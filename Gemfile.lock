@@ -1,0 +1,134 @@
+GIT
+  remote: https://github.com/projectcypress/health-data-standards.git
+  revision: 71e6c9e1ee8da2329ea2389698014703b10dfbfd
+  branch: master
+  specs:
+    health-data-standards (3.6.1)
+      activesupport (~> 4.1.1)
+      builder (~> 3.1)
+      erubis (~> 2.7.0)
+      highline (~> 1.7.0)
+      log4r (~> 1.1.10)
+      memoist (~> 0.9.1)
+      mongoid (~> 4.0.0)
+      mongoid-tree (~> 1.0.4)
+      nokogiri (~> 1.6.7.1)
+      protected_attributes (~> 1.0.5)
+      rest-client (~> 1.8.0)
+      rubyzip (= 0.9.9)
+      uuid (~> 2.3.7)
+
+PATH
+  remote: .
+  specs:
+    plan_executor (1.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (4.1.15)
+      activesupport (= 4.1.15)
+      builder (~> 3.1)
+    activesupport (4.1.15)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    ansi (1.5.0)
+    awesome_print (1.6.1)
+    bson (3.2.6)
+    builder (3.2.2)
+    cane (2.3.0)
+      parallel
+    coderay (1.1.1)
+    connection_pool (2.2.0)
+    docile (1.1.5)
+    domain_name (0.5.20160310)
+      unf (>= 0.0.5, < 1.0.0)
+    erubis (2.7.0)
+    faker (1.6.3)
+      i18n (~> 0.5)
+    highline (1.7.8)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
+    i18n (0.7.0)
+    json (1.8.3)
+    log4r (1.1.10)
+    macaddr (1.7.1)
+      systemu (~> 2.6.2)
+    memoist (0.9.3)
+    method_source (0.8.2)
+    mime-types (2.99.1)
+    mini_portile2 (2.0.0)
+    minitest (5.8.4)
+    minitest-reporters (1.0.17)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
+    mongoid (4.0.0)
+      activemodel (~> 4.0)
+      moped (~> 2.0.0)
+      origin (~> 2.1)
+      tzinfo (>= 0.3.37)
+    mongoid-tree (1.0.4)
+      mongoid (>= 3.0, <= 4.0)
+    moped (2.0.7)
+      bson (~> 3.0)
+      connection_pool (~> 2.0)
+      optionable (~> 0.2.0)
+    netrc (0.11.0)
+    nokogiri (1.6.7.2)
+      mini_portile2 (~> 2.0.0.rc2)
+    optionable (0.2.0)
+    origin (2.2.0)
+    parallel (1.6.0)
+    protected_attributes (1.0.9)
+      activemodel (>= 4.0.1, < 5.0)
+    pry (0.10.3)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    rake (11.1.2)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    ruby-progressbar (1.7.5)
+    rubyzip (0.9.9)
+    simplecov (0.11.2)
+      docile (~> 1.1.0)
+      json (~> 1.8)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
+    slop (3.6.0)
+    systemu (2.6.5)
+    thread_safe (0.3.5)
+    tilt (2.0.2)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.2)
+    uuid (2.3.8)
+      macaddr (~> 1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  awesome_print
+  cane (~> 2.3.0)
+  faker
+  health-data-standards!
+  minitest (~> 5.3)
+  minitest-reporters
+  plan_executor!
+  pry
+  rake
+  simplecov
+  tilt
+
+BUNDLED WITH
+   1.11.2
