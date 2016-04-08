@@ -1,4 +1,4 @@
-module Clyde
+module Synthea
   module Patient
     class Manager
 
@@ -10,7 +10,7 @@ module Clyde
 
       def evaluate(date)
         return if @patient.expired
-        process(Clyde::Event::Basic::Death, date) if Clyde::Likelihood::Death.evaluate(self, date)
+        process(Synthea::Event::Basic::Death, date) if Synthea::Likelihood::Death.evaluate(self, date)
       end
 
       def age(now)

@@ -1,10 +1,10 @@
-# Clyde Patient Generator 
+# Synthea Patient Generator 
 
-Clyde allows building a patient record.
+Synthetic Patient Population Simulator
 
 # License
 
-Copyright 2014 The MITRE Corporation
+Copyright 2016 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

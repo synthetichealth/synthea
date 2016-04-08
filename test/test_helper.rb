@@ -1,5 +1,5 @@
 require_relative "./simplecov"
-require_relative '../lib/clyde'
+require_relative '../lib/synthea'
 
 require 'pry'
 require 'minitest/autorun'

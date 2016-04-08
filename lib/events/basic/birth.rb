@@ -1,4 +1,4 @@
-module Clyde
+module Synthea
   module Event
     module Basic
 

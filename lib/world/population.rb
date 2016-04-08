@@ -1,4 +1,4 @@
-module Clyde
+module Synthea
   module World
     class Population
 
@@ -50,10 +50,10 @@ module Clyde
         patients.each do |patient|
           patient.evaluate(@date)
         end
-        @births += Clyde::Likelihood::Birth.likelihood(@area, @birth_std_dev)
+        @births += Synthea::Likelihood::Birth.likelihood(@area, @birth_std_dev)
         (0...(@births.floor)).each do |i|
-          manager = Clyde::Patient::Manager.new
-          manager.process(Clyde::Event::Basic::Birth, @date)
+          manager = Synthea::Patient::Manager.new
+          manager.process(Synthea::Event::Basic::Birth, @date)
           patients << manager
         end
         @births = @births % 1

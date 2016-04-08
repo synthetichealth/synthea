@@ -1,4 +1,4 @@
-module Clyde
+module Synthea
   module Likelihood
     class Birth
       def self.daily_births_per_square_mile

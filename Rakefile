@@ -2,7 +2,7 @@ require 'rake/testtask'
 require 'cane/rake_task'
 require "simplecov"
 
-require_relative 'lib/clyde'
+require_relative 'lib/synthea'
 
 # Pull in any rake task defined in lib/tasks
 Dir['lib/tasks/**/*.rake'].sort.each do |ext|

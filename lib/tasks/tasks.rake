@@ -1,4 +1,4 @@
-namespace :Clyde do
+namespace :synthea do
   
   desc 'console'
   task :console, [] do |t, args|
@@ -8,7 +8,7 @@ namespace :Clyde do
   desc 'generate'
   task :generate, [] do |t, args|
 
-    m = Clyde::World::Population.new
+    m = Synthea::World::Population.new
     m.run
 
     binding.pry
