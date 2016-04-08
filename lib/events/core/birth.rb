@@ -1,10 +1,13 @@
 module Synthea
-  module Event
-    module Basic
+  module Events
+    module Core
+      class Birth < Synthea::Event
 
-      class Birth
+        def initialize(now)
+          super(now,self.class.to_s)
+        end
 
-        def apply(manager, now)
+        def apply(manager)
   
           patient = manager.patient 
           raise "patient cannot be reborn" if patient.birthdate
@@ -14,7 +17,7 @@ module Synthea
           patient.last = Faker::Name.last_name
 
           patient.gender = gender
-          patient.birthdate = now.to_i
+          patient.birthdate = @time.to_i
           # patient.religious_affiliation = Faker::
           # patient.effective_time = Faker::
 
@@ -41,8 +44,8 @@ module Synthea
               'F'
           end
         end
+
       end
     end
-
   end
 end

@@ -13,6 +13,9 @@ Dir.glob(File.join(root, 'lib','ext','**','*.rb')).each do |file|
   require file
 end
 
+Dir.glob(File.join(root, 'lib','events','*.rb')).each do |file|
+  require file
+end
 Dir.glob(File.join(root, 'lib','events','**','*.rb')).each do |file|
   require file
 end

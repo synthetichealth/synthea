@@ -1,15 +1,18 @@
 module Synthea
-  module Event
-    module Basic
+  module Events
+    module Core
+      class Death < Synthea::Event
 
-      class Death
+        def initialize(now)
+          super(now,self.class.to_s)
+        end
 
-        def apply(manager, now)
+        def apply(manager)
   
           patient = manager.patient 
           raise "patient cannot die twice" if patient.expired
 
-          patient.deathdate = now.to_i
+          patient.deathdate = @time.to_i
           patient.expired = true
 
           #puts "     >>> #{patient.first} #{patient.last} died #{now.strftime("%m/%d/%Y")} at age: #{manager.age(now)}"
@@ -17,6 +20,5 @@ module Synthea
 
       end
     end
-
   end
 end

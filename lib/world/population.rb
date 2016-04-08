@@ -53,7 +53,7 @@ module Synthea
         @births += Synthea::Likelihood::Birth.likelihood(@area, @birth_std_dev)
         (0...(@births.floor)).each do |i|
           manager = Synthea::Patient::Manager.new
-          manager.process(Synthea::Event::Basic::Birth, @date)
+          manager.process(Synthea::Events::Core::Birth, @date)
           patients << manager
         end
         @births = @births % 1

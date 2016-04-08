@@ -10,7 +10,7 @@ module Synthea
 
       def evaluate(date)
         return if @patient.expired
-        process(Synthea::Event::Basic::Death, date) if Synthea::Likelihood::Death.evaluate(self, date)
+        process(Synthea::Events::Core::Death, date) if Synthea::Likelihood::Death.evaluate(self, date)
       end
 
       def age(now)
@@ -22,7 +22,7 @@ module Synthea
       end
 
       def process(event, date)
-        event.new.apply(self, date)
+        event.new(date).apply(self)
       end
 
     end
