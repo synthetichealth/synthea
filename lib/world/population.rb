@@ -2,10 +2,11 @@ module Synthea
   module World
     class Population
 
-      attr_reader :date, :patients
+      attr_reader :date, :people, :dead
         
       def initialize(area=0.05, birth_std_dev=0.01, date=(Time.now - 100.years))
-        @patients = []
+        @people = []
+        @dead = []
         @date = date
         @area = area
         @births = 0
@@ -22,20 +23,19 @@ module Synthea
           advance
           if year != @date.year
             year = @date.year
-            dead = @patients.select {|m| m.patient.expired}
             puts "#{year} \n"+
-                 "    Living Patients: #{@patients.count}\n"+
-                 "        0-20: #{@patients.select {|m| (0..20).include? m.age(@date)}.count}"+
-                      ",\t21-40: #{@patients.select {|m| (21..40).include? m.age(@date)}.count}"+
-                      ",\t41-60: #{@patients.select {|m| (41..60).include? m.age(@date)}.count}"+
-                      ",\t61-80: #{@patients.select {|m| (61..80).include? m.age(@date)}.count}"+
-                      ",\t>80: #{@patients.select {|m| m.age(@date) > 80}.count}\n"+
-                 "    Dead Patients: #{dead.count}\n" +
-                 "        0-20: #{dead.select {|m| (0..20).include? m.age(@date)}.count}"+
-                      ",\t21-40: #{dead.select {|m| (21..40).include? m.age(@date)}.count}"+
-                      ",\t41-60: #{dead.select {|m| (41..60).include? m.age(@date)}.count}"+
-                      ",\t61-80: #{dead.select {|m| (61..80).include? m.age(@date)}.count}"+
-                      ",\t>80: #{dead.select {|m| m.age(@date) > 80}.count}\n"
+                 "    Living People: #{@people.count}\n"+
+                 "        0-20: #{@people.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
+                      ",\t21-40: #{@people.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
+                      ",\t41-60: #{@people.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
+                      ",\t61-80: #{@people.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
+                      ",\t>80: #{@people.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n"+
+                 "    Dead People: #{@dead.count}\n" +
+                 "        0-20: #{@dead.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
+                      ",\t21-40: #{@dead.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
+                      ",\t41-60: #{@dead.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
+                      ",\t61-80: #{@dead.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
+                      ",\t>80: #{@dead.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n" 
           end
         end
       end
@@ -47,16 +47,30 @@ module Synthea
       end
 
       def handle_day
-        patients.each do |patient|
-          patient.evaluate(@date)
+        @people.each do |person|
+          Synthea::Rules.apply(@date,person)
         end
-        @births += Synthea::Likelihood::Birth.likelihood(@area, @birth_std_dev)
+        died = @people.select{|p|p.had_event?(:death)}
+        @people -= died
+        @dead += died
+        @births += new_births(@area, @birth_std_dev)
         (0...(@births.floor)).each do |i|
-          manager = Synthea::Patient::Manager.new
-          manager.process(Synthea::Events::Core::Birth, @date)
-          patients << manager
+          baby = Synthea::Person.new
+          @people << baby
         end
         @births = @births % 1
+      end
+
+      def daily_births_per_square_mile
+        ma_births_per_year = 73000.0
+        ma_square_miles = 10554.0
+        days_in_year = 365.0
+
+        ma_births_per_year/ma_square_miles/days_in_year
+      end
+
+      def new_births(area, stddev)
+        Synthea::Distributions.gaussian(daily_births_per_square_mile*area, stddev)
       end
 
     end

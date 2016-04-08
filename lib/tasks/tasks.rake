@@ -7,9 +7,11 @@ namespace :synthea do
 
   desc 'generate'
   task :generate, [] do |t, args|
-
-    m = Synthea::World::Population.new
-    m.run
+    start = Time.now
+    world = Synthea::World::Population.new
+    world.run
+    finish = Time.now
+    puts "Completed in #{((finish-start)/60).floor} minutes."
 
     binding.pry
   end
