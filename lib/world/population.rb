@@ -23,21 +23,26 @@ module Synthea
           advance
           if year != @date.year
             year = @date.year
-            puts "#{year} \n"+
-                 "    Living People: #{@people.count}\n"+
-                 "        0-20: #{@people.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
-                      ",\t21-40: #{@people.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
-                      ",\t41-60: #{@people.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
-                      ",\t61-80: #{@people.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
-                      ",\t>80: #{@people.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n"+
-                 "    Dead People: #{@dead.count}\n" +
-                 "        0-20: #{@dead.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
-                      ",\t21-40: #{@dead.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
-                      ",\t41-60: #{@dead.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
-                      ",\t61-80: #{@dead.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
-                      ",\t>80: #{@dead.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n" 
+
+            puts "#{year}: #{@people.count} living, #{@dead.count} dead"
           end
         end
+
+        living_prediabetics = @people.select{|p|p.had_event?(:prediabetic)}.count
+        dead_prediabetics = @dead.select{|p|p.had_event?(:prediabetic)}.count
+
+        puts  "    Living People: #{@people.count} (#{living_prediabetics} prediabetics)\n"+
+         "        0-20: #{@people.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
+              ",\t21-40: #{@people.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
+              ",\t41-60: #{@people.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
+              ",\t61-80: #{@people.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
+              ",\t>80: #{@people.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n"+
+         "    Dead People: #{@dead.count} (#{dead_prediabetics} prediabetics)\n" +
+         "        0-20: #{@dead.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
+              ",\t21-40: #{@dead.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
+              ",\t41-60: #{@dead.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
+              ",\t61-80: #{@dead.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
+              ",\t>80: #{@dead.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n" 
       end
 
       def advance
