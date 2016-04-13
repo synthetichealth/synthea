@@ -1,8 +1,7 @@
 module Synthea
   class Entity
     attr_accessor :attributes # Hash
-    attr_accessor :components # Hash
-    attr_accessor :event_list     # Array of Synthea::Event
+    attr_accessor :event_list # Array of Synthea::Event
 
     def initialize
       @attributes = {}

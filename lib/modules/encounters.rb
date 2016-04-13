@@ -4,7 +4,7 @@ module Synthea
 
       # People have encounters
       rule :schedule_encounter, [:age], [:encounter] do |time, entity|
-        if entity.components[:is_alive]
+        if entity.attributes[:is_alive]
           while entity.events(:encounter_ordered).unprocessed.next?
 
             event = entity.events(:encounter_ordered).unprocessed.next
@@ -46,7 +46,7 @@ module Synthea
       end
 
       rule :encounter, [], [:schedule_encounter] do |time, entity|
-        if entity.components[:is_alive]
+        if entity.attributes[:is_alive]
           while (event = entity.events(:encounter).unprocessed.before(time).next)
             event.processed=true
             age = entity.attributes[:age]

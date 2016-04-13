@@ -9,9 +9,9 @@ module Synthea
         if bmi
           entity.attributes[:blood_glucose] = blood_glucose(bmi)
           if(entity.attributes[:blood_glucose] < 6.5)
-            entity.components.delete(:prediabetic)
+            entity.attributes.delete(:prediabetic)
           else
-            entity.components[:prediabetic]=true 
+            entity.attributes[:prediabetic]=true 
             entity.events << Synthea::Event.new(time,:prediabetic,:prediabetes?,false) if !entity.had_event?(:prediabetic)
           end
         end

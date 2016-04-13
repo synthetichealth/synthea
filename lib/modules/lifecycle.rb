@@ -12,7 +12,7 @@ module Synthea
           # new babies are average weight and length for American newborns
           entity.attributes[:height] = 51 # centimeters
           entity.attributes[:weight] = 3.5 # kilograms
-          entity.components[:is_alive] = true
+          entity.attributes[:is_alive] = true
           entity.events << Synthea::Event.new(time,:birth,:birth,true)
           entity.events << Synthea::Event.new(time,:encounter_ordered,:birth)
           # TODO update record
@@ -22,7 +22,7 @@ module Synthea
 
       # People age
       rule :age, [:birth,:age,:is_alive], [:age] do |time, entity|
-        if entity.components[:is_alive]
+        if entity.attributes[:is_alive]
           birthdate = entity.event(:birth).time
           age = entity.attributes[:age]
           entity.attributes[:age] = ((time.to_i - birthdate.to_i)/1.year).floor
@@ -38,7 +38,7 @@ module Synthea
       rule :grow, [:age,:is_alive,:gender], [:height,:weight,:bmi] do |time, entity|
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
-        while entity.components[:is_alive] && entity.events(:grow).unprocessed.next?
+        while entity.attributes[:is_alive] && entity.events(:grow).unprocessed.next?
           event = entity.events(:grow).unprocessed.next
           event.processed=true
           age = entity.attributes[:age]
@@ -66,7 +66,7 @@ module Synthea
       rule :death, [:age], [] do |time, entity|
         unless entity.had_event?(:death)
           if(rand <= likelihood_of_death(entity.attributes[:age]))
-            entity.components.delete(:is_alive)
+            entity.attributes.delete(:is_alive)
             entity.events << Synthea::Event.new(time,:death,:death,true)
             # TODO update record
             # TODO update awareness
