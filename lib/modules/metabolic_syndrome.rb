@@ -4,15 +4,15 @@ module Synthea
 
       # People have a BMI that we can roughly use to estimate
       # blood glucose and diabetes
-      rule :prediabetes?, [:bmi], [:blood_glucose,:prediabetic] do
-        bmi = @@entity.attributes[:bmi]
+      rule :prediabetes?, [:bmi], [:blood_glucose,:prediabetic] do |time, entity|
+        bmi = entity.attributes[:bmi]
         if bmi
-          @@entity.attributes[:blood_glucose] = Synthea::Modules::MetabolicSyndrome.blood_glucose(bmi)
-          if(@@entity.attributes[:blood_glucose] < 6.5)
-            @@entity.components.delete(:prediabetic)
+          entity.attributes[:blood_glucose] = Synthea::Modules::MetabolicSyndrome.blood_glucose(bmi)
+          if(entity.attributes[:blood_glucose] < 6.5)
+            entity.components.delete(:prediabetic)
           else
-            @@entity.components[:prediabetic]=true 
-            @@entity.events << Synthea::Event.new(@@time,:prediabetic,:prediabetes?,false) if !@@entity.had_event?(:prediabetic)
+            entity.components[:prediabetic]=true 
+            entity.events << Synthea::Event.new(time,:prediabetic,:prediabetes?,false) if !entity.had_event?(:prediabetic)
           end
         end
       end
