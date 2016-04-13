@@ -7,7 +7,7 @@ module Synthea
       rule :prediabetes?, [:bmi], [:blood_glucose,:prediabetic] do |time, entity|
         bmi = entity.attributes[:bmi]
         if bmi
-          entity.attributes[:blood_glucose] = Synthea::Modules::MetabolicSyndrome.blood_glucose(bmi)
+          entity.attributes[:blood_glucose] = blood_glucose(bmi)
           if(entity.attributes[:blood_glucose] < 6.5)
             entity.components.delete(:prediabetic)
           else
@@ -19,7 +19,7 @@ module Synthea
 
       # rough linear fit seen in Figure 1
       # http://www.microbecolhealthdis.net/index.php/mehd/article/viewFile/22857/34046/125897
-      def self.blood_glucose(bmi)
+      def blood_glucose(bmi)
         ((bmi - 6) / 6.5)
       end
 

@@ -8,7 +8,7 @@ module Synthea
           entity.attributes[:age] = 0
           entity.attributes[:name_first] = Faker::Name.first_name
           entity.attributes[:name_last] = Faker::Name.last_name
-          entity.attributes[:gender] = Synthea::Modules::Lifecycle.gender
+          entity.attributes[:gender] = gender
           # new babies are average weight and length for American newborns
           entity.attributes[:height] = 51 # centimeters
           entity.attributes[:weight] = 3.5 # kilograms
@@ -58,14 +58,14 @@ module Synthea
             entity.attributes[:weight] += rand # kilograms            
           end
           # set the BMI
-          entity.attributes[:bmi] = Synthea::Modules::Lifecycle.calculate_bmi(entity.attributes[:height],entity.attributes[:weight])
+          entity.attributes[:bmi] = calculate_bmi(entity.attributes[:height],entity.attributes[:weight])
         end        
       end
 
       # People die
       rule :death, [:age], [] do |time, entity|
         unless entity.had_event?(:death)
-          if(rand <= Synthea::Modules::Lifecycle.likelihood_of_death(entity.attributes[:age]))
+          if(rand <= likelihood_of_death(entity.attributes[:age]))
             entity.components.delete(:is_alive)
             entity.events << Synthea::Event.new(time,:death,:death,true)
             # TODO update record
@@ -74,7 +74,7 @@ module Synthea
         end
       end
 
-      def self.gender(ratios = {male: 0.5})
+      def gender(ratios = {male: 0.5})
         value = rand
         case 
           when value < ratios[:male]
@@ -86,11 +86,11 @@ module Synthea
 
       # height in centimeters
       # weight in kilograms
-      def self.calculate_bmi(height,weight)
+      def calculate_bmi(height,weight)
         ( weight / ( (height/100) * (height/100) ) )
       end
 
-      def self.likelihood_of_death(age)
+      def likelihood_of_death(age)
         # http://www.cdc.gov/nchs/nvss/mortality/gmwk23r.htm: 820.4/100000
         case 
         when age < 1
