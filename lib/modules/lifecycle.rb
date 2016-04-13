@@ -14,6 +14,7 @@ module Synthea
           @@entity.attributes[:weight] = 3.5 # kilograms
           @@entity.components[:is_alive] = true
           @@entity.events << Synthea::Event.new(@@time,:birth,:birth,true)
+          @@entity.events << Synthea::Event.new(@@time,:encounter_ordered,:birth)
           # TODO update record
           # TODO update awareness
         end
@@ -22,7 +23,7 @@ module Synthea
       # People age
       rule :age, [:birth,:age,:is_alive], [:age] do
         if @@entity.components[:is_alive]
-          birthdate = @@entity.get_event(:birth).time
+          birthdate = @@entity.event(:birth).time
           age = @@entity.attributes[:age]
           @@entity.attributes[:age] = ((@@time.to_i - birthdate.to_i)/1.year).floor
           if(@@entity.attributes[:age] > age)
@@ -37,8 +38,8 @@ module Synthea
       rule :grow, [:age,:is_alive,:gender], [:height,:weight,:bmi] do
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
-        while @@entity.components[:is_alive] && @@entity.has_unprocessed_event?(:grow)
-          event = @@entity.get_unprocessed_event(:grow)
+        while @@entity.components[:is_alive] && @@entity.events(:grow).unprocessed.next?
+          event = @@entity.events(:grow).unprocessed.next
           event.processed=true
           age = @@entity.attributes[:age]
           gender = @@entity.attributes[:gender]
@@ -130,6 +131,20 @@ module Synthea
           0.0013698630136986301
         end
       end
+
+      def self.age(time, birthdate, deathdate, unit=:years)
+        case unit
+        when :months
+          left = deathdate.nil? ? time : deathdate
+          (left.month - birthdate.month) + (12 * (left.year - birthdate.year)) + (left.day < birthdate.day ? -1 : 0)
+        else
+          divisor = 1.method(unit).call
+
+          left = deathdate.nil? ? time : deathdate
+          ((left - birthdate)/divisor).floor
+        end
+      end
+
 
     end
   end

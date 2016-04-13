@@ -2,32 +2,28 @@ module Synthea
   class Entity
     attr_accessor :attributes # Hash
     attr_accessor :components # Hash
-    attr_accessor :events     # Array of Synthea::Event
+    attr_accessor :event_list     # Array of Synthea::Event
 
     def initialize
       @attributes = {}
       @components = {}
-      @events = []
+      @event_list = EventList.new
     end
 
     def had_event?(type)
-      !events.select{|x|x.type==type}.first.nil?
+      !event_list.select{|x|x.type==type}.first.nil?
     end
 
-    def get_events(type)
-      events.select{|x|x.type==type}
+    def event(type)
+      events(type).next
     end
 
-    def get_event(type)
-      get_events(type).first
-    end
-
-    def has_unprocessed_event?(type)
-      !get_events(type).select{|x|x.processed==false}.first.nil?
-    end
-
-    def get_unprocessed_event(type)
-      get_events(type).select{|x|x.processed==false}.first
+    def events(type=nil)
+      if type.nil?
+        event_list
+      else
+        event_list.select{|x| x.type==type}
+      end
     end
 
   end

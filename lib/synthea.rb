@@ -3,11 +3,18 @@ require 'bundler/setup'
 require 'rubygems'
 require 'yaml'
 require 'faker'
+require 'distribution'
+require 'recursive-open-struct'
 require 'health-data-standards'
 
 require 'pry'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
+
+module Synthea
+end
+
+Synthea::Config = RecursiveOpenStruct.new(YAML.load(ERB.new(File.read(File.join(root, 'config', 'synthea.yml'))).result)['synthea'])
 
 Dir.glob(File.join(root, 'lib','ext','**','*.rb')).each do |file|
   require file

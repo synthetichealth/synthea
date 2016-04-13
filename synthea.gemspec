@@ -10,6 +10,10 @@ Gem::Specification.new do |s|
   s.version = '1.0.0'
 
   s.files = s.files = `git ls-files`.split("\n")
+
+  s.add_runtime_dependency 'distribution', '~> 0.7', '>= 0.7.0'
+  s.add_runtime_dependency 'faker', '~> 1.6', '>= 1.6.0'
+  s.add_runtime_dependency 'recursive-open-struct', '~> 1.0',  '>= 1.0.0'
 end
 
 
