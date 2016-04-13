@@ -2,6 +2,16 @@ module Synthea
   module Modules
     class Lifecycle < Synthea::Rules
 
+      attr_accessor :male_growth, :male_weight, :female_growth, :female_weight
+
+      def initialize
+        super
+        @male_growth = Distribution::Normal.rng(Synthea::Config.lifecycle.growth_rate_male_average,Synthea::Config.lifecycle.growth_rate_male_stddev)
+        @male_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_male_average,Synthea::Config.lifecycle.weight_gain_male_stddev)
+        @female_growth = Distribution::Normal.rng(Synthea::Config.lifecycle.growth_rate_female_average,Synthea::Config.lifecycle.growth_rate_female_stddev)
+        @female_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_female_average,Synthea::Config.lifecycle.weight_gain_female_stddev)     
+      end
+
       # People are born
       rule :birth, [], [:age,:is_alive] do |time, entity|
         unless entity.had_event?(:birth)
@@ -47,15 +57,15 @@ module Synthea
           # they are not "good numbers"
           if(age <= 20)
             if(gender=='M')
-              entity.attributes[:height] += 6.3 # centimeters
-              entity.attributes[:weight] += 3.325 * (1 + rand) # kilograms
+              entity.attributes[:height] += @male_growth.call # centimeters
+              entity.attributes[:weight] += @male_weight.call # kilograms
             elsif(gender=='F')
-              entity.attributes[:height] += 5.6 # centimeters
-              entity.attributes[:weight] += 2.725 * (1 + rand) # kilograms
+              entity.attributes[:height] += @female_growth.call # centimeters
+              entity.attributes[:weight] += @female_weight.call # kilograms
             end
           else
             # getting old and fat
-            entity.attributes[:weight] += rand # kilograms            
+            entity.attributes[:weight] += @male_weight.call # kilograms            
           end
           # set the BMI
           entity.attributes[:bmi] = calculate_bmi(entity.attributes[:height],entity.attributes[:weight])

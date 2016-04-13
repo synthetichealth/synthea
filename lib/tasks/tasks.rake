@@ -11,7 +11,9 @@ namespace :synthea do
     world = Synthea::World::Population.new
     world.run
     finish = Time.now
-    puts "Completed in #{((finish-start)/60).floor} minutes."
+    minutes = ((finish-start)/60)
+    seconds = (minutes - minutes.floor) * 60
+    puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
 
     binding.pry
   end

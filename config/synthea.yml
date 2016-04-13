@@ -7,4 +7,12 @@ synthea:
     daily_births_per_square_mile: <%= (ma_births_per_year = 73000.0)/(ma_square_miles=10554.0)/365.0 %>
   schedule:
     variance: 0.1
-
+  lifecycle:
+    growth_rate_male_average:   6.3  # centimeters per year
+    growth_rate_male_stddev:    2    # centimeters per year
+    growth_rate_female_average: 5.6  # centimeters per year
+    growth_rate_female_stddev:  1.5  # centimeters per year
+    weight_gain_male_average:   3.325 # kilograms per year
+    weight_gain_male_stddev:    2     # kilograms per year
+    weight_gain_female_average: 2.725 # kilograms per year
+    weight_gain_female_stddev:  1     # kilograms per year
