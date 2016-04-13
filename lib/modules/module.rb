@@ -1,34 +1,22 @@
 module Synthea
   class Rules
 
-    cattr_accessor :time   # seconds since the epoch (Time)
-    cattr_accessor :entity # entity being processed
     cattr_accessor :metadata
 
-    # def self.rule(name,inputs,outputs,&block)
-    #   metadata = {}
-    #   metadata[:inputs] = inputs
-    #   metadata[:outputs] = outputs
-    #   metadata[:logic] = block
-
-
-    #   @@rules = {} if @@rules.nil?
-    #   @@rules[name] = metadata
-    # end
-
-    def self.apply(time,entity)
-      @@rules ||= self.get_rules
-      @@rules.each {|r| r.call(time, entity)}
-      entity
+    def initialize
+      @rules ||= methods.grep(/_rule$/).map {|r| method(r)}
     end
 
-    def self.get_rules
-      rules = []
-      Synthea::Modules.constants.each do |m|
-        instance = "Synthea::Modules::#{m}".constantize.new
-        rules.concat (instance.methods.grep(/_rule$/).map {|r| instance.method(r)})
-      end
-      rules
+    def run(time, entity)
+      @rules.each {|r| r.call(time, entity)}
+    end
+
+    def self.apply(time,entity)
+      get_modules.each {|r| r.run(time, entity)}
+    end
+
+    def self.get_modules
+      @@modules ||= Synthea::Modules.constants.map {|m| "Synthea::Modules::#{m}".constantize.new}
     end
 
     def self.rule(name,inputs,outputs,&block)
@@ -37,12 +25,8 @@ module Synthea
         inputs: inputs,
         outputs: outputs
       }
-
       define_method "#{name}_rule".to_sym, block
-
     end
-
-
-
+    
   end
 end
