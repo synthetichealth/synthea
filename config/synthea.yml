@@ -8,11 +8,17 @@ synthea:
   schedule:
     variance: 0.1
   lifecycle:
-    growth_rate_male_average:   6.3  # centimeters per year
-    growth_rate_male_stddev:    2    # centimeters per year
-    growth_rate_female_average: 5.6  # centimeters per year
-    growth_rate_female_stddev:  1.5  # centimeters per year
+    # these growth numbers are based on internet data to produce average height/weight men and women
+    # they are not "good numbers"
+    growth_rate_male_average:   6.3   # centimeters per year
+    growth_rate_male_stddev:    2     # centimeters per year
+    growth_rate_female_average: 5.6   # centimeters per year
+    growth_rate_female_stddev:  1.5   # centimeters per year
     weight_gain_male_average:   3.325 # kilograms per year
     weight_gain_male_stddev:    2     # kilograms per year
     weight_gain_female_average: 2.725 # kilograms per year
     weight_gain_female_stddev:  1     # kilograms per year
+    # http://www.livestrong.com/article/142567-average-increase-weight-adults/
+    adult_male_weight_gain:     0.034 # percent increase each year (where 1.0==100%)
+    adult_female_weight_gain:   0.052 # percent increase each year (where 1.0==100%)
+    adult_max_weight_age:       44    # age (years) when adults stop packing on weight

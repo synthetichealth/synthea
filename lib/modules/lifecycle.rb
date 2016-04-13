@@ -53,8 +53,6 @@ module Synthea
           event.processed=true
           age = entity.attributes[:age]
           gender = entity.attributes[:gender]
-          # these growth numbers are based on internet data to produce average height/weight men and women
-          # they are not "good numbers"
           if(age <= 20)
             if(gender=='M')
               entity.attributes[:height] += @male_growth.call # centimeters
@@ -63,9 +61,15 @@ module Synthea
               entity.attributes[:height] += @female_growth.call # centimeters
               entity.attributes[:weight] += @female_weight.call # kilograms
             end
+          elsif(age <= Synthea::Config.lifecycle.adult_max_weight_age)
+            # getting older and fatter
+            if(gender=='M')
+              entity.attributes[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
+            elsif(gender=='F')
+              entity.attributes[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
+            end           
           else
-            # getting old and fat
-            entity.attributes[:weight] += @male_weight.call # kilograms            
+            # TODO random change in weight?
           end
           # set the BMI
           entity.attributes[:bmi] = calculate_bmi(entity.attributes[:height],entity.attributes[:weight])
