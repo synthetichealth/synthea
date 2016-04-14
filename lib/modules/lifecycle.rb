@@ -25,6 +25,8 @@ module Synthea
           entity.attributes[:is_alive] = true
           entity.events << Synthea::Event.new(time,:birth,:birth,true)
           entity.events << Synthea::Event.new(time,:encounter_ordered,:birth)
+
+          Record.birth(entity, time)
           # TODO update record
           # TODO update awareness
         end
@@ -82,7 +84,7 @@ module Synthea
           if(rand <= likelihood_of_death(entity.attributes[:age]))
             entity.attributes.delete(:is_alive)
             entity.events << Synthea::Event.new(time,:death,:death,true)
-            # TODO update record
+            Record.death(entity, time)
             # TODO update awareness
           end
         end
@@ -157,6 +159,41 @@ module Synthea
           left = deathdate.nil? ? time : deathdate
           ((left - birthdate)/divisor).floor
         end
+      end
+
+      class Record < BaseRecord
+        def self.birth(entity, time)
+          patient = entity.record
+          patient.first = entity.attributes[:name_first]
+          patient.last = entity.attributes[:name_last]
+          patient.gender = entity.attributes[:gender]
+          patient.birthdate = time.to_i
+
+          patient.deathdate = nil
+          patient.expired = false
+
+          # patient.religious_affiliation
+          # patient.effective_time
+          # patient.race
+          # patient.ethnicity
+          # patient.languages
+          # patient.marital_status
+          # patient.medical_record_number
+          # patient.medical_record_assigner
+        end
+
+        def self.death(entity, time)
+          patient = entity.record
+          patient.deathdate = time.to_i
+          patient.expired = true
+        end
+
+        def self.height_weight(entity, time)
+          patient = entity.record
+          patient.vital_signs << VitalSign.new(lab_hash(:weight, time, entity.attributes[:weight]))
+          patient.vital_signs << VitalSign.new(lab_hash(:height, time, entity.attributes[:height]))
+        end
+
       end
 
 

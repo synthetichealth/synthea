@@ -23,6 +23,21 @@ module Synthea
         ((bmi - 6) / 6.5)
       end
 
+      class Record < BaseRecord
+        def self.diagnoses(entity, time)
+          patient = entity.record
+          if entity.components[:prediabetic] && !entity.record_conditions[:prediabetes]
+            # create the ongoing diagnosis
+            entity.record_conditions[:prediabetes] = Condition.new(condition_hash(:prediabetes, time))
+            patient.conditions << entity.record_conditions[:prediabetes]
+          elsif !entity.components[:prediabetic] && entity.record_conditions[:prediabetes]
+            # end the diagnosis
+            entity.record_conditions[:prediabetes].end_time = time.to_i
+            entity.record_conditions[:prediabetes] = nil
+          end
+        end
+      end
+
     end
   end
 end

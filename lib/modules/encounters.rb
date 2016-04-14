@@ -49,36 +49,43 @@ module Synthea
         if entity.attributes[:is_alive]
           while (event = entity.events(:encounter).unprocessed.before(time).next)
             event.processed=true
-            age = entity.attributes[:age]
-            codes = case
-              when age <= 1  
-                {"CPT" => ["99391"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
-              when age <= 4  
-                {"CPT" => ["99392"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
-              when age <= 11 
-                {"CPT" => ["99393"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
-              when age <= 17 
-                {"CPT" => ["99394"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
-              when age <= 39 
-                {"CPT" => ["99395"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
-              when age <= 64 
-                {"CPT" => ["99396"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
-              else
-                {"CPT" => ["99397"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']} 
-            end
-
-            entity.record.encounters << Encounter.new({
-              "codes" => codes,
-              "description" => "Encounter, Performed: Outpatient Encounter",
-              "start_time" => time.to_i,
-              "end_time" => time.to_i + 15.minutes,
-              "oid" => "2.16.840.1.113883.3.560.1.79"
-            })
+            Record.encounter(entity, time)
+            Synthea::Modules::Lifecycle::Record.height_weight(entity, time)
+            Synthea::Modules::MetabolicSyndrome::Record.diagnoses(entity, time)
 
             entity.events << Synthea::Event.new(time,:encounter_ordered,:encounter)
           end
         end
       end
+
+      class Record < BaseRecord
+        def self.encounter(entity, time)
+          age = entity.attributes[:age]
+          # https://www.uhccommunityplan.com/content/dam/communityplan/healthcareprofessionals/reimbursementpolicies/Preventive-Medicine-and-Screening-Policy-(R0013).pdf
+          # https://www.aap.org/en-us/professional-resources/practice-support/financing-and-payment/documents/bf-pmsfactsheet.pdf
+          # https://www.nlm.nih.gov/research/umls/mapping_projects/icd9cm_to_snomedct.html
+          # http://icd10coded.com/convert/
+          codes = case
+            when age <= 1  
+              {"CPT" => ["99391"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+            when age <= 4  
+              {"CPT" => ["99392"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+            when age <= 11 
+              {"CPT" => ["99393"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+            when age <= 17 
+              {"CPT" => ["99394"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+            when age <= 39 
+              {"CPT" => ["99395"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
+            when age <= 64 
+              {"CPT" => ["99396"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
+            else
+              {"CPT" => ["99397"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']} 
+          end
+
+          entity.record.encounters << Encounter.new(encounter_hash(time, codes))
+        end
+      end
+
 
     end
   end
