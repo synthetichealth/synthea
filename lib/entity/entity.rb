@@ -5,7 +5,6 @@ module Synthea
 
     def initialize
       @attributes = {}
-      @components = {}
       @event_list = EventList.new
     end
 
