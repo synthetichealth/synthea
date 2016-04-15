@@ -51,15 +51,15 @@ module Synthea
 
 
       def stats
-        living_prediabetics = @people.select{|p|p.had_event?(:prediabetic)}.count
-        dead_prediabetics = @dead.select{|p|p.had_event?(:prediabetic)}.count
-        puts  "    Living People: #{@people.count} (#{living_prediabetics} prediabetics)\n"+
+        living_diabetics = @people.select{|p|p.had_event?(:diabetes)}.count
+        dead_diabetics = @dead.select{|p|p.had_event?(:diabetes)}.count
+        puts  "    Living People: #{@people.count} (#{living_diabetics} diabetics)\n"+
          "        0-20: #{@people.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
               ",\t21-40: #{@people.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
               ",\t41-60: #{@people.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
               ",\t61-80: #{@people.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
               ",\t>80: #{@people.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n"+
-         "    Dead People: #{@dead.count} (#{dead_prediabetics} prediabetics)\n" +
+         "    Dead People: #{@dead.count} (#{dead_diabetics} diabetics)\n" +
          "        0-20: #{@dead.select {|m| (0..20).include?(m.attributes[:age])}.count}"+
               ",\t21-40: #{@dead.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
               ",\t41-60: #{@dead.select {|m| (41..60).include?(m.attributes[:age])}.count}"+

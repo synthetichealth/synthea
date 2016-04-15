@@ -65,7 +65,9 @@ module Synthea
           prediabetes: { description: 'Prediabetes', 
                          codes: {'ICD-9-CM' => ['790.29'], 
                                  'ICD-10-CM' => ['R73.09'], 
-                                 'SNOMED-CT' => ['15777000']}}
+                                 'SNOMED-CT' => ['15777000']}},
+          diabetes: { description: 'Diabetes', 
+                         codes: {'SNOMED-CT' => ['44054006']}}
         }
         {
           "codes" => lookup[type][:codes],
