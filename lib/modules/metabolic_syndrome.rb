@@ -5,17 +5,17 @@ module Synthea
       # People have a BMI that we can roughly use to estimate
       # blood glucose and diabetes
       rule :metabolic_syndrome, [:bmi], [:blood_glucose,:prediabetic,:diabetes] do |time, entity|
-        bmi = entity.attributes[:bmi]
+        bmi = entity[:bmi]
         if bmi
-          entity.attributes[:blood_glucose] = blood_glucose(bmi)
-          if(entity.attributes[:blood_glucose] < 5.7)
+          entity[:blood_glucose] = blood_glucose(bmi)
+          if(entity[:blood_glucose] < 5.7)
             # normal person
-          elsif(entity.attributes[:blood_glucose] < 6.5)
-            entity.attributes[:prediabetic]={} 
-            entity.events << Synthea::Event.new(time,:prediabetic,:metabolic_syndrome,false) if !entity.had_event?(:prediabetic)
-          elsif(entity.attributes[:blood_glucose] < 7.5)
+          elsif(entity[:blood_glucose] < 6.5)
+            entity[:prediabetic]={}
+            entity.events.create(time, :prediabetic, :metabolic_syndrome, false) if !entity.had_event?(:prediabetic)
+          elsif(entity[:blood_glucose] < 7.5)
             update_diabetes(1,time,entity)
-          elsif(entity.attributes[:blood_glucose] < 9)
+          elsif(entity[:blood_glucose] < 9)
             update_diabetes(2,time,entity)
           else  
             update_diabetes(3,time,entity)
@@ -24,12 +24,12 @@ module Synthea
       end
 
       def update_diabetes(severity,time,entity)
-        diabetes = entity.attributes[:diabetes]
+        diabetes = entity[:diabetes]
         if diabetes.nil?
           diabetes = {}
           diabetes[:duration] = 0
-          entity.attributes[:diabetes]=diabetes
-          entity.events << Synthea::Event.new(time,:diabetes,:metabolic_syndrome,false) if !entity.had_event?(:diabetes)
+          entity[:diabetes]=diabetes
+          entity.events.create(time, :diabetes, :metabolic_syndrome, false) if !entity.had_event?(:diabetes)
         end
         diabetes[:severity] = severity
         diabetes[:duration] += 1
@@ -37,7 +37,7 @@ module Synthea
 
       # prediabetics have symptoms
       rule :prediabetes?, [:prediabetic], [:hunger,:fatigue,:vision_blurred,:tingling_hands_feet] do |time,entity|
-        prediabetes = entity.attributes[:prediabetic]
+        prediabetes = entity[:prediabetic]
         if prediabetes
           prediabetes[:hunger] = rand
           prediabetes[:fatigue] = rand
@@ -48,7 +48,7 @@ module Synthea
 
       # diabetics have symptoms
       rule :diabetes?, [:diabetes], [:hunger,:fatigue,:vision_blurred,:tingling_hands_feet,:urination_frequent,:thirst] do |time,entity|
-        diabetes = entity.attributes[:diabetes]
+        diabetes = entity[:diabetes]
         if diabetes
           diabetes[:hunger] = rand * diabetes[:severity]
           diabetes[:fatigue] = rand * diabetes[:severity]
@@ -72,21 +72,21 @@ module Synthea
       class Record < BaseRecord
         def self.diagnoses(entity, time)
           patient = entity.record
-          if entity.attributes[:prediabetic] && !entity.record_conditions[:prediabetes]
+          if entity[:prediabetic] && !entity.record_conditions[:prediabetes]
             # create the ongoing diagnosis
             entity.record_conditions[:prediabetes] = Condition.new(condition_hash(:prediabetes, time))
             patient.conditions << entity.record_conditions[:prediabetes]
-          elsif !entity.attributes[:prediabetic] && entity.record_conditions[:prediabetes]
+          elsif !entity[:prediabetic] && entity.record_conditions[:prediabetes]
             # end the diagnosis
             entity.record_conditions[:prediabetes].end_time = time.to_i
             entity.record_conditions[:prediabetes] = nil
           end
 
-          if entity.attributes[:diabetes] && !entity.record_conditions[:diabetes]
+          if entity[:diabetes] && !entity.record_conditions[:diabetes]
             # create the ongoing diagnosis
             entity.record_conditions[:diabetes] = Condition.new(condition_hash(:diabetes, time))
             patient.conditions << entity.record_conditions[:diabetes]
-          elsif !entity.attributes[:diabetes] && entity.record_conditions[:diabetes]
+          elsif !entity[:diabetes] && entity.record_conditions[:diabetes]
             # end the diagnosis
             entity.record_conditions[:diabetes].end_time = time.to_i
             entity.record_conditions[:diabetes] = nil

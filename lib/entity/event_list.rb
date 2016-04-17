@@ -20,5 +20,9 @@ module Synthea
       self.select{|x|x.time <= date}
     end
 
+    def create(time, type, rule, processed=false)
+      self << Synthea::Event.new(time, type, rule, processed)
+    end
+
   end
 end

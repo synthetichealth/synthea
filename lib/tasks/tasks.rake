@@ -30,7 +30,7 @@ namespace :synthea do
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
       html = HealthDataStandards::Export::HTML.new.export(patient.record)
-      File.open(File.join(out_dir, "#{patient.attributes[:name_last]}_#{patient.attributes[:name_first]}_#{!patient.attributes[:diabetes].nil?}.html"), 'w') { |file| file.write(html) }
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.html"), 'w') { |file| file.write(html) }
     end
   end
 
