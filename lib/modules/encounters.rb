@@ -52,6 +52,7 @@ module Synthea
             Record.encounter(entity, time)
             Synthea::Modules::Lifecycle::Record.height_weight(entity, time)
             Synthea::Modules::MetabolicSyndrome::Record.diagnoses(entity, time)
+            Synthea::Modules::FoodAllergies::Record.diagnoses(entity, time)
 
             entity.events.create(time, :encounter_ordered, :encounter)
           end

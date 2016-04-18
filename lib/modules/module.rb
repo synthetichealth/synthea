@@ -67,7 +67,11 @@ module Synthea
                                  'ICD-10-CM' => ['R73.09'], 
                                  'SNOMED-CT' => ['15777000']}},
           diabetes: { description: 'Diabetes', 
-                         codes: {'SNOMED-CT' => ['44054006']}}
+                         codes: {'SNOMED-CT' => ['44054006']}},
+          food_allergy_peanuts: { description: 'Food Allergy: Peanuts', codes: {'SNOMED-CT' => ['91935009']}},
+          food_allergy_tree_nuts: { description: 'Food Allergy: Tree Nuts', codes: {'SNOMED-CT' => ['91934008']}},
+          food_allergy_fish: { description: 'Food Allergy: Fish', codes: {'SNOMED-CT' => ['417532002']}},
+          food_allergy_shellfish: { description: 'Food Allergy: Shellfish', codes: {'SNOMED-CT' => ['300913006']}}
         }
         {
           "codes" => lookup[type][:codes],
