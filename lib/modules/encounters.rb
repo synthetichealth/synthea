@@ -4,7 +4,7 @@ module Synthea
 
       # People have encounters
       rule :schedule_encounter, [:age], [:encounter] do |time, entity|
-        if entity.attributes[:is_alive]
+        if entity[:is_alive]
           while entity.events(:encounter_ordered).unprocessed.next?
 
             event = entity.events(:encounter_ordered).unprocessed.next
@@ -14,7 +14,7 @@ module Synthea
             birthdate = entity.event(:birth).time
             deathdate = entity.event(:death).try(:time)
 
-            age_in_years = entity.attributes[:age]
+            age_in_years = entity[:age]
             if age_in_years >= 3
               delta = case 
                 when age_in_years <= 19
@@ -40,27 +40,27 @@ module Synthea
               end
             end
             next_date = time + Distribution::Normal.rng(delta, delta*schedule_variance).call
-            entity.events << Synthea::Event.new(next_date,:encounter,:schedule_encounter)
+            entity.events.create(next_date, :encounter, :schedule_encounter)
           end
         end
       end
 
       rule :encounter, [], [:schedule_encounter] do |time, entity|
-        if entity.attributes[:is_alive]
+        if entity[:is_alive]
           while (event = entity.events(:encounter).unprocessed.before(time).next)
             event.processed=true
             Record.encounter(entity, time)
             Synthea::Modules::Lifecycle::Record.height_weight(entity, time)
             Synthea::Modules::MetabolicSyndrome::Record.diagnoses(entity, time)
 
-            entity.events << Synthea::Event.new(time,:encounter_ordered,:encounter)
+            entity.events.create(time, :encounter_ordered, :encounter)
           end
         end
       end
 
       class Record < BaseRecord
         def self.encounter(entity, time)
-          age = entity.attributes[:age]
+          age = entity[:age]
           # https://www.uhccommunityplan.com/content/dam/communityplan/healthcareprofessionals/reimbursementpolicies/Preventive-Medicine-and-Screening-Policy-(R0013).pdf
           # https://www.aap.org/en-us/professional-resources/practice-support/financing-and-payment/documents/bf-pmsfactsheet.pdf
           # https://www.nlm.nih.gov/research/umls/mapping_projects/icd9cm_to_snomedct.html

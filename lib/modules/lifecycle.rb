@@ -15,16 +15,16 @@ module Synthea
       # People are born
       rule :birth, [], [:age,:is_alive] do |time, entity|
         unless entity.had_event?(:birth)
-          entity.attributes[:age] = 0
-          entity.attributes[:name_first] = Faker::Name.first_name
-          entity.attributes[:name_last] = Faker::Name.last_name
-          entity.attributes[:gender] = gender
+          entity[:age] = 0
+          entity[:name_first] = Faker::Name.first_name
+          entity[:name_last] = Faker::Name.last_name
+          entity[:gender] = gender
           # new babies are average weight and length for American newborns
-          entity.attributes[:height] = 51 # centimeters
-          entity.attributes[:weight] = 3.5 # kilograms
-          entity.attributes[:is_alive] = true
-          entity.events << Synthea::Event.new(time,:birth,:birth,true)
-          entity.events << Synthea::Event.new(time,:encounter_ordered,:birth)
+          entity[:height] = 51 # centimeters
+          entity[:weight] = 3.5 # kilograms
+          entity[:is_alive] = true
+          entity.events.create(time, :birth, :birth, true)
+          entity.events.create(time, :encounter_ordered, :birth)
 
           Record.birth(entity, time)
           # TODO update record
@@ -34,12 +34,12 @@ module Synthea
 
       # People age
       rule :age, [:birth,:age,:is_alive], [:age] do |time, entity|
-        if entity.attributes[:is_alive]
+        if entity[:is_alive]
           birthdate = entity.event(:birth).time
-          age = entity.attributes[:age]
-          entity.attributes[:age] = ((time.to_i - birthdate.to_i)/1.year).floor
-          if(entity.attributes[:age] > age)
-            entity.events << Synthea::Event.new(time,:grow,:age)
+          age = entity[:age]
+          entity[:age] = ((time.to_i - birthdate.to_i)/1.year).floor
+          if(entity[:age] > age)
+            entity.events.create(time, :grow, :age)
           end
           # TODO update record
           # TODO update awareness
@@ -50,40 +50,40 @@ module Synthea
       rule :grow, [:age,:is_alive,:gender], [:height,:weight,:bmi] do |time, entity|
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
-        while entity.attributes[:is_alive] && entity.events(:grow).unprocessed.next?
+        while entity[:is_alive] && entity.events(:grow).unprocessed.next?
           event = entity.events(:grow).unprocessed.next
           event.processed=true
-          age = entity.attributes[:age]
-          gender = entity.attributes[:gender]
+          age = entity[:age]
+          gender = entity[:gender]
           if(age <= 20)
             if(gender=='M')
-              entity.attributes[:height] += @male_growth.call # centimeters
-              entity.attributes[:weight] += @male_weight.call # kilograms
+              entity[:height] += @male_growth.call # centimeters
+              entity[:weight] += @male_weight.call # kilograms
             elsif(gender=='F')
-              entity.attributes[:height] += @female_growth.call # centimeters
-              entity.attributes[:weight] += @female_weight.call # kilograms
+              entity[:height] += @female_growth.call # centimeters
+              entity[:weight] += @female_weight.call # kilograms
             end
           elsif(age <= Synthea::Config.lifecycle.adult_max_weight_age)
             # getting older and fatter
             if(gender=='M')
-              entity.attributes[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
+              entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
             elsif(gender=='F')
-              entity.attributes[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
+              entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
             end           
           else
             # TODO random change in weight?
           end
           # set the BMI
-          entity.attributes[:bmi] = calculate_bmi(entity.attributes[:height],entity.attributes[:weight])
+          entity[:bmi] = calculate_bmi(entity[:height],entity[:weight])
         end        
       end
 
       # People die
       rule :death, [:age], [] do |time, entity|
         unless entity.had_event?(:death)
-          if(rand <= likelihood_of_death(entity.attributes[:age]))
-            entity.attributes.delete(:is_alive)
-            entity.events << Synthea::Event.new(time,:death,:death,true)
+          if(rand <= likelihood_of_death(entity[:age]))
+            entity[:is_alive] = false
+            entity.events.create(time, :death, :death, true)
             Record.death(entity, time)
             # TODO update awareness
           end
@@ -164,9 +164,9 @@ module Synthea
       class Record < BaseRecord
         def self.birth(entity, time)
           patient = entity.record
-          patient.first = entity.attributes[:name_first]
-          patient.last = entity.attributes[:name_last]
-          patient.gender = entity.attributes[:gender]
+          patient.first = entity[:name_first]
+          patient.last = entity[:name_last]
+          patient.gender = entity[:gender]
           patient.birthdate = time.to_i
 
           patient.deathdate = nil
@@ -190,8 +190,8 @@ module Synthea
 
         def self.height_weight(entity, time)
           patient = entity.record
-          patient.vital_signs << VitalSign.new(lab_hash(:weight, time, entity.attributes[:weight]))
-          patient.vital_signs << VitalSign.new(lab_hash(:height, time, entity.attributes[:height]))
+          patient.vital_signs << VitalSign.new(lab_hash(:weight, time, entity[:weight]))
+          patient.vital_signs << VitalSign.new(lab_hash(:height, time, entity[:height]))
         end
 
       end
