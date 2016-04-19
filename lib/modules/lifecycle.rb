@@ -85,7 +85,6 @@ module Synthea
             entity[:is_alive] = false
             entity.events.create(time, :death, :death, true)
             Record.death(entity, time)
-            # TODO update awareness
           end
         end
       end

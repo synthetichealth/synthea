@@ -23,7 +23,8 @@ module Synthea
       @@metadata ||= {}
       @@metadata[name] = {
         inputs: inputs,
-        outputs: outputs
+        outputs: outputs,
+        module_name: self.to_s.split('::').last
       }
       define_method "#{name}_rule".to_sym, block
     end
