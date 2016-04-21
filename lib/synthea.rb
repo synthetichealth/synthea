@@ -4,6 +4,7 @@ require 'rubygems'
 require 'yaml'
 require 'faker'
 require 'distribution'
+require 'pickup'
 require 'recursive-open-struct'
 require 'health-data-standards'
 

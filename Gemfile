@@ -6,6 +6,7 @@ gem 'pry'
 gem 'tilt'
 gem 'faker'
 gem 'distribution'
+gem 'pickup'
 gem 'recursive-open-struct'
 gem 'health-data-standards', :git => 'https://github.com/projectcypress/health-data-standards.git', :branch => 'master'
 

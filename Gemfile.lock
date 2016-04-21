@@ -88,6 +88,7 @@ GEM
     optionable (0.2.0)
     origin (2.2.0)
     parallel (1.6.0)
+    pickup (0.0.11)
     protected_attributes (1.0.9)
       activemodel (>= 4.0.1, < 5.0)
     pry (0.10.3)
@@ -130,6 +131,7 @@ DEPENDENCIES
   health-data-standards!
   minitest (~> 5.3)
   minitest-reporters
+  pickup
   pry
   rake
   recursive-open-struct
