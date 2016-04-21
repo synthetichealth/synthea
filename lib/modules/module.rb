@@ -69,6 +69,21 @@ module Synthea
                                  'SNOMED-CT' => ['15777000']}},
           diabetes: { description: 'Diabetes', 
                          codes: {'SNOMED-CT' => ['44054006']}},
+
+          nephropathy: { description: 'Diabetic renal disease (disorder)', codes: {'SNOMED-CT' => ['127013003']}},
+          microalbuminuria: { description: 'Microalbuminuria due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['90781000119102']}},         
+          proteinuria: { description: 'Proteinuria due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['157141000119108']}},         
+          end_stage_renal_disease: { description: 'End stage renal disease (disorder)', codes: {'SNOMED-CT' => ['46177005']}},         
+
+          retinopathy: { description: 'Diabetic retinopathy associated with type II diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['422034002']}},         
+          nonproliferative_retinopathy: { description: 'Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['1551000119108']}},         
+          proliferative_retinopathy: { description: 'Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['1501000119109']}},         
+          macular_edema: { description: 'Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['97331000119101']}},         
+          blindness: { description: 'Blindness due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['60951000119105']}},         
+
+          neuropathy: { description: 'Neuropathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['368581000119106']}},         
+          amputation: { description: 'History of limb amputation (situation)', codes: {'SNOMED-CT' => ['271396005']}},
+
           food_allergy_peanuts: { description: 'Food Allergy: Peanuts', codes: {'SNOMED-CT' => ['91935009']}},
           food_allergy_tree_nuts: { description: 'Food Allergy: Tree Nuts', codes: {'SNOMED-CT' => ['91934008']}},
           food_allergy_fish: { description: 'Food Allergy: Fish', codes: {'SNOMED-CT' => ['417532002']}},
@@ -77,8 +92,8 @@ module Synthea
         {
           "codes" => lookup[type][:codes],
           "description" => lookup[type][:description],
-          "start_time" => time.to_i,
-          "oid" => "2.16.840.1.113883.3.560.1.2"
+          "start_time" => time.to_i
+          # "oid" => "2.16.840.1.113883.3.560.1.2"
         }
       end
     end

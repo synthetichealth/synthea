@@ -144,7 +144,6 @@ module Synthea
           entity.events.create(time, :encounter_ordered, :birth)
 
           Record.birth(entity, time)
-          # TODO update record
           # TODO update awareness
         end
       end
@@ -158,7 +157,6 @@ module Synthea
           if(entity[:age] > age)
             entity.events.create(time, :grow, :age)
           end
-          # TODO update record
           # TODO update awareness
         end
       end

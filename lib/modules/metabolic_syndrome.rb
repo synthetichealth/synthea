@@ -194,26 +194,31 @@ module Synthea
 
       class Record < BaseRecord
         def self.diagnoses(entity, time)
-          patient = entity.record
-          if entity[:prediabetes] && !entity.record_conditions[:prediabetes]
-            # create the ongoing diagnosis
-            entity.record_conditions[:prediabetes] = Condition.new(condition_hash(:prediabetes, time))
-            patient.conditions << entity.record_conditions[:prediabetes]
-          elsif !entity[:prediabetes] && entity.record_conditions[:prediabetes]
-            # end the diagnosis
-            entity.record_conditions[:prediabetes].end_time = time.to_i
-            entity.record_conditions[:prediabetes] = nil
+          [:prediabetes,:diabetes].each do |diagnosis|
+            process_diagnosis(diagnosis,entity,entity,time)
           end
 
-          if entity[:diabetes] && !entity.record_conditions[:diabetes]
+          if entity[:diabetes]
+            [:nephropathy,:microalbuminuria,:proteinuria,:end_stage_renal_disease,
+              :retinopathy,:nonproliferative_retinopathy,:proliferative_retinopathy,:macular_edema,:blindness,
+              :neuropathy,:amputation
+            ].each do |diagnosis|
+              process_diagnosis(diagnosis,entity[:diabetes],entity,time)
+            end
+          end
+        end
+
+        def self.process_diagnosis(diagnosis, diagnosis_hash, entity, time)
+          patient = entity.record
+          if diagnosis_hash[diagnosis] && !entity.record_conditions[diagnosis]
             # create the ongoing diagnosis
-            entity.record_conditions[:diabetes] = Condition.new(condition_hash(:diabetes, time))
-            patient.conditions << entity.record_conditions[:diabetes]
-          elsif !entity[:diabetes] && entity.record_conditions[:diabetes]
+            entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
+            patient.conditions << entity.record_conditions[diagnosis]
+          elsif !diagnosis_hash[diagnosis] && entity.record_conditions[diagnosis]
             # end the diagnosis
-            entity.record_conditions[:diabetes].end_time = time.to_i
-            entity.record_conditions[:diabetes] = nil
-          end          
+            entity.record_conditions[diagnosis].end_time = time.to_i
+            entity.record_conditions[diagnosis] = nil
+          end  
         end
       end
 
