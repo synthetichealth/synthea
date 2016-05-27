@@ -338,6 +338,19 @@ module Synthea
           patientResource.birthDate = time.to_i
           patientResource.deceasedBoolean = false
           patientResource.deceasedDateTime = nil
+          
+          race = FHIR::Extension.new
+          race.url = 'http://hl7.org/fhir/StructureDefinition/us-core-race'
+          race.id = entity[:race].to_s.capitalize
+          race.valueCodeableConcept = @race_ethnicity_codes[entity[:race]]
+
+          ethnicity = FHIR::Extension.new
+          ethnicity.url = 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity'
+          ethnicity.id = entity[:ethnicity].to_s.capitalize
+          ethnicity.valueCodeableConcept = @race_ethnicity_codes[entity[:ethnicity]]
+
+          patientResource.extension << race
+          patientResource.extension << ethnicity
           patientEntry.resource = patientResource
           patient.entry << patientEntry
         end
