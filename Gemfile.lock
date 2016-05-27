@@ -40,12 +40,15 @@ GEM
       tzinfo (~> 1.1)
     ansi (1.5.0)
     awesome_print (1.6.1)
+    bcp47 (0.3.3)
+      i18n
     bson (3.2.6)
     builder (3.2.2)
     cane (2.3.0)
       parallel
     coderay (1.1.1)
     connection_pool (2.2.0)
+    date_time_precision (0.8.1)
     distribution (0.7.3)
     docile (1.1.5)
     domain_name (0.5.20160310)
@@ -53,6 +56,12 @@ GEM
     erubis (2.7.0)
     faker (1.6.3)
       i18n (~> 0.5)
+    fhir_models (0.3.0)
+      bcp47 (>= 0.3)
+      date_time_precision (>= 0.8)
+      mime-types (>= 1.16, < 3)
+      nokogiri (>= 1.6)
+      rake (>= 0.8.7)
     highline (1.7.8)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -128,6 +137,7 @@ DEPENDENCIES
   cane (~> 2.3.0)
   distribution
   faker
+  fhir_models
   health-data-standards!
   minitest (~> 5.3)
   minitest-reporters
@@ -140,4 +150,4 @@ DEPENDENCIES
   tilt
 
 BUNDLED WITH
-   1.11.2
+   1.12.4

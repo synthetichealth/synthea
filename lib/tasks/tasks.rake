@@ -19,6 +19,7 @@ namespace :synthea do
 
     puts "Saving patient records..."
     export(world.people | world.dead)
+    fhir_export(world.people | world.dead)
   end
 
   def export(patients)
@@ -34,4 +35,13 @@ namespace :synthea do
     end
   end
 
+  def fhir_export(patients)
+    out_dir = File.join('output','fhir')
+    FileUtils.rm_r out_dir if File.exists? out_dir
+    FileUtils.mkdir_p out_dir
+    patients.each do |patient|
+      data = patient.fhir_record.to_json
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}"), 'w') { |file| file.write(data) }
+    end
+  end
 end

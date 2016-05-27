@@ -7,6 +7,7 @@ require 'distribution'
 require 'pickup'
 require 'recursive-open-struct'
 require 'health-data-standards'
+require 'fhir_models'
 
 require 'pry'
 
@@ -44,3 +45,16 @@ end
 Dir.glob(File.join(root, 'lib','likelihoods','**','*.rb')).each do |file|
   require file
 end
+
+begin
+	generator = FHIR::Boot::Generator.new
+	# 1. generate the lists of primitive data types, complex types, and resources
+	generator.generate_metadata
+	# 2. generate the complex data types
+	generator.generate_types
+	# 3. generate the base Resources
+	generator.generate_resources
+rescue Exception => e 
+	$LOG.error("Could not re-generate fhir models... this can happen in production, but the code does not need to be re-generated")
+end
+

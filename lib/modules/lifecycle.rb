@@ -328,6 +328,18 @@ module Synthea
           # patient.marital_status
           # patient.medical_record_number
           # patient.medical_record_assigner
+
+          patient = entity.fhir_record
+          patientEntry = FHIR::Bundle::Entry.new
+          patientEntry.id = "Patient"
+          patientResource = FHIR::Patient.new
+          patientResource.name = { 'use' => 'official', 'given' => entity[:name_first], 'family' => entity[:name_last] }
+          patientResource.gender = entity[:gender]
+          patientResource.birthDate = time.to_i
+          patientResource.deceasedBoolean = false
+          patientResource.deceasedDateTime = nil
+          patientEntry.resource = patientResource
+          patient.entry << patientEntry
         end
 
         def self.death(entity, time)
