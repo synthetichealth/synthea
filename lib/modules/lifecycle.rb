@@ -331,23 +331,36 @@ module Synthea
 
           patient = entity.fhir_record
           patientEntry = FHIR::Bundle::Entry.new
-          patientEntry.id = "Patient"
           patientResource = FHIR::Patient.new
-          patientResource.name = { 'use' => 'official', 'given' => entity[:name_first], 'family' => entity[:name_last] }
-          patientResource.gender = entity[:gender]
-          patientResource.birthDate = time.to_i
-          patientResource.deceasedBoolean = false
+          hname = FHIR::HumanName.new
+          hname.given << entity[:name_first]
+          hname.family << entity[:name_last]
+          hname.use = 'official'
+          patientResource.name << hname 
+          patientResource.id = SecureRandom.uuid
+          patientResource.gender = ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F')
+          patientResource.birthDate = Regexp.new(FHIR::PRIMITIVES['date']['regex']).match(time.to_s).to_s
           patientResource.deceasedDateTime = nil
           
           race = FHIR::Extension.new
           race.url = 'http://hl7.org/fhir/StructureDefinition/us-core-race'
-          race.id = entity[:race].to_s.capitalize
-          race.valueCodeableConcept = @race_ethnicity_codes[entity[:race]]
+          raceCodeConcept = FHIR::CodeableConcept.new
+          raceCodeConcept.text = 'race'
+          raceCoding = FHIR::Coding.new 
+          raceCoding.display = entity[:race].to_s.capitalize
+          raceCoding.code = @race_ethnicity_codes[entity[:race]]
+          raceCodeConcept.coding << raceCoding
+          race.valueCodeableConcept = raceCodeConcept
 
           ethnicity = FHIR::Extension.new
           ethnicity.url = 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity'
-          ethnicity.id = entity[:ethnicity].to_s.capitalize
-          ethnicity.valueCodeableConcept = @race_ethnicity_codes[entity[:ethnicity]]
+          ethnicityCodeConcept = FHIR::CodeableConcept.new
+          ethnicityCodeConcept.text = 'ethnicity'
+          ethnicityCoding = FHIR::Coding.new 
+          ethnicityCoding.display = entity[:ethnicity].to_s.capitalize
+          ethnicityCoding.code = @race_ethnicity_codes[entity[:ethnicity]]
+          ethnicityCodeConcept.coding << ethnicityCoding
+          ethnicity.valueCodeableConcept = ethnicityCodeConcept
 
           patientResource.extension << race
           patientResource.extension << ethnicity
@@ -359,6 +372,9 @@ module Synthea
           patient = entity.record
           patient.deathdate = time.to_i
           patient.expired = true
+
+          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
+          patient.resource.deceasedDateTime = Regexp.new(FHIR::PRIMITIVES['dateTime']['regex']).match(time.to_s).to_s
         end
 
         def self.height_weight(entity, time)

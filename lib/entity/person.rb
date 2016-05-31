@@ -9,6 +9,7 @@ module Synthea
       @record_conditions={}
       @record = Record.new
       @fhir_record = FHIR::Bundle.new
+      @fhir_record.type = 'collection'
     end
 
   end

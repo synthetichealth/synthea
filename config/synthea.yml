@@ -1,5 +1,6 @@
 synthea:
-  start_date: <%= Time.now - 100.years %>
+  #CHANGE THE START DATE BACK TO 100 YEARS FOR THE REAL THING*************************
+  start_date: <%= Time.now - 50.years %>
   end_date: <%= Time.now - 1.day %>
   population: 
     area: 0.05
