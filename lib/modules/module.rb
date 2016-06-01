@@ -96,6 +96,17 @@ module Synthea
           # "oid" => "2.16.840.1.113883.3.560.1.2"
         }
       end
+
+      def self.convertFhirDateTime(date, option = nil)
+        if option == 'time'
+          x = date.to_s.sub(' ', 'T')
+          x = x.sub(' ', '')
+          x = x.insert(-3, ":")
+          return Regexp.new(FHIR::PRIMITIVES['dateTime']['regex']).match(x.to_s).to_s
+        else
+          return Regexp.new(FHIR::PRIMITIVES['date']['regex']).match(date.to_s).to_s
+        end
+      end
     end
 
   end

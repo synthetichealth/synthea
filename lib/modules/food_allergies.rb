@@ -37,6 +37,10 @@ module Synthea
               key = "food_allergy_#{allergen.to_s}".to_sym
               entity.record_conditions[key] = Condition.new(condition_hash(key, time))
               patient.conditions << entity.record_conditions[key]
+
+              allergy = FHIR::AllergyIntolerance.new
+              patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
+              allergy.patient = FHIR::Reference.new({'reference' => patient.resource.id})
             end
           end
         end
