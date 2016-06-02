@@ -214,10 +214,31 @@ module Synthea
             # create the ongoing diagnosis
             entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
             patient.conditions << entity.record_conditions[diagnosis]
+
+            #write to fhir record
+            condition = FHIR::Condition.new
+            patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
+            condition.patient = FHIR::Reference.new({'reference' => patient.resource.id})
+            conditionData = condition_hash(diagnosis, time)
+            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct/900000000000207008'})
+            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding]})
+            condition.verificationStatus = 'confirmed'
+            condition.onsetDateTime = convertFhirDateTime(time,'time')
+
+            encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+            condition.encounter = FHIR::Reference.new({'reference'=>encounter.resource.id})
+
+            entry = FHIR::Bundle::Entry.new
+            entry.resource = condition
+            entity.fhir_record.entry << entry
+
           elsif !diagnosis_hash[diagnosis] && entity.record_conditions[diagnosis]
             # end the diagnosis
             entity.record_conditions[diagnosis].end_time = time.to_i
             entity.record_conditions[diagnosis] = nil
+
+            condition = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code['coding'][0]['display'] == condition_hash(diagnosis,time)['description']}
+            condition.resource.abatementDateTime = convertFhirDateTime(time,'time')
           end  
         end
       end

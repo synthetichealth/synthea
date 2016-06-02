@@ -41,7 +41,7 @@ namespace :synthea do
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
       data = patient.fhir_record.to_json
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{patient[:is_alive]}"), 'w') { |file| file.write(data) }
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}"), 'w') { |file| file.write(data) }
     end
   end
 end
