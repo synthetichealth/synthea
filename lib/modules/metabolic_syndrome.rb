@@ -106,8 +106,7 @@ module Synthea
         if diabetes && diabetes[:end_stage_renal_disease] && (rand < (0.01 * diabetes[:severity]))
           entity[:is_alive] = false
           entity.events.create(time, :death, :end_stage_renal_disease, true)
-          entity.record.deathdate = time.to_i
-          entity.record.expired = true
+          Synthea::Modules::Lifecycle::Record.death(entity, time)
         end
       end
 
