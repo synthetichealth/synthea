@@ -1,4 +1,4 @@
-require_relative "./simplecov"
+
 require_relative '../lib/synthea'
 
 require 'pry'

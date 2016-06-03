@@ -88,7 +88,7 @@ module Synthea
           encounter = FHIR::Encounter.new
           encounter.id = SecureRandom.uuid
           encounter.status = 'finished'
-          encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['CPT'][0], 'system'=>'http://snomed.info/sct/900000000000207008'})]})
+          encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['CPT'][0], 'system'=>'http://www.ama-assn.org/go/cpt'})]})
           encounter.type << encounterCode
           patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
           encounter.patient = FHIR::Reference.new({'reference' => patient.resource.id})
