@@ -236,7 +236,7 @@ module Synthea
             entity.record_conditions[diagnosis].end_time = time.to_i
             entity.record_conditions[diagnosis] = nil
 
-            condition = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code['coding'][0]['display'] == condition_hash(diagnosis,time)['description']}
+            condition = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding[0].display == condition_hash(diagnosis,time)['description']}
             condition.resource.abatementDateTime = convertFhirDateTime(time,'time')
           end  
         end
