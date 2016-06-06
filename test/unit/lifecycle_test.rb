@@ -16,8 +16,8 @@ class LifecycleTest < Minitest::Test
   def test_birthFhir
   	
   	person_entry = @patient.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
- 	person = person_entry.resource
- 	hname = person.name[0]
+ 	  person = person_entry.resource
+ 	  hname = person.name[0]
   	assert_equal("Jane",hname.given[0])
   	assert_equal("Doe",hname.family[0])
   	assert_equal("official",hname.use)
@@ -83,13 +83,30 @@ class LifecycleTest < Minitest::Test
   def test_height_weightCCDA
   	@patient[:height] = 60
   	@patient[:weight] = 10
+  	entry = FHIR::Bundle::Entry.new
+  	entry.resource = FHIR::Encounter.new('id'=>'123')
+  	@patient.fhir_record.entry << entry
   	Synthea::Modules::Lifecycle::Record.height_weight(@patient, @time)
   	person = @patient.record
+  	lookup = {
+      'quant_height' => 60, 
+      'quant_weight'=>10,
+      'code_height'=>'8302-2', 
+      'code_weight'=>'29463-7',
+     'vitals_height' => person.vital_signs[-1], 
+     'vitals_weight' => person.vital_signs[-2],
+     'unit_height'=>'cm',
+     'unit_weight'=>'kg'
+   }
 
-  	lookup = {'quant_height' => 60, 'quant_weight'=>10,'code_height'=>'8302-2', 'code_weight'=>'29463-7'}
-  	
   	['height','weight'].each do |option|
-  		assert_equal(lookup['code_'+option],#something with vital signs????? look into this)
-	end
+      vitals = lookup['vitals_'+option]
+  		assert_equal(lookup['code_'+option], vitals['codes']['LOINC'][0])
+      assert_equal(lookup['quant_'+option], vitals.values[0]['scalar'])
+      assert_equal(lookup['unit_'+option], vitals.values[0]['units'])
+      assert_equal('Body '+option.capitalize ,vitals['description'])
+      assert_equal(@time.to_i,vitals['start_time'])
+      assert_equal(@time.to_i,vitals['end_time'])
+    end
   end
 end

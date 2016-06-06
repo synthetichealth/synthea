@@ -339,7 +339,7 @@ module Synthea
           patientResource.name << hname 
           patientResource.id = SecureRandom.uuid
           patientResource.gender = ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F')
-          patientResource.birthDate = Regexp.new(FHIR::PRIMITIVES['date']['regex']).match(time.to_s).to_s
+          patientResource.birthDate = convertFhirDateTime(time)
           patientResource.deceasedDateTime = nil
           
           race = FHIR::Extension.new
