@@ -19,6 +19,8 @@ namespace :synthea do
 
     puts "Saving patient records..."
     export(world.people | world.dead)
+    fhir_export(world.people | world.dead)
+    uploadFhirServer(world.people | world.dead)
   end
 
   def export(patients)
@@ -34,4 +36,27 @@ namespace :synthea do
     end
   end
 
+  def fhir_export(patients)
+    out_dir = File.join('output','fhir')
+    FileUtils.rm_r out_dir if File.exists? out_dir
+    FileUtils.mkdir_p out_dir
+    patients.each do |patient|
+      data = patient.fhir_record.to_json
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}"), 'w') { |file| file.write(data) }
+    end
+  end
+
+  def uploadFhirServer(patients)
+    client = FHIR::Client.new('http://bonfire.mitre.org:8100/fhir/baseDstu3')
+    binding.pry
+    patients.each do |patient|
+      client.begin_transaction
+      patient.fhir_record.entry.each do |entry|
+        client.add_transaction_request('POST',nil,entry.resource)
+      end
+      reply = client.end_transaction
+      puts reply
+    end
+
+  end
 end
