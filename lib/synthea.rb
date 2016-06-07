@@ -8,7 +8,7 @@ require 'pickup'
 require 'recursive-open-struct'
 require 'health-data-standards'
 require 'fhir_models'
-
+require 'fhir_client'
 require 'pry'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))

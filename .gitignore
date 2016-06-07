@@ -2,4 +2,4 @@
 output
 coverage
 resources
-
+*log*
