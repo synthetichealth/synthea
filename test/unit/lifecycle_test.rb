@@ -9,8 +9,9 @@ class LifecycleTest < Minitest::Test
   	@patient[:gender] = 'F'
   	@patient[:race] = :white
   	@patient[:ethnicity] = :italian
+
     @time = Synthea::Config.start_date
-    Synthea::Modules::Lifecycle::Record.birth(@patient, @time)
+    Synthea::Modules::Lifecycle::Record.birth(@patient, @time) 
   end
 
   def test_birthFhir
@@ -25,11 +26,11 @@ class LifecycleTest < Minitest::Test
   	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time),person.birthDate)
   	assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,person_entry.fullUrl)
   	race = person.extension[0].valueCodeableConcept.coding[0]
-  	assert_equal('White',race.display)
-  	assert_equal('2106-3',race.code)
+  	assert_equal('Italian',race.display)
+  	assert_equal('2114-7',race.code)
   	ethnicity = person.extension[1].valueCodeableConcept.coding[0]
-  	assert_equal('Italian',ethnicity.display)
-  	assert_equal('2114-7',ethnicity.code)
+  	assert_equal('Nonhispanic',ethnicity.display)
+  	assert_equal('2186-5',ethnicity.code)
   end
   
   def test_birthCCDA
@@ -41,6 +42,20 @@ class LifecycleTest < Minitest::Test
   	assert(!person.expired)
   	assert_equal({'name'=>'White','code'=>'2106-3'},person.race)
   	assert_equal({'name'=>'Italian','code'=>'2114-7'},person.ethnicity)
+  end
+
+  def test_race_ethnicity
+    @patient[:race] = :hispanic
+    @patient[:ethnicity] = :mexican
+    Synthea::Modules::Lifecycle::Record.birth(@patient, @time)
+    person_entry = @patient.fhir_record.entry.reverse.find{|e| e.resource.is_a?(FHIR::Patient)}
+    person = person_entry.resource
+    race = person.extension[0].valueCodeableConcept.coding[0]
+    assert_equal('Other',race.display)
+    assert_equal('2131-1',race.code)
+    ethnicity = person.extension[1].valueCodeableConcept.coding[0]
+    assert_equal('Mexican',ethnicity.display)
+    assert_equal('2148-5',ethnicity.code)
   end
 
   def test_deathFhir
