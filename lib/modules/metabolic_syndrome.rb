@@ -219,7 +219,7 @@ module Synthea
             patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
             condition.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
             conditionData = condition_hash(diagnosis, time)
-            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct/900000000000207008'})
+            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://hl7.org/fhir/ValueSet/daf-problem'})
             condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding]})
             condition.verificationStatus = 'confirmed'
             condition.onsetDateTime = convertFhirDateTime(time,'time')

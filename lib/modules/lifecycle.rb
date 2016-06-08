@@ -345,14 +345,14 @@ module Synthea
           race = FHIR::Extension.new
           race.url = 'http://hl7.org/fhir/StructureDefinition/us-core-race'
           raceCodeConcept = FHIR::CodeableConcept.new({'text'=>'race'})
-          raceCoding = FHIR::Coding.new({'display'=>entity[:race].to_s.capitalize, 'code'=>@race_ethnicity_codes[entity[:race]]})
+          raceCoding = FHIR::Coding.new({'display'=>entity[:race].to_s.capitalize, 'code'=>@race_ethnicity_codes[entity[:race]], 'system'=>'http://hl7.org/fhir/v3/Race'})
           raceCodeConcept.coding << raceCoding
           race.valueCodeableConcept = raceCodeConcept
 
           ethnicity = FHIR::Extension.new
           ethnicity.url = 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity'
           ethnicityCodeConcept = FHIR::CodeableConcept.new({'text'=>'ethnicity'})
-          ethnicityCoding = FHIR::Coding.new({'display'=>entity[:ethnicity].to_s.capitalize, 'code'=>@race_ethnicity_codes[entity[:ethnicity]]})
+          ethnicityCoding = FHIR::Coding.new({'display'=>entity[:ethnicity].to_s.capitalize, 'code'=>@race_ethnicity_codes[entity[:ethnicity]],'system'=>'http://hl7.org/fhir/v3/Ethnicity'})
           ethnicityCodeConcept.coding << ethnicityCoding
           ethnicity.valueCodeableConcept = ethnicityCodeConcept
 
