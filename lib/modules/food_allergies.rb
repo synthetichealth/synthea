@@ -40,7 +40,7 @@ module Synthea
 
               allergy = FHIR::AllergyIntolerance.new
               patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-              allergy.patient = FHIR::Reference.new({'reference' => patient.resource.id})
+              allergy.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
               snomed_code = condition_hash(key, time)['codes']['SNOMED-CT'][0]
               allergyCoding = FHIR::Coding.new({'code'=>snomed_code, 'display'=>allergen.to_s, 'system' => 'http://snomed.info/sct/900000000000207008'})
               allergy.substance = FHIR::CodeableConcept.new({'coding'=>[allergyCoding]})

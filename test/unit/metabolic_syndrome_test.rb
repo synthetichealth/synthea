@@ -5,11 +5,11 @@ class MetabolicSyndromeTest < Minitest::Test
   def setup
   	@patient = Synthea::Person.new
     @time = Synthea::Config.start_date
-    entry = FHIR::Bundle::Entry.new
-    entry.resource = FHIR::Patient.new({'id'=>'123'})
+    entry = FHIR::Bundle::Entry.new({'fullUrl'=>'123'})
+    entry.resource = FHIR::Patient.new
   	@patient.fhir_record.entry << entry
-  	entry = FHIR::Bundle::Entry.new
-  	entry.resource = FHIR::Encounter.new('id'=>'789')
+  	entry = FHIR::Bundle::Entry.new('fullUrl'=>'789')
+  	entry.resource = FHIR::Encounter.new
   	@patient.fhir_record.entry << entry
     
   end
@@ -19,12 +19,12 @@ class MetabolicSyndromeTest < Minitest::Test
   	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
   	prediabetes_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
   	prediabetes = prediabetes_entry.resource
-  	assert_equal('123',prediabetes.patient.reference)
+  	assert_equal('Patient/123',prediabetes.patient.reference)
   	assert_equal("15777000", prediabetes.code.coding[0].code)
   	assert_equal('Prediabetes', prediabetes.code.coding[0].display)
-	assert_equal('confirmed',prediabetes.verificationStatus)
-	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),prediabetes.onsetDateTime)
-	assert_equal('789',prediabetes.encounter.reference)
+    assert_equal('confirmed',prediabetes.verificationStatus)
+    assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),prediabetes.onsetDateTime)
+    assert_equal('Encounter/789',prediabetes.encounter.reference)
   end
 
   def test_prediabetesCCDA
@@ -41,12 +41,12 @@ class MetabolicSyndromeTest < Minitest::Test
   	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
   	disease_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
   	disease = disease_entry.resource
-  	assert_equal('123',disease.patient.reference)
+  	assert_equal('Patient/123',disease.patient.reference)
   	assert_equal("46177005", disease.code.coding[0].code)
   	assert_equal('End stage renal disease (disorder)', disease.code.coding[0].display)
 	assert_equal('confirmed',disease.verificationStatus)
 	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),disease.onsetDateTime)
-	assert_equal('789',disease.encounter.reference)
+	assert_equal('Encounter/789',disease.encounter.reference)
 	assert(!@patient[:is_alive]) #end stage renal disease kills the patient
   end
 

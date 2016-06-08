@@ -337,7 +337,7 @@ module Synthea
           hname.family << entity[:name_last]
           hname.use = 'official'
           patientResource.name << hname 
-          patientResource.id = SecureRandom.uuid
+          patientEntry.fullUrl = SecureRandom.uuid.to_s.strip
           patientResource.gender = ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F')
           patientResource.birthDate = convertFhirDateTime(time)
           patientResource.deceasedDateTime = nil
@@ -384,8 +384,8 @@ module Synthea
           heightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'cm', 'value'=>entity[:height]})
           heightCode = FHIR::Coding.new({'code'=>'8302-2', 'system'=>'http://loinc.org'})
           heightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Height','coding' => [heightCode]})
-          heightObserve.encounter = FHIR::Reference.new({'reference'=>encounter.resource.id})
-          heightObserve.subject = FHIR::Reference.new({'reference'=>patient.resource.id})
+          heightObserve.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
+          heightObserve.subject = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
           heightEntry = FHIR::Bundle::Entry.new
           heightEntry.resource = heightObserve
           entity.fhir_record.entry << heightEntry
@@ -394,8 +394,8 @@ module Synthea
           weightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'kg', 'value'=>entity[:weight]})
           weightCode = FHIR::Coding.new({'code'=>'29463-7', 'system'=>'http://loinc.org'})
           weightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Weight','coding' => [weightCode]})
-          weightObserve.encounter = FHIR::Reference.new({'reference'=>encounter.resource.id})
-          weightObserve.subject = FHIR::Reference.new({'reference'=>patient.resource.id})
+          weightObserve.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
+          weightObserve.subject = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
           weightEntry = FHIR::Bundle::Entry.new
           weightEntry.resource = weightObserve
           entity.fhir_record.entry << weightEntry
