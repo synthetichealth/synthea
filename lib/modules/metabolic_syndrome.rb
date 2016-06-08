@@ -101,6 +101,8 @@ module Synthea
       end
 
       # KIDNEY FAILURE: End-Stage Renal Disease (ESRD), this is the end...
+      # Without intervention, 20-40 percent of patients with type 2 diabetes/microalbuminuria, will evolve to macroalbuminuria.
+      # - Shlipak, Michael. "Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician". www.aafp.org.
       rule :end_stage_renal_disease, [:proteinuria], [:kidney_dialysis,:kidney_transplant,:death] do |time,entity|
         diabetes = entity[:diabetes]
         if diabetes && diabetes[:end_stage_renal_disease] && (rand < (0.01 * diabetes[:severity]))

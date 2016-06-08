@@ -8,6 +8,7 @@ module Synthea
 
         @start_date = Synthea::Config.start_date
         @end_date = Synthea::Config.end_date
+        @time_step = Synthea::Config.time_step
         @date = @start_date
         @birth_rate = BirthRate.new
 
@@ -18,7 +19,7 @@ module Synthea
 
       def run
         year = 0
-        while @date <= (@end_date - 1.day)
+        while @date <= (@end_date - @time_step.days)
           advance
           if year != @date.year
             year = @date.year
@@ -29,12 +30,12 @@ module Synthea
       end
 
       def advance
-        @date += 1.day
-        handle_day
+        @date += @time_step.days
+        handle_time_step
         raise "advanced date: #{@date} beyond the end date: #{@end_date}" if @date > @end_date
       end
 
-      def handle_day
+      def handle_time_step
         @people.each do |person|
           Synthea::Rules.apply(@date,person)
         end

@@ -1,6 +1,7 @@
 synthea:
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
+  time_step: 7 # days
   population: 
     area: 0.05
     birth_variance: 0.01

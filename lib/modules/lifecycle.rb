@@ -155,7 +155,8 @@ module Synthea
           age = entity[:age]
           entity[:age] = ((time.to_i - birthdate.to_i)/1.year).floor
           if(entity[:age] > age)
-            entity.events.create(time, :grow, :age)
+            dt = DateTime.new(time.year,birthdate.month,birthdate.mday,birthdate.hour,birthdate.min,birthdate.sec,birthdate.formatted_offset)
+            entity.events.create(dt.to_time, :grow, :age)
           end
           # TODO update awareness
         end
