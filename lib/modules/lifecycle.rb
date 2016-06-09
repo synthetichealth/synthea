@@ -291,13 +291,13 @@ module Synthea
           :french => '2111-3',
           :german => '2112-1',
           :polish => '2115-4',
-          :portuguese => '2186-5',
-          :american => '2186-5',
-          :french_canadian => '2186-5',
+          :portuguese => '2131-1',
+          :american => '2131-1',
+          :french_canadian => '2131-1',
           :scottish => '2116-2',
-          :russian => '2186-5',
-          :swedish => '2186-5',
-          :greek => '2186-5',
+          :russian => '2131-1',
+          :swedish => '2131-1',
+          :greek => '2131-1',
           :puerto_rican => '2180-8',
           :mexican => '2148-5',
           :central_american => '2155-0',
@@ -308,7 +308,8 @@ module Synthea
           :west_indian => '2075-0',
           :asian_indian => '2029-7',
           :american_indian => '1004-1',
-          :arab => '2129-5'            
+          :arab => '2129-5',         
+          :nonhispanic => '2186-5'   
         }
 
         def self.birth(entity, time)
@@ -338,22 +339,30 @@ module Synthea
           hname.family << entity[:name_last]
           hname.use = 'official'
           patientResource.name << hname 
-          patientResource.id = SecureRandom.uuid
+          patientEntry.fullUrl = SecureRandom.uuid.to_s.strip
           patientResource.gender = ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F')
           patientResource.birthDate = convertFhirDateTime(time)
           patientResource.deceasedDateTime = nil
           
+         if entity[:race] == :hispanic 
+            raceFHIR = :other
+            ethnicityFHIR = entity[:ethnicity]
+         else 
+            raceFHIR = entity[:ethnicity]
+            ethnicityFHIR = :nonhispanic
+         end
+
           race = FHIR::Extension.new
           race.url = 'http://hl7.org/fhir/StructureDefinition/us-core-race'
           raceCodeConcept = FHIR::CodeableConcept.new({'text'=>'race'})
-          raceCoding = FHIR::Coding.new({'display'=>entity[:race].to_s.capitalize, 'code'=>@race_ethnicity_codes[entity[:race]]})
+          raceCoding = FHIR::Coding.new({'display'=>raceFHIR.to_s.capitalize, 'code'=>@race_ethnicity_codes[raceFHIR], 'system'=>'http://hl7.org/fhir/v3/Race'})
           raceCodeConcept.coding << raceCoding
           race.valueCodeableConcept = raceCodeConcept
 
           ethnicity = FHIR::Extension.new
           ethnicity.url = 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity'
           ethnicityCodeConcept = FHIR::CodeableConcept.new({'text'=>'ethnicity'})
-          ethnicityCoding = FHIR::Coding.new({'display'=>entity[:ethnicity].to_s.capitalize, 'code'=>@race_ethnicity_codes[entity[:ethnicity]]})
+          ethnicityCoding = FHIR::Coding.new({'display'=>ethnicityFHIR.to_s.capitalize, 'code'=>@race_ethnicity_codes[ethnicityFHIR],'system'=>'http://hl7.org/fhir/v3/Ethnicity'})
           ethnicityCodeConcept.coding << ethnicityCoding
           ethnicity.valueCodeableConcept = ethnicityCodeConcept
 
@@ -385,8 +394,8 @@ module Synthea
           heightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'cm', 'value'=>entity[:height]})
           heightCode = FHIR::Coding.new({'code'=>'8302-2', 'system'=>'http://loinc.org'})
           heightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Height','coding' => [heightCode]})
-          heightObserve.encounter = FHIR::Reference.new({'reference'=>encounter.resource.id})
-          heightObserve.subject = FHIR::Reference.new({'reference'=>patient.resource.id})
+          heightObserve.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
+          heightObserve.subject = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
           heightEntry = FHIR::Bundle::Entry.new
           heightEntry.resource = heightObserve
           entity.fhir_record.entry << heightEntry
@@ -395,8 +404,8 @@ module Synthea
           weightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'kg', 'value'=>entity[:weight]})
           weightCode = FHIR::Coding.new({'code'=>'29463-7', 'system'=>'http://loinc.org'})
           weightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Weight','coding' => [weightCode]})
-          weightObserve.encounter = FHIR::Reference.new({'reference'=>encounter.resource.id})
-          weightObserve.subject = FHIR::Reference.new({'reference'=>patient.resource.id})
+          weightObserve.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
+          weightObserve.subject = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
           weightEntry = FHIR::Bundle::Entry.new
           weightEntry.resource = weightObserve
           entity.fhir_record.entry << weightEntry

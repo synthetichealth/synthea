@@ -9,8 +9,9 @@ class LifecycleTest < Minitest::Test
   	@patient[:gender] = 'F'
   	@patient[:race] = :white
   	@patient[:ethnicity] = :italian
+
     @time = Synthea::Config.start_date
-    Synthea::Modules::Lifecycle::Record.birth(@patient, @time)
+    Synthea::Modules::Lifecycle::Record.birth(@patient, @time) 
   end
 
   def test_birthFhir
@@ -23,13 +24,13 @@ class LifecycleTest < Minitest::Test
   	assert_equal("official",hname.use)
   	assert_equal('female',person.gender)
   	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time),person.birthDate)
-  	assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,person.id)
+  	assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,person_entry.fullUrl)
   	race = person.extension[0].valueCodeableConcept.coding[0]
-  	assert_equal('White',race.display)
-  	assert_equal('2106-3',race.code)
+  	assert_equal('Italian',race.display)
+  	assert_equal('2114-7',race.code)
   	ethnicity = person.extension[1].valueCodeableConcept.coding[0]
-  	assert_equal('Italian',ethnicity.display)
-  	assert_equal('2114-7',ethnicity.code)
+  	assert_equal('Nonhispanic',ethnicity.display)
+  	assert_equal('2186-5',ethnicity.code)
   end
   
   def test_birthCCDA
@@ -43,11 +44,25 @@ class LifecycleTest < Minitest::Test
   	assert_equal({'name'=>'Italian','code'=>'2114-7'},person.ethnicity)
   end
 
+  def test_race_ethnicity
+    @patient[:race] = :hispanic
+    @patient[:ethnicity] = :mexican
+    Synthea::Modules::Lifecycle::Record.birth(@patient, @time)
+    person_entry = @patient.fhir_record.entry.reverse.find{|e| e.resource.is_a?(FHIR::Patient)}
+    person = person_entry.resource
+    race = person.extension[0].valueCodeableConcept.coding[0]
+    assert_equal('Other',race.display)
+    assert_equal('2131-1',race.code)
+    ethnicity = person.extension[1].valueCodeableConcept.coding[0]
+    assert_equal('Mexican',ethnicity.display)
+    assert_equal('2148-5',ethnicity.code)
+  end
+
   def test_deathFhir
   	Synthea::Modules::Lifecycle::Record.death(@patient, @time)
   	person_entry = @patient.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
- 	person = person_entry.resource
- 	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),person.deceasedDateTime)
+ 	  person = person_entry.resource
+ 	  assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),person.deceasedDateTime)
   end
 
   def test_deathCCDA
@@ -60,8 +75,8 @@ class LifecycleTest < Minitest::Test
   def test_height_weightFHIR
   	@patient[:height] = 60
   	@patient[:weight] = 10
-  	entry = FHIR::Bundle::Entry.new
-  	entry.resource = FHIR::Encounter.new('id'=>'123')
+  	entry = FHIR::Bundle::Entry.new({'fullUrl'=>'123'})
+  	entry.resource = FHIR::Encounter.new
   	@patient.fhir_record.entry << entry
   	Synthea::Modules::Lifecycle::Record.height_weight(@patient, @time)
   	
@@ -71,20 +86,20 @@ class LifecycleTest < Minitest::Test
 	  	observe_entry = @patient.fhir_record.entry.reverse.find{|e| e.resource.is_a?(FHIR::Observation) && e.resource.code.text=='Body '+option.capitalize}
 	  	observe = observe_entry.resource
 	  	assert_equal(lookup['quant_'+option] ,observe.valueQuantity.value)
-	  	assert_equal('123',observe.encounter.reference)
+	  	assert_equal('Encounter/123', observe.encounter.reference)
 	  	assert_equal(lookup['code_'+option] , observe.code.coding[0].code)
 	  	person_entry = @patient.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-	 	personID = person_entry.resource.id
-	 	assert_equal(personID,observe.subject.reference)
-	end
+      personID = person_entry.fullUrl
+      assert_equal('Patient/' + personID,observe.subject.reference)
+    end
 	 	
   end
   
   def test_height_weightCCDA
   	@patient[:height] = 60
   	@patient[:weight] = 10
-  	entry = FHIR::Bundle::Entry.new
-  	entry.resource = FHIR::Encounter.new('id'=>'123')
+  	entry = FHIR::Bundle::Entry.new({'fullUrl'=>'123'})
+  	entry.resource = FHIR::Encounter.new
   	@patient.fhir_record.entry << entry
   	Synthea::Modules::Lifecycle::Record.height_weight(@patient, @time)
   	person = @patient.record

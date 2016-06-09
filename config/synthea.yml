@@ -1,5 +1,4 @@
 synthea:
-  #CHANGE THE START DATE BACK TO 100 YEARS FOR THE REAL THING*************************
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days

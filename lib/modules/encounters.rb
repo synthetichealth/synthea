@@ -85,18 +85,17 @@ module Synthea
 
           entity.record.encounters << Encounter.new(encounter_hash(time, codes))
 
+          entry = FHIR::Bundle::Entry.new
           encounter = FHIR::Encounter.new
-          encounter.id = SecureRandom.uuid
+          entry.fullUrl = SecureRandom.uuid.to_s
           encounter.status = 'finished'
           encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['CPT'][0], 'system'=>'http://www.ama-assn.org/go/cpt'})]})
           encounter.type << encounterCode
           patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-          encounter.patient = FHIR::Reference.new({'reference' => patient.resource.id})
+          encounter.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
           startTime = convertFhirDateTime(time,'time')
           endTime = convertFhirDateTime(time+15.minutes, 'time')
           encounter.period = FHIR::Period.new({'start' => startTime, 'end' => endTime})
-
-          entry = FHIR::Bundle::Entry.new
           entry.resource = encounter
 
           entity.fhir_record.entry << entry

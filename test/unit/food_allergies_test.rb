@@ -5,8 +5,8 @@ class FoodAllergiesTest < Minitest::Test
   	@patient = Synthea::Person.new
     @time = Synthea::Config.start_date
     @patient[:food_allergy] = [:peanuts]
-    entry = FHIR::Bundle::Entry.new
-    entry.resource = FHIR::Patient.new({'id'=>'123'})
+    entry = FHIR::Bundle::Entry.new({'fullUrl'=>'123'})
+    entry.resource = FHIR::Patient.new
   	@patient.fhir_record.entry << entry
     Synthea::Modules::FoodAllergies::Record.diagnoses(@patient, @time)
   end
@@ -14,7 +14,7 @@ class FoodAllergiesTest < Minitest::Test
   def test_diagnoseFhir
   	allergy_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::AllergyIntolerance)}
   	allergy = allergy_entry.resource
-  	assert_equal('123',allergy.patient.reference)
+  	assert_equal('Patient/123',allergy.patient.reference)
   	assert_equal('91935009', allergy.substance.coding[0].code)
   	assert_equal('peanuts', allergy.substance.coding[0].display)
   end

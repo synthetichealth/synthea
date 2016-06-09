@@ -48,15 +48,35 @@ namespace :synthea do
 
   def uploadFhirServer(patients)
     client = FHIR::Client.new('http://bonfire.mitre.org:8100/fhir/baseDstu3')
-    binding.pry
     patients.each do |patient|
       client.begin_transaction
       patient.fhir_record.entry.each do |entry|
-        client.add_transaction_request('POST',nil,entry.resource)
+        #defined our own 'add to transaction' function to preserve our entry information
+        add_entry_transaction('POST',nil,entry,client)
       end
       reply = client.end_transaction
-      puts reply
+
     end
 
+  end
+
+
+  def add_entry_transaction(method, url, entry=nil, client)
+    request = FHIR::Bundle::Entry::Request.new
+    request.local_method = 'POST'
+    if url.nil? && !entry.resource.nil?
+      options = Hash.new
+      options[:resource] = entry.resource.class
+      options[:id] = entry.resource.id if request.local_method != 'POST'
+      request.url = client.resource_url(options)
+      request.url = request.url[1..-1] if request.url.starts_with?('/')
+    else
+      request.url = url
+    end
+
+    entry.request = request
+
+    client.transaction_bundle.entry << entry
+    entry
   end
 end
