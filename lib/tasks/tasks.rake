@@ -79,4 +79,22 @@ namespace :synthea do
     client.transaction_bundle.entry << entry
     entry
   end
+
+  desc 'clear_server'
+  task :clear_server, [] do |t, args|
+    client = FHIR::Client.new("http://bonfire.mitre.org:8100/fhir/baseDstu3")
+    binding.pry
+    FHIR::RESOURCES.map do | klass |
+      reply = client.read_feed(klass)
+      while !reply.nil? && !reply.resource.nil? && len(reply.resource.entry) > 0
+        reply.resource.entry.each do |entry|
+          client.destroy(klass,entry.resource.id) unless entry.resource.nil?
+        
+        end
+        reply = client.read_feed(klass)
+      end
+    end
+  end
+
+  
 end
