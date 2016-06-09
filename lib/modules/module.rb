@@ -41,6 +41,10 @@ module Synthea
           systolic_blood_pressure: { description: 'Systolic Blood Pressure', code: '8480-6', unit: 'mmHg'},
           diastolic_blood_pressure: { description: 'Diastolic Blood Pressure', code: '8462-4', unit: 'mmHg'},
           ha1c: { description: 'Hemoglobin A1c/Hemoglobin.total in Blood', code: '4548-4', unit: '%'},
+          cholesterol: { description: 'Total Cholesterol', code: '2093-3', unit: 'mg/dL'},
+          triglycerides: { description: 'Triglycerides', code: '2571-8', unit: 'mg/dL'},
+          hdl: { description: 'High Density Lipoprotein Cholesterol', code: '2085-9', unit: 'mg/dL'},
+          ldl: { description: 'Low Density Lipoprotein Cholesterol', code: '18262-6', unit: 'mg/dL'}
        }
 
         {
@@ -48,7 +52,7 @@ module Synthea
           "description" => lookup[type][:description],
           "start_time" => time.to_i,
           "end_time" => time.to_i,
-          "oid" => "2.16.840.1.113883.3.560.1.5",
+          # "oid" => "2.16.840.1.113883.3.560.1.5",
           "values" => [{
             "_type" => "PhysicalQuantityResultValue",
             "scalar" => value,
@@ -63,7 +67,7 @@ module Synthea
           "description" => "Outpatient Encounter",
           "start_time" => time.to_i,
           "end_time" => time.to_i + 15.minutes,
-          "oid" => "2.16.840.1.113883.3.560.1.79"
+          # "oid" => "2.16.840.1.113883.3.560.1.79"
         }
       end
 
