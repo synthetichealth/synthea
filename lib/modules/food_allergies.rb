@@ -42,7 +42,7 @@ module Synthea
               patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
               allergy.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
               snomed_code = condition_hash(key, time)['codes']['SNOMED-CT'][0]
-              allergyCoding = FHIR::Coding.new({'code'=>snomed_code, 'display'=>allergen.to_s, 'system' => 'http://hl7.org/fhir/ValueSet/daf-substance-sct'})
+              allergyCoding = FHIR::Coding.new({'code'=>snomed_code, 'display'=>allergen.to_s, 'system' => 'http://snomed.info/sct'})
               allergy.substance = FHIR::CodeableConcept.new({'coding'=>[allergyCoding]})
               
               entry = FHIR::Bundle::Entry.new

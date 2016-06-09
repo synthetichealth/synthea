@@ -45,13 +45,13 @@ module Synthea
         end
       end
 
-      rule :encounter, [], [:schedule_encounter] do |time, entity|
+      rule :encounter, [], [:schedule_encounter,:observations,:lab_results,:diagnoses] do |time, entity|
         if entity[:is_alive]
           while (event = entity.events(:encounter).unprocessed.before(time).next)
             event.processed=true
             Record.encounter(entity, event.time)
             Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
-            Synthea::Modules::MetabolicSyndrome::Record.diagnoses(entity, event.time)
+            Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(entity, event.time)
             Synthea::Modules::FoodAllergies::Record.diagnoses(entity, event.time)
 
             entity.events.create(event.time, :encounter_ordered, :encounter)

@@ -194,17 +194,65 @@ module Synthea
       end
 
       class Record < BaseRecord
-        def self.diagnoses(entity, time)
+        def self.perform_encounter(entity, time)
           [:prediabetes,:diabetes].each do |diagnosis|
             process_diagnosis(diagnosis,entity,entity,time)
           end
 
           if entity[:diabetes]
+            # process any diagnoses
             [:nephropathy,:microalbuminuria,:proteinuria,:end_stage_renal_disease,
               :retinopathy,:nonproliferative_retinopathy,:proliferative_retinopathy,:macular_edema,:blindness,
               :neuropathy,:amputation
             ].each do |diagnosis|
               process_diagnosis(diagnosis,entity[:diabetes],entity,time)
+            end
+
+            # process any necessary amputations
+            amputations = entity[:diabetes][:amputation]
+            process_amputations(amputations, entity, time) if amputations
+
+            # process any labs
+
+          end
+        end
+
+        def self.process_amputations(amputations, entity, time)
+          patient = entity.record
+          amputations.each do |amputation|
+            key = "amputation_#{amputation.to_s}".to_sym
+            description = "Amputation of #{amputation.to_s.gsub('_',' ')}."
+            if !entity.record_conditions[key]
+              # Add amputation procedure to HDS
+              entity.record_conditions[key] = Procedure.new({
+                "codes" => {'SNOMED-CT' => ['81723002']},
+                "description" => description,
+                "start_time" => time.to_i,
+                "end_time" => time.to_i + 15.minutes,
+              })
+              entity.record.procedures << entity.record_conditions[key]
+
+              # Add amputation procedure to FHIR record
+              patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
+              encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+              reason = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code=='368581000119106'} }
+
+              procedure = FHIR::Procedure.new({
+                'subject' => { 'reference' => patient.resource.id },
+                'status' => 'completed',
+                'code' => { 
+                  'coding' => [{'code'=>'81723002', 'display'=>description, 'system'=>'http://snomed.info/sct'}],
+                  'text' => description },
+                # 'reasonReference' => { 'reference' => reason.resource.id },
+                # 'performer' => { 'reference' => doctor_no_good },
+                'performedDateTime' => convertFhirDateTime(time,'time'),
+                'encounter' => { 'reference' => encounter.resource.id },
+              })
+              procedure.reasonReference = FHIR::Reference.new({'reference'=>reason.resource.id,'display'=>reason.resource.code.text}) if reason
+
+              entry = FHIR::Bundle::Entry.new
+              entry.resource = procedure
+              entity.fhir_record.entry << entry
             end
           end
         end
@@ -218,11 +266,12 @@ module Synthea
 
             #write to fhir record
             condition = FHIR::Condition.new
+            condition.id = SecureRandom.uuid
             patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
             condition.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
             conditionData = condition_hash(diagnosis, time)
-            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://hl7.org/fhir/ValueSet/daf-problem'})
-            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding]})
+            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct'})
+            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding],'text'=>conditionData['description']})
             condition.verificationStatus = 'confirmed'
             condition.onsetDateTime = convertFhirDateTime(time,'time')
 
