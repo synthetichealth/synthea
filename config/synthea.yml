@@ -23,3 +23,19 @@ synthea:
     adult_male_weight_gain:     0.034 # percent increase each year (where 1.0==100%)
     adult_female_weight_gain:   0.052 # percent increase each year (where 1.0==100%)
     adult_max_weight_age:       44    # age (years) when adults stop packing on weight
+  metabolic:
+    blood_glucose:
+      normal:      5.7 # or less
+      prediabetic: 6.5 # or less
+      diabetic:    7.5 # or less
+      severe:      9.0 # or less
+    blood_pressure:
+      normal:
+        systolic: [100,139] # mmHg
+        diastolic: [70,89]  # mmHg
+      hypertensive:
+        systolic: [140,200] # mmHg
+        diastolic: [90,120] # mmHg
+    hypertension:
+      probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
+      probability_given_diabetes: 0.594 #  (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab

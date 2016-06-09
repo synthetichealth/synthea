@@ -4,21 +4,35 @@ module Synthea
 
       # People have a BMI that we can roughly use to estimate
       # blood glucose and diabetes
-      rule :metabolic_syndrome, [:bmi], [:blood_glucose,:prediabetes,:diabetes] do |time, entity|
+      rule :metabolic_syndrome, [:bmi], [:blood_glucose,:prediabetes,:diabetes,:hypertension,:blood_pressure] do |time, entity|
+        # check for hypertension at adulthood
+        if entity[:hypertension].nil? && entity[:age] > 18
+          entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability)
+          entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension] 
+        end
+
+        # check for diabetes given BMI
         bmi = entity[:bmi]
         if bmi
           entity[:blood_glucose] = blood_glucose(bmi)
-          if(entity[:blood_glucose] < 5.7)
+          if(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.normal)
             # normal person
-          elsif(entity[:blood_glucose] < 6.5)
+          elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.prediabetic)
             update_prediabetes(time,entity)
-          elsif(entity[:blood_glucose] < 7.5)
+          elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.diabetic)
             update_diabetes(1,time,entity)
-          elsif(entity[:blood_glucose] < 9)
+          elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe)
             update_diabetes(2,time,entity)
           else  
             update_diabetes(3,time,entity)
           end
+        end
+
+        # estimate values
+        if entity[:hypertension]
+          entity[:blood_pressure] = [ pick(Synthea::Config.metabolic.blood_pressure.hypertensive.systolic), pick(Synthea::Config.metabolic.blood_pressure.hypertensive.diastolic)]
+        else
+          entity[:blood_pressure] = [ pick(Synthea::Config.metabolic.blood_pressure.normal.systolic), pick(Synthea::Config.metabolic.blood_pressure.normal.diastolic)]
         end
       end
 
@@ -36,10 +50,16 @@ module Synthea
       def update_diabetes(severity,time,entity)
         diabetes = entity[:diabetes]
         if diabetes.nil?
+          # Add diabetes
           diabetes = {}
           diabetes[:duration] = 0
           entity[:diabetes]=diabetes
           entity.events.create(time, :diabetes, :metabolic_syndrome, false) if !entity.had_event?(:diabetes)
+          # check for hypertension at onset of diabetes
+          if entity[:hypertension].nil? || entity[:hypertension]==false
+            entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability_given_diabetes)
+            entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension] 
+          end
         end
         diabetes[:severity] = severity
         diabetes[:duration] += 1   
@@ -194,17 +214,128 @@ module Synthea
       end
 
       class Record < BaseRecord
-        def self.diagnoses(entity, time)
-          [:prediabetes,:diabetes].each do |diagnosis|
+        def self.perform_encounter(entity, time)
+          [:prediabetes,:diabetes,:hypertension].each do |diagnosis|
             process_diagnosis(diagnosis,entity,entity,time)
           end
 
+          # record blood pressure
+          record_blood_pressure(entity,time) if entity[:blood_pressure]
+
+          if entity[:prediabetes] || entity[:diabetes]
+            # process any labs
+            record_h1ac(entity,time)
+          end
+
           if entity[:diabetes]
+            # process any diagnoses
             [:nephropathy,:microalbuminuria,:proteinuria,:end_stage_renal_disease,
               :retinopathy,:nonproliferative_retinopathy,:proliferative_retinopathy,:macular_edema,:blindness,
               :neuropathy,:amputation
             ].each do |diagnosis|
               process_diagnosis(diagnosis,entity[:diabetes],entity,time)
+            end
+
+            # process any necessary amputations
+            amputations = entity[:diabetes][:amputation]
+            process_amputations(amputations, entity, time) if amputations
+
+            # process any labs
+            # TODO
+          end
+        end
+
+        def self.record_blood_pressure(entity, time)
+          patient = entity.record
+          patient.vital_signs << VitalSign.new(lab_hash(:systolic_blood_pressure, time, entity[:blood_pressure].first))
+          patient.vital_signs << VitalSign.new(lab_hash(:diastolic_blood_pressure, time, entity[:blood_pressure].last))
+
+          #last encounter inserted into fhir_record entry is assumed to correspond with what's being recorded
+          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
+
+          observation = FHIR::Observation.new({
+            'status'=>'final',
+            'code'=>{
+              'coding'=>[{'system'=>'http://loinc.org','code'=>'55284-4','display'=>'Blood Pressure'}]
+            },
+            'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
+            'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+            'effectiveDateTime' => convertFhirDateTime(time,'time'),
+            'component'=>[
+              {
+                'code'=>{'coding'=>[{'system'=>'http://loinc.org','code'=>'8480-6','display'=>'Systolic blood pressure'}]},
+                'valueQuantity'=>{'value'=>entity[:blood_pressure].first,'unit'=>'mmHg'}
+              },{
+                'code'=>{'coding'=>[{'system'=>'http://loinc.org','code'=>'8462-4','display'=>'Diastolic blood pressure'}]},
+                'valueQuantity'=>{'value'=>entity[:blood_pressure].last,'unit'=>'mmHg'}
+              }
+            ]
+          })
+          entry = FHIR::Bundle::Entry.new
+          entry.resource = observation
+          entity.fhir_record.entry << entry
+        end
+
+        def self.record_h1ac(entity,time)
+          patient = entity.record
+          patient.vital_signs << VitalSign.new(lab_hash(:ha1c, time, entity[:blood_glucose]))
+
+          #last encounter inserted into fhir_record entry is assumed to correspond with what's being recorded
+          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
+
+          observation = FHIR::Observation.new({
+            'status'=>'final',
+            'code'=>{
+              'coding'=>[{'system'=>'http://loinc.org','code'=>'4548-4','display'=>'Hemoglobin A1c/Hemoglobin.total in Blood'}]
+            },
+            'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
+            'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+            'effectiveDateTime' => convertFhirDateTime(time,'time'),
+            'valueQuantity'=>{'value'=>entity[:blood_glucose],'unit'=>'%'}
+          })
+          entry = FHIR::Bundle::Entry.new
+          entry.resource = observation
+          entity.fhir_record.entry << entry
+        end
+
+        def self.process_amputations(amputations, entity, time)
+          patient = entity.record
+          amputations.each do |amputation|
+            key = "amputation_#{amputation.to_s}".to_sym
+            description = "Amputation of #{amputation.to_s.gsub('_',' ')}."
+            if !entity.record_conditions[key]
+              # Add amputation procedure to HDS
+              entity.record_conditions[key] = Procedure.new({
+                "codes" => {'SNOMED-CT' => ['81723002']},
+                "description" => description,
+                "start_time" => time.to_i,
+                "end_time" => time.to_i + 15.minutes,
+              })
+              entity.record.procedures << entity.record_conditions[key]
+
+              # Add amputation procedure to FHIR record
+              patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
+              encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+              reason = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code=='368581000119106'} }
+
+              procedure = FHIR::Procedure.new({
+                'subject' => { 'reference' => patient.resource.id },
+                'status' => 'completed',
+                'code' => { 
+                  'coding' => [{'code'=>'81723002', 'display'=>description, 'system'=>'http://snomed.info/sct'}],
+                  'text' => description },
+                # 'reasonReference' => { 'reference' => reason.resource.id },
+                # 'performer' => { 'reference' => doctor_no_good },
+                'performedDateTime' => convertFhirDateTime(time,'time'),
+                'encounter' => { 'reference' => encounter.resource.id },
+              })
+              procedure.reasonReference = FHIR::Reference.new({'reference'=>reason.resource.id,'display'=>reason.resource.code.text}) if reason
+
+              entry = FHIR::Bundle::Entry.new
+              entry.resource = procedure
+              entity.fhir_record.entry << entry
             end
           end
         end
@@ -218,11 +349,12 @@ module Synthea
 
             #write to fhir record
             condition = FHIR::Condition.new
+            condition.id = SecureRandom.uuid
             patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
             condition.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
             conditionData = condition_hash(diagnosis, time)
-            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://hl7.org/fhir/ValueSet/daf-problem'})
-            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding]})
+            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct'})
+            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding],'text'=>conditionData['description']})
             condition.verificationStatus = 'confirmed'
             condition.onsetDateTime = convertFhirDateTime(time,'time')
 
