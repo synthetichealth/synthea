@@ -4,21 +4,35 @@ module Synthea
 
       # People have a BMI that we can roughly use to estimate
       # blood glucose and diabetes
-      rule :metabolic_syndrome, [:bmi], [:blood_glucose,:prediabetes,:diabetes] do |time, entity|
+      rule :metabolic_syndrome, [:bmi], [:blood_glucose,:prediabetes,:diabetes,:hypertension,:blood_pressure] do |time, entity|
+        # check for hypertension at adulthood
+        if entity[:hypertension].nil? && entity[:age] > 18
+          entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability)
+          entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension] 
+        end
+
+        # check for diabetes given BMI
         bmi = entity[:bmi]
         if bmi
           entity[:blood_glucose] = blood_glucose(bmi)
-          if(entity[:blood_glucose] < 5.7)
+          if(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.normal)
             # normal person
-          elsif(entity[:blood_glucose] < 6.5)
+          elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.prediabetic)
             update_prediabetes(time,entity)
-          elsif(entity[:blood_glucose] < 7.5)
+          elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.diabetic)
             update_diabetes(1,time,entity)
-          elsif(entity[:blood_glucose] < 9)
+          elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe)
             update_diabetes(2,time,entity)
           else  
             update_diabetes(3,time,entity)
           end
+        end
+
+        # estimate values
+        if entity[:hypertension]
+          entity[:blood_pressure] = [ pick(Synthea::Config.metabolic.blood_pressure.hypertensive.systolic), pick(Synthea::Config.metabolic.blood_pressure.hypertensive.diastolic)]
+        else
+          entity[:blood_pressure] = [ pick(Synthea::Config.metabolic.blood_pressure.normal.systolic), pick(Synthea::Config.metabolic.blood_pressure.normal.diastolic)]
         end
       end
 
@@ -36,10 +50,16 @@ module Synthea
       def update_diabetes(severity,time,entity)
         diabetes = entity[:diabetes]
         if diabetes.nil?
+          # Add diabetes
           diabetes = {}
           diabetes[:duration] = 0
           entity[:diabetes]=diabetes
           entity.events.create(time, :diabetes, :metabolic_syndrome, false) if !entity.had_event?(:diabetes)
+          # check for hypertension at onset of diabetes
+          if entity[:hypertension].nil? || entity[:hypertension]==false
+            entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability_given_diabetes)
+            entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension] 
+          end
         end
         diabetes[:severity] = severity
         diabetes[:duration] += 1   
@@ -195,8 +215,16 @@ module Synthea
 
       class Record < BaseRecord
         def self.perform_encounter(entity, time)
-          [:prediabetes,:diabetes].each do |diagnosis|
+          [:prediabetes,:diabetes,:hypertension].each do |diagnosis|
             process_diagnosis(diagnosis,entity,entity,time)
+          end
+
+          # record blood pressure
+          record_blood_pressure(entity,time) if entity[:blood_pressure]
+
+          if entity[:prediabetes] || entity[:diabetes]
+            # process any labs
+            record_h1ac(entity,time)
           end
 
           if entity[:diabetes]
@@ -213,8 +241,63 @@ module Synthea
             process_amputations(amputations, entity, time) if amputations
 
             # process any labs
-
+            # TODO
           end
+        end
+
+        def self.record_blood_pressure(entity, time)
+          patient = entity.record
+          patient.vital_signs << VitalSign.new(lab_hash(:systolic_blood_pressure, time, entity[:blood_pressure].first))
+          patient.vital_signs << VitalSign.new(lab_hash(:diastolic_blood_pressure, time, entity[:blood_pressure].last))
+
+          #last encounter inserted into fhir_record entry is assumed to correspond with what's being recorded
+          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
+
+          observation = FHIR::Observation.new({
+            'status'=>'final',
+            'code'=>{
+              'coding'=>[{'system'=>'http://loinc.org','code'=>'55284-4','display'=>'Blood Pressure'}]
+            },
+            'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
+            'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+            'effectiveDateTime' => convertFhirDateTime(time,'time'),
+            'component'=>[
+              {
+                'code'=>{'coding'=>[{'system'=>'http://loinc.org','code'=>'8480-6','display'=>'Systolic blood pressure'}]},
+                'valueQuantity'=>{'value'=>entity[:blood_pressure].first,'unit'=>'mmHg'}
+              },{
+                'code'=>{'coding'=>[{'system'=>'http://loinc.org','code'=>'8462-4','display'=>'Diastolic blood pressure'}]},
+                'valueQuantity'=>{'value'=>entity[:blood_pressure].last,'unit'=>'mmHg'}
+              }
+            ]
+          })
+          entry = FHIR::Bundle::Entry.new
+          entry.resource = observation
+          entity.fhir_record.entry << entry
+        end
+
+        def self.record_h1ac(entity,time)
+          patient = entity.record
+          patient.vital_signs << VitalSign.new(lab_hash(:ha1c, time, entity[:blood_glucose]))
+
+          #last encounter inserted into fhir_record entry is assumed to correspond with what's being recorded
+          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
+
+          observation = FHIR::Observation.new({
+            'status'=>'final',
+            'code'=>{
+              'coding'=>[{'system'=>'http://loinc.org','code'=>'4548-4','display'=>'Hemoglobin A1c/Hemoglobin.total in Blood'}]
+            },
+            'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
+            'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+            'effectiveDateTime' => convertFhirDateTime(time,'time'),
+            'valueQuantity'=>{'value'=>entity[:blood_glucose],'unit'=>'%'}
+          })
+          entry = FHIR::Bundle::Entry.new
+          entry.resource = observation
+          entity.fhir_record.entry << entry
         end
 
         def self.process_amputations(amputations, entity, time)

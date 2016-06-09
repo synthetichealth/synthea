@@ -11,6 +11,10 @@ module Synthea
       @rules.each {|r| r.call(time, entity)}
     end
 
+    def pick(array)
+      rand(array.first..array.last)
+    end
+
     def self.apply(time,entity)
       get_modules.each {|r| r.run(time, entity)}
     end
@@ -33,8 +37,11 @@ module Synthea
       def self.lab_hash(type, time, value)
         lookup = {
           height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
-          weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'}
-        }
+          weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},
+          systolic_blood_pressure: { description: 'Systolic Blood Pressure', code: '8480-6', unit: 'mmHg'},
+          diastolic_blood_pressure: { description: 'Diastolic Blood Pressure', code: '8462-4', unit: 'mmHg'},
+          ha1c: { description: 'Hemoglobin A1c/Hemoglobin.total in Blood', code: '4548-4', unit: '%'},
+       }
 
         {
           "codes" => {'LOINC' => [lookup[type][:code]]},
@@ -63,6 +70,7 @@ module Synthea
       def self.condition_hash(type, time)
         lookup = {
           #http://www.icd9data.com/2012/Volume1/780-799/790-796/790/790.29.htm
+          hypertension: { description: 'Hypertension', codes: {'SNOMED-CT' => ['38341003']}},
           prediabetes: { description: 'Prediabetes', 
                          codes: {'ICD-9-CM' => ['790.29'], 
                                  'ICD-10-CM' => ['R73.09'], 
