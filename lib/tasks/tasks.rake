@@ -18,9 +18,9 @@ namespace :synthea do
     binding.pry
 
     puts "Saving patient records..."
-    export(world.people | world.dead)
-    fhir_export(world.people | world.dead)
-
+    #export(world.people | world.dead)
+    #fhir_export(world.people | world.dead)
+    ccda_export(world.people | world.dead)
     binding.pry
 
     puts "Uploading patient records..."
@@ -46,10 +46,20 @@ namespace :synthea do
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
       data = patient.fhir_record.to_json
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(data) }
     end
   end
 
+  def ccda_export(patients)
+    out_dir = File.join('output','CCDA')
+    FileUtils.rm_r out_dir if File.exists? out_dir
+    FileUtils.mkdir_p out_dir
+    patients.each do |patient|
+      html = HealthDataStandards::Export::CCDA.new.export(patient.record)
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(html) }
+    end
+  end
+  
   def uploadFhirServer(patients)
     client = FHIR::Client.new('http://bonfire.mitre.org:8100/fhir/baseDstu3')
     patients.each do |patient|
