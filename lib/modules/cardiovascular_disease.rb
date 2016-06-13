@@ -229,6 +229,19 @@ module Synthea
 					end
 		        end
     		end
+
+            #chance of getting a heart attack without heart disease
+            rule :no_coronary_heart_disease, [:coronary_heart_disease], [:cardiac_event, :death] do |time, entity|
+                cardiac_event_chance = 0.0000001
+                if !entity[:coronary_heart_disease] && rand < cardiac_event_chance
+                  entity.events.create(time, :cardiac_event, :no_coronary_heart_disease, true)
+                    if rand < 0.894
+                        entity[:is_alive] = false
+                        entity.events.create(time, :death, :no_coronary_heart_disease, true)
+                        Synthea::Modules::Lifecycle::Record.death(entity, time)
+                    end
+                end
+            end
     	end
 	end
 end

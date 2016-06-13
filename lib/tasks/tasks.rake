@@ -18,8 +18,8 @@ namespace :synthea do
     binding.pry
 
     puts "Saving patient records..."
-    #export(world.people | world.dead)
-    #fhir_export(world.people | world.dead)
+    export(world.people | world.dead)
+    fhir_export(world.people | world.dead)
     ccda_export(world.people | world.dead)
     binding.pry
 
@@ -59,7 +59,7 @@ namespace :synthea do
       File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(html) }
     end
   end
-  
+
   def uploadFhirServer(patients)
     client = FHIR::Client.new('http://bonfire.mitre.org:8100/fhir/baseDstu3')
     patients.each do |patient|
@@ -97,18 +97,24 @@ namespace :synthea do
   desc 'clear_server'
   task :clear_server, [] do |t, args|
     client = FHIR::Client.new("http://bonfire.mitre.org:8100/fhir/baseDstu3")
-    binding.pry
     FHIR::RESOURCES.map do | klass |
-      reply = client.read_feed(klass)
-      while !reply.nil? && !reply.resource.nil? && len(reply.resource.entry) > 0
-        reply.resource.entry.each do |entry|
-          client.destroy(klass,entry.resource.id) unless entry.resource.nil?
-        
-        end
-        reply = client.read_feed(klass)
-      end
+      clear_resource(klass, client)
     end
   end
 
+  def clear_resource(resource, client)
+    reply = client.read_feed(resource)
+      while !reply.nil? && !reply.resource.nil? && reply.resource.entry.length > 0
+        reply.resource.entry.each do |entry|
+          diagnostics = client.destroy(resource,entry.resource.id) unless entry.resource.nil?
+          #check for a reference to resource error
+          if diagnostics.response[:body].include?("Unable to delete")
+            resource_to_delete = diagnostics.response[:body].scan(/First reference found was resource .* in path (\w+)\./)[0][0]
+            clear_resource(resource_to_delete, client) unless resource_to_delete.nil?
+          end
+        end
+        reply = client.read_feed(resource)
+      end
+  end
   
 end
