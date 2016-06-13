@@ -34,6 +34,20 @@ module Synthea
         else
           entity[:blood_pressure] = [ pick(Synthea::Config.metabolic.blood_pressure.normal.systolic), pick(Synthea::Config.metabolic.blood_pressure.normal.diastolic)]
         end
+        # calculate the components of a lipid panel
+        index = 0
+        index = 1 if entity[:prediabetes]
+        index = entity[:diabetes][:severity] if entity[:diabetes]
+        cholesterol = Synthea::Config.metabolic.lipid_panel.cholesterol
+        triglycerides = Synthea::Config.metabolic.lipid_panel.triglycerides
+        hdl = Synthea::Config.metabolic.lipid_panel.hdl
+        entity[:cholesterol] = {
+          :total => rand(cholesterol[index]..cholesterol[index+1]),
+          :triglycerides => rand(triglycerides[index]..triglycerides[index+1]),
+          :hdl => rand(hdl[index+1]..hdl[index])
+        }
+        entity[:cholesterol][:ldl] = entity[:cholesterol][:total] - entity[:cholesterol][:hdl] - (0.2 * entity[:cholesterol][:triglycerides])
+        entity[:cholesterol][:ldl] = entity[:cholesterol][:ldl].to_i
       end
 
       def update_prediabetes(time,entity)
@@ -241,7 +255,9 @@ module Synthea
             process_amputations(amputations, entity, time) if amputations
 
             # process any labs
-            # TODO
+            record_lipid_panel(entity,time)
+          elsif entity[:age] > 30
+            # TODO run a lipid panel for non-diabetics if it has been more than 3 years
           end
         end
 
@@ -285,23 +301,74 @@ module Synthea
           encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
           patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
 
-          observation = FHIR::Observation.new({
+          entity.fhir_record.entry << create_basic_obs('4548-4','Hemoglobin A1c/Hemoglobin.total in Blood',patient,encounter,time,entity[:blood_glucose],'%')
+        end
+
+        def self.create_basic_obs(code,description,patientEntry,encounterEntry,time,value,unit)
+          entry = FHIR::Bundle::Entry.new
+          entry.fullUrl = SecureRandom.uuid
+          entry.resource = FHIR::Observation.new({
             'status'=>'final',
             'code'=>{
-              'coding'=>[{'system'=>'http://loinc.org','code'=>'4548-4','display'=>'Hemoglobin A1c/Hemoglobin.total in Blood'}]
+              'coding'=>[{'system'=>'http://loinc.org','code'=>code,'display'=>description}]
             },
-            'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
-            'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+            'subject'=> { 'reference'=> "Patient/#{patientEntry.fullUrl}"},
+            'encounter'=> { 'reference'=> "Encounter/#{encounterEntry.fullUrl}"},
             'effectiveDateTime' => convertFhirDateTime(time,'time'),
-            'valueQuantity'=>{'value'=>entity[:blood_glucose],'unit'=>'%'}
+            'valueQuantity'=>{'value'=>value,'unit'=>unit}
           })
+          entry
+        end
+
+        def self.create_basic_diagnostic_report(code,description,patientEntry,encounterEntry,time,obsEntries)
           entry = FHIR::Bundle::Entry.new
-          entry.resource = observation
-          entity.fhir_record.entry << entry
+          entry.fullUrl = SecureRandom.uuid
+          entry.resource = FHIR::DiagnosticReport.new({
+            'status'=>'final',
+            'code'=>{
+              'coding'=>[{'system'=>'http://loinc.org','code'=>code,'display'=>description}]
+            },
+            'subject'=> { 'reference'=> "Patient/#{patientEntry.fullUrl}"},
+            'encounter'=> { 'reference'=> "Encounter/#{encounterEntry.fullUrl}"},
+            'effectiveDateTime' => convertFhirDateTime(time,'time'),
+            'issued' => convertFhirDateTime(time,'time'),
+            'performer' => { 'display' => 'Hospital Lab'}
+          })
+          entry.resource.result = []
+          obsEntries.each do |e|
+            entry.resource.result << FHIR::Reference.new({'reference'=>"Observation/#{e.fullUrl}",'display'=>e.resource.code.coding.first.display})
+          end
+          entry
+        end
+
+        def self.record_lipid_panel(entity, time)
+          # cholesterol: { description: 'Total Cholesterol', code: '2093-3', unit: 'mg/dL'},
+          # triglycerides: { description: 'Triglycerides', code: '2571-8', unit: 'mg/dL'},
+          # hdl: { description: 'High Density Lipoprotein Cholesterol', code: '2085-9', unit: 'mg/dL'},
+          # ldl: { description: 'Low Density Lipoprotein Cholesterol', code: '18262-6', unit: 'mg/dL'}          
+          entity.record.vital_signs << VitalSign.new(lab_hash(:cholesterol, time, entity[:cholesterol][:total]))
+          entity.record.vital_signs << VitalSign.new(lab_hash(:triglycerides, time, entity[:cholesterol][:triglycerides]))
+          entity.record.vital_signs << VitalSign.new(lab_hash(:hdl, time, entity[:cholesterol][:hdl]))
+          entity.record.vital_signs << VitalSign.new(lab_hash(:ldl, time, entity[:cholesterol][:ldl]))
+
+          #last encounter inserted into fhir_record entry is assumed to correspond with what's being recorded
+          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
+
+          obs1 = create_basic_obs('2093-3','Total Cholesterol',patient,encounter,time,entity[:cholesterol][:total],'mg/dL')
+          obs2 = create_basic_obs('2571-8','Triglycerides',patient,encounter,time,entity[:cholesterol][:triglycerides],'mg/dL')
+          obs3 = create_basic_obs('2085-9','High Density Lipoprotein Cholesterol',patient,encounter,time,entity[:cholesterol][:hdl],'mg/dL')
+          obs4 = create_basic_obs('18262-6','Low Density Lipoprotein Cholesterol',patient,encounter,time,entity[:cholesterol][:ldl],'mg/dL')
+          report = create_basic_diagnostic_report('57698-3','Lipid Panel',patient,encounter,time,[obs1,obs2,obs3,obs4])
+          
+          entity.fhir_record.entry << obs1
+          entity.fhir_record.entry << obs2
+          entity.fhir_record.entry << obs3
+          entity.fhir_record.entry << obs4
+          entity.fhir_record.entry << report
         end
 
         def self.process_amputations(amputations, entity, time)
-          patient = entity.record
           amputations.each do |amputation|
             key = "amputation_#{amputation.to_s}".to_sym
             description = "Amputation of #{amputation.to_s.gsub('_',' ')}."
@@ -341,11 +408,10 @@ module Synthea
         end
 
         def self.process_diagnosis(diagnosis, diagnosis_hash, entity, time)
-          patient = entity.record
           if diagnosis_hash[diagnosis] && !entity.record_conditions[diagnosis]
             # create the ongoing diagnosis
             entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
-            patient.conditions << entity.record_conditions[diagnosis]
+            entity.record.conditions << entity.record_conditions[diagnosis]
 
             #write to fhir record
             condition = FHIR::Condition.new
