@@ -131,7 +131,9 @@ module Synthea
         unless entity.had_event?(:birth)
           entity[:age] = 0
           entity[:name_first] = Faker::Name.first_name
+          entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
           entity[:name_last] = Faker::Name.last_name
+          entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
           entity[:gender] = gender
           entity[:race] = @races.pick
           entity[:ethnicity] = @ethnicity[ entity[:race] ].pick
