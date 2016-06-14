@@ -20,7 +20,7 @@ namespace :synthea do
     puts "Saving patient records..."
     export(world.people | world.dead)
     fhir_export(world.people | world.dead)
-
+    ccda_export(world.people | world.dead)
     binding.pry
 
     puts "Uploading patient records..."
@@ -46,7 +46,17 @@ namespace :synthea do
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
       data = patient.fhir_record.to_json
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(data) }
+    end
+  end
+
+  def ccda_export(patients)
+    out_dir = File.join('output','CCDA')
+    FileUtils.rm_r out_dir if File.exists? out_dir
+    FileUtils.mkdir_p out_dir
+    patients.each do |patient|
+      html = HealthDataStandards::Export::CCDA.new.export(patient.record)
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(html) }
     end
   end
 
@@ -83,4 +93,28 @@ namespace :synthea do
     client.transaction_bundle.entry << entry
     entry
   end
+
+  desc 'clear_server'
+  task :clear_server, [] do |t, args|
+    client = FHIR::Client.new("http://bonfire.mitre.org:8100/fhir/baseDstu3")
+    FHIR::RESOURCES.map do | klass |
+      clear_resource(klass, client)
+    end
+  end
+
+  def clear_resource(resource, client)
+    reply = client.read_feed(resource)
+      while !reply.nil? && !reply.resource.nil? && reply.resource.entry.length > 0
+        reply.resource.entry.each do |entry|
+          diagnostics = client.destroy(resource,entry.resource.id) unless entry.resource.nil?
+          #check for a reference to resource error
+          if diagnostics.response[:body].include?("Unable to delete")
+            resource_to_delete = diagnostics.response[:body].scan(/First reference found was resource .* in path (\w+)\./)[0][0]
+            clear_resource(resource_to_delete, client) unless resource_to_delete.nil?
+          end
+        end
+        reply = client.read_feed(resource)
+      end
+  end
+  
 end
