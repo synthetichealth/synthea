@@ -144,7 +144,15 @@ module Synthea
           entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter_ordered, :birth)
-
+          zip = Area.zip_codes.find{|x|x.first==Synthea::Config.population.zip_code}
+          zip = Area.zip_codes.sample if zip.nil?
+          entity[:address] = {
+            'line' => [ Faker::Address.street_address ],
+            'city' => zip[1],
+            'state' => zip[2],
+            'postalCode' => zip[0]
+          }
+          entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           Record.birth(entity, time)
           # TODO update awareness
         end
@@ -321,6 +329,12 @@ module Synthea
           patient.gender = entity[:gender]
           patient.birthdate = time.to_i
 
+          patient.addresses << Address.new
+          patient.addresses.first.street = entity[:address]['line']
+          patient.addresses.first.city = entity[:address]['city']
+          patient.addresses.first.state = entity[:address]['state']
+          patient.addresses.first.zip = entity[:address]['postalCode']
+
           patient.deathdate = nil
           patient.expired = false
 
@@ -345,6 +359,7 @@ module Synthea
           patientResource.gender = ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F')
           patientResource.birthDate = convertFhirDateTime(time)
           patientResource.deceasedDateTime = nil
+          patientResource.address = FHIR::Address.new( entity[:address] )
           
          if entity[:race] == :hispanic 
             raceFHIR = :other
