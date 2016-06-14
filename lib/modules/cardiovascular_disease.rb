@@ -213,11 +213,12 @@ module Synthea
     			end
     		end 
 
+            #numbers are from appendix: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
     		rule :coronary_heart_disease, [:coronary_heart_disease], [:cardiac_event, :death] do |time, entity|
-    			if !entity[:gender].nil? && entity[:gender] == 'M'
-    				cardiac_event_chance = 0.0042
+    			if entity[:gender] && entity[:gender] == 'M'
+    				cardiac_event_chance = 0.000115
     			else
-    				cardiac_event_chance = 0.0015
+    				cardiac_event_chance = 0.00004110
     			end
 
 		        if entity[:coronary_heart_disease] && rand < cardiac_event_chance
@@ -230,14 +231,33 @@ module Synthea
 		        end
     		end
 
-            #chance of getting a heart attack without heart disease
+            #chance of getting a heart attack without heart disease. NUMBERS ARE NOT ACCURATE.
             rule :no_coronary_heart_disease, [:coronary_heart_disease], [:cardiac_event, :death] do |time, entity|
                 cardiac_event_chance = 0.0000001
-                if !entity[:coronary_heart_disease] && rand < cardiac_event_chance
+                if entity[:coronary_heart_disease].nil? && rand < cardiac_event_chance
                   entity.events.create(time, :cardiac_event, :no_coronary_heart_disease, true)
                     if rand < 0.894
                         entity[:is_alive] = false
                         entity.events.create(time, :death, :no_coronary_heart_disease, true)
+                        Synthea::Modules::Lifecycle::Record.death(entity, time)
+                    end
+                end
+            end
+
+            #-----------------------------------------------------------------------#
+            rule :calculate_stroke_risk, [:age, :blood_pressure, :stroke_history], [:stroke_risk] do |time, entity|
+                # need to find source for calculating stroke risk.
+                entity[:stroke_risk] = 0.0001
+            end
+
+            #Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
+            rule :get_stroke, [:stroke_history], [:stroke, :death] do |time, entity|
+                if entity[:stroke_risk] && rand < entity[:stroke_risk]
+                    entity.events.create(time, :stroke, :get_stroke, true)
+                    entity[:stroke_history] = true
+                    if rand < 0.15
+                        entity[:is_alive] = false
+                        entity.events.create(time, :death, :get_stroke, true)
                         Synthea::Modules::Lifecycle::Record.death(entity, time)
                     end
                 end
