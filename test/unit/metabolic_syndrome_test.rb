@@ -4,6 +4,7 @@ class MetabolicSyndromeTest < Minitest::Test
 
   def setup
   	@patient = Synthea::Person.new
+    @patient[:age] = 65
     @time = Synthea::Config.start_date
     entry = FHIR::Bundle::Entry.new({'fullUrl'=>'123'})
     entry.resource = FHIR::Patient.new
@@ -16,7 +17,7 @@ class MetabolicSyndromeTest < Minitest::Test
 
   def test_prediabetesFHIR
   	@patient[:prediabetes] = {}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time)
   	prediabetes_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
   	prediabetes = prediabetes_entry.resource
   	assert_equal('Patient/123',prediabetes.patient.reference)
@@ -29,7 +30,7 @@ class MetabolicSyndromeTest < Minitest::Test
 
   def test_prediabetesCCDA
   	@patient[:prediabetes] = {}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time)
   	prediabetes = @patient.record.conditions[-1]
   	assert_equal('15777000',prediabetes['codes']['SNOMED-CT'][0])
   	assert_equal('Prediabetes', prediabetes['description'])
@@ -38,21 +39,21 @@ class MetabolicSyndromeTest < Minitest::Test
 
   def test_diabetes_end_renal_diseaseFHIR
   	@patient[:diabetes] = {:end_stage_renal_disease => true}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time)
   	disease_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
   	disease = disease_entry.resource
   	assert_equal('Patient/123',disease.patient.reference)
   	assert_equal("46177005", disease.code.coding[0].code)
   	assert_equal('End stage renal disease (disorder)', disease.code.coding[0].display)
-	assert_equal('confirmed',disease.verificationStatus)
-	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),disease.onsetDateTime)
-	assert_equal('Encounter/789',disease.encounter.reference)
-	assert(!@patient[:is_alive]) #end stage renal disease kills the patient
+  	assert_equal('confirmed',disease.verificationStatus)
+  	assert_equal(Synthea::Rules::BaseRecord.convertFhirDateTime(@time,'time'),disease.onsetDateTime)
+  	assert_equal('Encounter/789',disease.encounter.reference)
+  	assert(!@patient[:is_alive]) #end stage renal disease kills the patient
   end
 
   def test_diabetes_end_renal_diseaseCCDA
-	@patient[:diabetes] = {:end_stage_renal_disease => true}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
+	 @patient[:diabetes] = {:end_stage_renal_disease => true}
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time)
   	disease = @patient.record.conditions[-1]
   	assert_equal('46177005',disease['codes']['SNOMED-CT'][0])
   	assert_equal('End stage renal disease (disorder)', disease['description'])
@@ -61,9 +62,9 @@ class MetabolicSyndromeTest < Minitest::Test
   
   def test_disease_abatementFHIR
   	@patient[:diabetes] = {:blindness => true}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time)
   	@patient[:diabetes] = {}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time + 15.minutes)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time + 15.minutes)
   	#blindness should be the last condition entered
   	disease_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
   	disease = disease_entry.resource
@@ -72,9 +73,9 @@ class MetabolicSyndromeTest < Minitest::Test
 
   def test_disease_abatementCCDA
   	@patient[:diabetes] = {:blindness => true}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time)
   	@patient[:diabetes] = {}
-  	Synthea::Modules::MetabolicSyndrome::Record.diagnoses(@patient, @time + 15.minutes)
+  	Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(@patient, @time + 15.minutes)
   	disease = @patient.record.conditions[-1]
   	assert_equal((@time + 15.minutes).to_i,disease['end_time'])
   end

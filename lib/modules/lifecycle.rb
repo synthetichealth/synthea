@@ -408,6 +408,7 @@ module Synthea
           patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
 
           heightObserve = FHIR::Observation.new({'status'=>'final'})
+          heightObserve.effectiveDateTime = convertFhirDateTime(time,'time')
           heightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'cm', 'value'=>entity[:height].to_i})
           heightCode = FHIR::Coding.new({'code'=>'8302-2', 'system'=>'http://loinc.org'})
           heightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Height','coding' => [heightCode]})
@@ -418,6 +419,7 @@ module Synthea
           entity.fhir_record.entry << heightEntry
 
           weightObserve = FHIR::Observation.new({'status'=>'final'})
+          weightObserve.effectiveDateTime = convertFhirDateTime(time,'time')
           weightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'kg', 'value'=>entity[:weight].to_i})
           weightCode = FHIR::Coding.new({'code'=>'29463-7', 'system'=>'http://loinc.org'})
           weightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Weight','coding' => [weightCode]})

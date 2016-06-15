@@ -343,6 +343,8 @@ module Synthea
         end
 
         def self.record_lipid_panel(entity, time)
+          return if entity[:cholesterol].nil?
+          
           entity.events.create(time, :lipid_panel, :encounter, true)
           # cholesterol: { description: 'Total Cholesterol', code: '2093-3', unit: 'mg/dL'},
           # triglycerides: { description: 'Triglycerides', code: '2571-8', unit: 'mg/dL'},
