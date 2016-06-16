@@ -165,7 +165,13 @@ module Synthea
           age = entity[:age]
           entity[:age] = ((time.to_i - birthdate.to_i)/1.year).floor
           if(entity[:age] > age)
-            dt = DateTime.new(time.year,birthdate.month,birthdate.mday,birthdate.hour,birthdate.min,birthdate.sec,birthdate.formatted_offset)
+            dt = nil
+            begin
+              dt = DateTime.new(time.year,birthdate.month,birthdate.mday,birthdate.hour,birthdate.min,birthdate.sec,birthdate.formatted_offset)
+            rescue Exception => e
+              # this person was born on a leap-day
+              dt = time
+            end
             entity.events.create(dt.to_time, :grow, :age)
           end
           # TODO update awareness
