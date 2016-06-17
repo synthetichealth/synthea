@@ -143,7 +143,7 @@ module Synthea
           entity[:weight] = 3.5 # kilograms
           entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
-          entity.events.create(time, :encounter_ordered, :birth)
+          entity.events.create(time, :encounter, :birth)
           zip = Area.zip_codes.find{|x|x.first==Synthea::Config.population.zip_code}
           zip = Area.zip_codes.sample if zip.nil?
           entity[:address] = {
