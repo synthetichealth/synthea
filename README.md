@@ -1,6 +1,41 @@
-# Synthea Patient Generator 
+# Synthea Patient Generator
 
-Synthetic Patient Population Simulator
+Synthea is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic but not real, patient data and associated health records in a variety of formats.
+
+Currently, Synthea features:
+- Birth to Death Lifecycle
+- Modular Rule System
+  - Drop in custom Ruby rules modules for additional capabilities
+- Primary Care Encounters and Emergency Room Encounters
+- Conditions, Allergies, Vaccinations, Observations/Vitals, Labs
+- Metabolic Syndrome
+ - Type II Diabetes
+ - Cardiovascular Disease
+- Formats
+ - FHIR (STU3)
+ - C-CDA
+
+### Quick Start
+The output of C-CDA documents requires Mongo DB.
+```
+brew install mongodb
+bundle install
+```
+
+### Generate Synthetic Patients
+```
+mongod &
+bundle exec rake synthea:generate
+```
+Some settings can be changed in `/config/synthea.yml`.
+
+Synthea will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `/output`.
+
+### Upload to FHIR Server
+After generating data, upload it to a STU3 server
+```
+bundle exec rake synthea:upload[http://server/fhir/baseDstu3]
+```
 
 # License
 
