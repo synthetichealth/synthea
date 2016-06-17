@@ -139,7 +139,7 @@ module Synthea
       # - Shlipak, Michael. "Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician". www.aafp.org.
       rule :end_stage_renal_disease, [:proteinuria], [:kidney_dialysis,:kidney_transplant,:death] do |time,entity|
         diabetes = entity[:diabetes]
-        if diabetes && diabetes[:end_stage_renal_disease] && (rand < (0.01 * diabetes[:severity]))
+        if diabetes && diabetes[:end_stage_renal_disease] && (rand < (0.0001 * diabetes[:severity]))
           entity[:is_alive] = false
           entity.events.create(time, :death, :end_stage_renal_disease, true)
           Synthea::Modules::Lifecycle::Record.death(entity, time)

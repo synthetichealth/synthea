@@ -53,9 +53,27 @@ module Synthea
             Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
             Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(entity, event.time)
             Synthea::Modules::FoodAllergies::Record.diagnoses(entity, event.time)
-
+            Synthea::Modules::CardiovascularDisease::Record.perform_encounter(entity, event.time)
             entity.events.create(event.time, :encounter_ordered, :encounter)
           end
+
+        end
+
+      end
+
+      #processes all emergency events. Implemented as a function instead of a rule because emergency events must be procesed
+      #immediately rather than waiting til the next time period. Patient may die, resulting in rule not being called.
+      def self.emergency_visit (time, entity)
+        while (event = entity.events(:emergency_encounter).unprocessed.before(time).next)
+          event.processed=true
+          Record.emergency_encounter(entity, event.time)
+        end
+
+        entity.events.unprocessed.before(time).each do |event|
+          if (event.type == :myocardial_infarction || event.type == :cardiac_arrest || event.type == :stroke) && entity[:is_alive]
+              event.processed = true
+              Synthea::Modules::CardiovascularDisease::Record.perform_emergency(entity, event)
+          end 
         end
       end
 
@@ -68,28 +86,42 @@ module Synthea
           # http://icd10coded.com/convert/
           codes = case
             when age <= 1  
-              {"CPT" => ["99391"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+              {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
             when age <= 4  
-              {"CPT" => ["99392"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+              {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
             when age <= 11 
-              {"CPT" => ["99393"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+              {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
             when age <= 17 
-              {"CPT" => ["99394"], "ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
+              {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}
             when age <= 39 
-              {"CPT" => ["99395"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
+              {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
             when age <= 64 
-              {"CPT" => ["99396"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
+              {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}
             else
-              {"CPT" => ["99397"], "ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']} 
+              {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']} 
           end
 
           entity.record.encounters << Encounter.new(encounter_hash(time, codes))
 
+          entity.fhir_record.entry << create_fhir_encounter('outpatient', entity, time, codes)
+        end
+
+        def self.emergency_encounter(entity,time)
+          #Should probably add ICD codes
+          codes = {'SNOMED-CT' => ['50849002']}
+          encounter_data = encounter_hash(time, codes)
+          encounter_data['description'] = "Emergency Encounter"
+          entity.record.encounters << Encounter.new(encounter_data)
+          entity.fhir_record.entry << create_fhir_encounter('emergency', entity, time, codes)
+        end
+
+        def self.create_fhir_encounter(type, entity, time, codes)
           entry = FHIR::Bundle::Entry.new
           encounter = FHIR::Encounter.new
           entry.fullUrl = SecureRandom.uuid.to_s
           encounter.status = 'finished'
-          encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['CPT'][0], 'system'=>'http://www.ama-assn.org/go/cpt'})]})
+          encounter.local_class = type
+          encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'})]})
           encounter.type << encounterCode
           patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
           encounter.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
@@ -97,9 +129,9 @@ module Synthea
           endTime = convertFhirDateTime(time+15.minutes, 'time')
           encounter.period = FHIR::Period.new({'start' => startTime, 'end' => endTime})
           entry.resource = encounter
-
-          entity.fhir_record.entry << entry
+          return entry
         end
+
       end
 
 
