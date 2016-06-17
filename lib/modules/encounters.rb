@@ -51,6 +51,7 @@ module Synthea
             event.processed=true
             Record.encounter(entity, event.time)
             Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
+            Synthea::Modules::Immunizations::Record.perform_encounter(entity, event.time)
             Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(entity, event.time)
             Synthea::Modules::FoodAllergies::Record.diagnoses(entity, event.time)
 
