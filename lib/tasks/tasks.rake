@@ -46,7 +46,7 @@ namespace :synthea do
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
       data = patient.fhir_record.to_json
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(data) }
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
     end
   end
 
@@ -55,8 +55,8 @@ namespace :synthea do
     FileUtils.rm_r out_dir if File.exists? out_dir
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
-      html = HealthDataStandards::Export::CCDA.new.export(patient.record)
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.txt"), 'w') { |file| file.write(html) }
+      xml = HealthDataStandards::Export::CCDA.new.export(patient.record)
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.xml"), 'w') { |file| file.write(xml) }
     end
   end
 

@@ -144,7 +144,15 @@ module Synthea
           entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter_ordered, :birth)
-
+          zip = Area.zip_codes.find{|x|x.first==Synthea::Config.population.zip_code}
+          zip = Area.zip_codes.sample if zip.nil?
+          entity[:address] = {
+            'line' => [ Faker::Address.street_address ],
+            'city' => zip[1],
+            'state' => zip[2],
+            'postalCode' => zip[0]
+          }
+          entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           Record.birth(entity, time)
           # TODO update awareness
         end
@@ -157,7 +165,13 @@ module Synthea
           age = entity[:age]
           entity[:age] = ((time.to_i - birthdate.to_i)/1.year).floor
           if(entity[:age] > age)
-            dt = DateTime.new(time.year,birthdate.month,birthdate.mday,birthdate.hour,birthdate.min,birthdate.sec,birthdate.formatted_offset)
+            dt = nil
+            begin
+              dt = DateTime.new(time.year,birthdate.month,birthdate.mday,birthdate.hour,birthdate.min,birthdate.sec,birthdate.formatted_offset)
+            rescue Exception => e
+              # this person was born on a leap-day
+              dt = time
+            end
             entity.events.create(dt.to_time, :grow, :age)
           end
           # TODO update awareness
@@ -321,6 +335,12 @@ module Synthea
           patient.gender = entity[:gender]
           patient.birthdate = time.to_i
 
+          patient.addresses << Address.new
+          patient.addresses.first.street = entity[:address]['line']
+          patient.addresses.first.city = entity[:address]['city']
+          patient.addresses.first.state = entity[:address]['state']
+          patient.addresses.first.zip = entity[:address]['postalCode']
+
           patient.deathdate = nil
           patient.expired = false
 
@@ -345,6 +365,7 @@ module Synthea
           patientResource.gender = ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F')
           patientResource.birthDate = convertFhirDateTime(time)
           patientResource.deceasedDateTime = nil
+          patientResource.address = FHIR::Address.new( entity[:address] )
           
          if entity[:race] == :hispanic 
             raceFHIR = :other
@@ -393,6 +414,7 @@ module Synthea
           patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
 
           heightObserve = FHIR::Observation.new({'status'=>'final'})
+          heightObserve.effectiveDateTime = convertFhirDateTime(time,'time')
           heightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'cm', 'value'=>entity[:height].to_i})
           heightCode = FHIR::Coding.new({'code'=>'8302-2', 'system'=>'http://loinc.org'})
           heightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Height','coding' => [heightCode]})
@@ -403,6 +425,7 @@ module Synthea
           entity.fhir_record.entry << heightEntry
 
           weightObserve = FHIR::Observation.new({'status'=>'final'})
+          weightObserve.effectiveDateTime = convertFhirDateTime(time,'time')
           weightObserve.valueQuantity = FHIR::Quantity.new({'code'=>'kg', 'value'=>entity[:weight].to_i})
           weightCode = FHIR::Coding.new({'code'=>'29463-7', 'system'=>'http://loinc.org'})
           weightObserve.code = FHIR::CodeableConcept.new({'text' => 'Body Weight','coding' => [weightCode]})

@@ -9,13 +9,12 @@ class LifecycleTest < Minitest::Test
   	@patient[:gender] = 'F'
   	@patient[:race] = :white
   	@patient[:ethnicity] = :italian
-
+    @patient[:address] = {}
     @time = Synthea::Config.start_date
     Synthea::Modules::Lifecycle::Record.birth(@patient, @time) 
   end
 
   def test_birthFhir
-  	
   	person_entry = @patient.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
  	  person = person_entry.resource
  	  hname = person.name[0]

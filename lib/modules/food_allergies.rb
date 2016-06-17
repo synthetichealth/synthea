@@ -39,6 +39,11 @@ module Synthea
               patient.conditions << entity.record_conditions[key]
 
               allergy = FHIR::AllergyIntolerance.new
+              allergy.recordedDate = convertFhirDateTime(time,'time')
+              allergy.status = 'confirmed'
+              allergy.type = 'allergy'
+              allergy.category = 'food'
+              allergy.criticality = ['low','high'].sample
               patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
               allergy.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
               snomed_code = condition_hash(key, time)['codes']['SNOMED-CT'][0]

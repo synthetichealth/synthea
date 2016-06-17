@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'recursive-open-struct', '~> 1.0',  '>= 1.0.0'
   s.add_runtime_dependency 'fhir_models'
   s.add_runtime_dependency 'fhir_client'
+  s.add_runtime_dependency 'area'
 end
 
 

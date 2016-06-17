@@ -13,7 +13,6 @@ class EncounterTest < Minitest::Test
   end
 
   def test_encounterFhir
-    
     encounter_entry = @patient.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
   	encounter = encounter_entry.resource
     assert_equal('99393',encounter.type[0].coding[0].code,'Encounter code incorrect')
@@ -28,7 +27,6 @@ class EncounterTest < Minitest::Test
   
   def test_encounterCCDA
     encounter = @patient.record.encounters.last
-    assert_equal('2.16.840.1.113883.3.560.1.79',encounter['oid'])
     assert_equal('Outpatient Encounter', encounter['description'])
     assert_equal(@time.to_i,encounter['start_time'])
     assert_equal(@time.to_i+15.minutes,encounter['end_time'])

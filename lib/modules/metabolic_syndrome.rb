@@ -256,8 +256,9 @@ module Synthea
 
             # process any labs
             record_lipid_panel(entity,time)
-          elsif entity[:age] > 30
-            # TODO run a lipid panel for non-diabetics if it has been more than 3 years
+          elsif entity[:age] > 30 && entity.events(:lipid_panel).since( time-3.years ).empty?
+            # run a lipid panel for non-diabetics if it has been more than 3 years
+            record_lipid_panel(entity,time)
           end
         end
 
@@ -342,6 +343,9 @@ module Synthea
         end
 
         def self.record_lipid_panel(entity, time)
+          return if entity[:cholesterol].nil?
+          
+          entity.events.create(time, :lipid_panel, :encounter, true)
           # cholesterol: { description: 'Total Cholesterol', code: '2093-3', unit: 'mg/dL'},
           # triglycerides: { description: 'Triglycerides', code: '2571-8', unit: 'mg/dL'},
           # hdl: { description: 'High Density Lipoprotein Cholesterol', code: '2085-9', unit: 'mg/dL'},
