@@ -6,68 +6,53 @@ module Synthea
       rule :vaccinations, [:age], [] do |time, entity|
       end
 
+      # http://www.cdc.gov/vaccines/schedules/downloads/child/0-18yrs-schedule.pdf
+      # http://www.cdc.gov/vaccines/schedules/downloads/adult/adult-schedule.pdf
       # http://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=cvx
-      VACCINATION_HASH = {
-        :hepb_child => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'08','display'=>'Hep B, adolescent or pediatric'},
-        :rv => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'119','display'=>'rotavirus, monovalent'},
+      SCHEDULE = {
+        :hepb_child => {
+          :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'08','display'=>'Hep B, adolescent or pediatric'},
+          :due_at_months => [0, 1, 6]
+        },
+        :rv_mono => {
+          :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'119','display'=>'rotavirus, monovalent'},
+          :due_at_months => [2, 4]
+        },
+        :dtap => {
+          :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'20','display'=>'DTaP'},
+          :due_at_months => [2, 4, 6, 15, 48]
+        },
       }
 
       class Record < BaseRecord
         def self.perform_encounter(entity, time)
-          if entity[:vaccs].nil?
-            entity[:vaccs] = {}
-          end
+          entity[:vaccs] ||= {}
 
-          VACCINATION_HASH.each_key do |vacc|
-            if self.vaccination_due(vacc, time, entity)
-              if entity[:vaccs][vacc].nil?
-                entity[:vaccs][vacc] = {
-                  :admins => []
-                }
-              end
-              entity[:vaccs][vacc][:admins] << time
+          birthdate = entity.event(:birth).time
+          age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, nil, :months)
+          SCHEDULE.each_key do |vacc|
+            if self.vaccination_due(vacc, age_in_months, entity[:vaccs][vacc])
+              entity[:vaccs][vacc] ||= []
+              entity[:vaccs][vacc] << time
               self.record_vaccination(vacc, entity, time)
             end
           end
         end
 
-        def self.num_admins(vacc,entity)
-          if (entity[:vaccs].nil? || entity[:vaccs][vacc].nil?)
-            0
-          else
-            entity[:vaccs][vacc][:admins].length
+        def self.vaccination_due(vacc,age_in_months,history)
+          history ||= []
+          due_at_months = SCHEDULE[vacc][:due_at_months]
+          if history.length < due_at_months.length
+            return age_in_months >= due_at_months[history.length]
           end
-        end
-
-        # http://www.cdc.gov/vaccines/schedules/downloads/child/0-18yrs-schedule.pdf
-        # http://www.cdc.gov/vaccines/schedules/downloads/adult/adult-schedule.pdf
-        def self.vaccination_due(vacc,time,entity)
-          age_in_years = entity[:age]
-          birthdate = entity.event(:birth).time
-          age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, nil, :months)
-          case vacc
-            when :hepb_child
-              admins = self.num_admins(vacc,entity)
-              return case
-                when admins == 0 then true
-                when admins == 1 then age_in_months >= 1
-                when admins == 2 then age_in_months >= 6
-                else false
-              end
-            when :rv
-              admins = self.num_admins(vacc,entity)
-              return case
-                when admins == 0 then age_in_months >= 2
-                when admins == 1 then age_in_months >= 4
-              end               
-          end
+          return false
         end
 
         def self.record_vaccination(vacc, entity, time)
           patient = entity.record
           patient.immunizations << Immunization.new({
-            "codes" => { "CVX" => [VACCINATION_HASH[vacc]["code"]]},
-            "description" => [VACCINATION_HASH[vacc]["display"]],
+            "codes" => { "CVX" => [SCHEDULE[vacc][:code]["code"]]},
+            "description" => [SCHEDULE[vacc][:code]["display"]],
             "time" => time.to_i
           })
 
@@ -79,7 +64,7 @@ module Synthea
             'status'=>'completed',
             'date' => convertFhirDateTime(time,'time'),
             'vaccineCode'=>{
-              'coding'=>[VACCINATION_HASH[vacc]]
+              'coding'=>[SCHEDULE[vacc][:code]]
             },
             'patient'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
             'wasNotGiven' => false,
