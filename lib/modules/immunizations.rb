@@ -11,8 +11,8 @@ module Synthea
       # contraindications based on patient conditions.  For now, we've avoided specific brand names, preferring the
       # general CVX codes.
 
-      # Blank rule to show relationship between vaccinations and age
-      rule :vaccinations, [:age], [] do |time, entity|
+      # Blank rule to show relationship between immunizations and age
+      rule :immunizations, [:age], [] do |time, entity|
       end
 
       # http://www.cdc.gov/vaccines/schedules/downloads/child/0-18yrs-schedule.pdf
@@ -20,7 +20,7 @@ module Synthea
       # http://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=cvx
       # https://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=tradename
       SCHEDULE = {
-        :hepb_child => {
+        :hepb => {
           :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'08','display'=>'Hep B, adolescent or pediatric'},
           :at_months => [0, 1, 6]
         },
@@ -98,33 +98,33 @@ module Synthea
 
       class Record < BaseRecord
         def self.perform_encounter(entity, time)
-          entity[:vaccs] ||= {}
+          entity[:immunizations] ||= {}
 
           birthdate = entity.event(:birth).time
           age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, nil, :months)
-          SCHEDULE.each_key do |vacc|
-            if self.vaccination_due(vacc, age_in_months, entity[:vaccs][vacc])
-              entity[:vaccs][vacc] ||= []
-              entity[:vaccs][vacc] << time
-              self.record_vaccination(vacc, entity, time)
+          SCHEDULE.each_key do |imm|
+            if self.immunization_due(imm, age_in_months, entity[:immunizations][imm])
+              entity[:immunizations][imm] ||= []
+              entity[:immunizations][imm] << time
+              self.record_immunization(imm, entity, time)
             end
           end
         end
 
-        def self.vaccination_due(vacc,age_in_months,history)
+        def self.immunization_due(imm,age_in_months,history)
           history ||= []
-          at_months = SCHEDULE[vacc][:at_months]
+          at_months = SCHEDULE[imm][:at_months]
           if history.length < at_months.length
             return age_in_months >= at_months[history.length]
           end
           return false
         end
 
-        def self.record_vaccination(vacc, entity, time)
+        def self.record_immunization(imm, entity, time)
           patient = entity.record
           patient.immunizations << Immunization.new({
-            "codes" => { "CVX" => [SCHEDULE[vacc][:code]["code"]]},
-            "description" => [SCHEDULE[vacc][:code]["display"]],
+            "codes" => { "CVX" => [SCHEDULE[imm][:code]["code"]]},
+            "description" => [SCHEDULE[imm][:code]["display"]],
             "time" => time.to_i
           })
 
@@ -136,7 +136,7 @@ module Synthea
             'status'=>'completed',
             'date' => convertFhirDateTime(time,'time'),
             'vaccineCode'=>{
-              'coding'=>[SCHEDULE[vacc][:code]]
+              'coding'=>[SCHEDULE[imm][:code]]
             },
             'patient'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
             'wasNotGiven' => false,

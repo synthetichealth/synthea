@@ -45,7 +45,7 @@ module Synthea
         end
       end
 
-      rule :encounter, [], [:schedule_encounter,:observations,:lab_results,:diagnoses] do |time, entity|
+      rule :encounter, [], [:schedule_encounter,:observations,:lab_results,:diagnoses,:immunizations] do |time, entity|
         if entity[:is_alive]
           while (event = entity.events(:encounter).unprocessed.before(time).next)
             event.processed=true
