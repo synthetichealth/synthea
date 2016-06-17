@@ -111,7 +111,7 @@ module Synthea
           food_allergy_fish: { description: 'Food Allergy: Fish', codes: {'SNOMED-CT' => ['417532002']}},
           food_allergy_shellfish: { description: 'Food Allergy: Shellfish', codes: {'SNOMED-CT' => ['300913006']}},
         
-          stroke_history: { description: 'Stroke', codes: {'SNOMED-CT' => ['230690007']}},
+          stroke: { description: 'Stroke', codes: {'SNOMED-CT' => ['230690007']}},
           coronary_heart_disease: { description: 'Coronary Heart Disease', codes: {'SNOMED-CT' => ['53741008']}},
           myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
           cardiac_arrest: {description: 'Cardiac Arrest', codes: {'SNOMED-CT' => ['410429000']}}

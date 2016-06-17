@@ -5,9 +5,8 @@ module Synthea
       # People have encounters
       rule :schedule_encounter, [:age], [:encounter] do |time, entity|
         if entity[:is_alive]
-          while entity.events(:encounter_ordered).unprocessed.next?
-
-            event = entity.events(:encounter_ordered).unprocessed.next
+          unprocessed_events = entity.events(:encounter_ordered).unprocessed
+          unprocessed_events.each do |event|
             event.processed=true
 
             schedule_variance = Synthea::Config.schedule.variance
@@ -47,7 +46,8 @@ module Synthea
 
       rule :encounter, [], [:schedule_encounter,:observations,:lab_results,:diagnoses,:immunizations] do |time, entity|
         if entity[:is_alive]
-          while (event = entity.events(:encounter).unprocessed.before(time).next)
+          unprocessed_events = entity.events(:encounter).unprocessed.before(time)
+          unprocessed_events.each do |event|
             event.processed=true
             Record.encounter(entity, event.time)
             Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
@@ -65,16 +65,16 @@ module Synthea
       #processes all emergency events. Implemented as a function instead of a rule because emergency events must be procesed
       #immediately rather than waiting til the next time period. Patient may die, resulting in rule not being called.
       def self.emergency_visit (time, entity)
-        while (event = entity.events(:emergency_encounter).unprocessed.before(time).next)
+        unprocessed_events = entity.events(:emergency_encounter).unprocessed.before(time)
+        unprocessed_events.each do |event|
           event.processed=true
           Record.emergency_encounter(entity, event.time)
         end
 
-        entity.events.unprocessed.before(time).each do |event|
-          if (event.type == :myocardial_infarction || event.type == :cardiac_arrest || event.type == :stroke) && entity[:is_alive]
-              event.processed = true
-              Synthea::Modules::CardiovascularDisease::Record.perform_emergency(entity, event)
-          end 
+        unprocessed_events = entity.events.select{|x| [:myocardial_infarction,:cardiac_arrest,:stroke].include?(x.type) }.unprocessed.before(time)
+        unprocessed_events.each do |event|
+          event.processed = true
+          Synthea::Modules::CardiovascularDisease::Record.perform_emergency(entity, event)
         end
       end
 

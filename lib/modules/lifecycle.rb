@@ -182,32 +182,34 @@ module Synthea
       rule :grow, [:age,:is_alive,:gender], [:height,:weight,:bmi] do |time, entity|
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
-        while entity[:is_alive] && entity.events(:grow).unprocessed.next?
-          event = entity.events(:grow).unprocessed.next
-          event.processed=true
-          age = entity[:age]
-          gender = entity[:gender]
-          if(age <= 20)
-            if(gender=='M')
-              entity[:height] += @male_growth.call # centimeters
-              entity[:weight] += @male_weight.call # kilograms
-            elsif(gender=='F')
-              entity[:height] += @female_growth.call # centimeters
-              entity[:weight] += @female_weight.call # kilograms
+        if entity[:is_alive]
+          unprocessed_events = entity.events(:grow).unprocessed
+          unprocessed_events.each do |event|
+            event.processed=true
+            age = entity[:age]
+            gender = entity[:gender]
+            if(age <= 20)
+              if(gender=='M')
+                entity[:height] += @male_growth.call # centimeters
+                entity[:weight] += @male_weight.call # kilograms
+              elsif(gender=='F')
+                entity[:height] += @female_growth.call # centimeters
+                entity[:weight] += @female_weight.call # kilograms
+              end
+            elsif(age <= Synthea::Config.lifecycle.adult_max_weight_age)
+              # getting older and fatter
+              if(gender=='M')
+                entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
+              elsif(gender=='F')
+                entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
+              end           
+            else
+              # TODO random change in weight?
             end
-          elsif(age <= Synthea::Config.lifecycle.adult_max_weight_age)
-            # getting older and fatter
-            if(gender=='M')
-              entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
-            elsif(gender=='F')
-              entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
-            end           
-          else
-            # TODO random change in weight?
+            # set the BMI
+            entity[:bmi] = calculate_bmi(entity[:height],entity[:weight])
           end
-          # set the BMI
-          entity[:bmi] = calculate_bmi(entity[:height],entity[:weight])
-        end        
+        end   
       end
 
       # People die

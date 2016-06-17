@@ -4,12 +4,13 @@ module Synthea
     def select(&block)
       EventList.new(super.select(&block))
     end
+    
     def next
       self.first
     end
 
     def next?
-      !self.next.nil?
+      !self.empty?
     end
 
     def unprocessed

@@ -15,16 +15,39 @@ namespace :synthea do
     seconds = (minutes - minutes.floor) * 60
     puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
 
-    binding.pry
-
     puts "Saving patient records..."
     export(world.people | world.dead)
     fhir_export(world.people | world.dead)
     ccda_export(world.people | world.dead)
-    binding.pry
+    puts 'Finished.'
+  end
 
-    puts "Uploading patient records..."
-    uploadFhirServer(world.people | world.dead)
+  desc 'upload to FHIR server'
+  task :fhirupload, [:url] do |t,args|
+    output = File.join('output','fhir')
+    if File.exists? output
+      start = Time.now
+      files = File.join(output, '**', '*.json')
+      client = FHIR::Client.new(args.url)
+      puts 'Uploading Patient records...'
+      Dir.glob(files).each do | file |
+        json = File.open(file,'r:UTF-8',&:read)
+        bundle = FHIR.from_contents(json)
+        client.begin_transaction
+        bundle.entry.each do |entry|
+          #defined our own 'add to transaction' function to preserve our entry information
+          add_entry_transaction('POST',nil,entry,client)
+        end
+        reply = client.end_transaction
+      end
+      finish = Time.now
+      minutes = ((finish-start)/60)
+      seconds = (minutes - minutes.floor) * 60
+      puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
+    else
+      puts 'No FHIR patient records have been generated yet.'
+      puts 'Run synthea:generate task.'
+    end
   end
 
   def export(patients)
@@ -60,21 +83,6 @@ namespace :synthea do
     end
   end
 
-  def uploadFhirServer(patients)
-    client = FHIR::Client.new('http://bonfire.mitre.org:8100/fhir/baseDstu3')
-    patients.each do |patient|
-      client.begin_transaction
-      patient.fhir_record.entry.each do |entry|
-        #defined our own 'add to transaction' function to preserve our entry information
-        add_entry_transaction('POST',nil,entry,client)
-      end
-      reply = client.end_transaction
-
-    end
-
-  end
-
-
   def add_entry_transaction(method, url, entry=nil, client)
     request = FHIR::Bundle::Entry::Request.new
     request.local_method = 'POST'
@@ -87,17 +95,15 @@ namespace :synthea do
     else
       request.url = url
     end
-
     entry.request = request
-
     client.transaction_bundle.entry << entry
     entry
   end
 
   desc 'clear_server'
-  task :clear_server, [] do |t, args|
-    client = FHIR::Client.new("http://bonfire.mitre.org:8100/fhir/baseDstu3")
-    FHIR::RESOURCES.map do | klass |
+  task :clear_server, [:url] do |t, args|
+    client = FHIR::Client.new(args.url)
+    FHIR::RESOURCES.each do | klass |
       clear_resource(klass, client)
     end
   end
