@@ -29,11 +29,11 @@ module Synthea
 
       class Record < BaseRecord
         def self.diagnoses(entity, time)
-          patient = entity.record
           food_allergy = entity[:food_allergy]
           if !food_allergy.nil? && food_allergy!=false && !entity.record_conditions.keys.any?{|x|x.to_s.start_with?('food_allergy_')}
             # create the ongoing diagnosis
             food_allergy.each do |allergen|
+              patient = entity.record
               key = "food_allergy_#{allergen.to_s}".to_sym
               entity.record_conditions[key] = Condition.new(condition_hash(key, time))
               patient.conditions << entity.record_conditions[key]
