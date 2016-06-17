@@ -24,6 +24,7 @@ synthea:
     adult_male_weight_gain:     0.034 # percent increase each year (where 1.0==100%)
     adult_female_weight_gain:   0.052 # percent increase each year (where 1.0==100%)
     adult_max_weight_age:       44    # age (years) when adults stop packing on weight
+
   metabolic:
     blood_glucose:
       normal:      5.7 # or less
@@ -44,4 +45,22 @@ synthea:
       cholesterol:   [160,200,239,269,300] # mg/dL
       triglycerides: [100,150,199,499,600] # mg/dL
       hdl:           [ 80, 59, 40, 20,  0] # mg/dL 
+  cardiovascular:
+    stroke:
+      #https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
+      rate_20_39: [0.002, 0.007] #Prevalence of stroke by age and sex (Male, Female)
+      rate_40_59: [0.019, 0.022]
+      death: 0.15 #Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
+    chd:
+      #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
+      
+      coronary_attack_risk: [0.042,0.015] #annual probability of coronary attack given history of angina (Male, Female)
+      mi_proportion: 0.8 #Proportion of coronary attacks that are MI ,given history of CHD
 
+      survive: 0.095 #http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp (0.095)
+      bystander: 0.46 #http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp 
+    #http://circ.ahajournals.org/content/early/2014/12/18/CIR.0000000000000152.full.pdf
+    sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
+      risk: 0.00076
+      death: 0.00069
+    smoke: 0.161 # 16.1% of MA are smokers. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
