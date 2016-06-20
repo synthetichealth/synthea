@@ -34,7 +34,7 @@ Synthea will output patient records in C-CDA (requires running instance of Mongo
 ### Upload to FHIR Server
 After generating data, upload it to a STU3 server
 ```
-bundle exec rake synthea:upload[http://server/fhir/baseDstu3]
+bundle exec rake synthea:fhirupload[http://server/fhir/baseDstu3]
 ```
 
 # License
