@@ -130,7 +130,7 @@ module Synthea
     			cholesterol = entity[:cholesterol][:total]
     			hdl_level = entity[:cholesterol][:hdl]
     			blood_pressure = entity[:blood_pressure][0]
-
+                bp_treated = entity[:bp_treated?] || false
     			#assign age bracket
     			if age < 40
     				long_age_range = '20-39'
@@ -193,7 +193,8 @@ module Synthea
     				if entity[:smoke]
     					framingham_points += m_age_smoke_chd[long_age_range]
     				end
-    				framingham_points += m_sys_bp_chd[bp_range][false]
+                    #the second variable refers to treated or untreated blood pressure
+    				framingham_points += m_sys_bp_chd[bp_range][bp_treated]
     				if framingham_points < 0
     					framingham_points = '<0'
     				elsif framingham_points >= 17
@@ -208,7 +209,7 @@ module Synthea
 	    			if entity[:smoke]
     					framingham_points += f_age_smoke_chd[long_age_range]
     				end
-    				framingham_points += f_sys_bp_chd[bp_range][false]
+    				framingham_points += f_sys_bp_chd[bp_range][bp_treated]
     				if framingham_points < 9
     					framingham_points = '<9'
     				elsif framingham_points >= 25
@@ -273,6 +274,74 @@ module Synthea
                     end
                 end
             end
+
+            #-----------------------------------------------------------------------#
+            #Framingham score system for calculating atrial fibrillation (significant factor for stroke risk)
+
+            age_af = {
+                'M' => {
+                    (45..49) => 1,
+                    (50..54) => 2,
+                    (55..59) => 3,
+                    (60..64) => 4,
+                    (65..69) => 5,
+                    (70..74) => 6,
+                    (75..79) => 7,
+                    (80..84) => 7,
+                    (85..999) => 8
+                },
+                'F' => {
+                    (45..49) => -3,
+                    (50..54) => -2,
+                    (55..59) => 0,
+                    (60..64) => 1,
+                    (65..69) => 3,
+                    (70..74) => 4,
+                    (75..79) => 6,
+                    (80..84) => 7,
+                    (85..999) => 8
+                }
+                
+            }
+            # only covers points 1-9. <=0 and >= 10 are in if statement
+            risk_af_table = {
+                1 => 0.02, 2 => 0.02, 3 => 0.03,
+                4 => 0.04, 5 => 0.06, 6 => 0.08,
+                7 => 0.12, 8 => 0.16, 9 => 0.22,
+            }
+
+            rule :calculate_atrial_fibrillation_risk, [:age, :bmi, :blood_pressure, :gender], [:atrial_fibrillation_risk] do |time, entity|
+                if entity[:atrial_fibrillation] || entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:bmi].nil? || entity[:age] < 45
+                    return
+                end 
+                age = entity[:age]
+                af_score = 0
+                age_af[entity[:gender]].each do |key, value|
+                    if key.include?(age)
+                        af_score += value
+                        break
+                    end
+                end
+                af_score += 1 if entity[:bmi] >= 30
+                af_score += 1 if entity[:blood_pressure][0] >= 160
+                af_score += 1 if entity[:bp_treated?]
+                if af_score <= 0
+                    af_risk = 0.01
+                elsif af_score >= 10
+                    af_risk = 0.3
+                else
+                    af_risk = risk_af_table[af_score]
+                end
+                entity[:atrial_fibrillation_risk] = Synthea::Rules.convert_risk_to_timestep(af_risk, 3650)
+            end
+
+            rule :get_atrial_fibrillation, [:atrial_fibrillation_risk], [:atrial_fibrillation] do |time, entity|
+                if entity[:atrial_fibrillation].nil? && entity[:atrial_fibrillation_risk] && rand < entity[:atrial_fibrillation_risk]
+                    entity.events.create(time, :atrial_fibrillation, :get_atrial_fibrillation)
+                    entity[:atrial_fibrillation] = true
+                end
+            end
+
 
             #-----------------------------------------------------------------------#
 
@@ -368,7 +437,6 @@ module Synthea
                     ten_stroke_risk = f_10_year_stroke_risk[stroke_points]
                 end
 
-                #divide 10 year risk by 365 * 10 to get daily risk.
                 entity[:stroke_risk] = Synthea::Rules.convert_risk_to_timestep(ten_stroke_risk, 3650)
                 entity[:stroke_points] = stroke_points
             end
