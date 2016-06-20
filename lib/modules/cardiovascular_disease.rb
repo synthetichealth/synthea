@@ -114,14 +114,14 @@ module Synthea
 
             # 9/10 smokers start before age 18. We will use 16.
             #http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
-            rule :start_smoking, [:age], [:smoke] do |time, entity|
-                if entity[:smoke].nil? && entity[:age] == 16
-                    rand < Synthea::Config.cardiovascular.smoke ? entity[:smoke] = true : entity[:smoke] = false
+            rule :start_smoking, [:age], [:smoker] do |time, entity|
+                if entity[:smoker].nil? && entity[:age] == 16
+                    rand < Synthea::Config.cardiovascular.smoker ? entity[:smoker] = true : entity[:smoker] = false
                 end
             end
 
     		
-            rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoke], [:coronary_heart_disease?] do |time, entity|
+            rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoker], [:coronary_heart_disease?] do |time, entity|
     			
     			if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:cholesterol].nil?
     				return
@@ -132,16 +132,17 @@ module Synthea
     			blood_pressure = entity[:blood_pressure][0]
 
     			#assign age bracket
-    			if age < 40
+                case 
+    			when age < 40
     				long_age_range = '20-39'
     				age < 35 ? short_age_range = '20-34' : short_age_range = '35-39'
-    			elsif age < 50
+    			when age < 50
     				long_age_range = '40-49'
     				age < 45 ? short_age_range = '40-44' : short_age_range = '45-49'
-    			elsif age < 60
+    			when age < 60
     				long_age_range = '50-59' 
     				age < 55 ? short_age_range = '50-54' : short_age_range = '55-59'
-    			elsif age < 70
+    			when age < 70
     				long_age_range = '60-69'
     				age < 65 ? short_age_range = '60-64' : short_age_range = '65-69'
     			else 
@@ -150,36 +151,39 @@ module Synthea
     			end
 
     			#assign cholesterol range
-    			if cholesterol < 160
+                case
+    			when cholesterol < 160
     				chol_range = '<160'
-    			elsif cholesterol < 200
+    			when cholesterol < 200
     				chol_range = '160-199'
-    			elsif cholesterol < 240
+    			when cholesterol < 240
     				chol_range = '200-239'
-    			elsif cholesterol < 280
+    			when cholesterol < 280
     				chol_range = '240-279'
     			else
     				chol_range = '>280'
 				end
 
 				#assign HDL range
-				if hdl_level < 40
+                case
+				when hdl_level < 40
 					hdl_range = '<40'
-				elsif hdl_level < 50
+				when hdl_level < 50
 					hdl_range = '40-49'
-				elsif hdl_level < 60
+				when hdl_level < 60
 					hdl_range = '50-59'
 				else
 					hdl_range = '>60'
 				end
 
-				if blood_pressure < 120
+                case
+				when blood_pressure < 120
 					bp_range = '<120'
-				elsif blood_pressure < 130
+				when blood_pressure < 130
 					bp_range = '120-129'
-				elsif blood_pressure < 140
+				when blood_pressure < 140
 					bp_range = '130-139'
-				elsif blood_pressure < 160
+				when blood_pressure < 160
 					bp_range = '140-159'
 				else
 					bp_range = '>160'
@@ -190,7 +194,7 @@ module Synthea
     			if entity[:gender] == 'M'
     				framingham_points += m_age_chd[short_age_range]
     				framingham_points += m_age_chol_chd[long_age_range][chol_range]
-    				if entity[:smoke]
+    				if entity[:smoker]
     					framingham_points += m_age_smoke_chd[long_age_range]
     				end
     				framingham_points += m_sys_bp_chd[bp_range][false]
@@ -205,7 +209,7 @@ module Synthea
 	    		else
 	    			framingham_points += f_age_chd[short_age_range]
 	    			framingham_points += f_age_chol_chd[long_age_range][chol_range]
-	    			if entity[:smoke]
+	    			if entity[:smoker]
     					framingham_points += f_age_smoke_chd[long_age_range]
     				end
     				framingham_points += f_sys_bp_chd[bp_range][false]
@@ -310,7 +314,7 @@ module Synthea
                 21 => 0.43, 22 => 0.5, 23 => 0.57, 24 => 0.64, 25 => 0.71, 26 => 0.78, 27 => 0.84
             }
 
-            rule :calculate_stroke_risk, [:age, :diabetes, :coronary_heart_disease, :blood_pressure, :stroke_history, :smoke], [:stroke_risk] do |time, entity|
+            rule :calculate_stroke_risk, [:age, :diabetes, :coronary_heart_disease, :blood_pressure, :stroke_history, :smoker], [:stroke_risk] do |time, entity|
                 if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? 
                     return
                 end 
@@ -324,11 +328,13 @@ module Synthea
                 else
                     index = 1
                 end
-                if age < 20
+
+                case
+                when age < 20
                     return
-                elsif age < 40 && age >= 20
+                when age < 40 && age >= 20
                     rate = Synthea::Config.cardiovascular.stroke.rate_20_39[index]
-                elsif age < 55 && age >=40
+                when age < 55 && age >=40
                     rate = Synthea::Config.cardiovascular.stroke.rate_40_59[index]
                 end
 
@@ -338,7 +344,7 @@ module Synthea
                 end
 
                 stroke_points = 0
-                stroke_points += 3 if entity[:smoke]
+                stroke_points += 3 if entity[:smoker]
                 stroke_points += 5 if entity[:left_ventricular_hypertrophy]
                 if gender == 'M'
                     stroke_points += m_age_stroke.find_index{|range| range.include?(age)}
@@ -373,7 +379,6 @@ module Synthea
                 entity[:stroke_points] = stroke_points
             end
 
-            #Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
             rule :get_stroke, [:stroke_risk, :stroke_history], [:stroke, :death, :stroke_history] do |time, entity|
                 if entity[:stroke_risk] && rand < entity[:stroke_risk]
                     entity.events.create(time, :stroke, :get_stroke)
@@ -400,7 +405,7 @@ module Synthea
                             condition = FHIR::Condition.new
                             condition.id = SecureRandom.uuid
                             patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-                            condition.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
+                            condition.patient = FHIR::Reference.new({'reference'=>"Patient/#{patient.fullUrl}"})
                             conditionData = condition_hash(diagnosis, time)
                             conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct'})
                             condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding],'text'=>conditionData['description']})
@@ -408,7 +413,7 @@ module Synthea
                             condition.onsetDateTime = convertFhirDateTime(time,'time')
 
                             encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-                            condition.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
+                            condition.encounter = FHIR::Reference.new({'reference'=>"Encounter/#{encounter.fullUrl}"})
 
                             entry = FHIR::Bundle::Entry.new
                             entry.resource = condition
@@ -419,29 +424,34 @@ module Synthea
 
                 def self.perform_emergency(entity, event)
                     time = event.time
-                    [:myocardial_infarction, :stroke, :cardiac_arrest].each do |diagnosis|
-                        if diagnosis == event.type && !entity.record_conditions[diagnosis]
-                            entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
-                            entity.record.conditions << entity.record_conditions[diagnosis]
-                        
-                            condition = FHIR::Condition.new
-                            condition.id = SecureRandom.uuid
-                            patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-                            condition.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
-                            conditionData = condition_hash(diagnosis, time)
-                            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct'})
-                            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding],'text'=>conditionData['description']})
-                            condition.verificationStatus = 'confirmed'
-                            condition.onsetDateTime = convertFhirDateTime(time,'time')
-
-                            encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-                            condition.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
-
-                            entry = FHIR::Bundle::Entry.new
-                            entry.resource = condition
-                            entity.fhir_record.entry << entry
-                        end
+                    diagnosis = event.type
+                    if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) && !entity.record_conditions[diagnosis]
+                        entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
+                        entity.record.conditions << entity.record_conditions[diagnosis]
+                    
+                        patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
+                        conditionData = condition_hash(diagnosis, time)
+                        encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+                        condition = FHIR::Condition.new({
+                            'id' => SecureRandom.uuid,
+                            'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+                            'code' => {
+                                'coding'=>[{
+                                    'code'=>conditionData['codes']['SNOMED-CT'][0],
+                                    'display'=>conditionData['description'],
+                                    'system' => 'http://snomed.info/sct'
+                                    }],
+                                'text'=>conditionData['description']
+                            },
+                            'verificationStatus' => 'confirmed',
+                            'onsetDateTime' => convertFhirDateTime(time,'time'),
+                            'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"}
+                        })
+                        entry = FHIR::Bundle::Entry.new
+                        entry.resource = condition
+                        entity.fhir_record.entry << entry
                     end
+
                     #record treatments for coronary attack?
                 end
                 

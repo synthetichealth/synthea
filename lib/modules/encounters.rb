@@ -117,18 +117,17 @@ module Synthea
         end
 
         def self.create_fhir_encounter(type, entity, time, codes)
-          entry = FHIR::Bundle::Entry.new
-          encounter = FHIR::Encounter.new
-          entry.fullUrl = SecureRandom.uuid.to_s
-          encounter.status = 'finished'
-          encounter.local_class = type
-          encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'})]})
-          encounter.type << encounterCode
           patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-          encounter.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
-          startTime = convertFhirDateTime(time,'time')
-          endTime = convertFhirDateTime(time+15.minutes, 'time')
-          encounter.period = FHIR::Period.new({'start' => startTime, 'end' => endTime})
+          encounter = FHIR::Encounter.new({
+            'fullUrl' => SecureRandom.uuid.to_s,
+            'status' => 'finished',
+            'local_class' => type,
+            'type' => [{'coding' => [{'code' => codes['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}]}],
+            'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+            'period' => {'start' => convertFhirDateTime(time,'time'), 'end' => convertFhirDateTime(time+15.minutes, 'time')}
+          })
+          
+          entry = FHIR::Bundle::Entry.new
           entry.resource = encounter
           return entry
         end

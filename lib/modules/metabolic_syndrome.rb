@@ -418,18 +418,22 @@ module Synthea
             entity.record.conditions << entity.record_conditions[diagnosis]
 
             #write to fhir record
-            condition = FHIR::Condition.new
-            condition.id = SecureRandom.uuid
             patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-            condition.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
-            conditionData = condition_hash(diagnosis, time)
-            conditionCoding = FHIR::Coding.new({'code'=>conditionData['codes']['SNOMED-CT'][0], 'display'=>conditionData['description'], 'system' => 'http://snomed.info/sct'})
-            condition.code = FHIR::CodeableConcept.new({'coding'=>[conditionCoding],'text'=>conditionData['description']})
-            condition.verificationStatus = 'confirmed'
-            condition.onsetDateTime = convertFhirDateTime(time,'time')
-
             encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-            condition.encounter = FHIR::Reference.new({'reference'=>'Encounter/' + encounter.fullUrl})
+            conditionData = condition_hash(diagnosis, time)
+            condition = FHIR::Condition.new({
+              'id' => SecureRandom.uuid,
+              'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+              'code' => {'coding'=>[{
+                'code'=>conditionData['codes']['SNOMED-CT'][0],
+                'display'=>conditionData['description'], 
+                'system' => 'http://snomed.info/sct'}],
+                'text'=>conditionData['description'
+                ]},
+              'verificationStatus' => 'confirmed',
+              'onsetDateTime' => convertFhirDateTime(time,'time'),
+              'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"}
+            })
 
             entry = FHIR::Bundle::Entry.new
             entry.resource = condition
