@@ -428,8 +428,8 @@ module Synthea
                 'code'=>conditionData['codes']['SNOMED-CT'][0],
                 'display'=>conditionData['description'], 
                 'system' => 'http://snomed.info/sct'}],
-                'text'=>conditionData['description'
-                ]},
+                'text'=>conditionData['description']
+                },
               'verificationStatus' => 'confirmed',
               'onsetDateTime' => convertFhirDateTime(time,'time'),
               'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"}

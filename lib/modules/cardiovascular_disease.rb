@@ -119,15 +119,14 @@ module Synthea
     		
             rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoker], [:coronary_heart_disease?] do |time, entity|
     			
-    			if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:cholesterol].nil?
-    				return
-    			end	
+    			return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:cholesterol].nil?
+
 				age = entity[:age]
                 gender = entity[:gender]
     			cholesterol = entity[:cholesterol][:total]
     			hdl_level = entity[:cholesterol][:hdl]
     			blood_pressure = entity[:blood_pressure][0]
-				
+				bp_treated = entity[:bp_treated?] || false
                 #calculate which index in a lookup array a number corresponds to based on ranges in scoring
                 short_age_range = [[(age - 20)/5,0].max,11].min
                 long_age_range = [[(age - 20)/10,0].max,5].min
@@ -144,7 +143,7 @@ module Synthea
 
 
     			framingham_points += hdl_lookup_chd[hdl_range]
-                framingham_points += sys_bp_chd[gender][bp_range][false]
+                framingham_points += sys_bp_chd[gender][bp_range][bp_treated]
                 #restrict lower and upper bound of framingham score
                 gender_bounds = {'M' => {'low' => 0, 'high' => 17}, 'F' => {'low' => 8, 'high' => 25}}
                 framingham_points = [[framingham_points,gender_bounds[gender]['low']].max, gender_bounds[gender]['high']].min
@@ -259,9 +258,7 @@ module Synthea
             atrial_fibrillation_stroke_points = {'M' => 4, 'F' => 6}
 
             rule :calculate_stroke_risk, [:age, :diabetes, :coronary_heart_disease, :blood_pressure, :stroke_history, :smoker], [:stroke_risk] do |time, entity|
-                if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? 
-                    return
-                end 
+                return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? 
                 age = entity[:age]
                 gender = entity[:gender]
                 blood_pressure = entity[:blood_pressure][0]

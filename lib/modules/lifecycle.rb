@@ -370,7 +370,6 @@ module Synthea
                       }],
             'gender' => ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F'),
             'birthDate' => convertFhirDateTime(time),
-            'deceasedDateTime' => nil,
             'address' => [FHIR::Address.new(entity[:address])],
             'extension' => [
               #race
