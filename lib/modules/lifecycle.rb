@@ -368,7 +368,6 @@ module Synthea
                         'family' => [entity[:name_last]],
                         'use' => 'official'
                       }],
-            'fullUrl' => SecureRandom.uuid.to_s.strip,
             'gender' => ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F'),
             'birthDate' => convertFhirDateTime(time),
             'deceasedDateTime' => nil,
@@ -401,6 +400,7 @@ module Synthea
             ]
           })
           entry = FHIR::Bundle::Entry.new
+          entry.fullUrl = SecureRandom.uuid.to_s.strip
           entry.resource = patientResource
           entity.fhir_record.entry << entry
         end

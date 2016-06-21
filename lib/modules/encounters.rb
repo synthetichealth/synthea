@@ -119,7 +119,6 @@ module Synthea
         def self.create_fhir_encounter(type, entity, time, codes)
           patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
           encounter = FHIR::Encounter.new({
-            'fullUrl' => SecureRandom.uuid.to_s,
             'status' => 'finished',
             'local_class' => type,
             'type' => [{'coding' => [{'code' => codes['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}]}],
@@ -128,6 +127,7 @@ module Synthea
           })
           
           entry = FHIR::Bundle::Entry.new
+          entry.fullUrl = SecureRandom.uuid.to_s
           entry.resource = encounter
           return entry
         end
