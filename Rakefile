@@ -1,6 +1,5 @@
 require 'rake/testtask'
 require 'cane/rake_task'
-require "simplecov"
 
 require_relative 'lib/synthea'
 

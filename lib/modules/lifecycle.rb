@@ -183,9 +183,9 @@ module Synthea
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
         if entity[:is_alive]
-          unprocessed_events = entity.events(:grow).unprocessed
+          unprocessed_events = entity.events.unprocessed.select{|e|e.type==:grow}
           unprocessed_events.each do |event|
-            event.processed=true
+            entity.events.process(event)
             age = entity[:age]
             gender = entity[:gender]
             if(age <= 20)
