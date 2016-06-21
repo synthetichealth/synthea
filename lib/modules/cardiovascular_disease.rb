@@ -279,7 +279,7 @@ module Synthea
             #Framingham score system for calculating atrial fibrillation (significant factor for stroke risk)
 
             age_af = { #age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84 
-                'M' => [0, 1, 2, 3, 4, 5, 6, 7, 7, 8],
+                'M' => [1, 2, 3, 4, 5, 6, 7, 7, 8],
                 'F' => [-3, -2, 0, 1, 3, 4, 6, 7, 8]
             }
             # only covers points 1-9. <=0 and >= 10 are in if statement
