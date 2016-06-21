@@ -4,7 +4,7 @@ class EventListTest < Minitest::Test
 
   def setup
     @entity = Synthea::Entity.new
-    @entity.events.create(0,:foo,:setup)
+    @entity.events.create(10,:foo,:setup)
     @entity.events.create(30,:bar,:setup)
     @entity.events.create(50,:foo,:setup)    
     @entity.events.create(100,:foo,:setup)    
@@ -97,11 +97,12 @@ class EventListTest < Minitest::Test
     assert(result.empty?)
   end
 
-  # @entity.events.create(0,:foo,:setup)
-  # @entity.events.create(30,:bar,:setup)
-  # @entity.events.create(50,:foo,:setup)    
-  # @entity.events.create(100,:foo,:setup)    
-  # @entity.events.create(150,:foo,:setup)   
+  def test_before_everything
+    result = @entity.events.before(0,:foo)
+    assert(result)
+    assert(result.is_a?(Array))
+    assert(result.empty?)
+  end 
 
   def test_before_first
     result = @entity.events.before(20,:foo)

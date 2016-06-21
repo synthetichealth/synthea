@@ -31,10 +31,12 @@ module Synthea
     def before(date,type=:all)
       list = @events[type]
       return EMPTY if list.nil? || list.empty?
+      start_index = list.index{|e|e.time <= date}
       end_index = list.index{|e|e.time >= date}
-      end_index = list.length if end_index.nil?
-      if !end_index.nil?
-        list[0..(end_index-1)]
+      if !start_index.nil? && !end_index.nil?
+        list[start_index..(end_index-1)]
+      elsif !start_index.nil?
+        list[start_index..list.length]
       else
         EMPTY
       end
