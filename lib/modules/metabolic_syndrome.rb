@@ -256,7 +256,7 @@ module Synthea
 
             # process any labs
             record_lipid_panel(entity,time)
-          elsif entity[:age] > 30 && entity.events(:lipid_panel).since( time-3.years ).empty?
+          elsif entity[:age] > 30 && entity.events.since( time-3.years, :lipid_panel ).empty?
             # run a lipid panel for non-diabetics if it has been more than 3 years
             record_lipid_panel(entity,time)
           end

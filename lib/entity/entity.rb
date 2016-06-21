@@ -1,11 +1,11 @@
 module Synthea
   class Entity
     attr_accessor :attributes # Hash
-    attr_accessor :event_list # Array of Synthea::Event
+    attr_accessor :events
 
     def initialize
       @attributes = {}
-      @event_list = EventList.new
+      @events = Synthea::EventList.new
     end
 
     def [](name)
@@ -17,19 +17,11 @@ module Synthea
     end
 
     def had_event?(type)
-      @event_list.any? { |e| e.type == type }
+      @events.events.has_key?(type)
     end
 
     def event(type)
-      events(type).next
-    end
-
-    def events(type = nil)
-      if type.nil?
-        @event_list
-      else
-        @event_list.select { |e| e.type == type }
-      end
+      @events.events[type].try(:last)
     end
 
   end
