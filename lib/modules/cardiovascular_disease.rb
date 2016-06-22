@@ -333,8 +333,11 @@ module Synthea
         stroke_points += chd_stroke_points[gender] if entity[:coronary_heart_disease]
         stroke_points += atrial_fibrillation_stroke_points[gender] if entity[:atrial_fibrillation]
         ten_stroke_risk = ten_year_stroke_risk[gender][stroke_points]
-        binding.pry if ten_stroke_risk.nil?
-
+        if ten_stroke_risk.nil?
+          worst_case = ten_year_stroke_risk[gender].keys.last
+          ten_stroke_risk = ten_year_stroke_risk[gender][worst_case]
+        end
+        
         #divide 10 year risk by 365 * 10 to get daily risk.
         entity[:stroke_risk] = Synthea::Rules.convert_risk_to_timestep(ten_stroke_risk, 3650)
         entity[:stroke_points] = stroke_points
@@ -358,7 +361,7 @@ module Synthea
 
       class Record < BaseRecord
         def self.perform_encounter(entity, time)
-          [:coronary_heart_disease].each do |diagnosis|
+          [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
             if entity[diagnosis] && !entity.record_conditions[diagnosis]
               entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
               entity.record.conditions << entity.record_conditions[diagnosis]
