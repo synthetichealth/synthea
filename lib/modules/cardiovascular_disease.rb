@@ -358,7 +358,7 @@ module Synthea
 
       class Record < BaseRecord
         def self.perform_encounter(entity, time)
-          [:coronary_heart_disease].each do |diagnosis|
+          [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
             if entity[diagnosis] && !entity.record_conditions[diagnosis]
               entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
               entity.record.conditions << entity.record_conditions[diagnosis]
