@@ -1,0 +1,7 @@
+language: ruby
+rvm:
+  - "2.0.0"
+script:
+  - bundle exec rake test
+notifications:
+  slack: hdi10x:tgmWL6OKKgODjOMqHuRMerxC
