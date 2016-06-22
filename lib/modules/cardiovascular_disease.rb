@@ -202,6 +202,45 @@ module Synthea
           end
         end
       end
+      #-----------------------------------------------------------------------#
+      #Framingham score system for calculating atrial fibrillation (significant factor for stroke risk)
+
+      age_af = { #age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84 
+        'M' => [1, 2, 3, 4, 5, 6, 7, 7, 8],
+        'F' => [-3, -2, 0, 1, 3, 4, 6, 7, 8]
+      }
+      # only covers points 1-9. <=0 and >= 10 are in if statement
+      risk_af_table = {
+        0 => 0.01, #0 or less
+        1 => 0.02, 2 => 0.02, 3 => 0.03,
+        4 => 0.04, 5 => 0.06, 6 => 0.08,
+        7 => 0.12, 8 => 0.16, 9 => 0.22,
+        10 => 0.3 #10 or greater
+      }
+
+      rule :calculate_atrial_fibrillation_risk, [:age, :bmi, :blood_pressure, :gender], [:atrial_fibrillation_risk] do |time, entity|
+        if entity[:atrial_fibrillation] || entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:bmi].nil? || entity[:age] < 45
+          return
+        end 
+        age = entity[:age]
+        af_score = 0
+        age_range = [(age-45)/5,8].min
+        af_score += age_af[entity[:gender]][age_range]
+        af_score += 1 if entity[:bmi] >= 30
+        af_score += 1 if entity[:blood_pressure][0] >= 160
+        af_score += 1 if entity[:bp_treated?]
+        af_score = [[af_score, 0].max, 10].min
+
+        af_risk = risk_af_table[af_score]
+        entity[:atrial_fibrillation_risk] = Synthea::Rules.convert_risk_to_timestep(af_risk, 3650)
+      end
+
+      rule :get_atrial_fibrillation, [:atrial_fibrillation_risk], [:atrial_fibrillation] do |time, entity|
+        if entity[:atrial_fibrillation].nil? && entity[:atrial_fibrillation_risk] && rand < entity[:atrial_fibrillation_risk]
+          entity.events.create(time, :atrial_fibrillation, :get_atrial_fibrillation)
+          entity[:atrial_fibrillation] = true
+        end
+      end
 
       #-----------------------------------------------------------------------#
 
