@@ -5,9 +5,9 @@ module Synthea
       # People have encounters
       rule :schedule_encounter, [:age], [:encounter] do |time, entity|
         if entity[:is_alive]
-          unprocessed_events = entity.events(:encounter_ordered).unprocessed
+          unprocessed_events = entity.events.unprocessed_before(time,:encounter_ordered)
           unprocessed_events.each do |event|
-            event.processed=true
+            entity.events.process(event)
 
             schedule_variance = Synthea::Config.schedule.variance
             birthdate = entity.event(:birth).time
@@ -46,9 +46,9 @@ module Synthea
 
       rule :encounter, [], [:schedule_encounter,:observations,:lab_results,:diagnoses,:immunizations] do |time, entity|
         if entity[:is_alive]
-          unprocessed_events = entity.events(:encounter).unprocessed.before(time)
+          unprocessed_events = entity.events.unprocessed_before(time,:encounter)
           unprocessed_events.each do |event|
-            event.processed=true
+            entity.events.process(event)
             Record.encounter(entity, event.time)
             Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
             Synthea::Modules::Immunizations::Record.perform_encounter(entity, event.time)
@@ -65,15 +65,15 @@ module Synthea
       #processes all emergency events. Implemented as a function instead of a rule because emergency events must be procesed
       #immediately rather than waiting til the next time period. Patient may die, resulting in rule not being called.
       def self.emergency_visit (time, entity)
-        unprocessed_events = entity.events(:emergency_encounter).unprocessed.before(time)
+        unprocessed_events = entity.events.unprocessed_before(time,:emergency_encounter)
         unprocessed_events.each do |event|
-          event.processed=true
+          entity.events.process(event)
           Record.emergency_encounter(entity, event.time)
         end
 
-        unprocessed_events = entity.events.select{|x| [:myocardial_infarction,:cardiac_arrest,:stroke].include?(x.type) }.unprocessed.before(time)
+        unprocessed_events = entity.events.unprocessed.select{|x| [:myocardial_infarction,:cardiac_arrest,:stroke].include?(x.type) && x.time <= time}
         unprocessed_events.each do |event|
-          event.processed = true
+          entity.events.process(event)
           Synthea::Modules::CardiovascularDisease::Record.perform_emergency(entity, event)
         end
       end
@@ -117,18 +117,17 @@ module Synthea
         end
 
         def self.create_fhir_encounter(type, entity, time, codes)
-          entry = FHIR::Bundle::Entry.new
-          encounter = FHIR::Encounter.new
-          entry.fullUrl = SecureRandom.uuid.to_s
-          encounter.status = 'finished'
-          encounter.local_class = type
-          encounterCode = FHIR::CodeableConcept.new({'coding' => [FHIR::Coding.new({'code' => codes['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'})]})
-          encounter.type << encounterCode
           patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-          encounter.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
-          startTime = convertFhirDateTime(time,'time')
-          endTime = convertFhirDateTime(time+15.minutes, 'time')
-          encounter.period = FHIR::Period.new({'start' => startTime, 'end' => endTime})
+          encounter = FHIR::Encounter.new({
+            'status' => 'finished',
+            'local_class' => type,
+            'type' => [{'coding' => [{'code' => codes['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}]}],
+            'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+            'period' => {'start' => convertFhirDateTime(time,'time'), 'end' => convertFhirDateTime(time+15.minutes, 'time')}
+          })
+          
+          entry = FHIR::Bundle::Entry.new
+          entry.fullUrl = SecureRandom.uuid.to_s
           entry.resource = encounter
           return entry
         end

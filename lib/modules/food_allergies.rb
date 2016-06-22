@@ -38,21 +38,23 @@ module Synthea
               entity.record_conditions[key] = Condition.new(condition_hash(key, time))
               patient.conditions << entity.record_conditions[key]
 
-              allergy = FHIR::AllergyIntolerance.new
-              allergy.recordedDate = convertFhirDateTime(time,'time')
-              allergy.status = 'confirmed'
-              allergy.type = 'allergy'
-              allergy.category = 'food'
-              allergy.criticality = ['low','high'].sample
               patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-              allergy.patient = FHIR::Reference.new({'reference'=>'Patient/' + patient.fullUrl})
               snomed_code = condition_hash(key, time)['codes']['SNOMED-CT'][0]
-              allergyCoding = FHIR::Coding.new({'code'=>snomed_code, 'display'=>allergen.to_s, 'system' => 'http://snomed.info/sct'})
-              allergy.substance = FHIR::CodeableConcept.new({'coding'=>[allergyCoding]})
-              
+              allergy = FHIR::AllergyIntolerance.new({
+                'recordedDate' => convertFhirDateTime(time,'time'),
+                'status' => 'confirmed',
+                'type' => 'allergy',
+                'category' => 'food',
+                'criticality' => ['low','high'].sample,
+                'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+                'substance' => {'coding'=>[{
+                    'code'=>snomed_code,
+                    'display'=>allergen.to_s,
+                    'system' => 'http://snomed.info/sct'
+                    }]}
+              })
               entry = FHIR::Bundle::Entry.new
               entry.resource = allergy
-
               entity.fhir_record.entry << entry
             end
           end

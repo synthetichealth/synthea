@@ -3,7 +3,7 @@ synthea:
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days
   population: 
-    area: 0.05 #13.9 # Bedford, MA # Default: 0.05
+    area: 5 #13.9 # Bedford, MA # Default: 0.05
     birth_variance: 0.01
     daily_births_per_square_mile: <%= (ma_births_per_year = 73000.0)/(ma_square_miles=10554.0)/365.0 %>
     zip_code: '01730'
@@ -63,4 +63,4 @@ synthea:
     sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
       risk: 0.00076
       death: 0.00069
-    smoke: 0.161 # 16.1% of MA are smokers. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
+    smoker: 0.161 # 16.1% of MA are smokers. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
