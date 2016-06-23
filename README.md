@@ -1,4 +1,4 @@
-# Synthea Patient Generator
+# Synthea Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea)
 
 Synthea is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic but not real, patient data and associated health records in a variety of formats.
 
@@ -23,10 +23,17 @@ bundle install
 ```
 
 ### Generate Synthetic Patients
+Generating an entire population at once...
 ```
 mongod &
 bundle exec rake synthea:generate
 ```
+Or generating the population one at a time...
+```
+mongod &
+bundle exec rake synthea:sequential
+```
+
 Some settings can be changed in `/config/synthea.yml`.
 
 Synthea will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `/output`.
