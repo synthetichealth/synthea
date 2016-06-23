@@ -22,6 +22,18 @@ namespace :synthea do
     puts 'Finished.'
   end
 
+  desc 'sequential generation'
+  task :sequential, [] do |t, args|
+    start = Time.now
+    world = Synthea::World::Sequential.new
+    world.run
+    finish = Time.now
+    minutes = ((finish-start)/60)
+    seconds = (minutes - minutes.floor) * 60
+    puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
+    puts 'Finished.'    
+  end
+
   desc 'upload to FHIR server'
   task :fhirupload, [:url] do |t,args|
     output = File.join('output','fhir')
