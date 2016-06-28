@@ -179,6 +179,8 @@ module Synthea
         	if rand > survival_rate
   					entity[:is_alive] = false
   					entity.events.create(time, :death, :coronary_heart_disease, true)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
+
   					Synthea::Modules::Lifecycle::Record.death(entity, time)
   				end
         end
@@ -198,6 +200,8 @@ module Synthea
           if rand < Synthea::Rules.convert_risk_to_timestep(annual_death_risk,365)
             entity[:is_alive] = false
             entity.events.create(time, :death, :no_coronary_heart_disease, true)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
+
             Synthea::Modules::Lifecycle::Record.death(entity, time)
           end
         end
@@ -352,12 +356,33 @@ module Synthea
           if rand < Synthea::Config.cardiovascular.stroke.death
             entity[:is_alive] = false
             entity.events.create(time, :death, :get_stroke, true)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
+            
             Synthea::Modules::Lifecycle::Record.death(entity, time)
           end
         end
       end
 
       #-----------------------------------------------------------------------#
+
+      def self.perform_encounter(entity, time)
+        patient = entity.record_synthea
+        [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
+          if entity[diagnosis] && !entity.record_conditions[diagnosis]
+            patient.condition(diagnosis, time, :condition)
+          end
+        end
+      end
+
+      def self.perform_emergency(entity, event)
+        time = event.time
+        diagnosis = event.type
+        patient = entity.record_synthea
+        if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) && !entity.record_synthea.present[diagnosis]
+          patient.condition(diagnosis, time, :condition)
+        end
+        #record treatments for coronary attack?
+      end
 
       class Record < BaseRecord
         def self.perform_encounter(entity, time)

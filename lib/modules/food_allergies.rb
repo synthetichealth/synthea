@@ -27,6 +27,17 @@ module Synthea
         end
       end
 
+      def self.record_diagnoses(entity, time)
+        food_allergy = entity[:food_allergy]
+        patient = entity.record_synthea
+        if food_allergy && !patient.present.keys.any?{|x|x.to_s.start_with?('food_allergy_')}
+          food_allergy.each do |allergen|
+            key = "food_allergy_#{allergen.to_s}".to_sym
+            patient.condition(key, time, :allergy)
+          end
+        end
+      end
+
       class Record < BaseRecord
         def self.diagnoses(entity, time)
           food_allergy = entity[:food_allergy]

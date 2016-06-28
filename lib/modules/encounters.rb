@@ -49,12 +49,18 @@ module Synthea
           unprocessed_events = entity.events.unprocessed_before(time,:encounter)
           unprocessed_events.each do |event|
             entity.events.process(event)
-            Record.encounter(entity, event.time)
-            Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
-            Synthea::Modules::Immunizations::Record.perform_encounter(entity, event.time)
-            Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(entity, event.time)
-            Synthea::Modules::FoodAllergies::Record.diagnoses(entity, event.time)
-            Synthea::Modules::CardiovascularDisease::Record.perform_encounter(entity, event.time)
+            self.class.encounter(entity, event.time)
+              Record.encounter(entity, event.time)
+            Synthea::Modules::Lifecycle.record_height_weight(entity, event.time)
+              Synthea::Modules::Lifecycle::Record.height_weight(entity, event.time)
+            Synthea::Modules::Immunizations.perform_encounter(entity, event.time)
+              Synthea::Modules::Immunizations::Record.perform_encounter(entity, event.time)
+            Synthea::Modules::MetabolicSyndrome.perform_encounter(entity, event.time)
+              Synthea::Modules::MetabolicSyndrome::Record.perform_encounter(entity, event.time)
+            Synthea::Modules::FoodAllergies.record_diagnoses(entity, event.time)  
+              Synthea::Modules::FoodAllergies::Record.diagnoses(entity, event.time)
+            Synthea::Modules::CardiovascularDisease.perform_encounter(entity, event.time)
+              Synthea::Modules::CardiovascularDisease::Record.perform_encounter(entity, event.time)
             entity.events.create(event.time, :encounter_ordered, :encounter)
           end
 
@@ -68,15 +74,49 @@ module Synthea
         unprocessed_events = entity.events.unprocessed_before(time,:emergency_encounter)
         unprocessed_events.each do |event|
           entity.events.process(event)
+
+          emergency_encounter(entity, time)
+          #delete
           Record.emergency_encounter(entity, event.time)
         end
 
         unprocessed_events = entity.events.unprocessed.select{|x| [:myocardial_infarction,:cardiac_arrest,:stroke].include?(x.type) && x.time <= time}
         unprocessed_events.each do |event|
           entity.events.process(event)
+
+          #delete
           Synthea::Modules::CardiovascularDisease::Record.perform_emergency(entity, event)
         end
       end
+
+      #------------------------------------------------------------------------------------------#
+
+      def self.encounter(entity, time)
+        age = entity[:age]
+        type = case
+          when age <= 1  
+            :age_lt_1
+          when age <= 4  
+            :age_lt_4
+          when age <= 11 
+            :age_lt_11
+          when age <= 17
+            :age_lt_17 
+          when age <= 39 
+            :age_lt_39
+          when age <= 64 
+            :age_lt_64
+          else
+            :age_senior
+        end
+        entity.record_synthea.encounter(type, time)
+      end
+
+      def self.emergency_encounter(entity,time)
+        entity.record_synthea.encounter(:emergency, time)
+      end
+
+      
 
       class Record < BaseRecord
         def self.encounter(entity, time)

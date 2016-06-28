@@ -14,10 +14,11 @@ namespace :synthea do
     minutes = ((finish-start)/60)
     seconds = (minutes - minutes.floor) * 60
     puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
-
+    fhir_export(world.people | world.dead)
+    binding.pry
     puts "Saving patient records..."
     export(world.people | world.dead)
-    fhir_export(world.people | world.dead)
+    
     ccda_export(world.people | world.dead)
     puts 'Finished.'
   end
@@ -80,8 +81,15 @@ namespace :synthea do
     FileUtils.rm_r out_dir if File.exists? out_dir
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
+      fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
       data = patient.fhir_record.to_json
+      begin
+        real_data = fhir_record.to_json
+      rescue
+        binding.pry
+      end
       File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
+      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_new.json"), 'w') { |file| file.write(real_data) }
     end
   end
 

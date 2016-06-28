@@ -142,6 +142,8 @@ module Synthea
         if diabetes && diabetes[:end_stage_renal_disease] && (rand < (0.0001 * diabetes[:severity]))
           entity[:is_alive] = false
           entity.events.create(time, :death, :end_stage_renal_disease, true)
+          Synthea::Modules::Lifecycle.record_death(entity, time)
+          #delete
           Synthea::Modules::Lifecycle::Record.death(entity, time)
         end
       end
@@ -225,6 +227,87 @@ module Synthea
       # http://www.microbecolhealthdis.net/index.php/mehd/article/viewFile/22857/34046/125897
       def blood_glucose(bmi)
         ((bmi - 6) / 6.5)
+      end
+
+      def self.perform_encounter(entity, time)
+        [:prediabetes,:diabetes,:hypertension].each do |diagnosis|
+          process_diagnosis(diagnosis,entity,entity,time)
+        end
+
+        # record blood pressure
+        record_blood_pressure(entity,time) if entity[:blood_pressure]
+
+        if entity[:prediabetes] || entity[:diabetes]
+          # process any labs
+          record_h1ac(entity,time)
+        end
+
+        if entity[:diabetes]
+          # process any diagnoses
+          [:nephropathy,:microalbuminuria,:proteinuria,:end_stage_renal_disease,
+            :retinopathy,:nonproliferative_retinopathy,:proliferative_retinopathy,:macular_edema,:blindness,
+            :neuropathy,:amputation
+          ].each do |diagnosis|
+            process_diagnosis(diagnosis,entity[:diabetes],entity,time)
+          end
+
+          # process any necessary amputations
+          amputations = entity[:diabetes][:amputation]
+          process_amputations(amputations, entity, time) if amputations
+
+          # process any labs
+          record_lipid_panel(entity,time)
+        elsif entity[:age] > 30 && entity.events.since( time-3.years, :lipid_panel ).empty?
+          # run a lipid panel for non-diabetics if it has been more than 3 years
+          record_lipid_panel(entity,time)
+        end
+      end
+
+      def self.process_diagnosis(diagnosis, diagnosis_hash, entity, time)
+        if diagnosis_hash[diagnosis] && !entity.record_synthea.present[diagnosis]
+          # create the ongoing diagnosis
+          entity.record_synthea.condition(diagnosis, time, :condition)
+        elsif !diagnosis_hash[diagnosis] && entity.record_synthea.present[diagnosis]
+          # end the diagnosis
+          entity.record_synthea.end_condition(diagnosis, time)
+        end  
+      end
+
+      def self.record_blood_pressure(entity, time)
+        patient = entity.record_synthea
+        patient.observation(:systolic_blood_pressure, time, entity[:blood_pressure].first, :observation)
+        patient.observation(:diastolic_blood_pressure, time, entity[:blood_pressure].last, :observation)
+        #This dummy 'Observation' indicates the two previous are linked together into one for fhir.
+        patient.observation(:blood_pressure, time, 2, :multi_observation)
+      end
+
+      def self.record_h1ac(entity,time)
+        patient = entity.record_synthea
+        patient.observation(:ha1c, time, entity[:blood_glucose], :observation)
+      end
+
+      def self.process_amputations(amputations, entity, time)
+        amputations.each do |amputation|
+          key = "amputation_#{amputation.to_s}".to_sym
+          reason = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code=='368581000119106'} }
+          reason_info = {'fullUrl'=>reason.fullUrl, 'text'=>reason.resource.code.text} unless reason.nil?
+          if !entity.record_synthea.present[key]
+            entity.record_synthea.procedure(key, time, reason_info, :procedure)
+          end
+        end
+      end
+
+      def self.record_lipid_panel(entity, time)
+        return if entity[:cholesterol].nil?
+        
+        entity.events.create(time, :lipid_panel, :encounter, true)
+        patient = entity.record_synthea
+
+        patient.observation(:cholesterol, time, entity[:cholesterol][:total], :observation)
+        patient.observation(:triglycerides, time, entity[:cholesterol][:triglycerides], :observation)
+        patient.observation(:hdl, time, entity[:cholesterol][:hdl], :observation)
+        patient.observation(:ldl, time, entity[:cholesterol][:ldl], :observation)
+        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report)
       end
 
       class Record < BaseRecord

@@ -39,6 +39,10 @@ Dir.glob(File.join(root, 'lib','modules','*.rb')).each do |file|
   require file
 end
 
+Dir.glob(File.join(root, 'lib','records','*.rb')).each do |file|
+  require file
+end
+
 Dir.glob(File.join(root, 'lib','world','**','*.rb')).each do |file|
   require file
 end
