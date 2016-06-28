@@ -96,6 +96,31 @@ module Synthea
         },
       }
 
+      #-----------------------------------------------------------------------#
+
+      def self.perform_encounter(entity, time)
+        entity[:immunizations] ||= {}
+        patient = entity.record_synthea
+        birthdate = entity.event(:birth).time
+        age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, nil, :months)
+        IMM_SCHEDULE.each_key do |imm|
+          if immunization_due(imm, age_in_months, entity[:immunizations][imm])
+            entity[:immunizations][imm] ||= []
+            entity[:immunizations][imm] << time
+            patient.immunization(imm, time, :immunization)
+          end
+        end
+      end
+
+      def self.immunization_due(imm,age_in_months,history)
+        history ||= []
+        at_months = IMM_SCHEDULE[imm][:at_months]
+        if history.length < at_months.length
+          return age_in_months >= at_months[history.length]
+        end
+        return false
+      end
+
       class Record < BaseRecord
         def self.perform_encounter(entity, time)
           entity[:immunizations] ||= {}

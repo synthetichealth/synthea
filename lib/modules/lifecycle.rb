@@ -218,6 +218,9 @@ module Synthea
           if(rand <= likelihood_of_death(entity[:age]))
             entity[:is_alive] = false
             entity.events.create(time, :death, :death, true)
+            self.class.record_death(entity,time)
+
+            #remove
             Record.death(entity, time)
           end
         end
@@ -294,6 +297,18 @@ module Synthea
           ((left - birthdate)/divisor).floor
         end
       end
+
+      #------------------------------------------------------------------------# begin class record functions
+      def self.record_death(entity, time)
+        entity.record_synthea.death(time)
+      end
+
+      def self.record_height_weight(entity, time)
+        entity.record_synthea.observation(:weight, time, entity[:weight], :observation)
+        entity.record_synthea.observation(:height, time, entity[:height], :observation)
+      end
+
+      
 
       class Record < BaseRecord
 
@@ -414,7 +429,7 @@ module Synthea
         end
 
         def self.height_weight(entity, time)
-          patient = entity.record
+          patient = entity.record 
           patient.vital_signs << VitalSign.new(lab_hash(:weight, time, entity[:weight]))
           patient.vital_signs << VitalSign.new(lab_hash(:height, time, entity[:height]))
 
