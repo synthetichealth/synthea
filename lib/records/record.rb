@@ -20,20 +20,22 @@ module Synthea
 				@patient_info[:expired] = true
 			end
 
-			def observation(type, time, value, fhir_method)
+			def observation(type, time, value, fhir_method, ccda_method)
         @observations << {
           'type' => type,
           'time' => time,
           'value' => value,
-          'fhir' => fhir_method 
+          'fhir' => fhir_method, 
+          'ccda' => ccda_method
         }
       end
 
-      def condition(type, time, fhir_method)
+      def condition(type, time, fhir_method, ccda_method)
         @present[type] = {
           'type' => type,
           'time' => time,
-          'fhir' => fhir_method
+          'fhir' => fhir_method,
+          'ccda' => ccda_method
         }
         @conditions << @present[type]
       end
@@ -43,22 +45,24 @@ module Synthea
         @present[type] = nil
       end
 
-      def procedure(type, time, reason, fhir_method)
+      def procedure(type, time, reason, fhir_method, ccda_method)
         @present[type] = {
           'type' => type,
           'time' => time,
           'reason' => reason,
-          'fhir' => fhir_method
+          'fhir' => fhir_method,
+          'ccda' => ccda_method
         }
         @procedures << @present[type]
       end
 
-      def diagnostic_report(type, time, numObs, fhir_method)
+      def diagnostic_report(type, time, numObs, fhir_method, ccda_method)
         @observations << {
           'type' => type,
           'time' => time,
           'numObs' => numObs,
-          'fhir' => fhir_method
+          'fhir' => fhir_method,
+          'ccda' => ccda_method
         }
       end
 
@@ -69,11 +73,12 @@ module Synthea
         }
       end
 
-      def immunization(imm, time, fhir_method)
+      def immunization(imm, time, fhir_method, ccda_method)
         @immunizations << {
           'type' => imm,
           'time' => time,
-          'fhir' => fhir_method
+          'fhir' => fhir_method,
+          'ccda' => ccda_method
         }
       end
 		end

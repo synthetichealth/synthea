@@ -33,7 +33,7 @@ module Synthea
         if food_allergy && !patient.present.keys.any?{|x|x.to_s.start_with?('food_allergy_')}
           food_allergy.each do |allergen|
             key = "food_allergy_#{allergen.to_s}".to_sym
-            patient.condition(key, time, :allergy)
+            patient.condition(key, time, :allergy, :condition)
           end
         end
       end

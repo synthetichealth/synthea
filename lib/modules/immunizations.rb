@@ -28,7 +28,7 @@ module Synthea
           if immunization_due(imm, age_in_months, entity[:immunizations][imm])
             entity[:immunizations][imm] ||= []
             entity[:immunizations][imm] << time
-            patient.immunization(imm, time, :immunization)
+            patient.immunization(imm, time, :immunization, :immunization)
           end
         end
       end

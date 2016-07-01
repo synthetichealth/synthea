@@ -363,7 +363,7 @@ module Synthea
         patient = entity.record_synthea
         [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
           if entity[diagnosis] && !entity.record_synthea.present[diagnosis]
-            patient.condition(diagnosis, time, :condition)
+            patient.condition(diagnosis, time, :condition, :condition)
           end
         end
       end
@@ -373,7 +373,7 @@ module Synthea
         diagnosis = event.type
         patient = entity.record_synthea
         if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) 
-          patient.condition(diagnosis, time, :condition)
+          patient.condition(diagnosis, time, :condition, :condition)
         end
         #record treatments for coronary attack?
       end
