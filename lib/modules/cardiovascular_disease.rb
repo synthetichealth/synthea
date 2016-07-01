@@ -179,7 +179,7 @@ module Synthea
         	if rand > survival_rate
   					entity[:is_alive] = false
   					entity.events.create(time, :death, :coronary_heart_disease, true)
-  					Synthea::Modules::Lifecycle::Record.death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
   				end
         end
   		end
@@ -198,7 +198,7 @@ module Synthea
           if rand < Synthea::Rules.convert_risk_to_timestep(annual_death_risk,365)
             entity[:is_alive] = false
             entity.events.create(time, :death, :no_coronary_heart_disease, true)
-            Synthea::Modules::Lifecycle::Record.death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
           end
         end
       end
@@ -352,62 +352,30 @@ module Synthea
           if rand < Synthea::Config.cardiovascular.stroke.death
             entity[:is_alive] = false
             entity.events.create(time, :death, :get_stroke, true)
-            Synthea::Modules::Lifecycle::Record.death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
           end
         end
       end
 
       #-----------------------------------------------------------------------#
 
-      class Record < BaseRecord
-        def self.perform_encounter(entity, time)
-          [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
-            if entity[diagnosis] && !entity.record_conditions[diagnosis]
-              entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
-              entity.record.conditions << entity.record_conditions[diagnosis]
-              
-              entry = FHIR::Bundle::Entry.new
-              entry.resource = create_fhir_condition(diagnosis, entity, time)
-              entity.fhir_record.entry << entry
-            end
+      def self.perform_encounter(entity, time)
+        patient = entity.record_synthea
+        [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
+          if entity[diagnosis] && !entity.record_synthea.present[diagnosis]
+            patient.condition(diagnosis, time, :condition, :condition)
           end
         end
+      end
 
-        def self.perform_emergency(entity, event)
-          time = event.time
-          diagnosis = event.type
-          if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) && !entity.record_conditions[diagnosis]
-            entity.record_conditions[diagnosis] = Condition.new(condition_hash(diagnosis, time))
-            entity.record.conditions << entity.record_conditions[diagnosis]
-        
-            
-            entry = FHIR::Bundle::Entry.new
-            entry.resource = create_fhir_condition(diagnosis, entity, time)
-            entity.fhir_record.entry << entry
-          end
-          #record treatments for coronary attack?
+      def self.perform_emergency(entity, event)
+        time = event.time
+        diagnosis = event.type
+        patient = entity.record_synthea
+        if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) 
+          patient.condition(diagnosis, time, :condition, :condition)
         end
-
-        def self.create_fhir_condition(diagnosis, entity, time)
-          patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-          conditionData = condition_hash(diagnosis, time)
-          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-          condition = FHIR::Condition.new({
-            'id' => SecureRandom.uuid,
-            'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
-            'code' => {
-              'coding'=>[{
-                'code'=>conditionData['codes']['SNOMED-CT'][0],
-                'display'=>conditionData['description'],
-                'system' => 'http://snomed.info/sct'
-              }],
-              'text'=>conditionData['description']
-            },
-            'verificationStatus' => 'confirmed',
-            'onsetDateTime' => convertFhirDateTime(time,'time'),
-            'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"}
-          })
-        end
+        #record treatments for coronary attack?
       end
     end
 	end

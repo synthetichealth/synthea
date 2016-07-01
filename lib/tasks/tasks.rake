@@ -14,11 +14,10 @@ namespace :synthea do
     minutes = ((finish-start)/60)
     seconds = (minutes - minutes.floor) * 60
     puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
-
     puts "Saving patient records..."
-    export(world.people | world.dead)
     fhir_export(world.people | world.dead)
     ccda_export(world.people | world.dead)
+    binding.pry
     puts 'Finished.'
   end
 
@@ -62,16 +61,22 @@ namespace :synthea do
     end
   end
 
-  def export(patients)
+  def ccda_export(patients)
     # we need to configure mongo to export for some reason... not ideal
     Mongoid.configure { |config| config.connect_to("synthea_test") }
 
-    out_dir = File.join('output','html')
-    FileUtils.rm_r out_dir if File.exists? out_dir
-    FileUtils.mkdir_p out_dir
+    html_out_dir = File.join('output','html')
+    FileUtils.rm_r html_out_dir if File.exists? html_out_dir
+    FileUtils.mkdir_p html_out_dir
+    ccda_out_dir = File.join('output','CCDA')
+    FileUtils.rm_r ccda_out_dir if File.exists? ccda_out_dir
+    FileUtils.mkdir_p ccda_out_dir
     patients.each do |patient|
-      html = HealthDataStandards::Export::HTML.new.export(patient.record)
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.html"), 'w') { |file| file.write(html) }
+      ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
+      html = HealthDataStandards::Export::HTML.new.export(ccda_record)
+      xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
+      File.open(File.join(html_out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.html"), 'w') { |file| file.write(html) }
+      File.open(File.join(ccda_out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.xml"), 'w') { |file| file.write(xml) }
     end
   end
 
@@ -80,18 +85,9 @@ namespace :synthea do
     FileUtils.rm_r out_dir if File.exists? out_dir
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
-      data = patient.fhir_record.to_json
+      fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
+      data = fhir_record.to_json
       File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
-    end
-  end
-
-  def ccda_export(patients)
-    out_dir = File.join('output','CCDA')
-    FileUtils.rm_r out_dir if File.exists? out_dir
-    FileUtils.mkdir_p out_dir
-    patients.each do |patient|
-      xml = HealthDataStandards::Export::CCDA.new.export(patient.record)
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.xml"), 'w') { |file| file.write(xml) }
     end
   end
 

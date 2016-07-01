@@ -27,40 +27,16 @@ module Synthea
         end
       end
 
-      class Record < BaseRecord
-        def self.diagnoses(entity, time)
-          food_allergy = entity[:food_allergy]
-          if !food_allergy.nil? && food_allergy!=false && !entity.record_conditions.keys.any?{|x|x.to_s.start_with?('food_allergy_')}
-            # create the ongoing diagnosis
-            food_allergy.each do |allergen|
-              patient = entity.record
-              key = "food_allergy_#{allergen.to_s}".to_sym
-              entity.record_conditions[key] = Condition.new(condition_hash(key, time))
-              patient.conditions << entity.record_conditions[key]
-
-              patient = entity.fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-              snomed_code = condition_hash(key, time)['codes']['SNOMED-CT'][0]
-              allergy = FHIR::AllergyIntolerance.new({
-                'recordedDate' => convertFhirDateTime(time,'time'),
-                'status' => 'confirmed',
-                'type' => 'allergy',
-                'category' => 'food',
-                'criticality' => ['low','high'].sample,
-                'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
-                'substance' => {'coding'=>[{
-                    'code'=>snomed_code,
-                    'display'=>allergen.to_s,
-                    'system' => 'http://snomed.info/sct'
-                    }]}
-              })
-              entry = FHIR::Bundle::Entry.new
-              entry.resource = allergy
-              entity.fhir_record.entry << entry
-            end
+      def self.record_diagnoses(entity, time)
+        food_allergy = entity[:food_allergy]
+        patient = entity.record_synthea
+        if food_allergy && !patient.present.keys.any?{|x|x.to_s.start_with?('food_allergy_')}
+          food_allergy.each do |allergen|
+            key = "food_allergy_#{allergen.to_s}".to_sym
+            patient.condition(key, time, :allergy, :condition)
           end
         end
       end
-
     end
   end
 end
