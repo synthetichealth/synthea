@@ -153,7 +153,6 @@ module Synthea
             'postalCode' => zip[0]
           }
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
-          Record.birth(entity, time)
           # TODO update awareness
         end
       end
@@ -219,9 +218,6 @@ module Synthea
             entity[:is_alive] = false
             entity.events.create(time, :death, :death, true)
             self.class.record_death(entity,time)
-
-            #remove
-            Record.death(entity, time)
           end
         end
       end
@@ -307,164 +303,6 @@ module Synthea
         entity.record_synthea.observation(:weight, time, entity[:weight], :observation)
         entity.record_synthea.observation(:height, time, entity[:height], :observation)
       end
-
-      
-
-      class Record < BaseRecord
-
-        @race_ethnicity_codes = {
-          :white => '2106-3',
-          :hispanic => '2131-1',
-          :black => '2054-5',
-          :asian => '2028-9',
-          :native => '1002-5',
-          :other => '2131-1',
-          :irish => '2113-9',
-          :italian => '2114-7',
-          :english => '2110-5',
-          :french => '2111-3',
-          :german => '2112-1',
-          :polish => '2115-4',
-          :portuguese => '2131-1',
-          :american => '2131-1',
-          :french_canadian => '2131-1',
-          :scottish => '2116-2',
-          :russian => '2131-1',
-          :swedish => '2131-1',
-          :greek => '2131-1',
-          :puerto_rican => '2180-8',
-          :mexican => '2148-5',
-          :central_american => '2155-0',
-          :south_american => '2165-9',
-          :african => '2058-6',
-          :dominican => '2069-3',
-          :chinese => '2034-7',
-          :west_indian => '2075-0',
-          :asian_indian => '2029-7',
-          :american_indian => '1004-1',
-          :arab => '2129-5',         
-          :nonhispanic => '2186-5'   
-        }
-
-        def self.birth(entity, time)
-          patient = entity.record
-          patient.first = entity[:name_first]
-          patient.last = entity[:name_last]
-          patient.gender = entity[:gender]
-          patient.birthdate = time.to_i
-
-          patient.addresses << Address.new
-          patient.addresses.first.street = entity[:address]['line']
-          patient.addresses.first.city = entity[:address]['city']
-          patient.addresses.first.state = entity[:address]['state']
-          patient.addresses.first.zip = entity[:address]['postalCode']
-
-          patient.deathdate = nil
-          patient.expired = false
-
-          # patient.religious_affiliation
-          # patient.effective_time
-          patient.race = { 'name' => entity[:race].to_s.capitalize, 'code' => @race_ethnicity_codes[ entity[:race] ] }
-          patient.ethnicity = { 'name' => entity[:ethnicity].to_s.capitalize, 'code' => @race_ethnicity_codes[ entity[:ethnicity] ] }
-          # patient.languages
-          # patient.marital_status
-          # patient.medical_record_number
-          # patient.medical_record_assigner
-
-          if entity[:race] == :hispanic 
-            raceFHIR = :other
-            ethnicityFHIR = entity[:ethnicity]
-          else 
-            raceFHIR = entity[:ethnicity]
-            ethnicityFHIR = :nonhispanic
-          end
-          patientResource = FHIR::Patient.new({
-            'name' => [{'given' => [entity[:name_first]],
-                        'family' => [entity[:name_last]],
-                        'use' => 'official'
-                      }],
-            'gender' => ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F'),
-            'birthDate' => convertFhirDateTime(time),
-            'address' => [FHIR::Address.new(entity[:address])],
-            'extension' => [
-              #race
-              {
-                'url' => 'http://hl7.org/fhir/StructureDefinition/us-core-race',
-                'valueCodeableConcept' => {
-                  'text' => 'race',
-                  'coding' => [{
-                    'display'=>raceFHIR.to_s.capitalize,
-                    'code'=>@race_ethnicity_codes[raceFHIR],
-                    'system'=>'http://hl7.org/fhir/v3/Race'
-                  }]
-                }
-              },
-              #ethnicity
-              {
-                'url' => 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity',
-                'valueCodeableConcept' => {
-                  'text' => 'ethnicity',
-                  'coding' => [{
-                    'display'=>ethnicityFHIR.to_s.capitalize,
-                    'code'=>@race_ethnicity_codes[ethnicityFHIR],
-                    'system'=>'http://hl7.org/fhir/v3/Ethnicity'
-                  }]
-                }
-              }
-            ]
-          })
-          entry = FHIR::Bundle::Entry.new
-          entry.fullUrl = SecureRandom.uuid.to_s.strip
-          entry.resource = patientResource
-          entity.fhir_record.entry << entry
-        end
-
-        def self.death(entity, time)
-          patient = entity.record
-          patient.deathdate = time.to_i
-          patient.expired = true
-
-          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
-          patient.resource.deceasedDateTime = convertFhirDateTime(time,'time')
-        end
-
-        def self.height_weight(entity, time)
-          patient = entity.record 
-          patient.vital_signs << VitalSign.new(lab_hash(:weight, time, entity[:weight]))
-          patient.vital_signs << VitalSign.new(lab_hash(:height, time, entity[:height]))
-
-          #last encounter inserted into fhir_record entry is assumed to correspond with what's being recorded
-          encounter = entity.fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-          patient = entity.fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
-
-          heightObserve = FHIR::Observation.new({
-            'status'=>'final',
-            'effectiveDateTime' => convertFhirDateTime(time,'time'),
-            'valueQuantity' => {'code'=>'cm', 'value'=>entity[:height].to_i},
-            'code' => {'text' => 'Body Height','coding' => [{'code'=>'8302-2', 'system'=>'http://loinc.org'}]},
-            'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"},
-            'subject' => {'reference'=>"Patient/#{patient.fullUrl}"}
-          })
-          heightEntry = FHIR::Bundle::Entry.new
-          heightEntry.resource = heightObserve
-          entity.fhir_record.entry << heightEntry
-
-          weightObserve = FHIR::Observation.new({
-            'status'=>'final',
-            'effectiveDateTime' => convertFhirDateTime(time,'time'),
-            'valueQuantity' => {'code'=>'kg', 'value'=>entity[:weight].to_i},
-            'code' => {'text' => 'Body Weight','coding' => [{'code'=>'29463-7', 'system'=>'http://loinc.org'}]},
-            'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"},
-            'subject' => {'reference' => "Patient/#{patient.fullUrl}"}
-          })
-          weightEntry = FHIR::Bundle::Entry.new
-          weightEntry.resource = weightObserve
-          entity.fhir_record.entry << weightEntry
-        end
-
-      end
-
-
     end
   end
 end

@@ -82,14 +82,8 @@ namespace :synthea do
     FileUtils.mkdir_p out_dir
     patients.each do |patient|
       fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
-      data = patient.fhir_record.to_json
-      begin
-        real_data = fhir_record.to_json
-      rescue
-        binding.pry
-      end
+      data = fhir_record.to_json
       File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_new.json"), 'w') { |file| file.write(real_data) }
     end
   end
 

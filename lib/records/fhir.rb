@@ -10,18 +10,14 @@ module Synthea
         basic_info(entity, fhir_record)
         synthea_record.encounters.each do |encounter|
           encounter(encounter, fhir_record)
-          [:conditions, :observations, :procedures, :immunizations].each do |klass| 
-            entry = synthea_record.send(klass)[indices[klass]]
+          [:conditions, :observations, :procedures, :immunizations].each do |attribute| 
+            entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
               #Exception: blood pressure needs to take two observations as an argument
               method = entry['fhir']
-              if method == :blood_pressure
-                indices[klass] += 1
-                entry = [entry, synthea_record.send(klass)[indices[klass]]]
-              end
               send(method, entry, fhir_record)
-              indices[klass] += 1
-              entry = synthea_record.send(klass)[indices[klass]]
+              indices[attribute] += 1
+              entry = synthea_record.send(attribute)[indices[attribute]]
             end
           end
         end
@@ -42,7 +38,7 @@ module Synthea
                       'use' => 'official'
                     }],
           'gender' => ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F'),
-          'birthDate' => convertFhirDateTime(entity[:birthDate]),
+          'birthDate' => convertFhirDateTime(entity.event(:birth).time),
           'address' => [FHIR::Address.new(entity[:address])],
           'extension' => [
             #race
@@ -92,7 +88,6 @@ module Synthea
               'display'=> conditionData[:description],
               'system' => 'http://snomed.info/sct'
             }],
-            'text'=>conditionData['description']
           },
           'verificationStatus' => 'confirmed',
           'onsetDateTime' => convertFhirDateTime(condition['time'],'time'),
@@ -214,10 +209,11 @@ module Synthea
       def self.procedure(procedure, fhir_record)
         patient = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
         encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-        reason = procedure['reason']
+
+        reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==procedure['reason']} }
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         fhir_procedure = FHIR::Procedure.new({
-          'subject' => { 'reference' => patient.resource.id },
+          'subject' => { 'reference' => "Patient/#{patient.fullUrl}"},
           'status' => 'completed',
           'code' => { 
             'coding' => [{'code'=>proc_data[:codes]['SNOMED-CT'][0], 'display'=>proc_data[:description], 'system'=>'http://snomed.info/sct'}],
@@ -225,9 +221,9 @@ module Synthea
           # 'reasonReference' => { 'reference' => reason.resource.id },
           # 'performer' => { 'reference' => doctor_no_good },
           'performedDateTime' => convertFhirDateTime(procedure['time'],'time'),
-          'encounter' => { 'reference' => encounter.resource.id },
+          'encounter' => { 'reference' => "Encounter/#{encounter.fullUrl}" },
         })
-        fhir_procedure.reasonReference = FHIR::Reference.new({'reference'=>reason['fullUrl'],'display'=>reason['text']}) if reason
+        fhir_procedure.reasonReference = FHIR::Reference.new({'reference'=>reason.fullUrl,'display'=>reason.resource.code.text}) if reason
 
         entry = FHIR::Bundle::Entry.new
         entry.resource = fhir_procedure
@@ -235,7 +231,7 @@ module Synthea
       end
 
       def self.immunization(imm, fhir_record)
-    	encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
         patient = fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
 
         immunization = FHIR::Immunization.new({

@@ -112,6 +112,11 @@ module Synthea
     emergency: {description: 'Emergency Encounter', codes: {'SNOMED-CT' => ['50849002']}}
   }
 
+
+  # http://www.cdc.gov/vaccines/schedules/downloads/child/0-18yrs-schedule.pdf
+  # http://www.cdc.gov/vaccines/schedules/downloads/adult/adult-schedule.pdf
+  # http://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=cvx
+  # https://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=tradename
   IMM_SCHEDULE = {
     :hepb => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'08','display'=>'Hep B, adolescent or pediatric'},
