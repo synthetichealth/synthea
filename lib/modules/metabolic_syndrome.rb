@@ -264,7 +264,7 @@ module Synthea
       def self.process_diagnosis(diagnosis, diagnosis_hash, entity, time)
         if diagnosis_hash[diagnosis] && !entity.record_synthea.present[diagnosis]
           # create the ongoing diagnosis
-          entity.record_synthea.condition(diagnosis, time, :condition)
+          entity.record_synthea.condition(diagnosis, time, :condition, :condition)
         elsif !diagnosis_hash[diagnosis] && entity.record_synthea.present[diagnosis]
           # end the diagnosis
           entity.record_synthea.end_condition(diagnosis, time)
@@ -273,15 +273,15 @@ module Synthea
 
       def self.record_blood_pressure(entity, time)
         patient = entity.record_synthea
-        patient.observation(:systolic_blood_pressure, time, entity[:blood_pressure].first, :observation)
-        patient.observation(:diastolic_blood_pressure, time, entity[:blood_pressure].last, :observation)
+        patient.observation(:systolic_blood_pressure, time, entity[:blood_pressure].first, :observation, :vital_sign)
+        patient.observation(:diastolic_blood_pressure, time, entity[:blood_pressure].last, :observation, :vital_sign)
         #This dummy 'Observation' indicates the two previous are linked together into one for fhir.
-        patient.observation(:blood_pressure, time, 2, :multi_observation)
+        patient.observation(:blood_pressure, time, 2, :multi_observation, nil)
       end
 
       def self.record_ha1c(entity,time)
         patient = entity.record_synthea
-        patient.observation(:ha1c, time, entity[:blood_glucose], :observation)
+        patient.observation(:ha1c, time, entity[:blood_glucose], :observation, :vital_sign)
       end
 
       def self.process_amputations(amputations, entity, time)
@@ -289,7 +289,7 @@ module Synthea
           key = "amputation_#{amputation.to_s}".to_sym
           reason_code = '368581000119106'
           if !entity.record_synthea.present[key]
-            entity.record_synthea.procedure(key, time, reason_code, :procedure)
+            entity.record_synthea.procedure(key, time, reason_code, :procedure, :procedure)
           end
         end
       end
@@ -300,11 +300,11 @@ module Synthea
         entity.events.create(time, :lipid_panel, :encounter, true)
         patient = entity.record_synthea
 
-        patient.observation(:cholesterol, time, entity[:cholesterol][:total], :observation)
-        patient.observation(:triglycerides, time, entity[:cholesterol][:triglycerides], :observation)
-        patient.observation(:hdl, time, entity[:cholesterol][:hdl], :observation)
-        patient.observation(:ldl, time, entity[:cholesterol][:ldl], :observation)
-        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report)
+        patient.observation(:cholesterol, time, entity[:cholesterol][:total], :observation, :vital_sign)
+        patient.observation(:triglycerides, time, entity[:cholesterol][:triglycerides], :observation, :vital_sign)
+        patient.observation(:hdl, time, entity[:cholesterol][:hdl], :observation, :vital_sign)
+        patient.observation(:ldl, time, entity[:cholesterol][:ldl], :observation, :vital_sign)
+        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report, nil)
       end
     end
   end

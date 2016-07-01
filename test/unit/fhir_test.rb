@@ -18,9 +18,9 @@ class FhirTest < Minitest::Test
     @fhir_record = FHIR::Bundle.new
     @time = Time.now
     @patient.events.create(@time, :birth, :birth)
-    Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
+    @patient_entry = Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
     @encounter = {'type' => :age_lt_11, 'time' => @time}
-    Synthea::Output::FhirRecord.encounter(@encounter, @fhir_record)
+    @encounter_entry = Synthea::Output::FhirRecord.encounter(@encounter, @fhir_record, @patient_entry)
     @patientID = @fhir_record.entry[0].fullUrl
     @encounterID = @fhir_record.entry[1].fullUrl
 	end
@@ -28,17 +28,17 @@ class FhirTest < Minitest::Test
   def test_convert_to_fhir
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)
-    record.condition(:prediabetes, @time, :condition)
-    record.procedure(:amputation_left_hand, @time, '46028000', :procedure)
-    record.immunization(:rv_mono, @time, :immunization)
-    record.observation(:ha1c, @time, 5, :observation)
+    record.condition(:prediabetes, @time, :condition, nil)
+    record.procedure(:amputation_left_hand, @time, '46028000', :procedure, nil)
+    record.immunization(:rv_mono, @time, :immunization, nil)
+    record.observation(:ha1c, @time, 5, :observation, nil)
     record.end_condition(:prediabetes, @time + 10.minutes)
     time_adv = @time + 15.minutes
     record.encounter(:age_lt_11, time_adv)
-    record.condition(:diabetes, time_adv, :condition)
-    record.procedure(:amputation_right_leg, time_adv, '79733001', :procedure)
-    record.immunization(:dtap, time_adv, :immunization)
-    record.observation(:height, time_adv, 5, :observation)
+    record.condition(:diabetes, time_adv, :condition, nil)
+    record.procedure(:amputation_right_leg, time_adv, '79733001', :procedure, nil)
+    record.immunization(:dtap, time_adv, :immunization, nil)
+    record.observation(:height, time_adv, 5, :observation, nil)
 
     #Add an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
@@ -56,10 +56,10 @@ class FhirTest < Minitest::Test
   def test_record_blood_pressure
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)
-    record.observation(:systolic_blood_pressure, @time, 120, :observation)
-    record.observation(:diastolic_blood_pressure, @time, 80, :observation)
-    record.observation(:blood_pressure, @time, 2, :multi_observation)
-    record.observation(:weight, @time, 50, :observation)
+    record.observation(:systolic_blood_pressure, @time, 120, :observation, nil)
+    record.observation(:diastolic_blood_pressure, @time, 80, :observation, nil)
+    record.observation(:blood_pressure, @time, 2, :multi_observation, nil)
+    record.observation(:weight, @time, 50, :observation, nil)
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
     assert_equal(2,fhir.entry.select {|e| e.resource.is_a?(FHIR::Observation)}.length)
   end
@@ -99,7 +99,7 @@ class FhirTest < Minitest::Test
 
 	def test_condition
 		condition = {'type' => :end_stage_renal_disease, 'time' => @time}
-		Synthea::Output::FhirRecord.condition(condition, @fhir_record)
+		Synthea::Output::FhirRecord.condition(condition, @fhir_record, @patient_entry, @encounter_entry)
 		disease_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
   	disease = disease_entry.resource
   	assert_equal("Patient/#{@patientID}",disease.patient.reference)
@@ -128,7 +128,7 @@ class FhirTest < Minitest::Test
 
 	def test_allergy
 		condition = {'type' => :food_allergy_peanuts, 'time' => @time}
-		Synthea::Output::FhirRecord.allergy(condition, @fhir_record)
+		Synthea::Output::FhirRecord.allergy(condition, @fhir_record, @patient_entry, @encounter_entry)
 		allergy_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::AllergyIntolerance)}
   	allergy = allergy_entry.resource
   	assert_equal("Patient/#{@patientID}",allergy.patient.reference)
@@ -141,7 +141,7 @@ class FhirTest < Minitest::Test
 
 	def test_observation
 		observation = {'type' => :height, 'time' => @time, 'value' => "60"}
-		Synthea::Output::FhirRecord.observation(observation, @fhir_record)
+		Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
 		obs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
 		obs = obs_entry.resource
 		assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,obs_entry.fullUrl)
@@ -158,11 +158,11 @@ class FhirTest < Minitest::Test
 
   def test_multi_observation
     observation = {'type' => :systolic_blood_pressure, 'time' => @time, 'value' => 120}
-    Synthea::Output::FhirRecord.observation(observation, @fhir_record)
+    Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     observation = {'type' => :diastolic_blood_pressure, 'time' => @time, 'value' => 80}
-    Synthea::Output::FhirRecord.observation(observation, @fhir_record)
+    Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     multiobservation = {'type' => :blood_pressure, 'time' =>  @time, 'value' => 2}
-    Synthea::Output::FhirRecord.multi_observation(multiobservation, @fhir_record)
+    Synthea::Output::FhirRecord.multi_observation(multiobservation, @fhir_record, @patient_entry, @encounter_entry)
     multiobs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
     multiobs = multiobs_entry.resource
     assert_equal(3, @fhir_record.entry.length)
@@ -190,12 +190,12 @@ class FhirTest < Minitest::Test
 
   def test_diagnostic_report
     observation = {'type' => :hdl, 'time' => @time, 'value' => "120"}
-    Synthea::Output::FhirRecord.observation(observation, @fhir_record)
+    Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     observation = {'type' => :ldl, 'time' => @time, 'value' => "80"}
-    Synthea::Output::FhirRecord.observation(observation, @fhir_record)
+    Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     ob_refs = @fhir_record.entry.last(2).map{|obs| [obs.fullUrl, obs.resource.code.coding.first.display]}
     report_hash = { 'type' => :lipid_panel, 'time' => @time, 'numObs' => 2}
-    Synthea::Output::FhirRecord.diagnostic_report(report_hash, @fhir_record)
+    Synthea::Output::FhirRecord.diagnostic_report(report_hash, @fhir_record, @patient_entry, @encounter_entry)
     report_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::DiagnosticReport)}
     report  = report_entry.resource
     assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,report_entry.fullUrl)
@@ -215,9 +215,9 @@ class FhirTest < Minitest::Test
 
   def test_procedure
     condition = {'type' => :nephropathy, 'time' => @time}
-    Synthea::Output::FhirRecord.condition(condition, @fhir_record)
+    Synthea::Output::FhirRecord.condition(condition, @fhir_record, @patient_entry, @encounter_entry)
     proc_hash = { 'type' => :amputation_left_arm , 'time' => @time, 'reason' => '368581000119106'}
-    Synthea::Output::FhirRecord.procedure(proc_hash, @fhir_record)
+    Synthea::Output::FhirRecord.procedure(proc_hash, @fhir_record, @patient_entry, @encounter_entry)
     proc_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Procedure)}
     procedure  = proc_entry.resource
     assert_equal("Patient/#{@patientID}", procedure.subject.reference)
@@ -231,7 +231,7 @@ class FhirTest < Minitest::Test
 
   def test_imm
     imm_hash = { 'type' => :hepb, 'time' => @time}
-    Synthea::Output::FhirRecord.immunization(imm_hash, @fhir_record)
+    Synthea::Output::FhirRecord.immunization(imm_hash, @fhir_record, @patient_entry, @encounter_entry)
     imm = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Immunization)}.resource
     assert_equal('completed', imm.status)
     assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time, 'time'), imm.date)

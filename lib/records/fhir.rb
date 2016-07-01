@@ -7,15 +7,15 @@ module Synthea
         indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0}
         fhir_record = FHIR::Bundle.new
         fhir_record.type = 'collection'
-        basic_info(entity, fhir_record)
+        patient = basic_info(entity, fhir_record)
         synthea_record.encounters.each do |encounter|
-          encounter(encounter, fhir_record)
+           curr_encounter = encounter(encounter, fhir_record, patient)
           [:conditions, :observations, :procedures, :immunizations].each do |attribute| 
             entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
               #Exception: blood pressure needs to take two observations as an argument
               method = entry['fhir']
-              send(method, entry, fhir_record)
+              send(method, entry, fhir_record, patient, curr_encounter)
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]
             end
@@ -74,11 +74,10 @@ module Synthea
         entry.fullUrl = SecureRandom.uuid.to_s.strip
         entry.resource = patientResource
         fhir_record.entry << entry
+        entry
       end
 
-      def self.condition(condition, fhir_record)
-        patient = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+      def self.condition(condition, fhir_record, patient, encounter)
         conditionData = COND_LOOKUP[condition['type']]
         fhir_condition = FHIR::Condition.new({
           'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
@@ -102,8 +101,7 @@ module Synthea
         fhir_record.entry << entry
       end
 
-			def self.encounter(encounter, fhir_record)
-        patient = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
+			def self.encounter(encounter, fhir_record, patient)
         encounterData = ENCOUNTER_LOOKUP[encounter['type']]
         fhir_encounter = FHIR::Encounter.new({
           'status' => 'finished',
@@ -117,13 +115,13 @@ module Synthea
         entry.fullUrl = SecureRandom.uuid.to_s
         entry.resource = fhir_encounter
         fhir_record.entry << entry
+        entry
       end
 
-      def self.allergy(encounter, fhir_record)
-        patient = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-        snomed_code = COND_LOOKUP[encounter['type']][:codes]['SNOMED-CT'][0]
+      def self.allergy(allergy, fhir_record, patient, encounter)
+        snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
         allergy = FHIR::AllergyIntolerance.new({
-          'recordedDate' => convertFhirDateTime(encounter['time'],'time'),
+          'recordedDate' => convertFhirDateTime(allergy['time'],'time'),
           'status' => 'confirmed',
           'type' => 'allergy',
           'category' => 'food',
@@ -131,7 +129,7 @@ module Synthea
           'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
           'substance' => {'coding'=>[{
               'code'=>snomed_code,
-              'display'=>encounter['type'].to_s.split('food_allergy_')[1],
+              'display'=>allergy['type'].to_s.split('food_allergy_')[1],
               'system' => 'http://snomed.info/sct'
               }]}
         })
@@ -140,9 +138,7 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.observation(observation, fhir_record)
-        patient = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
+      def self.observation(observation, fhir_record, patient, encounter)
         obs_data = OBS_LOOKUP[observation['type']]
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = SecureRandom.uuid
@@ -159,10 +155,8 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.multi_observation(multiObs, fhir_record)
+      def self.multi_observation(multiObs, fhir_record, patient, encounter)
         observations = fhir_record.entry.pop(multiObs['value'])
-        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-        patient = fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
         multi_data = OBS_LOOKUP[multiObs['type']]
         fhir_observation = FHIR::Observation.new({
           'status'=>'final',
@@ -181,11 +175,9 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.diagnostic_report(report, fhir_record)
+      def self.diagnostic_report(report, fhir_record, patient, encounter)
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = SecureRandom.uuid
-        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-        patient = fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
         report_data = OBS_LOOKUP[report['type']]
         entry.resource = FHIR::DiagnosticReport.new({
           'status'=>'final',
@@ -206,10 +198,7 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.procedure(procedure, fhir_record)
-        patient = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Patient)}
-        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-
+      def self.procedure(procedure, fhir_record, patient, encounter)
         reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==procedure['reason']} }
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         fhir_procedure = FHIR::Procedure.new({
@@ -230,10 +219,7 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.immunization(imm, fhir_record)
-        encounter = fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Encounter)}
-        patient = fhir_record.entry.find {|e| e.resource.is_a?(FHIR::Patient)}
-
+      def self.immunization(imm, fhir_record, patient, encounter)
         immunization = FHIR::Immunization.new({
           'status'=>'completed',
           'date' => convertFhirDateTime(imm['time'],'time'),

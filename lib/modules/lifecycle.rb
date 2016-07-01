@@ -300,8 +300,8 @@ module Synthea
       end
 
       def self.record_height_weight(entity, time)
-        entity.record_synthea.observation(:weight, time, entity[:weight], :observation)
-        entity.record_synthea.observation(:height, time, entity[:height], :observation)
+        entity.record_synthea.observation(:weight, time, entity[:weight], :observation, :vital_sign)
+        entity.record_synthea.observation(:height, time, entity[:height], :observation, :vital_sign)
       end
     end
   end
