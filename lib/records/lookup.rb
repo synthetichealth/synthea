@@ -13,7 +13,21 @@ module Synthea
     hdl: { description: 'High Density Lipoprotein Cholesterol', code: '2085-9', unit: 'mg/dL'},
     ldl: { description: 'Low Density Lipoprotein Cholesterol', code: '18262-6', unit: 'mg/dL'},
     lipid_panel: { description: 'Lipid Panel', code: '57698-3'},
-    blood_pressure: { description: 'Blood Pressure', code: '55284-4'}
+    blood_pressure: { description: 'Blood Pressure', code: '55284-4'},
+
+    basic_metabolic_panel: { description: 'Basic Metabolic Panel', code: '51990-0'},
+      glucose: { description: 'Glucose', code: '2339-0', unit: 'mg/dL'},
+      urea_nitrogen: { description: 'Urea Nitrogen', code: '6299-2', unit: 'mg/dL'},
+      creatinine: { description: 'Creatinine', code: '38483-4', unit: 'mg/dL'},
+      calcium: { description: 'Calcium', code: '49765-1', unit: 'mg/dL'},
+      electrolytes_panel: { description: 'Electrolytes Panel', code: '55231-5'},
+        sodium: { description: 'Sodium', code: '2947-0', unit: 'mmol/L'},
+        potassium: { description: 'Potassium', code: '6298-4', unit: 'mmol/L'},
+        chloride: { description: 'Chloride', code: '2069-3', unit: 'mmol/L'},
+        carbon_dioxide: { description: 'Carbon Dioxide', code: '20565-8', unit: 'mmol/L'},
+
+    microalbumin_creatine_ratio: { description: 'Microalbumin Creatine Ratio', code: '14959-1', unit: 'mg/g'},
+    egfr: { description: 'Estimated Glomerular Filtration Rate', code: '33914-3', unit: 'mL/min/{1.73_m2}'}
   }
 
 	COND_LOOKUP = {
