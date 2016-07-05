@@ -36,9 +36,6 @@ module Synthea
       end
 
       def handle_time_step
-        @people.each do |person|
-          Synthea::Rules.apply(@date,person)
-        end
         died = @people.select{|p|p.had_event?(:death)}
         @people -= died
         @dead += died
@@ -48,6 +45,9 @@ module Synthea
           @people << baby
         end
         @births = @births % 1
+        @people.each do |person|
+          Synthea::Rules.apply(@date,person)
+        end
       end
 
 
