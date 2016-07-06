@@ -1,7 +1,7 @@
 module Synthea
 	module Output
 		class Record
-			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations
+			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications
 			def initialize
 				@patient_info = {expired: false}
 				@encounters = []
@@ -12,6 +12,7 @@ module Synthea
 				@present = {}
         @procedures = []
         @immunizations = []
+        @medications = []
 			end
 			#birth and basic information are stored as person attributes and can be referred to when writing other records.
 			#No need to duplicate here.
@@ -80,6 +81,26 @@ module Synthea
           'fhir' => fhir_method,
           'ccda' => ccda_method
         }
+      end
+
+      def medication_start(type, time, reason)
+        @medications << {
+          'type' => type,
+          'time' => time,
+          'reason' => reason
+        }
+      end
+
+      def medication_active?(type)
+        !@medications.find{|x|x['type']==type && x['stop'].nil?}.nil?
+      end
+
+      def medication_stop(type, time, reason)
+        prescription = @medications.find{|x|x['type']==type && x['stop'].nil?}
+        if prescription
+          prescription['stop'] = time
+          prescription['stop_reason'] = reason
+        end
       end
 		end
 	end

@@ -44,9 +44,9 @@ synthea:
       probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
       probability_given_diabetes: 0.594 #  (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
     lipid_panel: #https://www.nlm.nih.gov/medlineplus/magazine/issues/summer12/articles/summer12pg6-7.html
-      cholesterol:   [160,200,239,269,300] # mg/dL
-      triglycerides: [100,150,199,499,600] # mg/dL
-      hdl:           [ 80, 59, 40, 20,  0] # mg/dL
+      cholesterol:   [160,200,239,259,279,300] # mg/dL
+      triglycerides: [100,150,199,499,550,600] # mg/dL
+      hdl:           [ 80, 59, 40, 20, 10,  0] # mg/dL
     basic_panel:
       # Basic Metabolic Panel results: https://www.nlm.nih.gov/medlineplus/ency/article/003462.htm
       # Comprehensive Metabolic Panel results: https://www.nlm.nih.gov/medlineplus/ency/article/003468.htm

@@ -24,7 +24,11 @@ module Synthea
           elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe)
             update_diabetes(2,time,entity)
           else  
-            update_diabetes(3,time,entity)
+            if entity[:diabetes] && entity[:diabetes][:severity]==3
+              update_diabetes(4,time,entity)
+            else
+              update_diabetes(3,time,entity)
+            end
           end
         end
 
@@ -283,23 +287,65 @@ module Synthea
       #-----------------------------------------------------------------------#
 
       rule :diet_and_exercise, [:prediabetes,:diabetes], [:monotherapy] do |time,entity|
-
+        if entity[:prediabetes] || entity[:diabetes]
+          entity[:careplan] = Hash.new if entity[:careplan].nil?
+          # Add diabetic restrictions to the diet          
+          entity[:careplan][:diet] = Array.new if entity[:careplan][:diet].nil?
+          entity[:careplan][:diet] << :diabetes if !entity[:careplan][:diet].include?(:diabetes)
+          # Add exercise and weight loss to the care plan
+          entity[:careplan][:exercise] = Array.new if entity[:careplan][:exercise].nil?
+          entity[:careplan][:exercise] << :diabetes if !entity[:careplan][:exercise].include?(:diabetes)
+        end
       end
 
       rule :monotherapy, [:diet_and_exercise], [:bitherapy] do |time,entity|
-
+        if entity[:diabetes] && entity[:diabetes][:severity]==1
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # delete medications above this stage...
+          [:glp1ra,:sglt21,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          # prescribe metformin if it isn't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+        end
       end
 
-      rule :bitherapy, [:monotherapy], [:tritherapy] do |time,entity|
-
+      rule :bitherapy, [:monotherapy], [:tritherapy,:insulin] do |time,entity|
+        if entity[:diabetes] && entity[:diabetes][:severity]==2
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # delete medications above this stage...
+          [:sglt21,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          # prescribe metformin and glp1ra if they aren't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+          entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?
+        end
       end
 
       rule :tritherapy, [:bitherapy], [:insulin] do |time,entity|
-
+        if entity[:diabetes] && entity[:diabetes][:severity]==3
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # delete medications above this stage...
+          [:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          # prescribe metformin and cocktail if they aren't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+          entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
+          entity[:medications][:sglt21] = [ time, :diabetes ] if entity[:medications][:sglt21].nil?  
+        end
       end
 
       rule :insulin, [:tritherapy], [:insulin] do |time,entity|
-
+        if entity[:diabetes] && entity[:diabetes][:severity]==4
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # prescribe metformin and cocktail if they aren't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+          entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
+          entity[:medications][:sglt21] = [ time, :diabetes ] if entity[:medications][:sglt21].nil?  
+          # prescribe insulin
+          if entity[:medications][:basal_insulin]
+            entity[:medications].delete(:basal_insulin)
+            entity[:medications][:prandial_insulin] = [ time, :diabetes ]            
+          else
+            entity[:medications][:basal_insulin] = [ time, :diabetes ]
+          end     
+        end
       end
 
       #-----------------------------------------------------------------------#
