@@ -8,7 +8,10 @@ module Synthea
     end
 
     def run(time, entity)
-      @rules.each {|r| r.call(time, entity)}
+      @rules.each do |r|
+        puts r
+       r.call(time, entity)
+      end
     end
 
     def pick(array)
