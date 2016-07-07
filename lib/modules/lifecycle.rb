@@ -153,6 +153,13 @@ module Synthea
             'postalCode' => zip[0]
           }
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
+          #determine lat/long coordinates of address within Bedford
+          while entity[:coordinates_address].nil?
+            x = rand(BEDFORD_min_x..BEDFORD_max_x)
+            y = rand(BEDFORD_min_y..BEDFORD_max_y)
+            point = GeoRuby::SimpleFeatures::Point.from_x_y(x,y)
+            entity[:coordinates_address] = point if BEDFORD.contains_point?(point)
+          end
           # TODO update awareness
         end
       end

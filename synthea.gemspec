@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'fhir_models'
   s.add_runtime_dependency 'fhir_client'
   s.add_runtime_dependency 'area'
+  s.add_runtime_dependency 'georuby'
 end
 
 
