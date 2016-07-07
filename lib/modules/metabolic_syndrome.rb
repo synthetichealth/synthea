@@ -5,6 +5,7 @@ module Synthea
       # People have a BMI that we can roughly use to estimate
       # blood glucose and diabetes
       rule :metabolic_syndrome, [:bmi], [:blood_glucose,:prediabetes,:diabetes,:hypertension,:blood_pressure] do |time, entity|
+        return if entity[:age].nil?
         # check for hypertension at adulthood
         if entity[:hypertension].nil? && entity[:age] > 18
           entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability)

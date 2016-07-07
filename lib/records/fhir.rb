@@ -64,6 +64,10 @@ module Synthea
                   'system'=>'http://hl7.org/fhir/v3/Ethnicity'
                 }]
               }
+            },
+            {
+              'url' => 'http://standardhealthrecord.org/fhir/extensions/wkt-geospatialpoint',
+              'valueString' => "POINT (#{entity[:coordinates_address].y}, #{entity[:coordinates_address].x})"
             }
           ]
         })
