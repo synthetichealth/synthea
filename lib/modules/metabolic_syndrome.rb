@@ -289,12 +289,8 @@ module Synthea
       rule :diet_and_exercise, [:prediabetes,:diabetes], [:monotherapy] do |time,entity|
         if entity[:prediabetes] || entity[:diabetes]
           entity[:careplan] = Hash.new if entity[:careplan].nil?
-          # Add diabetic restrictions to the diet          
-          entity[:careplan][:diet] = Array.new if entity[:careplan][:diet].nil?
-          entity[:careplan][:diet] << :diabetes if !entity[:careplan][:diet].include?(:diabetes)
-          # Add exercise and weight loss to the care plan
-          entity[:careplan][:exercise] = Array.new if entity[:careplan][:exercise].nil?
-          entity[:careplan][:exercise] << :diabetes if !entity[:careplan][:exercise].include?(:diabetes)
+          # Add diet and exercise to the list of careplans
+          entity[:careplan][:diabetes] = [ :diabetic_diet, :exercise ] if entity[:careplan][:diabetes].nil?
         end
       end
 
@@ -302,7 +298,7 @@ module Synthea
         if entity[:diabetes] && entity[:diabetes][:severity]==1
           entity[:medications] = Hash.new if entity[:medications].nil?
           # delete medications above this stage...
-          [:glp1ra,:sglt21,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          [:glp1ra,:sglt2i,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
           # prescribe metformin if it isn't already there...
           entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
         end
@@ -312,7 +308,7 @@ module Synthea
         if entity[:diabetes] && entity[:diabetes][:severity]==2
           entity[:medications] = Hash.new if entity[:medications].nil?
           # delete medications above this stage...
-          [:sglt21,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          [:sglt2i,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
           # prescribe metformin and glp1ra if they aren't already there...
           entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
           entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?
@@ -327,7 +323,7 @@ module Synthea
           # prescribe metformin and cocktail if they aren't already there...
           entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
           entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
-          entity[:medications][:sglt21] = [ time, :diabetes ] if entity[:medications][:sglt21].nil?  
+          entity[:medications][:sglt2i] = [ time, :diabetes ] if entity[:medications][:sglt2i].nil?  
         end
       end
 
@@ -337,7 +333,7 @@ module Synthea
           # prescribe metformin and cocktail if they aren't already there...
           entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
           entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
-          entity[:medications][:sglt21] = [ time, :diabetes ] if entity[:medications][:sglt21].nil?  
+          entity[:medications][:sglt2i] = [ time, :diabetes ] if entity[:medications][:sglt2i].nil?  
           # prescribe insulin
           if entity[:medications][:basal_insulin]
             entity[:medications].delete(:basal_insulin)
@@ -406,6 +402,30 @@ module Synthea
 
         if entity[:diabetes] || entity[:hypertension]
           record_egfr(entity,time)
+        end
+
+        if entity[:careplan] && entity[:careplan][:diabetes]
+          # Add a diabetes self-management careplan if one isn't active
+          if !entity.record_synthea.careplan_active?(:diabetes)
+            entity.record_synthea.careplan_start(:diabetes, entity[:careplan][:diabetes], time, :diabetes)
+          end
+        elsif entity.record_synthea.careplan_active?(:diabetes)
+          # We need to stop the current diabetes careplan
+          entity.record_synthea.careplan_stop(:diabetes,time)
+        end
+
+        if entity[:medications]
+          [:metformin,:glp1ra,:sglt2i,:basal_insulin,:prandial_insulin].each do |med|
+            if entity[:medications][med]
+              # Add a prescription to the record if it hasn't been recorded yet
+              if !entity.record_synthea.medication_active?(med)
+                entity.record_synthea.medication_start(med, time, :diabetes)
+              end
+            elsif entity.record_synthea.medication_active?(med)
+              # This prescription can be stopped...
+              entity.record_synthea.medication_stop(med, time, :diabetes_well_controlled)
+            end
+          end
         end
       end
 

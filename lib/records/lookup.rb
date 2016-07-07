@@ -66,6 +66,27 @@ module Synthea
     atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} }
   }
 
+  CAREPLAN_LOOKUP = {
+    diabetes: { description: 'Diabetes self management plan', codes: {'SNOMED-CT'=>['698360004']}},
+    diabetic_diet: { description: 'Diabetic diet', codes: {'SNOMED-CT'=>['160670007']}},
+    exercise: { description: 'Exercise therapy', codes: {'SNOMED-CT'=>['229065009']}}
+  }
+
+  REASON_LOOKUP = {
+    diabetes_well_controlled: {
+      description: 'Type II Diabetes Mellitus Well Controlled',
+      codes: {'SNOMED-CT'=>['444110003']}
+    }
+  }
+
+  MEDICATION_LOOKUP = {
+    metformin: { description: '24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet', codes: {'RxNorm'=>['860975']}},
+    glp1ra: { description: '3 ML liraglutide 6 MG/ML Pen Injector', codes: {'RxNorm'=>['897122']}},
+    sglt2i: { description: 'canagliflozin 100 MG Oral Tablet', codes: {'RxNorm'=>['1373463']}},
+    basal_insulin: { description: 'insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]', codes: {'RxNorm'=>['106892']}},
+    prandial_insulin: { description: 'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]', codes: {'RxNorm'=>['865098']}}
+  }
+
   RACE_ETHNICITY_CODES = {
     :white => '2106-3',
     :hispanic => '2131-1',

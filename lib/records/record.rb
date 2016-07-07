@@ -1,7 +1,7 @@
 module Synthea
 	module Output
 		class Record
-			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications
+			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications, :careplans
 			def initialize
 				@patient_info = {expired: false}
 				@encounters = []
@@ -13,6 +13,7 @@ module Synthea
         @procedures = []
         @immunizations = []
         @medications = []
+        @careplans = []
 			end
 			#birth and basic information are stored as person attributes and can be referred to when writing other records.
 			#No need to duplicate here.
@@ -100,6 +101,28 @@ module Synthea
         if prescription
           prescription['stop'] = time
           prescription['stop_reason'] = reason
+        end
+      end
+
+      def careplan_start(type, activities, time, reason)
+        @careplans << {
+          'type' => type,
+          'status' => 'active',
+          'activities' => activities,
+          'time' => time,
+          'reason' => reason
+        }
+      end
+
+      def careplan_active?(type)
+        !@careplans.find{|x|x['type']==type && x['status']=='active'}.nil?
+      end
+
+      def careplan_stop(type, time)
+        careplan = @careplans.find{|x|x['type']==type && x['status']=='active'}
+        if careplan
+          careplan['status'] = 'completed' 
+          careplan['stop'] = time
         end
       end
 		end
