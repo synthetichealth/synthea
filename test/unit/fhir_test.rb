@@ -15,6 +15,7 @@ class FhirTest < Minitest::Test
     @patient[:race] = :white
 		@patient[:ethnicity] = :italian
 		@patient[:is_alive] = true
+    @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
     @fhir_record = FHIR::Bundle.new
     @time = Time.now
     @patient.events.create(@time, :birth, :birth)
@@ -85,6 +86,9 @@ class FhirTest < Minitest::Test
   	assert_equal('Bedford', address.city)
   	assert_equal('MA', address.state)
   	assert_equal('01730', address.postalCode)
+    coordinates = person.extension[2]
+    assert_equal('http://standardhealthrecord.org/fhir/extensions/wkt-geospatialpoint', coordinates.url)
+    assert_equal('POINT (15, 10)', coordinates.valueString)
   	#test race/ethnicity logic
   	@patient[:race] = :hispanic
   	@patient[:ethnicity] = :mexican
