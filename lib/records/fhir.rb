@@ -4,17 +4,18 @@ module Synthea
 
       def self.convert_to_fhir (entity)
         synthea_record = entity.record_synthea
-        indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0}
+        indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0}
         fhir_record = FHIR::Bundle.new
         fhir_record.type = 'collection'
         patient = basic_info(entity, fhir_record)
         synthea_record.encounters.each do |encounter|
            curr_encounter = encounter(encounter, fhir_record, patient)
-          [:conditions, :observations, :procedures, :immunizations].each do |attribute| 
+          [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute| 
             entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
               #Exception: blood pressure needs to take two observations as an argument
               method = entry['fhir']
+              method = attribute.to_s if method.nil?
               send(method, entry, fhir_record, patient, curr_encounter)
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]
@@ -238,6 +239,84 @@ module Synthea
         entry = FHIR::Bundle::Entry.new
         entry.resource = immunization
         fhir_record.entry << entry
+      end
+
+      def self.careplans(plan, fhir_record, patient, encounter)
+        careplanData = CAREPLAN_LOOKUP[plan['type']]
+        reasonCode = COND_LOOKUP[plan['reason']][:codes]['SNOMED-CT'][0]
+        reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==reasonCode} }
+        careplan = FHIR::CarePlan.new({
+          'subject' => {'reference'=> "Patient/#{patient.fullUrl}"},
+          'status' => plan['status'],
+          'context' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'period' => {'start'=>convertFhirDateTime(plan['time'])},
+          'category' => {
+            'coding'=>[{
+              'code'=> careplanData[:codes]['SNOMED-CT'][0],
+              'display'=> careplanData[:description],
+              'system' => 'http://snomed.info/sct'
+            }]
+          },
+          'activity' => []
+        })
+        careplan.period.end = convertFhirDateTime(plan['stop']) if plan['stop']
+        careplan.addresses = FHIR::Reference.new({'reference'=> "Condition/#{reason.fullUrl}"}) if reason
+        plan['activities'].each do |activity|
+          activityData = CAREPLAN_LOOKUP[activity]
+          careplan.activity << FHIR::CarePlan::Activity.new({
+            'detail'=>{
+              'code'=>{
+                'coding'=>[{
+                  'code'=> activityData[:codes]['SNOMED-CT'][0],
+                  'display'=> activityData[:description],
+                  'system' => 'http://snomed.info/sct'
+                }]
+              }
+            }
+          })
+        end
+        entry = FHIR::Bundle::Entry.new
+        entry.resource = careplan
+        fhir_record.entry << entry        
+      end
+
+      def self.medications(prescription, fhir_record, patient, encounter)
+        medData = MEDICATION_LOOKUP[prescription['type']]
+        reasonCode = COND_LOOKUP[prescription['reason']][:codes]['SNOMED-CT'][0]
+        reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==reasonCode} }
+        medOrder = FHIR::MedicationOrder.new({
+          'status' => prescription['status'],
+          'medicationCodeableConcept'=>{
+            'coding'=>[{
+              'code'=> medData[:codes]['RxNorm'][0],
+              'display'=> medData[:description],
+              'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
+            }]
+          },
+          'patient' => {'reference'=> "Patient/#{patient.fullUrl}"},
+          'encounter' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'dateWritten' => convertFhirDateTime(prescription['time']),
+          'reasonReference' => {'reference'=> "Condition/#{reason.fullUrl}"},
+          'activity' => []
+        })
+        if prescription['stop']
+          medOrder.status = 'stopped' 
+          medOrder.dateEnded = convertFhirDateTime(prescription['stop'])
+
+          reasonData = REASON_LOOKUP[prescription['stop_reason']]
+          if reasonData
+            medOrder.reasonEnded = FHIR::CodeableConcept.new({
+              'coding'=>[{
+                'code'=> reasonData[:codes]['SNOMED-CT'][0],
+                'display'=> reasonData[:description],
+                'system' => 'http://snomed.info/sct'
+              }]
+            })
+          end
+        end
+        entry = FHIR::Bundle::Entry.new
+        entry.resource = medOrder
+        fhir_record.entry << entry        
       end
 
       def self.convertFhirDateTime(date, option = nil)

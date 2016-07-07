@@ -44,9 +44,37 @@ synthea:
       probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
       probability_given_diabetes: 0.594 #  (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
     lipid_panel: #https://www.nlm.nih.gov/medlineplus/magazine/issues/summer12/articles/summer12pg6-7.html
-      cholesterol:   [160,200,239,269,300] # mg/dL
-      triglycerides: [100,150,199,499,600] # mg/dL
-      hdl:           [ 80, 59, 40, 20,  0] # mg/dL 
+      cholesterol:   [160,200,239,259,279,300] # mg/dL
+      triglycerides: [100,150,199,499,550,600] # mg/dL
+      hdl:           [ 80, 59, 40, 20, 10,  0] # mg/dL
+    basic_panel:
+      # Basic Metabolic Panel results: https://www.nlm.nih.gov/medlineplus/ency/article/003462.htm
+      # Comprehensive Metabolic Panel results: https://www.nlm.nih.gov/medlineplus/ency/article/003468.htm
+      normal:
+        urea_nitrogen: [7,20] # mg/dL
+        co2: [20,29] # mmol/L
+        creatinine: [0.8,1.2] # mg/dL
+        glucose: [64,100] # mg/dL
+        chloride: [101,111] # mmol/L
+        potassium: [3.7,5.2] # mEq/L
+        sodium: [136, 144] # mEq/L
+        calcium: [8.5,10.2] # mg/dL
+      # http://www.mayomedicallaboratories.com/test-catalog/Clinical+and+Interpretive/81260
+      microalbumin_creatine_ratio: 
+        normal: [0,17] # mg/g
+        microalbuminuria_controlled: [17,30] # mg/g
+        microalbuminuria_uncontrolled: [30,300] # mg/g
+        proteinuria: [300,600] # mg/g
+      # http://www.mayomedicallaboratories.com/test-catalog/Clinical+and+Interpretive/8500
+      # http://www.mayomedicallaboratories.com/test-catalog/Clinical+and+Interpretive/8472
+      creatinine_clearance:
+        normal: # Creatine clearance test results: https://www.nlm.nih.gov/medlineplus/ency/article/003611.htm
+          male: [77,160] # ml/min/BSA
+          female: [56,161] # ml/min/BSA
+        mild_kidney_damage: [60,90] # ml/min/BSA
+        moderate_kidney_damage: [30,59] # ml/min/BSA
+        severe_kidney_damage: [15,29] # ml/min/BSA
+        esrd: [1,15] # ml/min/BSA
   cardiovascular:
     stroke:
       #https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
@@ -55,10 +83,8 @@ synthea:
       death: 0.15 #Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
     chd:
       #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
-      
       coronary_attack_risk: [0.042,0.015] #annual probability of coronary attack given history of angina (Male, Female)
       mi_proportion: 0.8 #Proportion of coronary attacks that are MI ,given history of CHD
-
       survive: 0.095 #http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp (0.095)
       bystander: 0.46 #http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp 
     #http://circ.ahajournals.org/content/early/2014/12/18/CIR.0000000000000152.full.pdf
