@@ -58,7 +58,7 @@ module Synthea
         @procedures << @present[type]
       end
 
-      def diagnostic_report(type, time, numObs, fhir_method=:diagnostic_report, ccda_method=nil)
+      def diagnostic_report(type, time, numObs, fhir_method=:diagnostic_report, ccda_method=:no_action)
         @observations << {
           'type' => type,
           'time' => time,

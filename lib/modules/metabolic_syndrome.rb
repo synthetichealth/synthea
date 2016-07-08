@@ -444,7 +444,7 @@ module Synthea
         patient.observation(:systolic_blood_pressure, time, entity[:blood_pressure].first, :observation, :vital_sign)
         patient.observation(:diastolic_blood_pressure, time, entity[:blood_pressure].last, :observation, :vital_sign)
         #This dummy 'Observation' indicates the two previous are linked together into one for fhir.
-        patient.observation(:blood_pressure, time, 2, :multi_observation, nil)
+        patient.observation(:blood_pressure, time, 2, :multi_observation, :no_action)
       end
 
       def self.record_ha1c(entity,time)
@@ -497,7 +497,7 @@ module Synthea
         patient.observation(:triglycerides, time, entity[:cholesterol][:triglycerides], :observation, :vital_sign)
         patient.observation(:hdl, time, entity[:cholesterol][:hdl], :observation, :vital_sign)
         patient.observation(:ldl, time, entity[:cholesterol][:ldl], :observation, :vital_sign)
-        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report, nil)
+        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report, :no_action)
       end
     end
   end
