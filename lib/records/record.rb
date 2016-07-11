@@ -107,7 +107,6 @@ module Synthea
       def careplan_start(type, activities, time, reason)
         @careplans << {
           'type' => type,
-          'status' => 'active',
           'activities' => activities,
           'time' => time,
           'reason' => reason
@@ -115,15 +114,12 @@ module Synthea
       end
 
       def careplan_active?(type)
-        !@careplans.find{|x|x['type']==type && x['status']=='active'}.nil?
+        !@careplans.find{|x|x['type']==type && x['stop'].nil?}.nil?
       end
 
       def careplan_stop(type, time)
         careplan = @careplans.find{|x|x['type']==type && x['status']=='active'}
-        if careplan
-          careplan['status'] = 'completed' 
-          careplan['stop'] = time
-        end
+        careplan['stop'] = time if careplan
       end
 		end
 	end

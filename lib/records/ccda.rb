@@ -126,10 +126,14 @@ module Synthea
             'codes' => CAREPLAN_LOOKUP[entry][:codes],
             'description' => CAREPLAN_LOOKUP[entry][:description],
             'start_time' => time.to_i,
-            'status' => plan['status'],
             'reason' => COND_LOOKUP[plan['reason']]
           })
-          care_goal['end_time'] = plan['stop'].to_i if plan['stop']
+          if plan['stop']
+            care_goal['end_time'] = plan['stop'].to_i 
+            care_goal.status='inactive'
+          else
+            care_goal.status='active'
+          end
           ccda_record.care_goals << care_goal
         end
       end
@@ -138,12 +142,17 @@ module Synthea
         type = prescription['type']
         time = prescription['time']
         medication = Medication.new({
-          "codes" =>  MEDICATION_LOOKUP[type][:codes],
-          "description" => MEDICATION_LOOKUP[type][:description],
-          "start_time" => time.to_i,
+          'codes' =>  MEDICATION_LOOKUP[type][:codes],
+          'description' => MEDICATION_LOOKUP[type][:description],
+          'start_time' => time.to_i,
           'reason' => COND_LOOKUP[prescription['reason']]
         })
-        medication["end_time"] = prescription['stop'].to_i if prescription['stop']
+        if prescription['stop']
+          medication['end_time'] = prescription['stop'].to_i 
+          medication.status='inactive'
+        else
+          medication.status='active'
+        end
         ccda_record.medications << medication
       end
 		end

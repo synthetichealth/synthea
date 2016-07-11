@@ -247,7 +247,6 @@ module Synthea
         reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==reasonCode} }
         careplan = FHIR::CarePlan.new({
           'subject' => {'reference'=> "Patient/#{patient.fullUrl}"},
-          'status' => plan['status'],
           'context' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
           'period' => {'start'=>convertFhirDateTime(plan['time'])},
           'category' => {
@@ -259,7 +258,12 @@ module Synthea
           },
           'activity' => []
         })
-        careplan.period.end = convertFhirDateTime(plan['stop']) if plan['stop']
+        if plan['stop']
+          careplan.period.end = convertFhirDateTime(plan['stop'])
+          careplan.status = 'completed'
+        else
+          careplan.status = 'active'
+        end 
         careplan.addresses = FHIR::Reference.new({'reference'=> "Condition/#{reason.fullUrl}"}) if reason
         plan['activities'].each do |activity|
           activityData = CAREPLAN_LOOKUP[activity]
@@ -285,7 +289,6 @@ module Synthea
         reasonCode = COND_LOOKUP[prescription['reason']][:codes]['SNOMED-CT'][0]
         reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==reasonCode} }
         medOrder = FHIR::MedicationOrder.new({
-          'status' => prescription['status'],
           'medicationCodeableConcept'=>{
             'coding'=>[{
               'code'=> medData[:codes]['RxNorm'][0],
@@ -313,6 +316,8 @@ module Synthea
               }]
             })
           end
+        else
+          medOrder.status = 'active'
         end
         entry = FHIR::Bundle::Entry.new
         entry.resource = medOrder
