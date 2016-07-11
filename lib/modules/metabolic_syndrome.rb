@@ -25,7 +25,9 @@ module Synthea
           elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe)
             update_diabetes(2,time,entity)
           else  
-            if entity[:diabetes] && entity[:diabetes][:severity]==3
+            if !entity[:diabetes]
+              update_diabetes(3,time,entity) 
+            elsif (entity[:diabetes][:severity]>=3 && ((entity[:diabetes][:duration] / 365) >= 1))
               update_diabetes(4,time,entity)
             else
               update_diabetes(3,time,entity)
@@ -88,7 +90,7 @@ module Synthea
           entity[:prediabetes]=prediabetes
           entity.events.create(time, :prediabetes, :metabolic_syndrome, false) if !entity.had_event?(:prediabetes)
         end
-        prediabetes[:duration] += 1
+        prediabetes[:duration] += Synthea::Config.time_step
       end
 
       def update_diabetes(severity,time,entity)
@@ -106,7 +108,7 @@ module Synthea
           end
         end
         diabetes[:severity] = severity
-        diabetes[:duration] += 1   
+        diabetes[:duration] += Synthea::Config.time_step
       end
 
       rule :prediabetes, [:metabolic_syndrome], [:diabetes] do |time, entity|
@@ -335,11 +337,18 @@ module Synthea
           entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
           entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
           entity[:medications][:sglt2i] = [ time, :diabetes ] if entity[:medications][:sglt2i].nil?  
-          # prescribe insulin
+          # prescribe insulin          
           if entity[:medications][:basal_insulin]
-            entity[:medications].delete(:basal_insulin)
-            entity[:medications][:prandial_insulin] = [ time, :diabetes ]            
-          else
+            # if basal insulin was prescribed at the last enounter, escalate to prandial
+            basal_added = entity[:medications][:basal_insulin].first
+            encounters = entity.events.events[:encounter].select do |x|
+              (x.time > basal_added) && (x.processed==true)
+            end
+            if !encounters.empty?
+              entity[:medications].delete(:basal_insulin)
+              entity[:medications][:prandial_insulin] = [ time, :diabetes ]
+            end
+          elsif !entity[:medications][:prandial_insulin]
             entity[:medications][:basal_insulin] = [ time, :diabetes ]
           end     
         end
