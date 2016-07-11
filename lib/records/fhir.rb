@@ -68,7 +68,7 @@ module Synthea
             },
             {
               'url' => 'http://standardhealthrecord.org/fhir/extensions/wkt-geospatialpoint',
-              'valueString' => "POINT (#{entity[:coordinates_address].y}, #{entity[:coordinates_address].x})"
+              'valueString' => "POINT (#{entity[:coordinates_address].x}, #{entity[:coordinates_address].y})"
             }
           ]
         })
