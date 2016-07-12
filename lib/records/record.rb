@@ -1,7 +1,7 @@
 module Synthea
 	module Output
 		class Record
-			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations
+			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications, :careplans
 			def initialize
 				@patient_info = {expired: false}
 				@encounters = []
@@ -12,6 +12,8 @@ module Synthea
 				@present = {}
         @procedures = []
         @immunizations = []
+        @medications = []
+        @careplans = []
 			end
 			#birth and basic information are stored as person attributes and can be referred to when writing other records.
 			#No need to duplicate here.
@@ -20,7 +22,7 @@ module Synthea
 				@patient_info[:expired] = true
 			end
 
-			def observation(type, time, value, fhir_method, ccda_method)
+			def observation(type, time, value, fhir_method=:observation, ccda_method=:vital_sign)
         @observations << {
           'type' => type,
           'time' => time,
@@ -30,7 +32,7 @@ module Synthea
         }
       end
 
-      def condition(type, time, fhir_method, ccda_method)
+      def condition(type, time, fhir_method=:condition, ccda_method=:condition)
         @present[type] = {
           'type' => type,
           'time' => time,
@@ -45,7 +47,7 @@ module Synthea
         @present[type] = nil
       end
 
-      def procedure(type, time, reason, fhir_method, ccda_method)
+      def procedure(type, time, reason, fhir_method=:procedure, ccda_method=:procedure)
         @present[type] = {
           'type' => type,
           'time' => time,
@@ -56,7 +58,7 @@ module Synthea
         @procedures << @present[type]
       end
 
-      def diagnostic_report(type, time, numObs, fhir_method, ccda_method)
+      def diagnostic_report(type, time, numObs, fhir_method=:diagnostic_report, ccda_method=:no_action)
         @observations << {
           'type' => type,
           'time' => time,
@@ -73,13 +75,51 @@ module Synthea
         }
       end
 
-      def immunization(imm, time, fhir_method, ccda_method)
+      def immunization(imm, time, fhir_method=:immunization, ccda_method=:immunization)
         @immunizations << {
           'type' => imm,
           'time' => time,
           'fhir' => fhir_method,
           'ccda' => ccda_method
         }
+      end
+
+      def medication_start(type, time, reason)
+        @medications << {
+          'type' => type,
+          'time' => time,
+          'reason' => reason
+        }
+      end
+
+      def medication_active?(type)
+        !@medications.find{|x|x['type']==type && x['stop'].nil?}.nil?
+      end
+
+      def medication_stop(type, time, reason)
+        prescription = @medications.find{|x|x['type']==type && x['stop'].nil?}
+        if prescription
+          prescription['stop'] = time
+          prescription['stop_reason'] = reason
+        end
+      end
+
+      def careplan_start(type, activities, time, reason)
+        @careplans << {
+          'type' => type,
+          'activities' => activities,
+          'time' => time,
+          'reason' => reason
+        }
+      end
+
+      def careplan_active?(type)
+        !@careplans.find{|x|x['type']==type && x['stop'].nil?}.nil?
+      end
+
+      def careplan_stop(type, time)
+        careplan = @careplans.find{|x|x['type']==type && x['status']=='active'}
+        careplan['stop'] = time if careplan
       end
 		end
 	end

@@ -25,7 +25,13 @@ module Synthea
           elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe)
             update_diabetes(2,time,entity)
           else  
-            update_diabetes(3,time,entity)
+            if !entity[:diabetes]
+              update_diabetes(3,time,entity) 
+            elsif (entity[:diabetes][:severity]>=3 && ((entity[:diabetes][:duration] / 365) >= 1))
+              update_diabetes(4,time,entity)
+            else
+              update_diabetes(3,time,entity)
+            end
           end
         end
 
@@ -49,6 +55,31 @@ module Synthea
         }
         entity[:cholesterol][:ldl] = entity[:cholesterol][:total] - entity[:cholesterol][:hdl] - (0.2 * entity[:cholesterol][:triglycerides])
         entity[:cholesterol][:ldl] = entity[:cholesterol][:ldl].to_i
+
+        # calculate the components of a metabolic panel and associated observations
+        normal = Synthea::Config.metabolic.basic_panel.normal
+        entity[:metabolic] = {
+          urea_nitrogen: rand(normal.urea_nitrogen.first..normal.urea_nitrogen.last),
+          carbon_dioxide: rand(normal.co2.first..normal.co2.last),
+          creatinine: rand(normal.creatinine.first..normal.creatinine.last),
+          glucose: rand(normal.glucose.first..normal.glucose.last),
+          chloride: rand(normal.chloride.first..normal.chloride.last),
+          potassium: rand(normal.potassium.first..normal.potassium.last),
+          sodium: rand(normal.sodium.first..normal.sodium.last),
+          calcium: rand(normal.calcium.first..normal.calcium.last)
+        }
+        creatinine_clearance = 100
+        if entity[:gender] && entity[:gender]=='M'
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.male
+          creatinine_clearance = rand(range.first..range.last)
+        else
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.female
+          creatinine_clearance = rand(range.first..range.last)          
+        end
+        entity[:metabolic][:creatinine_clearance] = creatinine_clearance
+        entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
+        range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
+        entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last) 
       end
 
       def update_prediabetes(time,entity)
@@ -59,7 +90,7 @@ module Synthea
           entity[:prediabetes]=prediabetes
           entity.events.create(time, :prediabetes, :metabolic_syndrome, false) if !entity.had_event?(:prediabetes)
         end
-        prediabetes[:duration] += 1
+        prediabetes[:duration] += Synthea::Config.time_step
       end
 
       def update_diabetes(severity,time,entity)
@@ -77,7 +108,7 @@ module Synthea
           end
         end
         diabetes[:severity] = severity
-        diabetes[:duration] += 1   
+        diabetes[:duration] += Synthea::Config.time_step
       end
 
       rule :prediabetes, [:metabolic_syndrome], [:diabetes] do |time, entity|
@@ -111,27 +142,54 @@ module Synthea
       # KIDNEY FAILURE: diabetics have nephropathy which can lead to transplant or death
       rule :nephropathy, [:diabetes], [:microalbuminuria] do |time,entity|
         diabetes = entity[:diabetes]
-        if diabetes && diabetes[:nephropathy] && diabetes[:microalbuminuria].nil? && (rand < (0.01 * diabetes[:severity]))
-          diabetes[:microalbuminuria] = true
-          entity.events.create(time, :microalbuminuria, :nephropathy, true)
+        if diabetes && diabetes[:nephropathy]
+          # update the creatinine levels...
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.mild_kidney_damage
+          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
+          entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
+          # see if the disease progresses another stage...
+          if diabetes[:microalbuminuria].nil? && (rand < (0.01 * diabetes[:severity]))
+            diabetes[:microalbuminuria] = true
+            entity.events.create(time, :microalbuminuria, :nephropathy, true)
+          end
         end
       end
 
       # KIDNEY FAILURE: microalbhuminuria - a moderate increase in the level of albumin in urine
       rule :microalbuminuria, [:nephropathy], [:proteinuria] do |time,entity|
         diabetes = entity[:diabetes]
-        if diabetes && diabetes[:microalbuminuria] && diabetes[:proteinuria].nil? && (rand < (0.01 * diabetes[:severity]))
-          diabetes[:proteinuria] = true
-          entity.events.create(time, :proteinuria, :microalbuminuria, true)
+        if diabetes && diabetes[:microalbuminuria]
+          # update the creatinine levels...
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage
+          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
+          entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
+          # update the microalbumin levels...
+          range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.microalbuminuria_uncontrolled
+          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last) 
+          # see if the disease progresses another stage...
+          if diabetes[:proteinuria].nil? && (rand < (0.01 * diabetes[:severity]))
+            diabetes[:proteinuria] = true
+            entity.events.create(time, :proteinuria, :microalbuminuria, true)
+          end
         end
       end
 
       # KIDNEY FAILURE: proteinuria - excess serum proteins in the urine
       rule :proteinuria, [:microalbuminuria], [:end_stage_renal_disease] do |time,entity|
         diabetes = entity[:diabetes]
-        if diabetes && diabetes[:proteinuria] && diabetes[:end_stage_renal_disease].nil? && (rand < (0.01 * diabetes[:severity]))
-          diabetes[:end_stage_renal_disease] = true 
-          entity.events.create(time, :end_stage_renal_disease, :proteinuria, true)
+        if diabetes && diabetes[:proteinuria]
+          # update the creatinine levels...
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.severe_kidney_damage
+          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
+          entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
+          # update the microalbumin levels...
+          range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.proteinuria
+          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last) 
+          # see if the disease progresses another stage...
+          if diabetes[:end_stage_renal_disease].nil? && (rand < (0.01 * diabetes[:severity]))
+            diabetes[:end_stage_renal_disease] = true 
+            entity.events.create(time, :end_stage_renal_disease, :proteinuria, true)
+          end
         end
       end
 
@@ -140,10 +198,17 @@ module Synthea
       # - Shlipak, Michael. "Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician". www.aafp.org.
       rule :end_stage_renal_disease, [:proteinuria], [:kidney_dialysis,:kidney_transplant,:death] do |time,entity|
         diabetes = entity[:diabetes]
-        if diabetes && diabetes[:end_stage_renal_disease] && (rand < (0.0001 * diabetes[:severity]))
-          entity[:is_alive] = false
-          entity.events.create(time, :death, :end_stage_renal_disease, true)
-          Synthea::Modules::Lifecycle.record_death(entity, time)
+        if diabetes && diabetes[:end_stage_renal_disease]
+          # update the creatinine levels...
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.esrd
+          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
+          entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
+          # see if the disease progresses another stage...
+          if (rand < (0.0001 * diabetes[:severity]))
+            entity[:is_alive] = false
+            entity.events.create(time, :death, :end_stage_renal_disease, true)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
+          end
         end
       end
 
@@ -221,11 +286,93 @@ module Synthea
       end
 
       #-----------------------------------------------------------------------#
+      # Treatments and Medications
+      #-----------------------------------------------------------------------#
+
+      rule :diet_and_exercise, [:prediabetes,:diabetes], [:monotherapy] do |time,entity|
+        if entity[:prediabetes] || entity[:diabetes]
+          entity[:careplan] = Hash.new if entity[:careplan].nil?
+          # Add diet and exercise to the list of careplans
+          entity[:careplan][:diabetes] = [ :diabetic_diet, :exercise ] if entity[:careplan][:diabetes].nil?
+        end
+      end
+
+      rule :monotherapy, [:diet_and_exercise], [:bitherapy] do |time,entity|
+        if entity[:diabetes] && entity[:diabetes][:severity]==1
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # delete medications above this stage...
+          [:glp1ra,:sglt2i,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          # prescribe metformin if it isn't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+        end
+      end
+
+      rule :bitherapy, [:monotherapy], [:tritherapy,:insulin] do |time,entity|
+        if entity[:diabetes] && entity[:diabetes][:severity]==2
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # delete medications above this stage...
+          [:sglt2i,:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          # prescribe metformin and glp1ra if they aren't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+          entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?
+        end
+      end
+
+      rule :tritherapy, [:bitherapy], [:insulin] do |time,entity|
+        if entity[:diabetes] && entity[:diabetes][:severity]==3
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # delete medications above this stage...
+          [:basal_insulin,:prandial_insulin].each{|m| entity[:medications].delete(m)}
+          # prescribe metformin and cocktail if they aren't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+          entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
+          entity[:medications][:sglt2i] = [ time, :diabetes ] if entity[:medications][:sglt2i].nil?  
+        end
+      end
+
+      rule :insulin, [:tritherapy], [:insulin] do |time,entity|
+        if entity[:diabetes] && entity[:diabetes][:severity]==4
+          entity[:medications] = Hash.new if entity[:medications].nil?
+          # prescribe metformin and cocktail if they aren't already there...
+          entity[:medications][:metformin] = [ time, :diabetes ] if entity[:medications][:metformin].nil?
+          entity[:medications][:glp1ra] = [ time, :diabetes ] if entity[:medications][:glp1ra].nil?     
+          entity[:medications][:sglt2i] = [ time, :diabetes ] if entity[:medications][:sglt2i].nil?  
+          # prescribe insulin          
+          if entity[:medications][:basal_insulin]
+            # if basal insulin was prescribed at the last enounter, escalate to prandial
+            basal_added = entity[:medications][:basal_insulin].first
+            encounters = entity.events.events[:encounter].select do |x|
+              (x.time > basal_added) && (x.processed==true)
+            end
+            if !encounters.empty?
+              entity[:medications].delete(:basal_insulin)
+              entity[:medications][:prandial_insulin] = [ time, :diabetes ]
+            end
+          elsif !entity[:medications][:prandial_insulin]
+            entity[:medications][:basal_insulin] = [ time, :diabetes ]
+          end     
+        end
+      end
+
+      #-----------------------------------------------------------------------#
 
       # rough linear fit seen in Figure 1
       # http://www.microbecolhealthdis.net/index.php/mehd/article/viewFile/22857/34046/125897
       def blood_glucose(bmi)
         ((bmi - 6) / 6.5)
+      end
+
+      # http://www.mcw.edu/calculators/creatinine.htm
+      def reverse_calculate_creatine(entity)
+        age = entity[:age] # years
+        female = (entity[:gender]=='F')
+        weight = entity[:weight] # kilograms
+        crcl = entity[:metabolic][:creatinine_clearance] # mg/dL
+        crcl = 100 if crcl.nil?
+        crcl = 1 if crcl < 1
+        creatine = ((140-age)*weight) / (72*crcl)
+        creatine *= 0.85 if female
+        creatine
       end
 
       def self.perform_encounter(entity, time)
@@ -239,6 +386,7 @@ module Synthea
         if entity[:prediabetes] || entity[:diabetes]
           # process any labs
           record_ha1c(entity,time)
+          record_metabolic_panel(entity,time)
         end
 
         if entity[:diabetes]
@@ -256,9 +404,38 @@ module Synthea
 
           # process any labs
           record_lipid_panel(entity,time)
+          record_microalbumin_creatinine_ratio(entity,time)
         elsif entity[:age] > 30 && entity.events.since( time-3.years, :lipid_panel ).empty?
           # run a lipid panel for non-diabetics if it has been more than 3 years
           record_lipid_panel(entity,time)
+        end
+
+        if entity[:diabetes] || entity[:hypertension]
+          record_egfr(entity,time)
+        end
+
+        if entity[:careplan] && entity[:careplan][:diabetes]
+          # Add a diabetes self-management careplan if one isn't active
+          if !entity.record_synthea.careplan_active?(:diabetes)
+            entity.record_synthea.careplan_start(:diabetes, entity[:careplan][:diabetes], time, :diabetes)
+          end
+        elsif entity.record_synthea.careplan_active?(:diabetes)
+          # We need to stop the current diabetes careplan
+          entity.record_synthea.careplan_stop(:diabetes,time)
+        end
+
+        if entity[:medications]
+          [:metformin,:glp1ra,:sglt2i,:basal_insulin,:prandial_insulin].each do |med|
+            if entity[:medications][med]
+              # Add a prescription to the record if it hasn't been recorded yet
+              if !entity.record_synthea.medication_active?(med)
+                entity.record_synthea.medication_start(med, time, :diabetes)
+              end
+            elsif entity.record_synthea.medication_active?(med)
+              # This prescription can be stopped...
+              entity.record_synthea.medication_stop(med, time, :diabetes_well_controlled)
+            end
+          end
         end
       end
 
@@ -277,12 +454,37 @@ module Synthea
         patient.observation(:systolic_blood_pressure, time, entity[:blood_pressure].first, :observation, :vital_sign)
         patient.observation(:diastolic_blood_pressure, time, entity[:blood_pressure].last, :observation, :vital_sign)
         #This dummy 'Observation' indicates the two previous are linked together into one for fhir.
-        patient.observation(:blood_pressure, time, 2, :multi_observation, nil)
+        patient.observation(:blood_pressure, time, 2, :multi_observation, :no_action)
       end
 
       def self.record_ha1c(entity,time)
         patient = entity.record_synthea
         patient.observation(:ha1c, time, entity[:blood_glucose], :observation, :vital_sign)
+      end
+
+      def self.record_metabolic_panel(entity,time)
+        patient = entity.record_synthea
+
+        # basic metabolic panel
+        patient.observation(:glucose, time, entity[:metabolic][:glucose])
+        patient.observation(:urea_nitrogen, time, entity[:metabolic][:urea_nitrogen])
+        patient.observation(:creatinine, time, entity[:metabolic][:creatinine])
+        patient.observation(:calcium, time, entity[:metabolic][:calcium])
+        patient.observation(:sodium, time, entity[:metabolic][:sodium])
+        patient.observation(:potassium, time, entity[:metabolic][:potassium])
+        patient.observation(:chloride, time, entity[:metabolic][:chloride])
+        patient.observation(:carbon_dioxide, time, entity[:metabolic][:carbon_dioxide])        
+        patient.diagnostic_report(:basic_metabolic_panel, time, 8)
+      end
+
+      def self.record_microalbumin_creatinine_ratio(entity,time)
+        patient = entity.record_synthea
+        patient.observation(:microalbumin_creatine_ratio, time, entity[:metabolic][:microalbumin_creatine_ratio])
+      end
+
+      def self.record_egfr(entity,time)
+        patient = entity.record_synthea
+        patient.observation(:egfr, time, entity[:metabolic][:creatinine_clearance])
       end
 
       def self.process_amputations(amputations, entity, time)
@@ -305,7 +507,7 @@ module Synthea
         patient.observation(:triglycerides, time, entity[:cholesterol][:triglycerides], :observation, :vital_sign)
         patient.observation(:hdl, time, entity[:cholesterol][:hdl], :observation, :vital_sign)
         patient.observation(:ldl, time, entity[:cholesterol][:ldl], :observation, :vital_sign)
-        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report, nil)
+        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report, :no_action)
       end
     end
   end

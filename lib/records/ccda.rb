@@ -4,17 +4,19 @@ module Synthea
 
       def self.convert_to_ccda (entity)
         synthea_record = entity.record_synthea
-        indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0}
+        indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0}
         ccda_record = ::Record.new
         basic_info(entity, ccda_record)
         synthea_record.encounters.each do |encounter|
           encounter(encounter, ccda_record)
-          [:conditions, :observations, :procedures, :immunizations].each do |attribute| 
+          [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute| 
             entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
               #Exception: blood pressure needs to take two observations as an argument
               method = entry['ccda']
-              send(method, entry, ccda_record) unless method.nil?
+              method = attribute.to_s if method.nil?
+              binding.pry if method == 'observations'
+              send(method, entry, ccda_record) unless method == :no_action
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]
             end
@@ -113,6 +115,45 @@ module Synthea
           "start_time" => time.to_i,
           "end_time" => time.to_i + 15.minutes,
         })
+      end
+
+      def self.careplans(plan, ccda_record)
+        type = plan['type']
+        time = plan['time']
+        entries = [type] + plan['activities']
+        entries.each do |entry| 
+          care_goal = CareGoal.new({
+            'codes' => CAREPLAN_LOOKUP[entry][:codes],
+            'description' => CAREPLAN_LOOKUP[entry][:description],
+            'start_time' => time.to_i,
+            'reason' => COND_LOOKUP[plan['reason']]
+          })
+          if plan['stop']
+            care_goal['end_time'] = plan['stop'].to_i 
+            care_goal.status='inactive'
+          else
+            care_goal.status='active'
+          end
+          ccda_record.care_goals << care_goal
+        end
+      end
+
+      def self.medications(prescription, ccda_record)
+        type = prescription['type']
+        time = prescription['time']
+        medication = Medication.new({
+          'codes' =>  MEDICATION_LOOKUP[type][:codes],
+          'description' => MEDICATION_LOOKUP[type][:description],
+          'start_time' => time.to_i,
+          'reason' => COND_LOOKUP[prescription['reason']]
+        })
+        if prescription['stop']
+          medication['end_time'] = prescription['stop'].to_i 
+          medication.status='inactive'
+        else
+          medication.status='active'
+        end
+        ccda_record.medications << medication
       end
 		end
 	end

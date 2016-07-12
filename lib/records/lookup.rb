@@ -13,7 +13,21 @@ module Synthea
     hdl: { description: 'High Density Lipoprotein Cholesterol', code: '2085-9', unit: 'mg/dL'},
     ldl: { description: 'Low Density Lipoprotein Cholesterol', code: '18262-6', unit: 'mg/dL'},
     lipid_panel: { description: 'Lipid Panel', code: '57698-3'},
-    blood_pressure: { description: 'Blood Pressure', code: '55284-4'}
+    blood_pressure: { description: 'Blood Pressure', code: '55284-4'},
+
+    basic_metabolic_panel: { description: 'Basic Metabolic Panel', code: '51990-0'},
+      glucose: { description: 'Glucose', code: '2339-0', unit: 'mg/dL'},
+      urea_nitrogen: { description: 'Urea Nitrogen', code: '6299-2', unit: 'mg/dL'},
+      creatinine: { description: 'Creatinine', code: '38483-4', unit: 'mg/dL'},
+      calcium: { description: 'Calcium', code: '49765-1', unit: 'mg/dL'},
+      electrolytes_panel: { description: 'Electrolytes Panel', code: '55231-5'},
+        sodium: { description: 'Sodium', code: '2947-0', unit: 'mmol/L'},
+        potassium: { description: 'Potassium', code: '6298-4', unit: 'mmol/L'},
+        chloride: { description: 'Chloride', code: '2069-3', unit: 'mmol/L'},
+        carbon_dioxide: { description: 'Carbon Dioxide', code: '20565-8', unit: 'mmol/L'},
+
+    microalbumin_creatine_ratio: { description: 'Microalbumin Creatine Ratio', code: '14959-1', unit: 'mg/g'},
+    egfr: { description: 'Estimated Glomerular Filtration Rate', code: '33914-3', unit: 'mL/min/{1.73_m2}'}
   }
 
 	COND_LOOKUP = {
@@ -50,6 +64,27 @@ module Synthea
     myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
     cardiac_arrest: {description: 'Cardiac Arrest', codes: {'SNOMED-CT' => ['410429000']}},
     atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} }
+  }
+
+  CAREPLAN_LOOKUP = {
+    diabetes: { description: 'Diabetes self management plan', codes: {'SNOMED-CT'=>['698360004']}},
+    diabetic_diet: { description: 'Diabetic diet', codes: {'SNOMED-CT'=>['160670007']}},
+    exercise: { description: 'Exercise therapy', codes: {'SNOMED-CT'=>['229065009']}}
+  }
+
+  REASON_LOOKUP = {
+    diabetes_well_controlled: {
+      description: 'Type II Diabetes Mellitus Well Controlled',
+      codes: {'SNOMED-CT'=>['444110003']}
+    }
+  }
+
+  MEDICATION_LOOKUP = {
+    metformin: { description: '24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet', codes: {'RxNorm'=>['860975']}},
+    glp1ra: { description: '3 ML liraglutide 6 MG/ML Pen Injector', codes: {'RxNorm'=>['897122']}},
+    sglt2i: { description: 'canagliflozin 100 MG Oral Tablet', codes: {'RxNorm'=>['1373463']}},
+    basal_insulin: { description: 'insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]', codes: {'RxNorm'=>['106892']}},
+    prandial_insulin: { description: 'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]', codes: {'RxNorm'=>['865098']}}
   }
 
   RACE_ETHNICITY_CODES = {
