@@ -84,11 +84,11 @@ module Synthea
         }
       end
 
-      def medication_start(type, time, reason)
+      def medication_start(type, time, reasons)
         @medications << {
           'type' => type,
           'time' => time,
-          'reason' => reason
+          'reasons' => reasons #an array of reasons
         }
       end
 

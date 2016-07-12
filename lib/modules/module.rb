@@ -42,5 +42,13 @@ module Synthea
     def self.convert_risk_to_timestep(risk, original_period)
       return 1-((1-risk) ** (Synthea::Config.time_step.to_f/original_period))
     end
+
+    def prescribeMedication(med, reason, time, entity)
+      if entity[:medications][med].nil?
+        entity[:medications][med] = [ time, [reason ] ]
+      elsif !entity[:medications][med][1].include?(reason) 
+        entity[:medications][med][1] << reason
+      end
+    end
   end
 end

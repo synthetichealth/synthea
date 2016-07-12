@@ -286,8 +286,11 @@ module Synthea
 
       def self.medications(prescription, fhir_record, patient, encounter)
         medData = MEDICATION_LOOKUP[prescription['type']]
-        reasonCode = COND_LOOKUP[prescription['reason']][:codes]['SNOMED-CT'][0]
-        reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==reasonCode} }
+        reasonCodes = []
+        prescription['reasons'].each do |reason|
+          reasonCodes << COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
+        end
+        reasons = fhir_record.entry.select{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c| reasonCodes.include?(c.code)} }
         medOrder = FHIR::MedicationOrder.new({
           'medicationCodeableConcept'=>{
             'coding'=>[{
@@ -299,9 +302,12 @@ module Synthea
           'patient' => {'reference'=> "Patient/#{patient.fullUrl}"},
           'encounter' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
           'dateWritten' => convertFhirDateTime(prescription['time']),
-          'reasonReference' => {'reference'=> "Condition/#{reason.fullUrl}"},
+          'reasonReference' => [] ,
           'activity' => []
         })
+        reasons.each do |r|
+          medOrder.reasonReference << {'reference'=> "Condition/#{r.fullUrl}"}
+        end
         if prescription['stop']
           medOrder.status = 'stopped' 
           medOrder.dateEnded = convertFhirDateTime(prescription['stop'])

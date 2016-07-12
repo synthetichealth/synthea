@@ -145,7 +145,7 @@ module Synthea
           'codes' =>  MEDICATION_LOOKUP[type][:codes],
           'description' => MEDICATION_LOOKUP[type][:description],
           'start_time' => time.to_i,
-          'reason' => COND_LOOKUP[prescription['reason']]
+          'reason' => COND_LOOKUP[prescription['reasons'][0]]
         })
         if prescription['stop']
           medication['end_time'] = prescription['stop'].to_i 
