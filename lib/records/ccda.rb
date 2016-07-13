@@ -15,7 +15,6 @@ module Synthea
               #Exception: blood pressure needs to take two observations as an argument
               method = entry['ccda']
               method = attribute.to_s if method.nil?
-              binding.pry if method == 'observations'
               send(method, entry, ccda_record) unless method == :no_action
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]

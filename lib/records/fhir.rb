@@ -13,7 +13,6 @@ module Synthea
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute| 
             entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
-              #Exception: blood pressure needs to take two observations as an argument
               method = entry['fhir']
               method = attribute.to_s if method.nil?
               send(method, entry, fhir_record, patient, curr_encounter)
@@ -217,7 +216,7 @@ module Synthea
           'performedDateTime' => convertFhirDateTime(procedure['time'],'time'),
           'encounter' => { 'reference' => "Encounter/#{encounter.fullUrl}" },
         })
-        fhir_procedure.reasonReference = FHIR::Reference.new({'reference'=>reason.fullUrl,'display'=>reason.resource.code.text}) if reason
+        fhir_procedure.reasonReference = FHIR::Reference.new({'reference'=>"Condition/#{reason.fullUrl}",'display'=>reason.resource.code.text}) if reason
 
         entry = FHIR::Bundle::Entry.new
         entry.resource = fhir_procedure

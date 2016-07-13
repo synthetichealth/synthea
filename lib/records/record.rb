@@ -96,6 +96,13 @@ module Synthea
         !@medications.find{|x|x['type']==type && x['stop'].nil?}.nil?
       end
 
+      def update_med_reasons(type, reasons)
+        prescription = @medications.find{|x|x['type']==type && x['stop'].nil?}
+        if prescription
+          prescription['reasons'] = reasons
+        end
+      end
+
       def medication_stop(type, time, reason)
         prescription = @medications.find{|x|x['type']==type && x['stop'].nil?}
         if prescription
