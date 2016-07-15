@@ -1,0 +1,116 @@
+{
+    "name": "Examplitis",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Demo_Guard"
+        },
+        "Demo_Guard": {
+            "type": "Guard",
+            "if": {
+                "conditionType": "And",
+                "conditions": [
+                    {
+                        "conditionType": "Gender",
+                        "gender": "M" 
+                    },
+                    {
+                        "conditionType": "Age",
+                        "operator": ">",
+                        "quantity": 40,
+                        "unit": "years"
+                    }
+                ]
+            },
+            "distributed_transition": [
+                {
+                    "distribution": 0.51,
+                    "transition": "Pre_Examplitis"
+                },
+                {
+                    "distribution": 0.49,
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Pre_Examplitis": {
+            "type": "Delay",
+            "range": {
+                "low": 0,
+                "high": 10,
+                "unit": "years"
+            },
+            "direct_transition": "Examplitis" 
+        },
+        "Examplitis": {
+            "type": "Diagnosis",
+            "code": {
+                "system": "http://example.org/c",
+                "code": "123",
+                "displayName": "Examplitis"
+            },
+            "direct_transition": "Examplitol"
+        },
+        "Examplitol": {
+            "type": "MedicationOrder",
+            "code": {
+                "system": "http://example.org/m",
+                "code": "456",
+                "displayName": "Examplitol"
+            },
+            "reason": "Examplitis",
+            "distributed_transition": [
+                {
+                    "distribution": 0.2,
+                    "transition": "Pre_Examplotomy"
+                },
+                {
+                    "distribution": 0.1,
+                    "transition": "Last Days"
+                },
+                {
+                    "distribution": 0.7,
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Pre_Examplotomy": {
+            "type": "Delay",
+            "range": {
+                "low": 18,
+                "high": 36,
+                "unit": "months"
+            },
+            "direct_transition": "Examplotomy" 
+        },
+        "Examplotomy": {
+            "type": "Procedure",
+            "reason": "Examplitis",
+            "distributed_transition": [
+                {
+                    "distribution": 0.1,
+                    "transition": "Death"
+                },
+                {
+                    "distribution": 0.9,
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Last_Days": {
+            "type": "Delay",
+            "range": {
+                "low": 8,
+                "high": 20,
+                "unit": "years"
+            },
+            "direct_transition": "Death" 
+        },
+        "Death": {
+            "type": "Death"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}
