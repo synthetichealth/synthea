@@ -360,9 +360,15 @@ module Synthea
       #Treatments and Medications
       #-----------------------------------------------------------------------#
       rule :heart_healthy_lifestyle, [:coronary_heart_disease, :stroke, :cardiac_arrest, :myocardial_infarction], [] do |time, entity|
-        if entity[:coronary_heart_disease] || entity[:stroke_history] || entity[:cardiac_arrest] || entity[:myocardial_infarction]
+        reasons = []
+        [:coronary_heart_disease, :stroke, :cardiac_arrest, :myocardial_infarction].each do |disease|
+          reasons << disease if entity[disease] || entity.had_event?(disease)
+        end
+        puts entity[:name_last] if reasons.length > 1
+        unless reasons.empty?
           entity[:careplan] ||= Hash.new
-          entity[:careplan][:cardiovascular_disease] ||= [:exercise, :stress_management, :stop_smoking, :healthy_diet]
+          entity[:careplan][:cardiovascular_disease] ||= {'activities'=>[:exercise, :stress_management, :stop_smoking, :healthy_diet]}
+          entity[:careplan][:cardiovascular_disease]['reasons'] = reasons
         end
       end
 
@@ -404,7 +410,9 @@ module Synthea
 
         if entity[:careplan] && entity[:careplan][:cardiovascular_disease]
           if !entity.record_synthea.careplan_active?(:cardiovascular_disease)
-            entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease], time, :diabetes)
+            entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['activities'], time, entity[:careplan][:cardiovascular_disease]['reasons'])
+          else 
+            entity.record_synthea.update_careplan_reasons(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['reasons'],time)
           end
         elsif entity.record_synthea.careplan_active?(:cardiovascular_disease)
           entity.record_synthea.careplan_stop(:cardiovascular_disease,time)
@@ -418,7 +426,7 @@ module Synthea
               if !entity.record_synthea.medication_active?(med)
                 entity.record_synthea.medication_start(med, time, entity[:medications][med][1])
               else
-                entity.record_synthea.update_med_reasons(med, entity[:medications][med][1])
+                entity.record_synthea.update_med_reasons(med, entity[:medications][med][1], time)
               end
             elsif entity.record_synthea.medication_active?(med)
               # This prescription can be stopped...

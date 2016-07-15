@@ -247,4 +247,62 @@ class FhirTest < Minitest::Test
     assert_equal(false, imm.reported)
     assert_equal("Encounter/#{@encounterID}", imm.encounter.reference)
   end
+
+  def test_medication
+    #insert 2 conditions that are reasons:
+    condition1 = {'type' => :cardiac_arrest, 'time' => @time}
+    Synthea::Output::FhirRecord.condition(condition1, @fhir_record, @patient_entry, @encounter_entry)
+    condition1fhir = @fhir_record.entry[-1]
+    condition2 = {'type' => :coronary_heart_disease, 'time' => @time}
+    Synthea::Output::FhirRecord.condition(condition2, @fhir_record, @patient_entry, @encounter_entry)
+    condition2fhir = @fhir_record.entry[-1]
+    med_hash = { 'type' => :amiodarone, 'time' =>  @time, 'reasons' => [:cardiac_arrest, :coronary_heart_disease],
+     'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved}
+    Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
+    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationOrder)}.resource
+    med_coding = med.medicationCodeableConcept.coding[0]
+    assert_equal('834357', med_coding.code)
+    assert_equal('3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe', med_coding.display)
+    assert_equal('http://www.nlm.nih.gov/research/umls/rxnorm',med_coding.system)
+    assert_equal("Patient/#{@patientID}", med.patient.reference)
+    assert_equal("Encounter/#{@encounterID}", med.encounter.reference)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time), med.dateWritten)
+    assert_equal('stopped', med.status)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time +  15.minutes), med.dateEnded)
+    assert_equal("Condition/#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
+    assert_equal("Condition/#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
+  end
+
+  def test_careplan
+    condition1 = {'type' => :coronary_heart_disease, 'time' => @time}
+    Synthea::Output::FhirRecord.condition(condition1, @fhir_record, @patient_entry, @encounter_entry)
+    condition1fhir = @fhir_record.entry[-1]
+    condition2 = {'type' => :cardiac_arrest, 'time' => @time}
+    Synthea::Output::FhirRecord.condition(condition2, @fhir_record, @patient_entry, @encounter_entry)
+    condition2fhir = @fhir_record.entry[-1]
+    plan_hash = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'time' => @time, 'reasons' => [:coronary_heart_disease, :cardiac_arrest], 'stop' => @time + 15.minutes}
+    Synthea::Output::FhirRecord.careplans(plan_hash, @fhir_record, @patient_entry, @encounter_entry)
+    plan = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::CarePlan)}.resource
+    assert_equal("Patient/#{@patientID}", plan.subject.reference)
+    assert_equal("Encounter/#{@encounterID}", plan.context.reference)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time), plan.period.start)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time + 15.minutes), plan.period.end)
+    plan_code = plan.category[0].coding[0]
+    assert_equal('698358001', plan_code.code)
+    assert_equal('Angina self management plan', plan_code.display)
+    assert_equal('http://snomed.info/sct', plan_code.system)
+    assert_equal('completed', plan.status)
+    assert_equal("Condition/#{condition1fhir.fullUrl}", plan.addresses[0].reference)
+    assert_equal("Condition/#{condition2fhir.fullUrl}", plan.addresses[1].reference)
+    #first activity
+    activity1 = plan.activity[-2].detail.code.coding[0]
+    assert_equal('229065009', activity1.code)
+    assert_equal('Exercise therapy', activity1.display)
+    assert_equal('http://snomed.info/sct', activity1.system)
+    #second activity
+    activity2 = plan.activity[-1].detail.code.coding[0]
+    assert_equal('226234005', activity2.code)
+    assert_equal('Healthy Diet', activity2.display)
+    assert_equal('http://snomed.info/sct', activity2.system)
+  end
 end

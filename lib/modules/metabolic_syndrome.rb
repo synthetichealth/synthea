@@ -416,8 +416,11 @@ module Synthea
 
         if entity[:careplan] && entity[:careplan][:diabetes]
           # Add a diabetes self-management careplan if one isn't active
+          entity[:diabetes] ? reason = :diabetes : reason = :prediabetes
           if !entity.record_synthea.careplan_active?(:diabetes)
-            entity.record_synthea.careplan_start(:diabetes, entity[:careplan][:diabetes], time, :diabetes)
+            entity.record_synthea.careplan_start(:diabetes, entity[:careplan][:diabetes], time, [reason])
+          else 
+            entity.record_synthea.update_careplan_reasons(:diabetes, [reason],time)
           end
         elsif entity.record_synthea.careplan_active?(:diabetes)
           # We need to stop the current diabetes careplan

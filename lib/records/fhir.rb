@@ -3,6 +3,7 @@ module Synthea
 		module FhirRecord
 
       def self.convert_to_fhir (entity)
+        binding.pry if entity[:prediabetes] && entity[:diabetes].nil?
         synthea_record = entity.record_synthea
         indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0}
         fhir_record = FHIR::Bundle.new
@@ -242,28 +243,39 @@ module Synthea
 
       def self.careplans(plan, fhir_record, patient, encounter)
         careplanData = CAREPLAN_LOOKUP[plan['type']]
-        reasonCode = COND_LOOKUP[plan['reason']][:codes]['SNOMED-CT'][0]
-        reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==reasonCode} }
+        reasons = []
+        plan['reasons'].each do |reason|
+          reasonCode = COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
+          r = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && reasonCode == e.resource.code.coding[0].code }
+          reasons << r unless r.nil?
+        end
+        
+        binding.pry if reasons.length != plan['reasons'].length
+        #binding.pry if reasons.length > 1 || plan['reasons'].length > 1
+
         careplan = FHIR::CarePlan.new({
           'subject' => {'reference'=> "Patient/#{patient.fullUrl}"},
           'context' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
-          'period' => {'start'=>convertFhirDateTime(plan['time'])},
-          'category' => {
+          'period' => {'start'=>convertFhirDateTime(plan['start_time'])},
+          'category' => [{
             'coding'=>[{
               'code'=> careplanData[:codes]['SNOMED-CT'][0],
               'display'=> careplanData[:description],
               'system' => 'http://snomed.info/sct'
             }]
-          },
-          'activity' => []
+          }],
+          'activity' => [],
+          'addresses' => [] 
         })
+        reasons.each do |r|
+          careplan.addresses << FHIR::Reference.new({'reference'=> "Condition/#{r.fullUrl}"}) unless reasons.nil? || reasons.empty?
+        end
         if plan['stop']
           careplan.period.end = convertFhirDateTime(plan['stop'])
           careplan.status = 'completed'
         else
           careplan.status = 'active'
         end 
-        careplan.addresses = FHIR::Reference.new({'reference'=> "Condition/#{reason.fullUrl}"}) if reason
         plan['activities'].each do |activity|
           activityData = CAREPLAN_LOOKUP[activity]
           careplan.activity << FHIR::CarePlan::Activity.new({
@@ -285,11 +297,12 @@ module Synthea
 
       def self.medications(prescription, fhir_record, patient, encounter)
         medData = MEDICATION_LOOKUP[prescription['type']]
-        reasonCodes = []
+        reasons = []
         prescription['reasons'].each do |reason|
-          reasonCodes << COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
+          reasonCode = COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
+          r = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && reasonCode == e.resource.code.coding[0].code }
+          reasons << r unless r.nil?
         end
-        reasons = fhir_record.entry.select{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c| reasonCodes.include?(c.code)} }
         medOrder = FHIR::MedicationOrder.new({
           'medicationCodeableConcept'=>{
             'coding'=>[{
@@ -300,12 +313,11 @@ module Synthea
           },
           'patient' => {'reference'=> "Patient/#{patient.fullUrl}"},
           'encounter' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
-          'dateWritten' => convertFhirDateTime(prescription['time']),
-          'reasonReference' => [] ,
-          'activity' => []
+          'dateWritten' => convertFhirDateTime(prescription['start_time']),
+          'reasonReference' => []
         })
         reasons.each do |r|
-          medOrder.reasonReference << {'reference'=> "Condition/#{r.fullUrl}"}
+          medOrder.reasonReference << FHIR::Reference.new({'reference'=> "Condition/#{r.fullUrl}"})
         end
         if prescription['stop']
           medOrder.status = 'stopped' 

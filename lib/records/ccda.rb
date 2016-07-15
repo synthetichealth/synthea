@@ -125,7 +125,7 @@ module Synthea
             'codes' => CAREPLAN_LOOKUP[entry][:codes],
             'description' => CAREPLAN_LOOKUP[entry][:description],
             'start_time' => time.to_i,
-            'reason' => COND_LOOKUP[plan['reason']]
+            'reason' => COND_LOOKUP[plan['reasons'][0]]
           })
           if plan['stop']
             care_goal['end_time'] = plan['stop'].to_i 

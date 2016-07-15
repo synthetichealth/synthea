@@ -63,7 +63,8 @@ module Synthea
     coronary_heart_disease: { description: 'Coronary Heart Disease', codes: {'SNOMED-CT' => ['53741008']}},
     myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
     cardiac_arrest: {description: 'Cardiac Arrest', codes: {'SNOMED-CT' => ['410429000']}},
-    atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} }
+    atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} },
+    cardiovascular_disease: { description: 'Disorder of cardiovascular system', codes: {'SNOMED-CT'=>['49601007']}}
   }
 
   CAREPLAN_LOOKUP = {

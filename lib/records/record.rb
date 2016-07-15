@@ -88,6 +88,7 @@ module Synthea
         @medications << {
           'type' => type,
           'time' => time,
+          'start_time' => time,
           'reasons' => reasons #an array of reasons
         }
       end
@@ -96,10 +97,11 @@ module Synthea
         !@medications.find{|x|x['type']==type && x['stop'].nil?}.nil?
       end
 
-      def update_med_reasons(type, reasons)
+      def update_med_reasons(type, reasons, update_time)
         prescription = @medications.find{|x|x['type']==type && x['stop'].nil?}
         if prescription
           prescription['reasons'] = reasons
+          prescription['time'] = update_time
         end
       end
 
@@ -116,7 +118,8 @@ module Synthea
           'type' => type,
           'activities' => activities,
           'time' => time,
-          'reason' => reason
+          'start_time' => time,
+          'reasons' => reason
         }
       end
 
@@ -125,8 +128,16 @@ module Synthea
       end
 
       def careplan_stop(type, time)
-        careplan = @careplans.find{|x|x['type']==type && x['status']=='active'}
+        careplan = @careplans.find{|x|x['type']==type && x['stop'].nil?}
         careplan['stop'] = time if careplan
+      end
+
+      def update_careplan_reasons(type, reasons, update_time)
+        careplan = @careplans.find{|x|x['type']==type}
+        if careplan
+          careplan['reasons'] = reasons
+          careplan['time'] = update_time
+        end
       end
 		end
 	end

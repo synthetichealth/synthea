@@ -54,7 +54,7 @@ module Synthea
     def stopMedication(med, reason, time, entity)
       return if entity[:medications][med].nil?
       entity[:medications][med][1].delete(reason) if entity[:medications][med][1].include?(reason)
-      entity[:medications].delete(med) if entity[:medications][med].empty?
+      entity[:medications].delete(med) if entity[:medications][med][1].empty?
     end
   end
 end
