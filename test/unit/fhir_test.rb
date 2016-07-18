@@ -256,7 +256,7 @@ class FhirTest < Minitest::Test
     condition2 = {'type' => :coronary_heart_disease, 'time' => @time}
     Synthea::Output::FhirRecord.condition(condition2, @fhir_record, @patient_entry, @encounter_entry)
     condition2fhir = @fhir_record.entry[-1]
-    med_hash = { 'type' => :amiodarone, 'time' =>  @time, 'reasons' => [:cardiac_arrest, :coronary_heart_disease],
+    med_hash = { 'type' => :amiodarone, 'time' =>  @time, 'start_time' => @time, 'reasons' => [:cardiac_arrest, :coronary_heart_disease],
      'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
     med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationOrder)}.resource
@@ -280,7 +280,7 @@ class FhirTest < Minitest::Test
     condition2 = {'type' => :cardiac_arrest, 'time' => @time}
     Synthea::Output::FhirRecord.condition(condition2, @fhir_record, @patient_entry, @encounter_entry)
     condition2fhir = @fhir_record.entry[-1]
-    plan_hash = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'time' => @time, 'reasons' => [:coronary_heart_disease, :cardiac_arrest], 'stop' => @time + 15.minutes}
+    plan_hash = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'start_time'=>@time, 'time' => @time, 'reasons' => [:coronary_heart_disease, :cardiac_arrest], 'stop' => @time + 15.minutes}
     Synthea::Output::FhirRecord.careplans(plan_hash, @fhir_record, @patient_entry, @encounter_entry)
     plan = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::CarePlan)}.resource
     assert_equal("Patient/#{@patientID}", plan.subject.reference)

@@ -3,7 +3,6 @@ module Synthea
 		module FhirRecord
 
       def self.convert_to_fhir (entity)
-        binding.pry if entity[:prediabetes] && entity[:diabetes].nil?
         synthea_record = entity.record_synthea
         indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0}
         fhir_record = FHIR::Bundle.new
@@ -250,9 +249,6 @@ module Synthea
           reasons << r unless r.nil?
         end
         
-        binding.pry if reasons.length != plan['reasons'].length
-        #binding.pry if reasons.length > 1 || plan['reasons'].length > 1
-
         careplan = FHIR::CarePlan.new({
           'subject' => {'reference'=> "Patient/#{patient.fullUrl}"},
           'context' => {'reference'=> "Encounter/#{encounter.fullUrl}"},

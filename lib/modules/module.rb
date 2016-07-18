@@ -43,7 +43,11 @@ module Synthea
       return 1-((1-risk) ** (Synthea::Config.time_step.to_f/original_period))
     end
 
+    #These functions are used to start/update medications and to stop medications, respectively.
+    #Similar functions were not written for care plans because a care plan is typically only started/updated in one
+    #rule, whereas it is common for a medication to be used in multiple rules. This may change in future modules(?) 
     def prescribeMedication(med, reason, time, entity)
+      entity[:medications] ||= Hash.new
       if entity[:medications][med].nil?
         entity[:medications][med] = [ time, [reason ] ]
       elsif !entity[:medications][med][1].include?(reason) 
@@ -52,7 +56,7 @@ module Synthea
     end
 
     def stopMedication(med, reason, time, entity)
-      return if entity[:medications][med].nil?
+      return if entity[:medications].nil? || entity[:medications][med].nil?
       entity[:medications][med][1].delete(reason) if entity[:medications][med][1].include?(reason)
       entity[:medications].delete(med) if entity[:medications][med][1].empty?
     end

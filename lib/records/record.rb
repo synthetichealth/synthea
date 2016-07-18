@@ -133,7 +133,7 @@ module Synthea
       end
 
       def update_careplan_reasons(type, reasons, update_time)
-        careplan = @careplans.find{|x|x['type']==type}
+        careplan = @careplans.find{|x|x['type']==type && x['stop'].nil?}
         if careplan
           careplan['reasons'] = reasons
           careplan['time'] = update_time
