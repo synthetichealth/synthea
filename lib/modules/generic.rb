@@ -13,7 +13,7 @@ module Synthea
       end
 
       # process module defined in json
-      rule :generic, [:generic], [:generic] do |time, entity|
+      rule :generic, [:generic], [:generic, :death] do |time, entity|
         if ! entity[:is_alive]
           return
         end
@@ -84,9 +84,17 @@ module Synthea
         when "Terminal"
           Terminal.new(self, name, time)
         when "Delay"
-          Delay.new(self,name, time)
+          Delay.new(self, name, time)
         when "Guard"
-          Guard.new(self,name, time)
+          Guard.new(self, name, time)
+        when "Diagnosis"
+          Diagnosis.new(self, name, time)
+        when "MedicationOrder"
+          MedicationOrder.new(self, name, time)
+        when "Procedure"
+          Procedure.new(self, name, time)
+        when "Death"
+          Death.new(self, name, time)
         else
           raise "Unsupported state type: #{c['type']}"
         end
@@ -177,6 +185,58 @@ module Synthea
         else
           return false
         end
+      end
+    end
+
+    class Diagnosis < Synthea::States::State
+      def initialize (context, name, start)
+        super
+        @code = context.config['states'][name]['code']
+      end
+
+      def process(time, entity)
+        puts "⬇ Diagnosed #{@name} at age #{entity[:age]} on #{@start}"
+        return true
+      end
+    end
+
+    class MedicationOrder < Synthea::States::State
+      def initialize (context, name, start)
+        super
+        @code = context.config['states'][name]['code']
+        if ! context.config['states'][name]['reason'].nil?
+          @reason = context.history.find {|h| h.name == context.config['states'][name]['reason'] }
+        end
+      end
+
+      def process(time, entity)
+        puts "⬇ Prescribed #{@name} at age #{entity[:age]} on #{@start}"
+        return true
+      end
+    end
+
+    class Procedure < Synthea::States::State
+      def initialize (context, name, start)
+        super
+        @code = context.config['states'][name]['code']
+        if ! context.config['states'][name]['reason'].nil?
+          @reason = context.history.find {|h| h.name == context.config['states'][name]['reason'] }
+        end
+      end
+
+      def process(time, entity)
+        puts "⬇ Performed #{@name} at age #{entity[:age]} on #{@start}"
+        return true
+      end
+    end
+
+    class Death < Synthea::States::State
+      def process(time, entity)
+        entity[:is_alive] = false
+        entity.events.create(time, :death, :generic, true)
+        Synthea::Modules::Lifecycle.record_death(entity, time)
+        puts "⬇ Died at age #{entity[:age]} on #{@start}"
+        true
       end
     end
   end
