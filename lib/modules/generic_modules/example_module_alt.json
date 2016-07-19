@@ -8,14 +8,14 @@
         "Demo_Guard": {
             "type": "Guard",
             "if": {
-                "conditionType": "And",
+                "condition_type": "And",
                 "conditions": [
                     {
-                        "conditionType": "Gender",
+                        "condition_type": "Gender",
                         "gender": "M" 
                     },
                     {
-                        "conditionType": "Age",
+                        "condition_type": "Age",
                         "operator": ">",
                         "quantity": 40,
                         "unit": "years"
@@ -43,21 +43,28 @@
             "direct_transition": "Examplitis" 
         },
         "Examplitis": {
-            "type": "Diagnosis",
-            "code": {
-                "system": "http://example.org/c",
+            "type": "ConditionOnset",
+            "target_encounter": "Wellness_Encounter",
+            "codes": [{
+                "system": "SNOMED-CT",
                 "code": "123",
-                "displayName": "Examplitis"
-            },
+                "display": "Examplitis"
+            }],
+            "direct_transition": "Wellness_Encounter"
+        },
+        "Wellness_Encounter": {
+            "type": "Encounter",
+            "wellness": true,
             "direct_transition": "Examplitol"
         },
         "Examplitol": {
             "type": "MedicationOrder",
-            "code": {
-                "system": "http://example.org/m",
+            "target_encounter": "Wellness_Encounter",
+            "codes": [{
+                "system": "RxNorm",
                 "code": "456",
-                "displayName": "Examplitol"
-            },
+                "display": "Examplitol"
+            }],
             "reason": "Examplitis",
             "distributed_transition": [
                 {
@@ -85,11 +92,11 @@
         },
         "Examplotomy": {
             "type": "Procedure",
-            "code": {
-                "system": "http://example.org/p",
+            "codes": [{
+                "system": "SNOMED-CT",
                 "code": "789",
-                "displayName": "Examplotomy"
-            },
+                "display": "Examplotomy"
+            }],
             "reason": "Examplitis",
             "distributed_transition": [
                 {

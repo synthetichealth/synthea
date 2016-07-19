@@ -25,8 +25,32 @@ module Synthea
         end
       end
 
-      def self.record_generic(entity, time)
-        
+      #-----------------------------------------------------------------------#
+      
+      def self.perform_wellness_encounter(entity, time)
+        return if entity[:generic].nil?
+
+        entity[:generic].each do | name, ctx |
+          st = ctx.current_state
+          if st.is_a?(Synthea::States::Encounter) && st.wellness && !st.processed
+            st.perform_encounter(time, entity)
+            # The encounter got unjammed.  Better keep going!
+            ctx.process(time, entity)
+          end
+        end
+      end
+
+      def self.add_lookup_code(symbol, state_codes, lookup_hash)
+        return if state_codes.empty?
+
+        lookup_hash[symbol] = {
+          description: state_codes.first['display'],
+          codes: {}
+        }
+        state_codes.each do |c|
+          lookup_hash[symbol][:codes][c['system']] ||= []
+          lookup_hash[symbol][:codes][c['system']] << c['code']
+        end
       end
     end
   end
@@ -38,7 +62,7 @@ module Synthea
       def initialize (config, time)
         @config = config
         @history = []
-        @current_state = self.createState("Initial", time)
+        @current_state = self.create_state("Initial", time)
       end
 
       def process(time, entity)
@@ -55,7 +79,7 @@ module Synthea
 
         c = @config['states'][@current_state.name]
         if c.has_key? 'direct_transition'
-          return self.createState(c['direct_transition'], time)
+          return self.create_state(c['direct_transition'], time)
         elsif c.has_key? 'distributed_transition'
           # distributed_transition is an array of distributions that should total 1.0.
           # So... pick a random float from 0.0 to 1.0 and walk up the scale.
@@ -64,19 +88,23 @@ module Synthea
           c['distributed_transition'].each do |dt|
             high += dt['distribution']
             if choice < high
-              return self.createState(dt['transition'], time)
+              return self.create_state(dt['transition'], time)
             end
           end
           # We only get here if the numbers didn't add to 1.0 or if one of the numbers caused
           # floating point imprecision (very, very rare).  Just go with the last one.
-          return self.createState(c['distributed_transition'].last['transition'], time)
+          return self.create_state(c['distributed_transition'].last['transition'], time)
         else
           # No transition.  Go to the default terminal state
           return Terminal.new(self, "Terminal", time)
         end
       end
 
-      def createState(name, time)
+      def most_recent_by_name(name)
+        @history.reverse.find { |h| h.name == name }
+      end
+
+      def create_state(name, time)
         c = @config['states'][name]
         case c['type']
         when "Initial"
@@ -85,10 +113,12 @@ module Synthea
           Terminal.new(self, name, time)
         when "Delay"
           Delay.new(self, name, time)
+        when "Encounter"
+          Encounter.new(self, name, time)
         when "Guard"
           Guard.new(self, name, time)
-        when "Diagnosis"
-          Diagnosis.new(self, name, time)
+        when "ConditionOnset"
+          ConditionOnset.new(self, name, time)
         when "MedicationOrder"
           MedicationOrder.new(self, name, time)
         when "Procedure"
@@ -108,6 +138,14 @@ module Synthea
         @context = context
         @name = name
         @start = start
+      end
+
+      def symbol ()
+        if ! @codes.nil? && ! @codes.empty?
+          @codes.first['display'].gsub(/\s+/,"_").downcase.to_sym
+        else
+          @name.gsub(/\s+/,"_").downcase.to_sym
+        end
       end
     end
 
@@ -137,6 +175,8 @@ module Synthea
       end
 
       def process(time, entity)
+        # TODO: Support delays that go between run cycles (e.g., 3-day delay when the
+        # cycle runs every 7 days).  Currently, the delay would expire 4 days late.
         return time >= @end
       end
     end
@@ -148,7 +188,7 @@ module Synthea
       end
 
       def test(condition, time, entity)
-        case condition['conditionType']
+        case condition['condition_type']
         when 'And'
           condition['conditions'].each do |c|
             if ! test(c, time, entity)
@@ -188,37 +228,121 @@ module Synthea
       end
     end
 
-    class Diagnosis < Synthea::States::State
+    class Encounter < Synthea::States::State
+      attr_reader :wellness, :processed, :time, :codes
+
       def initialize (context, name, start)
         super
-        @code = context.config['states'][name]['code']
-      end
-
-      def process(time, entity)
-        puts "⬇ Diagnosed #{@name} at age #{entity[:age]} on #{@start}"
-        return true
-      end
-    end
-
-    class MedicationOrder < Synthea::States::State
-      def initialize (context, name, start)
-        super
-        @code = context.config['states'][name]['code']
-        if ! context.config['states'][name]['reason'].nil?
-          @reason = context.history.find {|h| h.name == context.config['states'][name]['reason'] }
+        @processed = false
+        if context.config['states'][name]['wellness']
+          @wellness = true
+        else
+          @wellness = false
+          @codes = context.config['states'][name]['codes']
         end
       end
 
       def process(time, entity)
-        puts "⬇ Prescribed #{@name} at age #{entity[:age]} on #{@start}"
+        if !@wellness
+          # No need to wait for a wellness encounter.  Do it now!
+          self.perform_encounter(time, entity)
+        end
+        return @processed
+      end
+
+      def perform_encounter(time, entity)
+        puts "⬇ Encounter #{name} at age #{entity[:age]} on #{time}"
+        @processed = true
+        @time = time
+        self.record_encounter_activities(time, entity)
+      end
+
+      def record_encounter_activities(time, entity)
+        # Look through the history for things to record
+        @context.history.each do |h|
+          # Diagnose conditions
+          if h.is_a?(ConditionOnset) && ! h.diagnosed && h.target_encounter == @name
+            h.diagnose(time, entity)
+          # Prescribe medications
+          elsif h.is_a?(MedicationOrder) && ! h.prescribed && target_encounter == @name
+            h.prescribe(time, entity)
+          end
+        end
+        @processed = true
+      end
+    end
+
+    class ConditionOnset < Synthea::States::State
+      attr_reader :diagnosed, :target_encounter
+
+      def initialize (context, name, start)
+        super
+        @codes = context.config['states'][name]['codes']
+        @target_encounter = context.config['states'][name]['target_encounter']
+        @diagnosed = false
+      end
+
+      def process(time, entity)
+        puts "⬇ Condition Onset #{@name} at age #{entity[:age]} on #{@start}"
+        # If targeted for an encounter before it, and the encounter time is the same
+        # as the onset time, then record it (it happened during the encounter)
+        if ! @target_encounter.nil?
+          past = @context.most_recent_by_name(@target_encounter)
+          if ! past.nil? && past.time == time
+            self.diagnose(time, entity)
+          end
+        end
         return true
+      end
+
+      def diagnose(time, entity)
+        puts "⬇ Diagnosed #{@name} at age #{entity[:age]} on #{time}"
+        Synthea::Modules::Generic::add_lookup_code(self.symbol(), @codes, Synthea::COND_LOOKUP)
+        entity.record_synthea.condition(self.symbol(), time)
+        @diagnosed = true
+      end
+    end
+
+    class MedicationOrder < Synthea::States::State
+      attr_reader :prescribed, :target_encounter
+
+      def initialize (context, name, start)
+        super
+        @codes = context.config['states'][name]['codes']
+        @target_encounter = context.config['states'][name]['target_encounter']
+        @reason = context.config['states'][name]['reason']
+        @prescribed = false
+      end
+
+      def process(time, entity)
+        # If targeted for an encounter before it, and the encounter time is the same
+        # as the start time, then record it (it happened during the encounter)
+        if ! @target_encounter.nil?
+          past = @context.most_recent_by_name(@target_encounter)
+          if ! past.nil? && past.time == time
+            self.prescribe(time, entity)
+          end
+        end
+        return true
+      end
+
+      def prescribe(time, entity)
+        puts "⬇ Prescribed #{@name} at age #{entity[:age]} on #{time}"
+        Synthea::Modules::Generic::add_lookup_code(self.symbol(), @codes, Synthea::MEDICATION_LOOKUP)
+        if ! @reason.nil?
+          cond = @context.most_recent_by_name(@reason)
+          entity.record_synthea.medication_start(self.symbol(), time, cond.symbol())
+        else
+          entity.record_synthea.medication_start(self.symbol(), time)
+        end
+        @prescribed = true
       end
     end
 
     class Procedure < Synthea::States::State
       def initialize (context, name, start)
         super
-        @code = context.config['states'][name]['code']
+        @codes = context.config['states'][name]['codes']
         if ! context.config['states'][name]['reason'].nil?
           @reason = context.history.find {|h| h.name == context.config['states'][name]['reason'] }
         end
