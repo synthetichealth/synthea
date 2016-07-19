@@ -33,7 +33,7 @@ module Synthea
         entity[:generic].each do | name, ctx |
           st = ctx.current_state
           if st.is_a?(Synthea::Generic::States::Encounter) && st.wellness && !st.processed
-            st.perform_encounter(time, entity)
+            st.perform_encounter(time, entity, false)
             # The encounter got unjammed.  Better keep going!
             ctx.process(time, entity)
           end

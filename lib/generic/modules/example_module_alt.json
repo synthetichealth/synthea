@@ -88,10 +88,21 @@
                 "high": 36,
                 "unit": "months"
             },
-            "direct_transition": "Examplotomy" 
+            "direct_transition": "Examplotomy_Encounter"
+        },
+        "Examplotomy_Encounter": {
+            "type": "Encounter",
+            "class": "IMP",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "ABC",
+                "display": "Examplotomy Encounter"
+            }],
+            "direct_transition": "Examplotomy"
         },
         "Examplotomy": {
             "type": "Procedure",
+            "target_encounter": "Examplotomy_Encounter",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "789",

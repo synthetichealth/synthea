@@ -29,14 +29,17 @@ module Synthea
           return if @codes.nil? || @codes.empty?
 
           sym = self.symbol()
-          lookup_hash[sym] = {
+          value = {
             description: @codes.first['display'],
             codes: {}
           }
           @codes.each do |c|
-            lookup_hash[sym][:codes][c['system']] ||= []
-            lookup_hash[sym][:codes][c['system']] << c['code']
+            value[:codes][c['system']] ||= []
+            value[:codes][c['system']] << c['code']
           end
+
+          # intentionally returning the value for further modification (see Encounter.perform_encounter)
+          lookup_hash[sym] = value
         end
       end
 
@@ -90,21 +93,28 @@ module Synthea
           else
             @wellness = false
             @codes = context.config['states'][name]['codes']
+            @class = context.config['states'][name]['class']
           end
         end
 
         def process(time, entity)
           if !@wellness
             # No need to wait for a wellness encounter.  Do it now!
-            self.perform_encounter(time, entity)
+            # TODO: Record the encounter first...
+            self.perform_encounter(time, entity, true)
           end
           return @processed
         end
 
-        def perform_encounter(time, entity)
+        def perform_encounter(time, entity, record_encounter=true)
           puts "⬇ Encounter #{name} at age #{entity[:age]} on #{time}"
           @processed = true
           @time = time
+          if record_encounter
+            value = self.add_lookup_code(ENCOUNTER_LOOKUP)
+            value[:class] = @class
+            entity.record_synthea.encounter(self.symbol(), time)
+          end
           self.record_encounter_activities(time, entity)
         end
 

@@ -172,14 +172,14 @@ module Synthea
   # https://www.nlm.nih.gov/research/umls/mapping_projects/icd9cm_to_snomedct.html
   # http://icd10coded.com/convert/
   ENCOUNTER_LOOKUP = {
-    age_lt_1: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}},
-    age_lt_4: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}},
-    age_lt_11: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}},
-    age_lt_17: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}},
-    age_lt_39: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}},
-    age_lt_64: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}},
-    age_senior: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}}, 
-    emergency: {description: 'Emergency Encounter', codes: {'SNOMED-CT' => ['50849002']}}
+    age_lt_1: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}, class: 'AMB'},
+    age_lt_4: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}, class: 'AMB'},
+    age_lt_11: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}, class: 'AMB'},
+    age_lt_17: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}, class: 'AMB'},
+    age_lt_39: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'AMB'},
+    age_lt_64: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'AMB'},
+    age_senior: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'AMB'}, 
+    emergency: {description: 'Emergency Encounter', codes: {'SNOMED-CT' => ['50849002']}, class: 'EMER'}
   }
 
 
