@@ -109,7 +109,7 @@ module Synthea
         encounterData = ENCOUNTER_LOOKUP[encounter['type']]
         fhir_encounter = FHIR::Encounter.new({
           'status' => 'finished',
-          'class' => {'code' => encounterData[:class], 'system'=>'http://hl7.org/fhir/ValueSet/v3-ActEncounterCode'},
+          'class' => encounterData[:class],
           'type' => [{'coding' => [{'code' => encounterData[:codes]['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}], 'text' => encounterData[:description]}],
           'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
           'period' => {'start' => convertFhirDateTime(encounter['time'],'time'), 'end' => convertFhirDateTime(encounter['time']+15.minutes, 'time')}

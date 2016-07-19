@@ -92,7 +92,7 @@
         },
         "Examplotomy_Encounter": {
             "type": "Encounter",
-            "class": "IMP",
+            "class": "daytime",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "ABC",
