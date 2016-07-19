@@ -120,6 +120,7 @@ module Synthea
 
         def record_encounter_activities(time, entity)
           # Look through the history for things to record
+          # TODO: Consider if we should even allow medications and procedures to be defined *before* encounter
           @context.history.each do |h|
             # Diagnose conditions
             if h.is_a?(ConditionOnset) && ! h.diagnosed && h.target_encounter == @name
@@ -127,6 +128,9 @@ module Synthea
             # Prescribe medications
             elsif h.is_a?(MedicationOrder) && ! h.prescribed && target_encounter == @name
               h.prescribe(time, entity)
+            # Operate!
+            elsif h.is_a?(Procedure) && ! h.operated && target_encounter == @name
+              h.operate(time, entity)
             end
           end
           @processed = true
@@ -191,17 +195,33 @@ module Synthea
       end
 
       class Procedure < State
+        attr_reader :operated, :target_encounter
+
         def initialize (context, name, start)
           super
           @codes = context.config['states'][name]['codes']
-          if ! context.config['states'][name]['reason'].nil?
-            @reason = context.history.find {|h| h.name == context.config['states'][name]['reason'] }
-          end
+          @target_encounter = context.config['states'][name]['target_encounter']
+          @reason = context.config['states'][name]['reason']
+          @operated = false
         end
 
         def process(time, entity)
-          puts "⬇ Performed #{@name} at age #{entity[:age]} on #{@start}"
+          if self.concurrent_with_target_encounter(time)
+            self.operate(time, entity)
+          end
           return true
+        end
+
+        def operate(time, entity)
+          self.add_lookup_code(Synthea::PROCEDURE_LOOKUP)
+          if ! @reason.nil?
+            cond = @context.most_recent_by_name(@reason)
+            entity.record_synthea.procedure(self.symbol(), time, cond.symbol())
+          else
+            entity.record_synthea.procedure(self.symbol(), time)
+          end
+          puts "⬇ Performed #{@name} at age #{entity[:age]} on #{time}"
+          @operated = true
         end
       end
 
