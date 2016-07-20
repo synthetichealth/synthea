@@ -21,7 +21,7 @@ module Synthea
         entity[:generic] ||= {}
         @gmodules.each do |m|
           entity[:generic][m['name']] ||= Synthea::Generic::Context.new(m, time)
-          entity[:generic][m['name']].process(time, entity)
+          entity[:generic][m['name']].run(time, entity)
         end
       end
 
@@ -35,7 +35,7 @@ module Synthea
           if st.is_a?(Synthea::Generic::States::Encounter) && st.wellness && !st.processed
             st.perform_encounter(time, entity, false)
             # The encounter got unjammed.  Better keep going!
-            ctx.process(time, entity)
+            ctx.run(time, entity)
           end
         end
       end

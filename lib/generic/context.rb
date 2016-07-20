@@ -9,8 +9,8 @@ module Synthea
         @current_state = self.create_state("Initial", time)
       end
 
-      def process(time, entity)
-        while ! @current_state.nil? && @current_state.process(time, entity) do
+      def run(time, entity)
+        while ! @current_state.nil? && @current_state.run(time, entity) do
           @history << @current_state
           @current_state = self.next(time)
         end
@@ -21,7 +21,7 @@ module Synthea
           return nil
         end
 
-        c = @config['states'][@current_state.name]
+        c = state_config(@current_state.name)
         if c.has_key? 'direct_transition'
           return self.create_state(c['direct_transition'], time)
         elsif c.has_key? 'distributed_transition'
@@ -40,7 +40,7 @@ module Synthea
           return self.create_state(c['distributed_transition'].last['transition'], time)
         else
           # No transition.  Go to the default terminal state
-          return States::Terminal.new(self, "Terminal", time)
+          return States::Terminal.new(self, "Terminal")
         end
       end
 
@@ -48,9 +48,13 @@ module Synthea
         @history.reverse.find { |h| h.name == name }
       end
 
+      def state_config(name)
+        return @config['states'][name]
+      end
+
       def create_state(name, time)
-        clazz = @config['states'][name]['type']
-        Object::const_get("Synthea::Generic::States::#{clazz}").new(self, name, time)
+        clazz = state_config(name)['type']
+        Object::const_get("Synthea::Generic::States::#{clazz}").new(self, name)
       end
     end
   end
