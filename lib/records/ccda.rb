@@ -15,7 +15,6 @@ module Synthea
               #Exception: blood pressure needs to take two observations as an argument
               method = entry['ccda']
               method = attribute.to_s if method.nil?
-              binding.pry if method == 'observations'
               send(method, entry, ccda_record) unless method == :no_action
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]
@@ -126,7 +125,7 @@ module Synthea
             'codes' => CAREPLAN_LOOKUP[entry][:codes],
             'description' => CAREPLAN_LOOKUP[entry][:description],
             'start_time' => time.to_i,
-            'reason' => COND_LOOKUP[plan['reason']]
+            'reason' => COND_LOOKUP[plan['reasons'][0]] #some data is lost here b/c HDS does not support multiple reasons.
           })
           if plan['stop']
             care_goal['end_time'] = plan['stop'].to_i 
@@ -145,7 +144,7 @@ module Synthea
           'codes' =>  MEDICATION_LOOKUP[type][:codes],
           'description' => MEDICATION_LOOKUP[type][:description],
           'start_time' => time.to_i,
-          'reason' => COND_LOOKUP[prescription['reason']]
+          'reason' => COND_LOOKUP[prescription['reasons'][0]] #some data is lost here b/c HDS does not support multiple reasons.
         })
         if prescription['stop']
           medication['end_time'] = prescription['stop'].to_i 

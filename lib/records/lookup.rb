@@ -63,19 +63,32 @@ module Synthea
     coronary_heart_disease: { description: 'Coronary Heart Disease', codes: {'SNOMED-CT' => ['53741008']}},
     myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
     cardiac_arrest: {description: 'Cardiac Arrest', codes: {'SNOMED-CT' => ['410429000']}},
-    atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} }
+    atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} },
+    cardiovascular_disease: { description: 'Disorder of cardiovascular system', codes: {'SNOMED-CT'=>['49601007']}}
   }
 
   CAREPLAN_LOOKUP = {
     diabetes: { description: 'Diabetes self management plan', codes: {'SNOMED-CT'=>['698360004']}},
     diabetic_diet: { description: 'Diabetic diet', codes: {'SNOMED-CT'=>['160670007']}},
-    exercise: { description: 'Exercise therapy', codes: {'SNOMED-CT'=>['229065009']}}
+    exercise: { description: 'Exercise therapy', codes: {'SNOMED-CT'=>['229065009']}},
+    cardiovascular_disease: { description: 'Angina self management plan', codes: {'SNOMED-CT'=>['698358001']}},
+    healthy_diet: { description: 'Healthy Diet', codes: {'SNOMED-CT'=>['226234005']}},
+    stress_management: { description: 'Stress Management', codes: {'SNOMED-CT'=>['226060000']}},
+    stop_smoking: { description: 'Stopped Smoking', codes: {'SNOMED-CT'=>['160617001']}}
   }
 
   REASON_LOOKUP = {
     diabetes_well_controlled: {
       description: 'Type II Diabetes Mellitus Well Controlled',
       codes: {'SNOMED-CT'=>['444110003']}
+    },
+    cardiovascular_improved: {
+      description: 'Cardiac status is consistent with or improved from preoperative baseline',
+      codes: {'SNOMED-CT'=>['413757005']}
+    },
+    stop_drug: {
+      description: 'Recommendation to stop drug treatment',
+      codes: {'SNOMED-CT'=>['304540007']}
     }
   }
 
@@ -84,7 +97,22 @@ module Synthea
     glp1ra: { description: '3 ML liraglutide 6 MG/ML Pen Injector', codes: {'RxNorm'=>['897122']}},
     sglt2i: { description: 'canagliflozin 100 MG Oral Tablet', codes: {'RxNorm'=>['1373463']}},
     basal_insulin: { description: 'insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]', codes: {'RxNorm'=>['106892']}},
-    prandial_insulin: { description: 'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]', codes: {'RxNorm'=>['865098']}}
+    prandial_insulin: { description: 'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]', codes: {'RxNorm'=>['865098']}},
+    
+    #cardiovascular disease medications. Dosage amounts are roughly estimated, need to be confirmed
+    clopidogrel: { description: 'Clopidogrel 75 MG Oral Tablet', codes: {'RxNorm'=>['309362']}},
+    simvastatin: { description: 'Simvastatin 20 MG Oral Tablet', codes: {'RxNorm'=>['312961']}},
+    amlodipine: { description: 'Amlodipine 5 MG Oral Tablet', codes: {'RxNorm'=>['197361']}},
+    nitroglycerin: { description: 'Nitroglycerin 0.4 MG/ML Injectible Solution', codes: {'RxNorm'=>['312006']}},
+    atorvastatin: { description: 'Atorvastatin 80 MG Oral Tablet', codes: {'RxNorm'=>['259255']}},
+    captopril: { description: 'Captopril 25 MG Oral Tablet', codes: {'RxNorm'=>['833036']}},
+    warfarin: { description: 'Warfarin Sodium 5 MG Oral Tablet', codes: {'RxNorm'=>['855332']}},
+    verapamil: { description: 'Verapamil Hydrochloride 40 MG', codes: {'RxNorm'=>['897718']}},
+    digoxin: { description: 'Digoxin 0.125 MG Oral Tablet', codes: {'RxNorm'=>['197604']}},
+    epinephrine: { description: '1 ML Epinephrine 1 MG/ML Prefilled Syringe', codes: {'RxNorm'=>['727374']}},
+    amiodarone: { description: '3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe', codes: {'RxNorm'=>['834357']}},
+    atropine: { description: 'Atropine Sulfate 1 MG/ML Injectable Solution', codes: {'RxNorm'=>['1190795']}},
+    alteplase: { description: 'Alteplase 1 MG/ML Injectable Solution', codes: {'RxNorm'=>['308056']}}
   }
 
   RACE_ETHNICITY_CODES = {
@@ -129,7 +157,14 @@ module Synthea
     amputation_right_arm: { description: 'Amputation of right arm', codes: {'SNOMED-CT' => ['13995008']}},
     amputation_right_hand: {description: 'Amputation of right hand', codes: {'SNOMED-CT' => ['46028000']}},
     amputation_right_foot: {description: 'Amputation of right foot', codes: {'SNOMED-CT' => ['180030006']}},
-    amputation_right_leg: {description: 'Amputation of right leg', codes: {'SNOMED-CT' => ['79733001']}}
+    amputation_right_leg: {description: 'Amputation of right leg', codes: {'SNOMED-CT' => ['79733001']}},
+    defibrillation: {description: 'Monophasic defibrillation', codes: {'SNOMED-CT' => ['429500007']}},
+    implant_cardioverter_defib: {description: 'Insertion of biventricular implantable cardioverter defibrillator', codes: {'SNOMED-CT' => ['447365002']}},
+    catheter_ablation: {description: 'Catheter ablation of tissue of heart', codes: {'SNOMED-CT' => ['18286008']}},
+    percutaneous_coronary_intervention: { description: 'Percutaneous coronary intervention', codes: {'SNOMED-CT' => ['415070008']}},
+    coronary_artery_bypass_grafting: {description: 'Coronary artery bypass grafting', codes: {'SNOMED-CT' => ['232717009']}},
+    mechanical_thrombectomy: {description: 'Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance', codes: {'SNOMED-CT'=>['433112001']}},
+    electrical_cardioversion: {description: 'Electrical cardioversion', codes: {'SNOMED-CT' => ['180325003']}}
   }
 
   # https://www.uhccommunityplan.com/content/dam/communityplan/healthcareprofessionals/reimbursementpolicies/Preventive-Medicine-and-Screening-Policy-(R0013).pdf

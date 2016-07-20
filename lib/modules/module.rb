@@ -42,5 +42,31 @@ module Synthea
     def self.convert_risk_to_timestep(risk, original_period)
       return 1-((1-risk) ** (Synthea::Config.time_step.to_f/original_period))
     end
+
+    #These functions are used to start/update medications and to stop medications, respectively.
+    #The 'changes' parameter is an array of medications from the module that called the function used to keep track of 
+    #which meds were altered.
+    #Similar functions were not written for care plans because a care plan is typically only started/updated in one
+    #rule, whereas it is common for a medication to be used in multiple rules. This may change in future modules(?) 
+    def prescribeMedication(med, reason, time, entity, changes)
+      entity[:medications] ||= Hash.new
+      if entity[:medications][med].nil?
+        entity[:medications][med] = {'time' => time, 'reasons' => [reason]}
+        changes << med if !changes.include?(med)
+      elsif !entity[:medications][med]['reasons'].include?(reason) 
+        entity[:medications][med]['reasons'] << reason
+        changes << med if !changes.include?(med)
+      end
+    end
+
+    #'reason' is the condition that the medication was prescribed for but has since abated.
+    def stopMedication(med, reason, time, entity, changes)
+      return if entity[:medications].nil? || entity[:medications][med].nil?
+      if entity[:medications][med]['reasons'].include?(reason)
+        entity[:medications][med]['reasons'].delete(reason)
+        changes << med if !changes.include?(med)
+      end 
+      entity[:medications].delete(med) if entity[:medications][med]['reasons'].empty?
+    end
   end
 end

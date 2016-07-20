@@ -356,7 +356,53 @@ module Synthea
           end
         end
       end
+      #-----------------------------------------------------------------------#
+      #Treatments and Medications
+      #-----------------------------------------------------------------------#
+      @@med_changes = []
 
+      rule :heart_healthy_lifestyle, [:coronary_heart_disease, :stroke, :cardiac_arrest, :myocardial_infarction], [] do |time, entity|
+        reasons = []
+        [:coronary_heart_disease, :stroke, :cardiac_arrest, :myocardial_infarction].each do |disease|
+          reasons << disease if entity[disease] || entity.had_event?(disease)
+        end
+        unless reasons.empty?
+          entity[:careplan] ||= Hash.new
+          entity[:careplan][:cardiovascular_disease] ||= {'activities'=>[:exercise, :stress_management, :stop_smoking, :healthy_diet]}
+          entity[:careplan][:cardiovascular_disease]['reasons'] = reasons
+        end
+      end
+
+      rule :chd_treatment, [:coronary_heart_disease], [:coronary_heart_disease] do |time, entity|
+        meds = [:clopidogrel, :simvastatin, :amlodipine, :nitroglycerin]
+        if entity[:coronary_heart_disease]
+          entity[:medications] ||= Hash.new
+          meds.each {|m| prescribeMedication(m, :coronary_heart_disease, time, entity, @@med_changes)}
+        elsif entity[:medications]
+          meds.each do |m|
+            stopMedication(m, :coronary_heart_disease, time, entity, @@med_changes) if entity[:medications][m]
+          end
+        end
+      end
+
+      rule :atrial_fibrillation_treatment, [:atrial_fibrillation], [:atrial_fibrillation] do |time, entity|
+        meds = [:warfarin, :verapamil, :digoxin]
+        if entity[:atrial_fibrillation]
+          entity[:medications] ||= Hash.new
+          meds.each {|m| prescribeMedication(m, :atrial_fibrillation, time, entity, @@med_changes)}
+
+          #catheter ablation is a more extreme measure than electrical cardioversion and is usually only performed
+          #when medication and other procedures are not preferred or have failed. As a rough simulation of this,
+          #we arbitrarily chose a 20% chance of getting catheter ablation and 80% of getting cardioversion 
+          rand < 0.2 ? afib_procedure = :catheter_ablation : afib_procedure = :electrical_cardioversion
+          entity[:cardiovascular_procedures] ||= Hash.new
+          entity[:cardiovascular_procedures][:atrial_fibrillation] ||= [afib_procedure]
+        elsif entity[:medications]
+          meds.each do |m|
+            stopMedication(m, :atrial_fibrillation, time, entity, @@med_changes) if entity[:medications][m]
+          end
+        end
+      end
       #-----------------------------------------------------------------------#
 
       def self.perform_encounter(entity, time)
@@ -366,16 +412,73 @@ module Synthea
             patient.condition(diagnosis, time, :condition, :condition)
           end
         end
+
+        if entity[:careplan] && entity[:careplan][:cardiovascular_disease]
+          if !entity.record_synthea.careplan_active?(:cardiovascular_disease)
+            entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['activities'], time, entity[:careplan][:cardiovascular_disease]['reasons'])
+          else 
+            entity.record_synthea.update_careplan_reasons(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['reasons'],time)
+          end
+        elsif entity.record_synthea.careplan_active?(:cardiovascular_disease)
+          entity.record_synthea.careplan_stop(:cardiovascular_disease,time)
+        end
+
+        if entity[:medications]
+          @@med_changes.each do |med|
+            if entity[:medications][med]
+              # Add a prescription to the record if it hasn't been recorded yet
+              if !entity.record_synthea.medication_active?(med)
+                entity.record_synthea.medication_start(med, time, entity[:medications][med]['reasons'])
+              else
+                entity.record_synthea.update_med_reasons(med, entity[:medications][med]['reasons'], time)
+              end
+            elsif entity.record_synthea.medication_active?(med)
+              # This prescription can be stopped...
+              entity.record_synthea.medication_stop(med, time, :cardiovascular_improved)
+            end
+          end
+          @@med_changes = []
+        end
+
+        if entity[:cardiovascular_procedures]
+          entity[:cardiovascular_procedures].each do |reason, procedures|
+            reason_code = COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
+            procedures.each do |proc|
+              if !entity.record_synthea.present[proc]
+                #TODO assumes a procedure will only be performed once, might need to be revisited
+                entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure) 
+              end
+            end
+          end
+        end
       end
 
       def self.perform_emergency(entity, event)
+        emergency_meds = {
+          myocardial_infarction: [:nitroglycerin, :atorvastatin, :captopril, :clopidogrel],
+          stroke: [:clopidogrel, :alteplase],
+          cardiac_arrest: [:epinephrine, :amiodarone, :atropine]
+        }
+        emergency_procedures = {
+          myocardial_infarction: [:percutaneous_coronary_intervention, :coronary_artery_bypass_grafting],
+          stroke: [:mechanical_thrombectomy],
+          cardiac_arrest: [:implant_cardioverter_defib, :catheter_ablation]
+        }
         time = event.time
         diagnosis = event.type
         patient = entity.record_synthea
         if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) 
           patient.condition(diagnosis, time, :condition, :condition)
+          emergency_meds[diagnosis].each do |med|
+            entity.record_synthea.medication_start(med, time, [diagnosis])
+            entity.record_synthea.medication_stop(med, time + 15.minutes, :stop_drug)
+          end
+
+          emergency_procedures[diagnosis].each do |proc|
+            reason_code = COND_LOOKUP[diagnosis][:codes]['SNOMED-CT'][0]
+            entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure) 
+          end
         end
-        #record treatments for coronary attack?
       end
     end
 	end
