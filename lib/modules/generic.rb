@@ -20,7 +20,7 @@ module Synthea
         
         entity[:generic] ||= {}
         @gmodules.each do |m|
-          entity[:generic][m['name']] ||= Synthea::Generic::Context.new(m, time)
+          entity[:generic][m['name']] ||= Synthea::Generic::Context.new(m)
           entity[:generic][m['name']].run(time, entity)
         end
       end

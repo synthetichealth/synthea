@@ -58,7 +58,8 @@ module Synthea
 
       class Terminal < State
         def process(time, entity)
-          true
+          # never pass through the terminal state
+          false
         end
       end
 
