@@ -1,11 +1,11 @@
 {
-    "name": "Examplitis",
+    "name": "Guard",
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Test_Guard"
+            "direct_transition": "Gender_Guard"
         },
-        "Test_Guard": {
+        "Gender_Guard": {
             "type": "Guard",
             "if": {
                 "condition_type": "Gender",

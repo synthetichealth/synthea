@@ -67,6 +67,9 @@ module Synthea
         def initialize (context, name)
           super
           @range = context.state_config(name)['range']
+          if @range.nil?
+            @exact = context.state_config(name)['exact']
+          end
         end
 
         def process(time, entity)
@@ -74,6 +77,8 @@ module Synthea
             if ! @range.nil?
               choice = rand(@range['low'] .. @range['high'])
               @expiration = choice.method(@range['unit']).call().since(@entered)
+            elsif ! @exact.nil?
+              @expiration = @exact['quantity'].method(@exact['unit']).call().since(@entered)
             else
               @expiration = @entered
             end
@@ -110,13 +115,13 @@ module Synthea
           if !@wellness
             # No need to wait for a wellness encounter.  Do it now!
             # TODO: Record the encounter first...
-            self.perform_encounter(time, entity, true)
+            self.perform_encounter(time, entity)
           end
           return @processed
         end
 
         def perform_encounter(time, entity, record_encounter=true)
-          puts "⬇ Encounter #{name} at age #{entity[:age]} on #{time}"
+          puts "⬇ Encounter #{@name} at age #{entity[:age]} on #{time}"
           @processed = true
           @time = time
           if record_encounter
