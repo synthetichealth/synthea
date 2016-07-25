@@ -144,22 +144,23 @@ module Synthea
           entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
-          zip = Area.zip_codes.find{|x|x.first==Synthea::Config.population.zip_code}
-          zip = Area.zip_codes.sample if zip.nil?
+
+          #determine lat/long coordinates of address within Bedford
+          location_data = Synthea::Location.selectPoint
+          entity[:coordinates_address] = location_data['point']
+          zip_code = Synthea::Location.get_zipcode(location_data['city'])
+          #zip_code = "#{location_data['city']}, MA".to_zip[0]
+          #zip = Area.zip_codes.find{|x|x.first == zip_code}
+          #zip = Area.zip_codes.sample if zip.nil?
           entity[:address] = {
             'line' => [ Faker::Address.street_address ],
-            'city' => zip[1],
-            'state' => zip[2],
-            'postalCode' => zip[0]
+            'city' => location_data['city'],
+            'state' => "MA",
+            'postalCode' => zip_code
           }
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
-          #determine lat/long coordinates of address within Bedford
-          while entity[:coordinates_address].nil?
-            x = rand(BEDFORD_min_x..BEDFORD_max_x)
-            y = rand(BEDFORD_min_y..BEDFORD_max_y)
-            point = GeoRuby::SimpleFeatures::Point.from_x_y(x,y)
-            entity[:coordinates_address] = point if BEDFORD.contains_point?(point)
-          end
+          
+          
           # TODO update awareness
         end
       end
