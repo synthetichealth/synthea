@@ -252,6 +252,37 @@ class GenericTest < Minitest::Test
 		@patient.record_synthea.verify
   end
 
+	def test_medication_order_during_wellness_encounter
+		# Setup a mock to track calls to the patient record
+		@patient.record_synthea = MiniTest::Mock.new
+
+		ctx = get_context('medication_order.json')
+
+		# First, onset the Diabetes!
+		diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+		assert(diabetes.process(@time, @patient))
+		ctx.history << diabetes
+
+		# Process the wellness encounter state, which will wait for a wellness encounter
+		encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+		refute(encounter.process(@time, @patient))
+		@time = @time + 6.months
+		# Simulate the wellness encounter by calling perform_encounter
+		@patient.record_synthea.expect(:condition, nil, [:diabetes_mellitus, @time])
+		encounter.perform_encounter(@time, @patient, false)
+		assert(encounter.process(@time, @patient))
+		ctx.history << encounter
+
+		# Now process the prescription
+		med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
+		@patient.record_synthea.expect(:medication_start, nil, ["24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet".to_sym, @time, :diabetes_mellitus])
+		#binding.pry
+		assert(med.process(@time, @patient))
+
+		# Verify that Metformin was added to the record
+		@patient.record_synthea.verify
+  end
+
 	def get_context(file_name)
 		cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures", __FILE__), file_name)))
 		Synthea::Generic::Context.new(cfg)

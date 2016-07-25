@@ -1,0 +1,38 @@
+{
+    "name": "Guard",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Annual_Physical"
+        },
+        "Diabetes": {
+            "type": "ConditionOnset",
+            "target_encounter": "Wellness_Encounter",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+            }],
+            "direct_transition": "Wellness_Encounter"
+        },
+        "Wellness_Encounter": {
+            "type": "Encounter",
+            "wellness": true,
+            "direct_transition": "Metformin"
+        },
+        "Metformin": {
+            "type": "MedicationOrder",
+            "target_encounter": "Wellness_Encounter",
+            "codes": [{
+                "system": "RxNorm",
+                "code": "860975",
+                "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+            }],
+            "reason": "Diabetes",
+            "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}
