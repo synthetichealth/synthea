@@ -5,7 +5,7 @@ module Synthea
     @@geom.features.each do |feat|
       @@running_total += feat.properties["pop"]
     end
-    @@city_zipcode_hash = JSON.parse(File.read('lib/world/city_zip.json'))
+    @@city_zipcode_hash = JSON.parse(File.read(File.expand_path('city_zip.json',File.dirname(File.absolute_path(__FILE__)))))
 
     def self.get_zipcode(city)
       @@city_zipcode_hash[city].sample
