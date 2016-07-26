@@ -49,7 +49,12 @@ namespace :synthea do
           #defined our own 'add to transaction' function to preserve our entry information
           add_entry_transaction('POST',nil,entry,client)
         end
-        reply = client.end_transaction
+        begin
+          reply = client.end_transaction
+          puts "  Error: #{reply.code}" if reply.code!=200
+        rescue Exception => e
+          puts "  Error: #{e.message}"
+        end
       end
       finish = Time.now
       minutes = ((finish-start)/60)
