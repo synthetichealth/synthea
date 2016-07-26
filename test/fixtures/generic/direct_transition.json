@@ -1,0 +1,12 @@
+{
+    "name": "Direct",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

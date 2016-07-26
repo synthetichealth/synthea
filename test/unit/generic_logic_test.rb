@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class GenericTest < Minitest::Test
+class GenericLogicTest < Minitest::Test
 
   def setup
 		@time = Time.now
