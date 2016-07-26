@@ -6,7 +6,6 @@ synthea:
     area: 0.05 #13.9 # Bedford, MA # Default: 0.05
     birth_variance: 0.01
     daily_births_per_square_mile: <%= (ma_births_per_year = 73000.0)/(ma_square_miles=10554.0)/365.0 %>
-    zip_code: '01730'
   sequential: # sequential population generation... one at a time...
     population: 1000
   schedule:

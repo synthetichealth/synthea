@@ -1,4 +1,5 @@
 module Synthea
+  #preprocessing for MA_geo and Location class are at bottom of file
   MA_geo = '{
       "features": [
           {
@@ -83319,18 +83320,4 @@ module Synthea
       ],
       "type": "FeatureCollection"
   }'
-  geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(MA_geo)
-  BEDFORD = geom.features.find {|feat| feat.properties["cs_name"] == 'Bedford'}.geometry.geometries[0]
-  max_y, max_x = -999, -999
-  min_y, min_x = 999, 999
-  BEDFORD.rings[0].points.each do |point|
-    max_x = point.x if point.x > max_x
-    max_y = point.y if point.y > max_y
-    min_x = point.x if point.x < min_x
-    min_y = point.y if point.y < min_y
-  end
-  BEDFORD_max_x = max_x
-  BEDFORD_max_y = max_y
-  BEDFORD_min_x = min_x
-  BEDFORD_min_y = min_y
 end
