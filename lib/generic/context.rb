@@ -12,11 +12,15 @@ module Synthea
       def run(time, entity)
         while @current_state.run(time, entity) do
           @history << @current_state
-          @current_state = self.next(time)
+          @current_state = self.next()
+          if @history.last.exited < time
+            # This must be a delay that expired between cycles, so temporarily rewind time
+            self.run(@history.last.exited, entity)
+          end 
         end
       end
 
-      def next(time)
+      def next()
         c = state_config(@current_state.name)
         if c.has_key? 'direct_transition'
           return self.create_state(c['direct_transition'])

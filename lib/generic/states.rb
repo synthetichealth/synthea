@@ -12,7 +12,15 @@ module Synthea
         def run(time, entity)
           @entered ||= time
           exit = process(time, entity)
-          @exited = time if exit
+          if exit
+            # Special handling for Delay, which may expire between run cycles
+            if self.is_a? Delay
+              @exited = @expiration
+              @entered = @exited if @entered > @exited
+            else
+              @exited = time
+            end
+          end
           return exit
         end
 

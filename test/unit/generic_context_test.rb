@@ -68,6 +68,32 @@ class GenericContextTest < Minitest::Test
 		assert_equal("Guard2", ctx.history[5].name)
   end
 
+	def test_delay_time_accuracy
+		# Synthea is currently run in 7-day increments.  If a delay falls between increments, then the delay and subsequent
+		# states must be run at the delay expiration time -- not at the current cycle time.  It is the job of the context
+		# runner to ensure this is satisfied.
+
+		# Setup a mock to track calls to the patient record
+		@patient.record_synthea = MiniTest::Mock.new
+
+		# Setup the context
+		ctx = get_context('delay_time_travel.json')
+		assert_equal("Initial", ctx.current_state.name)
+
+		# Run number one should stop at the delay
+		ctx.run(@time, @patient)
+		assert_equal("2_Day_Delay", ctx.current_state.name)
+
+		# Run number two should go all the way to Terminal, but should process Encounter and Death along the way
+		# Ensure that the encounter really happens 2 days after the initial run
+		@patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2)])
+		# Ensure that death really happens 2 + 3 days after the initial run
+		@patient.record_synthea.expect(:death, nil, [@time.advance(:days => 5)])
+		# Run number 2: 7 days after run number 1
+		ctx.run(@time.advance(:days => 7), @patient)
+		assert_equal("Terminal", ctx.current_state.name)
+	end
+
 	def get_config(file_name)
 		JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
 	end
