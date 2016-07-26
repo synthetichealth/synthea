@@ -7,7 +7,7 @@
         },
         "Demo_Guard": {
             "type": "Guard",
-            "if": {
+            "allow": {
                 "condition_type": "And",
                 "conditions": [
                     {

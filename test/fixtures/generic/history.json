@@ -7,7 +7,7 @@
         },
         "Guard1": {
             "type": "Guard",
-            "if": {
+            "allow": {
                 "condition_type": "True"
             },
             "distributed_transition": [
@@ -27,7 +27,7 @@
         },
         "Guard2": {
             "type": "Guard",
-            "if": {
+            "allow": {
                 "condition_type": "True"
             },
             "distributed_transition": [

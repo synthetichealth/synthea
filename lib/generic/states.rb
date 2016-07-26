@@ -99,7 +99,7 @@ module Synthea
 
       class Guard < State
         def process(time, entity)
-          c = @context.state_config(@name)['if']
+          c = @context.state_config(@name)['allow']
           return Synthea::Generic::Logic::test(c, @context, time, entity)
         end
       end

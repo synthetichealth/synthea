@@ -7,7 +7,7 @@
         },
         "Gender_Guard": {
             "type": "Guard",
-            "if": {
+            "allow": {
                 "condition_type": "Gender",
                 "gender": "F" 
             },
