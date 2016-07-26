@@ -12,7 +12,7 @@ module Synthea
       def run(time, entity)
         while @current_state.run(time, entity) do
           @history << @current_state
-          @current_state = self.next()
+          @current_state = self.next(time, entity)
           if @history.last.exited < time
             # This must be a delay that expired between cycles, so temporarily rewind time
             self.run(@history.last.exited, entity)
@@ -24,7 +24,7 @@ module Synthea
         end 
       end
 
-      def next()
+      def next(time, entity)
         c = state_config(@current_state.name)
         if c.has_key? 'direct_transition'
           return self.create_state(c['direct_transition'])
@@ -42,6 +42,15 @@ module Synthea
           # We only get here if the numbers didn't add to 1.0 or if one of the numbers caused
           # floating point imprecision (very, very rare).  Just go with the last one.
           return self.create_state(c['distributed_transition'].last['transition'])
+        elsif c.has_key? 'conditional_transition'
+          c['conditional_transition'].each do |ct|
+            cond = ct['condition']
+            if cond.nil? || Synthea::Generic::Logic::test(cond, self, time, entity)
+              return self.create_state(ct['transition'])
+            end
+          end
+          # No satisfied condition or fallback transition.  Go to the default terminal state
+          return States::Terminal.new(self, "Terminal")
         else
           # No transition.  Go to the default terminal state
           return States::Terminal.new(self, "Terminal")

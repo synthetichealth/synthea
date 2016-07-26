@@ -43,6 +43,49 @@ class GenericContextTest < Minitest::Test
 		srand
   end
 
+	def test_conditional_transition
+		cfg = get_config('conditional_transition.json')
+		
+		# First run as a male
+		@patient[:gender] = 'M'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal1", ctx.current_state.name)
+
+		# Then run as a female
+		@patient[:gender] = 'F'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal2", ctx.current_state.name)
+
+		# Then run as unknown
+		@patient[:gender] = 'U'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal3", ctx.current_state.name)
+  end
+
+	def test_incomplete_conditional_transition
+		cfg = get_config('incomplete_conditional_transition.json')
+		
+		# First run as a male
+		@patient[:gender] = 'M'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal1", ctx.current_state.name)
+
+		# Then run as a female (which shouldn't be caught by any transition)
+		@patient[:gender] = 'F'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal", ctx.current_state.name)
+  end
+
 	def test_no_transition
 		ctx = get_context('no_transition.json')
 		assert_equal("Initial", ctx.current_state.name)

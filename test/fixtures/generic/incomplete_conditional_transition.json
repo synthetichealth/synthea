@@ -1,0 +1,20 @@
+{
+    "name": "IncompleteConditional",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Gender",
+                        "gender": "M" 
+                    },
+                    "transition": "Terminal1"
+                }
+            ]
+        },
+        "Terminal1": {
+            "type": "Terminal"
+        }
+    }
+}
