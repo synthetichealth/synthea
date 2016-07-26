@@ -1,0 +1,104 @@
+{
+  "trueTest": {
+      "condition_type": "True"
+  },
+  "falseTest": {
+      "condition_type": "False"
+  },
+  "genderIsMaleTest": {
+      "condition_type": "Gender",
+      "gender": "M" 
+  },
+  "ageLt40Test": {
+      "condition_type": "Age",
+      "operator": "<",
+      "quantity": 40,
+      "unit": "years"
+  },
+  "ageLte40Test": {
+      "condition_type": "Age",
+      "operator": "<=",
+      "quantity": 40,
+      "unit": "years"
+  },
+  "ageEq40Test": {
+      "condition_type": "Age",
+      "operator": "==",
+      "quantity": 40,
+      "unit": "years"
+  },
+  "ageGte40Test": {
+      "condition_type": "Age",
+      "operator": ">=",
+      "quantity": 40,
+      "unit": "years"
+  },
+  "ageGt40Test": {
+      "condition_type": "Age",
+      "operator": ">",
+      "quantity": 40,
+      "unit": "years"
+  },
+  "ageNe40Test": {
+      "condition_type": "Age",
+      "operator": "!=",
+      "quantity": 40,
+      "unit": "years"
+  },
+  "andAllTrueTest": {
+    "condition_type": "And",
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "True" }
+    ]
+  },
+  "andOneFalseTest": {
+    "condition_type": "And",
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "False" },
+      { "condition_type": "True" }
+    ]
+  },
+  "andAllFalseTest": {
+    "condition_type": "And",
+    "conditions": [
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "False" }
+    ]
+  },
+  "orAllTrueTest": {
+    "condition_type": "Or",
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "True" }
+    ]
+  },
+  "orOneTrueTest": {
+    "condition_type": "Or",
+    "conditions": [
+      { "condition_type": "False" },
+      { "condition_type": "True" },
+      { "condition_type": "False" }
+    ]
+  },
+  "orAllFalseTest": {
+    "condition_type": "Or",
+    "conditions": [
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "False" }
+    ]
+  },
+  "notTrueTest": {
+    "condition_type": "Not",
+    "condition": { "condition_type": "True" }
+  },
+  "notFalseTest": {
+    "condition_type": "Not",
+    "condition": { "condition_type": "False" }
+  }
+}

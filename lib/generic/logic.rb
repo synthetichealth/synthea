@@ -7,10 +7,16 @@ module Synthea
           self.testAnd(condition, context, time, entity)
         when 'Or'
           self.testOr(condition, context, time, entity)
+        when 'Not'
+          self.testNot(condition, context, time, entity)
         when 'Gender'
           self.testGender(condition, context, time, entity)
         when 'Age'
           self.testAge(condition, context, time, entity)
+        when 'True'
+          self.testTrue(condition, context, time, entity)
+        when 'False'
+          self.testFalse(condition, context, time, entity)
         else
           raise "Unsupported condition type: #{condition['condition_type']}"
         end
@@ -34,6 +40,10 @@ module Synthea
         return false
       end
 
+      def self.testNot(condition, context, time, entity)
+        return ! test(condition['condition'], context, time, entity)
+      end
+
       def self.testGender(condition, context, time, entity)
         return condition['gender'] == entity[:gender]
       end
@@ -42,6 +52,14 @@ module Synthea
         birthdate = entity.event(:birth).time
         age = Synthea::Modules::Lifecycle.age(time, birthdate, nil, condition['unit'].to_sym)
         self.compare(age, condition['quantity'], condition['operator'])
+      end
+
+      def self.testTrue(condition, context, time, entity)
+        return true
+      end
+
+      def self.testFalse(condition, context, time, entity)
+        return false
       end
 
       def self.compare(lhs, rhs, operator)
