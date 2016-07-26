@@ -1,3 +1,5 @@
+#OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+#Above line is a temporary certificate solution to upload fhir records to synthetic mass. Uncomment when uploading.
 # Top level include file that brings in all the necessary code
 require 'bundler/setup'
 require 'rubygems'
@@ -45,6 +47,7 @@ Dir.glob(File.join(root, 'lib','records','*.rb')).each do |file|
   require file
 end
 
+require File.join(root,'lib','world','MA_geo.rb')
 Dir.glob(File.join(root, 'lib','world','**','*.rb')).each do |file|
   require file
 end

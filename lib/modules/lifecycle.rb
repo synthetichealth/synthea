@@ -145,13 +145,10 @@ module Synthea
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
 
-          #determine lat/long coordinates of address within Bedford
+          #determine lat/long coordinates of address within MA
           location_data = Synthea::Location.selectPoint
           entity[:coordinates_address] = location_data['point']
           zip_code = Synthea::Location.get_zipcode(location_data['city'])
-          #zip_code = "#{location_data['city']}, MA".to_zip[0]
-          #zip = Area.zip_codes.find{|x|x.first == zip_code}
-          #zip = Area.zip_codes.sample if zip.nil?
           entity[:address] = {
             'line' => [ Faker::Address.street_address ],
             'city' => location_data['city'],
