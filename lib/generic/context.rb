@@ -16,8 +16,12 @@ module Synthea
           if @history.last.exited < time
             # This must be a delay that expired between cycles, so temporarily rewind time
             self.run(@history.last.exited, entity)
-          end 
+          end
         end
+        if Synthea::Config.generic.log && @current_state.is_a?(Synthea::Generic::States::Terminal) && @logged.nil?
+          self.log_history()
+          @logged = true
+        end 
       end
 
       def next()
@@ -56,6 +60,24 @@ module Synthea
         clazz = state_config(name)['type']
         Object::const_get("Synthea::Generic::States::#{clazz}").new(self, name)
       end
+
+      def log_history()
+        puts "/==============================================================================="
+        puts "| #{@config['name']} Log"
+        puts "|==============================================================================="
+        puts "| Entered                   | Exited                    | State"
+        puts "|---------------------------|---------------------------|-----------------------"
+        @history.each do |h|
+          self.log_state(h)
+        end
+        self.log_state(@current_state)
+        puts "\\==============================================================================="
+      end
+
+      def log_state(state)
+          exit_str = state.exited ? state.exited.strftime('%FT%T%:z') : "                         "
+          puts "| #{state.entered.strftime('%FT%T%:z')} | #{exit_str} | #{state.name}"
+        end
     end
   end
 end

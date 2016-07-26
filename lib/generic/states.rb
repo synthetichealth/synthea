@@ -129,7 +129,6 @@ module Synthea
         end
 
         def perform_encounter(time, entity, record_encounter=true)
-          puts "⬇ Encounter #{@name} at age #{entity[:age]} on #{time}"
           @processed = true
           @time = time
           if record_encounter
@@ -170,7 +169,6 @@ module Synthea
         end
 
         def process(time, entity)
-          puts "⬇ Condition Onset #{@name} at age #{entity[:age]} on #{time}"
           if self.concurrent_with_target_encounter(time)
             self.diagnose(time, entity)
           end
@@ -180,7 +178,6 @@ module Synthea
         def diagnose(time, entity)
           self.add_lookup_code(Synthea::COND_LOOKUP)
           entity.record_synthea.condition(self.symbol(), time)
-          puts "⬇ Diagnosed #{@name} at age #{entity[:age]} on #{time}"
           @diagnosed = true
         end
       end
@@ -211,7 +208,6 @@ module Synthea
           else
             entity.record_synthea.medication_start(self.symbol(), time)
           end
-          puts "⬇ Prescribed #{@name} at age #{entity[:age]} on #{time}"
           @prescribed = true
         end
       end
@@ -242,7 +238,6 @@ module Synthea
           else
             entity.record_synthea.procedure(self.symbol(), time)
           end
-          puts "⬇ Performed #{@name} at age #{entity[:age]} on #{time}"
           @operated = true
         end
       end
@@ -252,7 +247,6 @@ module Synthea
           entity[:is_alive] = false
           entity.events.create(time, :death, :generic, true)
           Synthea::Modules::Lifecycle.record_death(entity, time)
-          puts "⬇ Died at age #{entity[:age]} on #{time}"
           true
         end
       end
