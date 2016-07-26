@@ -1,9 +1,9 @@
 {
-    "name": "Guard",
+    "name": "MedicationOrder",
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Annual_Physical"
+            "direct_transition": "ConditionOnset"
         },
         "Diabetes": {
             "type": "ConditionOnset",

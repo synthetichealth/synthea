@@ -1,5 +1,5 @@
 {
-    "name": "Guard",
+    "name": "Encounter",
     "states": {
         "Initial": {
             "type": "Initial",

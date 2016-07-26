@@ -276,12 +276,49 @@ class GenericTest < Minitest::Test
 		# Now process the prescription
 		med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
 		@patient.record_synthea.expect(:medication_start, nil, ["24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet".to_sym, @time, :diabetes_mellitus])
-		#binding.pry
 		assert(med.process(@time, @patient))
 
 		# Verify that Metformin was added to the record
 		@patient.record_synthea.verify
   end
+
+	def test_procedure_during_encounter
+		# Setup a mock to track calls to the patient record
+		@patient.record_synthea = MiniTest::Mock.new
+
+		ctx = get_context('procedure.json')
+
+		# The encounter comes first (and add it to history)
+		encounter = Synthea::Generic::States::Encounter.new(ctx, "Inpatient_Encounter")
+		@patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time])
+		assert(encounter.process(@time, @patient))
+		ctx.history << encounter
+
+		# Then have the appendectomy		
+		appendectomy = Synthea::Generic::States::Procedure.new(ctx, "Appendectomy")
+		@patient.record_synthea.expect(:procedure, nil, [:laparoscopic_appendectomy, @time])
+		assert(appendectomy.process(@time, @patient))
+
+		# Verify that the procedure was added to the record
+		@patient.record_synthea.verify
+  end
+
+	def test_death
+		# Setup a mock to track calls to the patient record
+		@patient.record_synthea = MiniTest::Mock.new
+
+		ctx = get_context('death.json')
+		death = Synthea::Generic::States::Death.new(ctx, "Death")
+		@patient.record_synthea.expect(:death, nil, [@time])
+		assert(@patient[:is_alive])
+		assert(death.process(@time, @patient))
+
+		# Patient shouldn't be alive anymore
+		refute(@patient[:is_alive])
+
+		# Verify that death was added to the record
+		@patient.record_synthea.verify
+	end
 
 	def get_context(file_name)
 		cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures", __FILE__), file_name)))

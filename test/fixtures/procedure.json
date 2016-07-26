@@ -1,0 +1,32 @@
+{
+    "name": "Procedure",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Inpatient_Encounter"
+        },
+        "Inpatient_Encounter": {
+            "type": "Encounter",
+            "class": "inpatient",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "32485007",
+                "display": "Hospital admission"
+            }],
+            "direct_transition": "Appendectomy"
+        },
+        "Appendectomy": {
+            "type": "Procedure",
+            "target_encounter": "Inpatient_Encounter",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "6025007",
+                "display": "Laparoscopic appendectomy"
+            }],
+            "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}
