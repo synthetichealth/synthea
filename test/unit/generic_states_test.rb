@@ -321,7 +321,7 @@ class GenericTest < Minitest::Test
 	end
 
 	def get_context(file_name)
-		cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures", __FILE__), file_name)))
+		cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
 		Synthea::Generic::Context.new(cfg)
 	end
 end
