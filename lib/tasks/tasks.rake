@@ -41,6 +41,7 @@ namespace :synthea do
       files = File.join(output, '**', '*.json')
       client = FHIR::Client.new(args.url)
       puts 'Uploading Patient records...'
+      count = 0
       Dir.glob(files).each do | file |
         json = File.open(file,'r:UTF-8',&:read)
         bundle = FHIR.from_contents(json)
@@ -55,11 +56,16 @@ namespace :synthea do
         rescue Exception => e
           puts "  Error: #{e.message}"
         end
+        count += 1
       end
       finish = Time.now
       minutes = ((finish-start)/60)
       seconds = (minutes - minutes.floor) * 60
+      each_time = ((finish-start)/count)
+      each_minutes = each_time / 60
+      each_seconds = (each_minutes - each_minutes.floor) * 60
       puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
+      puts "Average time per record: #{each_minutes.floor} minute(s) #{each_seconds.floor} second(s)."
     else
       puts 'No FHIR patient records have been generated yet.'
       puts 'Run synthea:generate task.'
