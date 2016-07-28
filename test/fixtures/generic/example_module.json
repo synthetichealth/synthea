@@ -3,32 +3,34 @@
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Demo_Guard"
-        },
-        "Demo_Guard": {
-            "type": "Guard",
-            "allow": {
-                "condition_type": "And",
-                "conditions": [
-                    {
+            "conditional_transition": [
+                {
+                    "condition": {
                         "condition_type": "Gender",
                         "gender": "M" 
                     },
-                    {
-                        "condition_type": "Age",
-                        "operator": ">",
-                        "quantity": 40,
-                        "unit": "years"
-                    }
-                ]
+                    "transition": "Age_Guard"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Age_Guard": {
+            "type": "Guard",
+            "allow": {
+              "condition_type": "Age",
+              "operator": ">",
+              "quantity": 40,
+              "unit": "years"
             },
             "distributed_transition": [
                 {
-                    "distribution": 0.51,
+                    "distribution": 0.10,
                     "transition": "Pre_Examplitis"
                 },
                 {
-                    "distribution": 0.49,
+                    "distribution": 0.90,
                     "transition": "Terminal"
                 }
             ]
