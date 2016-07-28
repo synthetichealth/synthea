@@ -202,7 +202,7 @@ module Synthea
           if cond.nil?
             entity.record_synthea.medication_start(self.symbol(), time)
           else
-            entity.record_synthea.medication_start(self.symbol(), time, cond.symbol())
+            entity.record_synthea.medication_start(self.symbol(), time, [cond.symbol()])
           end
           @prescribed = true
         end

@@ -275,7 +275,7 @@ class GenericStatesTest < Minitest::Test
 
 		# Now process the prescription
 		med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
-		@patient.record_synthea.expect(:medication_start, nil, ["24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet".to_sym, @time, :diabetes_mellitus])
+		@patient.record_synthea.expect(:medication_start, nil, ["24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet".to_sym, @time, [:diabetes_mellitus]])
 		assert(med.process(@time, @patient))
 
 		# Verify that Metformin was added to the record
