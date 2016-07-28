@@ -1,7 +1,7 @@
 module Synthea
   module Generic
     class Context
-      attr_accessor :config, :current_state, :history
+      attr_reader :config, :current_state, :history, :logged
 
       def initialize (config)
         @config = config

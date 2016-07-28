@@ -137,6 +137,31 @@ class GenericContextTest < Minitest::Test
 		assert_equal("Terminal", ctx.current_state.name)
 	end
 
+	def test_logging
+		# Can't really test the quality of the logs, but at least ensure it logs when it should and that nothing crashes
+		
+		old_log_value = Synthea::Config.generic.log
+
+		# First check it doesn't log when it shouldn't
+		Synthea::Config.generic.log = false
+		ctx = get_context('direct_transition.json')
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal", ctx.current_state.name)
+		refute(ctx.logged)
+
+		# Then check it does log when it should
+		Synthea::Config.generic.log = true
+		ctx = get_context('direct_transition.json')
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert_equal("Terminal", ctx.current_state.name)
+		assert(ctx.logged)
+
+		# Set the log value back
+		Synthea::Config.generic.log = old_log_value
+  end
+
 	def get_config(file_name)
 		JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
 	end
