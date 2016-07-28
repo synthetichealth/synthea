@@ -122,7 +122,6 @@ module Synthea
         def process(time, entity)
           if !@wellness
             # No need to wait for a wellness encounter.  Do it now!
-            # TODO: Record the encounter first...
             self.perform_encounter(time, entity)
           end
           return @processed
@@ -131,30 +130,19 @@ module Synthea
         def perform_encounter(time, entity, record_encounter=true)
           @processed = true
           @time = time
+
           if record_encounter
             value = self.add_lookup_code(ENCOUNTER_LOOKUP)
             value[:class] = @class
             entity.record_synthea.encounter(self.symbol(), time)
           end
-          self.record_encounter_activities(time, entity)
-        end
-
-        def record_encounter_activities(time, entity)
-          # Look through the history for things to record
-          # TODO: Consider if we should even allow medications and procedures to be defined *before* encounter
+          
+          # Look through the history for conditions to diagnose
           @context.history.each do |h|
-            # Diagnose conditions
             if h.is_a?(ConditionOnset) && ! h.diagnosed && h.target_encounter == @name
               h.diagnose(time, entity)
-            # Prescribe medications
-            elsif h.is_a?(MedicationOrder) && ! h.prescribed && target_encounter == @name
-              h.prescribe(time, entity)
-            # Operate!
-            elsif h.is_a?(Procedure) && ! h.operated && target_encounter == @name
-              h.operate(time, entity)
             end
           end
-          @processed = true
         end
       end
 
