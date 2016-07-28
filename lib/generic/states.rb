@@ -1,6 +1,7 @@
 module Synthea
   module Generic
     module States
+      # define a base state with common functionality that can be inherited by all other states
       class State
         attr_accessor :name, :entered, :exited
 
@@ -24,7 +25,9 @@ module Synthea
           return exit
         end
 
+        # creates a symbol to be used in lookup tables (mainly for referencing codes)
         def symbol ()
+          # prefer a code display value since the state name may not be unique between modules
           if ! @codes.nil? && ! @codes.empty?
             @codes.first['display'].gsub(/\s+/,"_").downcase.to_sym
           else
@@ -39,6 +42,8 @@ module Synthea
           end
         end
 
+        # the record methods require the use of lookup tables.  Other (non-generic) modules statically define
+        # lookups in the tables, but we must define the lookups dynamically before the record method is invoked.
         def add_lookup_code(lookup_hash)
           return if @codes.nil? || @codes.empty?
 
@@ -83,6 +88,7 @@ module Synthea
         def process(time, entity)
           if @expiration.nil?
             if ! @range.nil?
+              # choose a random duration within the specified range
               choice = rand(@range['low'] .. @range['high'])
               @expiration = choice.method(@range['unit']).call().since(@entered)
             elsif ! @exact.nil?
@@ -91,14 +97,13 @@ module Synthea
               @expiration = @entered
             end
           end
-          # TODO: Support delays that go between run cycles (e.g., 3-day delay when the
-          # cycle runs every 7 days).  Currently, the delay would expire 4 days late.
           return time >= @expiration
         end
       end
 
       class Guard < State
         def process(time, entity)
+          # only indicate successful processing if the condition evaluates to true
           c = @context.state_config(@name)['allow']
           return Synthea::Generic::Logic::test(c, @context, time, entity)
         end
@@ -121,13 +126,16 @@ module Synthea
 
         def process(time, entity)
           if !@wellness
-            # No need to wait for a wellness encounter.  Do it now!
+            # This is a stand-alone (non-wellness) encounter, so proceed immediately!
             self.perform_encounter(time, entity)
           end
           return @processed
         end
 
+        # perform_encounter can be called from this state's process method, but it also might
+        # be called as a result of a wellness encounter occurring
         def perform_encounter(time, entity, record_encounter=true)
+          # set process to true so that the process method knows we've done a successful encounter
           @processed = true
           @time = time
 
@@ -190,11 +198,11 @@ module Synthea
 
         def prescribe(time, entity)
           self.add_lookup_code(Synthea::MEDICATION_LOOKUP)
-          if ! @reason.nil?
-            cond = @context.most_recent_by_name(@reason)
-            entity.record_synthea.medication_start(self.symbol(), time, cond.symbol())
-          else
+          cond = @context.most_recent_by_name(@reason) unless @reason.nil?
+          if cond.nil?
             entity.record_synthea.medication_start(self.symbol(), time)
+          else
+            entity.record_synthea.medication_start(self.symbol(), time, cond.symbol())
           end
           @prescribed = true
         end
@@ -220,11 +228,11 @@ module Synthea
 
         def operate(time, entity)
           self.add_lookup_code(Synthea::PROCEDURE_LOOKUP)
-          if ! @reason.nil?
-            cond = @context.most_recent_by_name(@reason)
-            entity.record_synthea.procedure(self.symbol(), time, cond.symbol())
-          else
+          cond = @context.most_recent_by_name(@reason) unless @reason.nil?
+          if cond.nil?
             entity.record_synthea.procedure(self.symbol(), time)
+          else
+            entity.record_synthea.procedure(self.symbol(), time, cond.symbol())
           end
           @operated = true
         end

@@ -4,6 +4,7 @@ module Synthea
 
       def initialize
         super
+        # load all the JSON module files in lib/generic/modules/
         @gmodules = []
         Dir.glob(File.join(File.expand_path("../../generic/modules", __FILE__), '*.json')).each do |file|
           m = JSON.parse(File.read(file))
@@ -12,7 +13,7 @@ module Synthea
         end
       end
 
-      # process module defined in json
+      # this rule loops through the generic modules, processing one at a time
       rule :generic, [:generic], [:generic, :death] do |time, entity|
         if ! entity[:is_alive]
           return
@@ -30,11 +31,12 @@ module Synthea
       def self.perform_wellness_encounter(entity, time)
         return if entity[:generic].nil?
 
+        # find all of the generic modules that are currently waiting for a wellness encounter
         entity[:generic].each do | name, ctx |
           st = ctx.current_state
           if st.is_a?(Synthea::Generic::States::Encounter) && st.wellness && !st.processed
             st.perform_encounter(time, entity, false)
-            # The encounter got unjammed.  Better keep going!
+            # The encounter got unjammed -- progress through the subsequent states
             ctx.run(time, entity)
           end
         end

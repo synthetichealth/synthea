@@ -10,11 +10,12 @@ module Synthea
       end
 
       def run(time, entity)
+        # if @current_state.run returns true, it means we should progress to the next state
         while @current_state.run(time, entity) do
           @history << @current_state
           @current_state = self.next(time, entity)
           if @history.last.exited < time
-            # This must be a delay that expired between cycles, so temporarily rewind time
+            # This must be a delay state that expired between cycles, so temporarily rewind time
             self.run(@history.last.exited, entity)
           end
         end
@@ -49,10 +50,10 @@ module Synthea
               return self.create_state(ct['transition'])
             end
           end
-          # No satisfied condition or fallback transition.  Go to the default terminal state
+          # No satisfied condition or fallback transition.  Go to the default terminal state.
           return States::Terminal.new(self, "Terminal")
         else
-          # No transition.  Go to the default terminal state
+          # No transition was specified.  Go to the default terminal state.
           return States::Terminal.new(self, "Terminal")
         end
       end
