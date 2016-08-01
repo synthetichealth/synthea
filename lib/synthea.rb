@@ -15,6 +15,7 @@ require 'fhir_client'
 require 'pry'
 require 'georuby'
 require 'geo_ruby/geojson'
+require 'net/sftp'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 

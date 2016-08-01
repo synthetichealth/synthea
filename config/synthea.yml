@@ -1,4 +1,9 @@
 synthea:
+  #change below 3 when running 'ccdaupload' rake task
+  ccda_host: "host" 
+  ccda_user: "user"
+  ccda_pass: "pass"
+
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days
