@@ -55,6 +55,7 @@ module Synthea
             Synthea::Modules::MetabolicSyndrome.perform_encounter(entity, event.time)
             Synthea::Modules::FoodAllergies.record_diagnoses(entity, event.time)  
             Synthea::Modules::CardiovascularDisease.perform_encounter(entity, event.time)
+            Synthea::Modules::Generic.perform_wellness_encounter(entity, event.time)
             entity.events.create(event.time, :encounter_ordered, :encounter)
           end
         end

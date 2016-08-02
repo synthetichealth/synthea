@@ -1,0 +1,31 @@
+{
+    "name": "Distributed",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "distributed_transition": [
+                {
+                    "distribution": 0.15,
+                    "transition": "Terminal1"
+                },
+                {
+                    "distribution": 0.55,
+                    "transition": "Terminal2"
+                },
+                {
+                    "distribution": 0.30,
+                    "transition": "Terminal3"
+                }
+            ]
+        },
+        "Terminal1": {
+            "type": "Terminal"
+        },
+        "Terminal2": {
+            "type": "Terminal"
+        },
+        "Terminal3": {
+            "type": "Terminal"
+        }
+    }
+}

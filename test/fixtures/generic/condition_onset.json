@@ -1,0 +1,49 @@
+{
+    "name": "ConditionOnset",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Annual_Physical"
+        },
+        "Diabetes": {
+            "type": "ConditionOnset",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+            }],
+            "direct_transition": "6_Month_Delay"
+        },
+        "6_Month_Delay": {
+            "type": "Delay",
+            "exact": {
+                "quantity": 6,
+                "unit": "months"
+            },
+            "direct_transition": "Diabetes"
+        },
+        "ED_Visit": {
+            "type": "Encounter",
+            "class": "emergency",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "50849002",
+                "display": "Emergency Room Admission"
+            }],
+            "direct_transition": "Appendicitis"
+        },
+        "Appendicitis": {
+            "type": "ConditionOnset",
+            "target_encounter": "ED_Visit",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "47693006",
+                "display": "Rupture of appendix"
+            }],
+            "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

@@ -17,6 +17,7 @@ require 'georuby'
 require 'geo_ruby/geojson'
 require 'net/sftp'
 require 'highline/import'
+require 'json'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 
@@ -37,6 +38,10 @@ Dir.glob(File.join(root, 'lib','events','**','*.rb')).each do |file|
 end
 
 Dir.glob(File.join(root, 'lib','entity','**','*.rb')).each do |file|
+  require file
+end
+
+Dir.glob(File.join(root, 'lib','generic','**','*.rb')).each do |file|
   require file
 end
 

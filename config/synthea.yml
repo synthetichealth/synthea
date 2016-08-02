@@ -91,3 +91,5 @@ synthea:
       risk: 0.00076
       death: 0.00069
     smoker: 0.161 # 16.1% of MA are smokers. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
+  generic:
+    log: false
