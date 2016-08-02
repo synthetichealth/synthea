@@ -67,14 +67,17 @@ namespace :synthea do
   task :ccdaupload, [:url] do |t,args|
     output = File.join('output','ccda')
     if File.exists? output
-      start = Time.now
       files = File.join(output, '**', '*.xml')
-      puts "Enter username:"
+      print "Username: "
       username = STDIN.gets.chomp
-      password = ask("Enter password:") {|q| q.echo = false}
+      password = ask("Password: ") {|q| q.echo = false}
+      start = Time.now
       Net::SFTP.start(args.url, username, :password => password) do |sftp|
-        Dir.glob(files).each do | file |
+        puts "Uploading files..."
+        fileset = Dir.glob(files)
+        fileset.each_with_index do | file, index |
           filename = File.basename(file)
+          puts "  (#{index+1}/#{fileset.length}) #{filename}"
           sftp.upload!(file, "/ccda/" + filename)
         end
       end
