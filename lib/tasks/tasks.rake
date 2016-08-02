@@ -72,7 +72,6 @@ namespace :synthea do
       puts "Enter username:"
       username = STDIN.gets.chomp
       password = ask("Enter password:") {|q| q.echo = false}
-      binding.pry
       Net::SFTP.start(args.url, username, :password => password) do |sftp|
         Dir.glob(files).each do | file |
           filename = File.basename(file)
