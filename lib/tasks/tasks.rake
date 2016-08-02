@@ -62,13 +62,18 @@ namespace :synthea do
     end
   end
 
+  #enter host name as command line argument to rake task
   desc 'upload CCDA records using sftp'
-  task :ccdaupload, [] do |t,args|
+  task :ccdaupload, [:url] do |t,args|
     output = File.join('output','ccda')
     if File.exists? output
       start = Time.now
       files = File.join(output, '**', '*.xml')
-      Net::SFTP.start(Synthea::Config.ccda_host, Synthea::Config.ccda_user, :password => Synthea::Config.ccda_pass) do |sftp|
+      puts "Enter username:"
+      username = STDIN.gets.chomp
+      password = ask("Enter password:") {|q| q.echo = false}
+      binding.pry
+      Net::SFTP.start(args.url, username, :password => password) do |sftp|
         Dir.glob(files).each do | file |
           filename = File.basename(file)
           sftp.upload!(file, "/ccda/" + filename)
