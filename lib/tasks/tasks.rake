@@ -40,6 +40,7 @@ namespace :synthea do
       start = Time.now
       files = File.join(output, '**', '*.json')
       client = FHIR::Client.new(args.url)
+      client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
       puts 'Uploading Patient records...'
       count = 0
       Dir.glob(files).each do | file |
@@ -69,6 +70,32 @@ namespace :synthea do
     else
       puts 'No FHIR patient records have been generated yet.'
       puts 'Run synthea:generate task.'
+    end
+  end
+
+  #enter host name as command line argument to rake task
+  desc 'upload CCDA records using sftp'
+  task :ccdaupload, [:url] do |t,args|
+    output = File.join('output','ccda')
+    if File.exists? output
+      files = File.join(output, '**', '*.xml')
+      print "Username: "
+      username = STDIN.gets.chomp
+      password = ask("Password: ") {|q| q.echo = false}
+      start = Time.now
+      Net::SFTP.start(args.url, username, :password => password) do |sftp|
+        puts "Uploading files..."
+        fileset = Dir.glob(files)
+        fileset.each_with_index do | file, index |
+          filename = File.basename(file)
+          puts "  (#{index+1}/#{fileset.length}) #{filename}"
+          sftp.upload!(file, "/ccda/" + filename)
+        end
+      end
+      finish = Time.now
+      minutes = ((finish-start)/60)
+      seconds = (minutes - minutes.floor) * 60
+      puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
     end
   end
 
