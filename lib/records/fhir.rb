@@ -84,7 +84,7 @@ module Synthea
       def self.condition(condition, fhir_record, patient, encounter)
         conditionData = COND_LOOKUP[condition['type']]
         fhir_condition = FHIR::Condition.new({
-          'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+          'patient' => {'reference'=>"urn:uuid:#{patient.fullUrl}"},
           'code' => {
             'coding'=>[{
               'code'=> conditionData[:codes]['SNOMED-CT'][0],
@@ -94,7 +94,7 @@ module Synthea
           },
           'verificationStatus' => 'confirmed',
           'onsetDateTime' => convertFhirDateTime(condition['time'],'time'),
-          'encounter' => {'reference'=>"Encounter/#{encounter.fullUrl}"}
+          'encounter' => {'reference'=>"urn:uuid:#{encounter.fullUrl}"}
         })
         if condition['end_time']
           fhir_condition.abatementDateTime = convertFhirDateTime(condition['end_time'], 'time')
@@ -111,7 +111,7 @@ module Synthea
           'status' => 'finished',
           'class' => encounterData[:class],
           'type' => [{'coding' => [{'code' => encounterData[:codes]['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}], 'text' => encounterData[:description]}],
-          'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+          'patient' => {'reference'=>"urn:uuid:#{patient.fullUrl}"},
           'period' => {'start' => convertFhirDateTime(encounter['time'],'time'), 'end' => convertFhirDateTime(encounter['time']+15.minutes, 'time')}
         })
         
@@ -130,7 +130,7 @@ module Synthea
           'type' => 'allergy',
           'category' => 'food',
           'criticality' => ['low','high'].sample,
-          'patient' => {'reference'=>"Patient/#{patient.fullUrl}"},
+          'patient' => {'reference'=>"urn:uuid:#{patient.fullUrl}"},
           'substance' => {'coding'=>[{
               'code'=>snomed_code,
               'display'=>allergy['type'].to_s.split('food_allergy_')[1],
@@ -151,8 +151,8 @@ module Synthea
           'code'=>{
             'coding'=>[{'system'=>'http://loinc.org','code'=>obs_data[:code],'display'=>obs_data[:description]}]
           },
-          'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
-          'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'subject'=> { 'reference'=> "urn:uuid:#{patient.fullUrl}"},
+          'encounter'=> { 'reference'=> "urn:uuid:#{encounter.fullUrl}"},
           'effectiveDateTime' => convertFhirDateTime(observation['time'],'time'),
           'valueQuantity'=>{'value'=>observation['value'],'unit'=>obs_data[:unit]}
         })
@@ -167,8 +167,8 @@ module Synthea
           'code'=>{
             'coding'=>[{'system'=>'http://loinc.org','code'=>multi_data[:code],'display'=>multi_data[:description]}]
           },
-          'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
-          'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'subject'=> { 'reference'=> "urn:uuid:#{patient.fullUrl}"},
+          'encounter'=> { 'reference'=> "urn:uuid:#{encounter.fullUrl}"},
           'effectiveDateTime' => convertFhirDateTime(multiObs['time'],'time')
         })
         observations.each do |obs| 
@@ -188,8 +188,8 @@ module Synthea
           'code'=>{
             'coding'=>[{'system'=>'http://loinc.org','code'=>report_data[:code],'display'=>report_data[:description]}]
           },
-          'subject'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
-          'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'subject'=> { 'reference'=> "urn:uuid:#{patient.fullUrl}"},
+          'encounter'=> { 'reference'=> "urn:uuid:#{encounter.fullUrl}"},
           'effectiveDateTime' => convertFhirDateTime(report['time'],'time'),
           'issued' => convertFhirDateTime(report['time'],'time'),
           'performer' => { 'display' => 'Hospital Lab'}
@@ -197,7 +197,7 @@ module Synthea
         entry.resource.result = []
         obsEntries = fhir_record.entry.last(report['numObs'])
         obsEntries.each do |e|
-          entry.resource.result << FHIR::Reference.new({'reference'=>"Observation/#{e.fullUrl}",'display'=>e.resource.code.coding.first.display})
+          entry.resource.result << FHIR::Reference.new({'reference'=>"urn:uuid:#{e.fullUrl}",'display'=>e.resource.code.coding.first.display})
         end
         fhir_record.entry << entry
       end
@@ -206,7 +206,7 @@ module Synthea
         reason = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{|c|c.code==procedure['reason']} }
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         fhir_procedure = FHIR::Procedure.new({
-          'subject' => { 'reference' => "Patient/#{patient.fullUrl}"},
+          'subject' => { 'reference' => "urn:uuid:#{patient.fullUrl}"},
           'status' => 'completed',
           'code' => { 
             'coding' => [{'code'=>proc_data[:codes]['SNOMED-CT'][0], 'display'=>proc_data[:description], 'system'=>'http://snomed.info/sct'}],
@@ -214,9 +214,9 @@ module Synthea
           # 'reasonReference' => { 'reference' => reason.resource.id },
           # 'performer' => { 'reference' => doctor_no_good },
           'performedDateTime' => convertFhirDateTime(procedure['time'],'time'),
-          'encounter' => { 'reference' => "Encounter/#{encounter.fullUrl}" },
+          'encounter' => { 'reference' => "urn:uuid:#{encounter.fullUrl}" },
         })
-        fhir_procedure.reasonReference = FHIR::Reference.new({'reference'=>"Condition/#{reason.fullUrl}",'display'=>reason.resource.code.text}) if reason
+        fhir_procedure.reasonReference = FHIR::Reference.new({'reference'=>"urn:uuid:#{reason.fullUrl}",'display'=>reason.resource.code.text}) if reason
 
         entry = FHIR::Bundle::Entry.new
         entry.resource = fhir_procedure
@@ -230,10 +230,10 @@ module Synthea
           'vaccineCode'=>{
             'coding'=>[IMM_SCHEDULE[imm['type']][:code]]
           },
-          'patient'=> { 'reference'=> "Patient/#{patient.fullUrl}"},
+          'patient'=> { 'reference'=> "urn:uuid:#{patient.fullUrl}"},
           'wasNotGiven' => false,
           'reported' => false,
-          'encounter'=> { 'reference'=> "Encounter/#{encounter.fullUrl}"}
+          'encounter'=> { 'reference'=> "urn:uuid:#{encounter.fullUrl}"}
         })
         entry = FHIR::Bundle::Entry.new
         entry.resource = immunization
@@ -250,8 +250,8 @@ module Synthea
         end
         
         careplan = FHIR::CarePlan.new({
-          'subject' => {'reference'=> "Patient/#{patient.fullUrl}"},
-          'context' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'subject' => {'reference'=> "urn:uuid:#{patient.fullUrl}"},
+          'context' => {'reference'=> "urn:uuid:#{encounter.fullUrl}"},
           'period' => {'start'=>convertFhirDateTime(plan['start_time'])},
           'category' => [{
             'coding'=>[{
@@ -264,7 +264,7 @@ module Synthea
           'addresses' => [] 
         })
         reasons.each do |r|
-          careplan.addresses << FHIR::Reference.new({'reference'=> "Condition/#{r.fullUrl}"}) unless reasons.nil? || reasons.empty?
+          careplan.addresses << FHIR::Reference.new({'reference'=> "urn:uuid:#{r.fullUrl}"}) unless reasons.nil? || reasons.empty?
         end
         if plan['stop']
           careplan.period.end = convertFhirDateTime(plan['stop'])
@@ -307,13 +307,13 @@ module Synthea
               'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
             }]
           },
-          'patient' => {'reference'=> "Patient/#{patient.fullUrl}"},
-          'encounter' => {'reference'=> "Encounter/#{encounter.fullUrl}"},
+          'patient' => {'reference'=> "urn:uuid:#{patient.fullUrl}"},
+          'encounter' => {'reference'=> "urn:uuid:#{encounter.fullUrl}"},
           'dateWritten' => convertFhirDateTime(prescription['start_time']),
           'reasonReference' => []
         })
         reasons.each do |r|
-          medOrder.reasonReference << FHIR::Reference.new({'reference'=> "Condition/#{r.fullUrl}"})
+          medOrder.reasonReference << FHIR::Reference.new({'reference'=> "urn:uuid:#{r.fullUrl}"})
         end
         if prescription['stop']
           medOrder.status = 'stopped' 
