@@ -63,15 +63,15 @@ module Synthea
 
         out_dir = File.join('output','html')
         html = HealthDataStandards::Export::HTML.new.export(ccda_record)
-        File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.html"), 'w') { |file| file.write(html) }
+        File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html"), 'w') { |file| file.write(html) }
         
         out_dir = File.join('output','fhir')
         data = fhir_record.to_json
-        File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
+        File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json"), 'w') { |file| file.write(data) }
         
         out_dir = File.join('output','CCDA')
         xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-        File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.xml"), 'w') { |file| file.write(xml) }
+        File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml"), 'w') { |file| file.write(xml) }
       end
 
     end

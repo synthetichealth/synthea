@@ -31,6 +31,9 @@ module Synthea
         patient.gender = entity[:gender]
         patient.birthdate = entity.event(:birth).time.to_i
 
+        patient.medical_record_number = entity.record_synthea.patient_info[:uuid]
+        patient.medical_record_assigner = 'https://github.com/synthetichealth/synthea'
+
         patient.addresses << Address.new
         patient.addresses.first.street = entity[:address]['line']
         patient.addresses.first.city = entity[:address]['city']

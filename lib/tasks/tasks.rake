@@ -113,8 +113,8 @@ namespace :synthea do
       ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
       html = HealthDataStandards::Export::HTML.new.export(ccda_record)
       xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-      File.open(File.join(html_out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.html"), 'w') { |file| file.write(html) }
-      File.open(File.join(ccda_out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.xml"), 'w') { |file| file.write(xml) }
+      File.open(File.join(html_out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html"), 'w') { |file| file.write(html) }
+      File.open(File.join(ccda_out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml"), 'w') { |file| file.write(xml) }
     end
   end
 
@@ -125,7 +125,7 @@ namespace :synthea do
     patients.each do |patient|
       fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
       data = fhir_record.to_json
-      File.open(File.join(out_dir, "#{patient[:name_last]}_#{patient[:name_first]}_#{!patient[:diabetes].nil?}.json"), 'w') { |file| file.write(data) }
+      File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json"), 'w') { |file| file.write(data) }
     end
   end
 

@@ -35,6 +35,10 @@ module Synthea
         resourceID = SecureRandom.uuid.to_s.strip
         patientResource = FHIR::Patient.new({
           'id' => resourceID,
+          'identifier' => [{
+              'system' => 'https://github.com/synthetichealth/synthea',
+              'value' => entity.record_synthea.patient_info[:uuid]
+            }],
           'name' => [{'given' => [entity[:name_first]],
                       'family' => [entity[:name_last]],
                       'use' => 'official'

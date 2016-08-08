@@ -3,7 +3,7 @@ module Synthea
 		class Record
 			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications, :careplans
 			def initialize
-				@patient_info = {expired: false}
+				@patient_info = {expired: false, uuid: SecureRandom.uuid}
 				@encounters = []
 				@observations = []
 				#store condition info
