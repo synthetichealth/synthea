@@ -69,6 +69,13 @@ module Synthea
         end
       end
 
+      class Simple < State
+        def process(time, entity)
+          # simple state always goes to next
+          true
+        end
+      end
+
       class Terminal < State
         def process(time, entity)
           # never pass through the terminal state
