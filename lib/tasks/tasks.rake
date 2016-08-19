@@ -168,5 +168,69 @@ namespace :synthea do
         reply = client.read_feed(resource)
       end
   end
+
+  # This task requires CSV data downloaded from the US Census Bureau
+  # and placed into a folder called `resources`.
+  # One file contains town population estimates, another file contains
+  # demographic (gender, race) distributions per county.
+  # This task merges the two datasets and generates the input files
+  # per county within the `config` folder.
+  desc 'transform census data'
+  task :census, [] do |t,args|
+    options = {:headers=>true,:header_converters=>:symbol}
+    towns = {}
+    counties = {}
+    townfile = File.open("./resources/SUB-EST2015_25.csv","r:UTF-8")
+    CSV.foreach(townfile,options) do |row|
+      if row[:primgeo_flag].to_i == 1
+        town_name = row[:name].split.keep_if{|x|!['town','city'].include?(x.downcase)}.join(' ')
+        towns[ town_name ] = { :population => row[:popestimate2015].to_i, :state => row[:stname], :county => row[:county] }
+      end
+      if row[:sumlev].to_i==50 #county
+        counties[ row[:county] ] = row[:name]
+      end
+    end
+    # remap county identifiers to county names
+    towns.each do |k,v|
+      v[:county] = counties[ v[:county] ]
+    end
+    townfile.close
+    countyfile = File.open("./resources/CC-EST2015-ALLDATA-25.csv","r:UTF-8")
+    CSV.foreach(countyfile,options) do |row|
+      # if (2015 estimate) && (total overall demographics)
+      if row[:year].to_i==8 && row[:agegrp].to_i==0
+        gender = {
+          :male => ( row[:tot_male].to_f / row[:tot_pop].to_f ),
+          :female => ( row[:tot_female].to_f / row[:tot_pop].to_f ),          
+        }
+        race = {
+          :white => (( row[:wa_male].to_f + row[:wa_female].to_f ) / row[:tot_pop].to_f),
+          :hispanic => (( row[:h_male].to_f + row[:h_female].to_f ) / row[:tot_pop].to_f),
+          :black => (( row[:ba_male].to_f + row[:ba_female].to_f ) / row[:tot_pop].to_f),
+          :asian => (( row[:aa_male].to_f + row[:aa_female].to_f ) / row[:tot_pop].to_f),
+          :native => (( row[:ia_male].to_f + row[:ia_female].to_f + row[:na_male].to_f + row[:na_female].to_f ) / row[:tot_pop].to_f),
+          :other => 0.001
+        }
+        towns.each do |k,v|
+          if v[:county]==row[:ctyname]
+            v[:gender] = gender
+            v[:race] = race
+          end
+        end
+      end
+    end
+    countyfile.close
+    output = File.open("./config/towns.json","w:UTF-8")
+    output.write( JSON.pretty_unparse(towns) )
+    output.close
+    puts "Wrote JSON to ./config/towns.json"
+    counties.each do |k,county|
+      output = File.open("./config/#{county.gsub(' ','_')}.json","w:UTF-8")
+      output.write( JSON.pretty_unparse(towns.select{|k,t|t[:county]==county}) )
+      output.close
+      puts "Wrote JSON for #{county}."
+    end
+    puts "Done."
+  end
   
 end

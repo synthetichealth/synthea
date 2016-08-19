@@ -1,0 +1,342 @@
+{
+  "Acushnet": {
+    "population": 10477,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Attleboro": {
+    "population": 44284,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Berkley": {
+    "population": 6658,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Dartmouth": {
+    "population": 34715,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Dighton": {
+    "population": 7399,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Easton": {
+    "population": 23908,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Fairhaven": {
+    "population": 16140,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Fall River": {
+    "population": 88777,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Freetown": {
+    "population": 9179,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Mansfield": {
+    "population": 23687,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "New Bedford": {
+    "population": 94958,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "North Attleborough": {
+    "population": 29071,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Norton": {
+    "population": 19468,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Raynham": {
+    "population": 13797,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Rehoboth": {
+    "population": 12008,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Seekonk": {
+    "population": 14968,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Somerset": {
+    "population": 18288,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Swansea": {
+    "population": 16387,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Taunton": {
+    "population": 56789,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  },
+  "Westport": {
+    "population": 15814,
+    "state": "Massachusetts",
+    "county": "Bristol County",
+    "gender": {
+      "male": 0.4848896855445317,
+      "female": 0.5151103144554683
+    },
+    "race": {
+      "white": 0.8998225485476999,
+      "hispanic": 0.07225938085966967,
+      "black": 0.0489374465669969,
+      "asian": 0.0231908213775118,
+      "native": 0.007311790104387433,
+      "other": 0.001
+    }
+  }
+}

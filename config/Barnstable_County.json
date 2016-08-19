@@ -1,0 +1,257 @@
+{
+  "Barnstable": {
+    "population": 44331,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Bourne": {
+    "population": 19681,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Brewster": {
+    "population": 9918,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Chatham": {
+    "population": 6143,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Dennis": {
+    "population": 14005,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Eastham": {
+    "population": 4915,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Falmouth": {
+    "population": 31524,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Harwich": {
+    "population": 12180,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Mashpee": {
+    "population": 14154,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Orleans": {
+    "population": 5846,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Provincetown": {
+    "population": 2968,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Sandwich": {
+    "population": 20445,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Truro": {
+    "population": 2007,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Wellfleet": {
+    "population": 2749,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  },
+  "Yarmouth": {
+    "population": 23467,
+    "state": "Massachusetts",
+    "county": "Barnstable County",
+    "gender": {
+      "male": 0.47638487773697935,
+      "female": 0.5236151222630206
+    },
+    "race": {
+      "white": 0.932754172245991,
+      "hispanic": 0.028409064399789113,
+      "black": 0.026762094497814148,
+      "asian": 0.014094889727666761,
+      "native": 0.008015564565419232,
+      "other": 0.001
+    }
+  }
+}

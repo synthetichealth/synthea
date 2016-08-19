@@ -1,0 +1,342 @@
+{
+  "Amherst": {
+    "population": 39833,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Belchertown": {
+    "population": 14929,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Chesterfield": {
+    "population": 1249,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Cummington": {
+    "population": 871,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Easthampton": {
+    "population": 16030,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Goshen": {
+    "population": 1070,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Granby": {
+    "population": 6352,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Hadley": {
+    "population": 5352,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Hatfield": {
+    "population": 3298,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Huntington": {
+    "population": 2181,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Middlefield": {
+    "population": 527,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Northampton": {
+    "population": 28540,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Pelham": {
+    "population": 1330,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Plainfield": {
+    "population": 652,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Southampton": {
+    "population": 6152,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "South Hadley": {
+    "population": 17743,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Ware": {
+    "population": 9888,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Westhampton": {
+    "population": 1638,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Williamsburg": {
+    "population": 2469,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  },
+  "Worthington": {
+    "population": 1188,
+    "state": "Massachusetts",
+    "county": "Hampshire County",
+    "gender": {
+      "male": 0.4661917516057833,
+      "female": 0.5338082483942167
+    },
+    "race": {
+      "white": 0.8862683828088188,
+      "hispanic": 0.0543796344518017,
+      "black": 0.03112987624928701,
+      "asian": 0.0556878208466632,
+      "native": 0.003447164149492845,
+      "other": 0.001
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "Aquinnah": {
+    "population": 328,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  },
+  "Chilmark": {
+    "population": 916,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  },
+  "Edgartown": {
+    "population": 4306,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  },
+  "Gosnold": {
+    "population": 77,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  },
+  "Oak Bluffs": {
+    "population": 4677,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  },
+  "Tisbury": {
+    "population": 4099,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  },
+  "West Tisbury": {
+    "population": 2896,
+    "state": "Massachusetts",
+    "county": "Dukes County",
+    "gender": {
+      "male": 0.49523093820452047,
+      "female": 0.5047690617954795
+    },
+    "race": {
+      "white": 0.9051968321868316,
+      "hispanic": 0.033874790450315044,
+      "black": 0.03838372160240476,
+      "asian": 0.009711544019885542,
+      "native": 0.013468986646626973,
+      "other": 0.001
+    }
+  }
+}

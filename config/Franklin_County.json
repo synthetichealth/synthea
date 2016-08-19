@@ -1,0 +1,444 @@
+{
+  "Ashfield": {
+    "population": 1723,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Bernardston": {
+    "population": 2101,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Buckland": {
+    "population": 1864,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Charlemont": {
+    "population": 1234,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Colrain": {
+    "population": 1647,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Conway": {
+    "population": 1881,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Deerfield": {
+    "population": 5015,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Erving": {
+    "population": 1776,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Gill": {
+    "population": 1492,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Greenfield": {
+    "population": 17450,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Hawley": {
+    "population": 331,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Heath": {
+    "population": 693,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Leverett": {
+    "population": 1845,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Leyden": {
+    "population": 713,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Monroe": {
+    "population": 120,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Montague": {
+    "population": 8272,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "New Salem": {
+    "population": 999,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Northfield": {
+    "population": 2992,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Orange": {
+    "population": 7651,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Rowe": {
+    "population": 383,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Shelburne": {
+    "population": 1848,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Shutesbury": {
+    "population": 1764,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Sunderland": {
+    "population": 3657,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Warwick": {
+    "population": 762,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Wendell": {
+    "population": 870,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  },
+  "Whately": {
+    "population": 1518,
+    "state": "Massachusetts",
+    "county": "Franklin County",
+    "gender": {
+      "male": 0.4882933669494766,
+      "female": 0.5117066330505233
+    },
+    "race": {
+      "white": 0.9450999277630628,
+      "hispanic": 0.03863967932465546,
+      "black": 0.014249089956232915,
+      "asian": 0.015693828699310207,
+      "native": 0.004900780442203368,
+      "other": 0.001
+    }
+  }
+}

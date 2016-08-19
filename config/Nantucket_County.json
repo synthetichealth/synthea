@@ -1,0 +1,19 @@
+{
+  "Nantucket": {
+    "population": 10925,
+    "state": "Massachusetts",
+    "county": "Nantucket County",
+    "gender": {
+      "male": 0.5063615560640732,
+      "female": 0.49363844393592676
+    },
+    "race": {
+      "white": 0.8763386727688787,
+      "hispanic": 0.1308924485125858,
+      "black": 0.08906178489702517,
+      "asian": 0.013821510297482837,
+      "native": 0.0023798627002288328,
+      "other": 0.001
+    }
+  }
+}

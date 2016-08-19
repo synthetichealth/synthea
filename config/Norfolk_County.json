@@ -1,0 +1,478 @@
+{
+  "Avon": {
+    "population": 4498,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Bellingham": {
+    "population": 16891,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Braintree": {
+    "population": 37497,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Brookline": {
+    "population": 59195,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Canton": {
+    "population": 22817,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Cohasset": {
+    "population": 8393,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Dedham": {
+    "population": 25397,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Dover": {
+    "population": 5961,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Foxborough": {
+    "population": 17456,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Franklin": {
+    "population": 33147,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Holbrook": {
+    "population": 11050,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Medfield": {
+    "population": 12718,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Medway": {
+    "population": 13253,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Millis": {
+    "population": 8169,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Milton": {
+    "population": 27374,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Needham": {
+    "population": 30564,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Norfolk": {
+    "population": 11908,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Norwood": {
+    "population": 29095,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Plainville": {
+    "population": 9057,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Quincy": {
+    "population": 93618,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Randolph": {
+    "population": 33699,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Sharon": {
+    "population": 18173,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Stoughton": {
+    "population": 28431,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Walpole": {
+    "population": 25102,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Wellesley": {
+    "population": 29000,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Westwood": {
+    "population": 16055,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Weymouth": {
+    "population": 55957,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  },
+  "Wrentham": {
+    "population": 11548,
+    "state": "Massachusetts",
+    "county": "Norfolk County",
+    "gender": {
+      "male": 0.4793534121717242,
+      "female": 0.5206465878282758
+    },
+    "race": {
+      "white": 0.8017163225927879,
+      "hispanic": 0.04168827754255247,
+      "black": 0.07099765381316422,
+      "asian": 0.10622206450074208,
+      "native": 0.002543019411714843,
+      "other": 0.001
+    }
+  }
+}

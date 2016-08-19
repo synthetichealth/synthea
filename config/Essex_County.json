@@ -1,0 +1,580 @@
+{
+  "Amesbury": {
+    "population": 17414,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Andover": {
+    "population": 35299,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Beverly": {
+    "population": 41186,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Boxford": {
+    "population": 8253,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Danvers": {
+    "population": 27849,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Essex": {
+    "population": 3661,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Georgetown": {
+    "population": 8584,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Gloucester": {
+    "population": 29781,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Groveland": {
+    "population": 6750,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Hamilton": {
+    "population": 8179,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Haverhill": {
+    "population": 62765,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Ipswich": {
+    "population": 13804,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Lawrence": {
+    "population": 80231,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Lynn": {
+    "population": 92457,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Lynnfield": {
+    "population": 12761,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Manchester-by-the-Sea": {
+    "population": 5366,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Marblehead": {
+    "population": 20517,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Merrimac": {
+    "population": 6800,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Methuen": {
+    "population": 49660,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Middleton": {
+    "population": 9738,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Nahant": {
+    "population": 3485,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Newbury": {
+    "population": 6971,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Newburyport": {
+    "population": 17982,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "North Andover": {
+    "population": 29721,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Peabody": {
+    "population": 52504,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Rockport": {
+    "population": 7206,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Rowley": {
+    "population": 6285,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Salem": {
+    "population": 42869,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Salisbury": {
+    "population": 9261,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Saugus": {
+    "population": 27994,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Swampscott": {
+    "population": 14477,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Topsfield": {
+    "population": 6529,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "Wenham": {
+    "population": 5163,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  },
+  "West Newbury": {
+    "population": 4541,
+    "state": "Massachusetts",
+    "county": "Essex County",
+    "gender": {
+      "male": 0.48242558724194406,
+      "female": 0.5175744127580559
+    },
+    "race": {
+      "white": 0.8613066543993052,
+      "hispanic": 0.19244165593916832,
+      "black": 0.06523607583600394,
+      "asian": 0.039206590356462206,
+      "native": 0.009937593664268603,
+      "other": 0.001
+    }
+  }
+}

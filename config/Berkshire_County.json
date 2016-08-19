@@ -1,0 +1,546 @@
+{
+  "Adams": {
+    "population": 8187,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Alford": {
+    "population": 495,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Becket": {
+    "population": 1762,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Cheshire": {
+    "population": 3158,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Clarksburg": {
+    "population": 1659,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Dalton": {
+    "population": 6661,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Egremont": {
+    "population": 1210,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Florida": {
+    "population": 730,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Great Barrington": {
+    "population": 6907,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Hancock": {
+    "population": 710,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Hinsdale": {
+    "population": 1959,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Lanesborough": {
+    "population": 2991,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Lee": {
+    "population": 5816,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Lenox": {
+    "population": 4988,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Monterey": {
+    "population": 948,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Mount Washington": {
+    "population": 163,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "New Ashford": {
+    "population": 225,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "New Marlborough": {
+    "population": 1478,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "North Adams": {
+    "population": 13263,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Otis": {
+    "population": 1576,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Peru": {
+    "population": 845,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Pittsfield": {
+    "population": 43303,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Richmond": {
+    "population": 1429,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Sandisfield": {
+    "population": 910,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Savoy": {
+    "population": 677,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Sheffield": {
+    "population": 3191,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Stockbridge": {
+    "population": 1938,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Tyringham": {
+    "population": 325,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Washington": {
+    "population": 535,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "West Stockbridge": {
+    "population": 1274,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Williamstown": {
+    "population": 7620,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  },
+  "Windsor": {
+    "population": 895,
+    "state": "Massachusetts",
+    "county": "Berkshire County",
+    "gender": {
+      "male": 0.4836499045592515,
+      "female": 0.5163500954407485
+    },
+    "race": {
+      "white": 0.9269330663078512,
+      "hispanic": 0.04265888537722565,
+      "black": 0.032246456175485806,
+      "asian": 0.014816785054917545,
+      "native": 0.0031917889664236317,
+      "other": 0.001
+    }
+  }
+}

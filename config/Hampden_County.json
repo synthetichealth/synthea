@@ -1,0 +1,393 @@
+{
+  "Agawam": {
+    "population": 28839,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Blandford": {
+    "population": 1259,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Brimfield": {
+    "population": 3741,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Chester": {
+    "population": 1372,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Chicopee": {
+    "population": 56741,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "East Longmeadow": {
+    "population": 16213,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Granville": {
+    "population": 1622,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Hampden": {
+    "population": 5223,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Holland": {
+    "population": 2506,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Holyoke": {
+    "population": 40684,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Longmeadow": {
+    "population": 15898,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Ludlow": {
+    "population": 21472,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Monson": {
+    "population": 8789,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Montgomery": {
+    "population": 859,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Palmer": {
+    "population": 12191,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Russell": {
+    "population": 1787,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Southwick": {
+    "population": 9737,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Springfield": {
+    "population": 154341,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Tolland": {
+    "population": 496,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Wales": {
+    "population": 1899,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Westfield": {
+    "population": 41690,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "West Springfield": {
+    "population": 28693,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  },
+  "Wilbraham": {
+    "population": 14638,
+    "state": "Massachusetts",
+    "county": "Hampden County",
+    "gender": {
+      "male": 0.48306316259108967,
+      "female": 0.5169368374089103
+    },
+    "race": {
+      "white": 0.8327752873441119,
+      "hispanic": 0.2397756485160084,
+      "black": 0.1079117890756124,
+      "asian": 0.025041959676220017,
+      "native": 0.009375597527034778,
+      "other": 0.001
+    }
+  }
+}

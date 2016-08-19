@@ -1,0 +1,1022 @@
+{
+  "Ashburnham": {
+    "population": 6209,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Athol": {
+    "population": 11654,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Auburn": {
+    "population": 16516,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Barre": {
+    "population": 5496,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Berlin": {
+    "population": 3020,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Blackstone": {
+    "population": 9104,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Bolton": {
+    "population": 5180,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Boylston": {
+    "population": 4534,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Brookfield": {
+    "population": 3411,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Charlton": {
+    "population": 13406,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Clinton": {
+    "population": 13805,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Douglas": {
+    "population": 8728,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Dudley": {
+    "population": 11587,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "East Brookfield": {
+    "population": 2187,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Fitchburg": {
+    "population": 40545,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Gardner": {
+    "population": 20333,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Grafton": {
+    "population": 18540,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Hardwick": {
+    "population": 3008,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Harvard": {
+    "population": 6573,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Holden": {
+    "population": 18645,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Hopedale": {
+    "population": 5955,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Hubbardston": {
+    "population": 4596,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Lancaster": {
+    "population": 8166,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Leicester": {
+    "population": 11334,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Leominster": {
+    "population": 41569,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Lunenburg": {
+    "population": 11241,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Mendon": {
+    "population": 6024,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Milford": {
+    "population": 28614,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Millbury": {
+    "population": 13537,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Millville": {
+    "population": 3234,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "New Braintree": {
+    "population": 1022,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Northborough": {
+    "population": 15042,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Northbridge": {
+    "population": 16544,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "North Brookfield": {
+    "population": 4749,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Oakham": {
+    "population": 1929,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Oxford": {
+    "population": 13916,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Paxton": {
+    "population": 4884,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Petersham": {
+    "population": 1246,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Phillipston": {
+    "population": 1747,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Princeton": {
+    "population": 3470,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Royalston": {
+    "population": 1274,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Rutland": {
+    "population": 8527,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Shrewsbury": {
+    "population": 36805,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Southborough": {
+    "population": 10038,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Southbridge": {
+    "population": 16865,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Spencer": {
+    "population": 11810,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Sterling": {
+    "population": 7992,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Sturbridge": {
+    "population": 9514,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Sutton": {
+    "population": 9272,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Templeton": {
+    "population": 8176,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Upton": {
+    "population": 7725,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Uxbridge": {
+    "population": 13892,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Warren": {
+    "population": 5189,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Webster": {
+    "population": 16893,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Westborough": {
+    "population": 18934,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "West Boylston": {
+    "population": 7894,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "West Brookfield": {
+    "population": 3780,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Westminster": {
+    "population": 7570,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Winchendon": {
+    "population": 10698,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  },
+  "Worcester": {
+    "population": 184815,
+    "state": "Massachusetts",
+    "county": "Worcester County",
+    "gender": {
+      "male": 0.49312117885667606,
+      "female": 0.5068788211433239
+    },
+    "race": {
+      "white": 0.8702358958829642,
+      "hispanic": 0.10760925707266385,
+      "black": 0.05490235822619581,
+      "asian": 0.049444236186494385,
+      "native": 0.004594835175703908,
+      "other": 0.001
+    }
+  }
+}

@@ -1,0 +1,461 @@
+{
+  "Abington": {
+    "population": 16227,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Bridgewater": {
+    "population": 27628,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Brockton": {
+    "population": 95314,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Carver": {
+    "population": 11629,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Duxbury": {
+    "population": 15483,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "East Bridgewater": {
+    "population": 14343,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Halifax": {
+    "population": 7834,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Hanover": {
+    "population": 14424,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Hanson": {
+    "population": 10630,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Hingham": {
+    "population": 23120,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Hull": {
+    "population": 10491,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Kingston": {
+    "population": 13301,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Lakeville": {
+    "population": 11338,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Marion": {
+    "population": 5086,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Marshfield": {
+    "population": 25709,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Mattapoisett": {
+    "population": 6267,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Middleborough": {
+    "population": 24350,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Norwell": {
+    "population": 10984,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Pembroke": {
+    "population": 18273,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Plymouth": {
+    "population": 58890,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Plympton": {
+    "population": 2917,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Rochester": {
+    "population": 5494,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Rockland": {
+    "population": 17832,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Scituate": {
+    "population": 18478,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Wareham": {
+    "population": 22408,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "West Bridgewater": {
+    "population": 7094,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  },
+  "Whitman": {
+    "population": 14849,
+    "state": "Massachusetts",
+    "county": "Plymouth County",
+    "gender": {
+      "male": 0.48684053268755645,
+      "female": 0.5131594673124436
+    },
+    "race": {
+      "white": 0.8595454874968896,
+      "hispanic": 0.03778069056589726,
+      "black": 0.1026111251525785,
+      "asian": 0.015057024684899676,
+      "native": 0.004602335847082542,
+      "other": 0.001
+    }
+  }
+}

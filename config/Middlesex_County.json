@@ -1,0 +1,920 @@
+{
+  "Acton": {
+    "population": 23549,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Arlington": {
+    "population": 44815,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Ashby": {
+    "population": 3226,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Ashland": {
+    "population": 17573,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Ayer": {
+    "population": 8001,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Bedford": {
+    "population": 14171,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Belmont": {
+    "population": 25584,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Billerica": {
+    "population": 42683,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Boxborough": {
+    "population": 5206,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Burlington": {
+    "population": 25920,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Cambridge": {
+    "population": 110402,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Carlisle": {
+    "population": 5245,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Chelmsford": {
+    "population": 35149,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Concord": {
+    "population": 19830,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Dracut": {
+    "population": 31352,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Dunstable": {
+    "population": 3435,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Everett": {
+    "population": 46050,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Framingham": {
+    "population": 71209,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Groton": {
+    "population": 11296,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Holliston": {
+    "population": 14525,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Hopkinton": {
+    "population": 16674,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Hudson": {
+    "population": 19864,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Lexington": {
+    "population": 33394,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Lincoln": {
+    "population": 7491,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Littleton": {
+    "population": 9912,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Lowell": {
+    "population": 110699,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Malden": {
+    "population": 61068,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Marlborough": {
+    "population": 39818,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Maynard": {
+    "population": 10676,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Medford": {
+    "population": 57403,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Melrose": {
+    "population": 27997,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Natick": {
+    "population": 36262,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Newton": {
+    "population": 88817,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "North Reading": {
+    "population": 15636,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Pepperell": {
+    "population": 12165,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Reading": {
+    "population": 25704,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Sherborn": {
+    "population": 4300,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Shirley": {
+    "population": 7400,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Somerville": {
+    "population": 80318,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Stoneham": {
+    "population": 22002,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Stow": {
+    "population": 7125,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Sudbury": {
+    "population": 18874,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Tewksbury": {
+    "population": 30915,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Townsend": {
+    "population": 9515,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Tyngsborough": {
+    "population": 12267,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Wakefield": {
+    "population": 26847,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Waltham": {
+    "population": 63378,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Watertown": {
+    "population": 34319,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Wayland": {
+    "population": 13684,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Westford": {
+    "population": 23831,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Weston": {
+    "population": 12057,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Wilmington": {
+    "population": 23534,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Winchester": {
+    "population": 22417,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  },
+  "Woburn": {
+    "population": 39555,
+    "state": "Massachusetts",
+    "county": "Middlesex County",
+    "gender": {
+      "male": 0.48814394195083205,
+      "female": 0.5118560580491679
+    },
+    "race": {
+      "white": 0.8030134896687293,
+      "hispanic": 0.0775887792805552,
+      "black": 0.05589478272883325,
+      "asian": 0.11533310327990164,
+      "native": 0.003214229162237507,
+      "other": 0.001
+    }
+  }
+}

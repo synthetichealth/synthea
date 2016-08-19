@@ -1,0 +1,70 @@
+{
+  "Boston": {
+    "population": 667137,
+    "state": "Massachusetts",
+    "county": "Suffolk County",
+    "gender": {
+      "male": 0.4844349400671618,
+      "female": 0.5155650599328382
+    },
+    "race": {
+      "white": 0.6212234344015904,
+      "hispanic": 0.22141286509424626,
+      "black": 0.2474756496740224,
+      "asian": 0.09066456245236923,
+      "native": 0.009193942844364823,
+      "other": 0.001
+    }
+  },
+  "Chelsea": {
+    "population": 39398,
+    "state": "Massachusetts",
+    "county": "Suffolk County",
+    "gender": {
+      "male": 0.4844349400671618,
+      "female": 0.5155650599328382
+    },
+    "race": {
+      "white": 0.6212234344015904,
+      "hispanic": 0.22141286509424626,
+      "black": 0.2474756496740224,
+      "asian": 0.09066456245236923,
+      "native": 0.009193942844364823,
+      "other": 0.001
+    }
+  },
+  "Revere": {
+    "population": 53422,
+    "state": "Massachusetts",
+    "county": "Suffolk County",
+    "gender": {
+      "male": 0.4844349400671618,
+      "female": 0.5155650599328382
+    },
+    "race": {
+      "white": 0.6212234344015904,
+      "hispanic": 0.22141286509424626,
+      "black": 0.2474756496740224,
+      "asian": 0.09066456245236923,
+      "native": 0.009193942844364823,
+      "other": 0.001
+    }
+  },
+  "Winthrop": {
+    "population": 18164,
+    "state": "Massachusetts",
+    "county": "Suffolk County",
+    "gender": {
+      "male": 0.4844349400671618,
+      "female": 0.5155650599328382
+    },
+    "race": {
+      "white": 0.6212234344015904,
+      "hispanic": 0.22141286509424626,
+      "black": 0.2474756496740224,
+      "asian": 0.09066456245236923,
+      "native": 0.009193942844364823,
+      "other": 0.001
+    }
+  }
+}
