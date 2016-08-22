@@ -193,8 +193,10 @@ namespace :synthea do
     # remap county identifiers to county names
     towns.each do |k,v|
       v[:county] = counties[ v[:county] ]
+      v[:ages] = {}
     end
     townfile.close
+    ageGroups = [ "Total", (0..4),(5..9),(10..14),(15..19),(20..24),(25..29),(30..34),(35..39),(40..44),(45..49),(50..54),(55..59),(60..64),(65..69),(70..74),(75..79),(80..84),(85..110) ]
     countyfile = File.open("./resources/CC-EST2015-ALLDATA-25.csv","r:UTF-8")
     CSV.foreach(countyfile,options) do |row|
       # if (2015 estimate) && (total overall demographics)
@@ -217,9 +219,20 @@ namespace :synthea do
             v[:race] = race
           end
         end
+      elsif row[:year].to_i==8 # (2015 estimate)
+        towns.each do |k,v|
+          if v[:county]==row[:ctyname]
+            v[:ages][ ageGroups[row[:agegrp].to_i] ] = row[:tot_pop].to_f
+          end
+        end        
       end
     end
     countyfile.close
+    # convert the age groups to probability
+    towns.each do |k,v|
+      total = v[:ages].values.inject(0){|i,j| i + j}
+      v[:ages].each{|i,j| v[:ages][i] = (j / total)}
+    end  
     output = File.open("./config/towns.json","w:UTF-8")
     output.write( JSON.pretty_unparse(towns) )
     output.close
