@@ -51,10 +51,13 @@ GEM
     bcp47 (0.3.3)
       i18n
     bson (3.2.6)
+    bson (3.2.6-java)
     builder (3.2.2)
     cane (2.3.0)
       parallel
     coderay (1.1.1)
+    concurrent-ruby (1.0.2)
+    concurrent-ruby (1.0.2-java)
     connection_pool (2.2.0)
     date_time_precision (0.8.1)
     distribution (0.7.3)
@@ -67,6 +70,7 @@ GEM
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
+    ffi (1.9.14-java)
     fhir_client (1.0.2)
       activesupport (>= 3)
       addressable (>= 2.3)
@@ -86,6 +90,7 @@ GEM
       domain_name (~> 0.5)
     i18n (0.7.0)
     json (1.8.3)
+    json (1.8.3-java)
     jwt (1.5.4)
     log4r (1.1.10)
     macaddr (1.7.1)
@@ -121,6 +126,7 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    nokogiri (1.6.8-java)
     oauth2 (1.2.0)
       faraday (>= 0.8, < 0.10)
       jwt (~> 1.0)
@@ -138,7 +144,12 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    rack (1.6.4)
+    pry (0.10.4-java)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+      spoon (~> 0.0)
+    rack (2.0.1)
     rake (11.2.2)
     recursive-open-struct (1.0.1)
     rest-client (1.8.0)
@@ -153,27 +164,33 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     slop (3.6.0)
+    spoon (0.0.4)
+      ffi
     systemu (2.6.5)
     thread_safe (0.3.5)
+    thread_safe (0.3.5-java)
     tilt (2.0.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
+    unf (0.1.4-java)
     unf_ext (0.0.7.2)
     uuid (2.3.8)
       macaddr (~> 1.0)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   awesome_print
   cane (~> 2.3.0)
+  concurrent-ruby
   distribution
   faker
   fhir_client
-  fhir_models
+  fhir_models (~> 0.3)
   georuby
   health-data-standards!
   minitest (~> 5.3)
