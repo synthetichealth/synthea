@@ -149,7 +149,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
-    rack (2.0.1)
+    rack (1.6.4)
     rake (11.2.2)
     recursive-open-struct (1.0.1)
     rest-client (1.8.0)
@@ -198,6 +198,7 @@ DEPENDENCIES
   net-sftp
   pickup
   pry
+  rack (~> 1.6)
   rake
   recursive-open-struct
   simplecov

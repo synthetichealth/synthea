@@ -18,9 +18,9 @@ module Synthea
 
         @population_count = Synthea::Config.sequential.population
 
-        @scaling_factor = @population_count / 6794422.0
-        # 6794422 is the total of all the populations in the towns.json file
-        # towns.collect { |k,v| v['population'] }.inject(0, :+)
+        @scaling_factor = @population_count.to_f / Synthea::Config.sequential.real_world_population.to_f
+        # if you want to generate a population smaller than 7M but still with accurate ratios,
+        #  you can scale the populations of individual cities down by this amount. 
 
         @city_populations = JSON.parse(datafile) if datafile
 
@@ -36,9 +36,8 @@ module Synthea
         puts "Generating #{@population_count} patients..."
         @threads = []
 
-        # 16 picked by experimentation to be a good number of threads to use for exporting records
         # using a cachedthreadpool has no upper bound on the # and if it gets too high then everything grinds to a halt
-        @pool = Concurrent::FixedThreadPool.new(16) if Synthea::Config.sequential.multithreading
+        @pool = Concurrent::FixedThreadPool.new(Synthea::Config.sequential.thread_pool_size) if Synthea::Config.sequential.multithreading
 
         if @city_populations
           run_with_target_data

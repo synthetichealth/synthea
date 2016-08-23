@@ -14,6 +14,7 @@ gem 'fhir_client' #, path: '../fhir_client'
 gem 'georuby'
 gem 'net-sftp'
 gem 'concurrent-ruby', require: 'concurrent'
+gem 'rack', '~> 1.6' #locked at 1.6 to maintain compatibility with ruby 2.0.0
 
 group :test do
   gem "cane", '~> 2.3.0'

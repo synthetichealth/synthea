@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.2.5
+  - "2.0.0"
 script:
   - bundle exec rake test
 notifications:
