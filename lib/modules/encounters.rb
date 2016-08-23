@@ -38,7 +38,7 @@ module Synthea
                   6.months
               end
             end
-            next_date = time + Distribution::Normal.rng(delta, delta*schedule_variance).call
+            next_date = time + Distribution::Normal.rng(delta*1.0, delta*schedule_variance).call
             entity.events.create(next_date, :encounter, :schedule_encounter)
           end
         end

@@ -22,9 +22,17 @@ namespace :synthea do
   end
 
   desc 'sequential generation'
-  task :sequential, [] do |t, args|
+  task :sequential, [:datafile] do |t, args|
+    args.with_defaults(datafile: nil)
+
+    datafile = args.datafile
+    if datafile
+      raise "File not found: #{datafile}" if !File.file?(datafile)
+      datafile = File.read(datafile)
+    end
+
     start = Time.now
-    world = Synthea::World::Sequential.new
+    world = Synthea::World::Sequential.new(datafile)
     world.run
     finish = Time.now
     minutes = ((finish-start)/60)

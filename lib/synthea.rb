@@ -18,6 +18,7 @@ require 'geo_ruby/geojson'
 require 'net/sftp'
 require 'highline/import'
 require 'json'
+require 'concurrent'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 
