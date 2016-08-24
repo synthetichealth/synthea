@@ -71,14 +71,15 @@ GEM
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
     ffi (1.9.14-java)
-    fhir_client (1.0.2)
+    fhir_client (1.6.1)
       activesupport (>= 3)
       addressable (>= 2.3)
-      fhir_models (>= 0.3.1)
+      fhir_models (>= 1.6.1)
       oauth2 (~> 1.1)
+      rack (~> 1.6)
       rest-client (~> 1.8)
       tilt (>= 1.1)
-    fhir_models (0.3.1)
+    fhir_models (1.6.1)
       bcp47 (>= 0.3)
       date_time_precision (>= 0.8)
       mime-types (>= 1.16, < 3)
@@ -190,7 +191,7 @@ DEPENDENCIES
   distribution
   faker
   fhir_client
-  fhir_models (~> 0.3)
+  fhir_models (>= 1.6)
   georuby
   health-data-standards!
   minitest (~> 5.3)
