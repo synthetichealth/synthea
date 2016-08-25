@@ -1,5 +1,9 @@
 synthea:
-
+  export:
+    ccda: true
+    fhir: true
+    html: true
+    years_of_history: 5
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days
