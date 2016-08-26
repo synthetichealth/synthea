@@ -74,9 +74,9 @@ module Synthea
             person = build_person(nil, rand(0..100), nil, nil, nil)
 
             if @pool
-              @pool.post { export (person) }
+              @pool.post { Synthea::Output::Exporter.export (person) }
             else
-              export(person)
+              Synthea::Output::Exporter.export(person)
             end
 
             record_stats(person)
@@ -102,9 +102,9 @@ module Synthea
             person = build_person(city_name, target_age, target_gender, target_race, target_ethnicity)
 
             if @pool
-              @pool.post { export (person) }
+              @pool.post { Synthea::Output::Exporter.export (person) }
             else
-              export(person)
+              Synthea::Output::Exporter.export(person)
             end
 
             record_stats(person)
@@ -172,24 +172,6 @@ module Synthea
         @stats[:ethnicity][ patient[:ethnicity] ] += 1
         @stats[:blood_type][ patient[:blood_type] ] += 1
       end
-
-      def export(patient)
-        ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
-        fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
-
-        out_dir = File.join('output','html')
-        html = HealthDataStandards::Export::HTML.new.export(ccda_record)
-        File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html"), 'w') { |file| file.write(html) }
-        
-        out_dir = File.join('output','fhir')
-        data = fhir_record.to_json
-        File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json"), 'w') { |file| file.write(data) }
-
-        out_dir = File.join('output','CCDA')
-        xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-        File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml"), 'w') { |file| file.write(xml) }
-      end
-
     end
   end
 end

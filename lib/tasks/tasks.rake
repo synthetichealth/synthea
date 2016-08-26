@@ -15,8 +15,8 @@ namespace :synthea do
     seconds = (minutes - minutes.floor) * 60
     puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
     puts "Saving patient records..."
-    fhir_export(world.people | world.dead)
-    ccda_export(world.people | world.dead)
+    fhir_export(world.people | world.dead) if Synthea::Config.export.fhir
+    ccda_export(world.people | world.dead) if Synthea::Config.export.ccda || Synthea::Config.export.html
     binding.pry
     puts 'Finished.'
   end
@@ -111,18 +111,13 @@ namespace :synthea do
     # we need to configure mongo to export for some reason... not ideal
     Mongoid.configure { |config| config.connect_to("synthea_test") }
 
-    html_out_dir = File.join('output','html')
-    FileUtils.rm_r html_out_dir if File.exists? html_out_dir
-    FileUtils.mkdir_p html_out_dir
-    ccda_out_dir = File.join('output','CCDA')
-    FileUtils.rm_r ccda_out_dir if File.exists? ccda_out_dir
-    FileUtils.mkdir_p ccda_out_dir
+    ['html','fhir','CCDA'].each do |type|
+      out_dir = File.join('output',type)
+      FileUtils.rm_r out_dir if File.exists? out_dir
+      FileUtils.mkdir_p out_dir
+    end
     patients.each do |patient|
-      ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
-      html = HealthDataStandards::Export::HTML.new.export(ccda_record)
-      xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-      File.open(File.join(html_out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html"), 'w') { |file| file.write(html) }
-      File.open(File.join(ccda_out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml"), 'w') { |file| file.write(xml) }
+      Synthea::Output::Exporter.export(patient)
     end
   end
 

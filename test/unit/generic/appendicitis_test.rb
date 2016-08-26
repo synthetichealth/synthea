@@ -34,6 +34,7 @@ class AppendicitisTest < Minitest::Test
     @patient.record_synthea.expect(:condition, nil, [:appendicitis, @time])
 
     @patient.record_synthea.expect(:procedure, nil, [:appendectomy, @time, :appendicitis])
+    @patient.record_synthea.expect(:condition, nil, [:history_of_appendectomy, @time])
     
     @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time])
     @patient.record_synthea.expect(:encounter, nil, [:encounter_inpatient, @time])
@@ -53,6 +54,7 @@ class AppendicitisTest < Minitest::Test
     @patient.record_synthea.expect(:condition, nil, [:rupture_of_appendix, @time])
 
     @patient.record_synthea.expect(:procedure, nil, [:appendectomy, @time, :appendicitis])
+    @patient.record_synthea.expect(:condition, nil, [:history_of_appendectomy, @time])
     
     @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time])
     @patient.record_synthea.expect(:encounter, nil, [:encounter_inpatient, @time])

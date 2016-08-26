@@ -494,10 +494,28 @@ module Synthea
 
       def self.process_amputations(amputations, entity, time)
         amputations.each do |amputation|
-          key = "amputation_#{amputation.to_s}".to_sym
+          amp_str = amputation.to_s
+          key = "amputation_#{amp_str}".to_sym
           reason_code = '368581000119106'
           if !entity.record_synthea.present[key]
             entity.record_synthea.procedure(key, time, reason_code, :procedure, :procedure)
+          end
+
+          body_part = amp_str.split('_')[1]
+
+          cond_key =  case body_part
+                      when 'leg' 
+                        :history_of_lower_limb_amputation
+                      when 'foot'
+                        :history_of_amputation_of_foot
+                      when 'hand'
+                        :history_of_disarticulation_at_wrist
+                      when 'arm'
+                        :history_of_upper_limb_amputation
+                      end
+          
+          if !entity.record_synthea.present[cond_key]
+            entity.record_synthea.condition(cond_key, time)
           end
         end
       end

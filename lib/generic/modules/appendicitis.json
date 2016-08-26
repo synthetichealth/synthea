@@ -156,13 +156,24 @@
     "Appendicitis_Encounter": {
       "type": "Encounter",
       "wellness": false,
-      "direct_transition": "Appendectomy_Encounter",
+      "direct_transition": "History_of_Appendectomy",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
         "display" : "Emergency Room Admission"
       }],
       "remarks" : "Currently the GMF does not include Vital Signs, if we decide to add that then there are some lab tests we could add at this Encounter."
+    },
+
+    "History_of_Appendectomy": {
+      "type": "ConditionOnset",
+      "target_encounter": "Appendectomy_Encounter",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "428251008",
+        "display": "History of appendectomy"
+      }],
+      "direct_transition": "Appendectomy_Encounter"
     },
 
     "Appendectomy_Encounter": {
@@ -175,6 +186,7 @@
       }],
       "direct_transition": "Appendectomy"
     },
+
     "Appendectomy": {
       "type": "Procedure",
       "target_encounter": "Appendectomy_Encounter",
