@@ -9,7 +9,7 @@ gem 'distribution'
 gem 'pickup'
 gem 'recursive-open-struct'
 gem 'health-data-standards', :git => 'https://github.com/projectcypress/health-data-standards.git', :branch => 'master'
-gem 'fhir_models', '~> 0.3' #locked at 0.3 until we implement the 1.6 changes
+gem 'fhir_models', '>= 1.6'
 gem 'fhir_client' #, path: '../fhir_client' 
 gem 'georuby'
 gem 'net-sftp'

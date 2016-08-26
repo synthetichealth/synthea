@@ -92,7 +92,7 @@ module Synthea
         conditionData = COND_LOOKUP[condition['type']]
         fhir_condition = FHIR::Condition.new({
           'id' => resourceID,
-          'patient' => {'reference'=>"#{patient.fullUrl}"},
+          'subject' => {'reference'=>"#{patient.fullUrl}"},
           'code' => {
             'coding'=>[{
               'code'=> conditionData[:codes]['SNOMED-CT'][0],
@@ -102,7 +102,7 @@ module Synthea
           },
           'verificationStatus' => 'confirmed',
           'onsetDateTime' => convertFhirDateTime(condition['time'],'time'),
-          'encounter' => {'reference'=>"#{encounter.fullUrl}"}
+          'context' => {'reference'=>"#{encounter.fullUrl}"}
         })
         if condition['end_time']
           fhir_condition.abatementDateTime = convertFhirDateTime(condition['end_time'], 'time')
@@ -119,7 +119,7 @@ module Synthea
         fhir_encounter = FHIR::Encounter.new({
           'id' => resourceID,
           'status' => 'finished',
-          'class' => encounterData[:class],
+          'class' => {'code' => encounterData[:class]},
           'type' => [{'coding' => [{'code' => encounterData[:codes]['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}], 'text' => encounterData[:description]}],
           'patient' => {'reference'=>"#{patient.fullUrl}"},
           'period' => {'start' => convertFhirDateTime(encounter['time'],'time'), 'end' => convertFhirDateTime(encounter['time']+15.minutes, 'time')}
@@ -134,13 +134,13 @@ module Synthea
       def self.allergy(allergy, fhir_record, patient, encounter)
         snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
         allergy = FHIR::AllergyIntolerance.new({
-          'recordedDate' => convertFhirDateTime(allergy['time'],'time'),
-          'status' => 'confirmed',
+          'attestedDate' => convertFhirDateTime(allergy['time'],'time'),
+          'status' => 'active-confirmed',
           'type' => 'allergy',
           'category' => 'food',
           'criticality' => ['low','high'].sample,
           'patient' => {'reference'=>"#{patient.fullUrl}"},
-          'substance' => {'coding'=>[{
+          'code' => {'coding'=>[{
               'code'=>snomed_code,
               'display'=>allergy['type'].to_s.split('food_allergy_')[1],
               'system' => 'http://snomed.info/sct'
@@ -208,7 +208,7 @@ module Synthea
           'encounter'=> { 'reference'=> "#{encounter.fullUrl}"},
           'effectiveDateTime' => convertFhirDateTime(report['time'],'time'),
           'issued' => convertFhirDateTime(report['time'],'time'),
-          'performer' => { 'display' => 'Hospital Lab'}
+          'performer' => [{ 'display' => 'Hospital Lab'}]
         })
         entry.resource.result = []
         obsEntries = fhir_record.entry.last(report['numObs'])
@@ -326,18 +326,23 @@ module Synthea
           'patient' => {'reference'=> "#{patient.fullUrl}"},
           'encounter' => {'reference'=> "#{encounter.fullUrl}"},
           'dateWritten' => convertFhirDateTime(prescription['start_time']),
-          'reasonReference' => []
+          'reasonReference' => [],
+          'eventHistory' => []
         })
         reasons.each do |r|
           medOrder.reasonReference << FHIR::Reference.new({'reference'=> "#{r.fullUrl}"})
         end
         if prescription['stop']
           medOrder.status = 'stopped' 
-          medOrder.dateEnded = convertFhirDateTime(prescription['stop'])
+
+          event = FHIR::MedicationOrder::EventHistory.new({
+              'status' => 'stopped',
+              'dateTime' => convertFhirDateTime(prescription['stop']),
+               })
 
           reasonData = REASON_LOOKUP[prescription['stop_reason']]
           if reasonData
-            medOrder.reasonEnded = FHIR::CodeableConcept.new({
+            event.reason = FHIR::CodeableConcept.new({
               'coding'=>[{
                 'code'=> reasonData[:codes]['SNOMED-CT'][0],
                 'display'=> reasonData[:description],
@@ -345,6 +350,7 @@ module Synthea
               }]
             })
           end
+          medOrder.eventHistory << event
         else
           medOrder.status = 'active'
         end
