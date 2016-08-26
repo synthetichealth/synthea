@@ -119,7 +119,7 @@ class FhirTest < Minitest::Test
 		encounter = @fhir_record.entry[1].resource
 		assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,@encounterID)
 		assert_equal('finished', encounter.status)
-		assert_equal('outpatient', encounter.local_class)
+		assert_equal('outpatient', encounter.local_class.code)
 		assert_equal('170258001', encounter.type[0].coding[0].code)
 		assert_equal('http://snomed.info/sct', encounter.type[0].coding[0].system)
     assert_equal("#{@patientID}",encounter.patient.reference)
@@ -138,6 +138,7 @@ class FhirTest < Minitest::Test
   	assert_equal("#{@patientID}",allergy.patient.reference)
   	assert_equal('91935009', allergy.code.coding[0].code)
   	assert_equal('peanuts', allergy.code.coding[0].display)
+    assert_equal('active-confirmed', allergy.status)
   	assert(allergy.criticality == 'low' || allergy.criticality == 'high')
   	assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time, 'time'), allergy.attestedDate)
 		assert_equal('food', allergy.category)
@@ -189,7 +190,6 @@ class FhirTest < Minitest::Test
     assert_equal('http://loinc.org', diastolic.code.coding[0].system)
     assert_equal(80, diastolic.valueQuantity.value)
     assert_equal("mmHg", diastolic.valueQuantity.unit)
-
   end
 
   def test_diagnostic_report

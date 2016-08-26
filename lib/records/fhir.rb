@@ -119,7 +119,7 @@ module Synthea
         fhir_encounter = FHIR::Encounter.new({
           'id' => resourceID,
           'status' => 'finished',
-          'class' => encounterData[:class],
+          'class' => {'code' => encounterData[:class]},
           'type' => [{'coding' => [{'code' => encounterData[:codes]['SNOMED-CT'][0], 'system'=>'http://snomed.info/sct'}], 'text' => encounterData[:description]}],
           'patient' => {'reference'=>"#{patient.fullUrl}"},
           'period' => {'start' => convertFhirDateTime(encounter['time'],'time'), 'end' => convertFhirDateTime(encounter['time']+15.minutes, 'time')}
@@ -135,7 +135,7 @@ module Synthea
         snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
         allergy = FHIR::AllergyIntolerance.new({
           'attestedDate' => convertFhirDateTime(allergy['time'],'time'),
-          'status' => 'confirmed',
+          'status' => 'active-confirmed',
           'type' => 'allergy',
           'category' => 'food',
           'criticality' => ['low','high'].sample,
@@ -326,7 +326,8 @@ module Synthea
           'patient' => {'reference'=> "#{patient.fullUrl}"},
           'encounter' => {'reference'=> "#{encounter.fullUrl}"},
           'dateWritten' => convertFhirDateTime(prescription['start_time']),
-          'reasonReference' => []
+          'reasonReference' => [],
+          'eventHistory' => []
         })
         reasons.each do |r|
           medOrder.reasonReference << FHIR::Reference.new({'reference'=> "#{r.fullUrl}"})
@@ -349,7 +350,6 @@ module Synthea
               }]
             })
           end
-          medOrder.eventHistory ||= []
           medOrder.eventHistory << event
         else
           medOrder.status = 'active'
