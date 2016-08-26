@@ -64,7 +64,14 @@ module Synthea
     myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
     cardiac_arrest: {description: 'Cardiac Arrest', codes: {'SNOMED-CT' => ['410429000']}},
     atrial_fibrillation: { description: 'Atrial Fibrillation', codes: {'SNOMED-CT' => ['49436004']} },
-    cardiovascular_disease: { description: 'Disorder of cardiovascular system', codes: {'SNOMED-CT'=>['49601007']}}
+    cardiovascular_disease: { description: 'Disorder of cardiovascular system', codes: {'SNOMED-CT'=>['49601007']}},
+
+    history_of_lower_limb_amputation: { description: 'History of lower limb amputation (situation)', codes: {'SNOMED-CT'=>['161622006']}},
+    history_of_amputation_of_foot: { description: 'History of amputation of foot (situation)', codes: {'SNOMED-CT'=>['429280009']}},
+    history_of_disarticulation_at_wrist: { description: 'History of disarticulation at wrist (situation)', codes: {'SNOMED-CT'=>['698423002']}},
+    history_of_upper_limb_amputation: { description: 'History of upper limb amputation (situation)', codes: {'SNOMED-CT'=>['161621004']}},
+    history_of_myocardial_infarction: { description: 'History of myocardial infarction (situation)', codes: {'SNOMED-CT'=>['399211009']}},
+    history_of_cardiac_arrest: { description: 'History of cardiac arrest (situation)', codes: {'SNOMED-CT'=>['429007001']}},
   }
 
   CAREPLAN_LOOKUP = {

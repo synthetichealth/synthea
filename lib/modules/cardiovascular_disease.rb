@@ -464,6 +464,11 @@ module Synthea
           stroke: [:mechanical_thrombectomy],
           cardiac_arrest: [:implant_cardioverter_defib, :catheter_ablation]
         }
+        history_conditions = {
+          myocardial_infarction: [:history_of_myocardial_infarction],
+          stroke: [],
+          cardiac_arrest: [:history_of_cardiac_arrest]
+        }
         time = event.time
         diagnosis = event.type
         patient = entity.record_synthea
@@ -477,6 +482,10 @@ module Synthea
           emergency_procedures[diagnosis].each do |proc|
             reason_code = COND_LOOKUP[diagnosis][:codes]['SNOMED-CT'][0]
             entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure) 
+          end
+
+          history_conditions[diagnosis].each do |cond|
+            entity.record_synthea.condition(cond, time) 
           end
         end
       end
