@@ -50,7 +50,8 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Early_Second_Trimester"
+			"direct_transition": "Early_Second_Trimester",
+			"remarks": "Week 10"
 		},
 		"Early_Second_Trimester": {
 			"type": "Delay",
@@ -61,7 +62,7 @@
 			"distributed_transition": [
 				{
 					"distribution": 0.128,
-					"transition": "Spontaneous_Abortion"
+					"transition": "Early_Term_Miscarriage"
 				},
 				{
 					"distribution": 0.872,
@@ -79,7 +80,8 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Late_Second_Trimester"
+			"direct_transition": "Late_Second_Trimester",
+			"remarks": "Week 15"
 		},
 		"Late_Second_Trimester": {
 			"type": "Delay",
@@ -87,16 +89,17 @@
 				"quantity": 11,
 				"unit": "weeks"
 			},
-      "distributed_transition": [
-        {
-          "distribution": 0.06,
-          "transition": "Spontaneous_Abortion"
-        },
-        {
-          "distribution": 0.94,
-          "transition": "Late_Second_Trimester_Visit"
-        }
-      ]
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Early_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.94,
+					"transition": "Late_Second_Trimester_Visit"
+				}
+			],
+			"remarks": "Week 26"
 		},
 		"Late_Second_Trimester_Visit": {
 			"type": "Encounter",
@@ -116,6 +119,32 @@
 				"quantity": 6,
 				"unit": "weeks"
 			},
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Late_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.08,
+					"transition": "Develop_Pre_Eclampsia"
+				},
+				{
+					"distribution": 0.86,
+					"transition": "First_Third_Trimester_Visit"
+				}
+			],
+			"remarks": "Week 32"
+		},
+		"Develop_Pre_Eclampsia": {
+			"type": "ConditionOnset",
+			"target_encounter": "First_Third_Trimester_Visit",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "47693006",
+					"display": "Pre_Eclampsia"
+				}
+			],
 			"direct_transition": "First_Third_Trimester_Visit"
 		},
 		"First_Third_Trimester_Visit": {
@@ -136,6 +165,32 @@
 				"quantity": 4,
 				"unit": "weeks"
 			},
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Late_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.08,
+					"transition": "Develop_Eclampsia"
+				},
+				{
+					"distribution": 0.86,
+					"transition": "Second_Third_Trimester_Visit"
+				}
+			],
+			"remarks": "Week 36"
+		},
+		"Develop_Eclampsia": {
+			"type": "ConditionOnset",
+			"target_encounter": "First_Third_Trimester_Visit",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "47693006",
+					"display": "Eclampsia"
+				}
+			],
 			"direct_transition": "Second_Third_Trimester_Visit"
 		},
 		"Second_Third_Trimester_Visit": {
@@ -156,7 +211,17 @@
 				"quantity": 2,
 				"unit": "weeks"
 			},
-			"direct_transition": "Third_Third_Trimester_Visit"
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Premature_Birth"
+				},
+				{
+					"distribution": 0.94,
+					"transition": "Third_Third_Trimester_Visit"
+				}
+			],
+			"remarks": "Week 38"
 		},
 		"Third_Third_Trimester_Visit": {
 			"type": "Encounter",
@@ -176,7 +241,17 @@
 				"quantity": 1,
 				"unit": "weeks"
 			},
-			"direct_transition": "Fourth_Third_Trimester_Visit"
+			"distributed_transition": [
+				{
+					"distribution": 0.15,
+					"transition": "Premature_Birth"
+				},
+				{
+					"distribution": 0.85,
+					"transition": "Fourth_Third_Trimester_Visit"
+				}
+			],
+			"remarks": "Week 39"
 		},
 		"Fourth_Third_Trimester_Visit": {
 			"type": "Encounter",
@@ -196,7 +271,17 @@
 				"quantity": 1,
 				"unit": "weeks"
 			},
-			"direct_transition": "Fifth_Third_Trimester_Visit"
+			"distributed_transition": [
+				{
+					"distribution": 0.20,
+					"transition": "Normal_Birth"
+				},
+				{
+					"distribution": 0.80,
+					"transition": "Fifth_Third_Trimester_Visit"
+				}
+			],
+			"remarks": "Week 40"
 		},
 		"Fifth_Third_Trimester_Visit": {
 			"type": "Encounter",
@@ -216,7 +301,16 @@
 				"quantity": 1,
 				"unit": "weeks"
 			},
-			"direct_transition": "Sixth_Third_Trimester_Visit"
+			"distributed_transition": [
+				{
+					"distribution": 0.50,
+					"transition": "Normal_Birth"
+				},
+				{
+					"distribution": 0.50,
+					"transition": "Sixth_Third_Trimester_Visit"
+				}
+			]
 		},
 		"Sixth_Third_Trimester_Visit": {
 			"type": "Encounter",
@@ -228,9 +322,64 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Birth"
+			"direct_transition": "Seventh_Third_Trimester",
+			"remarks": "Week 41"
 		},
-		"Birth": {
+		"Seventh_Third_Trimester": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 1,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.70,
+					"transition": "Normal_Birth"
+				},
+				{
+					"distribution": 0.30,
+					"transition": "Seventh_Third_Trimester_Visit"
+				}
+			]
+		},
+		"Seventh_Third_Trimester_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Induced_Birth",
+			"remarks": "Week 42"
+		},
+		"Premature_Birth": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Hospital Birth"
+				}
+			],
+			"direct_transition": "Terminal"
+		},
+		"Normal_Birth": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Hospital Birth"
+				}
+			],
+			"direct_transition": "Terminal"
+		},
+		"Induced_Birth": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -243,6 +392,14 @@
 			"direct_transition": "Terminal"
 		},
 		"Spontaneous_Abortion": {
+			"type": "Simple",
+			"direct_transition": "Terminal"
+		},
+		"Early_Term_Miscarriage": {
+			"type": "Simple",
+			"direct_transition": "Terminal"
+		},
+		"Late_Term_Miscarriage": {
 			"type": "Simple",
 			"direct_transition": "Terminal"
 		},
