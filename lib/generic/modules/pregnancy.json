@@ -16,12 +16,21 @@
 						"condition_type": "Gender",
 						"gender": "F"
 					},
-					"transition": "Become_Pregnant"
+					"transition": "Wait_For_Conception"
 				},
 				{
 					"transition": "Terminal"
 				}
 			]
+		},
+		"Wait_For_Conception": {
+			"type": "Delay",
+			"range": {
+				"low": 18,
+				"high": 39,
+				"unit": "years"
+			},
+			"direct_transition": "Become_Pregnant"
 		},
 		"Become_Pregnant": {
 			"type": "Delay",
@@ -36,11 +45,11 @@
 				},
 				{
 					"distribution": 0.872,
-					"transition": "Initial_Visit"
+					"transition": "Week_10_Visit"
 				}
 			]
 		},
-		"Initial_Visit": {
+		"Week_10_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -50,10 +59,10 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Early_Second_Trimester",
+			"direct_transition": "Week_15",
 			"remarks": "Week 10"
 		},
-		"Early_Second_Trimester": {
+		"Week_15": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 5,
@@ -66,11 +75,11 @@
 				},
 				{
 					"distribution": 0.872,
-					"transition": "Early_Second_Trimester_Visit"
+					"transition": "Week_15_Visit"
 				}
 			]
 		},
-		"Early_Second_Trimester_Visit": {
+		"Week_15_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -80,10 +89,10 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Late_Second_Trimester",
+			"direct_transition": "Week_26",
 			"remarks": "Week 15"
 		},
-		"Late_Second_Trimester": {
+		"Week_26": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 11,
@@ -96,12 +105,12 @@
 				},
 				{
 					"distribution": 0.94,
-					"transition": "Late_Second_Trimester_Visit"
+					"transition": "Week_26_Visit"
 				}
 			],
 			"remarks": "Week 26"
 		},
-		"Late_Second_Trimester_Visit": {
+		"Week_26_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -111,9 +120,9 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "First_Third_Trimester"
+			"direct_transition": "Week_32"
 		},
-		"First_Third_Trimester": {
+		"Week_32": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 6,
@@ -130,14 +139,14 @@
 				},
 				{
 					"distribution": 0.86,
-					"transition": "First_Third_Trimester_Visit"
+					"transition": "Week_32_Visit"
 				}
 			],
 			"remarks": "Week 32"
 		},
 		"Develop_Pre_Eclampsia": {
 			"type": "ConditionOnset",
-			"target_encounter": "First_Third_Trimester_Visit",
+			"target_encounter": "Week_32_Visit",
 			"codes": [
 				{
 					"system": "SNOMED-CT",
@@ -145,9 +154,9 @@
 					"display": "Pre_Eclampsia"
 				}
 			],
-			"direct_transition": "First_Third_Trimester_Visit"
+			"direct_transition": "Week_32_Visit"
 		},
-		"First_Third_Trimester_Visit": {
+		"Week_32_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -157,9 +166,9 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Second_Third_Trimester"
+			"direct_transition": "Week_36"
 		},
-		"Second_Third_Trimester": {
+		"Week_36": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 4,
@@ -176,14 +185,14 @@
 				},
 				{
 					"distribution": 0.86,
-					"transition": "Second_Third_Trimester_Visit"
+					"transition": "Week_36_Visit"
 				}
 			],
 			"remarks": "Week 36"
 		},
 		"Develop_Eclampsia": {
 			"type": "ConditionOnset",
-			"target_encounter": "First_Third_Trimester_Visit",
+			"target_encounter": "Week_36_Visit",
 			"codes": [
 				{
 					"system": "SNOMED-CT",
@@ -191,9 +200,9 @@
 					"display": "Eclampsia"
 				}
 			],
-			"direct_transition": "Second_Third_Trimester_Visit"
+			"direct_transition": "Week_36_Visit"
 		},
-		"Second_Third_Trimester_Visit": {
+		"Week_36_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -203,9 +212,9 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Third_Third_Trimester"
+			"direct_transition": "Week_38"
 		},
-		"Third_Third_Trimester": {
+		"Week_38": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 2,
@@ -218,12 +227,12 @@
 				},
 				{
 					"distribution": 0.94,
-					"transition": "Third_Third_Trimester_Visit"
+					"transition": "Week_38_Visit"
 				}
 			],
 			"remarks": "Week 38"
 		},
-		"Third_Third_Trimester_Visit": {
+		"Week_38_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -233,9 +242,9 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Fourth_Third_Trimester"
+			"direct_transition": "Week_39"
 		},
-		"Fourth_Third_Trimester": {
+		"Week_39": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 1,
@@ -248,12 +257,12 @@
 				},
 				{
 					"distribution": 0.85,
-					"transition": "Fourth_Third_Trimester_Visit"
+					"transition": "Week_39_Visit"
 				}
 			],
 			"remarks": "Week 39"
 		},
-		"Fourth_Third_Trimester_Visit": {
+		"Week_39_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -263,9 +272,9 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Fifth_Third_Trimester"
+			"direct_transition": "Week_40"
 		},
-		"Fifth_Third_Trimester": {
+		"Week_40": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 1,
@@ -278,12 +287,12 @@
 				},
 				{
 					"distribution": 0.80,
-					"transition": "Fifth_Third_Trimester_Visit"
+					"transition": "Week_40_Visit"
 				}
 			],
 			"remarks": "Week 40"
 		},
-		"Fifth_Third_Trimester_Visit": {
+		"Week_40_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -293,9 +302,9 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Sixth_Third_Trimester"
+			"direct_transition": "Week_41"
 		},
-		"Sixth_Third_Trimester": {
+		"Week_41": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 1,
@@ -308,11 +317,11 @@
 				},
 				{
 					"distribution": 0.50,
-					"transition": "Sixth_Third_Trimester_Visit"
+					"transition": "Week_41_Visit"
 				}
 			]
 		},
-		"Sixth_Third_Trimester_Visit": {
+		"Week_41_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
@@ -322,10 +331,10 @@
 					"display": "Office Visit"
 				}
 			],
-			"direct_transition": "Seventh_Third_Trimester",
+			"direct_transition": "Week_42",
 			"remarks": "Week 41"
 		},
-		"Seventh_Third_Trimester": {
+		"Week_42": {
 			"type": "Delay",
 			"exact": {
 				"quantity": 1,
@@ -338,11 +347,11 @@
 				},
 				{
 					"distribution": 0.30,
-					"transition": "Seventh_Third_Trimester_Visit"
+					"transition": "Week_42_Visit"
 				}
 			]
 		},
-		"Seventh_Third_Trimester_Visit": {
+		"Week_42_Visit": {
 			"type": "Encounter",
 			"class": "emergency",
 			"codes": [
