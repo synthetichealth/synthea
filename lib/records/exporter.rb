@@ -4,29 +4,54 @@ module Synthea
       def self.export(patient)
         patient = filter_for_export(patient) unless Synthea::Config.export.years_of_history <= 0
 
+        created_files = {}
+
         if Synthea::Config.export.ccda || Synthea::Config.export.html
           ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
 
           if Synthea::Config.export.ccda
-            out_dir = File.join('output','CCDA')
-            xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-            File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml"), 'w') { |file| file.write(xml) }
+            begin
+              out_dir = File.join('output','CCDA')
+              xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
+              out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml")
+              File.open(out_file, 'w') { |file| file.write(xml) }
+              created_files[:ccda] = out_file
+            rescue => e
+              created_files[:errors] ||= {}
+              created_files[:errors][:ccda] = e
+            end
           end
 
           if Synthea::Config.export.html
-            out_dir = File.join('output','html')
-            html = HealthDataStandards::Export::HTML.new.export(ccda_record)
-            File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html"), 'w') { |file| file.write(html) }
+            begin
+              out_dir = File.join('output','html')
+              html = HealthDataStandards::Export::HTML.new.export(ccda_record)
+              out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html")
+              File.open(out_file, 'w') { |file| file.write(html) }
+              created_files[:html] = out_file
+            rescue => e
+              created_files[:errors] ||= {}
+              created_files[:errors][:html] = e
+            end
           end
         end
 
         if Synthea::Config.export.fhir
-          fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
+          begin
+            fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
 
-          out_dir = File.join('output','fhir')
-          data = fhir_record.to_json
-          File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json"), 'w') { |file| file.write(data) }
+            out_dir = File.join('output','fhir')
+            data = fhir_record.to_json
+            out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json")
+            File.open(out_file, 'w') { |file| file.write(data) }
+            created_files[:fhir] = out_file
+          rescue => e
+            created_files[:errors] ||= {}
+            created_files[:errors][:fhir] = e
+          end
         end
+
+        created_files
       end
 
 

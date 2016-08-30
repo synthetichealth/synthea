@@ -40,7 +40,13 @@ module Synthea
         @pool = Concurrent::FixedThreadPool.new(Synthea::Config.sequential.thread_pool_size) if Synthea::Config.sequential.multithreading
 
         if @city_populations
-          run_with_target_data
+          @city_populations.each do |city_name,city_stats|
+            if Synthea::Config.sequential.multithreading
+              @threads << Thread.new { process_city(city_name, city_stats) }
+            else
+              process_city(city_name, city_stats)
+            end
+          end
         else
           run_random
         end
@@ -56,27 +62,15 @@ module Synthea
         puts "Generated Demographics:"
         puts JSON.pretty_unparse(@stats)
       end
-
-      def run_with_target_data
-        @city_populations.each do |city_name,city_stats|
-          if Synthea::Config.sequential.multithreading
-            @threads << Thread.new do
-              process_city(city_name, city_stats)
-            end
-          else
-            process_city(city_name, city_stats)
-          end
-        end
-      end
-
+      
       def run_random
         @population_count.times do |i|
             person = build_person(nil, rand(0..100), nil, nil, nil)
 
             if @pool
-              @pool.post { Synthea::Output::Exporter.export (person) }
+              @pool.post { export(person) }
             else
-              Synthea::Output::Exporter.export(person)
+              export(person)
             end
 
             record_stats(person)
@@ -102,9 +96,9 @@ module Synthea
             person = build_person(city_name, target_age, target_gender, target_race, target_ethnicity)
 
             if @pool
-              @pool.post { Synthea::Output::Exporter.export (person) }
+              @pool.post { export(person) }
             else
-              Synthea::Output::Exporter.export(person)
+              export(person)
             end
 
             record_stats(person)
@@ -156,6 +150,56 @@ module Synthea
         end
 
         person
+      end
+
+      def export(person)
+        files = Synthea::Output::Exporter.export(person)
+
+        if Synthea::Config.sequential.upload_files_upon_creation 
+          if Synthea::Config.sequential.fhir_server_url && files[:fhir]
+            fhir_upload(files[:fhir])
+          end
+          # ccda upload not yet implemented
+        end
+      end
+
+      def fhir_upload(file)
+        # create a new client object for each upload
+        # it's probably slower than keeping 1 or a fixed # around
+        # but it means we don't have to worry about thread-safety on this part
+        fhir_client = FHIR::Client.new(Synthea::Config.sequential.fhir_server_url)
+        fhir_client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
+        json = File.open(file,'r:UTF-8',&:read)
+        bundle = FHIR.from_contents(json)
+        fhir_client.begin_transaction
+        start_time = Time.now
+        bundle.entry.each do |entry|
+          #defined our own 'add to transaction' function to preserve our entry information
+          add_entry_transaction('POST',nil,entry,fhir_client)
+        end
+        begin
+          reply = fhir_client.end_transaction
+          puts "  Error: #{reply.code}" if reply.code!=200
+        rescue Exception => e
+          puts "  Error: #{e.message}"
+        end
+      end
+
+      def add_entry_transaction(method, url, entry=nil, client)
+        request = FHIR::Bundle::Entry::Request.new
+        request.local_method = 'POST'
+        if url.nil? && !entry.resource.nil?
+          options = Hash.new
+          options[:resource] = entry.resource.class
+          options[:id] = entry.resource.id if request.local_method != 'POST'
+          request.url = client.resource_url(options)
+          request.url = request.url[1..-1] if request.url.starts_with?('/')
+        else
+          request.url = url
+        end
+        entry.request = request
+        client.transaction_bundle.entry << entry
+        entry
       end
 
       def record_stats(patient)
