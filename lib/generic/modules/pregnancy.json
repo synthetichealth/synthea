@@ -1,0 +1,419 @@
+{
+	"name": "Pregnancy",
+	"states": {
+		"Initial": {
+			"type": "Initial",
+			"conditional_transition": [
+				{
+					"condition": {
+						"condition_type": "Gender",
+						"gender": "M"
+					},
+					"transition": "Terminal"
+				},
+				{
+					"condition": {
+						"condition_type": "Gender",
+						"gender": "F"
+					},
+					"transition": "Wait_For_Conception"
+				},
+				{
+					"transition": "Terminal"
+				}
+			]
+		},
+		"Wait_For_Conception": {
+			"type": "Delay",
+			"range": {
+				"low": 18,
+				"high": 39,
+				"unit": "years"
+			},
+			"direct_transition": "Become_Pregnant"
+		},
+		"Become_Pregnant": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 10,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.128,
+					"transition": "Spontaneous_Abortion"
+				},
+				{
+					"distribution": 0.872,
+					"transition": "Week_10_Visit"
+				}
+			]
+		},
+		"Week_10_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_15",
+			"remarks": "Week 10"
+		},
+		"Week_15": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 5,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.128,
+					"transition": "Early_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.872,
+					"transition": "Week_15_Visit"
+				}
+			]
+		},
+		"Week_15_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_26",
+			"remarks": "Week 15"
+		},
+		"Week_26": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 11,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Early_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.94,
+					"transition": "Week_26_Visit"
+				}
+			],
+			"remarks": "Week 26"
+		},
+		"Week_26_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_32"
+		},
+		"Week_32": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 6,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Late_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.08,
+					"transition": "Develop_Pre_Eclampsia"
+				},
+				{
+					"distribution": 0.86,
+					"transition": "Week_32_Visit"
+				}
+			],
+			"remarks": "Week 32"
+		},
+		"Develop_Pre_Eclampsia": {
+			"type": "ConditionOnset",
+			"target_encounter": "Week_32_Visit",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "47693006",
+					"display": "Pre_Eclampsia"
+				}
+			],
+			"direct_transition": "Week_32_Visit"
+		},
+		"Week_32_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_36"
+		},
+		"Week_36": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 4,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Late_Term_Miscarriage"
+				},
+				{
+					"distribution": 0.08,
+					"transition": "Develop_Eclampsia"
+				},
+				{
+					"distribution": 0.86,
+					"transition": "Week_36_Visit"
+				}
+			],
+			"remarks": "Week 36"
+		},
+		"Develop_Eclampsia": {
+			"type": "ConditionOnset",
+			"target_encounter": "Week_36_Visit",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "47693006",
+					"display": "Eclampsia"
+				}
+			],
+			"direct_transition": "Week_36_Visit"
+		},
+		"Week_36_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_38"
+		},
+		"Week_38": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 2,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.06,
+					"transition": "Premature_Birth"
+				},
+				{
+					"distribution": 0.94,
+					"transition": "Week_38_Visit"
+				}
+			],
+			"remarks": "Week 38"
+		},
+		"Week_38_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_39"
+		},
+		"Week_39": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 1,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.15,
+					"transition": "Premature_Birth"
+				},
+				{
+					"distribution": 0.85,
+					"transition": "Week_39_Visit"
+				}
+			],
+			"remarks": "Week 39"
+		},
+		"Week_39_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_40"
+		},
+		"Week_40": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 1,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.20,
+					"transition": "Normal_Birth"
+				},
+				{
+					"distribution": 0.80,
+					"transition": "Week_40_Visit"
+				}
+			],
+			"remarks": "Week 40"
+		},
+		"Week_40_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_41"
+		},
+		"Week_41": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 1,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.50,
+					"transition": "Normal_Birth"
+				},
+				{
+					"distribution": 0.50,
+					"transition": "Week_41_Visit"
+				}
+			]
+		},
+		"Week_41_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Week_42",
+			"remarks": "Week 41"
+		},
+		"Week_42": {
+			"type": "Delay",
+			"exact": {
+				"quantity": 1,
+				"unit": "weeks"
+			},
+			"distributed_transition": [
+				{
+					"distribution": 0.70,
+					"transition": "Normal_Birth"
+				},
+				{
+					"distribution": 0.30,
+					"transition": "Week_42_Visit"
+				}
+			]
+		},
+		"Week_42_Visit": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Office Visit"
+				}
+			],
+			"direct_transition": "Induced_Birth",
+			"remarks": "Week 42"
+		},
+		"Premature_Birth": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Hospital Birth"
+				}
+			],
+			"direct_transition": "Terminal"
+		},
+		"Normal_Birth": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Hospital Birth"
+				}
+			],
+			"direct_transition": "Terminal"
+		},
+		"Induced_Birth": {
+			"type": "Encounter",
+			"class": "emergency",
+			"codes": [
+				{
+					"system": "SNOMED-CT",
+					"code": "50849002",
+					"display": "Hospital Birth"
+				}
+			],
+			"direct_transition": "Terminal"
+		},
+		"Spontaneous_Abortion": {
+			"type": "Simple",
+			"direct_transition": "Terminal"
+		},
+		"Early_Term_Miscarriage": {
+			"type": "Simple",
+			"direct_transition": "Terminal"
+		},
+		"Late_Term_Miscarriage": {
+			"type": "Simple",
+			"direct_transition": "Terminal"
+		},
+		"Terminal": {
+			"type": "Terminal"
+		}
+	}
+}

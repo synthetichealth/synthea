@@ -1,0 +1,249 @@
+{
+	"name": "Birth",
+	"states": {
+		"Initial": {
+			"type": "Initial",
+			"conditional_transition": [
+				{
+					"condition": {
+						"condition_type": "Gender",
+						"gender": "M"
+					},
+					"transition": "Terminal"
+				},
+				{
+					"condition": {
+						"condition_type": "Gender",
+						"gender": "F"
+					},
+					"transition": "Female"
+				},
+				{
+					"transition": "Terminal"
+				}
+			]
+		},
+		"Female": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.012,
+					"transition": "Home_Birth"
+				},
+				{
+					"distribution": 0.098,
+					"transition": "Hospital_Birth"
+				},
+				{
+					"distribution": 0.008,
+					"transition": "BBA"
+				}
+			],
+			"remarks": "From RS-EHR Project Ref: https://docs.google.com/presentation/d/1nJwbdxB5pDo8sDJtzVLICQQ8rVsFzsEyZrJUTG4kiCo/edit#slide=id.g153e23b819_0_87"
+		},
+		"Home_Birth": {
+			"type": "Simple",
+			"direct_transition": "SVD",
+			"remarks": ""
+		},
+		"BBA": {
+			"type": "Simple",
+			"direct_transition": "SVD",
+			"remarks": ""
+		},
+		"SVD": {
+			"type": "Simple",
+			"direct_transition": "Normal_Expulsion",
+			"remarks": ""
+		},
+		"Normal_Expulsion": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.6,
+					"transition": "Fundal_Massage"
+				},
+				{
+					"distribution": 0.4,
+					"transition": "Assisted_Delivery"
+				}
+			],
+			"remarks": "TODO: Guessing on transition probabilities"
+		},
+		"Fundal_Massage": {
+			"type": "Simple",
+			"direct_transition": "Terminal",
+			"remarks": ""
+		},
+		"Hospital_Birth": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.117,
+					"transition": "SVD"
+				},
+				{
+					"distribution": 0.7246,
+					"transition": "Interventions"
+				},
+				{
+					"distribution": 0.0736,
+					"transition": "Assisted"
+				},
+				{
+					"distribution": 0.0025,
+					"transition": "Spontaneous_Breach"
+				},
+				{
+					"distribution": 0.0823,
+					"transition": "Elective_CS"
+				}
+			],
+			"remarks": ""
+		},
+		"Interventions": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.24,
+					"transition": "Induction"
+				},
+				{
+					"distribution": 0.2794,
+					"transition": "Epidural"
+				},
+				{
+					"distribution": 0.1245,
+					"transition": "Augmentation"
+				},
+				{
+					"distribution": 0.3561,
+					"transition": "Episiotomy"
+				}
+			],
+			"remarks": ""
+		},
+		"Induction": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.8341,
+					"transition": "SVD"
+				},
+				{
+					"distribution": 0.1659,
+					"transition": "Emergency_CS"
+				}
+			],
+			"remarks": ""
+		},
+		"Epidural": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.8341,
+					"transition": "SVD"
+				},
+				{
+					"distribution": 0.1659,
+					"transition": "Emergency_CS"
+				}
+			],
+			"remarks": ""
+		},
+		"Augmentation": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.8341,
+					"transition": "SVD"
+				},
+				{
+					"distribution": 0.1659,
+					"transition": "Emergency_CS"
+				}
+			],
+			"remarks": ""
+		},
+		"Episiotomy": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.8341,
+					"transition": "SVD"
+				},
+				{
+					"distribution": 0.1659,
+					"transition": "Emergency_CS"
+				}
+			],
+			"remarks": ""
+		},
+		"Emergency_CS": {
+			"type": "Simple",
+			"direct_transition": "Assisted_Delivery",
+			"remarks": ""
+		},
+		"Assisted": {
+			"type": "Simple",
+			"direct_transition": "Assisted_Delivery",
+			"remarks": ""
+		},
+		"Spontaneous_Breach": {
+			"type": "Simple",
+			"direct_transition": "Assisted_Delivery",
+			"remarks": ""
+		},
+		"Elective_CS": {
+			"type": "Simple",
+			"direct_transition": "Assisted_Delivery",
+			"remarks": ""
+		},
+		"Assisted_Delivery": {
+			"type": "Simple",
+			"direct_transition": "Controlled_Cord_Traction",
+			"remarks": ""
+		},
+		"Controlled_Cord_Traction": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.8341,
+					"transition": "Fundal_Massage"
+				},
+				{
+					"distribution": 0.1659,
+					"transition": "Surgical_Delivery"
+				}
+			],
+			"remarks": "Guessing on transition probabilitiesw"
+		},
+		"Surgical_Delivery": {
+			"type": "Simple",
+			"distributed_transition": [
+				{
+					"distribution": 0.8341,
+					"transition": "Manual_Removal"
+				},
+				{
+					"distribution": 0.1659,
+					"transition": "Curettage"
+				}
+			],
+			"remarks": "Guessing on transition probabilitiesw"
+		},
+		"Manual_Removal": {
+			"type": "Simple",
+			"direct_transition": "Terminal",
+			"remarks": ""
+		},
+		"Curettage": {
+			"type": "Simple",
+			"direct_transition": "Terminal",
+			"remarks": ""
+		},
+		"Terminal": {
+			"type": "Terminal"
+		}
+	}
+}
