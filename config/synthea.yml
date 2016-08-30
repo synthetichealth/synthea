@@ -18,6 +18,9 @@ synthea:
     multithreading: false  
     thread_pool_size: 16 # 16 picked by experimentation to be a good number of threads to use for exporting records
     max_tries: 10 # max number of times it tries to create a person before it gives up (ie, nobody reached the target age)
+    upload_files_upon_creation: false
+    fhir_server_url: null
+    ccda_server_url: null
   schedule:
     variance: 0.1
   lifecycle:
