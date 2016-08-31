@@ -31,7 +31,7 @@
 					"transition": "Home_Birth"
 				},
 				{
-					"distribution": 0.098,
+					"distribution": 0.98,
 					"transition": "Hospital_Birth"
 				},
 				{
