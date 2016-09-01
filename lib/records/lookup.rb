@@ -197,77 +197,93 @@ module Synthea
   IMM_SCHEDULE = {
     :hepb => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'08','display'=>'Hep B, adolescent or pediatric'},
-      :at_months => [0, 1, 6]
+      :at_months => [0, 1, 6],
+      :first_available => 1981
     },
     :rv_mono => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'119','display'=>'rotavirus, monovalent'},
       #  Monovalent (Rotarix) is a 2-dose series, as opposed to pentavalent (RotaTeq) which is a 3-dose series 
-      :at_months => [2, 4]
+      :at_months => [2, 4],
+      :first_available => 2006
     },
     :dtap => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'20','display'=>'DTaP'},
-      :at_months => [2, 4, 6, 15, 48]
+      :at_months => [2, 4, 6, 15, 48],
+      :first_available => 1997 # Note that DTaP is a combined vaccine, and prior to 1997 other DTP vaccines existed
     },
     :hib => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'49','display'=>'Hib (PRP-OMP)'},
       # PRP-OMP (PedvaxHib or COMVAX) is a 2-dose series with a booster at 12-15 months, as opposed to PRP-T
       # (AC-THIB) which is a 3-dose series with a booster at 12-15 months
-      :at_months => [2, 4, 12]
+      :at_months => [2, 4, 12],
+      :first_available => 1977
     },
     :pcv13 => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'133','display'=>'Pneumococcal conjugate PCV 13'},
-      :at_months => [2, 4, 6, 12, 780]
+      :at_months => [2, 4, 6, 12, 780],
+      :first_available => 2010
     },
     :ipv => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'10','display'=>'IPV'},
-      :at_months => [2, 4, 6, 48]
+      :at_months => [2, 4, 6, 48],
+      :first_available => 1955
     },
     :flu => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'140','display'=>'Influenza, seasonal, injectable, preservative free'},
       # This should really only happen Aug - Feb (preferring earlier).  That may take some trickery.
       # Since this is annual administration just populate the array with every 12 months, starting at 6 months.
-      :at_months => (0..100).map {|year| year * 12 + 6 }
+      :at_months => (0..100).map {|year| year * 12 + 6 },
+      :first_available => 1945
     },
     :mmr => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'03','display'=>'MMR'},
-      :at_months => [12, 48]
+      :at_months => [12, 48],
+      :first_available => 1971
     },
     :var => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'21','display'=>'varicella'},
-      :at_months => [12, 48]
+      :at_months => [12, 48],
+      :first_available => 1984
     },
     :hepa => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'83','display'=>'Hep A, ped/adol, 2 dose'},
       # First dose should be 12-23 months, second dose 6-18 months after.  Choosing to do 12 months after.
-      :at_months => [12, 24]
+      :at_months => [12, 24],
+      :first_available => 1995
     },
     :men => {
       # MenACWY can be Menactra (114) or Menveo (136).  Arbitrarily chose Menactra.
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'114','display'=>'meningococcal MCV4P'},
-      :at_months => [132, 192]
+      :at_months => [132, 192],
+      :first_available => 2005 # Other types of meningococcal vaccines were available earlier
     },
     :tdap => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'115','display'=>'Tdap'},
-      :at_months => [132]
+      :at_months => [132],
+      :first_available => 2005
     },
     :hpv => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'62','display'=>'HPV, quadrivalent'},
       # [11 years, boosters 2 months and 6 months later] -- but since we only have encounters scheduled yearly
       # at this age, the boosters will be late.  To be revisited later.
-      :at_months => [132, 134, 138]
+      :at_months => [132, 134, 138],
+      :first_available => 2006
     },
     :td => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'113','display'=>'Td (adult) preservative free'},
       # 21 years and every 10 years after
-      :at_months => [21, 31, 41, 51, 61, 71, 81, 91].map {|year| year * 12 }
+      :at_months => [21, 31, 41, 51, 61, 71, 81, 91].map {|year| year * 12 },
+      :first_available => 1992 # This particular combination of tetanus and diphtheria
     },
     :zoster => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'121','display'=>'zoster'},
-      :at_months => [720]
+      :at_months => [720],
+      :first_available => 2006
     },
     :ppsv23 => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'33','display'=>'pneumococcal polysaccharide vaccine, 23 valent'},
-      :at_months => [792]
+      :at_months => [792],
+      :first_available => 1983
     },
   }
 end
