@@ -38,6 +38,7 @@ Dir.glob(File.join(root, 'lib','events','**','*.rb')).each do |file|
   require file
 end
 
+require File.join(root, 'lib', 'entity', 'entity.rb')
 Dir.glob(File.join(root, 'lib','entity','**','*.rb')).each do |file|
   require file
 end
