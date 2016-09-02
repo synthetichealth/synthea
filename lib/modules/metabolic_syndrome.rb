@@ -62,12 +62,16 @@ module Synthea
           urea_nitrogen: rand(normal.urea_nitrogen.first..normal.urea_nitrogen.last),
           carbon_dioxide: rand(normal.co2.first..normal.co2.last),
           creatinine: rand(normal.creatinine.first..normal.creatinine.last),
-          glucose: rand(normal.glucose.first..normal.glucose.last),
           chloride: rand(normal.chloride.first..normal.chloride.last),
           potassium: rand(normal.potassium.first..normal.potassium.last),
           sodium: rand(normal.sodium.first..normal.sodium.last),
           calcium: rand(normal.calcium.first..normal.calcium.last)
         }
+        # calculate glucose out of the normal
+        glucose = Synthea::Config.metabolic.basic_panel.glucose
+        index = 2 if index > 2
+        entity[:metabolic][:glucose] = rand(glucose[index]..glucose[index+1])
+        # calculate creatine values
         creatinine_clearance = 100
         if entity[:gender] && entity[:gender]=='M'
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.male

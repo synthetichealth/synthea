@@ -23,6 +23,7 @@ PATH
   specs:
     synthea (1.0.0)
       area
+      concurrent-ruby
       distribution (~> 0.7, >= 0.7.0)
       faker (~> 1.6, >= 1.6.0)
       fhir_client
