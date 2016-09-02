@@ -3,7 +3,7 @@ module Synthea
     class CardiovascularDisease < Synthea::Rules
 
       #estimate cardiovascular risk of developing coronary heart disease (CHD)
-      #http://www.nhlbi.nih.gov/health-pro/guidelines/current/cholesterol-guidelines/quick-desk-reference-html/10-year-risk-framingham-table#men
+      #http://www.nhlbi.nih.gov/health-pro/guidelines/current/cholesterol-guidelines/quick-desk-reference-html/10-year-risk-framingham-table
 
       #Indices in the array correspond to these age ranges: 20-24, 25-29, 30-34 35-39, 40-44, 45-49,
       #50-54, 55-59, 60-64, 65-69, 70-74, 75-79
