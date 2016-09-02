@@ -56,7 +56,41 @@ module Synthea
             Synthea::Modules::FoodAllergies.record_diagnoses(entity, event.time)  
             Synthea::Modules::CardiovascularDisease.perform_encounter(entity, event.time)
             Synthea::Modules::Generic.perform_wellness_encounter(entity, event.time)
-            entity.events.create(event.time, :encounter_ordered, :encounter)
+            # Schedule the next general encounter unless this one was driven by symptoms
+            unless event.rule == :symptoms_cause_encounter
+              entity.events.create(event.time, :encounter_ordered, :encounter)
+            end
+          end
+        end
+      end
+
+      # Sometimes people schedule encounters because they're experiencing symptoms
+      rule :symptoms_cause_encounter, [:symptoms, :tracked_symptoms], [:encounter, :symptoms_cause_encounter] do |time, entity|
+        if entity[:is_alive]
+          unprocessed_events = entity.events.unprocessed_before(time, :symptoms_cause_encounter)
+          unprocessed_events.each do |event|
+            entity.events.process(event)
+
+            # We want a patient to perform a self assessment on whether symptoms are severe enough to make an
+            # appointment on a regular basis, currently we pick monthly
+            entity.events.create(time + 1.month, :symptoms_cause_encounter, :symptoms_cause_encounter)
+
+            # Check for severe symptoms
+            severe_symptoms = entity.get_symptoms_exceeding(85)
+            next unless severe_symptoms.length > 0
+
+            # A patient won't always make an apointment
+            next unless rand < 0.1
+
+            # We don't want a patient to schedule more than one; keep track of whether a patient has already
+            # paid attention to a symptom; at the moment this is symplistic, a patient will only ever schedule
+            # a single apointment for a particular symptom across all time
+            next if (severe_symptoms - (entity[:tracked_symptoms] || [])).blank?
+            entity[:tracked_symptoms] ||= []
+            entity[:tracked_symptoms] |= severe_symptoms
+
+            # The patient has decided to see the doctor, and schedules an apointent for 1-4 weeks in future
+            entity.events.create(time + rand(1..4).weeks, :encounter, :symptoms_cause_encounter)
           end
         end
       end

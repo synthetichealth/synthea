@@ -31,6 +31,7 @@ module Synthea
           entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
+          entity.events.create(time, :symptoms_cause_encounter, :birth)
 
           #determine lat/long coordinates of address within MA
           location_data = Synthea::Location.selectPoint(entity[:city])
@@ -184,6 +185,21 @@ module Synthea
           left = deathdate.nil? ? time : deathdate
           ((left - birthdate)/divisor).floor
         end
+      end
+
+      # This returns a random integer in a supplied range, possibly weighted; weighting ranges from 0 (prefer
+      # lower numbers) to 5 (even distribution) to 10 (prefer higher numbers)
+      def self.weighted_random_distribution(range, weighting)
+        # NOTE: Could probably be updated to use Distribution::Exponential.rng in some way
+        raise "Error, weighting must range from 0 to 10" if weighting < 0 || weighting > 10
+        # Normalize the range to have a min of 0
+        normalized_max = range.max - range.min
+        # Generate a curve based either on a root or a power for the appropriate shape
+        exponent = (15.0 - weighting) / 10.0 # Ranges from 5/10 to 15/10
+        # Start with a random number in the normalized range, apply the curve exponent, and normalize again to the original range
+        value = (rand * normalized_max) ** exponent
+        normalization_factor = normalized_max / (normalized_max ** exponent)
+        return (range.min + (value * normalization_factor)).round
       end
 
       #------------------------------------------------------------------------# begin class record functions

@@ -112,12 +112,11 @@ module Synthea
       end
 
       rule :prediabetes, [:metabolic_syndrome], [:diabetes] do |time, entity|
-        prediabetes = entity[:prediabetes]
-        if prediabetes
-          prediabetes[:hunger] = rand
-          prediabetes[:fatigue] = rand
-          prediabetes[:vision_blurred] = rand
-          prediabetes[:tingling_hands_feet] = rand
+        if entity[:prediabetes]
+          entity.set_symptom_weighted_random_value(:prediabetes, :hunger, 2)
+          entity.set_symptom_weighted_random_value(:prediabetes, :fatigue, 2)
+          entity.set_symptom_weighted_random_value(:prediabetes, :vision_blurred, 2)
+          entity.set_symptom_weighted_random_value(:prediabetes, :tingling_hands_feet, 2)
         end
       end
 
@@ -127,13 +126,13 @@ module Synthea
           diabetes[:nephropathy] = true
           diabetes[:retinopathy] = true
           diabetes[:neuropathy] = true
-          # symptoms
-          diabetes[:hunger] = rand * diabetes[:severity]
-          diabetes[:fatigue] = rand * diabetes[:severity]
-          diabetes[:vision_blurred] = rand * diabetes[:severity]
-          diabetes[:tingling_hands_feet] = rand * diabetes[:severity]
-          diabetes[:urination_frequent] = rand * diabetes[:severity]
-          diabetes[:thirst] = rand * diabetes[:severity]  
+          # Symptoms; diabetes severity can range from 1-4
+          entity.set_symptom_weighted_random_value(:diabetes, :hunger, diabetes[:severity] + 4)
+          entity.set_symptom_weighted_random_value(:diabetes, :fatigue, diabetes[:severity] + 4)
+          entity.set_symptom_weighted_random_value(:diabetes, :vision_blurred, diabetes[:severity] + 4)
+          entity.set_symptom_weighted_random_value(:diabetes, :tingling_hands_feet, diabetes[:severity] + 4)
+          entity.set_symptom_weighted_random_value(:diabetes, :urination_frequent, diabetes[:severity] + 4)
+          entity.set_symptom_weighted_random_value(:diabetes, :thirst, diabetes[:severity] + 4)
         end
       end
 
