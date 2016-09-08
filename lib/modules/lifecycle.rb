@@ -46,6 +46,11 @@ module Synthea
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           entity[:city] = location_data['city']
           
+          entity[:ses] = { income: rand, education: rand, occupation: rand } 
+          # for now, assign these at birth, purely randomly
+          # eventually these should be given a range based on city. (for example weston MA => small range of income score weighted high, boston = wide range of income score)
+          # also, they should be able to change. for example major illness before age 18 could lead to a reduced education
+
           # TODO update awareness
         end
       end
@@ -184,6 +189,31 @@ module Synthea
 
           left = deathdate.nil? ? time : deathdate
           ((left - birthdate)/divisor).floor
+        end
+      end
+
+      def self.socioeconomic_score(entity)
+        weighting = Synthea::Config.socioeconomic_status.weighting
+        
+        ses = entity[:ses]
+
+        (ses[:education] * weighting.education) + (ses[:income] * weighting.income) + (ses[:occupation] * weighting.occupation)
+      end
+
+      def self.socioeconomic_category(entity)
+        categories = Synthea::Config.socioeconomic_status.categories
+
+        score = self.socioeconomic_score(entity)
+
+        case score
+        when categories.low[0]...categories.low[1]
+          return 'Low'
+        when categories.middle[0]...categories.middle[1]
+          return 'Middle'
+        when categories.high[0]..categories.high[1]
+          return 'High'
+        else
+          raise "socioeconomic score #{score} outside expected range, make sure weightings add to 1 and categories cover 0..1"
         end
       end
 

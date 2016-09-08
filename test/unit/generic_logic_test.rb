@@ -71,6 +71,46 @@ class GenericLogicTest < Minitest::Test
 		assert(do_test('ageNe40Test'))
   end
 
+  def set_ses_config_settings
+  	Synthea::Config.socioeconomic_status.weighting.income = 0.3
+  	Synthea::Config.socioeconomic_status.weighting.occupation = 0.2
+  	Synthea::Config.socioeconomic_status.weighting.education = 0.5
+  	
+  	Synthea::Config.socioeconomic_status.categories.low = [0, 0.333]
+  	Synthea::Config.socioeconomic_status.categories.middle = [0.333, 0.667]
+  	Synthea::Config.socioeconomic_status.categories.high = [0.667, 1.0]
+  end
+
+  def test_ses_category_high
+  	set_ses_config_settings
+
+  	@patient[:ses] = { education: 0.75, income: 1, occupation: 0.7 }
+
+  	assert(do_test('sesHighTest'))
+  	refute(do_test('sesMiddleTest'))
+  	refute(do_test('sesLowTest'))
+  end
+
+  def test_ses_category_middle
+  	set_ses_config_settings
+
+  	@patient[:ses] = { education: 0.5, income: 0.5, occupation: 0.5 }
+
+  	refute(do_test('sesHighTest'))
+  	assert(do_test('sesMiddleTest'))
+  	refute(do_test('sesLowTest'))
+  end
+
+  def test_ses_category_low
+  	set_ses_config_settings
+
+  	@patient[:ses] = { education: 0.1, income: 0.2, occupation: 0.3 }
+
+  	refute(do_test('sesHighTest'))
+  	refute(do_test('sesMiddleTest'))
+  	assert(do_test('sesLowTest'))
+  end
+
 	def test_and_conditions
 		assert(do_test('andAllTrueTest'))
 		refute(do_test('andOneFalseTest'))

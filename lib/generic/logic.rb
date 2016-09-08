@@ -13,6 +13,8 @@ module Synthea
           self.testGender(condition, context, time, entity)
         when 'Age'
           self.testAge(condition, context, time, entity)
+        when 'Socioeconomic Status'
+          self.testSES(condition, context, time, entity)
         when 'True'
           self.testTrue(condition, context, time, entity)
         when 'False'
@@ -52,6 +54,11 @@ module Synthea
         birthdate = entity.event(:birth).time
         age = Synthea::Modules::Lifecycle.age(time, birthdate, nil, condition['unit'].to_sym)
         self.compare(age, condition['quantity'], condition['operator'])
+      end
+
+      def self.testSES(condition, context, time, entity)
+        ses_category = Synthea::Modules::Lifecycle.socioeconomic_category(entity)
+        self.compare(ses_category, condition['category'], '==')
       end
 
       def self.testTrue(condition, context, time, entity)
