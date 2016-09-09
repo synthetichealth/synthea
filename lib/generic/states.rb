@@ -207,7 +207,7 @@ module Synthea
           self.add_lookup_code(Synthea::MEDICATION_LOOKUP)
           cond = @context.most_recent_by_name(@reason) unless @reason.nil?
           if cond.nil?
-            entity.record_synthea.medication_start(self.symbol(), time)
+            entity.record_synthea.medication_start(self.symbol(), time, [])
           else
             entity.record_synthea.medication_start(self.symbol(), time, [cond.symbol()])
           end
@@ -237,7 +237,7 @@ module Synthea
           self.add_lookup_code(Synthea::PROCEDURE_LOOKUP)
           cond = @context.most_recent_by_name(@reason) unless @reason.nil?
           if cond.nil?
-            entity.record_synthea.procedure(self.symbol(), time)
+            entity.record_synthea.procedure(self.symbol(), time, nil)
           else
             entity.record_synthea.procedure(self.symbol(), time, cond.symbol())
           end
