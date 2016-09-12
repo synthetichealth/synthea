@@ -117,5 +117,11 @@ synthea:
       low: [0.0, 0.25]
       middle: [0.25, 0.66]
       high: [0.66, 1.0]
+    values:
+      education:
+        less_than_hs: [0.0, 0.5]
+        hs_degree: [0.1, 0.75]
+        some_college: [0.3, 0.85]
+        bs_degree: [0.5, 1.0]
   generic:
     log: false
