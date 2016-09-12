@@ -296,7 +296,7 @@ class GenericStatesTest < Minitest::Test
 
 		# Then have the appendectomy		
 		appendectomy = Synthea::Generic::States::Procedure.new(ctx, "Appendectomy")
-		@patient.record_synthea.expect(:procedure, nil, [:laparoscopic_appendectomy, @time])
+		@patient.record_synthea.expect(:procedure, nil, [:laparoscopic_appendectomy, @time, nil])
 		assert(appendectomy.process(@time, @patient))
 
 		# Verify that the procedure was added to the record

@@ -25,19 +25,67 @@
         "quantity" : 1,
         "unit" : "days"
       },
-      "distributed_transition": [
-          {
-            "distribution": 0.00037,
-            "transition": "Enter_Directed_Use"
+      "complex_transition" : [
+        {
+            "condition": {
+              "condition_type": "Socioeconomic Status",
+              "category": "High" 
+            },
+            "distributions" : [
+              {
+                "distribution": 0.00037,
+                "transition": "Enter_Directed_Use"
+              },
+              {
+                "distribution": 0.00001, 
+                "transition": "Misuse"
+              },
+              {
+                "distribution" : 0.99962,
+                "transition": "General_Population"
+              }
+            ]
+        },
+        {
+          "condition": {
+            "condition_type": "Socioeconomic Status",
+            "category": "Medium" 
           },
-          {
-            "distribution": 0.00002, 
-            "transition": "Misuse"
+          "distributions" : [
+            {
+              "distribution": 0.00037,
+              "transition": "Enter_Directed_Use"
+            },
+            {
+              "distribution": 0.00002, 
+              "transition": "Misuse"
+            },
+            {
+              "distribution" : 0.99961,
+              "transition": "General_Population"
+            }
+          ]
+        },
+        {
+        "condition": {
+            "condition_type": "Socioeconomic Status",
+            "category": "Low" 
           },
-          {
-            "distribution" : 0.99961,
-            "transition": "General_Population"
-          }
+          "distributions" : [
+            {
+              "distribution": 0.00037,
+              "transition": "Enter_Directed_Use"
+            },
+            {
+              "distribution": 0.00004, 
+              "transition": "Misuse"
+            },
+            {
+              "distribution" : 0.99959,
+              "transition": "General_Population"
+            }
+          ]
+        }
       ]
     },
 
