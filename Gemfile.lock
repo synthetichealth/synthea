@@ -29,6 +29,9 @@ PATH
       fhir_client
       fhir_models
       georuby
+      highline
+      json
+      net-sftp
       pickup (~> 0.0.11, >= 0.0.11)
       recursive-open-struct (~> 1.0, >= 1.0.0)
 

@@ -20,6 +20,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'area'
   s.add_runtime_dependency 'georuby'
   s.add_runtime_dependency 'concurrent-ruby'
+  s.add_runtime_dependency 'net-sftp'
+  s.add_runtime_dependency 'highline'
+  s.add_runtime_dependency 'json'
 end
 
 
