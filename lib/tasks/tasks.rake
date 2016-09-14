@@ -32,7 +32,12 @@ namespace :synthea do
     end
     # we need to configure mongo to export for some reason... not ideal
     Mongoid.configure { |config| config.connect_to("synthea_test") }
-
+    ['html','fhir','CCDA'].each do |type|
+      out_dir = File.join('output',type)
+      FileUtils.rm_r out_dir if File.exists? out_dir
+      FileUtils.mkdir_p out_dir
+    end
+        
     start = Time.now
     world = Synthea::World::Sequential.new(datafile)
     world.run

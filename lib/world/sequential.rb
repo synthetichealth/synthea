@@ -24,12 +24,6 @@ module Synthea
         #  you can scale the populations of individual cities down by this amount. 
 
         @city_populations = JSON.parse(datafile) if datafile
-
-        ['html','fhir','CCDA'].each do |type|
-          out_dir = File.join('output',type)
-          FileUtils.rm_r out_dir if File.exists? out_dir
-          FileUtils.mkdir_p out_dir
-        end
       end
 
       def run
