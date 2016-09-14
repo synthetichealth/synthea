@@ -57,6 +57,7 @@ module Synthea
       end
 
       def self.testSES(condition, context, time, entity)
+        raise "Unsupported category: #{condition['category']}" if !%w(High Middle Low).include?(condition['category'])
         ses_category = Synthea::Modules::Lifecycle.socioeconomic_category(entity)
         self.compare(ses_category, condition['category'], '==')
       end
