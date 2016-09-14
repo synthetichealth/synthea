@@ -3,8 +3,9 @@ module Synthea
     class Sequential
 
       attr_reader :stats
+      attr_accessor :population_count
         
-      def initialize(datafile)
+      def initialize(datafile=nil)
         @start_date = Synthea::Config.start_date
         @end_date = Synthea::Config.end_date
         @time_step = Synthea::Config.time_step
@@ -29,7 +30,6 @@ module Synthea
           FileUtils.rm_r out_dir if File.exists? out_dir
           FileUtils.mkdir_p out_dir
         end
-        Mongoid.configure { |config| config.connect_to("synthea_test") }
       end
 
       def run

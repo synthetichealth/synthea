@@ -30,6 +30,8 @@ namespace :synthea do
       raise "File not found: #{datafile}" if !File.file?(datafile)
       datafile = File.read(datafile)
     end
+    # we need to configure mongo to export for some reason... not ideal
+    Mongoid.configure { |config| config.connect_to("synthea_test") }
 
     start = Time.now
     world = Synthea::World::Sequential.new(datafile)

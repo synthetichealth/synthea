@@ -9,7 +9,6 @@ require 'area'
 require 'distribution'
 require 'pickup'
 require 'recursive-open-struct'
-require 'health-data-standards'
 require 'fhir_models'
 require 'fhir_client'
 require 'pry'
@@ -26,6 +25,13 @@ module Synthea
 end
 
 Synthea::Config = RecursiveOpenStruct.new(YAML.load(ERB.new(File.read(File.join(root, 'config', 'synthea.yml'))).result)['synthea'])
+begin
+  require 'health-data-standards'
+rescue LoadError
+  puts "`health-data-standards` failed to load: C-CDA export disabled."
+  Synthea::Config.export.ccda = false
+  Synthea::Config.export.html = false
+end
 
 Dir.glob(File.join(root, 'lib','ext','**','*.rb')).each do |file|
   require file
