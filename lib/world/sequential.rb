@@ -68,9 +68,10 @@ module Synthea
             end
 
             record_stats(person)
-            dead = person.had_event?(:death)
-            
-            puts "##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
+            dead = person.had_event?(:death)      
+            conditions = track_conditions(person)
+
+            puts "##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]} -- #{conditions.join(', ')}"
         end
       end
 
@@ -205,6 +206,15 @@ module Synthea
         entry
       end
 
+      def track_conditions(patient)
+        conditions = []
+        addict = patient[:generic]["Opioid Addiction"].history.find{|x|x.name=='Active_Addiction'} rescue nil
+        conditions << "Opioid Addict" if addict
+        conditions << "Diabetic" if patient[:diabetes]
+        conditions << "Heart Disease" if patient[:coronary_heart_disease]
+        conditions
+      end
+
       def record_stats(patient)
         @stats[:population_count] += 1
         if patient.had_event?(:death)
@@ -218,6 +228,11 @@ module Synthea
         @stats[:race][ patient[:race] ] += 1
         @stats[:ethnicity][ patient[:ethnicity] ] += 1
         @stats[:blood_type][ patient[:blood_type] ] += 1
+
+        conditions = track_conditions(patient)
+        conditions.each do |condition|
+          @stats[condition] += 1
+        end
       end
     end
   end

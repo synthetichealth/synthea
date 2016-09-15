@@ -98,9 +98,13 @@ module Synthea
       end
 
       def log_state(state)
-          exit_str = state.exited ? state.exited.strftime('%FT%T%:z') : "                         "
-          puts "| #{state.entered.strftime('%FT%T%:z')} | #{exit_str} | #{state.name}"
-        end
+        exit_str = state.exited ? state.exited.strftime('%FT%T%:z') : "                         "
+        puts "| #{state.entered.strftime('%FT%T%:z')} | #{exit_str} | #{state.name}"
+      end
+
+      def inspect
+        "#<Synthea::Generic::Context::#{object_id}> #{@current_state.name}"
+      end
     end
   end
 end
