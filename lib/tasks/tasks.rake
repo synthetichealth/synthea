@@ -238,6 +238,46 @@ namespace :synthea do
       end
     end
     countyfile.close
+
+    incomefile = File.open('./resources/ACS_14_5YR_S1901_with_ann.csv', 'r:UTF-8')
+    CSV.foreach(incomefile,options) do |row|
+      next if row[:geoid] == 'Id' # this CSV has 2 header rows
+      next if row[:geodisplaylabel].include?('not defined')
+
+      town_name = row[:geodisplaylabel].split(',')[0].split.keep_if{|x|!['town','city'].include?(x.downcase)}.join(' ')
+
+      # these numbers are given at the household level
+      # the keys represent 10s of thousands, ie 50..75 means 50,000 to 75,000
+      towns[ town_name ][:income] = { mean: row[:hc01_est_vc15].to_i,
+                                      median: row[:hc01_est_vc13].to_i,
+                                      '00..10'  => row[:hc01_est_vc02].to_f / 100,
+                                      '10..15'  => row[:hc01_est_vc03].to_f / 100,
+                                      '15..25'  => row[:hc01_est_vc04].to_f / 100,
+                                      '25..35'  => row[:hc01_est_vc05].to_f / 100,
+                                      '35..50'  => row[:hc01_est_vc06].to_f / 100,
+                                      '50..75'  => row[:hc01_est_vc07].to_f / 100,
+                                      '75..100' => row[:hc01_est_vc08].to_f / 100,
+                                      '100..150' => row[:hc01_est_vc09].to_f / 100,
+                                      '150..200' => row[:hc01_est_vc10].to_f / 100,
+                                      '200..999' => row[:hc01_est_vc11].to_f / 100 }
+    end
+    incomefile.close
+
+    educationfile = File.open('./resources/ACS_14_5YR_S1501_with_ann.csv', 'r:UTF-8')
+    CSV.foreach(educationfile,options) do |row|
+      next if row[:geoid] == 'Id' # this CSV has 2 header rows
+      next if row[:geodisplaylabel].include?('not defined')
+
+      town_name = row[:geodisplaylabel].split(',')[0].split.keep_if{|x|!['town','city'].include?(x.downcase)}.join(' ')
+
+      # the data allows for more granular categories (like 24-35 graduate degree) but these overall %s are good enough for our purposes
+      towns[ town_name ][:education] = { less_than_hs: row[:hc01_est_vc02].to_f / 100,
+                                         hs_degree: row[:hc01_est_vc03].to_f / 100,
+                                         some_college: row[:hc01_est_vc04].to_f / 100,
+                                         bs_degree: row[:hc01_est_vc05].to_f / 100 }
+    end
+    educationfile.close
+
     # convert the age groups to probability
     towns.each do |k,v|
       total = v[:ages].values.inject(0){|i,j| i + j}

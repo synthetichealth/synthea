@@ -21,9 +21,9 @@ module Synthea
           entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
           entity[:name_last] = Faker::Name.last_name
           entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
-          entity[:gender] = gender unless entity[:gender]
-          entity[:race] = Synthea::World::Demographics::RACES.pick unless entity[:race]
-          entity[:ethnicity] = Synthea::World::Demographics::ETHNICITY[ entity[:race] ].pick unless entity[:ethnicity]
+          entity[:gender] ||= gender
+          entity[:race] ||= Synthea::World::Demographics::RACES.pick
+          entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[ entity[:race] ].pick 
           entity[:blood_type] = Synthea::World::Demographics::BLOOD_TYPES[ entity[:race] ].pick
           # new babies are average weight and length for American newborns
           entity[:height] = 51 # centimeters
@@ -46,6 +46,8 @@ module Synthea
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           entity[:city] = location_data['city']
           
+          choose_socioeconomic_values(entity)
+
           # TODO update awareness
         end
       end
@@ -185,6 +187,66 @@ module Synthea
           left = deathdate.nil? ? time : deathdate
           ((left - birthdate)/divisor).floor
         end
+      end
+
+      def self.socioeconomic_score(entity)
+        weighting = Synthea::Config.socioeconomic_status.weighting
+        
+        ses = entity[:ses]
+
+        (ses[:education] * weighting.education) + (ses[:income] * weighting.income) + (ses[:occupation] * weighting.occupation)
+      end
+
+      def self.socioeconomic_category(entity)
+        categories = Synthea::Config.socioeconomic_status.categories
+
+        score = self.socioeconomic_score(entity)
+
+        case score
+        when categories.low[0]...categories.low[1]
+          return 'Low'
+        when categories.middle[0]...categories.middle[1]
+          return 'Middle'
+        when categories.high[0]..categories.high[1]
+          return 'High'
+        else
+          raise "socioeconomic score #{score} outside expected range, make sure weightings add to 1 and categories cover 0..1"
+        end
+      end
+
+      def choose_socioeconomic_values(entity)
+        # for now, these are assigned at birth
+        # eventually these should be able to change. for example major illness before age 18 could lead to a reduced education
+        entity[:ses] = { } 
+
+        if entity[:income]
+          # simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0
+          # 75,000 chosen based on https://www.princeton.edu/~deaton/downloads/deaton_kahneman_high_income_improves_evaluation_August2010.pdf
+
+          # (11000, 0) -> (75000, 1)
+          # m = y2-y1/x2-x1 = 1/64000
+          # y = mx+b, y = x/64000 - 11/64
+          if entity[:income] >= 75_000
+            entity[:ses][:income] = 1.0
+          elsif entity[:income] <= 11_000
+            entity[:ses][:income] = 0.0
+          else
+            entity[:ses][:income] = entity[:income].to_f / 64_000 - 11.0/64.0
+          end
+        else
+          entity[:ses][:income] = rand
+        end
+
+        edu_scores = Synthea::Config.socioeconomic_status.values.education
+
+        if entity[:education].nil?
+          entity[:ses][:education] = rand
+        else
+          range = edu_scores.send(entity[:education])
+          entity[:ses][:education] = rand(range[0]..range[1])
+        end
+
+        entity[:ses][:occupation] = rand # by default occupation is only 10% of SES and is tough to quantify, so just make it random
       end
 
       # This returns a random integer in a supplied range, possibly weighted; weighting ranges from 0 (prefer

@@ -30,19 +30,7 @@ module Synthea
         if c.has_key? 'direct_transition'
           return self.create_state(c['direct_transition'])
         elsif c.has_key? 'distributed_transition'
-          # distributed_transition is an array of distributions that should total 1.0.
-          # So... pick a random float from 0.0 to 1.0 and walk up the scale.
-          choice = rand()
-          high = 0.0
-          c['distributed_transition'].each do |dt|
-            high += dt['distribution']
-            if choice < high
-              return self.create_state(dt['transition'])
-            end
-          end
-          # We only get here if the numbers didn't add to 1.0 or if one of the numbers caused
-          # floating point imprecision (very, very rare).  Just go with the last one.
-          return self.create_state(c['distributed_transition'].last['transition'])
+          return pick_distributed_transition(c['distributed_transition'])
         elsif c.has_key? 'conditional_transition'
           c['conditional_transition'].each do |ct|
             cond = ct['condition']
@@ -52,10 +40,35 @@ module Synthea
           end
           # No satisfied condition or fallback transition.  Go to the default terminal state.
           return States::Terminal.new(self, "Terminal")
+        elsif c.has_key? 'complex_transition'
+          c['complex_transition'].each do |ct|
+            cond = ct['condition']
+            if cond.nil? || Synthea::Generic::Logic::test(cond, self, time, entity)
+              return pick_distributed_transition(ct['distributions'])
+            end
+          end
+          # No satisfied condition or fallback transition.  Go to the default terminal state.
+          return States::Terminal.new(self, "Terminal")
         else
           # No transition was specified.  Go to the default terminal state.
           return States::Terminal.new(self, "Terminal")
         end
+      end
+
+      def pick_distributed_transition(transitions)
+        # distributed_transition is an array of distributions that should total 1.0.
+        # So... pick a random float from 0.0 to 1.0 and walk up the scale.
+        choice = rand()
+        high = 0.0
+        transitions.each do |dt|
+          high += dt['distribution']
+          if choice < high
+            return self.create_state(dt['transition'])
+          end
+        end
+        # We only get here if the numbers didn't add to 1.0 or if one of the numbers caused
+        # floating point imprecision (very, very rare).  Just go with the last one.
+        return self.create_state(transitions.last['transition'])
       end
 
       def most_recent_by_name(name)

@@ -59,7 +59,7 @@ module Synthea
       
       def run_random
         @population_count.times do |i|
-            person = build_person(nil, rand(0..100), nil, nil, nil)
+            person = build_person
 
             if @pool
               @pool.post { export(person) }
@@ -85,9 +85,13 @@ module Synthea
           target_race = demographics[:race][i]
           target_ethnicity = Synthea::World::Demographics::ETHNICITY[target_race].pick
           target_age = demographics[:age][i]
+          target_income = demographics[:income][i]
+          target_education = demographics[:education][i]
           try_number = 1
           loop do
-            person = build_person(city_name, target_age, target_gender, target_race, target_ethnicity)
+            person = build_person(city: city_name, age: target_age, gender: target_gender, 
+                                  race: target_race, ethnicity: target_ethnicity,
+                                  income: target_income, education: target_education)
 
             if @pool
               @pool.post { export(person) }
@@ -116,6 +120,11 @@ module Synthea
         gender_ratio = Pickup.new(stats['gender']) { |v| v*100 }
         race_ratio = Pickup.new(stats['race']) { |v| v*100 }
         age_ratio = Pickup.new(stats['ages']) { |v| v*100 }
+        education_ratio = Pickup.new(stats['education']) { |v| v*100 }
+        income_stats = stats['income']
+        income_stats.delete('median')
+        income_stats.delete('mean')
+        income_ratio = Pickup.new(income_stats) { |v| v*100 }
 
         demographics = Hash.new() { |hsh, key| hsh[key] = Array.new(population) }
 
@@ -124,6 +133,8 @@ module Synthea
           demographics[:race][i] = race_ratio.pick.to_sym
           age_group = age_ratio.pick # gives us a string, we need a range
           demographics[:age][i] = rand( Range.new(*age_group.split('..').map(&:to_i)) )
+          demographics[:education][i] = education_ratio.pick
+          demographics[:income][i] = rand( Range.new(*age_group.split('..').map(&:to_i)) ) * 1000
         end
 
         demographics.each_value(&:shuffle)
@@ -131,13 +142,11 @@ module Synthea
         demographics
       end
 
-      def build_person(city, age, gender, race, ethnicity)
-        date = @end_date - age.years
+      def build_person(options={})
+        date = @end_date - (options[:age] || rand(0..100)).years
+        options.delete('age')
         person = Synthea::Person.new
-        person[:gender] = gender
-        person[:race] = race
-        person[:ethnicity] = ethnicity
-        person[:city] = city
+        options.each { |k,v| person[k] = v }
         while !person.had_event?(:death) && date<=@end_date
           date += @time_step.days
           Synthea::Rules.apply(date,person)

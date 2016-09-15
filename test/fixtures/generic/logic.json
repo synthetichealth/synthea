@@ -45,6 +45,18 @@
       "quantity": 40,
       "unit": "years"
   },
+  "sesHighTest" : {
+    "condition_type" : "Socioeconomic Status",
+    "category" : "High"
+  },
+  "sesMiddleTest" : {
+    "condition_type" : "Socioeconomic Status",
+    "category" : "Middle"
+  },
+  "sesLowTest" : {
+    "condition_type" : "Socioeconomic Status",
+    "category" : "Low"
+  },
   "andAllTrueTest": {
     "condition_type": "And",
     "conditions": [

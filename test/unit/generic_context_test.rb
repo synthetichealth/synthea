@@ -86,6 +86,25 @@ class GenericContextTest < Minitest::Test
 		assert_equal("Terminal", ctx.current_state.name)
   end
 
+  def test_complex_transition
+  	cfg = get_config('complex_transition.json')
+
+  		# First run as a male
+		@patient[:gender] = 'M'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert(ctx.current_state.name.start_with?("TerminalM"))
+
+		# Then run as a female
+		@patient[:gender] = 'F'
+		ctx = Synthea::Generic::Context.new(cfg)
+		assert_equal("Initial", ctx.current_state.name)
+		ctx.run(@time, @patient)
+		assert(ctx.current_state.name.start_with?("TerminalF"))
+
+  end
+
 	def test_no_transition
 		ctx = get_context('no_transition.json')
 		assert_equal("Initial", ctx.current_state.name)

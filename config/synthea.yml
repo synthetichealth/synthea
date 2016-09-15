@@ -105,5 +105,23 @@ synthea:
       risk: 0.00076
       death: 0.00069
     smoker: 0.161 # 16.1% of MA are smokers. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
+  socioeconomic_status:
+    weighting: # these should add up to 1.0
+    # weighting and categories are inspired by the following but there are no specific hard numbers to point to
+    #  http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1694190/pdf/amjph00543-0042.pdf
+    # http://www.ncbi.nlm.nih.gov/pubmed/8122813
+      income: 0.2
+      education: 0.7
+      occupation: 0.1
+    categories:
+      low: [0.0, 0.25]
+      middle: [0.25, 0.66]
+      high: [0.66, 1.0]
+    values:
+      education:
+        less_than_hs: [0.0, 0.5]
+        hs_degree: [0.1, 0.75]
+        some_college: [0.3, 0.85]
+        bs_degree: [0.5, 1.0]
   generic:
     log: false
