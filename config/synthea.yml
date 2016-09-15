@@ -35,8 +35,8 @@ synthea:
     weight_gain_female_average: 2.725 # kilograms per year
     weight_gain_female_stddev:  1     # kilograms per year
     # http://www.livestrong.com/article/142567-average-increase-weight-adults/
-    adult_male_weight_gain:     0.034 # percent increase each year (where 1.0==100%)
-    adult_female_weight_gain:   0.052 # percent increase each year (where 1.0==100%)
+    adult_male_weight_gain:     0.0034 # percent increase each year (where 1.0==100%)
+    adult_female_weight_gain:   0.0052 # percent increase each year (where 1.0==100%)
     adult_max_weight_age:       44    # age (years) when adults stop packing on weight
 
   metabolic:
