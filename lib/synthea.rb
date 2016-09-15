@@ -29,8 +29,8 @@ begin
   require 'health-data-standards'
 rescue LoadError
   puts "`health-data-standards` failed to load: C-CDA export disabled."
-  Synthea::Config.export.ccda = false
-  Synthea::Config.export.html = false
+  Synthea::Config.exporter.ccda.export = false
+  Synthea::Config.exporter.html.export = false
 end
 
 Dir.glob(File.join(root, 'lib','ext','**','*.rb')).each do |file|
