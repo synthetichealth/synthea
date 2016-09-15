@@ -46,6 +46,8 @@ module Synthea
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           entity[:city] = location_data['city']
           
+          entity[:med_changes] = Hash.new() { |hsh, key| hsh[key] = [] }
+
           choose_socioeconomic_values(entity)
 
           # TODO update awareness

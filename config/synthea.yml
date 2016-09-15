@@ -1,9 +1,16 @@
 synthea:
-  export:
-    ccda: true
-    fhir: true
-    html: true
+  exporter:
+    ccda:
+      export: true
+      upload: null # not yet implemented
+    fhir:
+      export: true
+      upload: null # url of the server, ex 'http://fhirserver.example.com:8080'
+    html:
+      export: true
     years_of_history: 5
+    location: './output/'  # should either start with . for relative path or / for absolute
+    folder_per_city: true
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days
@@ -18,9 +25,6 @@ synthea:
     multithreading: false  
     thread_pool_size: 16 # 16 picked by experimentation to be a good number of threads to use for exporting records
     max_tries: 10 # max number of times it tries to create a person before it gives up (ie, nobody reached the target age)
-    upload_files_upon_creation: false
-    fhir_server_url: null
-    ccda_server_url: null
   schedule:
     variance: 0.1
   lifecycle:
@@ -35,8 +39,8 @@ synthea:
     weight_gain_female_average: 2.725 # kilograms per year
     weight_gain_female_stddev:  1     # kilograms per year
     # http://www.livestrong.com/article/142567-average-increase-weight-adults/
-    adult_male_weight_gain:     0.034 # percent increase each year (where 1.0==100%)
-    adult_female_weight_gain:   0.052 # percent increase each year (where 1.0==100%)
+    adult_male_weight_gain:     0.0034 # percent increase each year (where 1.0==100%)
+    adult_female_weight_gain:   0.0052 # percent increase each year (where 1.0==100%)
     adult_max_weight_age:       44    # age (years) when adults stop packing on weight
 
   metabolic:

@@ -24,6 +24,8 @@ module Synthea
         #  you can scale the populations of individual cities down by this amount. 
 
         @city_populations = JSON.parse(datafile) if datafile
+
+        Synthea::Rules.get_modules # trigger the loading of modules here, to ensure they are set before all threads start
       end
 
       def run
@@ -62,9 +64,9 @@ module Synthea
             person = build_person
 
             if @pool
-              @pool.post { export(person) }
+              @pool.post { Synthea::Output::Exporter.export(person) }
             else
-              export(person)
+              Synthea::Output::Exporter.export(person)
             end
 
             record_stats(person)
@@ -95,15 +97,15 @@ module Synthea
                                   income: target_income, education: target_education)
 
             if @pool
-              @pool.post { export(person) }
+              @pool.post { Synthea::Output::Exporter.export(person) }
             else
-              export(person)
+              Synthea::Output::Exporter.export(person)
             end
 
             record_stats(person)
             dead = person.had_event?(:death)
             
-            puts "#{city_name} ##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
+            puts "#{city_name} ##{i+1}/#{population}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
 
             break unless dead
             break if try_number >= Synthea::Config.sequential.max_tries
@@ -138,14 +140,18 @@ module Synthea
           demographics[:income][i] = rand( Range.new(*age_group.split('..').map(&:to_i)) ) * 1000
         end
 
-        demographics.each_value(&:shuffle)
-
         demographics
       end
 
       def build_person(options={})
-        date = @end_date - (options[:age] || rand(0..100)).years
+        target_age = options[:age] || rand(0..100)
         options.delete('age')
+
+        earliest_birthdate = @end_date - (target_age+1).years + 1.day
+        latest_birthdate = @end_date - target_age.years
+
+        date = rand(earliest_birthdate..latest_birthdate)
+
         person = Synthea::Person.new
         options.each { |k,v| person[k] = v }
         while !person.had_event?(:death) && date<=@end_date
@@ -154,56 +160,6 @@ module Synthea
         end
 
         person
-      end
-
-      def export(person)
-        files = Synthea::Output::Exporter.export(person)
-
-        if Synthea::Config.sequential.upload_files_upon_creation 
-          if Synthea::Config.sequential.fhir_server_url && files[:fhir]
-            fhir_upload(files[:fhir])
-          end
-          # ccda upload not yet implemented
-        end
-      end
-
-      def fhir_upload(file)
-        # create a new client object for each upload
-        # it's probably slower than keeping 1 or a fixed # around
-        # but it means we don't have to worry about thread-safety on this part
-        fhir_client = FHIR::Client.new(Synthea::Config.sequential.fhir_server_url)
-        fhir_client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
-        json = File.open(file,'r:UTF-8',&:read)
-        bundle = FHIR.from_contents(json)
-        fhir_client.begin_transaction
-        start_time = Time.now
-        bundle.entry.each do |entry|
-          #defined our own 'add to transaction' function to preserve our entry information
-          add_entry_transaction('POST',nil,entry,fhir_client)
-        end
-        begin
-          reply = fhir_client.end_transaction
-          puts "  Error: #{reply.code}" if reply.code!=200
-        rescue Exception => e
-          puts "  Error: #{e.message}"
-        end
-      end
-
-      def add_entry_transaction(method, url, entry=nil, client)
-        request = FHIR::Bundle::Entry::Request.new
-        request.local_method = 'POST'
-        if url.nil? && !entry.resource.nil?
-          options = Hash.new
-          options[:resource] = entry.resource.class
-          options[:id] = entry.resource.id if request.local_method != 'POST'
-          request.url = client.resource_url(options)
-          request.url = request.url[1..-1] if request.url.starts_with?('/')
-        else
-          request.url = url
-        end
-        entry.request = request
-        client.transaction_bundle.entry << entry
-        entry
       end
 
       def track_conditions(patient)

@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 class ExporterTest < Minitest::Test
   def setup
-    Synthea::Config.export.years_of_history = 5
+    Synthea::Config.exporter.years_of_history = 5
 
     @time = Time.now
     @patient = Synthea::Person.new
