@@ -146,9 +146,8 @@
       "target_encounter" : "Enter_Directed_Use_Encounter1",
       "codes" : [{
           "system" : "RxNorm",
-          "code" : "420397007",
-          "display" : "Paracetamol 300mg/hydocodone 5mg tablet",
-          "remarks" : "aka vicodin"
+          "code" : "1310197",
+          "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
       }],
       "direct_transition" : "Directed_Use"
     },
@@ -180,9 +179,8 @@
       "target_encounter" : "Enter_Directed_Use_Encounter2",
       "codes" : [{
           "system" : "RxNorm",
-          "code" : "444958008",
-          "display" : "Oxycodone hydrochloride 15mg m/r tablet",
-          "remarks" : "aka oxycontin"
+          "code" : "1049544",
+          "display" : "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
       }],
       "direct_transition" : "Directed_Use"
     },
@@ -209,9 +207,8 @@
       "target_encounter" : "Enter_Directed_Use_Encounter3",
       "codes" : [{
           "system" : "RxNorm",
-          "code" : "377343008",
-          "display" : "Paracetamol + oxycodone hydrochloride 325mg/5mg tablet",
-          "remarks" : "aka percocet"
+          "code" : "1049639",
+          "display" : "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
       }],
       "direct_transition" : "Directed_Use"
     },
