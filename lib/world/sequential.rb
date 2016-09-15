@@ -144,8 +144,14 @@ module Synthea
       end
 
       def build_person(options={})
-        date = @end_date - (options[:age] || rand(0..100)).years
+        target_age = options[:age] || rand(0..100)
         options.delete('age')
+
+        earliest_birthdate = @end_date - (target_age+1).years + 1.day
+        latest_birthdate = @end_date - target_age.years
+
+        date = rand(earliest_birthdate..latest_birthdate)
+
         person = Synthea::Person.new
         options.each { |k,v| person[k] = v }
         while !person.had_event?(:death) && date<=@end_date
