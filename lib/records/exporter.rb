@@ -2,56 +2,91 @@ module Synthea
   module Output
     module Exporter
       def self.export(patient)
-        patient = filter_for_export(patient) unless Synthea::Config.export.years_of_history <= 0
+        patient = filter_for_export(patient) unless Synthea::Config.exporter.years_of_history <= 0
 
-        created_files = {}
-
-        if Synthea::Config.export.ccda || Synthea::Config.export.html
+        if Synthea::Config.exporter.ccda.export || Synthea::Config.exporter.ccda.upload || Synthea::Config.exporter.html.export
           ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
 
-          if Synthea::Config.export.ccda
-            begin
-              out_dir = File.join('output','CCDA')
-              xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-              out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml")
-              File.open(out_file, 'w') { |file| file.write(xml) }
-              created_files[:ccda] = out_file
-            rescue => e
-              created_files[:errors] ||= {}
-              created_files[:errors][:ccda] = e
-            end
+          if Synthea::Config.exporter.ccda.export
+            out_dir = get_output_folder('CCDA', patient)
+            xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
+            out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml")
+            File.open(out_file, 'w') { |file| file.write(xml) }
           end
 
-          if Synthea::Config.export.html
-            begin
-              out_dir = File.join('output','html')
-              html = HealthDataStandards::Export::HTML.new.export(ccda_record)
-              out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html")
-              File.open(out_file, 'w') { |file| file.write(html) }
-              created_files[:html] = out_file
-            rescue => e
-              created_files[:errors] ||= {}
-              created_files[:errors][:html] = e
-            end
+          if Synthea::Config.exporter.html.export
+            out_dir = get_output_folder('html', patient)
+            html = HealthDataStandards::Export::HTML.new.export(ccda_record)
+            out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html")
+            File.open(out_file, 'w') { |file| file.write(html) }
           end
         end
 
-        if Synthea::Config.export.fhir
-          begin
-            fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
+        if Synthea::Config.exporter.fhir.export || Synthea::Config.exporter.fhir.upload
+          fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
 
-            out_dir = File.join('output','fhir')
+          if Synthea::Config.exporter.fhir.upload
+            fhir_upload(fhir_record, Synthea::Config.exporter.fhir.upload)
+          end
+
+          if Synthea::Config.exporter.fhir.export
+            out_dir = get_output_folder('fhir', patient)
             data = fhir_record.to_json
             out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json")
             File.open(out_file, 'w') { |file| file.write(data) }
-            created_files[:fhir] = out_file
-          rescue => e
-            created_files[:errors] ||= {}
-            created_files[:errors][:fhir] = e
           end
         end
+      end
 
-        created_files
+      def self.get_output_folder(folder_name, patient=nil)
+        base = Synthea::Config.exporter.location
+        folder = if Synthea::Config.exporter.folder_per_city && !patient.nil?
+                   File.join(base, folder_name, patient[:city])
+                 else
+                   File.join(base, folder_name)
+                 end
+
+        FileUtils.mkdir_p folder unless File.exists? folder
+
+        folder
+      end
+
+      def self.fhir_upload(bundle, fhir_server_url)
+        # create a new client object for each upload
+        # it's probably slower than keeping 1 or a fixed # around
+        # but it means we don't have to worry about thread-safety on this part
+        fhir_client = FHIR::Client.new(fhir_server_url)
+        fhir_client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
+
+        fhir_client.begin_transaction
+        start_time = Time.now
+        bundle.entry.each do |entry|
+          #defined our own 'add to transaction' function to preserve our entry information
+          add_entry_transaction('POST',nil,entry,fhir_client)
+        end
+        begin
+          reply = fhir_client.end_transaction
+          puts "  Error: #{reply.code}" if reply.code!=200
+        rescue Exception => e
+          puts "  Error: #{e.message}"
+        end
+      end
+
+      def self.add_entry_transaction(method, url, entry=nil, client)
+        request = FHIR::Bundle::Entry::Request.new
+        request.local_method = 'POST'
+        if url.nil? && !entry.resource.nil?
+          options = Hash.new
+          options[:resource] = entry.resource.class
+          options[:id] = entry.resource.id if request.local_method != 'POST'
+          request.url = client.resource_url(options)
+          request.url = request.url[1..-1] if request.url.starts_with?('/')
+        else
+          request.url = url
+        end
+        entry.request = request
+        client.transaction_bundle.entry << entry
+        entry
       end
 
 
@@ -59,7 +94,7 @@ module Synthea
         # filter the patient's history to only the last __ years
         # but also include relevant history from before that
 
-        cutoff_date = Time.now - Synthea::Config.export.years_of_history.years
+        cutoff_date = Time.now - Synthea::Config.exporter.years_of_history.years
 
         # dup the patient so that we export only the last _ years but the rest still exists, just in case
         patient = patient.dup

@@ -15,8 +15,7 @@ namespace :synthea do
     seconds = (minutes - minutes.floor) * 60
     puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
     puts "Saving patient records..."
-    fhir_export(world.people | world.dead) if Synthea::Config.export.fhir
-    ccda_export(world.people | world.dead) if Synthea::Config.export.ccda || Synthea::Config.export.html
+    export(world.people | world.dead)
     binding.pry
     puts 'Finished.'
   end
@@ -50,7 +49,7 @@ namespace :synthea do
 
   desc 'upload to FHIR server'
   task :fhirupload, [:url] do |t,args|
-    output = File.join('output','fhir')
+    output = Synthea::Output::Exporter.get_output_folder('fhir')
     if File.exists? output
       start = Time.now
       files = File.join(output, '**', '*.json')
@@ -91,7 +90,7 @@ namespace :synthea do
   #enter host name as command line argument to rake task
   desc 'upload CCDA records using sftp'
   task :ccdaupload, [:url] do |t,args|
-    output = File.join('output','ccda')
+    output = Synthea::Output::Exporter.get_output_folder('CCDA')
     if File.exists? output
       files = File.join(output, '**', '*.xml')
       print "Username: "
@@ -114,46 +113,15 @@ namespace :synthea do
     end
   end
 
-  def ccda_export(patients)
+  def export(patients)
     # we need to configure mongo to export for some reason... not ideal
-    Mongoid.configure { |config| config.connect_to("synthea_test") }
-
-    ['html','fhir','CCDA'].each do |type|
-      out_dir = File.join('output',type)
-      FileUtils.rm_r out_dir if File.exists? out_dir
-      FileUtils.mkdir_p out_dir
+    if Synthea::Config.exporter.ccda.export || Synthea::Config.exporter.ccda.upload || Synthea::Config.exporter.html.export
+      Mongoid.configure { |config| config.connect_to("synthea_test") }
     end
+
     patients.each do |patient|
       Synthea::Output::Exporter.export(patient)
     end
-  end
-
-  def fhir_export(patients)
-    out_dir = File.join('output','fhir')
-    FileUtils.rm_r out_dir if File.exists? out_dir
-    FileUtils.mkdir_p out_dir
-    patients.each do |patient|
-      fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
-      data = fhir_record.to_json
-      File.open(File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json"), 'w') { |file| file.write(data) }
-    end
-  end
-
-  def add_entry_transaction(method, url, entry=nil, client)
-    request = FHIR::Bundle::Entry::Request.new
-    request.local_method = 'POST'
-    if url.nil? && !entry.resource.nil?
-      options = Hash.new
-      options[:resource] = entry.resource.class
-      options[:id] = entry.resource.id if request.local_method != 'POST'
-      request.url = client.resource_url(options)
-      request.url = request.url[1..-1] if request.url.starts_with?('/')
-    else
-      request.url = url
-    end
-    entry.request = request
-    client.transaction_bundle.entry << entry
-    entry
   end
 
   desc 'clear_server'
