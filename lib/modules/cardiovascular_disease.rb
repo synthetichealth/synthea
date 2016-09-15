@@ -359,7 +359,6 @@ module Synthea
       #-----------------------------------------------------------------------#
       #Treatments and Medications
       #-----------------------------------------------------------------------#
-      @@med_changes = []
 
       rule :heart_healthy_lifestyle, [:coronary_heart_disease, :stroke, :cardiac_arrest, :myocardial_infarction], [] do |time, entity|
         reasons = []
@@ -377,10 +376,10 @@ module Synthea
         meds = [:clopidogrel, :simvastatin, :amlodipine, :nitroglycerin]
         if entity[:coronary_heart_disease]
           entity[:medications] ||= Hash.new
-          meds.each {|m| prescribeMedication(m, :coronary_heart_disease, time, entity, @@med_changes)}
+          meds.each {|m| prescribeMedication(m, :coronary_heart_disease, time, entity, entity[:med_changes][:cardiovascular_disease])}
         elsif entity[:medications]
           meds.each do |m|
-            stopMedication(m, :coronary_heart_disease, time, entity, @@med_changes) if entity[:medications][m]
+            stopMedication(m, :coronary_heart_disease, time, entity, entity[:med_changes][:cardiovascular_disease]) if entity[:medications][m]
           end
         end
       end
@@ -389,7 +388,7 @@ module Synthea
         meds = [:warfarin, :verapamil, :digoxin]
         if entity[:atrial_fibrillation]
           entity[:medications] ||= Hash.new
-          meds.each {|m| prescribeMedication(m, :atrial_fibrillation, time, entity, @@med_changes)}
+          meds.each {|m| prescribeMedication(m, :atrial_fibrillation, time, entity, entity[:med_changes][:cardiovascular_disease])}
 
           #catheter ablation is a more extreme measure than electrical cardioversion and is usually only performed
           #when medication and other procedures are not preferred or have failed. As a rough simulation of this,
@@ -399,7 +398,7 @@ module Synthea
           entity[:cardiovascular_procedures][:atrial_fibrillation] ||= [afib_procedure]
         elsif entity[:medications]
           meds.each do |m|
-            stopMedication(m, :atrial_fibrillation, time, entity, @@med_changes) if entity[:medications][m]
+            stopMedication(m, :atrial_fibrillation, time, entity, entity[:med_changes][:cardiovascular_disease]) if entity[:medications][m]
           end
         end
       end
@@ -424,7 +423,7 @@ module Synthea
         end
 
         if entity[:medications]
-          @@med_changes.each do |med|
+          entity[:med_changes][:cardiovascular_disease].each do |med|
             if entity[:medications][med]
               # Add a prescription to the record if it hasn't been recorded yet
               if !entity.record_synthea.medication_active?(med)
@@ -437,7 +436,7 @@ module Synthea
               entity.record_synthea.medication_stop(med, time, :cardiovascular_improved)
             end
           end
-          @@med_changes = []
+          entity[:med_changes][:cardiovascular_disease] = []
         end
 
         if entity[:cardiovascular_procedures]

@@ -291,7 +291,6 @@ module Synthea
       #-----------------------------------------------------------------------#
       # Treatments and Medications
       #-----------------------------------------------------------------------#
-      @@med_changes = []
 
       rule :diet_and_exercise, [:prediabetes,:diabetes], [:monotherapy] do |time,entity|
         if entity[:prediabetes] || entity[:diabetes]
@@ -305,9 +304,9 @@ module Synthea
         if entity[:diabetes] && entity[:diabetes][:severity]==1
           entity[:medications] = Hash.new if entity[:medications].nil?
           # stop medications above this stage...
-          [:glp1ra,:sglt2i,:basal_insulin,:prandial_insulin].each{|m| stopMedication(m, :diabetes, time, entity, @@med_changes)}
+          [:glp1ra,:sglt2i,:basal_insulin,:prandial_insulin].each{|m| stopMedication(m, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])}
           # prescribe metformin if it isn't already there...
-          prescribeMedication(:metformin, :diabetes, time, entity, @@med_changes)
+          prescribeMedication(:metformin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
         end
       end
 
@@ -315,10 +314,10 @@ module Synthea
         if entity[:diabetes] && entity[:diabetes][:severity]==2
           entity[:medications] = Hash.new if entity[:medications].nil?
           # delete medications above this stage...
-          [:sglt2i,:basal_insulin,:prandial_insulin].each{|m| stopMedication(m, :diabetes, time, entity, @@med_changes)}
+          [:sglt2i,:basal_insulin,:prandial_insulin].each{|m| stopMedication(m, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])}
           # prescribe metformin and glp1ra if they aren't already there...
-          prescribeMedication(:metformin, :diabetes, time, entity, @@med_changes)
-          prescribeMedication(:glp1ra, :diabetes, time, entity, @@med_changes)
+          prescribeMedication(:metformin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
+          prescribeMedication(:glp1ra, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
         end
       end
 
@@ -326,11 +325,11 @@ module Synthea
         if entity[:diabetes] && entity[:diabetes][:severity]==3
           entity[:medications] = Hash.new if entity[:medications].nil?
           # delete medications above this stage...
-          [:basal_insulin,:prandial_insulin].each{|m| stopMedication(m, :diabetes, time, entity, @@med_changes)}
+          [:basal_insulin,:prandial_insulin].each{|m| stopMedication(m, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])}
           # prescribe metformin and cocktail if they aren't already there...
-          prescribeMedication(:metformin, :diabetes, time, entity, @@med_changes)
-          prescribeMedication(:glp1ra, :diabetes, time, entity, @@med_changes)
-          prescribeMedication(:sglt2i, :diabetes, time, entity, @@med_changes)
+          prescribeMedication(:metformin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
+          prescribeMedication(:glp1ra, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
+          prescribeMedication(:sglt2i, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
         end
       end
 
@@ -338,9 +337,9 @@ module Synthea
         if entity[:diabetes] && entity[:diabetes][:severity]==4
           entity[:medications] = Hash.new if entity[:medications].nil?
           # prescribe metformin and cocktail if they aren't already there...
-          prescribeMedication(:metformin, :diabetes, time, entity, @@med_changes)
-          prescribeMedication(:glp1ra, :diabetes, time, entity, @@med_changes)
-          prescribeMedication(:sglt2i, :diabetes, time, entity, @@med_changes)
+          prescribeMedication(:metformin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
+          prescribeMedication(:glp1ra, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
+          prescribeMedication(:sglt2i, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
           # prescribe insulin          
           if entity[:medications][:basal_insulin]
             # if basal insulin was prescribed at the last enounter, escalate to prandial
@@ -349,11 +348,11 @@ module Synthea
               (x.time > basal_added) && (x.processed==true)
             end
             if !encounters.empty?
-              stopMedication(:basal_insulin, :diabetes, time, entity, @@med_changes)
-              prescribeMedication(:prandial_insulin, :diabetes, time, entity, @@med_changes)
+              stopMedication(:basal_insulin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
+              prescribeMedication(:prandial_insulin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
             end
           elsif !entity[:medications][:prandial_insulin]
-            prescribeMedication(:basal_insulin, :diabetes, time, entity, @@med_changes)
+            prescribeMedication(:basal_insulin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
           end     
         end
       end
@@ -432,7 +431,7 @@ module Synthea
         end
 
         if entity[:medications]
-          @@med_changes.each do |med|
+          entity[:med_changes][:metabolic_syndrome].each do |med|
             if entity[:medications][med]
               # Add a prescription to the record if it hasn't been recorded yet
               if !entity.record_synthea.medication_active?(med)
@@ -443,7 +442,7 @@ module Synthea
               entity.record_synthea.medication_stop(med, time, :diabetes_well_controlled)
             end
           end
-          @@med_changes = []
+          entity[:med_changes][:metabolic_syndrome] = []
         end
       end
 
