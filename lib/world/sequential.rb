@@ -24,6 +24,8 @@ module Synthea
         #  you can scale the populations of individual cities down by this amount. 
 
         @city_populations = JSON.parse(datafile) if datafile
+
+        Synthea::Rules.get_modules # trigger the loading of modules here, to ensure they are set before all threads start
       end
 
       def run
@@ -103,7 +105,7 @@ module Synthea
             record_stats(person)
             dead = person.had_event?(:death)
             
-            puts "#{city_name} ##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
+            puts "#{city_name} ##{i+1}/#{population}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
 
             break unless dead
             break if try_number >= Synthea::Config.sequential.max_tries
@@ -137,8 +139,6 @@ module Synthea
           demographics[:education][i] = education_ratio.pick
           demographics[:income][i] = rand( Range.new(*age_group.split('..').map(&:to_i)) ) * 1000
         end
-
-        demographics.each_value(&:shuffle)
 
         demographics
       end
