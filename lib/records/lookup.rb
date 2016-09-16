@@ -5,6 +5,7 @@ module Synthea
 	OBS_LOOKUP = {
     height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
     weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},
+    bmi: { description: 'Body Mass Index', code: '39156-5', unit: 'kg/m2' },
     systolic_blood_pressure: { description: 'Systolic Blood Pressure', code: '8480-6', unit: 'mmHg'},
     diastolic_blood_pressure: { description: 'Diastolic Blood Pressure', code: '8462-4', unit: 'mmHg'},
     ha1c: { description: 'Hemoglobin A1c/Hemoglobin.total in Blood', code: '4548-4', unit: '%'},
@@ -33,32 +34,32 @@ module Synthea
 	COND_LOOKUP = {
     #http://www.icd9data.com/2012/Volume1/780-799/790-796/790/790.29.htm
     hypertension: { description: 'Hypertension', codes: {'SNOMED-CT' => ['38341003']}},
-    prediabetes: { description: 'Prediabetes', 
-                   codes: {'ICD-9-CM' => ['790.29'], 
-                           'ICD-10-CM' => ['R73.09'], 
+    prediabetes: { description: 'Prediabetes',
+                   codes: {'ICD-9-CM' => ['790.29'],
+                           'ICD-10-CM' => ['R73.09'],
                            'SNOMED-CT' => ['15777000']}},
-    diabetes: { description: 'Diabetes', 
+    diabetes: { description: 'Diabetes',
                    codes: {'SNOMED-CT' => ['44054006']}},
 
     nephropathy: { description: 'Diabetic renal disease (disorder)', codes: {'SNOMED-CT' => ['127013003']}},
-    microalbuminuria: { description: 'Microalbuminuria due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['90781000119102']}},         
-    proteinuria: { description: 'Proteinuria due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['157141000119108']}},         
-    end_stage_renal_disease: { description: 'End stage renal disease (disorder)', codes: {'SNOMED-CT' => ['46177005']}},         
+    microalbuminuria: { description: 'Microalbuminuria due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['90781000119102']}},
+    proteinuria: { description: 'Proteinuria due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['157141000119108']}},
+    end_stage_renal_disease: { description: 'End stage renal disease (disorder)', codes: {'SNOMED-CT' => ['46177005']}},
 
-    retinopathy: { description: 'Diabetic retinopathy associated with type II diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['422034002']}},         
-    nonproliferative_retinopathy: { description: 'Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['1551000119108']}},         
-    proliferative_retinopathy: { description: 'Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['1501000119109']}},         
-    macular_edema: { description: 'Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['97331000119101']}},         
-    blindness: { description: 'Blindness due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['60951000119105']}},         
+    retinopathy: { description: 'Diabetic retinopathy associated with type II diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['422034002']}},
+    nonproliferative_retinopathy: { description: 'Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['1551000119108']}},
+    proliferative_retinopathy: { description: 'Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['1501000119109']}},
+    macular_edema: { description: 'Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['97331000119101']}},
+    blindness: { description: 'Blindness due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['60951000119105']}},
 
-    neuropathy: { description: 'Neuropathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['368581000119106']}},         
+    neuropathy: { description: 'Neuropathy due to type 2 diabetes mellitus (disorder)', codes: {'SNOMED-CT' => ['368581000119106']}},
     amputation: { description: 'History of limb amputation (situation)', codes: {'SNOMED-CT' => ['271396005']}},
 
     food_allergy_peanuts: { description: 'Food Allergy: Peanuts', codes: {'SNOMED-CT' => ['91935009']}},
     food_allergy_tree_nuts: { description: 'Food Allergy: Tree Nuts', codes: {'SNOMED-CT' => ['91934008']}},
     food_allergy_fish: { description: 'Food Allergy: Fish', codes: {'SNOMED-CT' => ['417532002']}},
     food_allergy_shellfish: { description: 'Food Allergy: Shellfish', codes: {'SNOMED-CT' => ['300913006']}},
-  
+
     stroke: { description: 'Stroke', codes: {'SNOMED-CT' => ['230690007']}},
     coronary_heart_disease: { description: 'Coronary Heart Disease', codes: {'SNOMED-CT' => ['53741008']}},
     myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
@@ -105,7 +106,7 @@ module Synthea
     sglt2i: { description: 'canagliflozin 100 MG Oral Tablet', codes: {'RxNorm'=>['1373463']}},
     basal_insulin: { description: 'insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]', codes: {'RxNorm'=>['106892']}},
     prandial_insulin: { description: 'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]', codes: {'RxNorm'=>['865098']}},
-    
+
     #cardiovascular disease medications. Dosage amounts are roughly estimated, need to be confirmed
     clopidogrel: { description: 'Clopidogrel 75 MG Oral Tablet', codes: {'RxNorm'=>['309362']}},
     simvastatin: { description: 'Simvastatin 20 MG Oral Tablet', codes: {'RxNorm'=>['312961']}},
@@ -152,8 +153,8 @@ module Synthea
     :west_indian => '2075-0',
     :asian_indian => '2029-7',
     :american_indian => '1004-1',
-    :arab => '2129-5',         
-    :nonhispanic => '2186-5'   
+    :arab => '2129-5',
+    :nonhispanic => '2186-5'
   }
 
   PROCEDURE_LOOKUP = {
@@ -185,7 +186,7 @@ module Synthea
     age_lt_17: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V20.2'], "ICD-10-CM" => ['Z00.129'], 'SNOMED-CT' => ['170258001']}, class: 'outpatient'},
     age_lt_39: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'},
     age_lt_64: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'},
-    age_senior: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'}, 
+    age_senior: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'},
     emergency: {description: 'Emergency Encounter', codes: {'SNOMED-CT' => ['50849002']}, class: 'emergency'}
   }
 
@@ -202,7 +203,7 @@ module Synthea
     },
     :rv_mono => {
       :code => {'system'=>'http://hl7.org/fhir/sid/cvx','code'=>'119','display'=>'rotavirus, monovalent'},
-      #  Monovalent (Rotarix) is a 2-dose series, as opposed to pentavalent (RotaTeq) which is a 3-dose series 
+      #  Monovalent (Rotarix) is a 2-dose series, as opposed to pentavalent (RotaTeq) which is a 3-dose series
       :at_months => [2, 4],
       :first_available => 2006
     },
