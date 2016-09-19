@@ -3,6 +3,7 @@ require_relative '../test_helper'
 class ExporterTest < Minitest::Test
   def setup
     Synthea::Config.exporter.years_of_history = 5
+    Synthea::Config.exporter.location = './output/'
 
     @time = Time.now
     @patient = Synthea::Person.new
@@ -10,7 +11,9 @@ class ExporterTest < Minitest::Test
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
     @patient[:is_alive] = true
+    @patient[:city] = 'Bedford'
     @record = @patient.record_synthea
+    @record.patient_info[:uuid] = '1234'
   end
 
   def test_export_filter_simple_cutoff
@@ -121,4 +124,35 @@ class ExporterTest < Minitest::Test
     assert_empty filtered.record_synthea.observations
   end
 
+  def test_output_file_location_single_dir
+    Synthea::Config.exporter.folder_per_city = false
+    Synthea::Config.exporter.subfolder_by_id = false
+
+    assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
+    assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
+  end
+
+  def test_output_file_location_cities_single
+    Synthea::Config.exporter.folder_per_city = true
+    Synthea::Config.exporter.subfolder_by_id = false
+
+    assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
+    assert_equal './output/fhir/Bedford', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
+  end
+
+  def test_output_file_location_single_split
+    Synthea::Config.exporter.folder_per_city = false
+    Synthea::Config.exporter.subfolder_by_id = true
+
+    assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
+    assert_equal './output/fhir/12', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
+  end
+
+  def test_output_file_location_cities_split
+    Synthea::Config.exporter.folder_per_city = true
+    Synthea::Config.exporter.subfolder_by_id = true
+
+    assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
+    assert_equal './output/fhir/Bedford/12', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
+  end
 end

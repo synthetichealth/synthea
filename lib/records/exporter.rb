@@ -40,11 +40,18 @@ module Synthea
 
       def self.get_output_folder(folder_name, patient=nil)
         base = Synthea::Config.exporter.location
-        folder = if Synthea::Config.exporter.folder_per_city && !patient.nil?
-                   File.join(base, folder_name, patient[:city])
-                 else
-                   File.join(base, folder_name)
-                 end
+
+        dirs = [base, folder_name]
+
+        if patient
+          dirs << patient[:city] if Synthea::Config.exporter.folder_per_city
+
+          # take the first 2 characters of the patient uuid for subfolders
+          # uuid = hex so this gives us 256 subfolders
+          dirs << patient.record_synthea.patient_info[:uuid][0,2] if Synthea::Config.exporter.subfolder_by_id
+        end
+
+        folder = File.join(*dirs)
 
         FileUtils.mkdir_p folder unless File.exists? folder
 
