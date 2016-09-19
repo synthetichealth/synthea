@@ -151,7 +151,7 @@ module Synthea
             value[:class] = @class
             entity.record_synthea.encounter(self.symbol(), time)
           end
-          
+
           # Look through the history for conditions to diagnose
           @context.history.each do |h|
             if h.is_a?(ConditionOnset) && ! h.diagnosed && h.target_encounter == @name

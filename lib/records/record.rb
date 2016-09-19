@@ -1,33 +1,33 @@
 module Synthea
-	module Output
-		class Record
-			attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications, :careplans
-			def initialize
-				@patient_info = {expired: false, uuid: SecureRandom.uuid}
-				@encounters = []
-				@observations = []
-				#store condition info
-				@conditions = []
-				#check presence of condition
-				@present = {}
+  module Output
+    class Record
+      attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications, :careplans
+      def initialize
+        @patient_info = {expired: false, uuid: SecureRandom.uuid}
+        @encounters = []
+        @observations = []
+        #store condition info
+        @conditions = []
+        #check presence of condition
+        @present = {}
         @procedures = []
         @immunizations = []
         @medications = []
         @careplans = []
-			end
-			#birth and basic information are stored as person attributes and can be referred to when writing other records.
-			#No need to duplicate here.
-			def death(time)
-				@patient_info[:deathdate] =  time
-				@patient_info[:expired] = true
-			end
+      end
+      #birth and basic information are stored as person attributes and can be referred to when writing other records.
+      #No need to duplicate here.
+      def death(time)
+        @patient_info[:deathdate] =  time
+        @patient_info[:expired] = true
+      end
 
-			def observation(type, time, value, fhir_method=:observation, ccda_method=:vital_sign)
+      def observation(type, time, value, fhir_method=:observation, ccda_method=:vital_sign)
         @observations << {
           'type' => type,
           'time' => time,
           'value' => value,
-          'fhir' => fhir_method, 
+          'fhir' => fhir_method,
           'ccda' => ccda_method
         }
       end
@@ -68,7 +68,7 @@ module Synthea
         }
       end
 
-      def encounter(type, time) 
+      def encounter(type, time)
         @encounters << {
           'type' => type,
           'time' => time
@@ -139,6 +139,6 @@ module Synthea
           careplan['time'] = update_time
         end
       end
-		end
-	end
+    end
+  end
 end

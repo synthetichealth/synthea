@@ -1,6 +1,6 @@
 module Synthea
-	module Output
-		module CcdaRecord
+  module Output
+    module CcdaRecord
 
       def self.convert_to_ccda (entity)
         synthea_record = entity.record_synthea
@@ -9,7 +9,7 @@ module Synthea
         basic_info(entity, ccda_record)
         synthea_record.encounters.each do |encounter|
           encounter(encounter, ccda_record)
-          [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute| 
+          [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
             entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
               #Exception: blood pressure needs to take two observations as an argument
@@ -123,7 +123,7 @@ module Synthea
         type = plan['type']
         time = plan['time']
         entries = [type] + plan['activities']
-        entries.each do |entry| 
+        entries.each do |entry|
           care_goal = CareGoal.new({
             'codes' => CAREPLAN_LOOKUP[entry][:codes],
             'description' => CAREPLAN_LOOKUP[entry][:description],
@@ -131,7 +131,7 @@ module Synthea
             'reason' => COND_LOOKUP[plan['reasons'][0]] #some data is lost here b/c HDS does not support multiple reasons.
           })
           if plan['stop']
-            care_goal['end_time'] = plan['stop'].to_i 
+            care_goal['end_time'] = plan['stop'].to_i
             care_goal.status='inactive'
           else
             care_goal.status='active'
@@ -150,13 +150,13 @@ module Synthea
           'reason' => COND_LOOKUP[prescription['reasons'][0]] #some data is lost here b/c HDS does not support multiple reasons.
         })
         if prescription['stop']
-          medication['end_time'] = prescription['stop'].to_i 
+          medication['end_time'] = prescription['stop'].to_i
           medication.status='inactive'
         else
           medication.status='active'
         end
         ccda_record.medications << medication
       end
-		end
-	end
+    end
+  end
 end

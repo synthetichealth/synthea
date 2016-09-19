@@ -109,9 +109,9 @@ module Synthea
 
         present = patient.record_synthea.present
 
-        [:encounters, :conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute| 
+        [:encounters, :conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
           entries = patient.record_synthea.send(attribute).dup
- 
+
           entries.keep_if { |e| should_keep_entry(e, attribute, patient.record_synthea, cutoff_date) }
           patient.record_synthea.send("#{attribute.to_s}=", entries)
         end
@@ -127,7 +127,7 @@ module Synthea
 
         # - encounters, observations, immunizations are single dates and have no "reason"
         #    so they can only be filtered by the single date
-        # - procedures are always listed in "record.present" so they are only filtered by date. 
+        # - procedures are always listed in "record.present" so they are only filtered by date.
         #    procedures that have "permanent side effects" such as appendectomy, amputation,
         #    should also add a condition code such as "history of ___" (ex 429280009)
         case attribute

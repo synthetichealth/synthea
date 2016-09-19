@@ -1,6 +1,6 @@
 module Synthea
-	module Output
-		module FhirRecord
+  module Output
+    module FhirRecord
 
       def self.convert_to_fhir (entity)
         synthea_record = entity.record_synthea
@@ -10,7 +10,7 @@ module Synthea
         patient = basic_info(entity, fhir_record)
         synthea_record.encounters.each do |encounter|
            curr_encounter = encounter(encounter, fhir_record, patient)
-          [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute| 
+          [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
             entry = synthea_record.send(attribute)[indices[attribute]]
             while entry && entry['time'] <= encounter['time'] do
               method = entry['fhir']
@@ -25,10 +25,10 @@ module Synthea
       end
 
       def self.basic_info (entity, fhir_record)
-        if entity[:race] == :hispanic 
+        if entity[:race] == :hispanic
           raceFHIR = :other
           ethnicityFHIR = entity[:ethnicity]
-        else 
+        else
           raceFHIR = entity[:ethnicity]
           ethnicityFHIR = :nonhispanic
         end
@@ -113,7 +113,7 @@ module Synthea
         fhir_record.entry << entry
       end
 
-			def self.encounter(encounter, fhir_record, patient)
+      def self.encounter(encounter, fhir_record, patient)
         resourceID = SecureRandom.uuid.to_s
         encounterData = ENCOUNTER_LOOKUP[encounter['type']]
         fhir_encounter = FHIR::Encounter.new({
@@ -186,7 +186,7 @@ module Synthea
           'encounter'=> { 'reference'=> "#{encounter.fullUrl}"},
           'effectiveDateTime' => convertFhirDateTime(multiObs['time'],'time')
         })
-        observations.each do |obs| 
+        observations.each do |obs|
           fhir_observation.component << FHIR::Observation::Component.new({'code' => obs.resource.code.to_hash, 'valueQuantity' => obs.resource.valueQuantity.to_hash})
         end
         entry.resource = fhir_observation
@@ -224,7 +224,7 @@ module Synthea
         fhir_procedure = FHIR::Procedure.new({
           'subject' => { 'reference' => "#{patient.fullUrl}"},
           'status' => 'completed',
-          'code' => { 
+          'code' => {
             'coding' => [{'code'=>proc_data[:codes]['SNOMED-CT'][0], 'display'=>proc_data[:description], 'system'=>'http://snomed.info/sct'}],
             'text' => proc_data[:description] },
           # 'reasonReference' => { 'reference' => reason.resource.id },
@@ -264,7 +264,7 @@ module Synthea
           r = fhir_record.entry.find{|e| e.resource.is_a?(FHIR::Condition) && reasonCode == e.resource.code.coding[0].code }
           reasons << r unless r.nil?
         end
-        
+
         careplan = FHIR::CarePlan.new({
           'subject' => {'reference'=> "#{patient.fullUrl}"},
           'context' => {'reference'=> "#{encounter.fullUrl}"},
@@ -277,7 +277,7 @@ module Synthea
             }]
           }],
           'activity' => [],
-          'addresses' => [] 
+          'addresses' => []
         })
         reasons.each do |r|
           careplan.addresses << FHIR::Reference.new({'reference'=> "#{r.fullUrl}"}) unless reasons.nil? || reasons.empty?
@@ -287,7 +287,7 @@ module Synthea
           careplan.status = 'completed'
         else
           careplan.status = 'active'
-        end 
+        end
         plan['activities'].each do |activity|
           activityData = CAREPLAN_LOOKUP[activity]
           careplan.activity << FHIR::CarePlan::Activity.new({
@@ -304,7 +304,7 @@ module Synthea
         end
         entry = FHIR::Bundle::Entry.new
         entry.resource = careplan
-        fhir_record.entry << entry        
+        fhir_record.entry << entry
       end
 
       def self.medications(prescription, fhir_record, patient, encounter)
@@ -333,7 +333,7 @@ module Synthea
           medOrder.reasonReference << FHIR::Reference.new({'reference'=> "#{r.fullUrl}"})
         end
         if prescription['stop']
-          medOrder.status = 'stopped' 
+          medOrder.status = 'stopped'
 
           event = FHIR::MedicationOrder::EventHistory.new({
               'status' => 'stopped',
@@ -356,7 +356,7 @@ module Synthea
         end
         entry = FHIR::Bundle::Entry.new
         entry.resource = medOrder
-        fhir_record.entry << entry        
+        fhir_record.entry << entry
       end
 
       def self.convertFhirDateTime(date, option = nil)
@@ -370,6 +370,6 @@ module Synthea
           return Regexp.new(FHIR::PRIMITIVES['date']['regex']).match(date.to_s).to_s
         end
       end
-		end
-	end
+    end
+  end
 end

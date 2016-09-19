@@ -35,7 +35,7 @@ class ExporterTest < Minitest::Test
 
     @record.medication_start(:placebitol, @time - 8.years, [:reason2])
     @record.medication_stop(:placebitol, @time - 6.years, :ineffective)
-    
+
     filtered = Synthea::Output::Exporter.filter_for_export(@patient)
 
     assert_equal 1, filtered.record_synthea.medications.length
@@ -49,7 +49,7 @@ class ExporterTest < Minitest::Test
 
     @record.medication_start(:placebitol, @time - 8.years, [:reason2])
     @record.medication_stop(:placebitol, @time - 4.years, :ineffective)
-    
+
     filtered = Synthea::Output::Exporter.filter_for_export(@patient)
 
     assert_equal 1, filtered.record_synthea.medications.length
@@ -70,7 +70,7 @@ class ExporterTest < Minitest::Test
     assert_equal :healthy_diet, filtered.record_synthea.careplans[0]['type']
     assert_equal @time - 12.years, filtered.record_synthea.careplans[0]['time']
   end
-  
+
   def test_export_filter_should_keep_careplan_that_ended_during_target
     @record.careplan_start(:stop_smoking, [:activity1], @time - 10.years, :smoking_is_bad_mkay)
     @record.careplan_stop(:stop_smoking, @time - 1.years)

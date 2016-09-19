@@ -5,11 +5,10 @@ module Synthea
       # Statistics for these rules came from the National Institute of Allergy and Infectious Diseases
       # See https://web.archive.org/web/20100407195412/http://www.niaid.nih.gov/topics/foodAllergy/understanding/Pages/quickFacts.aspx
 
-
       # People can develop food allergies at any age.
       rule :food_allergy?, [:food_allergy], [:food_allergy] do |time, entity|
         food_allergy = entity[:food_allergy]
-        if food_allergy.nil? 
+        if food_allergy.nil?
           if rand <= 0.01 # one percent chance we'll calculate food allergies this time step
             allergens = []
             allergens << :peanuts if (rand <= 0.006)

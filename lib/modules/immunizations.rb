@@ -15,8 +15,8 @@ module Synthea
       rule :immunizations, [:age], [] do |time, entity|
       end
 
-      
-      
+
+
       #-----------------------------------------------------------------------#
 
       def self.perform_encounter(entity, time)

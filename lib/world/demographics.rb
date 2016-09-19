@@ -62,7 +62,7 @@ module Synthea
             :b_positive => 9,
             :b_negative => 2,
             :ab_positive => 3,
-            :ab_negative => 1            
+            :ab_negative => 1
             }),
           :hispanic => Pickup.new({
             :o_positive => 53,
@@ -72,7 +72,7 @@ module Synthea
             :b_positive => 9,
             :b_negative => 1,
             :ab_positive => 2,
-            :ab_negative => 1 
+            :ab_negative => 1
             }),
           :black => Pickup.new({
             :o_positive => 47,
@@ -92,7 +92,7 @@ module Synthea
             :b_positive => 25,
             :b_negative => 1,
             :ab_positive => 7,
-            :ab_negative => 1 
+            :ab_negative => 1
             }),
           :native => Pickup.new({
             :o_positive => 37.4,
@@ -102,7 +102,7 @@ module Synthea
             :b_positive => 8.5,
             :b_negative => 1.5,
             :ab_positive => 3.4,
-            :ab_negative => 0.6 
+            :ab_negative => 0.6
             }),
           :other => Pickup.new({
             :o_positive => 37.4,
@@ -112,7 +112,7 @@ module Synthea
             :b_positive => 8.5,
             :b_negative => 1.5,
             :ab_positive => 3.4,
-            :ab_negative => 0.6 
+            :ab_negative => 0.6
             })
         }
 
