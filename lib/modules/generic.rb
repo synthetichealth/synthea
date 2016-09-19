@@ -18,7 +18,7 @@ module Synthea
         if ! entity[:is_alive]
           return
         end
-        
+
         entity[:generic] ||= {}
         @gmodules.each do |m|
           entity[:generic][m['name']] ||= Synthea::Generic::Context.new(m)
@@ -27,7 +27,7 @@ module Synthea
       end
 
       #-----------------------------------------------------------------------#
-      
+
       def self.perform_wellness_encounter(entity, time)
         return if entity[:generic].nil?
 

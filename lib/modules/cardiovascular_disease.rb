@@ -1,5 +1,5 @@
 module Synthea
-	module Modules
+  module Modules
     class CardiovascularDisease < Synthea::Rules
 
       #estimate cardiovascular risk of developing coronary heart disease (CHD)
@@ -21,7 +21,7 @@ module Synthea
           [0, 2, 3, 4, 5], #50-59 years
           [0, 1, 1, 2, 3], #60-69 years
           [0, 0, 0, 1, 1] #70-79 years
-            
+
         ],
         'F' => [
           #<160, 160-199, 200-239, 240-279, >280
@@ -33,13 +33,13 @@ module Synthea
           [0, 1, 1, 2, 2] #70-79 years
         ]
       }
-  		age_smoke_chd = {
+      age_smoke_chd = {
         #20-29, 30-39, 40-49, 50-59, 60-69, 70-79 age ranges
         'M' => [8, 8, 5, 3, 1, 1],
         'F' => [9, 9, 7, 4, 2, 1]
       }
 
-  		hdl_lookup_chd = [2, 1, 0, -1] # <40, 40-49, 50-59, >60
+      hdl_lookup_chd = [2, 1, 0, -1] # <40, 40-49, 50-59, >60
 
       #true/false refers to whether or not blood pressure is treated
       sys_bp_chd = {
@@ -62,7 +62,7 @@ module Synthea
       }
 
 
-  		#framingham point scores gives a 10-year risk
+      #framingham point scores gives a 10-year risk
       risk_chd = {
         'M' => {
           -1 => 0.005, #'-1' represents all scores <0
@@ -106,7 +106,7 @@ module Synthea
           25 => 0.3 #'25' represents all scores >24
         }
       }
-  		
+
 
       # 9/10 smokers start before age 18. We will use 16.
       #http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
@@ -116,29 +116,29 @@ module Synthea
         end
       end
 
-  		
+
       rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoker], [:coronary_heart_disease?] do |time, entity|
-  			return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:cholesterol].nil?
-			  age = entity[:age]
+        return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:cholesterol].nil?
+        age = entity[:age]
         gender = entity[:gender]
-  			cholesterol = entity[:cholesterol][:total]
-  			hdl_level = entity[:cholesterol][:hdl]
-  			blood_pressure = entity[:blood_pressure][0]
-			  bp_treated = entity[:bp_treated?] || false
+        cholesterol = entity[:cholesterol][:total]
+        hdl_level = entity[:cholesterol][:hdl]
+        blood_pressure = entity[:blood_pressure][0]
+        bp_treated = entity[:bp_treated?] || false
         #calculate which index in a lookup array a number corresponds to based on ranges in scoring
         short_age_range = [[(age - 20)/5,0].max,11].min
         long_age_range = [[(age - 20)/10,0].max,5].min
         chol_range = [[(age - 160)/40 + 1,0].max,4].min
         hdl_range = [[(age - 40)/10 + 1,0].max,3].min
         bp_range = [[(age - 120)/10 + 1,0].max,5].min
-  			framingham_points = 0
+        framingham_points = 0
         framingham_points += age_chd[gender][short_age_range]
         framingham_points += age_chol_chd[gender][long_age_range][chol_range]
         if entity[:smoker]
           framingham_points += age_smoke_chd[gender][long_age_range]
         end
 
-  			framingham_points += hdl_lookup_chd[hdl_range]
+        framingham_points += hdl_lookup_chd[hdl_range]
         framingham_points += sys_bp_chd[gender][bp_range][bp_treated]
         #restrict lower and upper bound of framingham score
         gender_bounds = {'M' => {'low' => 0, 'high' => 17}, 'F' => {'low' => 8, 'high' => 25}}
@@ -146,22 +146,22 @@ module Synthea
 
         risk = risk_chd[gender][framingham_points]
         entity[:cardio_risk] = Synthea::Rules.convert_risk_to_timestep(risk,3650)
-  		end
+      end
 
-  		rule :coronary_heart_disease?, [:calculate_cardio_risk], [:coronary_heart_disease] do |time, entity|
-  			if !entity[:cardio_risk].nil? && entity[:coronary_heart_disease].nil? && rand < entity[:cardio_risk]
-  				entity[:coronary_heart_disease] = true 
-  				entity.events.create(time, :coronary_heart_disease, :coronary_heart_disease?, true)
-  			end
-  		end 
+      rule :coronary_heart_disease?, [:calculate_cardio_risk], [:coronary_heart_disease] do |time, entity|
+        if !entity[:cardio_risk].nil? && entity[:coronary_heart_disease].nil? && rand < entity[:cardio_risk]
+          entity[:coronary_heart_disease] = true
+          entity.events.create(time, :coronary_heart_disease, :coronary_heart_disease?, true)
+        end
+      end
 
       #numbers are from appendix: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
-  		rule :coronary_heart_disease, [:coronary_heart_disease?], [:myocardial_infarction, :cardiac_arrest, :encounter, :death] do |time, entity|
-  			if entity[:gender] && entity[:gender] == 'M'
+      rule :coronary_heart_disease, [:coronary_heart_disease?], [:myocardial_infarction, :cardiac_arrest, :encounter, :death] do |time, entity|
+        if entity[:gender] && entity[:gender] == 'M'
           index = 0
-  			else
+        else
           index = 1
-  			end
+        end
         annual_risk = Synthea::Config.cardiovascular.chd.coronary_attack_risk[index]
         cardiac_event_chance = Synthea::Rules.convert_risk_to_timestep(annual_risk,365)
         if entity[:coronary_heart_disease] && rand < cardiac_event_chance
@@ -176,13 +176,13 @@ module Synthea
           survival_rate = Synthea::Config.cardiovascular.chd.survive
           #survival rate triples if a bystander is present
           survival_rate *= 3 if rand < Synthea::Config.cardiovascular.chd.bystander
-        	if rand > survival_rate
-  					entity[:is_alive] = false
-  					entity.events.create(time, :death, :coronary_heart_disease, true)
+          if rand > survival_rate
+            entity[:is_alive] = false
+            entity.events.create(time, :death, :coronary_heart_disease, true)
             Synthea::Modules::Lifecycle.record_death(entity, time)
-  				end
+          end
         end
-  		end
+      end
 
       #chance of getting a sudden cardiac arrest without heart disease. (Most probable cardiac event w/o cause or history)
       rule :no_coronary_heart_disease, [:coronary_heart_disease?], [:cardiac_arrest, :death] do |time, entity|
@@ -205,7 +205,7 @@ module Synthea
       #-----------------------------------------------------------------------#
       #Framingham score system for calculating atrial fibrillation (significant factor for stroke risk)
 
-      age_af = { #age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84 
+      age_af = { #age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84
         'M' => [1, 2, 3, 4, 5, 6, 7, 7, 8],
         'F' => [-3, -2, 0, 1, 3, 4, 6, 7, 8]
       }
@@ -221,7 +221,7 @@ module Synthea
       rule :calculate_atrial_fibrillation_risk, [:age, :bmi, :blood_pressure, :gender], [:atrial_fibrillation_risk] do |time, entity|
         if entity[:atrial_fibrillation] || entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:bmi].nil? || entity[:age] < 45
           return
-        end 
+        end
         age = entity[:age]
         af_score = 0
         age_range = [(age-45)/5,8].min
@@ -293,13 +293,13 @@ module Synthea
       atrial_fibrillation_stroke_points = {'M' => 4, 'F' => 6}
 
       rule :calculate_stroke_risk, [:age, :diabetes, :coronary_heart_disease, :blood_pressure, :stroke_history, :smoker], [:stroke_risk] do |time, entity|
-        return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? 
+        return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil?
         age = entity[:age]
         gender = entity[:gender]
         blood_pressure = entity[:blood_pressure][0]
         #https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
         #calculate stroke risk based off of prevalence of stroke in age group for people younger than 54. Framingham score system does not cover these.
-        
+
         if gender == 'M'
           gender_index = 0
         else
@@ -316,7 +316,7 @@ module Synthea
         end
 
         if rate
-          entity[:stroke_risk] = Synthea::Rules.convert_risk_to_timestep(rate, 3650) 
+          entity[:stroke_risk] = Synthea::Rules.convert_risk_to_timestep(rate, 3650)
           return
         end
 
@@ -326,7 +326,7 @@ module Synthea
         stroke_points += age_stroke[gender_index].find_index{|range| range.include?(age)}
         if entity[:bp_treated?] #treating blood pressure currently is not a feature. Modify this for when it is.
           stroke_points += treated_sys_bp_stroke[gender_index].find_index{|range| range.include?(blood_pressure)}
-        else 
+        else
           stroke_points += untreated_sys_bp_stroke[gender_index].find_index{|range| range.include?(blood_pressure)}
         end
         stroke_points += diabetes_stroke[gender] if entity[:diabetes]
@@ -337,7 +337,7 @@ module Synthea
           worst_case = ten_year_stroke_risk[gender].keys.last
           ten_stroke_risk = ten_year_stroke_risk[gender][worst_case]
         end
-        
+
         #divide 10 year risk by 365 * 10 to get daily risk.
         entity[:stroke_risk] = Synthea::Rules.convert_risk_to_timestep(ten_stroke_risk, 3650)
         entity[:stroke_points] = stroke_points
@@ -392,7 +392,7 @@ module Synthea
 
           #catheter ablation is a more extreme measure than electrical cardioversion and is usually only performed
           #when medication and other procedures are not preferred or have failed. As a rough simulation of this,
-          #we arbitrarily chose a 20% chance of getting catheter ablation and 80% of getting cardioversion 
+          #we arbitrarily chose a 20% chance of getting catheter ablation and 80% of getting cardioversion
           rand < 0.2 ? afib_procedure = :catheter_ablation : afib_procedure = :electrical_cardioversion
           entity[:cardiovascular_procedures] ||= Hash.new
           entity[:cardiovascular_procedures][:atrial_fibrillation] ||= [afib_procedure]
@@ -415,7 +415,7 @@ module Synthea
         if entity[:careplan] && entity[:careplan][:cardiovascular_disease]
           if !entity.record_synthea.careplan_active?(:cardiovascular_disease)
             entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['activities'], time, entity[:careplan][:cardiovascular_disease]['reasons'])
-          else 
+          else
             entity.record_synthea.update_careplan_reasons(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['reasons'],time)
           end
         elsif entity.record_synthea.careplan_active?(:cardiovascular_disease)
@@ -445,7 +445,7 @@ module Synthea
             procedures.each do |proc|
               if !entity.record_synthea.present[proc]
                 #TODO assumes a procedure will only be performed once, might need to be revisited
-                entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure) 
+                entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure)
               end
             end
           end
@@ -471,7 +471,7 @@ module Synthea
         time = event.time
         diagnosis = event.type
         patient = entity.record_synthea
-        if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis) 
+        if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis)
           patient.condition(diagnosis, time, :condition, :condition)
           emergency_meds[diagnosis].each do |med|
             entity.record_synthea.medication_start(med, time, [diagnosis])
@@ -480,14 +480,14 @@ module Synthea
 
           emergency_procedures[diagnosis].each do |proc|
             reason_code = COND_LOOKUP[diagnosis][:codes]['SNOMED-CT'][0]
-            entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure) 
+            entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure)
           end
 
           history_conditions[diagnosis].each do |cond|
-            entity.record_synthea.condition(cond, time) 
+            entity.record_synthea.condition(cond, time)
           end
         end
       end
     end
-	end
+  end
 end

@@ -1,5 +1,5 @@
 namespace :synthea do
-  
+
   desc 'console'
   task :console, [] do |t, args|
     binding.pry
@@ -36,7 +36,7 @@ namespace :synthea do
       FileUtils.rm_r out_dir if File.exists? out_dir
       FileUtils.mkdir_p out_dir
     end
-        
+
     start = Time.now
     world = Synthea::World::Sequential.new(datafile)
     world.run
@@ -44,7 +44,7 @@ namespace :synthea do
     minutes = ((finish-start)/60)
     seconds = (minutes - minutes.floor) * 60
     puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
-    puts 'Finished.'    
+    puts 'Finished.'
   end
 
   desc 'upload to FHIR server'
@@ -181,7 +181,7 @@ namespace :synthea do
       if row[:year].to_i==8 && row[:agegrp].to_i==0
         gender = {
           :male => ( row[:tot_male].to_f / row[:tot_pop].to_f ),
-          :female => ( row[:tot_female].to_f / row[:tot_pop].to_f ),          
+          :female => ( row[:tot_female].to_f / row[:tot_pop].to_f ),
         }
         race = {
           :white => (( row[:wa_male].to_f + row[:wa_female].to_f ) / row[:tot_pop].to_f),
@@ -202,7 +202,7 @@ namespace :synthea do
           if v[:county]==row[:ctyname]
             v[:ages][ ageGroups[row[:agegrp].to_i] ] = row[:tot_pop].to_f
           end
-        end        
+        end
       end
     end
     countyfile.close
@@ -250,7 +250,7 @@ namespace :synthea do
     towns.each do |k,v|
       total = v[:ages].values.inject(0){|i,j| i + j}
       v[:ages].each{|i,j| v[:ages][i] = (j / total)}
-    end  
+    end
     output = File.open("./config/towns.json","w:UTF-8")
     output.write( JSON.pretty_unparse(towns) )
     output.close
@@ -263,5 +263,5 @@ namespace :synthea do
     end
     puts "Done."
   end
-  
+
 end

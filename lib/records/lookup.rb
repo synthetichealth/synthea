@@ -1,8 +1,8 @@
 module Synthea
 
-	#Store all code lookups here:
+  #Store all code lookups here:
 
-	OBS_LOOKUP = {
+  OBS_LOOKUP = {
     height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
     weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},
     bmi: { description: 'Body Mass Index', code: '39156-5', unit: 'kg/m2' },
@@ -31,7 +31,7 @@ module Synthea
     egfr: { description: 'Estimated Glomerular Filtration Rate', code: '33914-3', unit: 'mL/min/{1.73_m2}'}
   }
 
-	COND_LOOKUP = {
+  COND_LOOKUP = {
     #http://www.icd9data.com/2012/Volume1/780-799/790-796/790/790.29.htm
     hypertension: { description: 'Hypertension', codes: {'SNOMED-CT' => ['38341003']}},
     prediabetes: { description: 'Prediabetes',

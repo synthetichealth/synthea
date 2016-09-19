@@ -1,20 +1,20 @@
 require_relative '../test_helper'
 
 class FhirTest < Minitest::Test
-	def setup
-		@patient = Synthea::Person.new
-		@patient[:name_first] = "foo123"
-		@patient[:name_last] = "bar456"
-		@patient[:gender] = 'F'
-		@patient[:address] = {
+  def setup
+    @patient = Synthea::Person.new
+    @patient[:name_first] = "foo123"
+    @patient[:name_last] = "bar456"
+    @patient[:gender] = 'F'
+    @patient[:address] = {
       'line' => ["4655 Emmerich Springs"],
       'city' => "Bedford",
       'state' => "MA",
       'postalCode' => "01730"
     }
     @patient[:race] = :white
-		@patient[:ethnicity] = :italian
-		@patient[:is_alive] = true
+    @patient[:ethnicity] = :italian
+    @patient[:is_alive] = true
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
     @fhir_record = FHIR::Bundle.new
     @time = Time.now
@@ -24,7 +24,7 @@ class FhirTest < Minitest::Test
     @encounter_entry = Synthea::Output::FhirRecord.encounter(@encounter, @fhir_record, @patient_entry)
     @patientID = @fhir_record.entry[0].fullUrl
     @encounterID = @fhir_record.entry[1].fullUrl
-	end
+  end
 
   def test_convert_to_fhir
     record = @patient.record_synthea
@@ -53,7 +53,7 @@ class FhirTest < Minitest::Test
       assert_equal(klass, entry.resource.class)
     end
   end
-  
+
   def test_record_blood_pressure
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)
@@ -65,101 +65,101 @@ class FhirTest < Minitest::Test
     assert_equal(2,fhir.entry.select {|e| e.resource.is_a?(FHIR::Observation)}.length)
   end
 
-	def test_basic_info
-		entry = @fhir_record.entry
-		person = entry[0].resource
-		name = person.name[0]
-		assert_equal(name.given[0], "foo123")
-		assert_equal(name.family[0], "bar456")
-		assert_equal("official",name.use)
-  	assert_equal('female',person.gender)
-  	assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time),person.birthDate)
-  	assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,entry[0].fullUrl)
-  	race = person.extension[0].valueCodeableConcept.coding[0]
-  	assert_equal('Italian',race.display)
-  	assert_equal('2114-7',race.code)
-  	ethnicity = person.extension[1].valueCodeableConcept.coding[0]
-  	assert_equal('Nonhispanic',ethnicity.display)
-  	assert_equal('2186-5',ethnicity.code)
-  	address = person.address[0]
-  	assert_equal('4655 Emmerich Springs', address.line[0])
-  	assert_equal('Bedford', address.city)
-  	assert_equal('MA', address.state)
-  	assert_equal('01730', address.postalCode)
+  def test_basic_info
+    entry = @fhir_record.entry
+    person = entry[0].resource
+    name = person.name[0]
+    assert_equal(name.given[0], "foo123")
+    assert_equal(name.family[0], "bar456")
+    assert_equal("official",name.use)
+    assert_equal('female',person.gender)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time),person.birthDate)
+    assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,entry[0].fullUrl)
+    race = person.extension[0].valueCodeableConcept.coding[0]
+    assert_equal('Italian',race.display)
+    assert_equal('2114-7',race.code)
+    ethnicity = person.extension[1].valueCodeableConcept.coding[0]
+    assert_equal('Nonhispanic',ethnicity.display)
+    assert_equal('2186-5',ethnicity.code)
+    address = person.address[0]
+    assert_equal('4655 Emmerich Springs', address.line[0])
+    assert_equal('Bedford', address.city)
+    assert_equal('MA', address.state)
+    assert_equal('01730', address.postalCode)
     coordinates = person.extension[2]
     assert_equal('http://standardhealthrecord.org/fhir/extensions/wkt-geospatialpoint', coordinates.url)
     assert_equal('POINT (10, 15)', coordinates.valueString)
-  	#test race/ethnicity logic
-  	@patient[:race] = :hispanic
-  	@patient[:ethnicity] = :mexican
-  	Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
-  	race = @fhir_record.entry[2].resource.extension[0].valueCodeableConcept.coding[0]
-  	assert_equal('Other',race.display)
-  	assert_equal('2131-1',race.code)
-  	ethnicity = @fhir_record.entry[2].resource.extension[1].valueCodeableConcept.coding[0]
-  	assert_equal('Mexican',ethnicity.display)
-  	assert_equal('2148-5',ethnicity.code)
-	end
+    #test race/ethnicity logic
+    @patient[:race] = :hispanic
+    @patient[:ethnicity] = :mexican
+    Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
+    race = @fhir_record.entry[2].resource.extension[0].valueCodeableConcept.coding[0]
+    assert_equal('Other',race.display)
+    assert_equal('2131-1',race.code)
+    ethnicity = @fhir_record.entry[2].resource.extension[1].valueCodeableConcept.coding[0]
+    assert_equal('Mexican',ethnicity.display)
+    assert_equal('2148-5',ethnicity.code)
+  end
 
-	def test_condition
-		condition = {'type' => :end_stage_renal_disease, 'time' => @time}
-		Synthea::Output::FhirRecord.condition(condition, @fhir_record, @patient_entry, @encounter_entry)
-		disease_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
-  	disease = disease_entry.resource
-  	assert_equal("#{@patientID}",disease.subject.reference)
-  	assert_equal("46177005", disease.code.coding[0].code)
-  	assert_equal('End stage renal disease (disorder)', disease.code.coding[0].display)
-  	assert_equal("http://snomed.info/sct", disease.code.coding[0].system)
-  	assert_equal('confirmed',disease.verificationStatus)
-  	assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time,'time'),disease.onsetDateTime)
-  	assert_equal("#{@encounterID}",disease.context.reference)
-	end
+  def test_condition
+    condition = {'type' => :end_stage_renal_disease, 'time' => @time}
+    Synthea::Output::FhirRecord.condition(condition, @fhir_record, @patient_entry, @encounter_entry)
+    disease_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Condition)}
+    disease = disease_entry.resource
+    assert_equal("#{@patientID}",disease.subject.reference)
+    assert_equal("46177005", disease.code.coding[0].code)
+    assert_equal('End stage renal disease (disorder)', disease.code.coding[0].display)
+    assert_equal("http://snomed.info/sct", disease.code.coding[0].system)
+    assert_equal('confirmed',disease.verificationStatus)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time,'time'),disease.onsetDateTime)
+    assert_equal("#{@encounterID}",disease.context.reference)
+  end
 
-	def test_encounter
-		encounter = @fhir_record.entry[1].resource
-		assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,@encounterID)
-		assert_equal('finished', encounter.status)
-		assert_equal('outpatient', encounter.local_class.code)
-		assert_equal('170258001', encounter.type[0].coding[0].code)
-		assert_equal('http://snomed.info/sct', encounter.type[0].coding[0].system)
+  def test_encounter
+    encounter = @fhir_record.entry[1].resource
+    assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,@encounterID)
+    assert_equal('finished', encounter.status)
+    assert_equal('outpatient', encounter.local_class.code)
+    assert_equal('170258001', encounter.type[0].coding[0].code)
+    assert_equal('http://snomed.info/sct', encounter.type[0].coding[0].system)
     assert_equal("#{@patientID}",encounter.patient.reference)
     startTime = Synthea::Output::FhirRecord.convertFhirDateTime(@time,'time')
     endTime = Synthea::Output::FhirRecord.convertFhirDateTime(@time+15.minutes, 'time')
     period = FHIR::Period.new({'start'=>startTime, 'end' => endTime})
     assert_equal(period.start,encounter.period.start)
     assert_equal(period.end, encounter.period.end)
-	end
+  end
 
-	def test_allergy
-		condition = {'type' => :food_allergy_peanuts, 'time' => @time}
-		Synthea::Output::FhirRecord.allergy(condition, @fhir_record, @patient_entry, @encounter_entry)
-		allergy_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::AllergyIntolerance)}
-  	allergy = allergy_entry.resource
-  	assert_equal("#{@patientID}",allergy.patient.reference)
-  	assert_equal('91935009', allergy.code.coding[0].code)
-  	assert_equal('peanuts', allergy.code.coding[0].display)
+  def test_allergy
+    condition = {'type' => :food_allergy_peanuts, 'time' => @time}
+    Synthea::Output::FhirRecord.allergy(condition, @fhir_record, @patient_entry, @encounter_entry)
+    allergy_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::AllergyIntolerance)}
+    allergy = allergy_entry.resource
+    assert_equal("#{@patientID}",allergy.patient.reference)
+    assert_equal('91935009', allergy.code.coding[0].code)
+    assert_equal('peanuts', allergy.code.coding[0].display)
     assert_equal('active-confirmed', allergy.status)
-  	assert(allergy.criticality == 'low' || allergy.criticality == 'high')
-  	assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time, 'time'), allergy.attestedDate)
-		assert_equal('food', allergy.category)
-	end
+    assert(allergy.criticality == 'low' || allergy.criticality == 'high')
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time, 'time'), allergy.attestedDate)
+    assert_equal('food', allergy.category)
+  end
 
-	def test_observation
-		observation = {'type' => :height, 'time' => @time, 'value' => "60"}
-		Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
-		obs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
-		obs = obs_entry.resource
-		assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,obs_entry.fullUrl)
-		assert_equal('final', obs.status)
-		assert_equal('http://loinc.org', obs.code.coding[0].system)
-		assert_equal('8302-2', obs.code.coding[0].code)
-		assert_equal('Body Height', obs.code.coding[0].display)
-		assert_equal("#{@patientID}", obs.subject.reference)
-		assert_equal("#{@encounterID}", obs.encounter.reference)
-		assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time, 'time'), obs.effectiveDateTime)
-		assert_equal(60, obs.valueQuantity.value)
-		assert_equal("cm", obs.valueQuantity.unit)
-	end
+  def test_observation
+    observation = {'type' => :height, 'time' => @time, 'value' => "60"}
+    Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
+    obs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
+    obs = obs_entry.resource
+    assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,obs_entry.fullUrl)
+    assert_equal('final', obs.status)
+    assert_equal('http://loinc.org', obs.code.coding[0].system)
+    assert_equal('8302-2', obs.code.coding[0].code)
+    assert_equal('Body Height', obs.code.coding[0].display)
+    assert_equal("#{@patientID}", obs.subject.reference)
+    assert_equal("#{@encounterID}", obs.encounter.reference)
+    assert_equal(Synthea::Output::FhirRecord.convertFhirDateTime(@time, 'time'), obs.effectiveDateTime)
+    assert_equal(60, obs.valueQuantity.value)
+    assert_equal("cm", obs.valueQuantity.unit)
+  end
 
   def test_multi_observation
     observation = {'type' => :systolic_blood_pressure, 'time' => @time, 'value' => 120}

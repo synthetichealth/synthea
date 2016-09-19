@@ -22,7 +22,7 @@ module Synthea
         if Synthea::Config.generic.log && @current_state.is_a?(Synthea::Generic::States::Terminal) && @logged.nil?
           self.log_history()
           @logged = true
-        end 
+        end
       end
 
       def next(time, entity)

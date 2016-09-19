@@ -15,26 +15,26 @@ module Synthea
 
             age_in_years = entity[:age]
             if age_in_years >= 3
-              delta = case 
+              delta = case
                 when age_in_years <= 19
                   1.year
-                when age_in_years <= 39 
+                when age_in_years <= 39
                   3.years
-                when age_in_years <= 49 
+                when age_in_years <= 49
                   2.years
-                else 
+                else
                   1.year
               end
             else
               age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, deathdate, :months)
-              delta = case 
+              delta = case
                 when age_in_months <= 1
                   1.months
                 when age_in_months <= 5
                   2.months
                 when age_in_months <= 17
                   3.months
-                else 
+                else
                   6.months
               end
             end
@@ -53,7 +53,7 @@ module Synthea
             Synthea::Modules::Lifecycle.record_height_weight(entity, event.time)
             Synthea::Modules::Immunizations.perform_encounter(entity, event.time)
             Synthea::Modules::MetabolicSyndrome.perform_encounter(entity, event.time)
-            Synthea::Modules::FoodAllergies.record_diagnoses(entity, event.time)  
+            Synthea::Modules::FoodAllergies.record_diagnoses(entity, event.time)
             Synthea::Modules::CardiovascularDisease.perform_encounter(entity, event.time)
             Synthea::Modules::Generic.perform_wellness_encounter(entity, event.time)
             # Schedule the next general encounter unless this one was driven by symptoms
@@ -116,17 +116,17 @@ module Synthea
       def self.encounter(entity, time)
         age = entity[:age]
         type = case
-          when age <= 1  
+          when age <= 1
             :age_lt_1
-          when age <= 4  
+          when age <= 4
             :age_lt_4
-          when age <= 11 
+          when age <= 11
             :age_lt_11
           when age <= 17
-            :age_lt_17 
-          when age <= 39 
+            :age_lt_17
+          when age <= 39
             :age_lt_39
-          when age <= 64 
+          when age <= 64
             :age_lt_64
           else
             :age_senior

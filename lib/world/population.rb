@@ -3,7 +3,7 @@ module Synthea
     class Population
 
       attr_reader :date, :people, :dead
-        
+
       def initialize()
 
         @start_date = Synthea::Config.start_date
@@ -65,7 +65,7 @@ module Synthea
               ",\t21-40: #{@dead.select {|m| (21..40).include?(m.attributes[:age])}.count}"+
               ",\t41-60: #{@dead.select {|m| (41..60).include?(m.attributes[:age])}.count}"+
               ",\t61-80: #{@dead.select {|m| (61..80).include?(m.attributes[:age])}.count}"+
-              ",\t>80: #{@dead.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n" 
+              ",\t>80: #{@dead.select {|m| m.attributes[:age] && m.attributes[:age] > 80}.count}\n"
       end
 
     end

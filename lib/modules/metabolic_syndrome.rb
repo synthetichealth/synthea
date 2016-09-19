@@ -9,7 +9,7 @@ module Synthea
         # check for hypertension at adulthood
         if entity[:hypertension].nil? && entity[:age] > 18
           entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability)
-          entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension] 
+          entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension]
         end
 
         # check for diabetes given BMI
@@ -24,9 +24,9 @@ module Synthea
             update_diabetes(1,time,entity)
           elsif(entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe)
             update_diabetes(2,time,entity)
-          else  
+          else
             if !entity[:diabetes]
-              update_diabetes(3,time,entity) 
+              update_diabetes(3,time,entity)
             elsif (entity[:diabetes][:severity]>=3 && ((entity[:diabetes][:duration] / 365) >= 1))
               update_diabetes(4,time,entity)
             else
@@ -78,12 +78,12 @@ module Synthea
           creatinine_clearance = rand(range.first..range.last)
         else
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.female
-          creatinine_clearance = rand(range.first..range.last)          
+          creatinine_clearance = rand(range.first..range.last)
         end
         entity[:metabolic][:creatinine_clearance] = creatinine_clearance
         entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
         range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
-        entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last) 
+        entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last)
       end
 
       def update_prediabetes(time,entity)
@@ -108,7 +108,7 @@ module Synthea
           # check for hypertension at onset of diabetes
           if entity[:hypertension].nil? || entity[:hypertension]==false
             entity[:hypertension] = (rand < Synthea::Config.metabolic.hypertension.probability_given_diabetes)
-            entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension] 
+            entity.events.create(time, :hypertension, :metabolic_syndrome, true) if entity[:hypertension]
           end
         end
         diabetes[:severity] = severity
@@ -168,7 +168,7 @@ module Synthea
           entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
           # update the microalbumin levels...
           range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.microalbuminuria_uncontrolled
-          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last) 
+          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last)
           # see if the disease progresses another stage...
           if diabetes[:proteinuria].nil? && (rand < (0.01 * diabetes[:severity]))
             diabetes[:proteinuria] = true
@@ -187,10 +187,10 @@ module Synthea
           entity[:metabolic][:creatinine] = reverse_calculate_creatine(entity) rescue 1.0
           # update the microalbumin levels...
           range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.proteinuria
-          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last) 
+          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last)
           # see if the disease progresses another stage...
           if diabetes[:end_stage_renal_disease].nil? && (rand < (0.01 * diabetes[:severity]))
-            diabetes[:end_stage_renal_disease] = true 
+            diabetes[:end_stage_renal_disease] = true
             entity.events.create(time, :end_stage_renal_disease, :proteinuria, true)
           end
         end
@@ -277,7 +277,7 @@ module Synthea
       rule :neuropathy, [:diabetes], [:amputation] do |time,entity|
         diabetes = entity[:diabetes]
         if diabetes && diabetes[:neuropathy]
-          diabetes[:amputation] = [] if diabetes[:amputation].nil? 
+          diabetes[:amputation] = [] if diabetes[:amputation].nil?
           if (rand < (0.01 * diabetes[:severity]))
             body_part = [:left_hand,:left_arm,:left_foot,:left_leg,:right_hand,:right_arm,:right_foot,:right_leg].sample
             unless diabetes[:amputation].include?(body_part)
@@ -340,7 +340,7 @@ module Synthea
           prescribeMedication(:metformin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
           prescribeMedication(:glp1ra, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
           prescribeMedication(:sglt2i, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
-          # prescribe insulin          
+          # prescribe insulin
           if entity[:medications][:basal_insulin]
             # if basal insulin was prescribed at the last enounter, escalate to prandial
             basal_added = entity[:medications][:basal_insulin]['time']
@@ -353,7 +353,7 @@ module Synthea
             end
           elsif !entity[:medications][:prandial_insulin]
             prescribeMedication(:basal_insulin, :diabetes, time, entity, entity[:med_changes][:metabolic_syndrome])
-          end     
+          end
         end
       end
 
@@ -422,7 +422,7 @@ module Synthea
           entity[:diabetes] ? reason = :diabetes : reason = :prediabetes
           if !entity.record_synthea.careplan_active?(:diabetes)
             entity.record_synthea.careplan_start(:diabetes, entity[:careplan][:diabetes], time, [reason])
-          else 
+          else
             entity.record_synthea.update_careplan_reasons(:diabetes, [reason],time)
           end
         elsif entity.record_synthea.careplan_active?(:diabetes)
@@ -453,7 +453,7 @@ module Synthea
         elsif !diagnosis_hash[diagnosis] && entity.record_synthea.present[diagnosis]
           # end the diagnosis
           entity.record_synthea.end_condition(diagnosis, time)
-        end  
+        end
       end
 
       def self.record_blood_pressure(entity, time)
@@ -480,7 +480,7 @@ module Synthea
         patient.observation(:sodium, time, entity[:metabolic][:sodium])
         patient.observation(:potassium, time, entity[:metabolic][:potassium])
         patient.observation(:chloride, time, entity[:metabolic][:chloride])
-        patient.observation(:carbon_dioxide, time, entity[:metabolic][:carbon_dioxide])        
+        patient.observation(:carbon_dioxide, time, entity[:metabolic][:carbon_dioxide])
         patient.diagnostic_report(:basic_metabolic_panel, time, 8)
       end
 
@@ -506,7 +506,7 @@ module Synthea
           body_part = amp_str.split('_')[1]
 
           cond_key =  case body_part
-                      when 'leg' 
+                      when 'leg'
                         :history_of_lower_limb_amputation
                       when 'foot'
                         :history_of_amputation_of_foot
@@ -515,7 +515,7 @@ module Synthea
                       when 'arm'
                         :history_of_upper_limb_amputation
                       end
-          
+
           if !entity.record_synthea.present[cond_key]
             entity.record_synthea.condition(cond_key, time)
           end
@@ -524,7 +524,7 @@ module Synthea
 
       def self.record_lipid_panel(entity, time)
         return if entity[:cholesterol].nil?
-        
+
         entity.events.create(time, :lipid_panel, :encounter, true)
         patient = entity.record_synthea
 

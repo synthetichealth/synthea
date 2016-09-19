@@ -4,7 +4,7 @@ module Synthea
 
       attr_reader :stats
       attr_accessor :population_count
-        
+
       def initialize(datafile=nil)
         @start_date = Synthea::Config.start_date
         @end_date = Synthea::Config.end_date
@@ -21,7 +21,7 @@ module Synthea
 
         @scaling_factor = @population_count.to_f / Synthea::Config.sequential.real_world_population.to_f
         # if you want to generate a population smaller than 7M but still with accurate ratios,
-        #  you can scale the populations of individual cities down by this amount. 
+        #  you can scale the populations of individual cities down by this amount.
 
         @city_populations = JSON.parse(datafile) if datafile
 
@@ -58,7 +58,7 @@ module Synthea
         puts "Generated Demographics:"
         puts JSON.pretty_unparse(@stats)
       end
-      
+
       def run_random
         @population_count.times do |i|
             person = build_person
@@ -70,7 +70,7 @@ module Synthea
             end
 
             record_stats(person)
-            dead = person.had_event?(:death)      
+            dead = person.had_event?(:death)
             conditions = track_conditions(person)
 
             puts "##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]} -- #{conditions.join(', ')}"
@@ -80,7 +80,7 @@ module Synthea
       def process_city(city_name, city_stats)
         population = (city_stats['population'] * @scaling_factor).ceil
 
-        demographics = build_demographics(city_stats, population)            
+        demographics = build_demographics(city_stats, population)
 
         puts "Generating #{population} patients within #{city_name}"
         population.times do |i|
@@ -92,7 +92,7 @@ module Synthea
           target_education = demographics[:education][i]
           try_number = 1
           loop do
-            person = build_person(city: city_name, age: target_age, gender: target_gender, 
+            person = build_person(city: city_name, age: target_age, gender: target_gender,
                                   race: target_race, ethnicity: target_ethnicity,
                                   income: target_income, education: target_education)
 
@@ -104,7 +104,7 @@ module Synthea
 
             record_stats(person)
             dead = person.had_event?(:death)
-            
+
             puts "#{city_name} ##{i+1}/#{population}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
 
             break unless dead

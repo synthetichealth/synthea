@@ -33,7 +33,7 @@ module Synthea
       define_method "#{name}_rule".to_sym, block
     end
 
-    #Let Y be the original period risk (in our example 3650 days) and X be the time-step risk. The chance of an event not happening in 10 years is the 
+    #Let Y be the original period risk (in our example 3650 days) and X be the time-step risk. The chance of an event not happening in 10 years is the
     #probability of the event not occuring every time step. (1-X)^(3650/time_step). Subtract this from 1 to get the
     #probability of the event occuring in 10 years: Y = 1-(1-X)^(3650/time_step). Solve the equation for X to yield the
     #formula below:
@@ -44,16 +44,16 @@ module Synthea
     end
 
     #These functions are used to start/update medications and to stop medications, respectively.
-    #The 'changes' parameter is an array of medications from the module that called the function used to keep track of 
+    #The 'changes' parameter is an array of medications from the module that called the function used to keep track of
     #which meds were altered.
     #Similar functions were not written for care plans because a care plan is typically only started/updated in one
-    #rule, whereas it is common for a medication to be used in multiple rules. This may change in future modules(?) 
+    #rule, whereas it is common for a medication to be used in multiple rules. This may change in future modules(?)
     def prescribeMedication(med, reason, time, entity, changes)
       entity[:medications] ||= Hash.new
       if entity[:medications][med].nil?
         entity[:medications][med] = {'time' => time, 'reasons' => [reason]}
         changes << med if !changes.include?(med)
-      elsif !entity[:medications][med]['reasons'].include?(reason) 
+      elsif !entity[:medications][med]['reasons'].include?(reason)
         entity[:medications][med]['reasons'] << reason
         changes << med if !changes.include?(med)
       end
@@ -65,7 +65,7 @@ module Synthea
       if entity[:medications][med]['reasons'].include?(reason)
         entity[:medications][med]['reasons'].delete(reason)
         changes << med if !changes.include?(med)
-      end 
+      end
       entity[:medications].delete(med) if entity[:medications][med]['reasons'].empty?
     end
   end
