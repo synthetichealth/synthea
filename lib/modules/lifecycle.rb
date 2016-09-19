@@ -10,7 +10,7 @@ module Synthea
         @male_growth = Distribution::Normal.rng(Synthea::Config.lifecycle.growth_rate_male_average,Synthea::Config.lifecycle.growth_rate_male_stddev)
         @male_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_male_average,Synthea::Config.lifecycle.weight_gain_male_stddev)
         @female_growth = Distribution::Normal.rng(Synthea::Config.lifecycle.growth_rate_female_average,Synthea::Config.lifecycle.growth_rate_female_stddev)
-        @female_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_female_average,Synthea::Config.lifecycle.weight_gain_female_stddev)     
+        @female_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_female_average,Synthea::Config.lifecycle.weight_gain_female_stddev)
       end
 
       # People are born
@@ -23,7 +23,7 @@ module Synthea
           entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
           entity[:gender] ||= gender
           entity[:race] ||= Synthea::World::Demographics::RACES.pick
-          entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[ entity[:race] ].pick 
+          entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[ entity[:race] ].pick
           entity[:blood_type] = Synthea::World::Demographics::BLOOD_TYPES[ entity[:race] ].pick
           # new babies are average weight and length for American newborns
           entity[:height] = 51 # centimeters
@@ -45,7 +45,7 @@ module Synthea
           }
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           entity[:city] = location_data['city']
-          
+
           entity[:med_changes] = Hash.new() { |hsh, key| hsh[key] = [] }
 
           choose_socioeconomic_values(entity)
@@ -98,14 +98,14 @@ module Synthea
                 entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
               elsif(gender=='F')
                 entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
-              end           
+              end
             else
               # TODO random change in weight?
             end
             # set the BMI
             entity[:bmi] = calculate_bmi(entity[:height],entity[:weight])
           end
-        end   
+        end
       end
 
       # People die
@@ -118,10 +118,10 @@ module Synthea
           end
         end
       end
-      
+
       def gender(ratios = {male: 0.5})
         value = rand
-        case 
+        case
           when value < ratios[:male]
             'M'
           else
@@ -137,7 +137,7 @@ module Synthea
 
       def likelihood_of_death(age)
         # http://www.cdc.gov/nchs/nvss/mortality/gmwk23r.htm: 820.4/100000
-        case 
+        case
         when age < 1
           #508.1/100000/365
           x = 508.1/100000
@@ -193,7 +193,7 @@ module Synthea
 
       def self.socioeconomic_score(entity)
         weighting = Synthea::Config.socioeconomic_status.weighting
-        
+
         ses = entity[:ses]
 
         (ses[:education] * weighting.education) + (ses[:income] * weighting.income) + (ses[:occupation] * weighting.occupation)
@@ -219,7 +219,7 @@ module Synthea
       def choose_socioeconomic_values(entity)
         # for now, these are assigned at birth
         # eventually these should be able to change. for example major illness before age 18 could lead to a reduced education
-        entity[:ses] = { } 
+        entity[:ses] = { }
 
         if entity[:income]
           # simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0
@@ -274,6 +274,7 @@ module Synthea
       def self.record_height_weight(entity, time)
         entity.record_synthea.observation(:weight, time, entity[:weight], :observation, :vital_sign)
         entity.record_synthea.observation(:height, time, entity[:height], :observation, :vital_sign)
+        entity.record_synthea.observation(:bmi, time, entity[:bmi], :observation, :vital_sign)
       end
     end
   end
