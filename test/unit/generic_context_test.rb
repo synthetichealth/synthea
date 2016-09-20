@@ -121,13 +121,13 @@ class GenericContextTest < Minitest::Test
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert_equal("Terminal", ctx.current_state.name)
-    assert_equal(6, ctx.history.length)
+    assert_equal(5, ctx.history.length)
     assert_equal("Initial", ctx.history[0].name)
     assert_equal("Guard1", ctx.history[1].name)
     assert_equal("Guard2", ctx.history[2].name)
-    assert_equal("Guard2", ctx.history[3].name)
-    assert_equal("Guard1", ctx.history[4].name)
-    assert_equal("Guard2", ctx.history[5].name)
+    # Transition from Guard2 -> Guard2 is condensed into a single entry in history
+    assert_equal("Guard1", ctx.history[3].name)
+    assert_equal("Guard2", ctx.history[4].name)
   end
 
   def test_delay_time_accuracy
@@ -154,6 +154,31 @@ class GenericContextTest < Minitest::Test
     # Run number 2: 7 days after run number 1
     ctx.run(@time.advance(:days => 7), @patient)
     assert_equal("Terminal", ctx.current_state.name)
+
+    assert_equal(5, ctx.history.length)
+    assert_equal("Initial", ctx.history[0].name)
+    assert_equal(@time, ctx.history[0].entered)
+    assert_equal(@time, ctx.history[0].exited)
+
+    assert_equal("2_Day_Delay", ctx.history[1].name)
+    assert_equal(@time, ctx.history[1].entered)
+    assert_equal(@time.advance(days: 2), ctx.history[1].exited)
+
+    assert_equal("ED_Visit", ctx.history[2].name)
+    assert_equal(@time.advance(days: 2), ctx.history[2].entered)
+    assert_equal(@time.advance(days: 2), ctx.history[2].exited)
+
+    assert_equal("3_Day_Delay", ctx.history[3].name)
+    assert_equal(@time.advance(days: 2), ctx.history[3].entered)
+    assert_equal(@time.advance(days: 5), ctx.history[3].exited)
+
+    assert_equal("Death", ctx.history[4].name)
+    assert_equal(@time.advance(days: 5), ctx.history[4].entered)
+    assert_equal(@time.advance(days: 5), ctx.history[4].exited)
+
+    assert_equal("Terminal", ctx.current_state.name)
+    assert_equal(@time.advance(days: 5), ctx.current_state.entered)
+    assert_equal(nil, ctx.current_state.exited)
   end
 
   def test_logging

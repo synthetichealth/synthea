@@ -3,7 +3,7 @@ module Synthea
     module States
       # define a base state with common functionality that can be inherited by all other states
       class State
-        attr_accessor :name, :entered, :exited
+        attr_accessor :name, :entered, :exited, :start_time
 
         def initialize (context, name)
           @context = context
@@ -12,12 +12,14 @@ module Synthea
 
         def run(time, entity)
           @entered ||= time
+          @start_time ||= time
           exit = process(time, entity)
           if exit
             # Special handling for Delay, which may expire between run cycles
             if self.is_a? Delay
               @exited = @expiration
-              @entered = @exited if @entered > @exited
+              @expiration = nil
+              @start_time = @exited if @start_time > @exited
             else
               @exited = time
             end
@@ -97,11 +99,11 @@ module Synthea
             if ! @range.nil?
               # choose a random duration within the specified range
               choice = rand(@range['low'] .. @range['high'])
-              @expiration = choice.method(@range['unit']).call().since(@entered)
+              @expiration = choice.method(@range['unit']).call().since(@start_time)
             elsif ! @exact.nil?
-              @expiration = @exact['quantity'].method(@exact['unit']).call().since(@entered)
+              @expiration = @exact['quantity'].method(@exact['unit']).call().since(@start_time)
             else
-              @expiration = @entered
+              @expiration = @start_time
             end
           end
           return time >= @expiration

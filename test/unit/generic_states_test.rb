@@ -44,7 +44,7 @@ class GenericStatesTest < Minitest::Test
     # Purposefully avoiding ActiveSupport helpers (e.g., 2.seconds) to increase difference
     # between the test logic and the real logic that it is testing
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Second_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time + 1, @patient))
     assert(delay.process(@time + 2, @patient))
@@ -52,7 +52,7 @@ class GenericStatesTest < Minitest::Test
 
     # Minutes
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Minute_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time + 1*60, @patient))
     assert(delay.process(@time + 2*60, @patient))
@@ -60,7 +60,7 @@ class GenericStatesTest < Minitest::Test
 
     # Hours
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Hour_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time + 1*60*60, @patient))
     assert(delay.process(@time + 2*60*60, @patient))
@@ -70,7 +70,7 @@ class GenericStatesTest < Minitest::Test
     # Have to use some ActiveSupport to add days since Ruby doesn't provide an accurate way
     # but still do it a little different than the logic we're testing
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Day_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:days => 1), @patient))
     assert(delay.process(@time.advance(:days => 2), @patient))
@@ -78,7 +78,7 @@ class GenericStatesTest < Minitest::Test
 
     # Weeks
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Week_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:weeks => 1), @patient))
     assert(delay.process(@time.advance(:weeks => 2), @patient))
@@ -86,7 +86,7 @@ class GenericStatesTest < Minitest::Test
 
     # Months
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Month_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:months => 1), @patient))
     assert(delay.process(@time.advance(:months => 2), @patient))
@@ -94,7 +94,7 @@ class GenericStatesTest < Minitest::Test
 
     # Years
     delay = Synthea::Generic::States::Delay.new(ctx, "2_Year_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:years => 1), @patient))
     assert(delay.process(@time.advance(:years => 2), @patient))
@@ -109,7 +109,7 @@ class GenericStatesTest < Minitest::Test
 
     # Seconds (rand(2..10) = 4)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Second_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time + 3, @patient))
     assert(delay.process(@time + 4, @patient))
@@ -117,7 +117,7 @@ class GenericStatesTest < Minitest::Test
 
     # Minutes (rand(2..10) = 7)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Minute_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time + 6*60, @patient))
     assert(delay.process(@time + 7*60, @patient))
@@ -125,7 +125,7 @@ class GenericStatesTest < Minitest::Test
 
     # Hours (rand(2..10) = 3)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Hour_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time + 2*60*60, @patient))
     assert(delay.process(@time + 3*60*60, @patient))
@@ -133,7 +133,7 @@ class GenericStatesTest < Minitest::Test
 
     # Days (rand(2..10) = 6)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Day_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:days => 5), @patient))
     assert(delay.process(@time.advance(:days => 6), @patient))
@@ -141,7 +141,7 @@ class GenericStatesTest < Minitest::Test
 
     # Weeks (rand(2..10) = 7)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Week_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:weeks => 6), @patient))
     assert(delay.process(@time.advance(:weeks => 7), @patient))
@@ -149,7 +149,7 @@ class GenericStatesTest < Minitest::Test
 
     # Months (rand(2..10) = 4)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Month_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:months => 3), @patient))
     assert(delay.process(@time.advance(:months => 4), @patient))
@@ -157,7 +157,7 @@ class GenericStatesTest < Minitest::Test
 
     # Years (rand(2..10) = 3)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Year_Delay")
-    delay.entered = @time
+    delay.start_time = @time
     refute(delay.process(@time, @patient))
     refute(delay.process(@time.advance(:years => 2), @patient))
     assert(delay.process(@time.advance(:years => 3), @patient))

@@ -12,11 +12,26 @@ module Synthea
       def run(time, entity)
         # if @current_state.run returns true, it means we should progress to the next state
         while @current_state.run(time, entity) do
-          @history << @current_state
-          @current_state = self.next(time, entity)
-          if @history.last.exited < time
-            # This must be a delay state that expired between cycles, so temporarily rewind time
-            self.run(@history.last.exited, entity)
+          next_state = self.next(time, entity)
+
+          if @current_state.name == next_state.name
+            # looped from a state back to itself, so for perf reasons (memory usage)
+            # just stay in the same state and change the dates instead of keeping another object
+
+            if @current_state.exited < time
+              # This must be a delay state that expired between cycles, so temporarily rewind time
+              self.run(@current_state.exited, entity)
+            end
+
+            @current_state.start_time = @current_state.exited
+            @current_state.exited = nil
+          else
+            @history << @current_state
+            @current_state = next_state
+            if @history.last.exited < time
+              # This must be a delay state that expired between cycles, so temporarily rewind time
+              self.run(@history.last.exited, entity)
+            end
           end
         end
         if Synthea::Config.generic.log && @current_state.is_a?(Synthea::Generic::States::Terminal) && @logged.nil?
