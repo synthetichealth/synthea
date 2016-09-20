@@ -86,8 +86,9 @@ module Synthea
             record_stats(person)
             dead = person.had_event?(:death)
             conditions = track_conditions(person)
+            weight = (person[:weight] * 2.20462).to_i
 
-            puts "##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]} -- #{conditions.join(', ')}"
+            puts "##{i+1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]} #{weight} lbs. -- #{conditions.join(', ')}"
         end
       end
 

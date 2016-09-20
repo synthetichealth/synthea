@@ -94,13 +94,14 @@ module Synthea
               end
             elsif(age <= Synthea::Config.lifecycle.adult_max_weight_age)
               # getting older and fatter
-              if(gender=='M')
-                entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_male_weight_gain)
-              elsif(gender=='F')
-                entity[:weight] *= (1 + Synthea::Config.lifecycle.adult_female_weight_gain)
-              end
-            else
-              # TODO random change in weight?
+              range = Synthea::Config::lifecycle.adult_weight_gain
+              adult_weight_gain = rand(range.first..range.last)
+              entity[:weight] += adult_weight_gain          
+            elsif(age >= Synthea::Config::lifecycle.geriatric_weight_loss_age)
+              # getting older and wasting away
+              range = Synthea::Config::lifecycle.geriatric_weight_loss
+              geriatric_weight_loss = rand(range.first..range.last)
+              entity[:weight] -= geriatric_weight_loss              
             end
             # set the BMI
             entity[:bmi] = calculate_bmi(entity[:height],entity[:weight])
