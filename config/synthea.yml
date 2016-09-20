@@ -46,11 +46,11 @@ synthea:
     weight_gain_female_stddev:  1     # kilograms per year
     # http://www.nhlbi.nih.gov/news/press-releases/2010/trials-use-technology-to-help-young-adults-achieve-healthy-weights
     # "Previous NHLBI research has shown that people aged 18-49 gain an average of 1-2 pounds each year"
-    adult_weight_gain:          [1,2]   # kilograms per year (this is more than 1-2 pounds, but we want obese people since we don't account for other factors effecting weight-gain)
-    adult_max_weight_age:         49    # age (years) when adults stop packing on weight
+    adult_weight_gain:          [1.0,2.0] # kilograms per year (this is more than 1-2 pounds, but we want obese people since we don't account for other factors effecting weight-gain)
+    adult_max_weight_age:         49      # age (years) when adults stop packing on weight
     # http://www.aafp.org/afp/2014/0501/p718.html
-    geriatric_weight_loss_age:    60    # age (years) when elderly begin to lose weight (between 60-70)
-    geriatric_weight_loss:      [1,2]   # kilograms per year (this is more than the citation, but our people are severely overweight)
+    geriatric_weight_loss_age:    60      # age (years) when elderly begin to lose weight (between 60-70)
+    geriatric_weight_loss:      [1.0,2.0] # kilograms per year (this is more than the citation, but our people are severely overweight)
   metabolic:
     blood_glucose:
       normal:      5.7 # or less
