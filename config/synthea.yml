@@ -23,8 +23,13 @@ synthea:
     # population is scaled to accurately represent MA (using a "true" population of 6,794,422)
     population: 100
     real_world_population: 6794422 #sum of the jsons in the config folder
-    multithreading: false  
-    thread_pool_size: 16 # 16 picked by experimentation to be a good number of threads to use for exporting records
+    multithreading: false
+    thread_pool_size:
+    # numbers picked by experimentation on 2013 i5 mbp, may need to be tweaked on less powerful systems
+    # consider SSD vs HDD, # of cpus/cores, memory usage, etc
+      city_workers: 4
+      generate_workers: 6
+      export_workers: 10
     max_tries: 10 # max number of times it tries to create a person before it gives up (ie, nobody reached the target age)
   schedule:
     variance: 0.1
