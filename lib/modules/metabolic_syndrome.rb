@@ -362,7 +362,7 @@ module Synthea
       # rough linear fit seen in Figure 1
       # http://www.microbecolhealthdis.net/index.php/mehd/article/viewFile/22857/34046/125897
       def blood_glucose(bmi)
-        ((bmi - 6) / 6.5)
+        ((bmi - 6) / 5.5)
       end
 
       # http://www.mcw.edu/calculators/creatinine.htm
