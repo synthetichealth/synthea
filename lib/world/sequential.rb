@@ -30,15 +30,23 @@ module Synthea
 
       def run
         puts "Generating #{@population_count} patients..."
-        @threads = []
 
-        # using a cachedthreadpool has no upper bound on the # and if it gets too high then everything grinds to a halt
-        @pool = Concurrent::FixedThreadPool.new(Synthea::Config.sequential.thread_pool_size) if Synthea::Config.sequential.multithreading
+        if Synthea::Config.sequential.multithreading
+          pool_size = Synthea::Config.sequential.thread_pool_size
+          @city_workers = Concurrent::FixedThreadPool.new(pool_size.city_workers)
+          @generate_workers = Concurrent::ThreadPoolExecutor.new(
+                                                                   min_threads: pool_size.generate_workers,
+                                                                   max_threads: pool_size.generate_workers,
+                                                                   max_queue: pool_size.generate_workers * 2,
+                                                                   fallback_policy: :caller_runs
+                                                                )
+          @export_workers = Concurrent::FixedThreadPool.new(pool_size.export_workers)
+        end
 
         if @city_populations
           @city_populations.each do |city_name,city_stats|
             if Synthea::Config.sequential.multithreading
-              @threads << Thread.new { process_city(city_name, city_stats) }
+              @city_workers.post { process_city(city_name, city_stats) }
             else
               process_city(city_name, city_stats)
             end
@@ -47,12 +55,18 @@ module Synthea
           run_random
         end
 
-        @threads.each(&:join)
 
-        if @pool
-          puts 'Generation completed, waiting for files to finish exporting...'
-          @pool.shutdown # Tasks already in the queue will be executed, but no new tasks will be accepted.
-          @pool.wait_for_termination
+        if Synthea::Config.sequential.multithreading
+          @city_workers.shutdown # Tasks already in the queue will be executed, but no new tasks will be accepted.
+          @city_workers.wait_for_termination
+          puts "All cities (#{@city_workers.scheduled_task_count}) have been processed, waiting for generation..."
+
+          @generate_workers.shutdown
+          @generate_workers.wait_for_termination
+          puts "Generation completed (#{@generate_workers.scheduled_task_count} population), waiting for files to finish exporting..."
+
+          @export_workers.shutdown
+          @export_workers.wait_for_termination
         end
 
         puts "Generated Demographics:"
@@ -63,8 +77,8 @@ module Synthea
         @population_count.times do |i|
             person = build_person
 
-            if @pool
-              @pool.post { Synthea::Output::Exporter.export(person) }
+            if @export_workers
+              @export_workers.post { Synthea::Output::Exporter.export(person) }
             else
               Synthea::Output::Exporter.export(person)
             end
@@ -84,37 +98,45 @@ module Synthea
 
         puts "Generating #{population} patients within #{city_name}"
         population.times do |i|
-          target_gender = demographics[:gender][i]
-          target_race = demographics[:race][i]
-          target_ethnicity = Synthea::World::Demographics::ETHNICITY[target_race].pick
-          target_age = demographics[:age][i]
-          target_income = demographics[:income][i]
-          target_education = demographics[:education][i]
-          try_number = 1
-          loop do
-            person = build_person(city: city_name, age: target_age, gender: target_gender,
-                                  race: target_race, ethnicity: target_ethnicity,
-                                  income: target_income, education: target_education)
+          if @generate_workers
+            @generate_workers.post { process_person(city_name, population, demographics, i) }
+          else
+            process_person(city_name, population, demographics, i)
+          end
+        end
+      end
 
-            if @pool
-              @pool.post { Synthea::Output::Exporter.export(person) }
-            else
-              Synthea::Output::Exporter.export(person)
-            end
+      def process_person(city_name, population, demographics, i)
+        target_gender = demographics[:gender][i]
+        target_race = demographics[:race][i]
+        target_ethnicity = Synthea::World::Demographics::ETHNICITY[target_race].pick
+        target_age = demographics[:age][i]
+        target_income = demographics[:income][i]
+        target_education = demographics[:education][i]
+        try_number = 1
+        loop do
+          person = build_person(city: city_name, age: target_age, gender: target_gender,
+                                race: target_race, ethnicity: target_ethnicity,
+                                income: target_income, education: target_education)
 
-            record_stats(person)
-            dead = person.had_event?(:death)
+          if @export_workers
+            @export_workers.post { Synthea::Output::Exporter.export(person) }
+          else
+            Synthea::Output::Exporter.export(person)
+          end
 
-            puts "#{city_name} ##{i+1}/#{population}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
+          record_stats(person)
+          dead = person.had_event?(:death)
 
-            break unless dead
-            break if try_number >= Synthea::Config.sequential.max_tries
+          puts "#{city_name} ##{i+1}/#{population}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.gsub('_',' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
 
-            try_number += 1
-            if try_number > (Synthea::Config.sequential.max_tries / 2) && target_age > 90
-              target_age = rand(85..90)
-              # demographics count ages up to 110, which our people never hit
-            end
+          break unless dead
+          break if try_number >= Synthea::Config.sequential.max_tries
+
+          try_number += 1
+          if try_number > (Synthea::Config.sequential.max_tries / 2) && target_age > 90
+            target_age = rand(85..90)
+            # demographics count ages up to 110, which our people never hit
           end
         end
       end
