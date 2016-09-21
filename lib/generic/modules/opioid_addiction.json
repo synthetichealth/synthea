@@ -4,19 +4,30 @@
 
     "Initial" : {
       "type" : "Initial",
-      "direct_transition" : "Age_Guard"
+      "direct_transition" : "Guard"
     },
 
-    "Age_Guard" : {
+    "Guard" : {
       "type" : "Guard",
       "allow" : {
-        "condition_type" : "Age",
-        "operator" : ">=",
-        "quantity" : 14,
-        "unit" : "years"
+        "condition_type" : "And",
+        "conditions" : [
+          {
+            "condition_type" : "Age",
+            "operator" : ">=",
+            "quantity" : 14,
+            "unit" : "years"
+          },
+          {
+            "condition_type" : "Date",
+            "operator" : ">=",
+            "year" : 1990
+          }
+        ]
       },
       "direct_transition" : "General_Population",
-      "remarks" : "Data on specific ages is limited but generally below 15 no source indicates a statistically significant % of opioid addiction"
+      "remarks" : ["Data on specific ages is limited but generally below 15 no source indicates a statistically significant % of opioid addiction.",
+                   "While opioids have been available for decades, the current 'opioid crisis' is generally shown to have begun in the 90s-00s"]
     },
 
     "General_Population" : {
@@ -26,6 +37,19 @@
         "unit" : "days"
       },
       "complex_transition" : [
+        {
+            "condition" : {
+              "condition_type" : "Attribute",
+              "attribute" : "Opioid Prescription",
+              "operator" : "is not nil"
+            },
+            "distributions" : [
+              {
+                "distribution" : 1.0,
+                "transition" : "Directed_Use"
+              }
+            ]
+        },
         {
             "condition": {
               "condition_type": "Socioeconomic Status",
@@ -149,6 +173,7 @@
           "code" : "1310197",
           "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
       }],
+      "assign_to_attribute" : "Opioid Prescription",
       "direct_transition" : "Directed_Use"
     },
 
@@ -182,6 +207,7 @@
           "code" : "1049544",
           "display" : "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
       }],
+      "assign_to_attribute" : "Opioid Prescription",
       "direct_transition" : "Directed_Use"
     },
 
@@ -210,6 +236,7 @@
           "code" : "1049639",
           "display" : "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
       }],
+      "assign_to_attribute" : "Opioid Prescription",
       "direct_transition" : "Directed_Use"
     },
 
@@ -222,8 +249,7 @@
       "distributed_transition": [
         {
           "distribution": 0.03810,
-          "transition": "General_Population",
-          "remarks" : "TODO the directed use -> gen pop sequence needs to end the prescription"
+          "transition": "End_Prescription_Towards_Gen_Pop"
         },
         {
           "distribution": 0.00004,
@@ -231,8 +257,7 @@
         },
         {
           "distribution": 0.00948,
-          "transition": "Misuse",
-          "remarks" : "TODO the directed use -> misuse sequence should end the prescription"
+          "transition": "End_Prescription_Towards_Misuse"
         },
         {
           "distribution": 0.95238,
@@ -240,6 +265,26 @@
         }
       ]
     }, 
+
+    "End_Prescription_Towards_Gen_Pop" : {
+      "type" : "MedicationEnd",
+      "referenced_by_attribute" : "Opioid Prescription",
+      "direct_transition" : "Reset_Opioid_var_Towards_Gen_Pop"
+    },
+
+    "Reset_Opioid_var_Towards_Gen_Pop" : {
+      "type" : "SetAttribute",
+      "attribute" : "Opioid Prescription",
+      "remarks" : "no value here means the variable is reset to nil",
+      "direct_transition" : "General_Population"
+    },
+
+    "End_Prescription_Towards_Misuse" : {
+      "type" : "MedicationEnd",
+      "referenced_by_attribute" : "Opioid Prescription",
+      "remarks": "Note that the variable is not reset on this sequence, because we still want to know which medication they were on",
+      "direct_transition" : "Misuse"
+    },
 
     "Misuse" : {
       "type" : "Delay", 
@@ -254,7 +299,7 @@
         },
         {
           "distribution": 0.01700,
-          "transition": "General_Population"
+          "transition": "Reset_Opioid_var_Towards_Gen_Pop"
         },
         {
           "distribution": 0.00075,
@@ -476,7 +521,12 @@
     }, 
 
     "Death" : {
-      "type" : "Death"
+      "type" : "Death",
+      "direct_transition" : "Terminal"
+    },
+
+    "Terminal" : {
+      "type" : "Terminal"
     }
 
   }

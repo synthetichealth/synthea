@@ -15,6 +15,10 @@ module Synthea
           self.testAge(condition, context, time, entity)
         when 'Socioeconomic Status'
           self.testSES(condition, context, time, entity)
+        when 'Date'
+          self.testDate(condition, context, time, entity)
+        when 'Attribute'
+          self.testAttribute(condition, context, time, entity)
         when 'True'
           self.testTrue(condition, context, time, entity)
         when 'False'
@@ -62,6 +66,14 @@ module Synthea
         self.compare(ses_category, condition['category'], '==')
       end
 
+      def self.testDate(condition, context, time, entity)
+        self.compare(time.year, condition['year'], condition['operator'])
+      end
+
+      def self.testAttribute(condition, context, time, entity)
+        self.compare(entity[ condition['attribute'] ], condition['value'], condition['operator'])
+      end
+
       def self.testTrue(condition, context, time, entity)
         return true
       end
@@ -84,6 +96,10 @@ module Synthea
           return lhs > rhs
         when '!='
           return lhs != rhs
+        when 'is nil'
+          return lhs.nil?
+        when 'is not nil'
+          return !lhs.nil?
         else
           raise "Unsupported operator: #{operator}"
         end

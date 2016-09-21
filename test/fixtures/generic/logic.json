@@ -57,6 +57,38 @@
     "condition_type" : "Socioeconomic Status",
     "category" : "Low"
   },
+  "before2016Test" : {
+    "condition_type" : "Date",
+    "operator" : "<",
+    "year" : 2016
+  },
+  "after2000Test" : {
+    "condition_type" : "Date",
+    "operator" : ">=",
+    "year" : 2000
+  },
+  "attributeEqualTo_TestValue_Test" : {
+    "condition_type" : "Attribute",
+    "attribute" : "Test_Attribute_Key",
+    "operator" : "==",
+    "value" : "TestValue"
+  },
+  "attributeGt100Test" : {
+    "condition_type" : "Attribute",
+    "attribute" : "Test_Attribute_Key",
+    "operator" : ">",
+    "value" : 100
+  },
+  "attributeNilTest" : {
+    "condition_type" : "Attribute",
+    "attribute" : "Test_Attribute_Key",
+    "operator" : "is nil"
+  },
+  "attributeNotNilTest" : {
+    "condition_type" : "Attribute",
+    "attribute" : "Test_Attribute_Key",
+    "operator" : "is not nil"
+  },
   "andAllTrueTest": {
     "condition_type": "And",
     "conditions": [

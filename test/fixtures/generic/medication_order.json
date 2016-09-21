@@ -28,6 +28,7 @@
                 "code": "860975",
                 "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
             }],
+            "assign_to_attribute" : "Diabetes Medication",
             "reason": "Diabetes",
             "direct_transition": "Terminal"
         },
