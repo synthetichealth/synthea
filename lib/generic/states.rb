@@ -24,6 +24,12 @@ module Synthea
               @exited = time
             end
           end
+
+          c = @context.state_config(@name)
+          if c && c['assign_to_attribute']
+            entity[c['assign_to_attribute']] = self.symbol.to_s
+          end
+
           return exit
         end
 
@@ -115,6 +121,14 @@ module Synthea
           # only indicate successful processing if the condition evaluates to true
           c = @context.state_config(@name)['allow']
           return Synthea::Generic::Logic::test(c, @context, time, entity)
+        end
+      end
+
+      class SetAttribute < State
+        def process(time, entity)
+          c = @context.state_config(@name)
+          entity[ c['attribute'] ] = c['value']
+          return true
         end
       end
 
@@ -214,6 +228,36 @@ module Synthea
             entity.record_synthea.medication_start(self.symbol(), time, [cond.symbol()])
           end
           @prescribed = true
+        end
+      end
+
+      class MedicationEnd < State
+        def initialize (context, name)
+          super
+          cfg = context.state_config(name)
+          @referenced_by = cfg['referenced_by_attribute']
+          @medication_order = cfg['medication_order']
+          @reason = (cfg['reason'] || 'prescription_expired').to_sym
+          @codes = cfg['codes']
+        end
+
+        def process(time, entity)
+          self.end_prescription(time, entity)
+          return true
+        end
+
+        def end_prescription(time, entity)
+          if @referenced_by
+            @type = entity[@referenced_by].to_sym
+          elsif @medication_order
+            @type = @context.most_recent_by_name(@medication_order).symbol()
+          elsif @codes
+            @type = self.symbol()
+          else
+            raise "Medication End must define the medication to end either by code, a referenced entity attribute, or the name of the original MedicationOrder state"
+          end
+
+          entity.record_synthea.medication_stop(@type, time, [@reason])
         end
       end
 

@@ -23,6 +23,7 @@
                 "code": "6025007",
                 "display": "Laparoscopic appendectomy"
             }],
+            "assign_to_attribute" : "Most Recent Surgery",
             "direct_transition": "Terminal"
         },
         "Terminal": {

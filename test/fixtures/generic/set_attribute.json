@@ -1,0 +1,25 @@
+{
+    "name": "SetAttribute",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Set_Attribute_1"
+        },
+        "Set_Attribute_1": {
+            "type": "SetAttribute",
+            "attribute" : "Current Opioid Prescription",
+            "value" : "Vicodin",
+            "direct_transition": "Set_Attribute_2"
+        },
+
+        "Set_Attribute_2": {
+            "type": "SetAttribute",
+            "attribute" : "Current Opioid Prescription",
+            "direct_transition": "Terminal"
+        },
+
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

@@ -111,6 +111,45 @@ class GenericLogicTest < Minitest::Test
     assert(do_test('sesLowTest'))
   end
 
+  def test_date
+    @time = Time.new(2016, 9, 21)
+    refute(do_test('before2016Test'))
+    assert(do_test('after2000Test'))
+
+    @time = Time.new(1981, 4, 28)
+    assert(do_test('before2016Test'))
+    refute(do_test('after2000Test'))
+
+    @time = Time.new(2002, 2, 22)
+    assert(do_test('before2016Test'))
+    assert(do_test('after2000Test'))
+  end
+
+  def test_attribute
+    attribute = 'Test_Attribute_Key'
+
+    @patient[attribute] = nil
+    refute(do_test('attributeEqualTo_TestValue_Test'))
+    assert(do_test('attributeNilTest'))
+    refute(do_test('attributeNotNilTest'))
+
+    @patient[attribute] = "Wrong Value"
+    refute(do_test('attributeEqualTo_TestValue_Test'))
+    refute(do_test('attributeNilTest'))
+    assert(do_test('attributeNotNilTest'))
+
+    @patient[attribute] = "TestValue"
+    assert(do_test('attributeEqualTo_TestValue_Test'))
+    refute(do_test('attributeNilTest'))
+    assert(do_test('attributeNotNilTest'))
+
+    @patient[attribute] = 120
+    refute(do_test('attributeEqualTo_TestValue_Test'))
+    assert(do_test('attributeGt100Test'))
+    refute(do_test('attributeNilTest'))
+    assert(do_test('attributeNotNilTest'))
+  end
+
   def test_and_conditions
     assert(do_test('andAllTrueTest'))
     refute(do_test('andOneFalseTest'))

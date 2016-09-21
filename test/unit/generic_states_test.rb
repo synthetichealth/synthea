@@ -232,6 +232,15 @@ class GenericStatesTest < Minitest::Test
     assert(condition.process(@time, @patient))
   end
 
+  def test_condition_assigns_entity_attribute
+    @patient['Most Recent ED Visit'] = nil
+    ctx = get_context('condition_onset.json')
+    appendicitis = Synthea::Generic::States::ConditionOnset.new(ctx, "Appendicitis")
+    appendicitis.run(@time, @patient)
+
+    assert_equal('rupture_of_appendix', @patient['Most Recent ED Visit'])
+  end
+
   def test_condition_onset_during_encounter
     # Setup a mock to track calls to the patient record
     @patient.record_synthea = MiniTest::Mock.new
@@ -280,6 +289,158 @@ class GenericStatesTest < Minitest::Test
 
     # Verify that Metformin was added to the record
     @patient.record_synthea.verify
+  end
+
+  def test_medication_order_assigns_entity_attribute
+    @patient['Diabetes Medication'] = nil
+    ctx = get_context('medication_order.json')
+    med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
+    med.run(@time, @patient)
+
+    assert_equal("24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet", @patient['Diabetes Medication'])
+  end
+
+  def test_medication_end_by_entity_attribute
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('medication_end.json')
+
+    # First, onset the Diabetes!
+    diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+    assert(diabetes.process(@time, @patient))
+    ctx.history << diabetes
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [:diabetes_mellitus, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    medication_id = "insulin,_aspart,_human_100_unt/ml_[novolog]".to_sym
+
+    # Now process the prescription
+    med = Synthea::Generic::States::MedicationOrder.new(ctx, "Insulin_Start")
+    @patient.record_synthea.expect(:medication_start, nil, [medication_id, @time, [:diabetes_mellitus]])
+    assert(med.run(@time, @patient)) # have to use run not process here because the entity attribute stuff happens in run
+
+    ctx.history << med
+
+    # Now process the end of the prescription
+    med_end = Synthea::Generic::States::MedicationEnd.new(ctx, "Insulin_End")
+    @patient.record_synthea.expect(:medication_stop, nil, [medication_id, @time, [:prescription_expired]])
+    assert(med_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_medication_end_by_medication_order
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('medication_end.json')
+
+    # First, onset the Diabetes!
+    diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+    assert(diabetes.process(@time, @patient))
+    ctx.history << diabetes
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [:diabetes_mellitus, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    medication_id = "bromocriptine_5_mg_[parlodel]".to_sym
+
+    # Now process the prescription
+    med = Synthea::Generic::States::MedicationOrder.new(ctx, "Bromocriptine_Start")
+    @patient.record_synthea.expect(:medication_start, nil, [medication_id, @time, [:diabetes_mellitus]])
+    assert(med.process(@time, @patient))
+
+    ctx.history << med
+
+    # Now process the end of the prescription
+    med_end = Synthea::Generic::States::MedicationEnd.new(ctx, "Bromocriptine_End")
+    @patient.record_synthea.expect(:medication_stop, nil, [medication_id, @time, [:prescription_expired]])
+    assert(med_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_medication_end_by_code
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('medication_end.json')
+
+    # First, onset the Diabetes!
+    diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+    assert(diabetes.process(@time, @patient))
+    ctx.history << diabetes
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [:diabetes_mellitus, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    medication_id = "24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet".to_sym
+
+    # Now process the prescription
+    med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin_Start")
+    @patient.record_synthea.expect(:medication_start, nil, [medication_id, @time, [:diabetes_mellitus]])
+    assert(med.process(@time, @patient))
+
+    ctx.history << med
+
+    # Now process the end of the prescription
+    med_end = Synthea::Generic::States::MedicationEnd.new(ctx, "Metformin_End")
+    @patient.record_synthea.expect(:medication_stop, nil, [medication_id, @time, [:prescription_expired]])
+    assert(med_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_setAttribute_with_value
+    ctx = get_context('set_attribute.json')
+
+    @patient['Current Opioid Prescription'] = nil
+    set1 = Synthea::Generic::States::SetAttribute.new(ctx, "Set_Attribute_1")
+    assert(set1.process(@time, @patient))
+
+    assert_equal('Vicodin', @patient['Current Opioid Prescription'])
+  end
+
+  def test_setAttribute_without_value
+    ctx = get_context('set_attribute.json')
+
+    @patient['Current Opioid Prescription'] = 'Vicodin'
+    set2 = Synthea::Generic::States::SetAttribute.new(ctx, "Set_Attribute_2")
+    assert(set2.process(@time, @patient))
+
+    assert_equal(nil, @patient['Current Opioid Prescription'])
+  end
+
+  def test_procedure_assigns_entity_attribute
+    @patient['Most Recent Surgery'] = 'nil'
+    ctx = get_context('procedure.json')
+    appendectomy = Synthea::Generic::States::Procedure.new(ctx, "Appendectomy")
+    appendectomy.run(@time, @patient)
+
+    assert_equal("laparoscopic_appendectomy", @patient['Most Recent Surgery'])
   end
 
   def test_procedure_during_encounter
