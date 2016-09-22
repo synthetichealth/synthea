@@ -1,0 +1,580 @@
+{
+  "name" : "Injuries",
+  "states" : {
+
+    "Initial" : {
+      "type" : "Initial",
+      "direct_transition" : "No_Injury"
+    },
+
+    "No_Injury" : {
+      "type" : "Delay",
+      "exact" : {
+        "quantity" : 1,
+        "unit" : "months"
+      },
+      "complex_transition" : [{
+        "condition" : {
+            "condition_type" : "Age",
+            "operator" : "<",
+            "quantity" : 18,
+            "unit" : "years"
+          },
+        "distributions" : [
+          {
+            "distribution": 0.0011,
+            "transition": "Road_Injury_Minor",
+            "remarks" : ["On average, people have 3-4 minor accidents in their lifetime. We'll assume not all of those are bad enough to warrant an ER visit",
+                         "So given a 75-yr lifespan, assume 1 every 75 yrs, the chance of a minor accident in any month == P(t) = 1-e^(-t/75*12), P(1) = .0011"]
+          },
+          {
+            "distribution": 0.00039, 
+            "transition": "Road_Injury_Major",
+            "remarks" : ["Odds of being in a major accident = 30% lifetime --> odds of having a major car accident this month, assuming 75 yr lifespan ==",
+                          "1-(1-(.3))^(1/75*12) = .00039"]
+          },
+          {
+            "distribution": 0.0000086, 
+            "transition": "Road_Injury_Severe",
+            "remarks" : ["Odds of dying in a car accident = 1 in 18,585. --> odds of dying in a car accident this month, assuming 75 yr lifespan == ",
+                         "1-(1-(1/18585))^(1/75*12)  == roughly .0000086"]
+          },
+          {
+            "distribution": 0.003, 
+            "transition": "Falling_Injury_Minor",
+            "remarks" : ["For people under 18, ER visits are roughly equally likely for falls and being struck by object, and 3x more likely than car accidents.",
+                         "https://www.hcup-us.ahrq.gov/reports/statbriefs/sb156.jsp",
+                         "We assume the major injury is 50x less likely to occur than the minor injury."]
+          },
+          {
+            "distribution": 0.00006, 
+            "transition": "Falling_Injury_Major"
+          },
+          {
+            "distribution": 0.003, 
+            "transition": "Blunt_Object_Injury_Minor"
+          },
+          {
+            "distribution": 0.00006, 
+            "transition": "Blunt_Object_Injury_Major"
+          },
+          {
+            "distribution": 0.0015, 
+            "transition": "Sharp_Object_Injury_Minor",
+            "remarks" : "cuts requiring a trip to the ER are slightly more likely than motor vehicle accidents"
+          },
+          {
+            "distribution": 0.00005, 
+            "transition": "Sharp_Object_Injury_Major"
+          },
+          {
+            "distribution" : 0.991,
+            "transition": "No_Injury"
+          }
+        ]
+      },
+      {
+        "condition" : {
+            "condition_type" : "Age",
+            "operator" : "<",
+            "quantity" : 65,
+            "unit" : "years"
+          },
+        "distributions" : [
+          {
+            "distribution": 0.0011,
+            "transition": "Road_Injury_Minor",
+            "remarks" : "road injuries can occur as driver or passenger so we won't make a distinction by age here"
+          },
+          {
+            "distribution": 0.00039, 
+            "transition": "Road_Injury_Major"
+          },
+          {
+            "distribution": 0.0000086, 
+            "transition": "Road_Injury_Severe"
+          },
+          {
+            "distribution": 0.001, 
+            "transition": "Falling_Injury_Minor",
+            "remarks" : "Falling, object injuries, and road injuries are all roughly similar for ages 18+"
+          },
+          {
+            "distribution": 0.00002, 
+            "transition": "Falling_Injury_Major"
+          },
+          {
+            "distribution": 0.001, 
+            "transition": "Blunt_Object_Injury_Minor"
+          },
+          {
+            "distribution": 0.00002, 
+            "transition": "Blunt_Object_Injury_Major"
+          },
+          {
+            "distribution": 0.001, 
+            "transition": "Sharp_Object_Injury_Minor"
+          },
+          {
+            "distribution": 0.00002, 
+            "transition": "Sharp_Object_Injury_Major"
+          },
+          {
+            "distribution" : 0.996,
+            "transition": "No_Injury"
+          }
+        ]
+      },
+      {
+        "condition" : {
+            "condition_type" : "Age",
+            "operator" : ">=",
+            "quantity" : 65,
+            "unit" : "years"
+          },
+        "distributions" : [
+          {
+            "distribution": 0.0011,
+            "transition": "Road_Injury_Minor"
+          },
+          {
+            "distribution": 0.00039, 
+            "transition": "Road_Injury_Major"
+          },
+          {
+            "distribution": 0.0000086, 
+            "transition": "Road_Injury_Severe"
+          },
+          {
+            "distribution": 0.012, 
+            "transition": "Falling_Injury_Minor",
+            "remarks" : "Falling injuries are much more common among the elderly and are more likely to be major. Assume minor is only 20x less likely to happen than major here"
+          },
+          {
+            "distribution": 0.0006, 
+            "transition": "Falling_Injury_Major",
+            "remarks" : ["Each year over 300,000 older people-those 65 and older-are hospitalized for hip fractures. - http://www.cdc.gov/homeandrecreationalsafety/falls/adulthipfx.html",
+                         "About 13% of US population is > 65 - https://www.census.gov/quickfacts/table/PST045215/00",
+                         "13% of 300 million  == 39,000,000",
+                         "300,000/39,000,000 = .77% chance per year = 1-((1-.0077)^(1/12)) = 0.00064394242 = .06% chance per month"]
+          },
+          {
+            "distribution": 0.001, 
+            "transition": "Blunt_Object_Injury_Minor"
+          },
+          {
+            "distribution": 0.00002, 
+            "transition": "Blunt_Object_Injury_Major"
+          },
+          {
+            "distribution": 0.001, 
+            "transition": "Sharp_Object_Injury_Minor"
+          },
+          {
+            "distribution": 0.00002, 
+            "transition": "Sharp_Object_Injury_Major"
+          },
+          {
+            "distribution" : 0.984,
+            "transition": "No_Injury"
+          }
+        ]
+      }]
+    },
+
+
+    "Road_Injury_Minor" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "RI_Minor_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "39848009",
+        "display" : "Whiplash injury to neck"
+      }],
+      "direct_transition" : "RI_Minor_Encounter"
+    },
+
+    "RI_Minor_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Road_Injury_Major" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "RI_Major_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "125606003",
+        "display" : "Fracture of cervical spine"
+      }],
+      "direct_transition" : "RI_Major_Encounter"
+    },
+
+    "RI_Major_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "conditional_transition" : 
+        [
+          {
+            "condition": {
+              "condition_type" : "Or",
+              "conditions" : [
+                {
+                  "condition_type" : "Age",
+                  "operator" : "<",
+                  "quantity" : 14,
+                  "unit" : "years"
+                },
+                {
+                  "condition_type" : "Date",
+                  "operator" : "<",
+                  "year" : 1990
+                },
+                {
+                  "condition_type" : "Attribute",
+                  "attribute" : "Opioid Prescription",
+                  "operator" : "is not nil"
+                }
+              ]
+            },
+            "transition": "RI_Major_Medication_Nonopioid"
+        },
+        {
+            "transition": "RI_Major_Medication_Opioid"
+        }
+      ]
+    },
+
+    "RI_Major_Medication_Nonopioid" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "RI_Major_Encounter",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "646457",
+        "display" : "Acetaminophen 650 MG [Tylenol]"
+      }],
+      "reason" : "Road_Injury_Major",
+      "direct_transition" : "RI_Major_Medication_Nonopioid_Taken"
+    },
+
+    "RI_Major_Medication_Nonopioid_Taken" : {
+      "type" : "Delay",
+      "range" : {
+        "low" : 8,
+        "high" : 12,
+        "unit" : "weeks"
+      },
+      "direct_transition" : "RI_Major_Medication_Nonopioid_End"
+    },
+
+    "RI_Major_Medication_Nonopioid_End" : {
+      "type" : "MedicationEnd",
+      "medication_order" : "RI_Major_Medication_Nonopioid",
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "RI_Major_Medication_Opioid" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "RI_Major_Encounter",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "1310197",
+        "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+      }],
+      "reason" : "Road_Injury_Major",
+      "assign_to_attribute" : "Opioid Prescription",
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Road_Injury_Severe" : {
+      "type" : "Simple",
+      "direct_transition" : "Death"
+    },
+
+
+    "Falling_Injury_Minor" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "FI_Minor_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "44465007",
+        "display" : "Sprain of ankle"
+      }],
+      "direct_transition" : "FI_Minor_Encounter"
+    },
+
+    "FI_Minor_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Falling_Injury_Major" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "FI_Major_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "77493009",
+        "display" : "Fracture of pelvis"
+      }],
+      "direct_transition" : "FI_Major_Encounter"
+    },
+
+    "FI_Major_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+       "conditional_transition" : [
+                {
+                    "condition": {
+                      "condition_type" : "Or",
+                      "conditions" : [
+                        {
+                          "condition_type" : "Age",
+                          "operator" : "<",
+                          "quantity" : 14,
+                          "unit" : "years"
+                        },
+                        {
+                          "condition_type" : "Date",
+                          "operator" : "<",
+                          "year" : 1990
+                        },
+                        {
+                          "condition_type" : "Attribute",
+                          "attribute" : "Opioid Prescription",
+                          "operator" : "is not nil"
+                        }
+                      ]
+                    },
+                    "transition": "FI_Major_Medication_Nonopioid"
+                },
+                {
+                    "transition": "FI_Major_Medication_Opioid"
+                }
+            ]
+    },
+
+    "FI_Major_Medication_Opioid" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "FI_Major_Encounter",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "1310197",
+        "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+      }],
+      "reason" : "Falling_Injury_Major",
+      "assign_to_attribute" : "Opioid Prescription",
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+
+    "FI_Major_Medication_Nonopioid" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "FI_Major_Encounter",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "646457",
+        "display" : "Acetaminophen 650 MG [Tylenol]"
+      }],
+      "reason" : "Falling_Injury_Major",
+      "direct_transition" : "FI_Major_Medication_Nonopioid_Taken"
+    },
+
+    "FI_Major_Medication_Nonopioid_Taken" : {
+      "type" : "Delay",
+      "range" : {
+        "low" : 4,
+        "high" : 8,
+        "unit" : "weeks"
+      },
+      "direct_transition" : "FI_Major_Medication_Nonopioid_End"
+    },
+
+    "FI_Major_Medication_Nonopioid_End" : {
+      "type" : "MedicationEnd",
+      "medication_order" : "FI_Major_Medication_Nonopioid",
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Blunt_Object_Injury_Minor" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "BOI_Minor_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "62106007",
+        "display" : "Concussion with no loss of consciousness"
+      }],
+      "direct_transition" : "BOI_Minor_Encounter"
+    },
+
+    "BOI_Minor_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Blunt_Object_Injury_Major" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "BOI_Major_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "419945001",
+        "display" : "Traumatic injury due to event"
+      }],
+      "direct_transition" : "BOI_Major_Encounter"
+    },
+
+    "BOI_Major_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "direct_transition" : "BOI_Major_Medication"
+    },
+
+    "BOI_Major_Medication" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "BOI_Major_Encounter",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "142442",
+        "display" : "Naproxen sodium"
+      }],
+      "reason" : "Blunt_Object_Injury_Major",
+      "direct_transition" : "BOI_Major_Medication_Taken"
+    },
+
+    "BOI_Major_Medication_Taken" : {
+      "type" : "Delay",
+      "range" : {
+        "low" : 2,
+        "high" : 6,
+        "unit" : "weeks"
+      },
+      "direct_transition" : "BOI_Major_Medication_End"
+    },
+
+    "BOI_Major_Medication_End" : {
+      "type" : "MedicationEnd",
+      "medication_order" : "BOI_Major_Medication",
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Sharp_Object_Injury_Minor" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "SOI_Minor_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "284549007",
+        "display" : "Laceration of hand"
+      }],
+      "direct_transition" : "SOI_Minor_Encounter"
+    },
+
+    "SOI_Minor_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Sharp_Object_Injury_Major" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "SOI_Major_Encounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "446455004",
+        "display" : "Deep laceration of thigh"
+      }],
+      "direct_transition" : "SOI_Major_Encounter"
+    },
+
+    "SOI_Major_Encounter" : {
+      "type" : "Encounter",
+      "class" : "emergency",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "50849002",
+        "display" : "Emergency Room Admission"
+      }],
+      "direct_transition" : "SOI_Major_Medication"
+    },
+
+    "SOI_Major_Medication" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "SOI_Major_Encounter",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "572514",
+        "display" : "Cephalexin 250 MG [Keflex]"
+      }],
+      "reason" : "Sharp_Object_Injury_Major",
+      "direct_transition" : "SOI_Major_Medication_Taken"
+    },
+
+    "SOI_Major_Medication_Taken" : {
+      "type" : "Delay",
+      "range" : {
+        "low" : 7,
+        "high" : 14,
+        "unit" : "days"
+      },
+      "direct_transition" : "SOI_Major_Medication_End"
+    },
+
+    "SOI_Major_Medication_End" : {
+      "type" : "MedicationEnd",
+      "medication_order" : "SOI_Major_Medication",
+      "direct_transition" : "Loop_back_to_no_injury"
+    },
+
+    "Death" : {
+      "type" : "Death",
+      "direct_transition" : "Terminal"
+    },
+
+    "Terminal" : {
+      "type" : "Terminal"
+    },
+
+    "Loop_back_to_no_injury" : {
+      "type" : "Simple",
+      "direct_transition" : "No_Injury",
+      "remarks" : "this state only exists to make the graph look nicer"
+    }
+
+  }
+}
