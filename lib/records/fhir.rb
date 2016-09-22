@@ -45,6 +45,9 @@ module Synthea
                       'family' => [entity[:name_last]],
                       'use' => 'official'
                     }],
+          'telecom' => [{'system'=>'phone','use'=>'home','value'=>entity[:telephone],
+            'extension' => [{'url'=>"#{SHR_EXT}okayToLeaveMessage",'valueBoolean'=>true}]
+          }],
           'gender' => ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F'),
           'birthDate' => convertFhirDateTime(entity.event(:birth).time),
           'address' => [FHIR::Address.new(entity[:address])],

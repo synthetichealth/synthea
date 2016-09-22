@@ -47,6 +47,9 @@ module Synthea
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           entity[:city] = location_data['city']
 
+          #telephone
+          entity[:telephone] = Faker::PhoneNumber.phone_number
+          
           #birthplace
           entity[:birth_place] = {
             'city' => Synthea::Location.selectPoint['city'],
