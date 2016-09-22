@@ -12,6 +12,7 @@ class FhirTest < Minitest::Test
       'state' => "MA",
       'postalCode' => "01730"
     }
+    @patient[:birth_place] = { 'city' => 'Bedford','state' => 'MA', }
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
     @patient[:is_alive] = true
