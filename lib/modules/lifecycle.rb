@@ -18,9 +18,11 @@ module Synthea
         unless entity.had_event?(:birth)
           entity[:age] = 0
           entity[:name_first] = Faker::Name.first_name
-          entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
           entity[:name_last] = Faker::Name.last_name
-          entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
+          if (Synthea::Config.population.append_hash_to_person_names = true)
+            entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
+            entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
+          end
           entity[:gender] ||= gender
           entity[:race] ||= Synthea::World::Demographics::RACES.pick
           entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[ entity[:race] ].pick
@@ -96,12 +98,12 @@ module Synthea
               # getting older and fatter
               range = Synthea::Config::lifecycle.adult_weight_gain
               adult_weight_gain = rand(range.first..range.last)
-              entity[:weight] += adult_weight_gain          
+              entity[:weight] += adult_weight_gain
             elsif(age >= Synthea::Config::lifecycle.geriatric_weight_loss_age)
               # getting older and wasting away
               range = Synthea::Config::lifecycle.geriatric_weight_loss
               geriatric_weight_loss = rand(range.first..range.last)
-              entity[:weight] -= geriatric_weight_loss              
+              entity[:weight] -= geriatric_weight_loss
             end
             # set the BMI
             entity[:bmi] = calculate_bmi(entity[:height],entity[:weight])
