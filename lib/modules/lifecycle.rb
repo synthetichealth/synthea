@@ -69,7 +69,7 @@ module Synthea
           entity[:name_father] = "#{fathers_name} #{entity[:name_last]}"
 
           #identifiers
-          entity[:identifier_ssn] = "999-#{rand(100..999)}-#{rand(1000..9999)}"
+          entity[:identifier_ssn] = "999-#{rand(10..99)}-#{rand(1000..9999)}"
 
           entity[:med_changes] = Hash.new() { |hsh, key| hsh[key] = [] }
           choose_socioeconomic_values(entity)
