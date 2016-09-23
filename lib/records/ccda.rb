@@ -26,8 +26,10 @@ module Synthea
 
       def self.basic_info (entity, ccda_record)
         patient = ccda_record
+        patient.title = entity[:prefix]
         patient.first = entity[:name_first]
         patient.last = entity[:name_last]
+        # no field for suffix
         patient.gender = entity[:gender]
         patient.birthdate = entity.event(:birth).time.to_i
 
@@ -39,9 +41,19 @@ module Synthea
         patient.addresses.first.city = entity[:address]['city']
         patient.addresses.first.state = entity[:address]['state']
         patient.addresses.first.zip = entity[:address]['postalCode']
+        patient.addresses.first.use = 'Place of Residence'
+
+        patient.addresses << Address.new
+        patient.addresses.last.city = entity[:birth_place]['city']
+        patient.addresses.last.state = entity[:birth_place]['state']
+        patient.addresses.last.use = 'Place of Birth'
+
+        patient.telecoms << Telecom.new
+        patient.telecoms.last.value = entity[:telephone]
 
         patient.deathdate = nil
         patient.expired = false
+        patient.marital_status = { 'name'=>entity[:marital_status], 'code'=>entity[:marital_status] } if entity[:marital_status]
 
         # patient.religious_affiliation
         # patient.effective_time

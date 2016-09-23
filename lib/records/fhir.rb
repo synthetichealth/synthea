@@ -78,7 +78,7 @@ module Synthea
             },
             {
               'url' => "#{SHR_EXT}wkt-geospatialpoint",
-              'valueString' => "POINT (#{entity[:coordinates_address].x}, #{entity[:coordinates_address].y})"
+              'valueString' => "POINT (#{entity[:coordinates_address].x} #{entity[:coordinates_address].y})"
             },
             #place of birth
             {
@@ -131,6 +131,13 @@ module Synthea
           patientResource.identifier << FHIR::Identifier.new({
             'type'=>{'coding'=>[{'system'=>'http://hl7.org/fhir/v2/0203','code'=>'PPN'}]},
             'system'=>"#{SHR_EXT}passportNumber",'value'=>entity[:identifier_passport]})
+        end
+        # add biometric data
+        if entity[:fingerprint]
+          patientResource.photo << FHIR::Attachment.new({
+            'contentType'=>'image/png','title'=>'Biometrics.Fingerprint',
+            'data'=> Base64.strict_encode64(entity[:fingerprint].to_blob)
+          })
         end
         # record death if applicable
         if !entity[:is_alive]

@@ -18,6 +18,7 @@ require 'net/sftp'
 require 'highline/import'
 require 'json'
 require 'concurrent'
+require 'chunky_png'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 
