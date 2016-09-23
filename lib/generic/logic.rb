@@ -19,6 +19,10 @@ module Synthea
           self.testDate(condition, context, time, entity)
         when 'Attribute'
           self.testAttribute(condition, context, time, entity)
+        when 'Symptom'
+          self.testSymptom(condition, context, time, entity)
+        when 'PriorState'
+          self.testPriorState(condition, context, time, entity)
         when 'True'
           self.testTrue(condition, context, time, entity)
         when 'False'
@@ -72,6 +76,14 @@ module Synthea
 
       def self.testAttribute(condition, context, time, entity)
         self.compare(entity[ condition['attribute'] ], condition['value'], condition['operator'])
+      end
+
+      def self.testSymptom(condition, context, time, entity)
+        self.compare(entity.get_symptom_value(condition['symptom']), condition['value'], condition['operator'])
+      end
+
+      def self.testPriorState(condition, context, time, entity)
+        !(context.most_recent_by_name(condition['name']).nil?)
       end
 
       def self.testTrue(condition, context, time, entity)

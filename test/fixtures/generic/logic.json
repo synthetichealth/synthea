@@ -79,6 +79,18 @@
     "operator" : ">",
     "value" : 100
   },
+  "symptomPainLevelGt50" : {
+    "condition_type": "Symptom",
+    "symptom" : "PainLevel",
+    "operator" : ">",
+    "value" : 50
+  },
+  "symptomPainLevelLte80" : {
+    "condition_type": "Symptom",
+    "symptom" : "PainLevel",
+    "operator" : "<=",
+    "value" : 80
+  },
   "attributeNilTest" : {
     "condition_type" : "Attribute",
     "attribute" : "Test_Attribute_Key",
@@ -88,6 +100,10 @@
     "condition_type" : "Attribute",
     "attribute" : "Test_Attribute_Key",
     "operator" : "is not nil"
+  },
+  "priorStateDoctorVisitTest" : {
+    "condition_type": "PriorState",
+    "name" : "DoctorVisit"
   },
   "andAllTrueTest": {
     "condition_type": "And",
