@@ -15,10 +15,11 @@ synthea:
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days
-  population: 
+  population:
     area: 0.05 #13.9 # Bedford, MA # Default: 0.05
     birth_variance: 0.01
     daily_births_per_square_mile: <%= (ma_births_per_year = 73000.0)/(ma_square_miles=10554.0)/365.0 %>
+    append_hash_to_person_names: true # If true, person names have a numeric hash appended to them to make them more obviously fake
   sequential: # sequential population generation... one at a time...
     # population is scaled to accurately represent MA (using a "true" population of 6,794,422)
     population: 100
@@ -88,7 +89,7 @@ synthea:
       # http://www.cdc.gov/diabetes/prevention/pdf/point-of-care-prediabetes-identification-algorithm_tag508.pdf
       glucose: [64,100,125,200] # mg/dL [normal minimum,prediabetic,diabetic,max]
       # http://www.mayomedicallaboratories.com/test-catalog/Clinical+and+Interpretive/81260
-      microalbumin_creatine_ratio: 
+      microalbumin_creatine_ratio:
         normal: [0,17] # mg/g
         microalbuminuria_controlled: [17,30] # mg/g
         microalbuminuria_uncontrolled: [30,300] # mg/g
@@ -114,7 +115,7 @@ synthea:
       coronary_attack_risk: [0.042,0.015] #annual probability of coronary attack given history of angina (Male, Female)
       mi_proportion: 0.8 #Proportion of coronary attacks that are MI ,given history of CHD
       survive: 0.095 #http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp (0.095)
-      bystander: 0.46 #http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp 
+      bystander: 0.46 #http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
     #http://circ.ahajournals.org/content/early/2014/12/18/CIR.0000000000000152.full.pdf
     sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
       risk: 0.00076
