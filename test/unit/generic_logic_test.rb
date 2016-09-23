@@ -150,6 +150,35 @@ class GenericLogicTest < Minitest::Test
     assert(do_test('attributeNotNilTest'))
   end
 
+  def test_symptoms
+    @patient.set_symptom_value('Appendicitis', 'PainLevel', 60)
+    assert(do_test('symptomPainLevelGt50'))
+    assert(do_test('symptomPainLevelLte80'))
+
+    @patient.set_symptom_value('Appendicitis', 'LackOfAppetite', 100) # painlevel still 60 here
+    assert(do_test('symptomPainLevelGt50'))
+    assert(do_test('symptomPainLevelLte80'))
+
+    @patient.set_symptom_value('Appendicitis', 'PainLevel', 10)
+    refute(do_test('symptomPainLevelGt50'))
+    assert(do_test('symptomPainLevelLte80'))
+
+    @patient.set_symptom_value('Appendicitis', 'PainLevel', 100)
+    assert(do_test('symptomPainLevelGt50'))
+    refute(do_test('symptomPainLevelLte80'))
+  end
+
+  def test_prior_state
+    # @context.history = [] # can't actually set this here, but we know it's true
+    refute(do_test('priorStateDoctorVisitTest'))
+
+    @context.history << Synthea::Generic::States::Simple.new(@context, "SomeOtherState")
+    refute(do_test('priorStateDoctorVisitTest'))
+
+    @context.history << Synthea::Generic::States::Simple.new(@context, "DoctorVisit")
+    assert(do_test('priorStateDoctorVisitTest'))
+  end
+
   def test_and_conditions
     assert(do_test('andAllTrueTest'))
     refute(do_test('andOneFalseTest'))

@@ -464,6 +464,18 @@ class GenericStatesTest < Minitest::Test
     @patient.record_synthea.verify
   end
 
+  def test_symptoms
+    ctx = get_context('symptom.json')
+
+    symptom1 = Synthea::Generic::States::Symptom.new(ctx, "SymptomOnset")
+    assert(symptom1.process(@time, @patient))
+    assert_includes(1..10, @patient.get_symptom_value('Chest Pain'))
+
+    symptom2 = Synthea::Generic::States::Symptom.new(ctx, "SymptomWorsen")
+    assert(symptom2.process(@time, @patient))
+    assert_equal(96, @patient.get_symptom_value('Chest Pain'))
+  end
+
   def test_death
     # Setup a mock to track calls to the patient record
     @patient.record_synthea = MiniTest::Mock.new

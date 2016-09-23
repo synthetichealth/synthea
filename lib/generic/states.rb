@@ -291,6 +291,28 @@ module Synthea
         end
       end
 
+      class Symptom < State
+        def initialize (context, name)
+          super
+          cfg = context.state_config(name)
+          @symptom = cfg['symptom']
+          @cause = cfg['cause'] || context.config['name']
+          range = cfg['range']
+          exact = cfg['exact']
+          if range
+            @value = rand(range['low'] .. range['high'])
+          elsif exact
+            @value = exact['quantity']
+          else
+            raise 'Symptom state must specify value using either "range" or "exact"'
+          end
+        end
+
+        def process(time, entity)
+          entity.set_symptom_value(@cause, @symptom, @value)
+        end
+      end
+
       class Death < State
         def process(time, entity)
           entity[:is_alive] = false
