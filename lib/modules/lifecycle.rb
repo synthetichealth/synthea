@@ -19,7 +19,7 @@ module Synthea
           entity[:age] = 0
           entity[:name_first] = Faker::Name.first_name
           entity[:name_last] = Faker::Name.last_name
-          if (Synthea::Config.population.append_hash_to_person_names = true)
+          if (Synthea::Config.population.append_hash_to_person_names == true)
             entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
             entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
           end
@@ -61,13 +61,14 @@ module Synthea
 
           #parents
           mothers_name = Faker::Name.first_name
-          mothers_name = "#{mothers_name}#{(mothers_name.hash % 999)}"
+          mothers_name = "#{mothers_name}#{(mothers_name.hash % 999)}" if Synthea::Config.population.append_hash_to_person_names==true
+
           mothers_surname = Faker::Name.last_name
-          mothers_surname = "#{mothers_surname}#{(mothers_surname.hash % 999)}"
+          mothers_surname = "#{mothers_surname}#{(mothers_surname.hash % 999)}" if Synthea::Config.population.append_hash_to_person_names==true
           entity[:name_mother] = "#{mothers_name} #{mothers_surname}"
 
           fathers_name = Faker::Name.first_name
-          fathers_name = "#{fathers_name}#{(fathers_name.hash % 999)}"
+          fathers_name = "#{fathers_name}#{(fathers_name.hash % 999)}" if Synthea::Config.population.append_hash_to_person_names==true
           entity[:name_father] = "#{fathers_name} #{entity[:name_last]}"
 
           #identifiers
