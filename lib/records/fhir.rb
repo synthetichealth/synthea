@@ -2,6 +2,8 @@ module Synthea
   module Output
     module FhirRecord
 
+      SHR_EXT = 'http://standardhealthrecord.org/fhir/extensions/'
+
       def self.convert_to_fhir (entity)
         synthea_record = entity.record_synthea
         indices = {observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0}
@@ -43,6 +45,9 @@ module Synthea
                       'family' => [entity[:name_last]],
                       'use' => 'official'
                     }],
+          'telecom' => [{'system'=>'phone','use'=>'home','value'=>entity[:telephone],
+            'extension' => [{'url'=>"#{SHR_EXT}okayToLeaveMessage",'valueBoolean'=>true}]
+          }],
           'gender' => ('male' if entity[:gender] == 'M') || ('female' if entity[:gender] == 'F'),
           'birthDate' => convertFhirDateTime(entity.event(:birth).time),
           'address' => [FHIR::Address.new(entity[:address])],
@@ -72,14 +77,73 @@ module Synthea
               }
             },
             {
-              'url' => 'http://standardhealthrecord.org/fhir/extensions/wkt-geospatialpoint',
-              'valueString' => "POINT (#{entity[:coordinates_address].x}, #{entity[:coordinates_address].y})"
+              'url' => "#{SHR_EXT}wkt-geospatialpoint",
+              'valueString' => "POINT (#{entity[:coordinates_address].x} #{entity[:coordinates_address].y})"
+            },
+            #place of birth
+            {
+              'url' => "#{SHR_EXT}placeOfBirth",
+              'valueAddress' => FHIR::Address.new(entity[:birth_place]).to_hash
+            },
+            #mother's maiden name
+            {
+              'url' => 'http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName',
+              'valueString' => entity[:name_mother]
+            },
+            #father's name
+            {
+              'url' => "#{SHR_EXT}fathersName",
+              'valueString' => entity[:name_father]
             }
           ]
         })
+        # add optional patient name information
+        patientResource.name.first.prefix << entity[:name_prefix] if entity[:name_prefix]
+        patientResource.name.first.suffix << entity[:name_suffix] if entity[:name_suffix]
+        if entity[:name_maiden]
+          patientResource.name << FHIR::HumanName.new({ 'given'=> [entity[:name_first]],
+            'family'=> [entity[:name_maiden]],'use'=>'maiden'})
+        end
+        # add marital status if present
+        if entity[:marital_status]
+          patientResource.maritalStatus = FHIR::CodeableConcept.new({ 'coding'=>[{ 'system'=>'http://hl7.org/fhir/v3/MaritalStatus', 'code'=> entity[:marital_status] }] })
+        end
+        # add information about twins/triplets if applicable
+        if entity[:multiple_birth]
+          patientResource.multipleBirthInteger = entity[:multiple_birth]
+          patientResource.extension << FHIR::Extension.new({ 'url'=>"#{SHR_EXT}multipleBirth",
+            'valueCode'=>'Multiple' })
+        else
+          patientResource.multipleBirthBoolean = false
+        end
+        # add additional identification numbers if applicable
+        if entity[:identifier_ssn]
+          patientResource.identifier << FHIR::Identifier.new({
+            'type'=>{'coding'=>[{'system'=>'http://hl7.org/fhir/identifier-type','code'=>'SB'}]},
+            'system'=>'http://hl7.org/fhir/sid/us-ssn','value'=>entity[:identifier_ssn].gsub('-','')})
+        end
+        if entity[:identifier_drivers]
+          patientResource.identifier << FHIR::Identifier.new({
+            'type'=>{'coding'=>[{'system'=>'http://hl7.org/fhir/v2/0203','code'=>'DL'}]},
+            'system'=>'urn:oid:2.16.840.1.113883.4.3.25','value'=>entity[:identifier_drivers]})
+        end
+        if entity[:identifier_passport]
+          patientResource.identifier << FHIR::Identifier.new({
+            'type'=>{'coding'=>[{'system'=>'http://hl7.org/fhir/v2/0203','code'=>'PPN'}]},
+            'system'=>"#{SHR_EXT}passportNumber",'value'=>entity[:identifier_passport]})
+        end
+        # add biometric data
+        if entity[:fingerprint]
+          patientResource.photo << FHIR::Attachment.new({
+            'contentType'=>'image/png','title'=>'Biometrics.Fingerprint',
+            'data'=> Base64.strict_encode64(entity[:fingerprint].to_blob)
+          })
+        end
+        # record death if applicable
         if !entity[:is_alive]
           patientResource.deceasedDateTime = convertFhirDateTime(entity.record_synthea.patient_info[:deathdate], 'time')
         end
+
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = "urn:uuid:#{resourceID}"
         entry.resource = patientResource

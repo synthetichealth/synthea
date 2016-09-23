@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'net-sftp'
   s.add_runtime_dependency 'highline'
   s.add_runtime_dependency 'json'
+  s.add_runtime_dependency 'chunky_png'
 end
 
 

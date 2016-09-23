@@ -25,9 +25,11 @@ module Synthea
           entity[:race] ||= Synthea::World::Demographics::RACES.pick
           entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[ entity[:race] ].pick
           entity[:blood_type] = Synthea::World::Demographics::BLOOD_TYPES[ entity[:race] ].pick
+          entity[:fingerprint] = Synthea::Fingerprint.generate
           # new babies are average weight and length for American newborns
           entity[:height] = 51 # centimeters
           entity[:weight] = 3.5 # kilograms
+          entity[:multiple_birth] = rand(3)+1 if(rand < Synthea::Config.lifecycle.prevalence_of_twins)
           entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
@@ -46,11 +48,31 @@ module Synthea
           entity[:address]['line'] << Faker::Address.secondary_address if (rand < 0.5)
           entity[:city] = location_data['city']
 
+          #telephone
+          entity[:telephone] = Faker::PhoneNumber.phone_number
+          
+          #birthplace
+          entity[:birth_place] = {
+            'city' => Synthea::Location.selectPoint['city'],
+            'state' => 'MA',
+          }
+
+          #parents
+          mothers_name = Faker::Name.first_name
+          mothers_name = "#{mothers_name}#{(mothers_name.hash % 999)}"
+          mothers_surname = Faker::Name.last_name
+          mothers_surname = "#{mothers_surname}#{(mothers_surname.hash % 999)}"
+          entity[:name_mother] = "#{mothers_name} #{mothers_surname}"
+
+          fathers_name = Faker::Name.first_name
+          fathers_name = "#{fathers_name}#{(fathers_name.hash % 999)}"
+          entity[:name_father] = "#{fathers_name} #{entity[:name_last]}"
+
+          #identifiers
+          entity[:identifier_ssn] = "999-#{rand(10..99)}-#{rand(1000..9999)}"
+
           entity[:med_changes] = Hash.new() { |hsh, key| hsh[key] = [] }
-
           choose_socioeconomic_values(entity)
-
-          # TODO update awareness
         end
       end
 
@@ -70,7 +92,39 @@ module Synthea
             end
             entity.events.create(dt.to_time, :grow, :age)
           end
-          # TODO update awareness
+          # stuff happens when you're an adult
+          if entity[:age]==16
+            # you get a driver's license
+            entity[:identifier_drivers] = "S999#{rand(10000..99999)}" if !entity[:identifier_drivers]
+          elsif entity[:age]==18
+            # you get respect
+            if entity[:gender]=='M'
+              entity[:name_prefix]='Mr.' if !entity[:name_prefix]
+            else
+              entity[:name_prefix]='Ms.' if !entity[:name_prefix]
+            end
+          elsif entity[:age]==20 && entity[:identifier_passport].nil?
+            # you might get a passport
+            entity[:identifier_passport] = (rand(0..1)==1)
+            entity[:identifier_passport] = "X#{rand(10000000..99999999)}X" if entity[:identifier_passport]
+          elsif entity[:age]==27 && !entity[:marital_status] # median age of marriage (26 for women, 28 for men)
+            if rand < 0.8
+              # you might get married
+              entity[:marital_status] = 'M'
+              if entity[:gender]=='F'
+                entity[:name_prefix]='Mrs.' 
+                entity[:name_maiden]=entity[:name_last]
+                entity[:name_last] = Faker::Name.last_name
+                entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
+              end
+            else
+              entity[:marital_status] = 'S'
+            end
+            # this doesn't account for divorces or widows right now
+          elsif entity[:age]==30
+            # you might get overeducated
+            entity[:name_suffix] = ['PhD','JD','MD'].sample if entity[:ses] && entity[:ses][:education] >= 0.95 && !entity[:name_suffix]
+          end
         end
       end
 

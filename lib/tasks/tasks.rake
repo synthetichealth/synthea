@@ -5,6 +5,12 @@ namespace :synthea do
     binding.pry
   end
 
+  desc 'fingerprint'
+  task :fingerprint, [] do |t, args|
+    fingerprint = Synthea::Fingerprint.generate
+    fingerprint.save('fingerprint_sample.png')
+  end
+
   desc 'generate'
   task :generate, [] do |t, args|
     start = Time.now
