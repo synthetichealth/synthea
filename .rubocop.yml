@@ -5,6 +5,7 @@ AllCops:
     - 'lib/world/MA_geo.rb'
     - 'lib/records/lookup.rb'
     - 'lib/tasks/*'
+    - 'vendor/**/*'
 
 Documentation:
   Enabled: false
