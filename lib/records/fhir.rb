@@ -165,6 +165,7 @@ module Synthea
             }],
           },
           'verificationStatus' => 'confirmed',
+          'clinicalStatus' => 'active',
           'onsetDateTime' => convertFhirDateTime(condition['time'],'time'),
           'context' => {'reference'=>"#{encounter.fullUrl}"}
         })
