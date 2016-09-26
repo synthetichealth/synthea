@@ -22,7 +22,7 @@ module Synthea
     end
 
     def had_event?(type)
-      @events.events.has_key?(type)
+      @events.events.key?(type)
     end
 
     def event(type)
@@ -35,7 +35,7 @@ module Synthea
 
     # Set value for a symptom, providing cause (ie :diabetes), type (ie :fatigue), and value ranging from 1-100
     def set_symptom_value(cause, type, value)
-      raise "Symptom value out of range" if value < 1 || value > 100
+      raise 'Symptom value out of range' if value < 1 || value > 100
       @symptoms[type][cause] = value
     end
 
@@ -56,6 +56,5 @@ module Synthea
     def get_symptoms_exceeding(threshold)
       @symptoms.keys.select { |type| get_symptom_value(type) > threshold } || []
     end
-
   end
 end

@@ -1,0 +1,18 @@
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'test/**/*'
+    - 'lib/world/MA_geo.rb'
+    - 'lib/records/lookup.rb'
+    - 'lib/tasks/*'
+
+Documentation:
+  Enabled: false
+
+Metrics:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+Style/HashSyntax:
+  Enabled: false
