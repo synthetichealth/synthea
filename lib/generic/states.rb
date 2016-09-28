@@ -215,11 +215,15 @@ module Synthea
 
         def prescribe(time, entity)
           add_lookup_code(Synthea::MEDICATION_LOOKUP)
-          cond = @context.most_recent_by_name(@reason) unless @reason.nil?
+          unless @reason.nil?
+            cond = @context.most_recent_by_name(@reason)
+            cond = cond.symbol if cond
+            cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
+          end
           if cond.nil?
             entity.record_synthea.medication_start(symbol, time, [])
           else
-            entity.record_synthea.medication_start(symbol, time, [cond.symbol])
+            entity.record_synthea.medication_start(symbol, time, [cond])
           end
           @prescribed = true
         end
@@ -274,10 +278,15 @@ module Synthea
         def operate(time, entity)
           add_lookup_code(Synthea::PROCEDURE_LOOKUP)
           cond = @context.most_recent_by_name(@reason) unless @reason.nil?
+          unless @reason.nil?
+            cond = @context.most_recent_by_name(@reason)
+            cond = cond.symbol if cond
+            cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
+          end
           if cond.nil?
             entity.record_synthea.procedure(symbol, time, nil)
           else
-            entity.record_synthea.procedure(symbol, time, cond.symbol)
+            entity.record_synthea.procedure(symbol, time, cond)
           end
           @operated = true
         end
@@ -342,13 +351,34 @@ module Synthea
       end
 
       class Death < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @range = cfg['range']
+          if @range.nil?
+            @exact = cfg['exact']
+          end
+        end
+
         def process(time, entity)
-          entity[:is_alive] = false
-          entity.events.create(time, :death, :generic, true)
-          Synthea::Modules::Lifecycle.record_death(entity, time)
+          if @range
+            value = rand(@range['low'] .. @range['high']).method(@range['unit']).call().since(time)
+          elsif @exact
+            value = @exact['quantity'].method(@exact['unit']).call().since(time)
+          end
+          if value
+            # Record the future death... if there is a condition with a known life-expectancy
+            # and you want the model to keep running in the mean time.
+            entity.events.create(value, :death, :generic, false)
+            Synthea::Modules::Lifecycle.record_death(entity, value)
+          else
+            entity.events.create(time, :death, :generic, true)
+            Synthea::Modules::Lifecycle.record_death(entity, time)
+          end
           true
         end
       end
+
     end
   end
 end
