@@ -3,7 +3,7 @@ module Synthea
     class Encounters < Synthea::Rules
       # People have encounters
       rule :schedule_encounter, [:age], [:encounter] do |time, entity|
-        if entity[:is_alive]
+        if entity.alive?(time)
           unprocessed_events = entity.events.unprocessed_before(time, :encounter_ordered)
           unprocessed_events.each do |event|
             entity.events.process(event)
@@ -42,7 +42,7 @@ module Synthea
       end
 
       rule :encounter, [], [:schedule_encounter, :observations, :lab_results, :diagnoses, :immunizations] do |time, entity|
-        if entity[:is_alive]
+        if entity.alive?(time)
           unprocessed_events = entity.events.unprocessed_before(time, :encounter)
           unprocessed_events.each do |event|
             entity.events.process(event)
@@ -63,7 +63,7 @@ module Synthea
 
       # Sometimes people schedule encounters because they're experiencing symptoms
       rule :symptoms_cause_encounter, [:symptoms, :tracked_symptoms], [:encounter, :symptoms_cause_encounter] do |time, entity|
-        if entity[:is_alive]
+        if entity.alive?(time)
           unprocessed_events = entity.events.unprocessed_before(time, :symptoms_cause_encounter)
           unprocessed_events.each do |event|
             entity.events.process(event)

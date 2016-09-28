@@ -58,7 +58,7 @@ module Synthea
         # patient.effective_time
         patient.race = { 'name' => entity[:race].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:race]] }
         patient.ethnicity = { 'name' => entity[:ethnicity].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:ethnicity]] }
-        unless entity[:is_alive]
+        unless entity.alive?
           patient.deathdate = entity.record_synthea.patient_info[:deathdate].to_i
           patient.expired = true
         end

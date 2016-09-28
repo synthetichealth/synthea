@@ -34,7 +34,7 @@ module Synthea
       end
 
       def handle_time_step
-        died = @people.select { |p| p.had_event?(:death) }
+        died = @people.select { |p| p.had_event?(:death, @data) }
         @people -= died
         @dead += died
         @births += @birth_rate.births

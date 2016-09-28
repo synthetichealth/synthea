@@ -14,7 +14,7 @@ module Synthea
 
       # this rule loops through the generic modules, processing one at a time
       rule :generic, [:generic], [:generic, :death] do |time, entity|
-        return unless entity[:is_alive]
+        return unless entity.alive?(time)
 
         entity[:generic] ||= {}
         @gmodules.each do |m|

@@ -130,7 +130,7 @@ module Synthea
                                                          'data' => Base64.strict_encode64(entity[:fingerprint].to_blob))
         end
         # record death if applicable
-        unless entity[:is_alive]
+        unless entity.alive?
           patient_resource.deceasedDateTime = convert_fhir_date_time(entity.record_synthea.patient_info[:deathdate], 'time')
         end
 
@@ -262,7 +262,10 @@ module Synthea
       end
 
       def self.procedure(procedure, fhir_record, patient, encounter)
-        reason = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find { |c| c.code == procedure['reason'] } }
+        if procedure['reason']
+          reason_code = COND_LOOKUP[procedure['reason']][:codes]['SNOMED-CT'][0]
+          reason = fhir_record.entry.find{ |e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{ |c| c.code == reason_code } }
+        end
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         fhir_procedure = FHIR::Procedure.new('subject' => { 'reference' => patient.fullUrl.to_s },
                                              'status' => 'completed',

@@ -10,7 +10,6 @@ class ExporterTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
-    @patient[:is_alive] = true
     @patient[:city] = 'Bedford'
     @record = @patient.record_synthea
     @record.patient_info[:uuid] = '1234'

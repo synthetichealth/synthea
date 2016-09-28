@@ -8,7 +8,6 @@ class GenericStatesTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
-    @patient[:is_alive] = true
   end
 
   def test_initial_always_passes
@@ -503,14 +502,30 @@ class GenericStatesTest < Minitest::Test
     ctx = get_context('death.json')
     death = Synthea::Generic::States::Death.new(ctx, "Death")
     @patient.record_synthea.expect(:death, nil, [@time])
-    assert(@patient[:is_alive])
+    assert(@patient.alive?)
     assert(death.process(@time, @patient))
 
     # Patient shouldn't be alive anymore
-    refute(@patient[:is_alive])
+    refute(@patient.alive?)
 
     # Verify that death was added to the record
     @patient.record_synthea.verify
+  end
+
+  def test_future_death
+    ctx = get_context('death_life_expectancy.json')
+    ctx.run(@time, @patient)
+    ctx.run(@time.advance(days: 7), @patient)
+
+    assert(@patient.alive?(@time.advance(days: 7)))
+    assert(@patient['processing'])
+    refute(@patient['still_processing'])
+
+    ctx.run(@time.advance(days: 14), @patient)
+    assert(@patient['still_processing'])
+
+    ctx.run(@time.advance(months: 6), @patient)
+    refute(@patient.alive?(@time.advance(months: 6)))
   end
 
   def get_context(file_name)

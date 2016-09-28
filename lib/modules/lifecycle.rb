@@ -13,7 +13,7 @@ module Synthea
       end
 
       # People are born
-      rule :birth, [], [:age, :is_alive] do |time, entity|
+      rule :birth, [], [:age] do |time, entity|
         unless entity.had_event?(:birth)
           entity[:age] = 0
           entity[:name_first] = Faker::Name.first_name
@@ -31,7 +31,6 @@ module Synthea
           entity[:height] = 51 # centimeters
           entity[:weight] = 3.5 # kilograms
           entity[:multiple_birth] = rand(3) + 1 if rand < Synthea::Config.lifecycle.prevalence_of_twins
-          entity[:is_alive] = true
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
           entity.events.create(time, :symptoms_cause_encounter, :birth)
@@ -79,8 +78,8 @@ module Synthea
       end
 
       # People age
-      rule :age, [:birth, :age, :is_alive], [:age] do |time, entity|
-        if entity[:is_alive]
+      rule :age, [:birth, :age], [:age] do |time, entity|
+        if entity.alive?(time)
           birthdate = entity.event(:birth).time
           age = entity[:age]
           entity[:age] = ((time.to_i - birthdate.to_i) / 1.year).floor
@@ -131,10 +130,10 @@ module Synthea
       end
 
       # People grow
-      rule :grow, [:age, :is_alive, :gender], [:height, :weight, :bmi] do |_time, entity|
+      rule :grow, [:age, :gender], [:height, :weight, :bmi] do |_time, entity|
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
-        if entity[:is_alive]
+        if entity.alive?(time)
           unprocessed_events = entity.events.unprocessed.select { |e| e.type == :grow }
           unprocessed_events.each do |event|
             entity.events.process(event)
@@ -167,9 +166,8 @@ module Synthea
 
       # People die
       rule :death, [:age], [] do |time, entity|
-        unless entity.had_event?(:death)
+        if entity.alive?(time)
           if rand <= likelihood_of_death(entity[:age])
-            entity[:is_alive] = false
             entity.events.create(time, :death, :death, true)
             self.class.record_death(entity, time)
           end

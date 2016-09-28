@@ -169,11 +169,10 @@ module Synthea
 
         person = Synthea::Person.new
         options.each { |k, v| person[k] = v }
-        while !person.had_event?(:death) && date <= @end_date
+        while !person.had_event?(:death, date) && date <= @end_date
           date += @time_step.days
           Synthea::Rules.apply(date, person)
         end
-
         person
       end
 
@@ -187,6 +186,7 @@ module Synthea
         conditions << 'Opioid Addict' if addict
         conditions << 'Diabetic' if patient[:diabetes]
         conditions << 'Heart Disease' if patient[:coronary_heart_disease]
+        conditions << 'Lung Cancer' if patient['Lung Cancer Type']
         conditions
       end
 
