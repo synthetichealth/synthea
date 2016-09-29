@@ -34,7 +34,7 @@ module Synthea
     end
 
     def alive?(time=nil)
-      !had_event?(:death,time)
+      event(:birth) && !had_event?(:death,time)
     end
 
     #-----------------------------------------------------------------------
