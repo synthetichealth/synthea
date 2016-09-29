@@ -284,14 +284,14 @@ module Synthea
       end
 
       class Observation < State
-        def initialize (context, name)
+        def initialize(context, name)
           super
           cfg = context.state_config(name)
           @codes = cfg['codes']
           range = cfg['range']
           exact = cfg['exact']
           if range
-            @value = rand(range['low'] .. range['high'])
+            @value = rand(range['low']..range['high'])
           elsif exact
             @value = exact['quantity']
           else
@@ -299,23 +299,23 @@ module Synthea
           end
           @unit = cfg['unit']
           @target_encounter = cfg['target_encounter']
-          @type = self.symbol()
+          @type = symbol
         end
 
         def add_lookup_code(lookup_hash)
-          # TODO - update the observation lookup hash so it's the same format as all the others
+          # TODO: update the observation lookup hash so it's the same format as all the others
           # and then delete this method
           return if @codes.nil? || @codes.empty?
           code = @codes.first
-          lookup_hash[@type] = { description: code['display'], code: code['code'],  unit: @unit}
+          lookup_hash[@type] = { description: code['display'], code: code['code'], unit: @unit }
         end
 
         def process(time, entity)
-          self.add_lookup_code(Synthea::OBS_LOOKUP)
-          if self.concurrent_with_target_encounter(time)
+          add_lookup_code(Synthea::OBS_LOOKUP)
+          if concurrent_with_target_encounter(time)
             entity.record_synthea.observation(@type, time, @value)
           end
-          return true
+          true
         end
       end
 
