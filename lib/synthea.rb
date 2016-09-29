@@ -19,6 +19,7 @@ require 'highline/import'
 require 'json'
 require 'concurrent'
 require 'chunky_png'
+require 'graphviz'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 
@@ -68,6 +69,6 @@ Dir.glob(File.join(root, 'lib', 'world', '**', '*.rb')).each do |file|
   require file
 end
 
-Dir.glob(File.join(root, 'lib', 'likelihoods', '**', '*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'tasks', '**', '*.rb')).each do |file|
   require file
 end

@@ -141,3 +141,5 @@ synthea:
         bs_degree: [0.5, 1.0]
   generic:
     log: false
+  graphviz:
+    output: './output/graphviz/'
