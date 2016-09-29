@@ -82,11 +82,7 @@ module Synthea
           end
 
           record_stats(person)
-          dead = person.had_event?(:death)
-          conditions = track_conditions(person)
-          weight = (person[:weight] * 2.20462).to_i
-
-          puts "##{i + 1}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]} #{weight} lbs. -- #{conditions.join(', ')}"
+          log_patient(person, number: i + 1, is_dead: person.had_event?(:death))
         end
       end
 
@@ -126,8 +122,7 @@ module Synthea
 
           record_stats(person)
           dead = person.had_event?(:death)
-
-          puts "#{city_name} ##{i + 1}/#{population}#{'(d)' if dead}:  #{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]}."
+          log_patient(person, number: i + 1, is_dead: dead, city_name: city_name, city_pop: population)
 
           break unless dead
           break if try_number >= Synthea::Config.sequential.max_tries
@@ -193,6 +188,22 @@ module Synthea
         conditions << 'Diabetic' if patient[:diabetes]
         conditions << 'Heart Disease' if patient[:coronary_heart_disease]
         conditions
+      end
+
+      def log_patient(person, options = {})
+        str = ''
+        str << options[:city_name] << ' ' if options[:city_name]
+        str << options[:number].to_s if options[:number]
+        str << '/' << options[:city_pop].to_s if options[:city_pop]
+        str << '(d)' if options[:is_dead]
+        str << ': '
+        str << "#{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]}"
+
+        conditions = track_conditions(person)
+        weight = (person[:weight] * 2.20462).to_i
+        str << " #{weight} lbs. -- #{conditions.join(', ')}"
+
+        puts str
       end
 
       def record_stats(patient)

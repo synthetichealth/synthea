@@ -32,6 +32,7 @@ synthea:
       generate_workers: 6
       export_workers: 10
     max_tries: 10 # max number of times it tries to create a person before it gives up (ie, nobody reached the target age)
+    clean_output_each_run: false # clear out the output directory before running
   schedule:
     variance: 0.1
   lifecycle:

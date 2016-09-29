@@ -58,12 +58,13 @@ module Synthea
         folder
       end
 
-      def self.fhir_upload(bundle, fhir_server_url)
+      def self.fhir_upload(bundle, fhir_server_url, fhir_client = nil)
         # create a new client object for each upload
-        # it's probably slower than keeping 1 or a fixed # around
-        # but it means we don't have to worry about thread-safety on this part
-        fhir_client = FHIR::Client.new(fhir_server_url)
-        fhir_client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
+        # unless they provide us a client to use
+        unless fhir_client
+          fhir_client = FHIR::Client.new(fhir_server_url)
+          fhir_client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
+        end
 
         fhir_client.begin_transaction
         bundle.entry.each do |entry|
