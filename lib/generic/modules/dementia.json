@@ -1,0 +1,596 @@
+{
+  "name": "Dementia",
+  "remarks" : "right now this is just Alzheimer's but there are other dementias that could be adapted into this model",
+  "states": {
+    "Initial" : {
+      "type" : "Initial",
+      "distributed_transition" : [
+      {
+          "distribution" : 0.4,
+          "transition" : "AlzheimersGene"
+      },
+      {
+          "distribution" : 0.6,
+          "transition" : "Terminal"
+      }],
+      "remarks" : ["Alzheimer's has been shown to be significantly based on genetics, and there are specific genes to point to for early-onset:",
+                   "https://www.nia.nih.gov/alzheimers/publication/alzheimers-disease-genetics-fact-sheet",
+                   "Since Synthea does not currently model at the level of individual genes",
+                   "we'll use a simple probability to differentiate the population into who will and won't get alzheimers.",
+                   "The 40% chance does seem high, but the key factor here is the delay in when it appears.",
+                   "38% of people over age 85 have alzheimer's. ( http://www.alzheimers.net/resources/alzheimers-statistics/ )"]
+    },
+    "AlzheimersGene" : {
+      "type" : "Simple",
+      "distributed_transition" : [
+      {
+          "distribution" : 0.95,
+          "transition" : "PreAlzheimers"
+      },
+      {
+          "distribution" : 0.05,
+          "transition" : "PreEarlyOnsetAlzheimers"
+      }],
+      "remarks" : "Early onset Alzheimers affects roughly 5% of people with Alzheimer's. http://www.mayoclinic.org/diseases-conditions/alzheimers-disease/in-depth/alzheimers/art-20048356"
+    },
+    
+    "PreAlzheimers" : {
+        "type" : "Delay",
+        "range": {
+            "low": 64,
+            "high": 80,
+            "unit": "years"
+          },
+        "remarks" : "There is evidence that higher education leads to a delay in the onset of alzheimers.",
+        "conditional_transition" : [        
+            {
+                "condition": {
+                    "condition_type": "Socioeconomic Status",
+                    "category" : "High"
+                },
+                "transition": "EducationDelay"
+            },
+            {
+                "transition": "AlzheimersOnset"
+            }
+        ]
+    },
+
+    "EducationDelay" : {
+        "type" : "Delay",
+        "range": {
+            "low": 5,
+            "high": 10,
+            "unit": "years"
+          },
+        "direct_transition" : "AlzheimersOnset"
+    },
+    
+    "AlzheimersOnset" : {
+        "type" : "ConditionOnset",
+        "target_encounter" : "DiagnosisEncounter",
+        "codes" : [{
+            "system" : "SNOMED-CT",
+            "code" : "26929004",
+            "display" : "Alzheimer's disease (disorder)"
+        }],
+        "direct_transition" : "NoImpairment"
+    },
+    
+    "PreEarlyOnsetAlzheimers" : {
+        "type" : "Delay",
+        "range": {
+            "low": 40,
+            "high": 64,
+            "unit": "years"
+          },
+        "direct_transition" : "EarlyOnsetAlzheimersOnset"
+    },
+    
+    "EarlyOnsetAlzheimersOnset" : {
+        "type" : "ConditionOnset",
+        "target_encounter" : "DiagnosisEncounter",
+        "codes" : [{
+            "system" : "SNOMED-CT",
+            "code" : "230265002",
+            "display" : "Familial Alzheimer's disease of early onset (disorder)"
+        }],
+        "direct_transition" : "NoImpairment"
+    },
+
+    "NoImpairment" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 12,
+            "high": 36,
+            "unit": "months"
+        },
+        "remarks" : ["1. Normal"],
+        "direct_transition" : "VeryMildDecline"
+    },
+    
+    "VeryMildDecline" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 12,
+            "high": 36,
+            "unit": "months"
+        },
+        "remarks" : ["2. Very mild decline, also considered normal aged forgetfulness"],
+        "direct_transition" : "MildMemoryLoss"
+    },
+
+    
+    "MildMemoryLoss" : {
+        "type" : "Symptom",
+        "symptom" : "Memory Loss",
+        "range" : {
+            "low" : 1,
+            "high" : 50
+        },
+        "direct_transition" : "MildDecline"
+    },
+    
+        
+    "MildDecline" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 6,
+            "high": 12,
+            "unit": "months"
+        },
+        "remarks" : ["3. Mild decline, aka mild cognitive impairment (MCI) progresses to the next stage in generally 2-4 years",
+                     "Persons at this stage display subtle deficits which are noted by others close to the subject",
+                     "https://www.alzinfo.org/understand-alzheimers/clinical-stages-of-alzheimers/"],
+       "conditional_transition": [
+       {
+            "condition": {
+                "condition_type": "Symptom",
+                "symptom" : "Memory Loss",
+                "operator" : ">",
+                "value" : 40
+            },
+            "transition": "DiagnosisEncounter",
+            "remarks" : "if the symptom is sufficiently noticeable enough people can be diagnosed in this stage, if not they will be diagnosed in the next stage"
+        },
+        {
+            "condition": {
+                "condition_type": "Symptom",
+                "symptom" : "Memory Loss",
+                "operator" : ">",
+                "value" : 30
+            },
+            "transition": "ModerateDecline"
+        },
+        {
+            "transition": "MildMemoryLoss"
+        }
+      ]
+    },
+
+
+    
+    "DiagnosisEncounter" : {
+        "type" : "Encounter",
+        "wellness" : true,
+        "remarks" : ["This is the enounter where alzheimer's is diagnosed. ", 
+                     "Typical life expectancy after an Alzheimer’s diagnosis is 4-to-8 years. (Alzheimer’s Association)"],
+        "direct_transition" : "Diagnosis_MMSE_Score"
+    },
+
+    "Diagnosis_MMSE_Score" : {
+        "type" : "Observation",
+        "target_encounter" : "DiagnosisEncounter",
+        "codes" : [{
+          "system" : "LOINC",
+          "code" : "72106-8",
+          "display" : "Total score [MMSE]"
+        }],
+        "range" : {
+            "low" : 18,
+            "high" : 25
+        },
+        "remarks" : ["The maximum MMSE score is 30 points. A score of 20 to 24 suggests mild dementia, ",
+                     "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
+                     "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp",
+                     "also available is the Clinical Dementia Rating (CDR)",
+                     "http://alzheimer.wustl.edu/cdr/cdr.htm"],
+        "unit" : "(score)",
+        "direct_transition" : "FirstPrescription"
+    },
+
+    "FirstPrescription" : {
+        "type" : "Simple",
+        "conditional_transition" : [
+        {
+            "condition": {
+                "condition_type": "Date",
+                "operator" : ">",
+                "year" : 2001
+            },
+            "transition": "FirstPrescription1",
+            "remarks" : "galantamine(razadyne) fda approved in 2001"
+        },
+        {
+            "condition": {
+                "condition_type": "Date",
+                "operator" : ">",
+                "year" : 1996
+            },
+            "transition": "FirstPrescription2",
+            "remarks" : "donepezil(aricept) fda approved in 1996"
+        },
+        {
+            "condition": {
+                "condition_type": "Date",
+                "operator" : ">",
+                "year" : 1993
+            },
+            "transition": "FirstPrescription3",
+            "remarks" : "tarine first available in 1993"
+        },
+        {
+            "transition": "ModerateDecline",
+            "remarks" : "before 1993 there were no specific drugs approved for Alzheimer’s by the fda"
+        }
+      ]
+    },
+
+    "FirstPrescription1": {
+        "type": "MedicationOrder",
+        "target_encounter": "DiagnosisEncounter",
+        "codes": [{
+            "system": "RxNorm",
+            "code": "602735",
+            "display": "Galantamine 4 MG [Razadyne]"
+        }],
+        "assign_to_attribute" : "Alzheimer's Medication",
+        "direct_transition": "ModerateDecline"
+    },
+
+    "FirstPrescription2": {
+        "type": "MedicationOrder",
+        "target_encounter": "DiagnosisEncounter",
+        "codes": [{
+            "system": "RxNorm",
+            "code": "997221",
+            "display": "Donepezil hydrochloride 10 MG [Aricept]"
+        }],
+        "assign_to_attribute" : "Alzheimer's Medication",
+        "direct_transition": "ModerateDecline"
+    },
+
+    "FirstPrescription3": {
+        "type": "MedicationOrder",
+        "target_encounter": "DiagnosisEncounter",
+        "codes": [{
+            "system": "RxNorm",
+            "code": "313185",
+            "display": "Tacrine 10 MG Oral Capsule"
+        }],
+        "assign_to_attribute" : "Alzheimer's Medication",
+        "direct_transition": "ModerateDecline"
+    },
+    
+    "ModerateDecline" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 5,
+            "high": 7,
+            "unit": "months"
+        },
+        "remarks" : ["4. Moderate decline, or mild alzheimer's has a mean duration of 2 years.",
+                     "The diagnosis of alzheimer's can be made with considerable accuracy in this stage",
+                     "https://www.alzinfo.org/understand-alzheimers/clinical-stages-of-alzheimers/"],
+        "conditional_transition": [
+       {
+            "condition": {
+                "condition_type": "Not",
+                "condition": {
+                   "condition_type": "PriorState",
+                   "name" : "DiagnosisEncounter"
+                }
+            },
+            "transition": "DiagnosisEncounter"
+        },
+        {
+            "condition": {
+                "condition_type": "Symptom",
+                "symptom" : "Memory Loss",
+                "operator" : ">",
+                "value" : 70
+            },
+            "transition": "ModeratelySevere_Encounter"
+        },
+        {
+            "transition": "ModerateMemoryLoss"
+        }
+      ]
+    },
+    
+    "ModerateMemoryLoss" : {
+        "type" : "Symptom",
+        "symptom" : "Memory Loss",
+        "range" : {
+            "low" : 40,
+            "high" : 80
+        }, 
+        "remarks" : "These numbers do not map to any real data, they are just picked mathematically to get the %s right",
+        "direct_transition" : "ModerateDecline"
+    },
+
+    "ModeratelySevere_Encounter": {
+      "type": "Encounter",
+      "class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "316744009",
+          "display": "Office Visit"
+        }
+      ],
+      "direct_transition": "ModeratelySevere_MMSE_Score"
+    },
+
+    "ModeratelySevere_MMSE_Score" : {
+        "type" : "Observation",
+        "target_encounter" : "ModeratelySevere_Encounter",
+        "codes" : [{
+          "system" : "LOINC",
+          "code" : "72106-8",
+          "display" : "Total score [MMSE]"
+        }],
+        "range" : {
+            "low" : 12,
+            "high" : 18
+        },
+        "remarks" : ["The maximum MMSE score is 30 points. A score of 20 to 24 suggests mild dementia, ",
+                     "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
+                     "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"],
+        "unit" : "(score)",
+        "conditional_transition" : [
+          {
+            "condition" : {
+              "condition_type" : "Attribute",
+              "attribute" : "Alzheimer’s Medication",
+              "operator" : "is not nil"
+            },
+            "transition" : "EndFirstPrescription"
+          },
+          {
+            "transition" : "SecondPrescription"
+          }
+        ]
+    },
+
+    "EndFirstPrescription": {
+        "type": "MedicationEnd",
+        "referenced_by_attribute" : "Alzheimer's Medication",
+        "direct_transition": "SecondPrescription"
+    },
+
+    "SecondPrescription" : {
+      "type" : "Simple",
+        "conditional_transition" : [
+        {
+            "condition": {
+                "condition_type": "Date",
+                "operator" : ">",
+                "year" : 2014
+            },
+            "transition": "SecondPrescription1",
+            "remarks" : "memantine+donepezil(namzaric) fda approved in 2014"
+        },
+        {
+            "condition": {
+                "condition_type": "Date",
+                "operator" : ">",
+                "year" : 2003
+            },
+            "transition": "SecondPrescription2",
+            "remarks" : "memantine(namenda) fda approved in 2003"
+        },
+        {
+            "condition": {
+                "condition_type": "Date",
+                "operator" : ">",
+                "year" : 1996
+            },
+            "transition": "SecondPrescription3",
+            "remarks" : "donepezil(aricept) fda approved in 1996"
+        },
+        {
+            "transition": "ModeratelySevereDecline"
+        }
+      ]
+    },
+
+    "SecondPrescription1": {
+        "type": "MedicationOrder",
+        "target_encounter": "ModeratelySevere_Encounter",
+        "codes": [{
+            "system": "RxNorm",
+            "code": "1602593",
+            "display": "Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG [Namzaric]"
+        }],
+        "direct_transition": "ModeratelySevereDecline"
+    },
+
+    "SecondPrescription2": {
+        "type": "MedicationOrder",
+        "target_encounter": "ModeratelySevere_Encounter",
+        "codes": [{
+            "system": "RxNorm",
+            "code": "996741",
+            "display": "Memantine hydrochloride 2 MG/ML [Namenda]"
+        }],
+        "direct_transition": "ModeratelySevereDecline"
+    },
+
+    "SecondPrescription3": {
+        "type": "MedicationOrder",
+        "target_encounter": "ModeratelySevere_Encounter",
+        "codes": [{
+            "system": "RxNorm",
+            "code": "998582",
+            "display": "Donepezil hydrochloride 23 MG [Aricept]"
+        }],
+        "direct_transition": "ModeratelySevereDecline"
+    },
+    
+    "ModeratelySevereDecline" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 12,
+            "high": 24,
+            "unit": "months"
+        },
+        "remarks" : ["5. Moderately severe decline, aka mid-stage or moderate alzheimer's has a mean duration about 1.5 yrs",
+                     "https://www.alzinfo.org/understand-alzheimers/clinical-stages-of-alzheimers/"],
+        "direct_transition" : "Severe_Encounter"
+    },
+    
+    "Severe_Encounter": {
+      "type": "Encounter",
+      "class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "316744009",
+          "display": "Office Visit"
+        }
+      ],
+      "direct_transition": "Severe_MMSE_Score"
+    },
+
+    "Severe_MMSE_Score" : {
+        "type" : "Observation",
+        "target_encounter" : "Severe_Encounter",
+        "codes" : [{
+          "system" : "LOINC",
+          "code" : "72106-8",
+          "display" : "Total score [MMSE]"
+        }],
+        "range" : {
+            "low" : 6,
+            "high" : 12
+        },
+        "remarks" : ["The maximum MMSE score is 30 points. A score of 20 to 24 suggests mild dementia, ",
+                     "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
+                     "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"],
+        "unit" : "(score)",
+        "direct_transition" : "SevereDecline"
+    },
+
+    "SevereDecline" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 20,
+            "high": 40,
+            "unit": "months"
+        },
+        "remarks" : ["6. Severe decline, or moderately severe Alzheimer's contains 5 defined substages, the total duration approximately 2.5 yrs"],
+        "direct_transition" : "VerySevere_Encounter"
+    },
+    
+    "VerySevere_Encounter": {
+      "type": "Encounter",
+      "class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "316744009",
+          "display": "Office Visit"
+        }
+      ],
+      "direct_transition": "VerySevere_MMSE_Score"
+    },
+
+    "VerySevere_MMSE_Score" : {
+        "type" : "Observation",
+        "target_encounter" : "Severe_Encounter",
+        "codes" : [{
+          "system" : "LOINC",
+          "code" : "72106-8",
+          "display" : "Total score [MMSE]"
+        }],
+        "range" : {
+            "low" : 0,
+            "high" : 6
+        },
+        "remarks" : ["The maximum MMSE score is 30 points. A score of 20 to 24 suggests mild dementia, ",
+                     "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
+                     "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"],
+        "unit" : "(score)",
+        "direct_transition" : "VerySevereDecline"
+    },
+
+
+    "VerySevereDecline" : {
+        "type" : "Delay",
+        "range" : {
+            "low": 6,
+            "high": 12,
+            "unit": "months"
+        },
+        "remarks" : ["7. Very severe decline, aka late-stage or severe alzheimer's contains 6 functional substages, each with a mean duration ~1 yr",
+                     "https://www.alzinfo.org/understand-alzheimers/clinical-stages-of-alzheimers/"],
+        "distributed_transition" : [
+        {
+            "distribution" : 0.16,
+            "transition" : "Pneumonia"
+        },
+        {
+            "distribution" : 0.16,
+            "transition" : "Death"
+        },
+        {
+            "distribution" : 0.68,
+            "transition" : "VerySevereDecline"
+        }
+      ]
+    },
+
+    "Pneumonia" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "PneumoniaEncounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "233604007",
+        "display" : "Pneumonia"
+      }],
+      "remarks" : "Pneumonia is one of the most common causes of death among Alzheimer’s patients",
+      "direct_transition" : "PneumoniaEncounter"
+    },
+
+    "PneumoniaEncounter" : {
+      "type" : "Encounter",
+      "class" : "inpatient",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "34285007",
+        "display" : "Hospital admission"
+      }],
+      "direct_transition" : "PneumoniaDelay"
+    }, 
+
+    "PneumoniaDelay" : {
+      "type" : "Delay",
+      "range" : {
+            "low": 4,
+            "high": 14,
+            "unit": "days"
+        },
+      "direct_transition" : "Death"
+    },
+    
+    "Death" : {
+        "type" : "Death",
+        "direct_transition" : "Terminal"
+    },
+    
+    "Terminal" : {
+        "type" : "Terminal"
+    }
+  }
+}

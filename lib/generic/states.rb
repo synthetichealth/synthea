@@ -283,6 +283,42 @@ module Synthea
         end
       end
 
+      class Observation < State
+        def initialize (context, name)
+          super
+          cfg = context.state_config(name)
+          @codes = cfg['codes']
+          range = cfg['range']
+          exact = cfg['exact']
+          if range
+            @value = rand(range['low'] .. range['high'])
+          elsif exact
+            @value = exact['quantity']
+          else
+            raise 'Observation state must specify value using either "range" or "exact"'
+          end
+          @unit = cfg['unit']
+          @target_encounter = cfg['target_encounter']
+          @type = self.symbol()
+        end
+
+        def add_lookup_code(lookup_hash)
+          # TODO - update the observation lookup hash so it's the same format as all the others
+          # and then delete this method
+          return if @codes.nil? || @codes.empty?
+          code = @codes.first
+          lookup_hash[@type] = { description: code['display'], code: code['code'],  unit: @unit}
+        end
+
+        def process(time, entity)
+          self.add_lookup_code(Synthea::OBS_LOOKUP)
+          if self.concurrent_with_target_encounter(time)
+            entity.record_synthea.observation(@type, time, @value)
+          end
+          return true
+        end
+      end
+
       class Symptom < State
         def initialize(context, name)
           super
