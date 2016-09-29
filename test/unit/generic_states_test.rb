@@ -464,6 +464,26 @@ class GenericStatesTest < Minitest::Test
     @patient.record_synthea.verify
   end
 
+  def test_observation
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('observation.json')
+
+    # The encounter comes first (and add it to history)
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "SomeEncounter")
+    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time])
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    obs = Synthea::Generic::States::Observation.new(ctx, "SomeObservation")
+    @patient.record_synthea.expect(:observation, nil, [:blood_pressure, @time, "120/80"])
+    assert(obs.process(@time, @patient))
+
+    # Verify that the procedure was added to the record
+    @patient.record_synthea.verify
+  end
+
   def test_symptoms
     ctx = get_context('symptom.json')
 
