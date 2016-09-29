@@ -18,19 +18,21 @@ module Synthea
       modules.each { |r| r.run(time, entity) }
     end
 
+    # rubocop:disable Style/ClassVars
     def self.modules
-      @modules ||= Synthea::Modules.constants.map { |m| "Synthea::Modules::#{m}".constantize.new }
+      @@modules ||= Synthea::Modules.constants.map { |m| "Synthea::Modules::#{m}".constantize.new }
     end
 
     def self.rule(name, inputs, outputs, &block)
-      @metadata ||= {}
-      @metadata[name] = {
+      @@metadata ||= {}
+      @@metadata[name] = {
         inputs: inputs,
         outputs: outputs,
         module_name: to_s.split('::').last
       }
       define_method "#{name}_rule".to_sym, block
     end
+    # rubocop:enable Style/ClassVars
 
     # Let Y be the original period risk (in our example 3650 days) and X be the time-step risk. The chance of an event not happening in 10 years is the
     # probability of the event not occuring every time step. (1-X)^(3650/time_step). Subtract this from 1 to get the
