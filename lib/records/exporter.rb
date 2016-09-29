@@ -38,7 +38,7 @@ module Synthea
         end
       end
 
-      def self.get_output_folder(folder_name, patient=nil)
+      def self.get_output_folder(folder_name, patient = nil)
         base = Synthea::Config.exporter.location
 
         dirs = [base, folder_name]
@@ -48,12 +48,12 @@ module Synthea
 
           # take the first 2 characters of the patient uuid for subfolders
           # uuid = hex so this gives us 256 subfolders
-          dirs << patient.record_synthea.patient_info[:uuid][0,2] if Synthea::Config.exporter.subfolder_by_id
+          dirs << patient.record_synthea.patient_info[:uuid][0, 2] if Synthea::Config.exporter.subfolder_by_id
         end
 
         folder = File.join(*dirs)
 
-        FileUtils.mkdir_p folder unless File.exists? folder
+        FileUtils.mkdir_p folder unless File.exist? folder
 
         folder
       end
@@ -66,24 +66,23 @@ module Synthea
         fhir_client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
 
         fhir_client.begin_transaction
-        start_time = Time.now
         bundle.entry.each do |entry|
-          #defined our own 'add to transaction' function to preserve our entry information
-          add_entry_transaction('POST',nil,entry,fhir_client)
+          # defined our own 'add to transaction' function to preserve our entry information
+          add_entry_transaction('POST', nil, entry, fhir_client)
         end
         begin
           reply = fhir_client.end_transaction
-          puts "  Error: #{reply.code}" if reply.code!=200
-        rescue Exception => e
+          puts "  Error: #{reply.code}" if reply.code != 200
+        rescue StandardError => e
           puts "  Error: #{e.message}"
         end
       end
 
-      def self.add_entry_transaction(method, url, entry=nil, client)
+      def self.add_entry_transaction(_method, url, entry = nil, client)
         request = FHIR::Bundle::Entry::Request.new
         request.local_method = 'POST'
         if url.nil? && !entry.resource.nil?
-          options = Hash.new
+          options = {}
           options[:resource] = entry.resource.class
           options[:id] = entry.resource.id if request.local_method != 'POST'
           request.url = client.resource_url(options)
@@ -96,7 +95,6 @@ module Synthea
         entry
       end
 
-
       def self.filter_for_export(patient)
         # filter the patient's history to only the last __ years
         # but also include relevant history from before that
@@ -107,13 +105,11 @@ module Synthea
         patient = patient.dup
         patient.record_synthea = patient.record_synthea.dup
 
-        present = patient.record_synthea.present
-
         [:encounters, :conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
           entries = patient.record_synthea.send(attribute).dup
 
           entries.keep_if { |e| should_keep_entry(e, attribute, patient.record_synthea, cutoff_date) }
-          patient.record_synthea.send("#{attribute.to_s}=", entries)
+          patient.record_synthea.send("#{attribute}=", entries)
         end
 
         patient
@@ -136,7 +132,7 @@ module Synthea
         when :careplans
           return record.careplan_active?(e['type'])
         when :conditions
-          return record.present[ e['type'] ] || (e['end_time'] && e['end_time'] > cutoff_date)
+          return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date)
         end
 
         false

@@ -4,94 +4,90 @@ module Synthea
       def self.test(condition, context, time, entity)
         case condition['condition_type']
         when 'And'
-          self.testAnd(condition, context, time, entity)
+          test_and(condition, context, time, entity)
         when 'Or'
-          self.testOr(condition, context, time, entity)
+          test_or(condition, context, time, entity)
         when 'Not'
-          self.testNot(condition, context, time, entity)
+          test_not(condition, context, time, entity)
         when 'Gender'
-          self.testGender(condition, context, time, entity)
+          test_gender(condition, context, time, entity)
         when 'Age'
-          self.testAge(condition, context, time, entity)
+          test_age(condition, context, time, entity)
         when 'Socioeconomic Status'
-          self.testSES(condition, context, time, entity)
+          test_ses(condition, context, time, entity)
         when 'Date'
-          self.testDate(condition, context, time, entity)
+          test_date(condition, context, time, entity)
         when 'Attribute'
-          self.testAttribute(condition, context, time, entity)
+          test_attribute(condition, context, time, entity)
         when 'Symptom'
-          self.testSymptom(condition, context, time, entity)
+          test_symptom(condition, context, time, entity)
         when 'PriorState'
-          self.testPriorState(condition, context, time, entity)
+          test_prior_state(condition, context, time, entity)
         when 'True'
-          self.testTrue(condition, context, time, entity)
+          test_true(condition, context, time, entity)
         when 'False'
-          self.testFalse(condition, context, time, entity)
+          test_false(condition, context, time, entity)
         else
           raise "Unsupported condition type: #{condition['condition_type']}"
         end
       end
 
-      def self.testAnd(condition, context, time, entity)
+      def self.test_and(condition, context, time, entity)
         condition['conditions'].each do |c|
-          if ! self.test(c, context, time, entity)
-            return false
-          end
+          return false unless test(c, context, time, entity)
         end
-        return true
+        true
       end
 
-      def self.testOr(condition, context, time, entity)
+      def self.test_or(condition, context, time, entity)
         condition['conditions'].each do |c|
-          if test(c, context, time, entity)
-            return true
-          end
+          return true if test(c, context, time, entity)
         end
-        return false
+        false
       end
 
-      def self.testNot(condition, context, time, entity)
-        return ! test(condition['condition'], context, time, entity)
+      def self.test_not(condition, context, time, entity)
+        !test(condition['condition'], context, time, entity)
       end
 
-      def self.testGender(condition, context, time, entity)
-        return condition['gender'] == entity[:gender]
+      def self.test_gender(condition, _context, _time, entity)
+        condition['gender'] == entity[:gender]
       end
 
-      def self.testAge(condition, context, time, entity)
+      def self.test_age(condition, _context, time, entity)
         birthdate = entity.event(:birth).time
         age = Synthea::Modules::Lifecycle.age(time, birthdate, nil, condition['unit'].to_sym)
-        self.compare(age, condition['quantity'], condition['operator'])
+        compare(age, condition['quantity'], condition['operator'])
       end
 
-      def self.testSES(condition, context, time, entity)
-        raise "Unsupported category: #{condition['category']}" if !%w(High Middle Low).include?(condition['category'])
+      def self.test_ses(condition, _context, _time, entity)
+        raise "Unsupported category: #{condition['category']}" unless %w(High Middle Low).include?(condition['category'])
         ses_category = Synthea::Modules::Lifecycle.socioeconomic_category(entity)
-        self.compare(ses_category, condition['category'], '==')
+        compare(ses_category, condition['category'], '==')
       end
 
-      def self.testDate(condition, context, time, entity)
-        self.compare(time.year, condition['year'], condition['operator'])
+      def self.test_date(condition, _context, time, _entity)
+        compare(time.year, condition['year'], condition['operator'])
       end
 
-      def self.testAttribute(condition, context, time, entity)
-        self.compare(entity[ condition['attribute'] ], condition['value'], condition['operator'])
+      def self.test_attribute(condition, _context, _time, entity)
+        compare(entity[condition['attribute']], condition['value'], condition['operator'])
       end
 
-      def self.testSymptom(condition, context, time, entity)
-        self.compare(entity.get_symptom_value(condition['symptom']), condition['value'], condition['operator'])
+      def self.test_symptom(condition, _context, _time, entity)
+        compare(entity.get_symptom_value(condition['symptom']), condition['value'], condition['operator'])
       end
 
-      def self.testPriorState(condition, context, time, entity)
-        !(context.most_recent_by_name(condition['name']).nil?)
+      def self.test_prior_state(condition, context, _time, _entity)
+        !context.most_recent_by_name(condition['name']).nil?
       end
 
-      def self.testTrue(condition, context, time, entity)
-        return true
+      def self.test_true(_condition, _context, _time, _entity)
+        true
       end
 
-      def self.testFalse(condition, context, time, entity)
-        return false
+      def self.test_false(_condition, _context, _time, _entity)
+        false
       end
 
       def self.compare(lhs, rhs, operator)

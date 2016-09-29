@@ -1,11 +1,10 @@
 module Synthea
   module Modules
     class Encounters < Synthea::Rules
-
       # People have encounters
       rule :schedule_encounter, [:age], [:encounter] do |time, entity|
         if entity[:is_alive]
-          unprocessed_events = entity.events.unprocessed_before(time,:encounter_ordered)
+          unprocessed_events = entity.events.unprocessed_before(time, :encounter_ordered)
           unprocessed_events.each do |event|
             entity.events.process(event)
 
@@ -15,38 +14,36 @@ module Synthea
 
             age_in_years = entity[:age]
             if age_in_years >= 3
-              delta = case
-                when age_in_years <= 19
-                  1.year
-                when age_in_years <= 39
-                  3.years
-                when age_in_years <= 49
-                  2.years
-                else
-                  1.year
-              end
+              delta = if age_in_years <= 19
+                        1.year
+                      elsif age_in_years <= 39
+                        3.years
+                      elsif age_in_years <= 49
+                        2.years
+                      else
+                        1.year
+                      end
             else
               age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, deathdate, :months)
-              delta = case
-                when age_in_months <= 1
-                  1.months
-                when age_in_months <= 5
-                  2.months
-                when age_in_months <= 17
-                  3.months
-                else
-                  6.months
-              end
+              delta = if age_in_months <= 1
+                        1.months
+                      elsif age_in_months <= 5
+                        2.months
+                      elsif age_in_months <= 17
+                        3.months
+                      else
+                        6.months
+                      end
             end
-            next_date = time + Distribution::Normal.rng(delta*1.0, delta*schedule_variance).call
+            next_date = time + Distribution::Normal.rng(delta * 1.0, delta * schedule_variance).call
             entity.events.create(next_date, :encounter, :schedule_encounter)
           end
         end
       end
 
-      rule :encounter, [], [:schedule_encounter,:observations,:lab_results,:diagnoses,:immunizations] do |time, entity|
+      rule :encounter, [], [:schedule_encounter, :observations, :lab_results, :diagnoses, :immunizations] do |time, entity|
         if entity[:is_alive]
-          unprocessed_events = entity.events.unprocessed_before(time,:encounter)
+          unprocessed_events = entity.events.unprocessed_before(time, :encounter)
           unprocessed_events.each do |event|
             entity.events.process(event)
             self.class.encounter(entity, event.time)
@@ -77,7 +74,7 @@ module Synthea
 
             # Check for severe symptoms
             severe_symptoms = entity.get_symptoms_exceeding(85)
-            next unless severe_symptoms.length > 0
+            next if severe_symptoms.empty?
 
             # A patient won't always make an apointment
             next unless rand < 0.1
@@ -95,16 +92,16 @@ module Synthea
         end
       end
 
-      #processes all emergency events. Implemented as a function instead of a rule because emergency events must be procesed
-      #immediately rather than waiting til the next time period. Patient may die, resulting in rule not being called.
-      def self.emergency_visit (time, entity)
-        unprocessed_events = entity.events.unprocessed_before(time,:emergency_encounter)
+      # processes all emergency events. Implemented as a function instead of a rule because emergency events must be procesed
+      # immediately rather than waiting til the next time period. Patient may die, resulting in rule not being called.
+      def self.emergency_visit(time, entity)
+        unprocessed_events = entity.events.unprocessed_before(time, :emergency_encounter)
         unprocessed_events.each do |event|
           entity.events.process(event)
           emergency_encounter(entity, time)
         end
 
-        unprocessed_events = entity.events.unprocessed.select{|x| [:myocardial_infarction,:cardiac_arrest,:stroke].include?(x.type) && x.time <= time}
+        unprocessed_events = entity.events.unprocessed.select { |x| [:myocardial_infarction, :cardiac_arrest, :stroke].include?(x.type) && x.time <= time }
         unprocessed_events.each do |event|
           entity.events.process(event)
           Synthea::Modules::CardiovascularDisease.perform_emergency(entity, event)
@@ -115,26 +112,25 @@ module Synthea
 
       def self.encounter(entity, time)
         age = entity[:age]
-        type = case
-          when age <= 1
-            :age_lt_1
-          when age <= 4
-            :age_lt_4
-          when age <= 11
-            :age_lt_11
-          when age <= 17
-            :age_lt_17
-          when age <= 39
-            :age_lt_39
-          when age <= 64
-            :age_lt_64
-          else
-            :age_senior
-        end
+        type = if age <= 1
+                 :age_lt_1
+               elsif age <= 4
+                 :age_lt_4
+               elsif age <= 11
+                 :age_lt_11
+               elsif age <= 17
+                 :age_lt_17
+               elsif age <= 39
+                 :age_lt_39
+               elsif age <= 64
+                 :age_lt_64
+               else
+                 :age_senior
+               end
         entity.record_synthea.encounter(type, time)
       end
 
-      def self.emergency_encounter(entity,time)
+      def self.emergency_encounter(entity, time)
         entity.record_synthea.encounter(:emergency, time)
       end
     end
