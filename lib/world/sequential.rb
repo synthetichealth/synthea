@@ -173,6 +173,7 @@ module Synthea
           date += @time_step.days
           Synthea::Rules.apply(date, person)
         end
+        Synthea::Modules::Generic.log_modules(person)
         person
       end
 

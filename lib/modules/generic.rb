@@ -25,6 +25,14 @@ module Synthea
 
       #-----------------------------------------------------------------------#
 
+      def self.log_modules(entity)
+        if entity && Synthea::Config.generic.log
+          entity[:generic].each do |key,context|
+            context.log_history if context.logged.nil?
+          end
+        end
+      end
+
       def self.perform_wellness_encounter(entity, time)
         return if entity[:generic].nil?
 
