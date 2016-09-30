@@ -355,16 +355,14 @@ module Synthea
           super
           cfg = context.state_config(name)
           @range = cfg['range']
-          if @range.nil?
-            @exact = cfg['exact']
-          end
+          @exact = cfg['exact'] if @range.nil?
         end
 
         def process(time, entity)
           if @range
-            value = rand(@range['low'] .. @range['high']).method(@range['unit']).call().since(time)
+            value = rand(@range['low']..@range['high']).method(@range['unit']).call.since(time)
           elsif @exact
-            value = @exact['quantity'].method(@exact['unit']).call().since(time)
+            value = @exact['quantity'].method(@exact['unit']).call.since(time)
           end
           if value
             # Record the future death... if there is a condition with a known life-expectancy
@@ -378,7 +376,6 @@ module Synthea
           true
         end
       end
-
     end
   end
 end

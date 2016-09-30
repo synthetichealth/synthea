@@ -264,7 +264,7 @@ module Synthea
       def self.procedure(procedure, fhir_record, patient, encounter)
         if procedure['reason']
           reason_code = COND_LOOKUP[procedure['reason']][:codes]['SNOMED-CT'][0]
-          reason = fhir_record.entry.find{ |e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find{ |c| c.code == reason_code } }
+          reason = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find { |c| c.code == reason_code } }
         end
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         fhir_procedure = FHIR::Procedure.new('subject' => { 'reference' => patient.fullUrl.to_s },

@@ -27,7 +27,7 @@ module Synthea
 
       def self.log_modules(entity)
         if entity && Synthea::Config.generic.log
-          entity[:generic].each do |key,context|
+          entity[:generic].each do |_key, context|
             context.log_history if context.logged.nil?
           end
         end

@@ -21,9 +21,9 @@ module Synthea
       @attributes[name] = value
     end
 
-    def had_event?(type,time=nil)
+    def had_event?(type, time = nil)
       if time
-        !@events.before(time,type).empty?
+        !@events.before(time, type).empty?
       else
         @events.events.key?(type)
       end
@@ -33,8 +33,8 @@ module Synthea
       @events.events[type].try(:last)
     end
 
-    def alive?(time=nil)
-      event(:birth) && !had_event?(:death,time)
+    def alive?(time = nil)
+      event(:birth) && !had_event?(:death, time)
     end
 
     #-----------------------------------------------------------------------
