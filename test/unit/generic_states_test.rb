@@ -413,6 +413,102 @@ class GenericStatesTest < Minitest::Test
     @patient.record_synthea.verify
   end
 
+
+  def test_condition_end_by_entity_attribute
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('condition_end.json')
+
+    # First, onset the condition
+    condition1 = Synthea::Generic::States::ConditionOnset.new(ctx, "Condition1_Start")
+    assert(condition1.run(@time, @patient))
+    ctx.history << condition1
+
+    condition_id = 'chases_the_dragon_(finding)'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "DiagnosisEncounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    assert_equal(condition_id, @patient['Drug Use Behavior'].to_sym)
+
+    # Now process the end of the condition
+    con_end = Synthea::Generic::States::ConditionEnd.new(ctx, "Condition1_End")
+    @patient.record_synthea.expect(:end_condition, nil, [condition_id, @time])
+    assert(con_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_condition_end_by_medication_order
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('condition_end.json')
+
+    # First, onset the condition
+    condition2 = Synthea::Generic::States::ConditionOnset.new(ctx, "Condition2_Start")
+    assert(condition2.run(@time, @patient))
+    ctx.history << condition2
+
+    condition_id = 'influenza'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "DiagnosisEncounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    # Now process the end of the condition
+    con_end = Synthea::Generic::States::ConditionEnd.new(ctx, "Condition2_End")
+    @patient.record_synthea.expect(:end_condition, nil, [condition_id, @time])
+    assert(con_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_condition_end_by_code
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('condition_end.json')
+
+    # First, onset the Diabetes!
+    condition3 = Synthea::Generic::States::ConditionOnset.new(ctx, "Condition3_Start")
+    assert(condition3.run(@time, @patient))
+    ctx.history << condition3
+
+    condition_id = 'diabetes_mellitus'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "DiagnosisEncounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    # Now process the end of the condition
+    con_end = Synthea::Generic::States::ConditionEnd.new(ctx, "Condition3_End")
+    @patient.record_synthea.expect(:end_condition, nil, [condition_id, @time])
+    assert(con_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
   def test_setAttribute_with_value
     ctx = get_context('set_attribute.json')
 
