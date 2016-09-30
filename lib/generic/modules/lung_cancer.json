@@ -1,0 +1,794 @@
+{
+  "name": "Lung Cancer",
+  "remarks": [
+    "Most of the data for this module was synthesized from two primary sources:",
+    "1. The comprehensive pages starting at http://www.cancer.org/cancer/lungcancer/index",
+    "2. The Cancer Care Ontario Pathway Maps at https://www.cancercare.on.ca/ocs/qpi/dispathmgmt/pathways/lung_cancer_pathway_map/",
+    "Some data statistics came from:",
+    "3. The American Lung Association Lung Cancer Fact Sheet @ http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html",
+    "4. https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868",
+    "5. Life Expectancies: http://www.healthcommunities.com/lung-cancer/prognosis.shtml"
+  ],
+  "states": {
+
+    "Initial": {
+      "type" : "Initial",
+      "direct_transition" : "Ages_45_65"
+    },
+
+    "Ages_45_65": {
+      "type": "Delay",
+      "range": {
+        "low": 45,
+        "high": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Lung Cancer Probabilities",
+      "remarks": [
+        "Lung cancer mainly occurs in older people. About 2 out of 3 people diagnosed with lung cancer are 65 or older, while less than 2% are younger than 45. The average age at the time of diagnosis is about 70.",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-key-statistics"
+      ]
+    },
+
+    "Lung Cancer Probabilities": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              { "condition_type": "Gender", "gender": "M" },
+              { "condition_type": "Attribute", "attribute": "smoker", "operator": "==", "value": false }
+            ]
+          },
+          "distributions": [
+            { "distribution": 0.002, "transition": "Cough" },
+            { "distribution": 0.998, "transition": "Terminal" }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              { "condition_type": "Gender", "gender": "M" },
+              { "condition_type": "Attribute", "attribute": "smoker", "operator": "==", "value": true }
+            ]
+          },
+          "distributions": [
+            { "distribution": 0.244, "transition": "Cough" },
+            { "distribution": 0.766, "transition": "Terminal" }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              { "condition_type": "Gender", "gender": "F" },
+              { "condition_type": "Attribute", "attribute": "smoker", "operator": "==", "value": false }
+            ]
+          },
+          "distributions": [
+            { "distribution": 0.004, "transition": "Cough" },
+            { "distribution": 0.996, "transition": "Terminal" }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              { "condition_type": "Gender", "gender": "F" },
+              { "condition_type": "Attribute", "attribute": "smoker", "operator": "==", "value": true }
+            ]
+          },
+          "distributions": [
+            { "distribution": 0.185, "transition": "Cough" },
+            { "distribution": 0.815, "transition": "Terminal" }
+          ]
+        }
+      ],
+      "remarks": [
+        "Overall, the chance that a man will develop lung cancer in his lifetime is about 1 in 14; for a woman, the risk is about 1 in 17.",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-key-statistics",
+        "Men who smoke are 23 times more likely to develop lung cancer. Women are 13 times more likely, compared to never smokers.",
+        "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html",
+        "In a 2006 European study, the risk of developing lung cancer was: 0.2 percent for men who never smoked (0.4% for women); 5.5 percent of male former smokers (2.6% in women); 15.9 percent of current male smokers (9.5% for women); 24.4 percent for male “heavy smokers” defined as smoking more than 5 cigarettes per day (18.5 percent for women)",
+        "https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868"
+      ]
+    },
+
+    "Cough": {
+      "type" : "Symptom",
+      "symptom": "Cough",
+      "range": { "low": 50, "high": 100},
+      "direct_transition": "Chest Pain"
+    },
+
+    "Chest Pain": {
+      "type" : "Symptom",
+      "symptom": "Chest Pain",
+      "range": { "low": 50, "high": 100},
+      "direct_transition": "Suspected Lung Cancer"
+    },
+
+    "Suspected Lung Cancer": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter I",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "162573006",
+        "display": "Suspected lung cancer (situation)"
+      }],
+      "assign_to_attribute": "Suspected Lung Cancer",
+      "direct_transition": "Diagnosis Encounter I"
+    },
+
+    "Diagnosis Encounter I": {
+      "type": "Encounter",
+      "class": "emergency",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "50849002",
+        "display": "Emergency Room Admission"
+      }],
+      "direct_transition": "Chest X-Ray"
+    },
+
+    "Chest X-Ray": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter I",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "399208008",
+        "display": "Plain chest X-ray (procedure)"
+      }],
+      "direct_transition": "Schedule Follow Up I"
+    },
+
+    "Schedule Follow Up I": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 9,
+        "unit": "days"
+      },
+      "direct_transition": "Diagnosis Encounter II"
+    },
+
+    "Diagnosis Encounter II": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "185347001",
+        "display": "Encounter for problem"
+      }],
+      "direct_transition": "Chest CT Scan"
+    },
+
+    "Chest CT Scan": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter II",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "418891003",
+        "display": "Computed tomography of chest and abdomen"
+      }],
+      "reason": "Suspected Lung Cancer",
+      "direct_transition": "Schedule Follow Up II"
+    },
+
+    "Schedule Follow Up II": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 9,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        { "distribution": 0.85, "transition": "Non-Small Cell Lung Cancer"},
+        { "distribution": 0.15, "transition": "Small Cell Lung Cancer"}
+      ],
+      "remarks": [
+        "About 85% of lung cancers are non-small cell lung cancers.",
+        "About 10%-15% of lung cancers are small cell lung cancers.",
+        "http://www.cancer.org/cancer/lungcancer/index"
+      ]
+    },
+
+    "Non-Small Cell Lung Cancer": {
+      "type": "SetAttribute",
+      "attribute": "Lung Cancer Type",
+      "value": "NSCLC",
+      "direct_transition": "NSCLC"
+    },
+
+    "NSCLC": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter III",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "254637007",
+        "display": "Non-small cell lung cancer (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer",
+      "direct_transition": "Diagnosis Encounter III"
+    },
+
+    "Small Cell Lung Cancer": {
+      "type": "SetAttribute",
+      "attribute": "Lung Cancer Type",
+      "value": "SCLC",
+      "direct_transition": "SCLC"
+    },
+
+    "SCLC": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter III",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "254632001",
+        "display": "Small cell carcinoma of lung (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer",
+      "direct_transition": "Diagnosis Encounter III"
+    },
+
+    "Diagnosis Encounter III": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "185347001",
+        "display": "Encounter for problem"
+      }],
+      "distributed_transition": [
+        { "distribution": 0.25, "transition": "Sputum Cytology (Phelgm)"},
+        { "distribution": 0.25, "transition": "Thoracentesis (Fluid)"},
+        { "distribution": 0.25, "transition": "Needle Biopsy (Cells)"},
+        { "distribution": 0.25, "transition": "Bronchoscopy (Tube)"}
+      ]
+    },
+
+    "Sputum Cytology (Phelgm)": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter III",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "167995008",
+        "display": "Sputum microscopy (procedure)"
+      }],
+      "reason": "Suspected Lung Cancer",
+      "direct_transition": "Schedule Follow Up III"
+    },
+
+    "Thoracentesis (Fluid)": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter III",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "91602002",
+        "display": "Thoracentesis (procedure)"
+      }],
+      "reason": "Suspected Lung Cancer",
+      "direct_transition": "Schedule Follow Up III"
+    },
+
+    "Needle Biopsy (Cells)": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter III",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "432231006",
+        "display": "Fine needle aspiration biopsy of lung (procedure)"
+      }],
+      "reason": "Suspected Lung Cancer",
+      "direct_transition": "Schedule Follow Up III"
+    },
+
+    "Bronchoscopy (Tube)": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter III",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "173160006",
+        "display": "Diagnostic fiberoptic bronchoscopy (procedure)"
+      }],
+      "reason": "Suspected Lung Cancer",
+      "direct_transition": "Schedule Follow Up III"
+    },
+
+    "Schedule Follow Up III": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "NSCLC"
+          },
+          "distributions": [
+            { "distribution": 0.19, "transition": "Stage I"},
+            { "distribution": 0.12, "transition": "Stage II"},
+            { "distribution": 0.12, "transition": "Stage III"},
+            { "distribution": 0.55, "transition": "Stage IV"}
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "SCLC"
+          },
+          "distributions": [
+            { "distribution": 0.04, "transition": "Stage I"},
+            { "distribution": 0.10, "transition": "Stage II"},
+            { "distribution": 0.10, "transition": "Stage III"},
+            { "distribution": 0.74, "transition": "Stage IV"}
+          ]
+        }        
+      ],
+      "remarks": [
+        "See Stage Distribution (%) 2006-2012, Case Counts and Percentages",
+        "http://seer.cancer.gov/csr/1975_2013/browse_csr.php?sectionSEL=15&pageSEL=sect_15_table.14.html",
+        "http://seer.cancer.gov/csr/1975_2013/browse_csr.php?sectionSEL=15&pageSEL=sect_15_table.13.html",
+        "only 15 percent of lung cancer cases are diagnosed at an early stage.",
+        "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html"
+      ]
+    },
+
+    "Stage I": {
+      "type": "Death",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "SCLC"
+          },
+          "transition": "SCLC I"
+        },{
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "NSCLC"
+          },
+          "transition": "NSCLC I"
+        }
+      ]
+    },
+
+    "Stage II": {
+      "type": "Death",
+      "range": {
+        "low": 16,
+        "high": 28,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "SCLC"
+          },
+          "transition": "SCLC II"
+        },{
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "NSCLC"
+          },
+          "transition": "NSCLC II"
+        }
+      ]
+    },
+
+    "Stage III": {
+      "type": "Death",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "SCLC"
+          },
+          "transition": "SCLC III"
+        },{
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "NSCLC"
+          },
+          "transition": "NSCLC III"
+        }
+      ]
+    }, 
+
+    "Stage IV": {
+      "type": "Death",
+      "range": {
+        "low": 6,
+        "high": 10,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "SCLC"
+          },
+          "transition": "SCLC IV"
+        },{
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "NSCLC"
+          },
+          "transition": "NSCLC IV"
+        }
+      ]
+    },
+
+    "NSCLC I": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "424132000",
+        "display": "Non-small cell carcinoma of lung, TNM stage 1 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "NSCLC II": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "425048006",
+        "display": "Non-small cell carcinoma of lung, TNM stage 2 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "NSCLC III": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "422968005",
+        "display": "Non-small cell carcinoma of lung, TNM stage 3 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "NSCLC IV": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "423121009",
+        "display": "Non-small cell carcinoma of lung, TNM stage 4 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "SCLC I": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "67811000119102",
+        "display": "Primary small cell malignant neoplasm of lung, TNM stage 1 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "SCLC II": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "67821000119109",
+        "display": "Primary small cell malignant neoplasm of lung, TNM stage 2 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "SCLC III": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "67831000119107",
+        "display": "Primary small cell malignant neoplasm of lung, TNM stage 3 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "SCLC IV": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "67841000119103",
+        "display": "Primary small cell malignant neoplasm of lung, TNM stage 4 (disorder)"
+      }],
+      "assign_to_attribute": "Lung Cancer Condition",
+      "direct_transition": "Diagnosis Encounter IV"
+    },
+
+    "Diagnosis Encounter IV": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "185347001",
+        "display": "Encounter for problem"
+      }],
+      "direct_transition": "MRI Brain"
+    },
+
+    "MRI Brain": {
+      "type": "Procedure",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "698354004",
+        "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
+      }],
+      "reason": "Lung Cancer Condition",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "SCLC"
+          },
+          "transition": "SCLC Treatment Path"
+        },{
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer Type",
+            "operator": "==",
+            "value": "NSCLC"
+          },
+          "transition": "NSCLC Treatment Path"
+        }
+      ]
+    },
+
+    "SCLC Treatment Path": {
+      "type": "Simple",
+      "direct_transition": "SCLC Treatment Encounter"
+    },
+
+    "SCLC Treatment Encounter": {
+      "type": "Encounter",
+      "class": "inpatient",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "185347001",
+        "display": "Encounter for problem"
+      }],
+      "direct_transition": "SCLC Chemotheraphy I",
+      "remarks": [
+        "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
+      ]   
+    },
+
+    "SCLC Chemotheraphy I": {
+      "type": "MedicationOrder",
+      "target_encounter": "SCLC Treatment Encounter",
+      "codes": [{
+        "system": "RxNorm",
+        "code": "1736854",
+        "display": "Cisplatin 50 MG Injection"
+      }],
+      "reason": "Lung Cancer Condition",
+      "assign_to_attribute": "chemotherapy1",
+      "direct_transition": "SCLC Chemotheraphy IB",
+      "remarks": [
+        "SCLC is generally treated with combinations of chemotherapy drugs. The combinations most often used are: Cisplatin and etoposide",
+        "http://www.cancer.org/cancer/lungcancer-smallcell/detailedguide/small-cell-lung-cancer-treating-chemotherapy"
+      ]
+    },
+
+    "SCLC Chemotheraphy IB": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "chemotherapy1",
+      "direct_transition": "SCLC Chemotheraphy II"
+    },
+
+    "SCLC Chemotheraphy II": {
+      "type": "MedicationOrder",
+      "target_encounter": "SCLC Treatment Encounter",
+      "codes": [{
+        "system": "RxNorm",
+        "code": "1734340",
+        "display": "Etoposide 100 MG Injection"
+      }],
+      "reason": "Lung Cancer Condition",
+      "assign_to_attribute": "chemotherapy2",
+      "direct_transition": "SCLC Chemotheraphy IIB",
+      "remarks": [
+        "SCLC is generally treated with combinations of chemotherapy drugs. The combinations most often used are: Cisplatin and etoposide",
+        "http://www.cancer.org/cancer/lungcancer-smallcell/detailedguide/small-cell-lung-cancer-treating-chemotherapy"
+      ]
+    },
+
+    "SCLC Chemotheraphy IIB": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "chemotherapy2",
+      "direct_transition": "SCLC Radiation"
+    },
+
+    "SCLC Radiation": {
+      "type": "Procedure",
+      "target_encounter": "SCLC Treatment Encounter",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "703423002",
+        "display": "Combined chemotherapy and radiation therapy (procedure)"
+      }],
+      "reason": "Lung Cancer Condition",
+      "direct_transition": "SCLC Treatment Delay",
+      "remarks": [
+        "The type of radiation therapy most often used to treat SCLC is called external beam radiation therapy (EBRT).",
+        "http://www.cancer.org/cancer/lungcancer-smallcell/detailedguide/small-cell-lung-cancer-treating-radiation-therapy"
+      ]
+    },
+
+    "SCLC Treatment Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 21,
+        "high": 28,
+        "unit": "days"
+      },
+      "direct_transition": "SCLC Treatment Path",
+      "remarks": [
+        "Doctors give chemo in cycles, with a period of treatment (usually 1 to 3 days) followed by a rest period to allow your body time to recover. Each cycle generally lasts about 3 to 4 weeks",
+        "http://www.cancer.org/cancer/lungcancer-smallcell/detailedguide/small-cell-lung-cancer-treating-chemotherapy",
+        "Most often, radiation as part of the initial treatment for SCLC is given once or twice daily, 5 days a week, for 3 to 7 weeks.",
+        "http://www.cancer.org/cancer/lungcancer-smallcell/detailedguide/small-cell-lung-cancer-treating-radiation-therapy"
+      ]
+    },
+
+    "NSCLC Treatment Path": {
+      "type": "Simple",
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+
+    "NSCLC Treatment Encounter": {
+      "type": "Encounter",
+      "class": "inpatient",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "185347001",
+        "display": "Encounter for problem"
+      }],
+      "direct_transition": "NSCLC Chemotheraphy I",
+      "remarks": [
+        "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
+      ]   
+    },
+
+    "NSCLC Chemotheraphy I": {
+      "type": "MedicationOrder",
+      "target_encounter": "NSCLC Treatment Encounter",
+      "codes": [{
+        "system": "RxNorm",
+        "code": "1736854",
+        "display": "Cisplatin 50 MG Injection"
+      }],
+      "reason": "Lung Cancer Condition",
+      "assign_to_attribute": "chemotherapy1",
+      "direct_transition": "NSCLC Chemotheraphy IB",
+      "remarks": [
+        "Most often, treatment for NSCLC uses a combination of 2 chemo drugs.",
+        "If a combination is used, it often includes cisplatin or carboplatin plus one other drug",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-treating-chemotherapy"
+      ]
+    },
+
+    "NSCLC Chemotheraphy IB": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "chemotherapy1",
+      "direct_transition": "NSCLC Chemotheraphy II"
+    },
+
+    "NSCLC Chemotheraphy II": {
+      "type": "MedicationOrder",
+      "target_encounter": "NSCLC Treatment Encounter",
+      "codes": [{
+        "system": "RxNorm",
+        "code": "583214",
+        "display": "PACLitaxel 100 MG Injection"
+      }],
+      "reason": "Lung Cancer Condition",
+      "assign_to_attribute": "chemotherapy2",
+      "direct_transition": "NSCLC Chemotheraphy IIB",
+      "remarks": [
+        "The chemo drugs most often used for NSCLC include ... Paclitaxel (Taxol)",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-treating-chemotherapy"
+      ]
+    },
+
+    "NSCLC Chemotheraphy IIB": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "chemotherapy2",
+      "direct_transition": "NSCLC Radiation"
+    },
+
+    "NSCLC Radiation": {
+      "type": "Procedure",
+      "target_encounter": "NSCLC Treatment Encounter",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "703423002",
+        "display": "Combined chemotherapy and radiation therapy (procedure)"
+      }],
+      "reason": "Lung Cancer Condition",
+      "direct_transition": "NSCLC Treatment Delay",
+      "remarks": [
+        "External beam radiation therapy (EBRT) focuses radiation from outside the body on the cancer. This is the type of radiation therapy most often used to treat NSCLC or its spread to other organs.",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-treating-radiation-therapy"
+      ]
+    },
+
+    "NSCLC Treatment Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 28,
+        "high": 35,
+        "unit": "days"
+      },
+      "direct_transition": "NSCLC Treatment Path",
+      "remarks": [
+        "Doctors give chemo in cycles, with a period of treatment (usually 1 to 3 days) followed by a rest period to allow the body time to recover. Some chemo drugs, though, are given every day. Chemo cycles generally last about 3 to 4 weeks.",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-treating-radiation-therapy",
+        "Most often, radiation treatments to the lungs are given 5 days a week for 5 to 7 weeks",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-treating-radiation-therapy"
+      ]
+    },
+
+    "Terminal": {
+      "type" : "Terminal"
+    }
+  }
+}

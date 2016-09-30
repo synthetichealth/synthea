@@ -14,7 +14,7 @@ module Synthea
 
       # this rule loops through the generic modules, processing one at a time
       rule :generic, [:generic], [:generic, :death] do |time, entity|
-        return unless entity[:is_alive]
+        return unless entity.alive?(time)
 
         entity[:generic] ||= {}
         @gmodules.each do |m|
@@ -24,6 +24,14 @@ module Synthea
       end
 
       #-----------------------------------------------------------------------#
+
+      def self.log_modules(entity)
+        if entity && Synthea::Config.generic.log
+          entity[:generic].each do |_key, context|
+            context.log_history if context.logged.nil?
+          end
+        end
+      end
 
       def self.perform_wellness_encounter(entity, time)
         return if entity[:generic].nil?

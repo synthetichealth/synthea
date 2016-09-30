@@ -224,7 +224,6 @@ module Synthea
                                             end
           # see if the disease progresses another stage...
           if rand < (0.0001 * diabetes[:severity])
-            entity[:is_alive] = false
             entity.events.create(time, :death, :end_stage_renal_disease, true)
             Synthea::Modules::Lifecycle.record_death(entity, time)
           end
@@ -511,9 +510,8 @@ module Synthea
         amputations.each do |amputation|
           amp_str = amputation.to_s
           key = "amputation_#{amp_str}".to_sym
-          reason_code = '368581000119106'
           unless entity.record_synthea.present[key]
-            entity.record_synthea.procedure(key, time, reason_code, :procedure, :procedure)
+            entity.record_synthea.procedure(key, time, :neuropathy, :procedure, :procedure)
           end
 
           body_part = amp_str.split('_')[1]

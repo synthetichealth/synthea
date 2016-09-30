@@ -6,7 +6,6 @@ class GenericLogicTest < Minitest::Test
     @time = Time.now
     @patient = Synthea::Person.new
     @patient[:gender] = 'F'
-    @patient[:is_alive] = true
     @context = Synthea::Generic::Context.new({
       "name" => "Logic",
       "states" => {

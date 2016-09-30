@@ -170,7 +170,6 @@ module Synthea
           # survival rate triples if a bystander is present
           survival_rate *= 3 if rand < Synthea::Config.cardiovascular.chd.bystander
           if rand > survival_rate
-            entity[:is_alive] = false
             entity.events.create(time, :death, :coronary_heart_disease, true)
             Synthea::Modules::Lifecycle.record_death(entity, time)
           end
@@ -189,7 +188,6 @@ module Synthea
           survival_rate *= 3 if rand < Synthea::Config.cardiovascular.chd.bystander
           annual_death_risk = 1 - survival_rate
           if rand < Synthea::Rules.convert_risk_to_timestep(annual_death_risk, 365)
-            entity[:is_alive] = false
             entity.events.create(time, :death, :no_coronary_heart_disease, true)
             Synthea::Modules::Lifecycle.record_death(entity, time)
           end
@@ -342,7 +340,6 @@ module Synthea
           entity.events.create(time + 10.minutes, :emergency_encounter, :get_stroke)
           Synthea::Modules::Encounters.emergency_visit(time + 15.minutes, entity)
           if rand < Synthea::Config.cardiovascular.stroke.death
-            entity[:is_alive] = false
             entity.events.create(time, :death, :get_stroke, true)
             Synthea::Modules::Lifecycle.record_death(entity, time)
           end
@@ -433,11 +430,10 @@ module Synthea
 
         if entity[:cardiovascular_procedures]
           entity[:cardiovascular_procedures].each do |reason, procedures|
-            reason_code = COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
             procedures.each do |proc|
               unless entity.record_synthea.present[proc]
                 # TODO: assumes a procedure will only be performed once, might need to be revisited
-                entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure)
+                entity.record_synthea.procedure(proc, time, reason, :procedure, :procedure)
               end
             end
           end
@@ -471,8 +467,7 @@ module Synthea
           end
 
           emergency_procedures[diagnosis].each do |proc|
-            reason_code = COND_LOOKUP[diagnosis][:codes]['SNOMED-CT'][0]
-            entity.record_synthea.procedure(proc, time, reason_code, :procedure, :procedure)
+            entity.record_synthea.procedure(proc, time, diagnosis, :procedure, :procedure)
           end
 
           history_conditions[diagnosis].each do |cond|

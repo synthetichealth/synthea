@@ -16,7 +16,6 @@ class FhirTest < Minitest::Test
     @patient[:birth_place] = { 'city' => 'Bedford','state' => 'MA', }
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
-    @patient[:is_alive] = true
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
     @fhir_record = FHIR::Bundle.new
     @time = Time.now
@@ -32,14 +31,14 @@ class FhirTest < Minitest::Test
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)
     record.condition(:prediabetes, @time, :condition, nil)
-    record.procedure(:amputation_left_hand, @time, '46028000', :procedure, nil)
+    record.procedure(:amputation_left_hand, @time, :diabetes, :procedure, nil)
     record.immunization(:rv_mono, @time, :immunization, nil)
     record.observation(:ha1c, @time, 5, :observation, nil)
     record.end_condition(:prediabetes, @time + 10.minutes)
     time_adv = @time + 15.minutes
     record.encounter(:age_lt_11, time_adv)
     record.condition(:diabetes, time_adv, :condition, nil)
-    record.procedure(:amputation_right_leg, time_adv, '79733001', :procedure, nil)
+    record.procedure(:amputation_right_leg, time_adv, :diabetes, :procedure, nil)
     record.immunization(:dtap, time_adv, :immunization, nil)
     record.observation(:height, time_adv, 5, :observation, nil)
 
@@ -222,7 +221,7 @@ class FhirTest < Minitest::Test
   def test_procedure
     condition = {'type' => :nephropathy, 'time' => @time}
     Synthea::Output::FhirRecord.condition(condition, @fhir_record, @patient_entry, @encounter_entry)
-    proc_hash = { 'type' => :amputation_left_arm , 'time' => @time, 'reason' => '368581000119106'}
+    proc_hash = { 'type' => :amputation_left_arm , 'time' => @time, 'reason' => :nephropathy}
     Synthea::Output::FhirRecord.procedure(proc_hash, @fhir_record, @patient_entry, @encounter_entry)
     proc_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Procedure)}
     procedure  = proc_entry.resource

@@ -71,7 +71,8 @@ module Synthea
       end
 
       def self.test_attribute(condition, _context, _time, entity)
-        compare(entity[condition['attribute']], condition['value'], condition['operator'])
+        attribute = entity[condition['attribute']] || entity[condition['attribute'].to_sym]
+        compare(attribute, condition['value'], condition['operator'])
       end
 
       def self.test_symptom(condition, _context, _time, entity)
