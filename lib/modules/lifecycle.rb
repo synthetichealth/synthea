@@ -130,7 +130,7 @@ module Synthea
       end
 
       # People grow
-      rule :grow, [:age, :gender], [:height, :weight, :bmi] do |_time, entity|
+      rule :grow, [:age, :gender], [:height, :weight, :bmi] do |time, entity|
         # Assume a linear growth rate until average size is achieved at age 20
         # TODO consider genetics, social determinants of health, etc
         if entity.alive?(time)
