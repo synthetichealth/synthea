@@ -9,6 +9,11 @@ namespace :synthea do
     fingerprint.save('fingerprint_sample.png')
   end
 
+  desc 'generate rule visualization'
+  task :graphviz, [] do |t, args|
+    Synthea::Tasks::Graphviz.generate_graphs
+  end
+
   desc 'generate'
   task :generate, [] do |_t, _args|
     start = Time.now
