@@ -44,6 +44,14 @@ After generating data, upload it to a STU3 server
 bundle exec rake synthea:fhirupload[http://server/fhir/baseDstu3]
 ```
 
+### Synthea GraphViz
+Generate a graphical visualization of Synthea rules. Requires GraphViz to be installed.
+
+```
+brew install graphviz
+bundle exec rake synthea:graphviz
+```
+
 # License
 
 Copyright 2016 The MITRE Corporation
