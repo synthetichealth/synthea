@@ -102,83 +102,20 @@ module Synthea
         nodeMap = {}
         
         wf['states'].each do |name, state|
-          node = g.add_nodes(name, {'shape'=> 'record', 'style'=> 'rounded'})
-          details = ''
-          case state['type']
-          when 'Initial', 'Terminal'
+          node = g.add_nodes(name, {'shape' => 'record', 'style' => 'rounded'})
+          if state['type'] == 'Initial' || state['type'] == 'Terminal'
             node['color'] = 'black'
             node['style'] = 'rounded,filled'
             node['fontcolor'] = 'white'
-          when 'Guard'
-            details = "Allow if " + logicDetails(state['allow'])
-          when 'Delay', 'Death'
-            if state.has_key? 'range'
-              r = state['range']
-              details = "#{r['low']} - #{r['high']} #{r['unit']}"
-            elsif state.has_key? 'exact'
-              e = state['exact']
-              details = "#{e['quantity']} #{e['unit']}"
-            end 
-          when 'Encounter'
-            if state['wellness']
-              details = 'Wait for regularly scheduled wellness encounter'
-            end
-          when 'SetAttribute'
-            v = state['value']
-            details = "Set '#{state['attribute']}' = #{v ? "'#{v}'" : 'nil'}"
-          when 'Symptom'
-            s = state['symptom']
-            if state.has_key? 'range'
-              r = state['range']
-              details = "#{s}: #{r['low']} - #{r['high']}"
-            elsif state.has_key? 'exact'
-              e = state['exact']
-              details = "#{s}: #{e['quantity']}"
-            end
-          when 'Observation'
-            unit = state['unit']
-            if state.has_key? 'range'
-              r = state['range']
-              details = "#{r['low']} - #{r['high']} #{unit}\\l"
-            elsif state.has_key? 'exact'
-              e = state['exact']
-              details = "#{e['quantity']} #{unit}\\l"
-            end
           end
 
-          # Things common to many states
-          if state.has_key? 'codes'
-            state['codes'].each do |code|
-              details = details + code['system'] + "[" + code['code'] + "]: " + code['display'] + "\\l"
-            end
-          end
-          if state.has_key? 'target_encounter'
-            verb = 'Perform'
-            case state['type']
-            when 'ConditionOnset'
-              verb = 'Diagnose'
-            when 'MedicationOrder'
-              verb = 'Prescribe'
-            end
-            details = details + verb + " at " + state['target_encounter'] + "\\l"
-          end
-          if state.has_key? 'reason'
-            details = details + "Reason: " + state['reason'] + "\\l"
-          end
-          if state.has_key? 'medication_order'
-            details = details + "Prescribed at: #{state['medication_order']}\\l"
-          end
-          if state.has_key? 'assign_to_attribute'
-            details = details + "Assign to Attribute: '#{state['assign_to_attribute']}'\\l"
-          end
-          if state.has_key? 'referenced_by_attribute'
-            details = details + "Referenced By Attribute: '#{state['referenced_by_attribute']}'\\l"
-          end
+          details = state_description(state)
           if details.empty?
             node['label'] = (name == state['type']) ? name : "{ #{name} | #{state['type']} }"
           else
             node['label'] = "{ #{name} | { #{state['type']} | #{details} } }"
           end
+
           nodeMap[name] = node
         end
 
@@ -188,7 +125,7 @@ module Synthea
             begin
               g.add_edges( nodeMap[name], nodeMap[state['direct_transition']] )
             rescue
-              puts "State '#{name}' is transitioning to an unknown state: '#{state['direct_transition']}'"
+              raise "State '#{name}' is transitioning to an unknown state: '#{state['direct_transition']}'"
             end
           elsif state.has_key? 'distributed_transition'
             state['distributed_transition'].each do |t|
@@ -197,7 +134,7 @@ module Synthea
               begin
                 g.add_edges( nodeMap[name], nodeMap[t['transition']], {'label'=> "#{pct}%"})
               rescue
-                puts "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
+                raise "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
               end
             end
           elsif state.has_key? 'conditional_transition'
@@ -206,7 +143,7 @@ module Synthea
               begin
                 g.add_edges( nodeMap[name], nodeMap[t['transition']], {'label'=> "#{i+1}. #{cnd}"})
               rescue
-                puts "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
+                raise "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
               end
             end
           elsif state.has_key? 'complex_transition'
@@ -226,11 +163,86 @@ module Synthea
               begin
                 g.add_edges( nodeMap[nodes[0]], nodeMap[nodes[1]], {'label'=> labels.join(',\n')})
               rescue
-                puts "State '#{nodes[0]}' is transitioning to an unknown state: '#{nodes[1]}'"
+                raise "State '#{nodes[0]}' is transitioning to an unknown state: '#{nodes[1]}'"
               end
             end
           end
         end
+      end
+
+      def self.state_description(state)
+        details = ''
+
+        case state['type']
+        when 'Guard'
+          details = "Allow if " + logicDetails(state['allow'])
+        when 'Delay', 'Death'
+          if state.has_key? 'range'
+            r = state['range']
+            details = "#{r['low']} - #{r['high']} #{r['unit']}"
+          elsif state.has_key? 'exact'
+            e = state['exact']
+            details = "#{e['quantity']} #{e['unit']}"
+          end
+        when 'Encounter'
+          if state['wellness']
+            details = 'Wait for regularly scheduled wellness encounter'
+          end
+        when 'SetAttribute'
+          v = state['value']
+          details = "Set '#{state['attribute']}' = #{v ? "'#{v}'" : 'nil'}"
+        when 'Symptom'
+          s = state['symptom']
+          if state.has_key? 'range'
+            r = state['range']
+            details = "#{s}: #{r['low']} - #{r['high']}"
+          elsif state.has_key? 'exact'
+            e = state['exact']
+            details = "#{s}: #{e['quantity']}"
+          end
+        when 'Observation'
+          unit = state['unit']
+          if state.has_key? 'range'
+            r = state['range']
+            details = "#{r['low']} - #{r['high']} #{unit}\\l"
+          elsif state.has_key? 'exact'
+            e = state['exact']
+            details = "#{e['quantity']} #{unit}\\l"
+          end
+        end
+
+        # Things common to many states
+        if state.has_key? 'codes'
+          state['codes'].each do |code|
+            details = details + code['system'] + "[" + code['code'] + "]: " + code['display'] + "\\l"
+          end
+        end
+        if state.has_key? 'target_encounter'
+          verb = 'Perform'
+          case state['type']
+          when 'ConditionOnset'
+            verb = 'Diagnose'
+          when 'MedicationOrder'
+            verb = 'Prescribe'
+          end
+          details = details + verb + " at " + state['target_encounter'] + "\\l"
+        end
+        if state.has_key? 'reason'
+          details = details + "Reason: " + state['reason'] + "\\l"
+        end
+        if state.has_key? 'medication_order'
+          details = details + "Prescribed at: #{state['medication_order']}\\l"
+        end
+        if state.has_key? 'condition_onset'
+          details = details + "Onset at: #{state['condition_onset']}\\l"
+        end
+        if state.has_key? 'assign_to_attribute'
+          details = details + "Assign to Attribute: '#{state['assign_to_attribute']}'\\l"
+        end
+        if state.has_key? 'referenced_by_attribute'
+          details = details + "Referenced By Attribute: '#{state['referenced_by_attribute']}'\\l"
+        end
+        details
       end
 
       def self.logicDetails(logic)
@@ -265,8 +277,10 @@ module Synthea
           "state '#{logic['name']}' has been processed\\l"
         when 'Attribute'
           "Attribute: '#{logic['attribute']}' \\#{logic['operator']} #{logic['value']}\\l"
+        when 'True', 'False'
+          logic['condition_type']
         else
-          "UNSUPPORTED_CONDITION(#{logic['condition_type']})\\l"
+          raise "Unsupported Conditon: #{logic['condition_type']}"
         end
       end
 
