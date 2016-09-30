@@ -34,10 +34,13 @@ namespace :synthea do
     end
     # we need to configure mongo to export for some reason... not ideal
     Mongoid.configure { |config| config.connect_to('synthea_test') }
-    %w(html fhir CCDA).each do |type|
-      out_dir = File.join('output', type)
-      FileUtils.rm_r out_dir if File.exist? out_dir
-      FileUtils.mkdir_p out_dir
+
+    if Synthea::Config.sequential.clean_output_each_run
+      %w(html fhir CCDA).each do |type|
+        out_dir = Synthea::Output::Exporter.get_output_folder(type)
+        FileUtils.rm_r out_dir if File.exist? out_dir
+        FileUtils.mkdir_p out_dir
+      end
     end
 
     start = Time.now
@@ -63,17 +66,7 @@ namespace :synthea do
       Dir.glob(files).each do |file|
         json = File.open(file, 'r:UTF-8', &:read)
         bundle = FHIR.from_contents(json)
-        client.begin_transaction
-        bundle.entry.each do |entry|
-          # defined our own 'add to transaction' function to preserve our entry information
-          add_entry_transaction('POST', nil, entry, client)
-        end
-        begin
-          reply = client.end_transaction
-          puts "  Error: #{reply.code}" if reply.code != 200
-        rescue Exception => e
-          puts "  Error: #{e.message}"
-        end
+        Synthea::Output::Exporter.fhir_upload(bundle, args.url, client)
         count += 1
       end
       finish = Time.now
