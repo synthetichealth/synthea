@@ -197,6 +197,31 @@ module Synthea
         end
       end
 
+      class ConditionEnd < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @referenced_by = cfg['referenced_by_attribute']
+          @condition_onset = cfg['condition_onset']
+          @codes = cfg['codes']
+        end
+
+        def process(time, entity)
+          if @referenced_by
+            @type = entity[@referenced_by].to_sym
+          elsif @condition_onset
+            @type = @context.most_recent_by_name(@condition_onset).symbol
+          elsif @codes
+            @type = symbol
+          else
+            raise 'Condition End must define the condition to end either by code, a referenced entity attribute, or the name of the original ConditionOnset state'
+          end
+
+          entity.record_synthea.end_condition(@type, time)
+          true
+        end
+      end
+
       class MedicationOrder < State
         attr_reader :prescribed, :target_encounter
 
