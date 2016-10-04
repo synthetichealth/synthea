@@ -288,7 +288,7 @@ module Synthea
             raise 'Observation condition must be specified by code or attribute'
           end
           "Observation #{obs} \\#{logic['operator']} #{logic['value']}\\l"
-        when 'Condition'
+        when 'Active Condition'
           cond = ''
           if logic['codes']
             code = logic['codes'].first

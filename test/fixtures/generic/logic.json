@@ -107,7 +107,7 @@
     "operator" : "is not nil"
   },
   "diabetesConditionTest" : {
-    "condition_type" : "Condition",
+    "condition_type" : "Active Condition",
     "codes": [{
         "system": "SNOMED-CT",
         "code": "73211009",
@@ -115,7 +115,7 @@
     }]
   },
   "alzheimersConditionTest" : {
-    "condition_type" : "Condition",
+    "condition_type" : "Active Condition",
     "referenced_by_attribute" : "Alzheimer's Variant"
   },
   "attributeNilTest" : {

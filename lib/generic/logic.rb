@@ -81,7 +81,7 @@ module Synthea
         end
       end
 
-      def self.test_condition(condition, _context, _time, entity)
+      def self.test_active_condition(condition, _context, _time, entity)
         # return true if the given condition is currently active
         contype = if condition['codes']
                     # based on state.symbol
