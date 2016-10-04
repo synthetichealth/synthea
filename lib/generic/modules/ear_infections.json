@@ -1,0 +1,208 @@
+{
+  "name": "Ear Infections",
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "No_Infection"
+    },
+
+    "No_Infection": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator" : "<",
+            "quantity" : 3,
+            "unit" : "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.02010556,
+              "transition": "Gets_Ear_Infection",
+              "remarks": ["72.38% of children < 3 get an ear infection. This gives an incidence of .7238 / (3 * 12) = 0.020105556 per month",
+                          "Source: https://www.nidcd.nih.gov/health/statistics/ambulatory-care-visits-diagnosis-otitis-media"]
+            },
+            {
+              "distribution": 0.97989444,
+              "transition": "No_Infection"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 6,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.01316250,
+              "transition": "Gets_Ear_Infection",
+              "remarks": ["31.59% of children between 3 and 5 get an ear infection. .3159 / (2 * 12) = 0.01316250",
+                          "Source: https://www.nidcd.nih.gov/health/statistics/ambulatory-care-visits-diagnosis-otitis-media"]
+            },
+            {
+              "distribution": 0.98683750,
+              "transition": "No_Infection"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "units": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0007444,
+              "transition": "Gets_Ear_Infection",
+              "remarks": ["10.72% of children 6 - 18 get an ear infection. .1072 / (12 * 12) = .00074444",
+                          "Source: https://www.nidcd.nih.gov/health/statistics/ambulatory-care-visits-diagnosis-otitis-media"]
+            },
+            {
+              "distribution": 0.99925556,
+              "transition": "No_Infection"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 18,
+            "units": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00020833,
+              "transition": "Gets_Ear_Infection",
+              "remarks": ["It is widely accepted that 0.25% of adults get an ear infection (per anum).",
+                          "Based on 79 year average life expectancy in the U.S. .0025 / 12 = .00020833",
+                          "Source for life expectancy: http://data.worldbank.org/indicator/SP.DYN.LE00.IN",
+                          "Source for ear infection rates: http://patient.info/doctor/acute-otitis-media-in-adults"]
+            },
+            {
+              "distribution": 0.99979167,
+              "transition": "No_Infection"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Gets_Ear_Infection": {
+      "type": "ConditionOnset",
+      "target_encounter": "Ear_Infection_Encounter",
+      "codes": [
+        {
+            "system": "SNOMED-CT",
+            "code": "65363002",
+            "display": "Otitis media"
+        }
+      ],
+      "direct_transition": "Ear_Infection_Encounter"
+    },
+
+    "Ear_Infection_Encounter": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.859,
+          "transition": "Ear_Infection_Prescribed_Antibiotic",
+          "remarks": ["Could not find an exact source for the rate at which antibiotics are perscribed.",
+                      "Was able to find some relevant statistics for acute otitis media from this source:",
+                      "http://pediatrics.aappublications.org/content/early/2014/09/09/peds.2014-0605"]
+        },
+        {
+          "distribution": 0.141,
+          "transition": "Ear_Infection_Prescribed_OTC_Painkiller",
+          "remarks": ["Assuming those not perscribed antibiotics were encourage to use over-the-counter pain killers."]
+        }
+      ]
+    },
+
+    "Ear_Infection_Prescribed_Antibiotic": {
+      "type": "MedicationOrder",
+      "target_encounter": "Ear_Infection_Encounter",
+      "codes": [
+          {
+            "system": "RxNorm",
+            "code": "317616",
+            "display": "Amoxicillin 500MG"
+          }
+      ],
+      "reason": "Gets_Ear_Infection",
+      "direct_transition": "Ear_Infection_Antibiotic_Taken"
+    },
+
+    "Ear_Infection_Antibiotic_Taken": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "Ear_Infection_Antibiotic_End"
+    },
+
+    "Ear_Infection_Antibiotic_End": {
+        "type": "MedicationEnd",
+        "medication_order": "Ear_Infection_Prescribed_Antibiotic",
+        "direct_transition": "Loopback_No_Infection"
+    },
+
+    "Ear_Infection_Prescribed_OTC_Painkiller": {
+      "type": "MedicationOrder",
+      "target_encounter": "Ear_Infection_Encounter",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "315263",
+          "display": "Acetaminophen 325MG [Tylenol]",
+          "remarks": ["Dosage based on a single, standard Acetaminophen tablet of 325MG"]
+        }
+      ],
+      "reason": "Gets_Ear_Infection",
+      "direct_transition": "Ear_Infection_OTC_Painkiller_Taken"
+    },
+
+    "Ear_Infection_OTC_Painkiller_Taken": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "Ear_Infection_OTC_Painkiller_End"
+    },
+
+    "Ear_Infection_OTC_Painkiller_End": {
+      "type": "MedicationEnd",
+      "medication_order": "Ear_Infection_Prescribed_OTC_Painkiller",
+      "direct_transition": "Loopback_No_Infection"
+    },
+
+    "Loopback_No_Infection": {
+        "type": "Simple",
+        "direct_transition": "No_Infection",
+        "remarks" : "this state only exists to make the graph look nicer"
+    }
+  }
+}
