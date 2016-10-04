@@ -2,34 +2,11 @@ module Synthea
   module Generic
     module Logic
       def self.test(condition, context, time, entity)
-        case condition['condition_type']
-        when 'And'
-          test_and(condition, context, time, entity)
-        when 'Or'
-          test_or(condition, context, time, entity)
-        when 'Not'
-          test_not(condition, context, time, entity)
-        when 'Gender'
-          test_gender(condition, context, time, entity)
-        when 'Age'
-          test_age(condition, context, time, entity)
-        when 'Socioeconomic Status'
-          test_ses(condition, context, time, entity)
-        when 'Date'
-          test_date(condition, context, time, entity)
-        when 'Attribute'
-          test_attribute(condition, context, time, entity)
-        when 'Symptom'
-          test_symptom(condition, context, time, entity)
-        when 'PriorState'
-          test_prior_state(condition, context, time, entity)
-        when 'True'
-          test_true(condition, context, time, entity)
-        when 'False'
-          test_false(condition, context, time, entity)
-        else
-          raise "Unsupported condition type: #{condition['condition_type']}"
-        end
+        func = "test_#{condition['condition_type'].gsub(/\s+/, '_').downcase}"
+
+        raise "Unsupported condition type: #{condition['condition_type']}" unless respond_to?(func)
+
+        send(func, condition, context, time, entity)
       end
 
       def self.test_and(condition, context, time, entity)
@@ -60,7 +37,7 @@ module Synthea
         compare(age, condition['quantity'], condition['operator'])
       end
 
-      def self.test_ses(condition, _context, _time, entity)
+      def self.test_socioeconomic_status(condition, _context, _time, entity)
         raise "Unsupported category: #{condition['category']}" unless %w(High Middle Low).include?(condition['category'])
         ses_category = Synthea::Modules::Lifecycle.socioeconomic_category(entity)
         compare(ses_category, condition['category'], '==')
@@ -79,7 +56,46 @@ module Synthea
         compare(entity.get_symptom_value(condition['symptom']), condition['value'], condition['operator'])
       end
 
-      def self.test_prior_state(condition, context, _time, _entity)
+      def self.test_observation(condition, _context, _time, entity)
+        # find the most recent instance of the given observation
+        obstype = if condition['codes']
+                    # based on state.symbol
+                    condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+                  elsif condition['referenced_by_attribute']
+                    entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
+                  else
+                    raise 'Observation condition must be specified by code or attribute'
+                  end
+
+        obs = entity.record_synthea.observations.select { |o| o['type'] == obstype }
+        operator = condition['operator']
+
+        if obs.empty?
+          if ['is nil', 'is not nil'].include?(operator)
+            compare(nil, condition['value'], operator)
+          else
+            raise "No observations exist for type #{obstype}, cannot compare values"
+          end
+        else
+          compare(obs.last['value'], condition['value'], operator)
+        end
+      end
+
+      def self.test_condition(condition, _context, _time, entity)
+        # return true if the given condition is currently active
+        contype = if condition['codes']
+                    # based on state.symbol
+                    condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+                  elsif condition['referenced_by_attribute']
+                    entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
+                  else
+                    raise 'Condition condition must be specified by code or attribute'
+                  end
+
+        entity.record_synthea.present[contype]
+      end
+
+      def self.test_priorstate(condition, context, _time, _entity)
         !context.most_recent_by_name(condition['name']).nil?
       end
 

@@ -277,6 +277,28 @@ module Synthea
           "state '#{logic['name']}' has been processed\\l"
         when 'Attribute'
           "Attribute: '#{logic['attribute']}' \\#{logic['operator']} #{logic['value']}\\l"
+        when 'Observation'
+          obs = ''
+          if logic['codes']
+            code = logic['codes'].first
+            cond = "'#{code['system']} [#{code['code']}]: #{code['display']}'"
+          elsif logic['referenced_by_attribute']
+            cond = "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
+          else
+            raise 'Observation condition must be specified by code or attribute'
+          end
+          "Observation #{obs} \\#{logic['operator']} #{logic['value']}\\l"
+        when 'Condition'
+          cond = ''
+          if logic['codes']
+            code = logic['codes'].first
+            cond = "'#{code['system']} [#{code['code']}]: #{code['display']}'"
+          elsif logic['referenced_by_attribute']
+            cond = "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
+          else
+            raise 'Condition condition must be specified by code or attribute'
+          end
+          "Condition #{cond} is active\\l"
         when 'True', 'False'
           logic['condition_type']
         else
