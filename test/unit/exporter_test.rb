@@ -125,7 +125,7 @@ class ExporterTest < Minitest::Test
 
   def test_output_file_location_single_dir
     Synthea::Config.exporter.folder_per_city = false
-    Synthea::Config.exporter.subfolder_by_id = false
+    Synthea::Config.exporter.subfolders_by_id_substring = false
 
     assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
     assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
@@ -133,7 +133,7 @@ class ExporterTest < Minitest::Test
 
   def test_output_file_location_cities_single
     Synthea::Config.exporter.folder_per_city = true
-    Synthea::Config.exporter.subfolder_by_id = false
+    Synthea::Config.exporter.subfolders_by_id_substring = false
 
     assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
     assert_equal './output/fhir/Bedford', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
@@ -141,17 +141,17 @@ class ExporterTest < Minitest::Test
 
   def test_output_file_location_single_split
     Synthea::Config.exporter.folder_per_city = false
-    Synthea::Config.exporter.subfolder_by_id = true
+    Synthea::Config.exporter.subfolders_by_id_substring = true
 
     assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
-    assert_equal './output/fhir/12', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
+    assert_equal './output/fhir/12/123', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
   end
 
   def test_output_file_location_cities_split
     Synthea::Config.exporter.folder_per_city = true
-    Synthea::Config.exporter.subfolder_by_id = true
+    Synthea::Config.exporter.subfolders_by_id_substring = true
 
     assert_equal './output/fhir', Synthea::Output::Exporter.get_output_folder('fhir')
-    assert_equal './output/fhir/Bedford/12', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
+    assert_equal './output/fhir/Bedford/12/123', Synthea::Output::Exporter.get_output_folder('fhir', @patient)
   end
 end
