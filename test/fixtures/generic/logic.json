@@ -91,6 +91,33 @@
     "operator" : "<=",
     "value" : 80
   },
+  "mmseObservationGt22" : {
+    "condition_type" : "Observation",
+    "codes" : [{
+      "system" : "LOINC",
+      "code" : "72107-6",
+      "display" : "Mini Mental State Examination"
+    }],
+    "operator" : ">",
+    "value" : 22
+  },
+  "hasDiabetesObservation" : {
+    "condition_type" : "Observation",
+    "referenced_by_attribute" : "Diabetes Test Performed",
+    "operator" : "is not nil"
+  },
+  "diabetesConditionTest" : {
+    "condition_type" : "Active Condition",
+    "codes": [{
+        "system": "SNOMED-CT",
+        "code": "73211009",
+        "display": "Diabetes mellitus"
+    }]
+  },
+  "alzheimersConditionTest" : {
+    "condition_type" : "Active Condition",
+    "referenced_by_attribute" : "Alzheimer's Variant"
+  },
   "attributeNilTest" : {
     "condition_type" : "Attribute",
     "attribute" : "Test_Attribute_Key",

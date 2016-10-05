@@ -178,6 +178,52 @@ class GenericLogicTest < Minitest::Test
     assert(do_test('priorStateDoctorVisitTest'))
   end
 
+  def test_observations
+    @patient.record_synthea.observations = []
+    assert_raises { do_test('mmseObservationGt22') }
+
+    @patient.record_synthea.observation(:mini_mental_state_examination, @time, 12)
+    refute(do_test('mmseObservationGt22'))
+
+    @patient.record_synthea.observation(:mini_mental_state_examination, @time, 29)
+    assert(do_test('mmseObservationGt22'))
+
+
+    @patient.record_synthea.observations = []
+    refute(do_test('hasDiabetesObservation'))
+
+    @patient.record_synthea.observation(:blood_panel, @time, 'blah blah')
+    @patient['Blood Test Performed'] = :blood_panel
+    refute(do_test('hasDiabetesObservation'))
+
+    @patient.record_synthea.observation(:glucose_panel, @time, '12345')
+    @patient['Diabetes Test Performed'] = :glucose_panel
+    assert(do_test('hasDiabetesObservation'))
+  end
+
+  def test_condition_condition
+    @patient.record_synthea.conditions = []
+    @patient.record_synthea.present = {}
+
+    refute(do_test('diabetesConditionTest'))
+    refute(do_test('alzheimersConditionTest'))
+
+    @patient.record_synthea.condition(:diabetes_mellitus, @time)
+    assert(do_test('diabetesConditionTest'))
+    refute(do_test('alzheimersConditionTest'))
+
+    @time += 10.years
+
+    @patient.record_synthea.end_condition(:diabetes_mellitus, @time)
+    refute(do_test('diabetesConditionTest'))
+
+
+    @patient.record_synthea.condition(:early_onset_alzheimers, @time)
+    @patient['Alzheimer\'s Variant'] = :early_onset_alzheimers
+
+    assert(do_test('alzheimersConditionTest'))
+  end
+
   def test_and_conditions
     assert(do_test('andAllTrueTest'))
     refute(do_test('andOneFalseTest'))
