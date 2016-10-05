@@ -165,7 +165,7 @@
     "Ear_Infection_Antibiotic_End": {
         "type": "MedicationEnd",
         "medication_order": "Ear_Infection_Prescribed_Antibiotic",
-        "direct_transition": "Loopback_No_Infection"
+        "direct_transition": "Next_Wellness_Encounter"
     },
 
     "Ear_Infection_Prescribed_OTC_Painkiller": {
@@ -196,6 +196,18 @@
     "Ear_Infection_OTC_Painkiller_End": {
       "type": "MedicationEnd",
       "medication_order": "Ear_Infection_Prescribed_OTC_Painkiller",
+      "direct_transition": "Next_Wellness_Encounter"
+    },
+
+    "Next_Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Ear_Infection_End"
+    },
+
+    "Ear_Infection_End": {
+      "type": "ConditionEnd",
+      "condition_onset": "Gets_Ear_Infection",
       "direct_transition": "Loopback_No_Infection"
     },
 
