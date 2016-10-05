@@ -1,6 +1,27 @@
+if RUBY_PLATFORM == 'java'
+  require 'java'
+end
+
 module Synthea
   module World
     class Population
+      if RUBY_PLATFORM == 'java'
+        include_package 'java.util.concurrent'
+
+        class PatientRunner
+          include java.lang.Runnable
+
+          def initialize(date, person)
+            @date = date
+            @person = person
+          end
+
+          def run
+            Synthea::Rules.apply(@date, @person)
+          end
+        end
+      end
+
       attr_reader :date, :people, :dead
 
       def initialize
@@ -43,8 +64,18 @@ module Synthea
           @people << baby
         end
         @births = @births % 1
-        @people.each do |person|
-          Synthea::Rules.apply(@date, person)
+        if RUBY_PLATFORM == 'java'
+          tpe = Executors.new_fixed_thread_pool(8)
+          @people.each do |person|
+            pr = PatientRunner.new(@date, person)
+            tpe.execute(pr)
+          end
+          tpe.shutdown
+          tpe.await_termination(1, TimeUnit::HOURS)
+        else
+          @people.each do |person|
+            Synthea::Rules.apply(@date, person)
+          end
         end
       end
 
