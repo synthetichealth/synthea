@@ -1,6 +1,4 @@
-if RUBY_PLATFORM == 'java'
-  require 'java'
-end
+require 'java' if RUBY_PLATFORM == 'java'
 
 module Synthea
   module World
