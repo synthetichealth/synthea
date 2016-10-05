@@ -34,7 +34,7 @@
         "code": "428191000124101",
         "display": "Documentation of current medications"
       }],
-      "direct_transition" : "Wellness_Encounter"
+      "direct_transition" : "Initial"
     }
   }
 }
