@@ -18,6 +18,7 @@ class FhirTest < Minitest::Test
     @patient[:ethnicity] = :italian
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
     @fhir_record = FHIR::Bundle.new
+    @fhir_record.type = 'collection'
     @time = Time.now
     @patient.events.create(@time, :birth, :birth)
     @patient_entry = Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
@@ -53,6 +54,7 @@ class FhirTest < Minitest::Test
     order.zip(fhir.entry) do |klass, entry|
       assert_equal(klass, entry.resource.class)
     end
+    assert_empty fhir.validate
   end
 
   def test_record_blood_pressure
@@ -64,6 +66,7 @@ class FhirTest < Minitest::Test
     record.observation(:weight, @time, 50, :observation, nil)
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
     assert_equal(2,fhir.entry.select {|e| e.resource.is_a?(FHIR::Observation)}.length)
+    assert_empty fhir.validate
   end
 
   def test_basic_info
@@ -100,6 +103,8 @@ class FhirTest < Minitest::Test
     ethnicity = @fhir_record.entry[2].resource.extension[1].valueCodeableConcept.coding[0]
     assert_equal('Mexican',ethnicity.display)
     assert_equal('2148-5',ethnicity.code)
+    refute_empty person.text
+    assert_empty @fhir_record.validate
   end
 
   def test_condition
@@ -114,6 +119,7 @@ class FhirTest < Minitest::Test
     assert_equal('confirmed',disease.verificationStatus)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time,'time'),disease.onsetDateTime)
     assert_equal("#{@encounterID}",disease.context.reference)
+    assert_empty @fhir_record.validate
   end
 
   def test_encounter
@@ -129,6 +135,7 @@ class FhirTest < Minitest::Test
     period = FHIR::Period.new({'start'=>startTime, 'end' => endTime})
     assert_equal(period.start,encounter.period.start)
     assert_equal(period.end, encounter.period.end)
+    assert_empty @fhir_record.validate
   end
 
   def test_allergy
@@ -143,6 +150,7 @@ class FhirTest < Minitest::Test
     assert(allergy.criticality == 'low' || allergy.criticality == 'high')
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), allergy.attestedDate)
     assert_equal('food', allergy.category)
+    assert_empty @fhir_record.validate
   end
 
   def test_observation
@@ -160,6 +168,7 @@ class FhirTest < Minitest::Test
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), obs.effectiveDateTime)
     assert_equal(60, obs.valueQuantity.value)
     assert_equal("cm", obs.valueQuantity.unit)
+    assert_empty @fhir_record.validate
   end
 
   def test_multi_observation
@@ -191,6 +200,7 @@ class FhirTest < Minitest::Test
     assert_equal('http://loinc.org', diastolic.code.coding[0].system)
     assert_equal(80, diastolic.valueQuantity.value)
     assert_equal("mmHg", diastolic.valueQuantity.unit)
+    assert_empty @fhir_record.validate
   end
 
   def test_diagnostic_report
@@ -216,6 +226,7 @@ class FhirTest < Minitest::Test
       assert_equal("#{ob[0]}", result.reference)
       assert_equal(ob[1], result.display)
     end
+    assert_empty @fhir_record.validate
   end
 
   def test_procedure
@@ -232,6 +243,7 @@ class FhirTest < Minitest::Test
     assert_equal('Amputation of left arm', procedure.code.coding[0].display)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), procedure.performedDateTime)
     assert_equal("#{@encounterID}", procedure.encounter.reference)
+    assert_empty @fhir_record.validate
   end
 
   def test_imm
@@ -247,6 +259,7 @@ class FhirTest < Minitest::Test
     assert_equal(false, imm.wasNotGiven)
     assert_equal(false, imm.reported)
     assert_equal("#{@encounterID}", imm.encounter.reference)
+    assert_empty @fhir_record.validate
   end
 
   def test_medication
@@ -273,6 +286,7 @@ class FhirTest < Minitest::Test
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time +  15.minutes), med.eventHistory[0].dateTime)
     assert_equal("#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
+    assert_empty @fhir_record.validate
   end
 
   def test_careplan
@@ -306,5 +320,6 @@ class FhirTest < Minitest::Test
     assert_equal('226234005', activity2.code)
     assert_equal('Healthy Diet', activity2.display)
     assert_equal('http://snomed.info/sct', activity2.system)
+    assert_empty @fhir_record.validate
   end
 end
