@@ -59,7 +59,7 @@
             "condition_type": "Age",
             "operator": "<",
             "quantity": 18,
-            "units": "years"
+            "unit": "years"
           },
           "distributions": [
             {
@@ -79,7 +79,7 @@
             "condition_type": "Age",
             "operator": ">=",
             "quantity": 18,
-            "units": "years"
+            "unit": "years"
           },
           "distributions": [
             {
