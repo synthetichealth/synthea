@@ -181,8 +181,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
-          "display": "Emergency room admission"
+          "code": "183478001",
+          "display": "Emergency hospital admission for asthma"
         }
       ],
       "direct_transition": "Asthma_Attack_Followup"
