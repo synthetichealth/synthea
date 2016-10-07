@@ -22,8 +22,8 @@
         },
         {
           "distribution": 0.070,
-          "transition": "Asthma_Begins",
-          "remarks": ["Most people with asthma will be dealing with it for life"]
+          "transition": "Childhood_Asthma_Begins",
+          "remarks": ["Most people with asthma will be dealing with it for life, starting with childhood"]
         },
         {
           "distribution": 0.004,
@@ -41,7 +41,7 @@
       "type": "SetAttribute",
       "attribute": "asthma_type",
       "value": "childhood-only",
-      "direct_transition": "Asthma_Begins"
+      "direct_transition": "Childhood_Asthma_Begins"
     },
 
     "Adult_Onset_Asthma": {
@@ -58,10 +58,23 @@
         "high": 40,
         "unit": "years"
       },
-      "direct_transition": "Asthma_Begins"
+      "direct_transition": "Adult_Asthma_Begins"
     },
 
-    "Asthma_Begins": {
+    "Childhood_Asthma_Begins": {
+      "type": "ConditionOnset",
+      "target_encounter": "Asthma_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233678006",
+          "display": "Childhood asthma"
+        }
+      ],
+      "direct_transition": "Cough"
+    },
+
+    "Adult_Asthma_Begins": {
       "type": "ConditionOnset",
       "target_encounter": "Asthma_Diagnosis",
       "codes": [
@@ -96,6 +109,19 @@
           "system": "SNOMED-CT",
           "code": "185345009",
           "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Asthma_Screening"
+    },
+
+    "Asthma_Screening": {
+      "type": "Procedure",
+      "target_encounter": "Asthma_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "171231001",
+          "display": "Asthma screening"
         }
       ],
       "direct_transition": "Prescribe_Maintenance_Inhaler"
@@ -133,9 +159,46 @@
             "transition": "Next_Wellness_Encounter"
           },
           {
+            "condition": {
+              "remarks": ["Childhood asthma eventually becomes adult asthma.",
+                          "This applies to those without childhood-only or adult-onset attributes (about 7% of population)."],
+              "condition_type": "And",
+              "conditions": [
+                {"condition_type": "Age", "operator": ">", "quantity": 18, "unit": "years"},
+                {"condition_type": "Attribute", "attribute": "asthma_type", "operator": "is nil"}
+              ]
+            },
+            "transition": "Childhood_Asthma_Becomes_Lifelong_Asthma"
+          },
+          {
             "transition": "Potential_Asthma_Attack"
           }
         ]
+    },
+
+    "Childhood_Asthma_Becomes_Lifelong_Asthma": {
+        "type": "ConditionEnd",
+        "condition_onset": "Childhood_Asthma_Begins",
+        "direct_transition": "Lifelong_Asthma"
+    },
+
+    "Lifelong_Asthma": {
+      "type": "SetAttribute",
+      "attribute": "asthma_type",
+      "value": "lifelong",
+      "direct_transition": "Lifelong_Asthma_Begins"
+    },
+
+    "Lifelong_Asthma_Begins": {
+        "type": "ConditionOnset",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "195967001",
+            "display": "Asthma"
+          }
+        ],
+        "direct_transition": "Maintaining_Asthma"
     },
 
     "Potential_Asthma_Attack": {
@@ -242,12 +305,12 @@
     "Maintenance_Medication_End": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Maintenance_Inhaler",
-      "direct_transition": "Asthma_Subsides"
+      "direct_transition": "Childhood_Asthma_Subsides"
     },
 
-    "Asthma_Subsides": {
+    "Childhood_Asthma_Subsides": {
       "type": "ConditionEnd",
-      "condition_onset": "Asthma_Begins",
+      "condition_onset": "Childhood_Asthma_Begins",
       "direct_transition": "Terminal"
     },
 
