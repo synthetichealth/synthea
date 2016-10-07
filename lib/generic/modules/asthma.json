@@ -194,8 +194,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": "394701000",
+          "display": "Asthma follow-up"
         }
       ],
       "conditional_transition": [
