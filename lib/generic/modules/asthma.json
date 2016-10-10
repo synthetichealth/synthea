@@ -129,6 +129,7 @@
 
     "Prescribe_Maintenance_Inhaler": {
         "type": "MedicationOrder",
+        "target_encounter": "Asthma_Diagnosis",
         "codes": [
           {
             "system": "RxNorm",
@@ -186,11 +187,18 @@
       "type": "SetAttribute",
       "attribute": "asthma_type",
       "value": "lifelong",
+      "direct_transition": "Next_Adult_Welness_Encounter"
+    },
+
+    "Next_Adult_Welness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
       "direct_transition": "Lifelong_Asthma_Begins"
     },
 
     "Lifelong_Asthma_Begins": {
         "type": "ConditionOnset",
+        "target_encounter": "Next_Adult_Welness_Encounter",
         "codes": [
           {
             "system": "SNOMED-CT",
@@ -286,6 +294,7 @@
 
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
+      "target_encounter": "Asthma_Attack_Followup",
       "codes": [
         {
           "system": "RxNorm",
