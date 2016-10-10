@@ -61,6 +61,8 @@ module Synthea
         unless entity.alive?
           patient.deathdate = entity.record_synthea.patient_info[:deathdate].to_i
           patient.expired = true
+          # TODO: would like to put cause of death on the record, though different IGs seem to provide different templates
+          # ex, IHE IG -> "deceased observation"; "Public Health & Emergency Response WG" -> "Cause of Death"
         end
       end
 

@@ -1,0 +1,41 @@
+{
+    "name": "Death Reason",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "OnsetDiabetes"
+        },
+        "OnsetDiabetes": {
+            "type": "ConditionOnset",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+            }],
+            "assign_to_attribute" : "Cause of Death",
+            "direct_transition": "Terminal"
+        },
+        "Death_by_Code": {
+            "type": "Death",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+            }],
+            "direct_transition": "Terminal"
+        },
+        "Death_by_ConditionOnset" : {
+            "type": "Death",
+            "condition_onset" : "OnsetDiabetes",
+            "direct_transition": "Terminal"
+        },
+        "Death_by_Attribute" : {
+            "type": "Death",
+            "referenced_by_attribute" : "Cause of Death",
+            "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

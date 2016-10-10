@@ -196,7 +196,13 @@ module Synthea
         str << options[:city_name] << ' ' if options[:city_name]
         str << options[:number].to_s if options[:number]
         str << '/' << options[:city_pop].to_s if options[:city_pop]
-        str << '(d)' if options[:is_dead]
+        if options[:is_dead]
+          if person[:cause_of_death]
+            str << "(d: #{person[:cause_of_death]})"
+          else
+            str << '(d)'
+          end
+        end
         str << ': '
         str << "#{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]}"
 

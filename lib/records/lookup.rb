@@ -27,6 +27,9 @@ module Synthea
         chloride: { description: 'Chloride', code: '2069-3', unit: 'mmol/L'},
         carbon_dioxide: { description: 'Carbon Dioxide', code: '20565-8', unit: 'mmol/L'},
 
+    death_certificate: { description: 'U.S. standard certificate of death - 2003 revision', code: '69409-1' },
+      cause_of_death: { description: 'Cause of Death [US Standard Certificate of Death]', code: '69453-9', value_type: 'condition' },
+
     microalbumin_creatine_ratio: { description: 'Microalbumin Creatine Ratio', code: '14959-1', unit: 'mg/g'},
     egfr: { description: 'Estimated Glomerular Filtration Rate', code: '33914-3', unit: 'mL/min/{1.73_m2}'}
   }
@@ -187,7 +190,8 @@ module Synthea
     age_lt_39: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'},
     age_lt_64: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'},
     age_senior: {description: 'Outpatient Encounter', codes: {"ICD-9-CM" => ['V70.0'], "ICD-10-CM" => ['Z00.00'],  'SNOMED-CT' => ['185349003']}, class: 'outpatient'},
-    emergency: {description: 'Emergency Encounter', codes: {'SNOMED-CT' => ['50849002']}, class: 'emergency'}
+    emergency: {description: 'Emergency Encounter', codes: {'SNOMED-CT' => ['50849002']}, class: 'emergency'},
+    death_certification: {description: 'Death Certification', codes: {'SNOMED-CT' => ['308646001']}, class: 'ambulatory'}
   }
 
 

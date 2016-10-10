@@ -158,11 +158,12 @@ module Synthea
         annual_risk = Synthea::Config.cardiovascular.chd.coronary_attack_risk[index]
         cardiac_event_chance = Synthea::Rules.convert_risk_to_timestep(annual_risk, 365)
         if entity[:coronary_heart_disease] && rand < cardiac_event_chance
-          if rand < Synthea::Config.cardiovascular.chd.mi_proportion
-            entity.events.create(time, :myocardial_infarction, :coronary_heart_disease)
-          else
-            entity.events.create(time, :cardiac_arrest, :coronary_heart_disease)
-          end
+          cardiac_event = if rand < Synthea::Config.cardiovascular.chd.mi_proportion
+                            :myocardial_infarction
+                          else
+                            :cardiac_arrest
+                          end
+          entity.events.create(time, cardiac_event, :coronary_heart_disease)
           # creates unprocessed emergency encounter. Will be processed at next time step.
           entity.events.create(time, :emergency_encounter, :coronary_heart_disease)
           Synthea::Modules::Encounters.emergency_visit(time, entity)
@@ -171,7 +172,7 @@ module Synthea
           survival_rate *= 3 if rand < Synthea::Config.cardiovascular.chd.bystander
           if rand > survival_rate
             entity.events.create(time, :death, :coronary_heart_disease, true)
-            Synthea::Modules::Lifecycle.record_death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time, cardiac_event)
           end
         end
       end
@@ -189,7 +190,7 @@ module Synthea
           annual_death_risk = 1 - survival_rate
           if rand < Synthea::Rules.convert_risk_to_timestep(annual_death_risk, 365)
             entity.events.create(time, :death, :no_coronary_heart_disease, true)
-            Synthea::Modules::Lifecycle.record_death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time, :cardiac_arrest)
           end
         end
       end
@@ -341,7 +342,7 @@ module Synthea
           Synthea::Modules::Encounters.emergency_visit(time + 15.minutes, entity)
           if rand < Synthea::Config.cardiovascular.stroke.death
             entity.events.create(time, :death, :get_stroke, true)
-            Synthea::Modules::Lifecycle.record_death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time, :stroke)
           end
         end
       end

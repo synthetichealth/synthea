@@ -225,7 +225,7 @@ module Synthea
           # see if the disease progresses another stage...
           if rand < (0.0001 * diabetes[:severity])
             entity.events.create(time, :death, :end_stage_renal_disease, true)
-            Synthea::Modules::Lifecycle.record_death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time, :end_stage_renal_disease)
           end
         end
       end
