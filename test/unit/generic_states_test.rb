@@ -624,6 +624,78 @@ class GenericStatesTest < Minitest::Test
     refute(@patient.alive?(@time.advance(months: 6)))
   end
 
+  def test_cause_of_death_code
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('death_reason.json')
+
+    # First, onset the Diabetes!
+    condition = Synthea::Generic::States::ConditionOnset.new(ctx, "OnsetDiabetes")
+    assert(condition.run(@time, @patient))
+    ctx.history << condition
+
+    condition_id = :diabetes_mellitus
+
+    # Now process the end of the condition
+    death = Synthea::Generic::States::Death.new(ctx, "Death_by_Code")
+    @patient.record_synthea.expect(:death, nil, [@time])
+    @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, :observation, :no_action])
+    @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
+    assert(death.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_cause_of_death_conditionOnset
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('death_reason.json')
+
+    # First, onset the Diabetes!
+    condition = Synthea::Generic::States::ConditionOnset.new(ctx, "OnsetDiabetes")
+    assert(condition.run(@time, @patient))
+    ctx.history << condition
+
+    condition_id = :diabetes_mellitus
+
+    # Now process the end of the condition
+    death = Synthea::Generic::States::Death.new(ctx, "Death_by_ConditionOnset")
+    @patient.record_synthea.expect(:death, nil, [@time])
+    @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, :observation, :no_action])
+    @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
+    assert(death.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
+  def test_cause_of_death_attribute
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('death_reason.json')
+
+    # First, onset the Diabetes!
+    condition = Synthea::Generic::States::ConditionOnset.new(ctx, "OnsetDiabetes")
+    assert(condition.run(@time, @patient))
+    ctx.history << condition
+
+    condition_id = :diabetes_mellitus
+
+    # Now process the end of the condition
+    death = Synthea::Generic::States::Death.new(ctx, "Death_by_Attribute")
+    @patient.record_synthea.expect(:death, nil, [@time])
+    @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, :observation, :no_action])
+    @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
+    assert(death.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
   def get_context(file_name)
     cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
     Synthea::Generic::Context.new(cfg)

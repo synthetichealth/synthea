@@ -74,6 +74,7 @@
             "code" : "26929004",
             "display" : "Alzheimer's disease (disorder)"
         }],
+        "assign_to_attribute" : "Type of Alzheimer's",
         "direct_transition" : "NoImpairment"
     },
     
@@ -95,6 +96,7 @@
             "code" : "230265002",
             "display" : "Familial Alzheimer's disease of early onset (disorder)"
         }],
+        "assign_to_attribute" : "Type of Alzheimer's",
         "direct_transition" : "NoImpairment"
     },
 
@@ -571,26 +573,28 @@
         "code" : "34285007",
         "display" : "Hospital admission"
       }],
-      "direct_transition" : "PneumoniaDelay"
+      "direct_transition" : "PneumoniaDeath"
     }, 
 
-    "PneumoniaDelay" : {
-      "type" : "Delay",
+    "PneumoniaDeath" : {
+      "type" : "Death",
       "range" : {
-            "low": 4,
-            "high": 14,
-            "unit": "days"
-        },
-      "direct_transition" : "Death"
+          "low": 4,
+          "high": 14,
+          "unit": "days"
+      },
+      "condition_onset" : "Pneumonia",
+      "direct_transition" : "Terminal"
     },
     
     "Death" : {
-        "type" : "Death",
-        "direct_transition" : "Terminal"
+      "type" : "Death",
+      "referenced_by_attribute" : "Type of Alzheimer's",
+      "direct_transition" : "Terminal"
     },
     
     "Terminal" : {
-        "type" : "Terminal"
+      "type" : "Terminal"
     }
   }
 }

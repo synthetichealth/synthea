@@ -320,8 +320,15 @@ module Synthea
       end
 
       #------------------------------------------------------------------------# begin class record functions
-      def self.record_death(entity, time)
+      def self.record_death(entity, time, reason = nil)
         entity.record_synthea.death(time)
+        if reason
+          entity[:cause_of_death] = reason
+          # TODO: once CCDA supports cause of death, change the ccda_method parameter
+          entity.record_synthea.encounter(:death_certification, time)
+          entity.record_synthea.observation(:cause_of_death, time, reason, :observation, :no_action)
+          entity.record_synthea.diagnostic_report(:death_certificate, time, 1) # note: ccda already no action here
+        end
       end
 
       def self.record_height_weight(entity, time)

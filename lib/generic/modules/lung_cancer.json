@@ -350,6 +350,7 @@
         "high": 6,
         "unit": "years"
       },
+      "referenced_by_attribute" : "Lung Cancer",
       "conditional_transition": [
         {
           "condition": {
@@ -378,6 +379,7 @@
         "high": 28,
         "unit": "months"
       },
+      "referenced_by_attribute" : "Lung Cancer",
       "conditional_transition": [
         {
           "condition": {
@@ -406,6 +408,7 @@
         "high": 18,
         "unit": "months"
       },
+      "referenced_by_attribute" : "Lung Cancer",
       "conditional_transition": [
         {
           "condition": {
@@ -434,6 +437,7 @@
         "high": 10,
         "unit": "months"
       },
+      "referenced_by_attribute" : "Lung Cancer",
       "conditional_transition": [
         {
           "condition": {

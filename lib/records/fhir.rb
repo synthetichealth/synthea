@@ -215,8 +215,19 @@ module Synthea
                                                },
                                                'subject' => { 'reference' => patient.fullUrl.to_s },
                                                'encounter' => { 'reference' => encounter.fullUrl.to_s },
-                                               'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'),
-                                               'valueQuantity' => { 'value' => observation['value'], 'unit' => obs_data[:unit] })
+                                               'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'))
+
+        if obs_data[:value_type] == 'condition'
+          condition_data = COND_LOOKUP[observation['value']]
+          entry.resource.valueCodeableConcept = FHIR::CodeableConcept.new('coding' => [{
+                                                                            'code' => condition_data[:codes]['SNOMED-CT'][0],
+                                                                            'display' => condition_data[:description],
+                                                                            'system' => 'http://snomed.info/sct'
+                                                                          }])
+        else
+          entry.resource.valueQuantity = FHIR::Quantity.new('value' => observation['value'], 'unit' => obs_data[:unit])
+        end
+
         fhir_record.entry << entry
       end
 

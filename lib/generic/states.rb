@@ -381,6 +381,9 @@ module Synthea
           cfg = context.state_config(name)
           @range = cfg['range']
           @exact = cfg['exact'] if @range.nil?
+          @referenced_by = cfg['referenced_by_attribute']
+          @condition_onset = cfg['condition_onset']
+          @codes = cfg['codes']
         end
 
         def process(time, entity)
@@ -389,14 +392,24 @@ module Synthea
           elsif @exact
             value = @exact['quantity'].method(@exact['unit']).call.since(time)
           end
+
+          # this is the same as the ConditionEnd logic, maybe we want to extract this somewhere
+          if @referenced_by
+            @reason = entity[@referenced_by].to_sym
+          elsif @condition_onset
+            @reason = @context.most_recent_by_name(@condition_onset).symbol
+          elsif @codes
+            @reason = symbol
+          end
+
           if value
             # Record the future death... if there is a condition with a known life-expectancy
             # and you want the model to keep running in the mean time.
             entity.events.create(value, :death, :generic, false)
-            Synthea::Modules::Lifecycle.record_death(entity, value)
+            Synthea::Modules::Lifecycle.record_death(entity, value, @reason)
           else
             entity.events.create(time, :death, :generic, true)
-            Synthea::Modules::Lifecycle.record_death(entity, time)
+            Synthea::Modules::Lifecycle.record_death(entity, time, @reason)
           end
           true
         end
