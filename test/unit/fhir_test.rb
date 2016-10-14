@@ -103,7 +103,7 @@ class FhirTest < Minitest::Test
     ethnicity = @fhir_record.entry[2].resource.extension[1].valueCodeableConcept.coding[0]
     assert_equal('Mexican',ethnicity.display)
     assert_equal('2148-5',ethnicity.code)
-    refute_empty person.text
+    refute_empty person.text.div
     assert_empty @fhir_record.validate
   end
 
