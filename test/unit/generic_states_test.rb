@@ -106,7 +106,7 @@ class GenericStatesTest < Minitest::Test
     # Re-seed the random generator so we have deterministic outcomes
     srand 12345
 
-    # Seconds (rand(2..10) = 4)
+    # Seconds (rand(2.seconds..10.seconds) = 4s)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Second_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
@@ -114,7 +114,7 @@ class GenericStatesTest < Minitest::Test
     assert(delay.process(@time + 4, @patient))
     assert(delay.process(@time + 5, @patient))
 
-    # Minutes (rand(2..10) = 7)
+    # Minutes (rand(2.minutes..10.minutes) = 405s = 6.75 min)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Minute_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
@@ -122,7 +122,7 @@ class GenericStatesTest < Minitest::Test
     assert(delay.process(@time + 7*60, @patient))
     assert(delay.process(@time + 8*60, @patient))
 
-    # Hours (rand(2..10) = 3)
+    # Hours (rand(2.hours..10.hours) = 9377s = 2.605 hrs)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Hour_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
@@ -130,15 +130,16 @@ class GenericStatesTest < Minitest::Test
     assert(delay.process(@time + 3*60*60, @patient))
     assert(delay.process(@time + 4*60*60, @patient))
 
-    # Days (rand(2..10) = 6)
+    # Days (rand(2.days..10.days) = 520356 s = 6.022 days)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Day_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
-    refute(delay.process(@time.advance(:days => 5), @patient))
-    assert(delay.process(@time.advance(:days => 6), @patient))
+    refute(delay.process(@time.advance(:days => 6), @patient))
     assert(delay.process(@time.advance(:days => 7), @patient))
+    assert(delay.process(@time.advance(:days => 8), @patient))
 
-    # Weeks (rand(2..10) = 7)
+
+    # Weeks (rand(2.weeks..10.weeks) = 4203177 s = 6.95 weeks)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Week_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
@@ -146,21 +147,21 @@ class GenericStatesTest < Minitest::Test
     assert(delay.process(@time.advance(:weeks => 7), @patient))
     assert(delay.process(@time.advance(:weeks => 8), @patient))
 
-    # Months (rand(2..10) = 4)
+    # Months (rand(2.months..10.months) = 11348478 s ~= 4.4 months)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Month_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
-    refute(delay.process(@time.advance(:months => 3), @patient))
-    assert(delay.process(@time.advance(:months => 4), @patient))
+    refute(delay.process(@time.advance(:months => 4), @patient))
     assert(delay.process(@time.advance(:months => 5), @patient))
+    assert(delay.process(@time.advance(:months => 6), @patient))
 
-    # Years (rand(2..10) = 3)
+    # Years (rand(2.years..10.years) = 122970430 s ~= 3.9 years)
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Year_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
-    refute(delay.process(@time.advance(:years => 2), @patient))
-    assert(delay.process(@time.advance(:years => 3), @patient))
+    refute(delay.process(@time.advance(:years => 3), @patient))
     assert(delay.process(@time.advance(:years => 4), @patient))
+    assert(delay.process(@time.advance(:years => 5), @patient))
 
     # Re-seed the random generator with a new (random) seed
     srand

@@ -102,10 +102,11 @@ module Synthea
           if @expiration.nil?
             if !@range.nil?
               # choose a random duration within the specified range
-              choice = rand(@range['low']..@range['high'])
-              @expiration = choice.method(@range['unit']).call.since(@start_time)
+              low = @range['low'].send(@range['unit'])
+              high = @range['high'].send(@range['unit'])
+              @expiration = rand(low..high).since(@start_time)
             elsif !@exact.nil?
-              @expiration = @exact['quantity'].method(@exact['unit']).call.since(@start_time)
+              @expiration = @exact['quantity'].send(@exact['unit']).since(@start_time)
             else
               @expiration = @start_time
             end
@@ -388,9 +389,11 @@ module Synthea
 
         def process(time, entity)
           if @range
-            value = rand(@range['low']..@range['high']).method(@range['unit']).call.since(time)
+            low = @range['low'].send(@range['unit'])
+            high = @range['high'].send(@range['unit'])
+            value = rand(low..high).since(time)
           elsif @exact
-            value = @exact['quantity'].method(@exact['unit']).call.since(time)
+            value = @exact['quantity'].send(@exact['unit']).since(time)
           end
 
           # this is the same as the ConditionEnd logic, maybe we want to extract this somewhere
