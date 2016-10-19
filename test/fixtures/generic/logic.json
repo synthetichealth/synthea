@@ -7,7 +7,7 @@
   },
   "genderIsMaleTest": {
       "condition_type": "Gender",
-      "gender": "M" 
+      "gender": "M"
   },
   "ageLt40Test": {
       "condition_type": "Age",
@@ -117,6 +117,18 @@
   "alzheimersConditionTest" : {
     "condition_type" : "Active Condition",
     "referenced_by_attribute" : "Alzheimer's Variant"
+  },
+  "diabetesCarePlanTest": {
+    "condition_type": "Active CarePlan",
+    "codes": [{
+      "system": "SNOMED-CT",
+      "code": "698360004",
+      "display": "Diabetes self management plan"
+    }]
+  },
+  "anginaCarePlanTest": {
+    "condition_type": "Active CarePlan",
+    "referenced_by_attribute": "Angina_CarePlan"
   },
   "attributeNilTest" : {
     "condition_type" : "Attribute",

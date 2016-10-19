@@ -224,6 +224,27 @@ class GenericLogicTest < Minitest::Test
     assert(do_test('alzheimersConditionTest'))
   end
 
+  def test_careplan_condition
+    @patient.record_synthea.careplans = []
+    @patient.record_synthea.present = {}
+
+    refute(do_test('diabetesCarePlanTest'))
+    refute(do_test('anginaCarePlanTest'))
+
+    @patient.record_synthea.careplan_start(:diabetes_self_management_plan, [:diabetic_diet], @time, []) # no reasons given
+    assert(do_test('diabetesCarePlanTest'))
+    refute(do_test('anginaCarePlanTest'))
+
+    @time += 10.years
+
+    @patient.record_synthea.careplan_stop(:diabetes_self_management_plan, @time)
+    refute(do_test('diabetesCarePlanTest'))
+
+    @patient.record_synthea.careplan_start(:angina_careplan, [:healthy_diet], @time, []) # no reasons given
+    @patient['Angina_CarePlan'] = :angina_careplan
+    assert(do_test('anginaCarePlanTest'))
+  end
+
   def test_and_conditions
     assert(do_test('andAllTrueTest'))
     refute(do_test('andOneFalseTest'))
