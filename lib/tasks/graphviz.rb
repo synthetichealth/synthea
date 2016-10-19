@@ -100,7 +100,7 @@ module Synthea
       def self.populate_graph(g, wf)
         # Create nodes based on states
         nodeMap = {}
-        
+
         wf['states'].each do |name, state|
           node = g.add_nodes(name, {'shape' => 'record', 'style' => 'rounded'})
           if state['type'] == 'Initial' || state['type'] == 'Terminal'
@@ -236,6 +236,9 @@ module Synthea
         if state.has_key? 'condition_onset'
           details = details + "Onset at: #{state['condition_onset']}\\l"
         end
+        if state.has_key? 'careplan'
+          details = details + "Prescribed at: #{state['careplan']}\\l"
+        end
         if state.has_key? 'assign_to_attribute'
           details = details + "Assign to Attribute: '#{state['assign_to_attribute']}'\\l"
         end
@@ -251,7 +254,7 @@ module Synthea
           subs = logic['conditions'].map do |c|
             if ['And','Or'].include?(c['condition_type'])
               "(\\l" + logicDetails(c) + ")\\l"
-            else 
+            else
               logicDetails(c)
             end
           end
@@ -299,6 +302,17 @@ module Synthea
             raise 'Condition condition must be specified by code or attribute'
           end
           "Condition #{cond} is active\\l"
+        when 'Active CarePlan'
+          plan = ''
+          if logic['codes']
+            code = logic['codes'].first
+            plan = "'#{code['system']} [#{code['code']}]: #{code['display']}''"
+          elsif logic['referenced_by_attribute']
+            plan = "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
+          else
+            raise 'CarePlan condition must be specified by code or attribute'
+          end
+          "CarePlan #{plan} is active\\l"
         when 'True', 'False'
           logic['condition_type']
         else

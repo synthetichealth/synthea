@@ -80,9 +80,9 @@ module Synthea
     diabetic_diet: { description: 'Diabetic diet', codes: {'SNOMED-CT'=>['160670007']}},
     exercise: { description: 'Exercise therapy', codes: {'SNOMED-CT'=>['229065009']}},
     cardiovascular_disease: { description: 'Angina self management plan', codes: {'SNOMED-CT'=>['698358001']}},
-    healthy_diet: { description: 'Healthy Diet', codes: {'SNOMED-CT'=>['226234005']}},
-    stress_management: { description: 'Stress Management', codes: {'SNOMED-CT'=>['226060000']}},
-    stop_smoking: { description: 'Smoking Cessation Therapy', codes: {'SNOMED-CT'=>['710081004']}} # if they actually stop smoking, use 160617001 (finding)
+    healthy_diet: { description: 'Healthy diet', codes: {'SNOMED-CT'=>['226234005']}},
+    stress_management: { description: 'Stress management', codes: {'SNOMED-CT'=>['226060000']}},
+    stop_smoking: { description: 'Smoking cessation therapy', codes: {'SNOMED-CT'=>['710081004']}} # if they actually stop smoking, use 160617001 (finding)
   }
 
   REASON_LOOKUP = {
