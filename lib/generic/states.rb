@@ -284,6 +284,96 @@ module Synthea
         end
       end
 
+      class CarePlanStart < State
+        attr_reader :target_encounter
+
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @codes = cfg['codes']
+          @activities = cfg['activities']
+          @target_encounter = cfg['target_encounter']
+          @reason = cfg['reason']
+        end
+
+        def process(time, entity)
+          start_plan(time, entity) if concurrent_with_target_encounter(time)
+          true
+        end
+
+        def start_plan(time, entity)
+          add_lookup_code(Synthea::CAREPLAN_LOOKUP)
+          activities = add_activity_lookup_codes(Synthea::CAREPLAN_LOOKUP)
+
+          unless @reason.nil?
+            rsn = @context.most_recent_by_name(@reason)
+            rsn = rsn.symbol if rsn
+            rsn = entity[@reason].to_sym if rsn.nil? && entity[@reason]
+          end
+
+          if rsn
+            entity.record_synthea.careplan_start(symbol, activities, time, [rsn])
+          else
+            entity.record_synthea.careplan_start(symbol, activities, time, [])
+          end
+        end
+
+        def add_activity_lookup_codes(lookup_hash)
+          return if @activities.nil? || @activities.empty?
+          symbols = []
+          @activities.each do |a|
+            sym = activity_symbol(a)
+            symbols << sym
+            value = {
+              description: a['display'],
+              codes: {}
+            }
+            value[:codes][a['system']] ||= []
+            value[:codes][a['system']] << a['code']
+            lookup_hash[sym] = value
+          end
+          symbols
+        end
+
+        def activity_symbol(activity)
+          if activity.key?('display')
+            activity['display'].gsub(/\s+/, '_').downcase.to_sym
+          else
+            raise 'Activity must have a display name to hash'
+          end
+        end
+      end
+
+      class CarePlanEnd < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @referenced_by = cfg['referenced_by_attribute']
+          @careplan = cfg['careplan']
+          @reason = (cfg['reason'] || 'careplan_ended').to_sym
+          @codes = cfg['codes']
+        end
+
+        def process(time, entity)
+          end_plan(time, entity)
+          true
+        end
+
+        def end_plan(time, entity)
+          if @referenced_by
+            @type = entity[@referenced_by].to_sym
+          elsif @careplan
+            @type = @context.most_recent_by_name(@careplan).symbol
+          elsif @codes
+            @type = symbol
+          else
+            raise 'CarePlanEnd must define the CarePlan to end either by code, a referenced entity attribute, or the name of the original CarePlanStart state'
+          end
+
+          entity.record_synthea.careplan_stop(@type, time)
+        end
+      end
+
       class Procedure < State
         attr_reader :operated, :target_encounter
 
