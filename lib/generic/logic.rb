@@ -99,6 +99,19 @@ module Synthea
         !context.most_recent_by_name(condition['name']).nil?
       end
 
+      def self.test_active_careplan(careplan, _context, _time, entity)
+        # return true if the given careplan is currently active
+        contype = if careplan['codes']
+                    # based on the state.symbol
+                    careplan['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+                  elsif careplan['referenced_by_attribute']
+                    entity[careplan['referenced_by_attribute']] || entity[careplan['referenced_by_attribute'].to_sym]
+                  else
+                    raise 'Condition careplan must be specified by code or attribute'
+                  end
+        entity.record_synthea.careplan_active?(contype)
+      end
+
       def self.test_true(_condition, _context, _time, _entity)
         true
       end

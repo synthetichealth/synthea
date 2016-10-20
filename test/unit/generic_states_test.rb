@@ -510,6 +510,167 @@ class GenericStatesTest < Minitest::Test
     @patient.record_synthea.verify
   end
 
+  def test_careplan_start
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('careplan_start.json')
+
+    # First onset diabetes
+    diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+    assert(diabetes.process(@time, @patient))
+    ctx.history << diabetes
+
+    condition_id = 'diabetes_mellitus'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    # Now process the careplan
+    plan = Synthea::Generic::States::CarePlanStart.new(ctx, "Diabetes_Self_Management")
+    @patient.record_synthea.expect(:careplan_start, nil, ['diabetes_self_management_plan'.to_sym, [:diabetic_diet], @time, [condition_id]])
+    assert(plan.process(@time, @patient))
+    ctx.history << plan
+
+    # Verify that the careplan was added to the record
+    @patient.record_synthea.verify
+  end
+
+  def test_careplan_assigns_entity_attribute
+      @patient['Diabetes_CarePlan'] = nil
+      ctx = get_context('careplan_start.json')
+      plan = Synthea::Generic::States::CarePlanStart.new(ctx, "Diabetes_Self_Management")
+      plan.run(@time, @patient)
+
+      assert_equal("diabetes_self_management_plan", @patient['Diabetes_CarePlan'])
+  end
+
+  def test_careplan_end_by_entity_attribute
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('careplan_end.json')
+
+    # First, onset the condition
+    condition = Synthea::Generic::States::ConditionOnset.new(ctx, "The_Condition")
+    assert(condition.run(@time, @patient))
+    ctx.history << condition
+
+    condition_id = 'chases_the_dragon'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    # Now process the careplan
+    plan_id = 'diabetes_self_management_plan'.to_sym
+    plan = Synthea::Generic::States::CarePlanStart.new(ctx, "CarePlan1_Start")
+    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:diabetic_diet], @time, []])  # no reasons provided
+    assert(plan.run(@time, @patient)) # have to use run not process here because the entity attribute stuff happens in run
+    ctx.history << plan
+
+    assert_equal(plan_id, @patient['Diabetes_CarePlan'].to_sym)
+
+    # Now process the end of the careplan
+    plan_end = Synthea::Generic::States::CarePlanEnd.new(ctx, "CarePlan1_End")
+    @patient.record_synthea.expect(:careplan_stop, nil, [plan_id, @time])
+    assert(plan_end.process(@time, @patient))
+    ctx.history << plan_end
+
+    @patient.record_synthea.verify
+  end
+
+  def test_careplan_end_by_code
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('careplan_end.json')
+
+    # First, onset the condition
+    condition = Synthea::Generic::States::ConditionOnset.new(ctx, "The_Condition")
+    assert(condition.run(@time, @patient))
+    ctx.history << condition
+
+    condition_id = 'chases_the_dragon'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    # Now process the careplan
+    plan_id = 'angina_self_management_plan'.to_sym
+    plan = Synthea::Generic::States::CarePlanStart.new(ctx, "CarePlan2_Start")
+    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:exercise_therapy, :healthy_diet], @time, []])  # no reasons provided
+    assert(plan.process(@time, @patient))
+    ctx.history << plan
+
+    # Now process the end of the careplan
+    plan_end = Synthea::Generic::States::CarePlanEnd.new(ctx, "CarePlan2_End")
+    @patient.record_synthea.expect(:careplan_stop, nil, [plan_id, @time])
+    assert(plan_end.process(@time, @patient))
+    ctx.history << plan_end
+
+    @patient.record_synthea.verify
+  end
+
+  def test_careplan_end_by_careplan
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('careplan_end.json')
+
+    # First, onset the condition
+    condition = Synthea::Generic::States::ConditionOnset.new(ctx, "The_Condition")
+    assert(condition.run(@time, @patient))
+    ctx.history << condition
+
+    condition_id = 'chases_the_dragon'.to_sym
+
+    # Process the wellness encounter state, which will wait for a wellness encounter
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+    refute(encounter.process(@time, @patient))
+    @time = @time + 6.months
+    # Simulate the wellness encounter by calling perform_encounter
+    @patient.record_synthea.expect(:condition, nil, [condition_id, @time])
+    encounter.perform_encounter(@time, @patient, false)
+    assert(encounter.process(@time, @patient))
+    ctx.history << encounter
+
+    # Now process the careplan
+    plan_id = 'immunological_care_management'.to_sym
+    plan = Synthea::Generic::States::CarePlanStart.new(ctx, "CarePlan3_Start")
+    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:allergen_immunotherapy_drugs_band_1], @time, []])  # no reasons provided
+    assert(plan.process(@time, @patient))
+    ctx.history << plan
+
+    # Now process the end of the careplan
+    plan_end = Synthea::Generic::States::CarePlanEnd.new(ctx, "CarePlan3_End")
+    @patient.record_synthea.expect(:careplan_stop, nil, [plan_id, @time])
+    assert(plan_end.process(@time, @patient))
+    ctx.history << plan_end
+
+    @patient.record_synthea.verify
+  end
+
   def test_setAttribute_with_value
     ctx = get_context('set_attribute.json')
 

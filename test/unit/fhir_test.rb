@@ -318,7 +318,7 @@ class FhirTest < Minitest::Test
     #second activity
     activity2 = plan.activity[-1].detail.code.coding[0]
     assert_equal('226234005', activity2.code)
-    assert_equal('Healthy Diet', activity2.display)
+    assert_equal('Healthy diet', activity2.display)
     assert_equal('http://snomed.info/sct', activity2.system)
     assert_empty @fhir_record.validate
   end
