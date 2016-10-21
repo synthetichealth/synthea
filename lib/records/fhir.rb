@@ -75,10 +75,6 @@ module Synthea
                                                    }]
                                                  }
                                                },
-                                               {
-                                                 'url' => "#{SHR_EXT}wkt-geospatialpoint",
-                                                 'valueString' => "POINT (#{entity[:coordinates_address].x} #{entity[:coordinates_address].y})"
-                                               },
                                                # place of birth
                                                {
                                                  'url' => "#{SHR_EXT}placeOfBirth",
@@ -102,6 +98,18 @@ module Synthea
           patient_resource.name << FHIR::HumanName.new('given' => [entity[:name_first]],
                                                        'family' => [entity[:name_maiden]], 'use' => 'maiden')
         end
+        # add geospatial information to address
+        patient_resource.address.first.extension = [FHIR::Extension.new('url' => 'http://hl7.org/fhir/StructureDefinition/geolocation',
+                                                                        'extension' => [
+                                                                          {
+                                                                            'url' => 'latitude',
+                                                                            'valueDecimal' => entity[:coordinates_address].y
+                                                                          },
+                                                                          {
+                                                                            'url' => 'longitude',
+                                                                            'valueDecimal' => entity[:coordinates_address].x
+                                                                          }
+                                                                        ])]
         # add marital status if present
         if entity[:marital_status]
           patient_resource.maritalStatus = FHIR::CodeableConcept.new('coding' => [{ 'system' => 'http://hl7.org/fhir/v3/MaritalStatus', 'code' => entity[:marital_status] }])
