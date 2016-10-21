@@ -1,0 +1,351 @@
+{
+  "name": "Allergic Rhinitis",
+  "remarks": ["Better known as 'hay fever' or 'seasonal allergies'.",
+              "Statistics are from the American College of Allergy, Asthma, & Immunology (ACAAI):",
+              "http://acaai.org/news/facts-statistics/allergies",
+              "or the Allergy and Asthma Foundation of America (AAFA):",
+              "http://www.aafa.org/page/allergy-facts.aspx"],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.157,
+          "transition": "Delay_Until_Early_Mid_Childhood",
+          "remarks": [
+            "Estimated 50 million Americans affected by nasal allergies (ACAAI). 50M / 318.9M => 15.7%.",
+            "It makes more sense to wait until early-mid childhood (2-6 years old) for these ",
+            "symptoms to appear and to be diagnosed by a doctor."
+          ]
+        },
+        {
+          "distribution": 0.843,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_Until_Early_Mid_Childhood": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "years"
+      },
+      "direct_transition": "Has_Allergic_Rhinitis"
+    },
+
+    "Has_Allergic_Rhinitis": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Has_Seasonal_Allergic_Rhinitis",
+          "remarks": [
+            "Seasonal allergies occur only at a specific time of year. They can be more actue but ",
+            "are easily treated. 20% of Americans have just seasonal allergies.",
+            "source: http://www.neilmed.com/neilmedblog/2014/08/seasonal-and-perennial-allergic-rhinitis/"
+          ]
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Has_Perennial_Allergic_Rhinitis",
+          "remarks": [
+            "Perennial allergies are not influenced by the seasons. They are typically tied to other ",
+            "allergens like pet dander, mold, and dust mites."
+          ]
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Has_Perennial_And_Seasonal_Allergic_Rhinitis",
+          "remarks": [
+            "Perennial allergies flare up in the spring with additional allergies, like grass and ",
+            "tree pollens."
+          ]
+        }
+      ]
+    },
+
+    "Has_Seasonal_Allergic_Rhinitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "has_allergic_rhinitis",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "367498001",
+          "display": "Seasonal allergic rhinitis"
+        }
+      ],
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+    },
+
+    "Has_Perennial_Allergic_Rhinitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "has_allergic_rhinitis",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "429195002",
+          "display": "Allergic rhinitis caused by animal dander"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "449729000",
+          "display": "Allergic rhinitis caused by house dust mite"
+        }
+      ],
+      "remarks": ["These people do not have seasonal hay fever like the other cases.",
+                  "These allergies are mainly to pet dander and dust."],
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+    },
+
+    "Has_Perennial_And_Seasonal_Allergic_Rhinitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "has_allergic_rhinitis",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232353008",
+          "display": "Perennial allergic rhinitis with seasonal variation"
+        }
+      ],
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+    },
+
+    "Allergic_Rhinitis_Diagnosis": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Prescribe_OTC_Medication"
+    },
+
+    "Prescribe_OTC_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "remarks": [
+        "There are several antihistamines and delivery methods to choose from. Different ones work for each person.",
+        "For variety I listed oral (Claritin, and Benadryl), nasal (Flonase), and decongestants (Sudafed) medicines, ",
+        "but used the generic medicine names and dosages. Most doctors would likely recommend any combination of these."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "311372",
+          "display": "Loratadine 10 MG Oral Tablet [Claritin]"
+        },
+        {
+          "system": "RxNorm",
+          "code": "1049630",
+          "display": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet [Benadryl]"
+        },
+        {
+          "system": "RxNorm",
+          "code": "896322",
+          "display": "Fluticasone propionate 0.05 MG/ACTUAT [Flonase]"
+        },
+        {
+          "system": "RxNorm",
+          "code": "1049160",
+          "display": "Pseudoephedrine Hydrochloride 30 MG Oral Tablet [Sudafed]"
+        }
+      ],
+      "direct_transition": "Living_With_Allergic_Rhinitis"
+    },
+
+    "Living_With_Allergic_Rhinitis": {
+      "type": "Simple",
+      "direct_transition": "Immunotherapy_Guard"
+    },
+
+    "Immunotherapy_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 12,
+            "unit": "years",
+            "remarks": ["They typically don't give immunotherapy treatment to young children"]
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "immunotherapy_status",
+            "operator": "is nil"
+          }
+        ]
+      },
+      "direct_transition": "Immunotherapy_Consultation"
+    },
+
+    "Immunotherapy_Consultation": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "170837001",
+          "display": "Allergic disorder initial assessment"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Immunotherapy_Given"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Immunotherapy_Not_Given",
+          "remarks": [
+            "The distribution here is somewhat arbitrary. I could not find reasonable stats for",
+            "what percentage of people are given immunotherapy but it's not everyone.",
+            "I went with a 75/25 split. Reasons to not give immunotherapy include fear of needles,",
+            "pre-existing immune conditions (like AIDS), and prohibitive cost."
+          ]
+        }
+      ]
+    },
+
+    "Immunotherapy_Given": {
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_status",
+      "value": "given",
+      "direct_transition": "Immunotherapy_CarePlan"
+    },
+
+    "Immunotherapy_Not_Given": {
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_status",
+      "value": "not-given",
+      "direct_transition": "Living_With_Allergic_Rhinitis"
+    },
+
+    "Immunotherapy_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Immunotherapy_Consultation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "170836005",
+          "display": "Allergic disorder monitoring"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "764101000000108",
+          "display": "Allergen immunotherapy drugs Band 1"
+        }
+      ],
+      "direct_transition": "Allergy_Screening_Test"
+    },
+
+    "Allergy_Screening_Test": {
+      "type": "Procedure",
+      "target_encounter": "Immunotherapy_Consultation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395142003",
+          "display": "Allergy screening test"
+        }
+      ],
+      "reason": "Has allergies treatable with immunotherapy",
+      "direct_transition": "Undergoing_Immunotherapy_Treatment"
+    },
+
+    "Undergoing_Immunotherapy_Treatment": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "direct_transition": "Immunotherapy_Treatment"
+    },
+
+    "Immunotherapy_Treatment": {
+      "type": "Encounter",
+      "class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371883000",
+          "display": "Outpatient procedure"
+        }
+      ],
+      "direct_transition": "Immunotherapy_Procedure"
+    },
+
+    "Immunotherapy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Immunotherapy_Treatment",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "180256009",
+          "display": "Subcutaneous immunotherapy"
+        }
+      ],
+      "reason": "Immunotherapy_CarePlan",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 15,
+            "unit": "years"
+          },
+          "transition": "Immunotherapy_Treatment_Complete"
+        },
+        {
+          "transition": "Undergoing_Immunotherapy_Treatment"
+        }
+      ]
+    },
+
+    "Immunotherapy_Treatment_Complete": {
+      "type": "Simple",
+      "direct_transition": "Allergic_Rhinitis_Subsides"
+    },
+
+    "Allergic_Rhinitis_Subsides": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "has_allergic_rhinitis",
+      "direct_transition": "Immunotherapy_Followup"
+    },
+
+    "Immunotherapy_Followup": {
+      "type": "Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "170838006",
+          "display": "Allergic disorder follow-up assessment"
+        }
+      ],
+      "direct_transition": "Immunotherapy_CarePlan_Ends"
+    },
+
+    "Immunotherapy_CarePlan_Ends": {
+      "type": "CarePlanEnd",
+      "careplan": "Immunotherapy_CarePlan",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
