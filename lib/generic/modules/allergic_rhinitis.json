@@ -126,39 +126,6 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "Prescribe_OTC_Medication"
-    },
-
-    "Prescribe_OTC_Medication": {
-      "type": "MedicationOrder",
-      "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "remarks": [
-        "There are several antihistamines and delivery methods to choose from. Different ones work for each person.",
-        "For variety I listed oral (Claritin, and Benadryl), nasal (Flonase), and decongestants (Sudafed) medicines, ",
-        "but used the generic medicine names and dosages. Most doctors would likely recommend any combination of these."
-      ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "311372",
-          "display": "Loratadine 10 MG Oral Tablet [Claritin]"
-        },
-        {
-          "system": "RxNorm",
-          "code": "1049630",
-          "display": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet [Benadryl]"
-        },
-        {
-          "system": "RxNorm",
-          "code": "896322",
-          "display": "Fluticasone propionate 0.05 MG/ACTUAT [Flonase]"
-        },
-        {
-          "system": "RxNorm",
-          "code": "1049160",
-          "display": "Pseudoephedrine Hydrochloride 30 MG Oral Tablet [Sudafed]"
-        }
-      ],
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
@@ -228,7 +195,7 @@
       "type": "SetAttribute",
       "attribute": "immunotherapy_status",
       "value": "not-given",
-      "direct_transition": "Living_With_Allergic_Rhinitis"
+      "direct_transition": "Terminal"
     },
 
     "Immunotherapy_CarePlan": {
