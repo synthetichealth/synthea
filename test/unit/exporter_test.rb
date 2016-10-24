@@ -109,6 +109,23 @@ class ExporterTest < Minitest::Test
     assert_equal @time - 10.years, filtered.record_synthea.conditions[0]['time']
   end
 
+  def test_export_filter_should_keep_cause_of_death
+    Synthea::Modules::Lifecycle.record_death(@patient, @time - 20.years, :rabies)
+
+    filtered = Synthea::Output::Exporter.filter_for_export(@patient)
+
+    assert_equal 1, filtered.record_synthea.encounters.length
+    assert_equal :death_certification, filtered.record_synthea.encounters[0]['type']
+    assert_equal @time - 20.years, filtered.record_synthea.encounters[0]['time']
+
+    assert_equal 2, filtered.record_synthea.observations.length
+    assert_equal :cause_of_death, filtered.record_synthea.observations[0]['type']
+    assert_equal @time - 20.years, filtered.record_synthea.observations[0]['time']
+
+    assert_equal :death_certificate, filtered.record_synthea.observations[1]['type']
+    assert_equal @time - 20.years, filtered.record_synthea.observations[1]['time']
+  end
+
   def test_export_filter_should_not_keep_old_stuff
     @record.procedure(:appendectomy, @time - 20.years, :appendicitis)
     @record.encounter(:er_visit, @time - 18.years)
