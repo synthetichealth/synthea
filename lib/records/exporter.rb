@@ -138,6 +138,10 @@ module Synthea
           return record.careplan_active?(e['type'])
         when :conditions
           return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date)
+        when :encounters
+          return e['type'] == :death_certification
+        when :observations
+          return e['type'] == :cause_of_death || e['type'] == :death_certificate
         end
 
         false
