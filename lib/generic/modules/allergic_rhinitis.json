@@ -286,7 +286,6 @@
           "display": "Allergy screening test"
         }
       ],
-      "reason": "Has allergies treatable with immunotherapy",
       "direct_transition": "Undergoing_Immunotherapy_Treatment"
     },
 
@@ -323,7 +322,6 @@
           "display": "Subcutaneous immunotherapy"
         }
       ],
-      "reason": "Immunotherapy_CarePlan",
       "conditional_transition": [
         {
           "condition": {
