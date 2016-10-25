@@ -1,12 +1,11 @@
 module Synthea
   module Modules
     class Generic < Synthea::Rules
-
       def initialize
         super
         # load all the JSON module files in lib/generic/modules/
         @gmodules = []
-        Dir.glob(File.join(File.expand_path("../../generic/modules", __FILE__), '*.json')).each do |file|
+        Dir.glob(File.join(File.expand_path('../../generic/modules', __FILE__), '*.json')).each do |file|
           m = JSON.parse(File.read(file))
           puts "Loaded #{m['name']} module from #{file}"
           @gmodules << m
@@ -15,9 +14,7 @@ module Synthea
 
       # this rule loops through the generic modules, processing one at a time
       rule :generic, [:generic], [:generic, :death] do |time, entity|
-        if ! entity[:is_alive]
-          return
-        end
+        return unless entity.alive?(time)
 
         entity[:generic] ||= {}
         @gmodules.each do |m|
@@ -28,17 +25,24 @@ module Synthea
 
       #-----------------------------------------------------------------------#
 
+      def self.log_modules(entity)
+        if entity && Synthea::Config.generic.log
+          entity[:generic].each do |_key, context|
+            context.log_history if context.logged.nil?
+          end
+        end
+      end
+
       def self.perform_wellness_encounter(entity, time)
         return if entity[:generic].nil?
 
         # find all of the generic modules that are currently waiting for a wellness encounter
-        entity[:generic].each do | name, ctx |
+        entity[:generic].each do |_name, ctx|
           st = ctx.current_state
-          if st.is_a?(Synthea::Generic::States::Encounter) && st.wellness && !st.processed
-            st.perform_encounter(time, entity, false)
-            # The encounter got unjammed -- progress through the subsequent states
-            ctx.run(time, entity)
-          end
+          next unless st.is_a?(Synthea::Generic::States::Encounter) && st.wellness && !st.processed
+          st.perform_encounter(time, entity, false)
+          # The encounter got unjammed -- progress through the subsequent states
+          ctx.run(time, entity)
         end
       end
     end

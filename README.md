@@ -2,15 +2,15 @@
 
 Synthea is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic but not real, patient data and associated health records in a variety of formats.
 
+Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
+
 Currently, Synthea features:
 - Birth to Death Lifecycle
 - Modular Rule System
-  - Drop in custom Ruby rules modules for additional capabilities
+  - Drop in [Generic Modules](https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework)
+  - Custom Ruby rules modules for additional capabilities
 - Primary Care Encounters and Emergency Room Encounters
-- Conditions, Allergies, Vaccinations, Observations/Vitals, Labs
-- Metabolic Syndrome
- - Type II Diabetes
- - Cardiovascular Disease
+- Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs
 - Formats
  - FHIR (STU3)
  - C-CDA
@@ -42,6 +42,14 @@ Synthea will output patient records in C-CDA (requires running instance of Mongo
 After generating data, upload it to a STU3 server
 ```
 bundle exec rake synthea:fhirupload[http://server/fhir/baseDstu3]
+```
+
+### Synthea GraphViz
+Generate a graphical visualization of Synthea rules. Requires GraphViz to be installed.
+
+```
+brew install graphviz
+bundle exec rake synthea:graphviz
 ```
 
 # License

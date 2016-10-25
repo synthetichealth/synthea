@@ -5,7 +5,7 @@ module Synthea
       class State
         attr_accessor :name, :entered, :exited, :start_time
 
-        def initialize (context, name)
+        def initialize(context, name)
           @context = context
           @name = name
         end
@@ -16,7 +16,7 @@ module Synthea
           exit = process(time, entity)
           if exit
             # Special handling for Delay, which may expire between run cycles
-            if self.is_a? Delay
+            if is_a? Delay
               @exited = @expiration
               @expiration = nil
               @start_time = @exited if @start_time > @exited
@@ -27,26 +27,26 @@ module Synthea
 
           c = @context.state_config(@name)
           if c && c['assign_to_attribute']
-            entity[c['assign_to_attribute']] = self.symbol.to_s
+            entity[c['assign_to_attribute']] = symbol.to_s
           end
 
-          return exit
+          exit
         end
 
         # creates a symbol to be used in lookup tables (mainly for referencing codes)
-        def symbol ()
+        def symbol
           # prefer a code display value since the state name may not be unique between modules
-          if ! @codes.nil? && ! @codes.empty?
-            @codes.first['display'].gsub(/\s+/,"_").downcase.to_sym
+          if !@codes.nil? && !@codes.empty?
+            @codes.first['display'].gsub(/\s+/, '_').downcase.to_sym
           else
-            @name.gsub(/\s+/,"_").downcase.to_sym
+            @name.gsub(/\s+/, '_').downcase.to_sym
           end
         end
 
         def concurrent_with_target_encounter(time)
-          if ! @target_encounter.nil?
+          unless @target_encounter.nil?
             past = @context.most_recent_by_name(@target_encounter)
-            return ! past.nil? && past.time == time
+            return !past.nil? && past.time == time
           end
         end
 
@@ -55,7 +55,7 @@ module Synthea
         def add_lookup_code(lookup_hash)
           return if @codes.nil? || @codes.empty?
 
-          sym = self.symbol()
+          sym = symbol
           value = {
             description: @codes.first['display'],
             codes: {}
@@ -71,48 +71,47 @@ module Synthea
       end
 
       class Initial < State
-        def process(time, entity)
+        def process(_time, _entity)
           # initial state always goes to next
           true
         end
       end
 
       class Simple < State
-        def process(time, entity)
+        def process(_time, _entity)
           # simple state always goes to next
           true
         end
       end
 
       class Terminal < State
-        def process(time, entity)
+        def process(_time, _entity)
           # never pass through the terminal state
           false
         end
       end
 
       class Delay < State
-        def initialize (context, name)
+        def initialize(context, name)
           super
           @range = context.state_config(name)['range']
-          if @range.nil?
-            @exact = context.state_config(name)['exact']
-          end
+          @exact = context.state_config(name)['exact'] if @range.nil?
         end
 
-        def process(time, entity)
+        def process(time, _entity)
           if @expiration.nil?
-            if ! @range.nil?
+            if !@range.nil?
               # choose a random duration within the specified range
-              choice = rand(@range['low'] .. @range['high'])
-              @expiration = choice.method(@range['unit']).call().since(@start_time)
-            elsif ! @exact.nil?
-              @expiration = @exact['quantity'].method(@exact['unit']).call().since(@start_time)
+              low = @range['low'].send(@range['unit'])
+              high = @range['high'].send(@range['unit'])
+              @expiration = rand(low..high).since(@start_time)
+            elsif !@exact.nil?
+              @expiration = @exact['quantity'].send(@exact['unit']).since(@start_time)
             else
               @expiration = @start_time
             end
           end
-          return time >= @expiration
+          time >= @expiration
         end
       end
 
@@ -120,22 +119,22 @@ module Synthea
         def process(time, entity)
           # only indicate successful processing if the condition evaluates to true
           c = @context.state_config(@name)['allow']
-          return Synthea::Generic::Logic::test(c, @context, time, entity)
+          Synthea::Generic::Logic.test(c, @context, time, entity)
         end
       end
 
       class SetAttribute < State
-        def process(time, entity)
+        def process(_time, entity)
           c = @context.state_config(@name)
-          entity[ c['attribute'] ] = c['value']
-          return true
+          entity[c['attribute']] = c['value']
+          true
         end
       end
 
       class Encounter < State
         attr_reader :wellness, :processed, :time, :codes
 
-        def initialize (context, name)
+        def initialize(context, name)
           super
           @processed = false
           if context.state_config(name)['wellness']
@@ -148,29 +147,29 @@ module Synthea
         end
 
         def process(time, entity)
-          if !@wellness
+          unless @wellness
             # This is a stand-alone (non-wellness) encounter, so proceed immediately!
-            self.perform_encounter(time, entity)
+            perform_encounter(time, entity)
           end
-          return @processed
+          @processed
         end
 
         # perform_encounter can be called from this state's process method, but it also might
         # be called as a result of a wellness encounter occurring
-        def perform_encounter(time, entity, record_encounter=true)
+        def perform_encounter(time, entity, record_encounter = true)
           # set process to true so that the process method knows we've done a successful encounter
           @processed = true
           @time = time
 
           if record_encounter
-            value = self.add_lookup_code(ENCOUNTER_LOOKUP)
+            value = add_lookup_code(ENCOUNTER_LOOKUP)
             value[:class] = @class
-            entity.record_synthea.encounter(self.symbol(), time)
+            entity.record_synthea.encounter(symbol, time)
           end
 
           # Look through the history for conditions to diagnose
           @context.history.each do |h|
-            if h.is_a?(ConditionOnset) && ! h.diagnosed && h.target_encounter == @name
+            if h.is_a?(ConditionOnset) && !h.diagnosed && h.target_encounter == @name
               h.diagnose(time, entity)
             end
           end
@@ -180,7 +179,7 @@ module Synthea
       class ConditionOnset < State
         attr_reader :diagnosed, :target_encounter
 
-        def initialize (context, name)
+        def initialize(context, name)
           super
           @codes = context.state_config(name)['codes']
           @target_encounter = context.state_config(name)['target_encounter']
@@ -188,23 +187,46 @@ module Synthea
         end
 
         def process(time, entity)
-          if self.concurrent_with_target_encounter(time)
-            self.diagnose(time, entity)
-          end
-          return true
+          diagnose(time, entity) if concurrent_with_target_encounter(time)
+          true
         end
 
         def diagnose(time, entity)
-          self.add_lookup_code(Synthea::COND_LOOKUP)
-          entity.record_synthea.condition(self.symbol(), time)
+          add_lookup_code(Synthea::COND_LOOKUP)
+          entity.record_synthea.condition(symbol, time)
           @diagnosed = true
+        end
+      end
+
+      class ConditionEnd < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @referenced_by = cfg['referenced_by_attribute']
+          @condition_onset = cfg['condition_onset']
+          @codes = cfg['codes']
+        end
+
+        def process(time, entity)
+          if @referenced_by
+            @type = entity[@referenced_by].to_sym
+          elsif @condition_onset
+            @type = @context.most_recent_by_name(@condition_onset).symbol
+          elsif @codes
+            @type = symbol
+          else
+            raise 'Condition End must define the condition to end either by code, a referenced entity attribute, or the name of the original ConditionOnset state'
+          end
+
+          entity.record_synthea.end_condition(@type, time)
+          true
         end
       end
 
       class MedicationOrder < State
         attr_reader :prescribed, :target_encounter
 
-        def initialize (context, name)
+        def initialize(context, name)
           super
           @codes = context.state_config(name)['codes']
           @target_encounter = context.state_config(name)['target_encounter']
@@ -213,26 +235,28 @@ module Synthea
         end
 
         def process(time, entity)
-          if self.concurrent_with_target_encounter(time)
-            self.prescribe(time, entity)
-          end
-          return true
+          prescribe(time, entity) if concurrent_with_target_encounter(time)
+          true
         end
 
         def prescribe(time, entity)
-          self.add_lookup_code(Synthea::MEDICATION_LOOKUP)
-          cond = @context.most_recent_by_name(@reason) unless @reason.nil?
+          add_lookup_code(Synthea::MEDICATION_LOOKUP)
+          unless @reason.nil?
+            cond = @context.most_recent_by_name(@reason)
+            cond = cond.symbol if cond
+            cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
+          end
           if cond.nil?
-            entity.record_synthea.medication_start(self.symbol(), time, [])
+            entity.record_synthea.medication_start(symbol, time, [])
           else
-            entity.record_synthea.medication_start(self.symbol(), time, [cond.symbol()])
+            entity.record_synthea.medication_start(symbol, time, [cond])
           end
           @prescribed = true
         end
       end
 
       class MedicationEnd < State
-        def initialize (context, name)
+        def initialize(context, name)
           super
           cfg = context.state_config(name)
           @referenced_by = cfg['referenced_by_attribute']
@@ -242,29 +266,119 @@ module Synthea
         end
 
         def process(time, entity)
-          self.end_prescription(time, entity)
-          return true
+          end_prescription(time, entity)
+          true
         end
 
         def end_prescription(time, entity)
           if @referenced_by
             @type = entity[@referenced_by].to_sym
           elsif @medication_order
-            @type = @context.most_recent_by_name(@medication_order).symbol()
+            @type = @context.most_recent_by_name(@medication_order).symbol
           elsif @codes
-            @type = self.symbol()
+            @type = symbol
           else
-            raise "Medication End must define the medication to end either by code, a referenced entity attribute, or the name of the original MedicationOrder state"
+            raise 'Medication End must define the medication to end either by code, a referenced entity attribute, or the name of the original MedicationOrder state'
           end
 
           entity.record_synthea.medication_stop(@type, time, [@reason])
         end
       end
 
+      class CarePlanStart < State
+        attr_reader :target_encounter
+
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @codes = cfg['codes']
+          @activities = cfg['activities']
+          @target_encounter = cfg['target_encounter']
+          @reason = cfg['reason']
+        end
+
+        def process(time, entity)
+          start_plan(time, entity) if concurrent_with_target_encounter(time)
+          true
+        end
+
+        def start_plan(time, entity)
+          add_lookup_code(Synthea::CAREPLAN_LOOKUP)
+          activities = add_activity_lookup_codes(Synthea::CAREPLAN_LOOKUP)
+
+          unless @reason.nil?
+            rsn = @context.most_recent_by_name(@reason)
+            rsn = rsn.symbol if rsn
+            rsn = entity[@reason].to_sym if rsn.nil? && entity[@reason]
+          end
+
+          if rsn
+            entity.record_synthea.careplan_start(symbol, activities, time, [rsn])
+          else
+            entity.record_synthea.careplan_start(symbol, activities, time, [])
+          end
+        end
+
+        def add_activity_lookup_codes(lookup_hash)
+          return if @activities.nil? || @activities.empty?
+          symbols = []
+          @activities.each do |a|
+            sym = activity_symbol(a)
+            symbols << sym
+            value = {
+              description: a['display'],
+              codes: {}
+            }
+            value[:codes][a['system']] ||= []
+            value[:codes][a['system']] << a['code']
+            lookup_hash[sym] = value
+          end
+          symbols
+        end
+
+        def activity_symbol(activity)
+          if activity.key?('display')
+            activity['display'].gsub(/\s+/, '_').downcase.to_sym
+          else
+            raise 'Activity must have a display name to hash'
+          end
+        end
+      end
+
+      class CarePlanEnd < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @referenced_by = cfg['referenced_by_attribute']
+          @careplan = cfg['careplan']
+          @reason = (cfg['reason'] || 'careplan_ended').to_sym
+          @codes = cfg['codes']
+        end
+
+        def process(time, entity)
+          end_plan(time, entity)
+          true
+        end
+
+        def end_plan(time, entity)
+          if @referenced_by
+            @type = entity[@referenced_by].to_sym
+          elsif @careplan
+            @type = @context.most_recent_by_name(@careplan).symbol
+          elsif @codes
+            @type = symbol
+          else
+            raise 'CarePlanEnd must define the CarePlan to end either by code, a referenced entity attribute, or the name of the original CarePlanStart state'
+          end
+
+          entity.record_synthea.careplan_stop(@type, time)
+        end
+      end
+
       class Procedure < State
         attr_reader :operated, :target_encounter
 
-        def initialize (context, name)
+        def initialize(context, name)
           super
           @codes = context.state_config(name)['codes']
           @target_encounter = context.state_config(name)['target_encounter']
@@ -273,29 +387,123 @@ module Synthea
         end
 
         def process(time, entity)
-          if self.concurrent_with_target_encounter(time)
-            self.operate(time, entity)
-          end
-          return true
+          operate(time, entity) if concurrent_with_target_encounter(time)
+          true
         end
 
         def operate(time, entity)
-          self.add_lookup_code(Synthea::PROCEDURE_LOOKUP)
+          add_lookup_code(Synthea::PROCEDURE_LOOKUP)
           cond = @context.most_recent_by_name(@reason) unless @reason.nil?
+          unless @reason.nil?
+            cond = @context.most_recent_by_name(@reason)
+            cond = cond.symbol if cond
+            cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
+          end
           if cond.nil?
-            entity.record_synthea.procedure(self.symbol(), time, nil)
+            entity.record_synthea.procedure(symbol, time, nil)
           else
-            entity.record_synthea.procedure(self.symbol(), time, cond.symbol())
+            entity.record_synthea.procedure(symbol, time, cond)
           end
           @operated = true
         end
       end
 
-      class Death < State
+      class Observation < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @codes = cfg['codes']
+          range = cfg['range']
+          exact = cfg['exact']
+          if range
+            @value = rand(range['low']..range['high'])
+          elsif exact
+            @value = exact['quantity']
+          else
+            raise 'Observation state must specify value using either "range" or "exact"'
+          end
+          @unit = cfg['unit']
+          @target_encounter = cfg['target_encounter']
+          @type = symbol
+        end
+
+        def add_lookup_code(lookup_hash)
+          # TODO: update the observation lookup hash so it's the same format as all the others
+          # and then delete this method
+          return if @codes.nil? || @codes.empty?
+          code = @codes.first
+          lookup_hash[@type] = { description: code['display'], code: code['code'], unit: @unit }
+        end
+
         def process(time, entity)
-          entity[:is_alive] = false
-          entity.events.create(time, :death, :generic, true)
-          Synthea::Modules::Lifecycle.record_death(entity, time)
+          add_lookup_code(Synthea::OBS_LOOKUP)
+          if concurrent_with_target_encounter(time)
+            entity.record_synthea.observation(@type, time, @value)
+          end
+          true
+        end
+      end
+
+      class Symptom < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @symptom = cfg['symptom']
+          @cause = cfg['cause'] || context.config['name']
+          range = cfg['range']
+          exact = cfg['exact']
+          if range
+            @value = rand(range['low']..range['high'])
+          elsif exact
+            @value = exact['quantity']
+          else
+            raise 'Symptom state must specify value using either "range" or "exact"'
+          end
+        end
+
+        def process(_time, entity)
+          entity.set_symptom_value(@cause, @symptom, @value)
+        end
+      end
+
+      class Death < State
+        def initialize(context, name)
+          super
+          cfg = context.state_config(name)
+          @range = cfg['range']
+          @exact = cfg['exact'] if @range.nil?
+          @referenced_by = cfg['referenced_by_attribute']
+          @condition_onset = cfg['condition_onset']
+          @codes = cfg['codes']
+        end
+
+        def process(time, entity)
+          if @range
+            low = @range['low'].send(@range['unit'])
+            high = @range['high'].send(@range['unit'])
+            value = rand(low..high).since(time)
+          elsif @exact
+            value = @exact['quantity'].send(@exact['unit']).since(time)
+          end
+
+          # this is the same as the ConditionEnd logic, maybe we want to extract this somewhere
+          if @referenced_by
+            @reason = entity[@referenced_by].to_sym
+          elsif @condition_onset
+            @reason = @context.most_recent_by_name(@condition_onset).symbol
+          elsif @codes
+            @reason = symbol
+          end
+
+          if value
+            # Record the future death... if there is a condition with a known life-expectancy
+            # and you want the model to keep running in the mean time.
+            entity.events.create(value, :death, :generic, false)
+            Synthea::Modules::Lifecycle.record_death(entity, value, @reason)
+          else
+            entity.events.create(time, :death, :generic, true)
+            Synthea::Modules::Lifecycle.record_death(entity, time, @reason)
+          end
           true
         end
       end

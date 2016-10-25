@@ -1,7 +1,6 @@
 module Synthea
   module Modules
     class Immunizations < Synthea::Rules
-
       # This is a complete, but fairly simplistic approach to synthesizing immunizations.  It is encounter driven;
       # whenever an encounter occurs, the doctor checks for due immunizations and gives them.  In at least one case
       # (HPV) this means that the immunization schedule isn't strictly followed since the encounter schedule doesn't
@@ -15,8 +14,6 @@ module Synthea
       rule :immunizations, [:age], [] do |time, entity|
       end
 
-
-
       #-----------------------------------------------------------------------#
 
       def self.perform_encounter(entity, time)
@@ -25,17 +22,15 @@ module Synthea
         birthdate = entity.event(:birth).time
         age_in_months = Synthea::Modules::Lifecycle.age(time, birthdate, nil, :months)
         IMM_SCHEDULE.each_key do |imm|
-          if immunization_due(imm, birthdate, age_in_months, time, entity[:immunizations][imm] || [])
-            entity[:immunizations][imm] ||= []
-            entity[:immunizations][imm] << time
-            # puts "Administering #{IMM_SCHEDULE[imm][:code]['display']} to #{entity[:name_first]} age #{age_in_months/12} in year #{time.year}"
-            patient.immunization(imm, time, :immunization, :immunization)
-          end
+          next unless immunization_due(imm, birthdate, age_in_months, time, entity[:immunizations][imm] || [])
+          entity[:immunizations][imm] ||= []
+          entity[:immunizations][imm] << time
+          # puts "Administering #{IMM_SCHEDULE[imm][:code]['display']} to #{entity[:name_first]} age #{age_in_months/12} in year #{time.year}"
+          patient.immunization(imm, time, :immunization, :immunization)
         end
       end
 
       def self.immunization_due(imm, birthdate, age_in_months, time, history)
-
         at_months = IMM_SCHEDULE[imm][:at_months]
         first_available = IMM_SCHEDULE[imm][:first_available]
 
@@ -61,17 +56,16 @@ module Synthea
           age_at_date = Synthea::Modules::Lifecycle.age(date, birthdate, nil, :months)
           # Note: we use drop(1) to non-destructively create a copy of at_months without the first element
           # so that we don't change the global at_months data
-          at_months = at_months.drop(1) if at_months.size > 0 && age_at_date >= at_months.first && age_at_date - at_months.first < 48
+          at_months = at_months.drop(1) if !at_months.empty? && age_at_date >= at_months.first && age_at_date - at_months.first < 48
         end
 
         # 3) see if there are any recommended doses remaining that this patient is old enough for
-        return at_months.size > 0 && age_in_months >= at_months.first
+        !at_months.empty? && age_in_months >= at_months.first
 
         # Note: the approach used here still has some issues, mostly due to odd interactions between
         # vaccination availability dates and how we schedule adult vaccinations. For example, the PCV13
         # vaccine is administered to adults over 65, but if the adult is already older than 69 (65 + 4) when
         # the vaccine is made available in 2012, step 1 above causes the dose to not be administered at all
-
       end
     end
   end

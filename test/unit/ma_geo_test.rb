@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 class MA_Geo < Minitest::Test
   def setup
-    @ma = Synthea::Location.class_variable_get(:@@geom)
+    @ma = Synthea::Location.instance_variable_get(:@geom)
   end
 
   def test_all_valid_cities
@@ -35,7 +35,7 @@ class MA_Geo < Minitest::Test
   end
 
   def test_select_point
-    data = Synthea::Location.selectPoint
+    data = Synthea::Location.select_point
     city = @ma.features.find{|c| c.properties['cs_name']== data["city"] }.geometry.geometries[0]
     assert(city.contains_point?(data["point"]))
   end

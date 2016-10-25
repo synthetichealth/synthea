@@ -522,6 +522,11 @@
 
     "Death" : {
       "type" : "Death",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "55680006",
+        "display" : "Drug overdose"
+      }],
       "direct_transition" : "Terminal"
     },
 

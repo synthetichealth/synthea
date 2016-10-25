@@ -2,84 +2,122 @@ module Synthea
   module Generic
     module Logic
       def self.test(condition, context, time, entity)
-        case condition['condition_type']
-        when 'And'
-          self.testAnd(condition, context, time, entity)
-        when 'Or'
-          self.testOr(condition, context, time, entity)
-        when 'Not'
-          self.testNot(condition, context, time, entity)
-        when 'Gender'
-          self.testGender(condition, context, time, entity)
-        when 'Age'
-          self.testAge(condition, context, time, entity)
-        when 'Socioeconomic Status'
-          self.testSES(condition, context, time, entity)
-        when 'Date'
-          self.testDate(condition, context, time, entity)
-        when 'Attribute'
-          self.testAttribute(condition, context, time, entity)
-        when 'True'
-          self.testTrue(condition, context, time, entity)
-        when 'False'
-          self.testFalse(condition, context, time, entity)
-        else
-          raise "Unsupported condition type: #{condition['condition_type']}"
-        end
+        func = "test_#{condition['condition_type'].gsub(/\s+/, '_').downcase}"
+
+        raise "Unsupported condition type: #{condition['condition_type']}" unless respond_to?(func)
+
+        send(func, condition, context, time, entity)
       end
 
-      def self.testAnd(condition, context, time, entity)
+      def self.test_and(condition, context, time, entity)
         condition['conditions'].each do |c|
-          if ! self.test(c, context, time, entity)
-            return false
-          end
+          return false unless test(c, context, time, entity)
         end
-        return true
+        true
       end
 
-      def self.testOr(condition, context, time, entity)
+      def self.test_or(condition, context, time, entity)
         condition['conditions'].each do |c|
-          if test(c, context, time, entity)
-            return true
-          end
+          return true if test(c, context, time, entity)
         end
-        return false
+        false
       end
 
-      def self.testNot(condition, context, time, entity)
-        return ! test(condition['condition'], context, time, entity)
+      def self.test_not(condition, context, time, entity)
+        !test(condition['condition'], context, time, entity)
       end
 
-      def self.testGender(condition, context, time, entity)
-        return condition['gender'] == entity[:gender]
+      def self.test_gender(condition, _context, _time, entity)
+        condition['gender'] == entity[:gender]
       end
 
-      def self.testAge(condition, context, time, entity)
+      def self.test_age(condition, _context, time, entity)
         birthdate = entity.event(:birth).time
         age = Synthea::Modules::Lifecycle.age(time, birthdate, nil, condition['unit'].to_sym)
-        self.compare(age, condition['quantity'], condition['operator'])
+        compare(age, condition['quantity'], condition['operator'])
       end
 
-      def self.testSES(condition, context, time, entity)
-        raise "Unsupported category: #{condition['category']}" if !%w(High Middle Low).include?(condition['category'])
+      def self.test_socioeconomic_status(condition, _context, _time, entity)
+        raise "Unsupported category: #{condition['category']}" unless %w(High Middle Low).include?(condition['category'])
         ses_category = Synthea::Modules::Lifecycle.socioeconomic_category(entity)
-        self.compare(ses_category, condition['category'], '==')
+        compare(ses_category, condition['category'], '==')
       end
 
-      def self.testDate(condition, context, time, entity)
-        self.compare(time.year, condition['year'], condition['operator'])
+      def self.test_date(condition, _context, time, _entity)
+        compare(time.year, condition['year'], condition['operator'])
       end
 
-      def self.testAttribute(condition, context, time, entity)
-        self.compare(entity[ condition['attribute'] ], condition['value'], condition['operator'])
+      def self.test_attribute(condition, _context, _time, entity)
+        attribute = entity[condition['attribute']] || entity[condition['attribute'].to_sym]
+        compare(attribute, condition['value'], condition['operator'])
       end
 
-      def self.testTrue(condition, context, time, entity)
-        return true
+      def self.test_symptom(condition, _context, _time, entity)
+        compare(entity.get_symptom_value(condition['symptom']), condition['value'], condition['operator'])
       end
 
-      def self.testFalse(condition, context, time, entity)
-        return false
+      def self.test_observation(condition, _context, _time, entity)
+        # find the most recent instance of the given observation
+        obstype = if condition['codes']
+                    # based on state.symbol
+                    condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+                  elsif condition['referenced_by_attribute']
+                    entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
+                  else
+                    raise 'Observation condition must be specified by code or attribute'
+                  end
+
+        obs = entity.record_synthea.observations.select { |o| o['type'] == obstype }
+        operator = condition['operator']
+
+        if obs.empty?
+          if ['is nil', 'is not nil'].include?(operator)
+            compare(nil, condition['value'], operator)
+          else
+            raise "No observations exist for type #{obstype}, cannot compare values"
+          end
+        else
+          compare(obs.last['value'], condition['value'], operator)
+        end
+      end
+
+      def self.test_active_condition(condition, _context, _time, entity)
+        # return true if the given condition is currently active
+        contype = if condition['codes']
+                    # based on state.symbol
+                    condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+                  elsif condition['referenced_by_attribute']
+                    entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
+                  else
+                    raise 'Condition condition must be specified by code or attribute'
+                  end
+
+        entity.record_synthea.present[contype]
+      end
+
+      def self.test_priorstate(condition, context, _time, _entity)
+        !context.most_recent_by_name(condition['name']).nil?
+      end
+
+      def self.test_active_careplan(careplan, _context, _time, entity)
+        # return true if the given careplan is currently active
+        contype = if careplan['codes']
+                    # based on the state.symbol
+                    careplan['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+                  elsif careplan['referenced_by_attribute']
+                    entity[careplan['referenced_by_attribute']] || entity[careplan['referenced_by_attribute'].to_sym]
+                  else
+                    raise 'Condition careplan must be specified by code or attribute'
+                  end
+        entity.record_synthea.careplan_active?(contype)
+      end
+
+      def self.test_true(_condition, _context, _time, _entity)
+        true
+      end
+
+      def self.test_false(_condition, _context, _time, _entity)
+        false
       end
 
       def self.compare(lhs, rhs, operator)

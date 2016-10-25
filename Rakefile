@@ -1,5 +1,6 @@
 require 'rake/testtask'
 require 'cane/rake_task'
+require 'rubocop/rake_task'
 
 require_relative 'lib/synthea'
 
@@ -8,16 +9,21 @@ Dir['lib/tasks/**/*.rake'].sort.each do |ext|
   load ext
 end
 
-desc "Run basic tests"
+desc 'Run basic tests'
 Rake::TestTask.new(:test_unit) do |t|
-  t.libs << "test"
+  t.libs << 'test'
   t.test_files = FileList['test/**/*_test.rb']
   t.verbose = true
   t.warning = false
 end
 
-task :test => [:test_unit] do
-  system("open coverage/index.html")
+desc 'Run rubocop'
+task :rubocop do
+  RuboCop::RakeTask.new
 end
 
-task :default => [:test]
+task test: [:test_unit, :rubocop] do
+  system('open coverage/index.html')
+end
+
+task default: [:test]

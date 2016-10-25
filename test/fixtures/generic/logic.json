@@ -7,7 +7,7 @@
   },
   "genderIsMaleTest": {
       "condition_type": "Gender",
-      "gender": "M" 
+      "gender": "M"
   },
   "ageLt40Test": {
       "condition_type": "Age",
@@ -79,6 +79,57 @@
     "operator" : ">",
     "value" : 100
   },
+  "symptomPainLevelGt50" : {
+    "condition_type": "Symptom",
+    "symptom" : "PainLevel",
+    "operator" : ">",
+    "value" : 50
+  },
+  "symptomPainLevelLte80" : {
+    "condition_type": "Symptom",
+    "symptom" : "PainLevel",
+    "operator" : "<=",
+    "value" : 80
+  },
+  "mmseObservationGt22" : {
+    "condition_type" : "Observation",
+    "codes" : [{
+      "system" : "LOINC",
+      "code" : "72107-6",
+      "display" : "Mini Mental State Examination"
+    }],
+    "operator" : ">",
+    "value" : 22
+  },
+  "hasDiabetesObservation" : {
+    "condition_type" : "Observation",
+    "referenced_by_attribute" : "Diabetes Test Performed",
+    "operator" : "is not nil"
+  },
+  "diabetesConditionTest" : {
+    "condition_type" : "Active Condition",
+    "codes": [{
+        "system": "SNOMED-CT",
+        "code": "73211009",
+        "display": "Diabetes mellitus"
+    }]
+  },
+  "alzheimersConditionTest" : {
+    "condition_type" : "Active Condition",
+    "referenced_by_attribute" : "Alzheimer's Variant"
+  },
+  "diabetesCarePlanTest": {
+    "condition_type": "Active CarePlan",
+    "codes": [{
+      "system": "SNOMED-CT",
+      "code": "698360004",
+      "display": "Diabetes self management plan"
+    }]
+  },
+  "anginaCarePlanTest": {
+    "condition_type": "Active CarePlan",
+    "referenced_by_attribute": "Angina_CarePlan"
+  },
   "attributeNilTest" : {
     "condition_type" : "Attribute",
     "attribute" : "Test_Attribute_Key",
@@ -88,6 +139,10 @@
     "condition_type" : "Attribute",
     "attribute" : "Test_Attribute_Key",
     "operator" : "is not nil"
+  },
+  "priorStateDoctorVisitTest" : {
+    "condition_type": "PriorState",
+    "name" : "DoctorVisit"
   },
   "andAllTrueTest": {
     "condition_type": "And",

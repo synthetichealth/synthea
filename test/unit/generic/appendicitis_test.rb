@@ -7,7 +7,6 @@ class AppendicitisTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
-    @patient[:is_alive] = true
     # Setup a mock to track calls to the patient record
     @patient.record_synthea = MiniTest::Mock.new
 
@@ -29,7 +28,7 @@ class AppendicitisTest < Minitest::Test
     srand 9
 
     @context.run(@time, @patient)
-    @time = @time.advance(years: 40)
+    @time = @time.advance(years: 19, months: 0, days: 9, hours: 23, minutes: 16, seconds: 8)
 
     @patient.record_synthea.expect(:condition, nil, [:appendicitis, @time])
 
@@ -48,7 +47,7 @@ class AppendicitisTest < Minitest::Test
     srand 8765
 
     @context.run(@time, @patient)
-    @time = @time.advance(years: 61)
+    @time = @time.advance(years: 62, months: 6, days: 12, hours: 15, minutes: 37, seconds: 20)
 
     @patient.record_synthea.expect(:condition, nil, [:appendicitis, @time])
     @patient.record_synthea.expect(:condition, nil, [:rupture_of_appendix, @time])

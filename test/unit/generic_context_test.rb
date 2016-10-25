@@ -8,7 +8,6 @@ class GenericContextTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
-    @patient[:is_alive] = true
   end
 
   def test_direct_transition

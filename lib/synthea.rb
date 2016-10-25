@@ -1,5 +1,5 @@
-#OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-#Above line is a temporary certificate solution to upload fhir records to synthetic mass. Uncomment when uploading.
+# OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+# Above line is a temporary certificate solution to upload fhir records to synthetic mass. Uncomment when uploading.
 # Top level include file that brings in all the necessary code
 require 'bundler/setup'
 require 'rubygems'
@@ -18,6 +18,8 @@ require 'net/sftp'
 require 'highline/import'
 require 'json'
 require 'concurrent'
+require 'chunky_png'
+require 'graphviz'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 
@@ -28,45 +30,45 @@ Synthea::Config = RecursiveOpenStruct.new(YAML.load(ERB.new(File.read(File.join(
 begin
   require 'health-data-standards'
 rescue LoadError
-  puts "`health-data-standards` failed to load: C-CDA export disabled."
+  puts '`health-data-standards` failed to load: C-CDA export disabled.'
   Synthea::Config.exporter.ccda.export = false
   Synthea::Config.exporter.html.export = false
 end
 
-Dir.glob(File.join(root, 'lib','ext','**','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'ext', '**', '*.rb')).each do |file|
   require file
 end
 
-Dir.glob(File.join(root, 'lib','events','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'events', '*.rb')).each do |file|
   require file
 end
-Dir.glob(File.join(root, 'lib','events','**','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'events', '**', '*.rb')).each do |file|
   require file
 end
 
 require File.join(root, 'lib', 'entity', 'entity.rb')
-Dir.glob(File.join(root, 'lib','entity','**','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'entity', '**', '*.rb')).each do |file|
   require file
 end
 
-Dir.glob(File.join(root, 'lib','generic','**','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'generic', '**', '*.rb')).each do |file|
   require file
 end
 
-require File.join(root,'lib','modules','module.rb')
-Dir.glob(File.join(root, 'lib','modules','*.rb')).each do |file|
+require File.join(root, 'lib', 'modules', 'module.rb')
+Dir.glob(File.join(root, 'lib', 'modules', '*.rb')).each do |file|
   require file
 end
 
-Dir.glob(File.join(root, 'lib','records','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'records', '*.rb')).each do |file|
   require file
 end
 
-require File.join(root,'lib','world','MA_geo.rb')
-Dir.glob(File.join(root, 'lib','world','**','*.rb')).each do |file|
+require File.join(root, 'lib', 'world', 'MA_geo.rb')
+Dir.glob(File.join(root, 'lib', 'world', '**', '*.rb')).each do |file|
   require file
 end
 
-Dir.glob(File.join(root, 'lib','likelihoods','**','*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'tasks', '**', '*.rb')).each do |file|
   require file
 end

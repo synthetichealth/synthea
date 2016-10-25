@@ -6,7 +6,6 @@ class GenericLogicTest < Minitest::Test
     @time = Time.now
     @patient = Synthea::Person.new
     @patient[:gender] = 'F'
-    @patient[:is_alive] = true
     @context = Synthea::Generic::Context.new({
       "name" => "Logic",
       "states" => {
@@ -148,6 +147,102 @@ class GenericLogicTest < Minitest::Test
     assert(do_test('attributeGt100Test'))
     refute(do_test('attributeNilTest'))
     assert(do_test('attributeNotNilTest'))
+  end
+
+  def test_symptoms
+    @patient.set_symptom_value('Appendicitis', 'PainLevel', 60)
+    assert(do_test('symptomPainLevelGt50'))
+    assert(do_test('symptomPainLevelLte80'))
+
+    @patient.set_symptom_value('Appendicitis', 'LackOfAppetite', 100) # painlevel still 60 here
+    assert(do_test('symptomPainLevelGt50'))
+    assert(do_test('symptomPainLevelLte80'))
+
+    @patient.set_symptom_value('Appendicitis', 'PainLevel', 10)
+    refute(do_test('symptomPainLevelGt50'))
+    assert(do_test('symptomPainLevelLte80'))
+
+    @patient.set_symptom_value('Appendicitis', 'PainLevel', 100)
+    assert(do_test('symptomPainLevelGt50'))
+    refute(do_test('symptomPainLevelLte80'))
+  end
+
+  def test_prior_state
+    # @context.history = [] # can't actually set this here, but we know it's true
+    refute(do_test('priorStateDoctorVisitTest'))
+
+    @context.history << Synthea::Generic::States::Simple.new(@context, "SomeOtherState")
+    refute(do_test('priorStateDoctorVisitTest'))
+
+    @context.history << Synthea::Generic::States::Simple.new(@context, "DoctorVisit")
+    assert(do_test('priorStateDoctorVisitTest'))
+  end
+
+  def test_observations
+    @patient.record_synthea.observations = []
+    assert_raises { do_test('mmseObservationGt22') }
+
+    @patient.record_synthea.observation(:mini_mental_state_examination, @time, 12)
+    refute(do_test('mmseObservationGt22'))
+
+    @patient.record_synthea.observation(:mini_mental_state_examination, @time, 29)
+    assert(do_test('mmseObservationGt22'))
+
+
+    @patient.record_synthea.observations = []
+    refute(do_test('hasDiabetesObservation'))
+
+    @patient.record_synthea.observation(:blood_panel, @time, 'blah blah')
+    @patient['Blood Test Performed'] = :blood_panel
+    refute(do_test('hasDiabetesObservation'))
+
+    @patient.record_synthea.observation(:glucose_panel, @time, '12345')
+    @patient['Diabetes Test Performed'] = :glucose_panel
+    assert(do_test('hasDiabetesObservation'))
+  end
+
+  def test_condition_condition
+    @patient.record_synthea.conditions = []
+    @patient.record_synthea.present = {}
+
+    refute(do_test('diabetesConditionTest'))
+    refute(do_test('alzheimersConditionTest'))
+
+    @patient.record_synthea.condition(:diabetes_mellitus, @time)
+    assert(do_test('diabetesConditionTest'))
+    refute(do_test('alzheimersConditionTest'))
+
+    @time += 10.years
+
+    @patient.record_synthea.end_condition(:diabetes_mellitus, @time)
+    refute(do_test('diabetesConditionTest'))
+
+
+    @patient.record_synthea.condition(:early_onset_alzheimers, @time)
+    @patient['Alzheimer\'s Variant'] = :early_onset_alzheimers
+
+    assert(do_test('alzheimersConditionTest'))
+  end
+
+  def test_careplan_condition
+    @patient.record_synthea.careplans = []
+    @patient.record_synthea.present = {}
+
+    refute(do_test('diabetesCarePlanTest'))
+    refute(do_test('anginaCarePlanTest'))
+
+    @patient.record_synthea.careplan_start(:diabetes_self_management_plan, [:diabetic_diet], @time, []) # no reasons given
+    assert(do_test('diabetesCarePlanTest'))
+    refute(do_test('anginaCarePlanTest'))
+
+    @time += 10.years
+
+    @patient.record_synthea.careplan_stop(:diabetes_self_management_plan, @time)
+    refute(do_test('diabetesCarePlanTest'))
+
+    @patient.record_synthea.careplan_start(:angina_careplan, [:healthy_diet], @time, []) # no reasons given
+    @patient['Angina_CarePlan'] = :angina_careplan
+    assert(do_test('anginaCarePlanTest'))
   end
 
   def test_and_conditions
