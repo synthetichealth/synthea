@@ -233,7 +233,7 @@ module Synthea
                                                                             'system' => 'http://snomed.info/sct'
                                                                           }])
         else
-          entry.resource.valueQuantity = FHIR::Quantity.new('value' => observation['value'], 'unit' => obs_data[:unit])
+          entry.resource.valueQuantity = FHIR::Quantity.new('value' => observation['value'], 'unit' => obs_data[:unit], 'code' => obs_data[:unit], 'system' => 'http://unitsofmeasure.org/')
         end
 
         fhir_record.entry << entry
