@@ -90,9 +90,10 @@ class FhirTest < Minitest::Test
     assert_equal('Bedford', address.city)
     assert_equal('MA', address.state)
     assert_equal('01730', address.postalCode)
-    coordinates = person.extension[2]
-    assert_equal('http://standardhealthrecord.org/fhir/extensions/wkt-geospatialpoint', coordinates.url)
-    assert_equal('POINT (10 15)', coordinates.valueString)
+    coordinates = address.extension[0]
+    assert_equal('http://hl7.org/fhir/StructureDefinition/geolocation', coordinates.url)
+    assert_equal( 15 , coordinates.latitude)
+    assert_equal( 10 , coordinates.longitude)
     #test race/ethnicity logic
     @patient[:race] = :hispanic
     @patient[:ethnicity] = :mexican
