@@ -8,6 +8,17 @@ module Synthea
                       :direct_transition, :conditional_transition,
                       :distributed_transition, :complex_transition
 
+        def self.required_fields
+          @required_fields ||= []
+        end
+
+        def self.required_field(field)
+          required_fields << field
+        end
+
+        required_field :name
+        required_field or: [:direct_transition, :conditional_transition, :distributed_transition, :complex_transition]
+
         def initialize(context, name)
           @context = context
           @name = name
@@ -75,6 +86,49 @@ module Synthea
           # intentionally returning the value for further modification (see Encounter.perform_encounter)
           lookup_hash[sym] = value
         end
+
+        def validate
+          messages = []
+          self.class.required_fields.each do |field|
+            validate_required_field(field, messages)
+          end
+          messages
+        end
+
+        def validate_field_hash(fhash, messages)
+          raise 'Validation hash must have exactly 1 top-level key' if fhash.size != 1
+
+          if fhash[:or]
+            valid = fhash[:or].any? { |f| validate_required_field(f, []) }
+            unless valid
+              messages << "At least one of [#{fhash[:or].join(',')}] is required on #{inspect}"
+              return false
+            end
+          elsif fhash[:and]
+            valid = fhash[:and].all? { |f| validate_required_field(f, []) }
+            unless valid
+              messages << "All of [#{fhash[:and].join(',')}] are required on #{inspect}"
+              return false
+            end
+          end
+
+          true
+        end
+
+        def validate_required_field(field, messages)
+          valid = true
+
+          if field.is_a?(Symbol)
+            valid = send(field)
+            messages << "Required field #{field} is missing on #{inspect}" unless valid
+          elsif field.is_a?(Hash)
+            validate_field_hash(field, messages)
+          else
+            raise "Unexpected Required Field format. Expected Symbol or Hash, got: #{field}"
+          end
+
+          valid
+        end
       end
 
       class Initial < State
@@ -101,6 +155,8 @@ module Synthea
       class Delay < State
         attr_accessor :range, :exact
 
+        required_field or: [:range, :exact]
+
         def process(time, _entity)
           if @expiration.nil?
             if !@range.nil?
@@ -121,6 +177,8 @@ module Synthea
       class Guard < State
         attr_accessor :allow
 
+        required_field :allow
+
         def process(time, entity)
           # only indicate successful processing if the condition evaluates to true
           Synthea::Generic::Logic.test(@allow, @context, time, entity)
@@ -138,6 +196,8 @@ module Synthea
 
       class Encounter < State
         attr_accessor :wellness, :processed, :time, :codes, :encounter_class
+
+        required_field or: [:wellness, and: [:codes, :encounter_class]]
 
         def process(time, entity)
           unless @wellness
@@ -172,6 +232,8 @@ module Synthea
       class ConditionOnset < State
         attr_accessor :diagnosed, :target_encounter, :codes
 
+        required_field and: [:target_encounter, :codes]
+
         def process(time, entity)
           diagnose(time, entity) if concurrent_with_target_encounter(time)
           true
@@ -186,6 +248,8 @@ module Synthea
 
       class ConditionEnd < State
         attr_accessor :referenced_by_attribute, :condition_onset, :codes
+
+        required_field or: [:referenced_by_attribute, :condition_onset, :codes]
 
         def process(time, entity)
           if @referenced_by_attribute
@@ -205,6 +269,8 @@ module Synthea
 
       class MedicationOrder < State
         attr_accessor :prescribed, :target_encounter, :codes, :reason
+
+        required_field and: [:target_encounter, :codes]
 
         def process(time, entity)
           prescribe(time, entity) if concurrent_with_target_encounter(time)
@@ -337,6 +403,8 @@ module Synthea
       class Procedure < State
         attr_accessor :operated, :target_encounter, :reason, :codes
 
+        required_field and: [:target_encounter, :codes]
+
         def process(time, entity)
           operate(time, entity) if concurrent_with_target_encounter(time)
           true
@@ -361,6 +429,9 @@ module Synthea
 
       class Observation < State
         attr_accessor :codes, :range, :exact, :unit, :target_encounter
+
+        required_field and: [:target_encounter, :codes, :unit]
+        required_field or: [:range, :exact]
 
         def initialize(context, name)
           super
