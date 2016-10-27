@@ -158,6 +158,7 @@
           "display": "Loratadine 10 MG [Claritin]"
         }
       ],
+      "assign_to_attribute": "otc_medication",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
@@ -171,6 +172,7 @@
           "display": "Cetirizine hydrochloride 10 MG [ZyrTEC]"
         }
       ],
+      "assign_to_attribute": "otc_medication",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
@@ -184,6 +186,7 @@
           "display": "Fluticasone propionate 0.05 MG [Flonase]"
         }
       ],
+      "assign_to_attribute": "otc_medication",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
@@ -348,6 +351,12 @@
     "Allergic_Rhinitis_Subsides": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "has_allergic_rhinitis",
+      "direct_transition": "OTC_Medication_End"
+    },
+
+    "OTC_Medication_End": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "otc_medication",
       "direct_transition": "Immunotherapy_Followup"
     },
 
