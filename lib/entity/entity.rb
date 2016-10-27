@@ -41,9 +41,9 @@ module Synthea
     # Symptom API
     #-----------------------------------------------------------------------
 
-    # Set value for a symptom, providing cause (ie :diabetes), type (ie :fatigue), and value ranging from 1-100
+    # Set value for a symptom, providing cause (ie :diabetes), type (ie :fatigue), and value ranging from 0-100
     def set_symptom_value(cause, type, value)
-      raise 'Symptom value out of range' if value < 1 || value > 100
+      raise 'Symptom value out of range' if value < 0 || value > 100
       @symptoms[type][cause] = value
     end
 
