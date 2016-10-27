@@ -151,11 +151,16 @@ module Synthea
 
             state['complex_transition'].each do |t|
               cond = t.has_key?('condition') ? logicDetails(t['condition']) : 'else'
-              t['distributions'].each do |dist|
-                pct = dist['distribution'] * 100
-                pct = pct.to_i if pct == pct.to_i
-                nodes = [name, dist['transition']]
-                transitions[nodes] << "#{cond}: #{pct}%"
+              if t['transition']
+                nodes = [name, t['transition']]
+                transitions[nodes] << "#{cond}"
+              else
+                t['distributions'].each do |dist|
+                  pct = dist['distribution'] * 100
+                  pct = pct.to_i if pct == pct.to_i
+                  nodes = [name, dist['transition']]
+                  transitions[nodes] << "#{cond}: #{pct}%"
+                end
               end
             end
 
@@ -259,6 +264,16 @@ module Synthea
             end
           end
           subs.join(logic['condition_type'].downcase + ' ')
+        when 'At Least', 'At Most'
+          threshold = logic['minimum'] || logic['maximum']
+          subs = logic['conditions'].map do |c|
+            if ['And','Or'].include?(c['condition_type'])
+              "(\\l" + logicDetails(c) + ")\\l"
+            else
+              logicDetails(c)
+            end
+          end
+          "#{logic['condition_type']} #{threshold} of:\\l- #{subs.join('- ')}"
         when 'Not'
           c = logic['condition']
           if ['And','Or'].include?(c['condition_type'])
@@ -281,42 +296,32 @@ module Synthea
         when 'Attribute'
           "Attribute: '#{logic['attribute']}' \\#{logic['operator']} #{logic['value']}\\l"
         when 'Observation'
-          obs = ''
-          if logic['codes']
-            code = logic['codes'].first
-            cond = "'#{code['system']} [#{code['code']}]: #{code['display']}'"
-          elsif logic['referenced_by_attribute']
-            cond = "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
-          else
-            raise 'Observation condition must be specified by code or attribute'
-          end
+          obs = find_referenced_type(logic)
           "Observation #{obs} \\#{logic['operator']} #{logic['value']}\\l"
         when 'Active Condition'
-          cond = ''
-          if logic['codes']
-            code = logic['codes'].first
-            cond = "'#{code['system']} [#{code['code']}]: #{code['display']}'"
-          elsif logic['referenced_by_attribute']
-            cond = "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
-          else
-            raise 'Condition condition must be specified by code or attribute'
-          end
+          cond = find_referenced_type(logic)
           "Condition #{cond} is active\\l"
         when 'Active CarePlan'
-          plan = ''
-          if logic['codes']
-            code = logic['codes'].first
-            plan = "'#{code['system']} [#{code['code']}]: #{code['display']}''"
-          elsif logic['referenced_by_attribute']
-            plan = "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
-          else
-            raise 'CarePlan condition must be specified by code or attribute'
-          end
+          plan = find_referenced_type(logic)
           "CarePlan #{plan} is active\\l"
+        when 'Active Medication'
+          med = find_referenced_type(logic)
+          "Medication #{med} is active\\l"
         when 'True', 'False'
           logic['condition_type']
         else
           raise "Unsupported Conditon: #{logic['condition_type']}"
+        end
+      end
+
+      def self.find_referenced_type(logic)
+        if logic['codes']
+          code = logic['codes'].first
+          "'#{code['system']} [#{code['code']}]: #{code['display']}'"
+        elsif logic['referenced_by_attribute']
+          "Referenced By Attribute: '#{logic['referenced_by_attribute']}'"
+        else
+          raise "#{logic['condition_type']} condition must be specified by code or attribute"
         end
       end
 

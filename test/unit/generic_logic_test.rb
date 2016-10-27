@@ -257,6 +257,20 @@ class GenericLogicTest < Minitest::Test
     refute(do_test('orAllFalseTest'))
   end
 
+  def test_at_least_condition
+    assert(do_test('atLeast3_AllTrueTest'))
+    assert(do_test('atLeast3_3TrueTest'))
+    refute(do_test('atLeast3_2TrueTest'))
+    refute(do_test('atLeast3_NoneTrueTest'))
+  end
+
+  def test_at_most_condition
+    refute(do_test('atMost2_AllTrueTest'))
+    refute(do_test('atMost2_3TrueTest'))
+    assert(do_test('atMost2_2TrueTest'))
+    assert(do_test('atMost2_NoneTrueTest'))
+  end
+
   def test_not_conditions
     refute(do_test('notTrueTest'))
     assert(do_test('notFalseTest'))

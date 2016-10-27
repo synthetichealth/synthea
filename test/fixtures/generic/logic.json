@@ -192,6 +192,88 @@
       { "condition_type": "False" }
     ]
   },
+  "atLeast3_AllTrueTest" : {
+    "condition_type": "At Least",
+    "minimum" : 3,
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "True" }
+    ]
+  },
+  "atLeast3_3TrueTest" : {
+    "condition_type": "At Least",
+    "minimum" : 3,
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "False" },
+      { "condition_type": "True" }
+    ]
+  },
+  "atLeast3_2TrueTest" : {
+    "condition_type": "At Least",
+    "minimum" : 3,
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "True" }
+    ]
+  },
+  "atLeast3_NoneTrueTest" : {
+    "condition_type": "At Least",
+    "minimum" : 3,
+    "conditions": [
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "False" }
+    ]
+  },
+
+  "atMost2_AllTrueTest" : {
+    "condition_type": "At Most",
+    "maximum" : 2,
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "True" }
+    ]
+  },
+  "atMost2_3TrueTest" : {
+    "condition_type": "At Most",
+    "maximum" : 2,
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "True" },
+      { "condition_type": "False" },
+      { "condition_type": "True" }
+    ]
+  },
+  "atMost2_2TrueTest" : {
+    "condition_type": "At Most",
+    "maximum" : 2,
+    "conditions": [
+      { "condition_type": "True" },
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "True" }
+    ]
+  },
+  "atMost2_NoneTrueTest" : {
+    "condition_type": "At Most",
+    "maximum" : 2,
+    "conditions": [
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "False" },
+      { "condition_type": "False" }
+    ]
+  },
+
   "notTrueTest": {
     "condition_type": "Not",
     "condition": { "condition_type": "True" }
