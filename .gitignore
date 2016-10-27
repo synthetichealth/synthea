@@ -1,5 +1,6 @@
 **/.DS_Store
 .vscode
+.palate
 output
 coverage
 resources
