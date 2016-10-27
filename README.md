@@ -15,28 +15,47 @@ Currently, Synthea features:
  - FHIR (STU3)
  - C-CDA
 
-### Quick Start
+## Quick Start
+
+### Installation
+
+**System Requirements:** Synthea requires macOS or Linux with Ruby 2.0.0 or above. (While Windows is not officially supported, it is possible to get it running on Windows)
+
 The output of C-CDA documents requires Mongo DB.
 ```
 brew install mongodb
+mongod &
+```
+
+To clone the Synthea repo and install the necessary gems:
+```
+git clone https://github.com/synthetichealth/synthea.git
+cd synthea
+gem install bundler
 bundle install
 ```
 
 ### Generate Synthetic Patients
 Generating an entire population at once...
+
 ```
-mongod &
 bundle exec rake synthea:generate
 ```
 Or generating the population one at a time...
+
 ```
-mongod &
 bundle exec rake synthea:sequential
 ```
 
-Some settings can be changed in `/config/synthea.yml`.
+Or generating the population for a county a time based on census statistics...
 
-Synthea will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `/output`.
+```
+bundle exec rake synthea:sequential['./config/Suffolk_County.json']
+```
+
+Some settings can be changed in `./config/synthea.yml`.
+
+Synthea will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `./output`.
 
 ### Upload to FHIR Server
 After generating data, upload it to a STU3 server
