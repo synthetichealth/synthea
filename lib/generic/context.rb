@@ -41,13 +41,12 @@ module Synthea
       end
 
       def next(time, entity)
-        c = state_config(@current_state.name)
-        if c.key? 'direct_transition'
-          return create_state(c['direct_transition'])
-        elsif c.key? 'distributed_transition'
-          return pick_distributed_transition(c['distributed_transition'])
-        elsif c.key? 'conditional_transition'
-          c['conditional_transition'].each do |ct|
+        if @current_state.direct_transition
+          return create_state(@current_state.direct_transition)
+        elsif @current_state.distributed_transition
+          return pick_distributed_transition(@current_state.distributed_transition)
+        elsif @current_state.conditional_transition
+          @current_state.conditional_transition.each do |ct|
             cond = ct['condition']
             if cond.nil? || Synthea::Generic::Logic.test(cond, self, time, entity)
               return create_state(ct['transition'])
@@ -55,8 +54,8 @@ module Synthea
           end
           # No satisfied condition or fallback transition.  Go to the default terminal state.
           return States::Terminal.new(self, 'Terminal')
-        elsif c.key? 'complex_transition'
-          c['complex_transition'].each do |ct|
+        elsif @current_state.complex_transition
+          @current_state.complex_transition.each do |ct|
             cond = ct['condition']
             if cond.nil? || Synthea::Generic::Logic.test(cond, self, time, entity)
               return pick_distributed_transition(ct['distributions'])

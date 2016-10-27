@@ -3,11 +3,22 @@ module Synthea
     module States
       # define a base state with common functionality that can be inherited by all other states
       class State
-        attr_accessor :name, :entered, :exited, :start_time
+        attr_accessor :name, :entered, :exited, :start_time,
+                      :assign_to_attribute,
+                      :direct_transition, :conditional_transition,
+                      :distributed_transition, :complex_transition
 
         def initialize(context, name)
           @context = context
           @name = name
+
+          @config = context.state_config(name) || {}
+
+          # automatically assign the keys in the state to attributes
+          @config.each do |key, value|
+            next if %w(type remarks).include?(key)
+            send("#{key}=", value)
+          end
         end
 
         def run(time, entity)
@@ -25,11 +36,7 @@ module Synthea
             end
           end
 
-          c = @context.state_config(@name)
-          if c && c['assign_to_attribute']
-            entity[c['assign_to_attribute']] = symbol.to_s
-          end
-
+          entity[@assign_to_attribute] = symbol.to_s if @assign_to_attribute
           exit
         end
 
@@ -92,11 +99,7 @@ module Synthea
       end
 
       class Delay < State
-        def initialize(context, name)
-          super
-          @range = context.state_config(name)['range']
-          @exact = context.state_config(name)['exact'] if @range.nil?
-        end
+        attr_accessor :range, :exact
 
         def process(time, _entity)
           if @expiration.nil?
@@ -116,35 +119,25 @@ module Synthea
       end
 
       class Guard < State
+        attr_accessor :allow
+
         def process(time, entity)
           # only indicate successful processing if the condition evaluates to true
-          c = @context.state_config(@name)['allow']
-          Synthea::Generic::Logic.test(c, @context, time, entity)
+          Synthea::Generic::Logic.test(@allow, @context, time, entity)
         end
       end
 
       class SetAttribute < State
+        attr_accessor :attribute, :value
+
         def process(_time, entity)
-          c = @context.state_config(@name)
-          entity[c['attribute']] = c['value']
+          entity[@attribute] = @value
           true
         end
       end
 
       class Encounter < State
-        attr_reader :wellness, :processed, :time, :codes
-
-        def initialize(context, name)
-          super
-          @processed = false
-          if context.state_config(name)['wellness']
-            @wellness = true
-          else
-            @wellness = false
-            @codes = context.state_config(name)['codes']
-            @class = context.state_config(name)['class']
-          end
-        end
+        attr_accessor :wellness, :processed, :time, :codes, :class
 
         def process(time, entity)
           unless @wellness
@@ -177,14 +170,7 @@ module Synthea
       end
 
       class ConditionOnset < State
-        attr_reader :diagnosed, :target_encounter
-
-        def initialize(context, name)
-          super
-          @codes = context.state_config(name)['codes']
-          @target_encounter = context.state_config(name)['target_encounter']
-          @diagnosed = false
-        end
+        attr_accessor :diagnosed, :target_encounter, :codes
 
         def process(time, entity)
           diagnose(time, entity) if concurrent_with_target_encounter(time)
@@ -199,17 +185,11 @@ module Synthea
       end
 
       class ConditionEnd < State
-        def initialize(context, name)
-          super
-          cfg = context.state_config(name)
-          @referenced_by = cfg['referenced_by_attribute']
-          @condition_onset = cfg['condition_onset']
-          @codes = cfg['codes']
-        end
+        attr_accessor :referenced_by_attribute, :condition_onset, :codes
 
         def process(time, entity)
-          if @referenced_by
-            @type = entity[@referenced_by].to_sym
+          if @referenced_by_attribute
+            @type = entity[@referenced_by_attribute].to_sym
           elsif @condition_onset
             @type = @context.most_recent_by_name(@condition_onset).symbol
           elsif @codes
@@ -224,15 +204,7 @@ module Synthea
       end
 
       class MedicationOrder < State
-        attr_reader :prescribed, :target_encounter
-
-        def initialize(context, name)
-          super
-          @codes = context.state_config(name)['codes']
-          @target_encounter = context.state_config(name)['target_encounter']
-          @reason = context.state_config(name)['reason']
-          @prescribed = false
-        end
+        attr_accessor :prescribed, :target_encounter, :codes, :reason
 
         def process(time, entity)
           prescribe(time, entity) if concurrent_with_target_encounter(time)
@@ -256,13 +228,11 @@ module Synthea
       end
 
       class MedicationEnd < State
+        attr_accessor :referenced_by_attribute, :medication_order, :reason, :codes
+
         def initialize(context, name)
           super
-          cfg = context.state_config(name)
-          @referenced_by = cfg['referenced_by_attribute']
-          @medication_order = cfg['medication_order']
-          @reason = (cfg['reason'] || 'prescription_expired').to_sym
-          @codes = cfg['codes']
+          @reason ||= :prescription_expired
         end
 
         def process(time, entity)
@@ -271,8 +241,8 @@ module Synthea
         end
 
         def end_prescription(time, entity)
-          if @referenced_by
-            @type = entity[@referenced_by].to_sym
+          if @referenced_by_attribute
+            @type = entity[@referenced_by_attribute].to_sym
           elsif @medication_order
             @type = @context.most_recent_by_name(@medication_order).symbol
           elsif @codes
@@ -286,16 +256,7 @@ module Synthea
       end
 
       class CarePlanStart < State
-        attr_reader :target_encounter
-
-        def initialize(context, name)
-          super
-          cfg = context.state_config(name)
-          @codes = cfg['codes']
-          @activities = cfg['activities']
-          @target_encounter = cfg['target_encounter']
-          @reason = cfg['reason']
-        end
+        attr_accessor :target_encounter, :codes, :activities, :target_encounter, :reason
 
         def process(time, entity)
           start_plan(time, entity) if concurrent_with_target_encounter(time)
@@ -346,13 +307,11 @@ module Synthea
       end
 
       class CarePlanEnd < State
+        attr_accessor :careplan, :reason, :codes, :referenced_by_attribute
+
         def initialize(context, name)
           super
-          cfg = context.state_config(name)
-          @referenced_by = cfg['referenced_by_attribute']
-          @careplan = cfg['careplan']
-          @reason = (cfg['reason'] || 'careplan_ended').to_sym
-          @codes = cfg['codes']
+          @reason ||= :careplan_ended
         end
 
         def process(time, entity)
@@ -361,8 +320,8 @@ module Synthea
         end
 
         def end_plan(time, entity)
-          if @referenced_by
-            @type = entity[@referenced_by].to_sym
+          if @referenced_by_attribute
+            @type = entity[@referenced_by_attribute].to_sym
           elsif @careplan
             @type = @context.most_recent_by_name(@careplan).symbol
           elsif @codes
@@ -376,15 +335,7 @@ module Synthea
       end
 
       class Procedure < State
-        attr_reader :operated, :target_encounter
-
-        def initialize(context, name)
-          super
-          @codes = context.state_config(name)['codes']
-          @target_encounter = context.state_config(name)['target_encounter']
-          @reason = context.state_config(name)['reason']
-          @operated = false
-        end
+        attr_accessor :operated, :target_encounter, :reason, :codes
 
         def process(time, entity)
           operate(time, entity) if concurrent_with_target_encounter(time)
@@ -409,21 +360,10 @@ module Synthea
       end
 
       class Observation < State
+        attr_accessor :codes, :range, :exact, :unit, :target_encounter
+
         def initialize(context, name)
           super
-          cfg = context.state_config(name)
-          @codes = cfg['codes']
-          range = cfg['range']
-          exact = cfg['exact']
-          if range
-            @value = rand(range['low']..range['high'])
-          elsif exact
-            @value = exact['quantity']
-          else
-            raise 'Observation state must specify value using either "range" or "exact"'
-          end
-          @unit = cfg['unit']
-          @target_encounter = cfg['target_encounter']
           @type = symbol
         end
 
@@ -437,6 +377,15 @@ module Synthea
 
         def process(time, entity)
           add_lookup_code(Synthea::OBS_LOOKUP)
+
+          if @range
+            @value = rand(@range['low']..@range['high'])
+          elsif exact
+            @value = @exact['quantity']
+          else
+            raise 'Observation state must specify value using either "range" or "exact"'
+          end
+
           if concurrent_with_target_encounter(time)
             entity.record_synthea.observation(@type, time, @value)
           end
@@ -445,37 +394,27 @@ module Synthea
       end
 
       class Symptom < State
+        attr_accessor :symptom, :cause, :range, :exact
+
         def initialize(context, name)
           super
-          cfg = context.state_config(name)
-          @symptom = cfg['symptom']
-          @cause = cfg['cause'] || context.config['name']
-          range = cfg['range']
-          exact = cfg['exact']
-          if range
-            @value = rand(range['low']..range['high'])
-          elsif exact
-            @value = exact['quantity']
-          else
-            raise 'Symptom state must specify value using either "range" or "exact"'
-          end
+          @cause ||= context.config['name']
         end
 
         def process(_time, entity)
+          if range
+            @value = rand(@range['low']..@range['high'])
+          elsif exact
+            @value = @exact['quantity']
+          else
+            raise 'Symptom state must specify value using either "range" or "exact"'
+          end
           entity.set_symptom_value(@cause, @symptom, @value)
         end
       end
 
       class Death < State
-        def initialize(context, name)
-          super
-          cfg = context.state_config(name)
-          @range = cfg['range']
-          @exact = cfg['exact'] if @range.nil?
-          @referenced_by = cfg['referenced_by_attribute']
-          @condition_onset = cfg['condition_onset']
-          @codes = cfg['codes']
-        end
+        attr_accessor :range, :exact, :referenced_by_attribute, :condition_onset, :codes
 
         def process(time, entity)
           if @range
@@ -487,8 +426,8 @@ module Synthea
           end
 
           # this is the same as the ConditionEnd logic, maybe we want to extract this somewhere
-          if @referenced_by
-            @reason = entity[@referenced_by].to_sym
+          if @referenced_by_attribute
+            @reason = entity[@referenced_by_attribute].to_sym
           elsif @condition_onset
             @reason = @context.most_recent_by_name(@condition_onset).symbol
           elsif @codes
