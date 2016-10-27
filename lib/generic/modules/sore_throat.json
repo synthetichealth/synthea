@@ -33,16 +33,16 @@
           },
           "distributions" : [
             {
-              "distribution": 0.02,
+              "distribution": 0.00583,
               "transition": "Acquire_Viral_Infection"
             },
             {
-              "distribution": 0.01,
+              "distribution": 0.00292,
               "transition": "Acquire_Bacterial_Infection",
               "remarks" : ["Bacterial is more common in children than in adults. Assume viral is only 2x as likely as bacterial for children"]
             },
             {
-              "distribution": 0.97,
+              "distribution": 0.9913,
               "transition": "Potential_Infection"
             }
           ]
@@ -50,16 +50,16 @@
         {
           "distributions" : [
             {
-              "distribution": 0.02,
+              "distribution": 0.00583,
               "transition": "Acquire_Viral_Infection"
             },
             {
-              "distribution": 0.003,
+              "distribution": 0.000875,
               "transition": "Acquire_Bacterial_Infection",
               "remarks" : ["[in adults] only about 5%-10% of sore throats are caused by a bacterial infection"]
             },
             {
-              "distribution": 0.977,
+              "distribution": 0.9933,
               "transition": "Potential_Infection"
             }
           ]
@@ -69,6 +69,7 @@
 
     "Acquire_Viral_Infection" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "195662009",
@@ -101,6 +102,7 @@
 
     "Acquire_Bacterial_Infection" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "43878008",

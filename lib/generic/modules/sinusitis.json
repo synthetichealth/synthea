@@ -1,0 +1,305 @@
+{
+  "name": "Sinusitis",
+  "states": {
+
+    "Initial": {
+      "type" : "Initial",
+      "direct_transition" : "Potential_Onset"
+    },
+
+    "Potential_Onset" : {
+      "type" : "Delay",
+      "exact" : {
+        "quantity" : 1,
+        "unit" : "months"
+      },
+      "remarks" : ["Sinusitis, also called rhinosinusitis, affects about 1 in 8 adults annually",
+                   "http://www.entnet.org/content/sinusitis",
+                   "Although sinus infections are the fifth leading reason for antibiotic prescriptions, 90 to 98 percent of cases are caused by viruses,",
+                   "http://www.idsociety.org/2012_Rhinosinusitis_Guidelines/",
+                   "While 15 percent of the population self-reports chronic sinusitis, only an estimated 2 to 3 percent of doctors’ visits are for the disease",
+                   "http://labblog.uofmhealth.org/rounds/chronic-sinusitis-rarer-than-most-providers-and-patients-believe"],
+      "distributed_transition" : [
+        { "distribution" : 0.009, "transition" : "Viral_Infection_Starts" },
+        { "distribution" : 0.0005, "transition" : "Bacterial_Infection_Starts" },
+        { "distribution" : 0.0005, "transition" : "Inflammation_Starts" },
+        { "distribution" : 0.99, "transition" : "Potential_Onset" }
+      ]
+    },
+
+    "Viral_Infection_Starts" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "444814009",
+        "display" : "Viral sinusitis (disorder)"
+      }],
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sinusitis Condition",
+      "direct_transition" : "Symptom_of_Infection"
+    },
+
+    "Bacterial_Infection_Starts" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "75498004",
+        "display" : "Acute bacterial sinusitis (disorder)"
+      }],
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sinusitis Condition",
+      "direct_transition" : "Symptom_of_Infection"
+    },
+
+    "Symptom_of_Infection" : {
+      "type" : "Symptom",
+      "symptom": "Sinus Pain",
+      "range": { "low" : 40, "high" : 60 },
+      "direct_transition" : "Common_Symptom"
+    },
+
+    "Inflammation_Starts" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "36971009",
+        "display" : "Sinusitis (disorder)"
+      }],
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sinusitis Condition",
+      "direct_transition" : "Symptom_of_Inflammation"
+    },
+
+    "Symptom_of_Inflammation" : {
+      "type" : "Symptom",
+      "symptom": "Sinus Pain",
+      "range": { "low" : 20, "high" : 80 },
+      "direct_transition" : "Common_Symptom"
+    },
+
+    "Common_Symptom" : {
+      "type" : "Symptom",
+      "symptom": "Nasal Congestion",
+      "range": { "low" : 60, "high" : 90 },
+      "direct_transition" : "Wait_to_see_Dr"
+    },
+
+    "Wait_to_see_Dr" : {
+      "type" : "Delay",
+      "range": {
+        "low": 5,
+        "high": 10,
+        "unit": "days"
+      },
+      "direct_transition" : "Doctor_Visit"
+    },
+
+    "Doctor_Visit" : {
+      "type" : "Encounter",
+      "codes" : [{
+        "system": "SNOMED-CT",
+        "code": "185345009",
+        "display": "Encounter for symptom"
+      }],
+      "distributed_transition" : [
+        { "distribution" : 0.80, "transition" : "Wait_for_condition_to_resolve" },
+        { "distribution" : 0.20, "transition" : "Prescribe_Antibiotic" }
+      ],
+      "remarks" : "Antibiotics are overprescribed for sinus infections"
+    },
+
+    "Prescribe_Antibiotic" : {
+      "type" : "MedicationOrder",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "824184",
+        "display" : " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
+      }],
+      "remarks" : "https://www.drugs.com/dosage/amoxicillin.html#Usual_Adult_Dose_for_Sinusitis",
+      "target_encounter" : "Doctor_Visit",
+      "direct_transition" : "Wait_for_condition_to_resolve"
+    },
+
+    "Wait_for_condition_to_resolve" : {
+      "type" : "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "And",
+            "conditions" : [
+              {
+                "condition_type" : "Active Medication",
+                "codes" : [{
+                  "system" : "RxNorm",
+                  "code" : "824184",
+                  "display" : " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
+                }]
+              }, 
+              {
+                "condition_type" : "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "75498004",
+                  "display" : "Acute bacterial sinusitis (disorder)"
+                }]
+              }
+            ]
+          },
+          "transition" : "Sinusitis_Ends"
+        },
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "444814009",
+              "display" : "Viral sinusitis (disorder)"
+            }]
+          },
+          "transition" : "Sinusitis_Ends"
+        },
+        {
+          "transition" : "Chronic_Sinusitis_Continues"
+        }
+      ]
+    },
+
+    "Sinusitis_Ends" : {
+      "type" : "ConditionEnd",
+      "referenced_by_attribute" : "Sinusitis Condition",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Medication",
+            "codes" : [{
+              "system" : "RxNorm",
+              "code" : "824184",
+              "display" : " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
+            }]
+          },
+          "transition" : "End_Antibiotic"  
+        },
+        {
+          "transition" : "Symptom1_Subsides"
+        }
+      ]
+    },
+
+    "End_Antibiotic" : {
+      "type" : "MedicationEnd",
+      "medication_order" : "Prescribe_Antibiotic",
+      "direct_transition" : "Symptom1_Subsides"
+    },
+
+    "Symptom1_Subsides" : {
+      "type" : "Symptom",
+      "symptom": "Sinus Pain",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Symptom2_Subsides"
+    },
+
+    "Symptom2_Subsides" : {
+      "type" : "Symptom",
+      "symptom": "Nasal Congestion",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Potential_Onset"
+    },
+
+    "Chronic_Sinusitis_Continues" : {
+      "type" : "Delay",
+      "exact" : { "quantity" : 1, "unit" : "weeks" },
+      "distributed_transition" : [
+        { "distribution" : 0.10, "transition" : "Sinusitis_Ends" },
+        { "distribution" : 0.75, "transition" : "Chronic_Sinusitis_Continues" },
+        { "distribution" : 0.15, "transition" : "Chronic_Symptoms_Worsen" }
+      ]
+    },
+
+    "Chronic_Symptoms_Worsen" : {
+      "type" : "Symptom",
+      "symptom": "Sinus Pain",
+      "range": { "low" : 60, "high" : 100 },
+      "direct_transition" : "Chronic_Sinusitis_Followup"
+    },
+
+    "Chronic_Sinusitis_Followup" : {
+      "type" : "Encounter",
+      "codes" : [{
+        "system": "SNOMED-CT",
+        "code": "185345009",
+        "display": "Encounter for symptom"
+      }],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "40055000",
+              "display" : "Chronic sinusitis (disorder)"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.95, "transition" : "Chronic_Sinusitis_Continues" },
+            { "distribution" : 0.05, "transition" : "Sinus_Surgery" }
+          ]
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.95, "transition" : "Diagnose_Chronic_Sinusitis" },
+            { "distribution" : 0.05, "transition" : "Sinus_Surgery" }
+          ]
+        }
+      ]
+    },
+
+    "Diagnose_Chronic_Sinusitis" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "40055000",
+        "display" : "Chronic sinusitis (disorder)"
+      }],
+      "target_encounter" : "Chronic_Sinusitis_Followup",
+      "direct_transition" : "Chronic_Sinusitis_Continues"
+    },
+
+    "Sinus_Surgery" : {
+      "type" : "Procedure",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "112790001",
+        "display" : "Nasal sinus endoscopy (procedure)"
+      }],
+      "target_encounter" : "Chronic_Sinusitis_Followup",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "40055000",
+              "display" : "Chronic sinusitis (disorder)"
+            }]
+          },
+          "transition" : "Chronic_Sinusisitis_Ends"  
+        },
+        {
+          "transition" : "Sinusitis_Ends"
+        }
+      ]
+    },
+
+    "Chronic_Sinusisitis_Ends" : {
+      "type" : "ConditionEnd",
+      "condition_onset" : "Diagnose_Chronic_Sinusitis",
+      "direct_transition" : "Sinusitis_Ends"
+    }
+
+  }
+}
