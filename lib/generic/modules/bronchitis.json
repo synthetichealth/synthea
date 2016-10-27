@@ -101,6 +101,7 @@
 
     "Doctor_Visit" : {
       "type" : "Encounter",
+      "class" : "ambulatory",
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
