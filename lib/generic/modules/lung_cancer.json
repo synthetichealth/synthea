@@ -124,7 +124,7 @@
 
     "Diagnosis Encounter I": {
       "type": "Encounter",
-      "class": "emergency",
+      "encounter_class": "emergency",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "50849002",
@@ -156,7 +156,7 @@
 
     "Diagnosis Encounter II": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "185347001",
@@ -235,7 +235,7 @@
 
     "Diagnosis Encounter III": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "185347001",
@@ -557,7 +557,7 @@
 
     "Diagnosis Encounter IV": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "185347001",
@@ -603,7 +603,7 @@
 
     "SCLC Treatment Encounter": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "185347001",
@@ -700,7 +700,7 @@
 
     "NSCLC Treatment Encounter": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "185347001",

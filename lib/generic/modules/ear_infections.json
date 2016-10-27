@@ -114,7 +114,7 @@
 
     "Ear_Infection_Encounter": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [
         {
           "system": "SNOMED-CT",

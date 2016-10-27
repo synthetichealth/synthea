@@ -156,7 +156,7 @@
     "Appendicitis_Encounter": {
       "type": "Encounter",
       "wellness": false,
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "direct_transition": "History_of_Appendectomy",
       "codes" : [{
         "system" : "SNOMED-CT",
@@ -179,7 +179,7 @@
 
     "Appendectomy_Encounter": {
       "type": "Encounter",
-      "class": "daytime",
+      "encounter_class": "daytime",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "183452005",

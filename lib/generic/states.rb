@@ -137,7 +137,7 @@ module Synthea
       end
 
       class Encounter < State
-        attr_accessor :wellness, :processed, :time, :codes, :class
+        attr_accessor :wellness, :processed, :time, :codes, :encounter_class
 
         def process(time, entity)
           unless @wellness
@@ -156,7 +156,7 @@ module Synthea
 
           if record_encounter
             value = add_lookup_code(ENCOUNTER_LOOKUP)
-            value[:class] = @class
+            value[:class] = @encounter_class
             entity.record_synthea.encounter(symbol, time)
           end
 
@@ -256,7 +256,7 @@ module Synthea
       end
 
       class CarePlanStart < State
-        attr_accessor :target_encounter, :codes, :activities, :target_encounter, :reason
+        attr_accessor :target_encounter, :codes, :activities, :reason
 
         def process(time, entity)
           start_plan(time, entity) if concurrent_with_target_encounter(time)

@@ -118,7 +118,7 @@
 
     "Allergic_Rhinitis_Diagnosis": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -219,7 +219,7 @@
 
     "Immunotherapy_Consultation": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -305,7 +305,7 @@
 
     "Immunotherapy_Treatment": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [
         {
           "system": "SNOMED-CT",

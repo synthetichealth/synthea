@@ -24,7 +24,7 @@
         },
         "ED_Visit": {
             "type": "Encounter",
-            "class": "emergency",
+            "encounter_class": "emergency",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "50849002",

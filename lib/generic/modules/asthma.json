@@ -103,7 +103,7 @@
 
     "Asthma_Diagnosis": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -248,7 +248,7 @@
 
     "Asthma_ED_Visit": {
       "type": "Encounter",
-      "class": "emergency",
+      "encounter_class": "emergency",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -261,7 +261,7 @@
 
     "Asthma_Attack_Followup": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "outpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
