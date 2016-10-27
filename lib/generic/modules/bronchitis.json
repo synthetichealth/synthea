@@ -1,0 +1,192 @@
+{
+  "name": "Bronchitis",
+  "remarks" : ["For now this covers only acute bronchitis. Chronic bronchitis is one of the conditions included in chronic obstructive pulmonary disease (COPD).",
+               "Acute bronchitis is the fifth most common reason why adults see their GP; 5% of the adult population seeks medical advice for bronchitis each year.",
+               "Most of the data here comes from the following sources: ",
+               "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2278319/",
+               "http://www.aafp.org/afp/1998/0315/p1270.html"],
+  "states": {
+
+  "Initial": {
+      "type" : "Initial",
+      "direct_transition" : "Potential_Infection"
+    },
+
+    "Potential_Infection" : {
+      "type" : "Delay",
+      "exact" : {
+        "quantity" : 1,
+        "unit" : "months"
+      },
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Age",
+            "operator" : "<",
+            "quantity" : 18,
+            "unit" : "years"
+          },
+          "distributions" : [
+            {
+              "distribution": 0.005,
+              "transition": "Bronchitis_Infection",
+              "remarks" : ["6% of children get bronchitis each year.",
+                           "6% / year == ~ .5% per month?"]
+            },
+            {
+              "distribution": 0.995,
+              "transition": "Potential_Infection"
+            }
+          ]
+        },
+
+        {
+          "distributions" : [
+            {
+              "distribution": 0.00416,
+              "transition": "Bronchitis_Infection",
+              "remarks" : ["5% of the adult population seeks medical advice for bronchitis each year.",
+                           "5% / year == ~ .42% per month?"]
+            },
+            {
+              "distribution": 0.99584,
+              "transition": "Potential_Infection"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Bronchitis_Infection" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "10509002",
+        "display" : "Acute bronchitis (disorder)"
+      }],
+      "direct_transition" : "Bronchitis_Symptom1"
+    },
+
+    "Bronchitis_Symptom1" : {
+      "type" : "Symptom",
+      "symptom": "Cough",
+      "range": { "low" : 50, "high" : 100 },
+      "direct_transition" : "Bronchitis_Symptom2"
+    },
+
+    "Bronchitis_Symptom2" : {
+      "type" : "Symptom",
+      "symptom": "Mucus",
+      "range": { "low" : 50, "high" : 100 },
+      "direct_transition" : "Bronchitis_Symptom3"
+    },
+    
+    "Bronchitis_Symptom3" : {
+      "type" : "Symptom",
+      "symptom": "Shortness of Breath",
+      "range": { "low" : 50, "high" : 100 },
+      "direct_transition" : "Symptoms_Dont_improve"
+    },
+
+    "Symptoms_Dont_improve" : {
+      "type" : "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "direct_transition" : "Doctor_Visit"
+    },
+
+    "Doctor_Visit" : {
+      "type" : "Encounter",
+      "codes" : [{
+        "system": "SNOMED-CT",
+        "code": "185345009",
+        "display": "Encounter for symptom"
+      }],
+      "distributed_transition" : [
+        { "distribution" : 0.05, "transition" : "Chest_Xray" },
+        { "distribution" : 0.20, "transition" : "Sputum_Test" },
+        { "distribution" : 0.50, "transition" : "Lung_Function_Test" },
+        { "distribution" : 0.20, "transition" : "Wait_for_condition_to_resolve" }
+      ],
+      "remarks" : ["There are no reliable diagnostic signs or laboratory tests, so the diagnosis of acute bronchitis is essentially a clinical one. ",
+                   "The most important condition to rule out is acute pneumonia. "]
+    },
+
+    "Chest_Xray" : {
+      "type" : "Procedure",
+      "target_encounter" : "Doctor_Visit",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "399208008",
+        "display": "Plain chest X-ray (procedure)"
+      }],
+      "direct_transition" : "Wait_for_condition_to_resolve"
+    },
+
+    "Sputum_Test" : {
+      "type" : "Procedure",
+      "target_encounter" : "Doctor_Visit",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "269911007",
+        "display": "Sputum examination (procedure)"
+      }],
+      "direct_transition" : "Wait_for_condition_to_resolve"
+    },
+
+    "Lung_Function_Test" : {
+      "type" : "Procedure",
+      "target_encounter" : "Doctor_Visit",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "23426006",
+        "display": "Measurement of respiratory function (procedure)"
+      }],
+      "direct_transition" : "Wait_for_condition_to_resolve"
+    },
+
+    "Wait_for_condition_to_resolve" : {
+      "type" : "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "remarks" : ["Note that there is no prescription here. Up to 95% of bronchitis cases are viral so antibiotics are rarely prescribed",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2278319/"],
+      "direct_transition" : "Bronchitis_Subsides"
+    },
+
+    "Bronchitis_Subsides" : {
+      "type" : "ConditionEnd",
+      "condition_onset" : "Bronchitis_Infection",
+      "direct_transition" : "Bronchitis_Symptom1_Subsides"
+    },
+
+    "Bronchitis_Symptom1_Subsides" : {
+      "type" : "Symptom",
+      "symptom": "Cough",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Bronchitis_Symptom2_Subsides"
+    },
+
+    "Bronchitis_Symptom2_Subsides" : {
+      "type" : "Symptom",
+      "symptom": "Mucus",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Bronchitis_Symptom3_Subsides"
+    },
+    
+    "Bronchitis_Symptom3_Subsides" : {
+      "type" : "Symptom",
+      "symptom": "Shortness of Breath",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Potential_Infection"
+    }
+
+  }
+}
