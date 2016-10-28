@@ -51,6 +51,7 @@ Dir.glob(File.join(root, 'lib', 'entity', '**', '*.rb')).each do |file|
   require file
 end
 
+require File.join(root, 'lib', 'generic', 'validation.rb')
 Dir.glob(File.join(root, 'lib', 'generic', '**', '*.rb')).each do |file|
   require file
 end

@@ -14,7 +14,7 @@ module Synthea
         while @current_state.run(time, entity)
           next_state = self.next(time, entity)
 
-          if @current_state.name == next_state.name
+          if @current_state.name == next_state
             # looped from a state back to itself, so for perf reasons (memory usage)
             # just stay in the same state and change the dates instead of keeping another object
 
@@ -29,7 +29,7 @@ module Synthea
             end
           else
             @history << @current_state
-            @current_state = next_state
+            @current_state = create_state(next_state)
             if @history.last.exited < time
               # This must be a delay state that expired between cycles, so temporarily rewind time
               run(@history.last.exited, entity)
@@ -43,54 +43,11 @@ module Synthea
       end
 
       def next(time, entity)
-        if @current_state.direct_transition
-          return create_state(@current_state.direct_transition)
-        elsif @current_state.distributed_transition
-          return pick_distributed_transition(@current_state.distributed_transition)
-        elsif @current_state.conditional_transition
-          @current_state.conditional_transition.each do |ct|
-            cond = ct['condition']
-            if cond.nil? || Synthea::Generic::Logic.test(cond, self, time, entity)
-              return create_state(ct['transition'])
-            end
-          end
-          # No satisfied condition or fallback transition.  Go to the default terminal state.
-          return States::Terminal.new(self, 'Terminal')
-        elsif @current_state.complex_transition
-          return pick_complex_transition(@current_state.complex_transition, time, entity)
-        else
-          # No transition was specified.  Go to the default terminal state.
-          return States::Terminal.new(self, 'Terminal')
-        end
-      end
+        transition = @current_state.transition
+        return nil unless transition
+        # no defined transition
 
-      def pick_distributed_transition(transitions)
-        # distributed_transition is an array of distributions that should total 1.0.
-        # So... pick a random float from 0.0 to 1.0 and walk up the scale.
-        choice = rand
-        high = 0.0
-        transitions.each do |dt|
-          high += dt['distribution']
-          return create_state(dt['transition']) if choice < high
-        end
-        # We only get here if the numbers didn't add to 1.0 or if one of the numbers caused
-        # floating point imprecision (very, very rare).  Just go with the last one.
-        create_state(transitions.last['transition'])
-      end
-
-      def pick_complex_transition(transitions, time, entity)
-        transitions.each do |ct|
-          cond = ct['condition']
-          next unless cond.nil? || Synthea::Generic::Logic.test(cond, self, time, entity)
-
-          if ct['transition']
-            return create_state(ct['transition'])
-          else
-            return pick_distributed_transition(ct['distributions'])
-          end
-        end
-        # No satisfied condition or fallback transition.  Go to the default terminal state.
-        States::Terminal.new(self, 'Terminal')
+        transition.follow(self, entity, time)
       end
 
       def most_recent_by_name(name)
@@ -102,6 +59,8 @@ module Synthea
       end
 
       def create_state(name)
+        return States::Terminal.new(self, 'Terminal') if name.nil?
+
         clazz = state_config(name)['type']
         Object.const_get("Synthea::Generic::States::#{clazz}").new(self, name)
       end

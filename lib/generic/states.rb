@@ -3,21 +3,14 @@ module Synthea
     module States
       # define a base state with common functionality that can be inherited by all other states
       class State
+        include Synthea::Generic::Validation
+
         attr_accessor :name, :entered, :exited, :start_time,
                       :assign_to_attribute,
-                      :direct_transition, :conditional_transition,
-                      :distributed_transition, :complex_transition
-
-        def self.required_fields
-          @required_fields ||= []
-        end
-
-        def self.required_field(field)
-          required_fields << field
-        end
+                      :transition
 
         required_field :name
-        required_field or: [:direct_transition, :conditional_transition, :distributed_transition, :complex_transition]
+        required_field :transition
 
         def initialize(context, name)
           @context = context
@@ -28,8 +21,16 @@ module Synthea
           # automatically assign the keys in the state to attributes
           @config.each do |key, value|
             next if %w(type remarks).include?(key)
-            send("#{key}=", value)
+            if key.include?('_transition')
+              set_transition(key, value)
+            else
+              send("#{key}=", value)
+            end
           end
+        end
+
+        def set_transition(type, transition)
+          @transition = Object.const_get("Synthea::Generic::Transitions::#{type.camelize}").new(transition)
         end
 
         def run(time, entity)
@@ -85,49 +86,6 @@ module Synthea
 
           # intentionally returning the value for further modification (see Encounter.perform_encounter)
           lookup_hash[sym] = value
-        end
-
-        def validate
-          messages = []
-          self.class.required_fields.each do |field|
-            validate_required_field(field, messages)
-          end
-          messages
-        end
-
-        def validate_field_hash(fhash, messages)
-          raise 'Validation hash must have exactly 1 top-level key' if fhash.size != 1
-
-          if fhash[:or]
-            valid = fhash[:or].any? { |f| validate_required_field(f, []) }
-            unless valid
-              messages << "At least one of [#{fhash[:or].join(',')}] is required on #{inspect}"
-              return false
-            end
-          elsif fhash[:and]
-            valid = fhash[:and].all? { |f| validate_required_field(f, []) }
-            unless valid
-              messages << "All of [#{fhash[:and].join(',')}] are required on #{inspect}"
-              return false
-            end
-          end
-
-          true
-        end
-
-        def validate_required_field(field, messages)
-          valid = true
-
-          if field.is_a?(Symbol)
-            valid = send(field)
-            messages << "Required field #{field} is missing on #{inspect}" unless valid
-          elsif field.is_a?(Hash)
-            validate_field_hash(field, messages)
-          else
-            raise "Unexpected Required Field format. Expected Symbol or Hash, got: #{field}"
-          end
-
-          valid
         end
       end
 
