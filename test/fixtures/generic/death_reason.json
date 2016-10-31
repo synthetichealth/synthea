@@ -14,7 +14,7 @@
                 "display": "Diabetes mellitus"
             }],
             "assign_to_attribute" : "Cause of Death",
-            "direct_transition": "Terminal"
+            "direct_transition": "Diagnosis"
         },
         "Diagnosis" : {
             "type" : "Encounter",

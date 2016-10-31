@@ -49,7 +49,7 @@
                 "code": "50849002",
                 "display": "Emergency Room Admission"
             }],
-            "direct_transition": "2_Year_Delay"
+            "direct_transition": "Terminal"
         },
         "Terminal": {
             "type": "Terminal"

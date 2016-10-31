@@ -13,6 +13,10 @@ module Synthea
         def follow(_context, _entity, _time)
           @transition
         end
+
+        def all_transitions
+          [@transition]
+        end
       end
 
       class DistributedTransition < Transition
@@ -22,6 +26,10 @@ module Synthea
 
         def follow(_context, _entity, _time)
           pick_distributed_transition(@distributions)
+        end
+
+        def all_transitions
+          @distributions.collect { |dt| dt['transition'] }
         end
 
         def pick_distributed_transition(transitions)
@@ -44,6 +52,10 @@ module Synthea
           @transitions = transition
         end
 
+        def all_transitions
+          @transitions.collect { |ct| ct['transition'] }
+        end
+
         def follow(context, entity, time)
           @transitions.each do |ct|
             cond = ct['condition']
@@ -59,6 +71,17 @@ module Synthea
         # inherit from distributed to get access to pick_distributed_transition
         def initialize(transition)
           @transitions = transition
+        end
+
+        def all_transitions
+          ts = @transitions.collect do |ct|
+            if ct['transition']
+              ct['transition']
+            else
+              ct['distributions'].collect { |dt| dt['transition'] }
+            end
+          end
+          ts.flatten.uniq
         end
 
         def follow(context, entity, time)
