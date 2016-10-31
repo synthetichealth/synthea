@@ -362,6 +362,7 @@
 
     "Immunotherapy_Followup": {
       "type": "Encounter",
+      "encounter_class" : "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",

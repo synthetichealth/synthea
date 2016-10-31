@@ -29,13 +29,13 @@ module Synthea
         if field[:or]
           valid = field[:or].any? { |f| validate_required_field(f, []) }
           unless valid
-            messages << "At least one of [#{to_string(field[:or])}] is required on #{inspect}"
+            messages << "At least one of #{to_string(field)} is required on #{inspect}"
             return false
           end
         elsif field[:and]
           valid = field[:and].all? { |f| validate_required_field(f, []) }
           unless valid
-            messages << "All of [#{to_string(field[:and])}] are required on #{inspect}"
+            messages << "All of #{to_string(field)} are required on #{inspect}"
             return false
           end
         end
@@ -65,10 +65,10 @@ module Synthea
           key, list = field.first
           # there's only one element, either field[:or] or field[:and]
           operator = " #{key} "
-          list.map! { |f| to_string(f) }
+          list = list.map { |f| to_string(f) }
           "(#{list.join(operator)})"
         else
-          raise "Unexpected Required Field format. Expected Symbol or Hash, got: #{field}"
+          raise "Unexpected Required Field format. Expected Symbol or Hash, got: #{field.inspect}"
         end
       end
     end

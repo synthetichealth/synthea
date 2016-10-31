@@ -3,7 +3,7 @@
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Gender_Guard"
+            "direct_transition": "Death"
         },
         "Death": {
             "type": "Death",

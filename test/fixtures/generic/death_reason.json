@@ -7,6 +7,7 @@
         },
         "OnsetDiabetes": {
             "type": "ConditionOnset",
+            "target_encounter" : "Diagnosis",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "73211009",
@@ -14,6 +15,15 @@
             }],
             "assign_to_attribute" : "Cause of Death",
             "direct_transition": "Terminal"
+        },
+        "Diagnosis" : {
+            "type" : "Encounter",
+            "wellness" : true,
+            "distributed_transition" : [
+                { "distribution" : 0.33 , "transition" : "Death_by_Code" },
+                { "distribution" : 0.33 , "transition" : "Death_by_Attribute" },
+                { "distribution" : 0.33 , "transition" : "Death_by_ConditionOnset" }
+            ]
         },
         "Death_by_Code": {
             "type": "Death",

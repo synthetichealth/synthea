@@ -1,8 +1,0 @@
-{
-    "name": "NoTransition",
-    "states": {
-        "Initial": {
-            "type": "Initial"
-        }
-    }
-}

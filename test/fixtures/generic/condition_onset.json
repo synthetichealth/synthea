@@ -3,7 +3,7 @@
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Annual_Physical"
+            "direct_transition": "Diabetes"
         },
         "Diabetes": {
             "type": "ConditionOnset",
@@ -12,6 +12,7 @@
                 "code": "73211009",
                 "display": "Diabetes mellitus"
             }],
+            "target_encounter": "ED_Visit",
             "direct_transition": "6_Month_Delay"
         },
         "6_Month_Delay": {
@@ -20,7 +21,7 @@
                 "quantity": 6,
                 "unit": "months"
             },
-            "direct_transition": "Diabetes"
+            "direct_transition": "ED_Visit"
         },
         "ED_Visit": {
             "type": "Encounter",

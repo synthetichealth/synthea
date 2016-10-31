@@ -104,14 +104,6 @@ class GenericContextTest < Minitest::Test
 
   end
 
-  def test_no_transition
-    ctx = get_context('no_transition.json')
-    assert_equal("Initial", ctx.current_state.name)
-    ctx.run(@time, @patient)
-    # If there is no transition, it should go to a default Terminal state
-    assert_equal("Terminal", ctx.current_state.name)
-  end
-
   def test_history
     # seed rand so we have deterministic results
     srand 3

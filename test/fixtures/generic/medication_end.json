@@ -3,7 +3,7 @@
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Condition"
+            "direct_transition": "Diabetes"
         },
         "Diabetes": {
             "type": "ConditionOnset",
