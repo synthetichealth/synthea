@@ -134,9 +134,9 @@ class GenericStatesTest < Minitest::Test
     delay = Synthea::Generic::States::Delay.new(ctx, "2_To_10_Day_Delay")
     delay.start_time = @time
     refute(delay.process(@time, @patient))
-    refute(delay.process(@time.advance(:days => 6), @patient))
-    assert(delay.process(@time.advance(:days => 7), @patient))
-    assert(delay.process(@time.advance(:days => 8), @patient))
+    refute(delay.process(@time + 6*24*60*60, @patient))
+    assert(delay.process(@time + 7*24*60*60, @patient))
+    assert(delay.process(@time + 8*24*60*60, @patient))
 
 
     # Weeks (rand(2.weeks..10.weeks) = 4203177 s = 6.95 weeks)

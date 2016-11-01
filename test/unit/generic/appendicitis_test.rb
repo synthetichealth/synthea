@@ -28,7 +28,8 @@ class AppendicitisTest < Minitest::Test
     srand 9
 
     @context.run(@time, @patient)
-    @time = @time.advance(years: 19, months: 0, days: 9, hours: 23, minutes: 16, seconds: 8)
+    @time = (18.years + 32397368.seconds).since(@time) # seed 9 gives us this delay.
+    # DST means that giving a cleaner number in terms of years/months/days may not always match this # of seconds
 
     @patient.record_synthea.expect(:condition, nil, [:appendicitis, @time])
 
@@ -47,7 +48,8 @@ class AppendicitisTest < Minitest::Test
     srand 8765
 
     @context.run(@time, @patient)
-    @time = @time.advance(years: 62, months: 6, days: 12, hours: 15, minutes: 37, seconds: 20)
+    @time = (45.years + 553275440.seconds).since(@time) # seed 8765 gives us this delay.
+    # DST means that giving a cleaner number in terms of years/months/days may not always match this # of seconds
 
     @patient.record_synthea.expect(:condition, nil, [:appendicitis, @time])
     @patient.record_synthea.expect(:condition, nil, [:rupture_of_appendix, @time])
