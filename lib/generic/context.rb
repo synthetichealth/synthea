@@ -18,13 +18,15 @@ module Synthea
             # looped from a state back to itself, so for perf reasons (memory usage)
             # just stay in the same state and change the dates instead of keeping another object
 
-            if @current_state.exited < time
-              # This must be a delay state that expired between cycles, so temporarily rewind time
-              run(@current_state.exited, entity)
-            end
+            exited = @current_state.exited
 
-            @current_state.start_time = @current_state.exited
+            @current_state.start_time = exited
             @current_state.exited = nil
+
+            if exited < time
+              # This must be a delay state that expired between cycles, so temporarily rewind time
+              run(exited, entity)
+            end
           else
             @history << @current_state
             @current_state = next_state
