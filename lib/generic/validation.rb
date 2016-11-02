@@ -13,6 +13,12 @@ module Synthea
         def required_field(field)
           required_fields << field
         end
+
+        def inherited(klass)
+          super
+          # this is needed because otherwise the children classes don't get the parent required fields
+          klass.required_fields.push(*required_fields)
+        end
       end
 
       def validate
@@ -48,7 +54,7 @@ module Synthea
 
         if field.is_a?(Symbol)
           valid = send(field)
-          messages << "Required field #{field} is missing on #{inspect}" unless valid
+          messages << "Required field #{field} is missing on #{self}" unless valid
         elsif field.is_a?(Hash)
           valid = validate_field_hash(field, messages)
         else

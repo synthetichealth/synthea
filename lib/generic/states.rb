@@ -104,6 +104,8 @@ module Synthea
       end
 
       class Terminal < State
+        required_fields.delete(:transition)
+
         def process(_time, _entity)
           # never pass through the terminal state
           false
