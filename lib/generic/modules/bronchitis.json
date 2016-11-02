@@ -78,7 +78,7 @@
     "Bronchitis_Symptom2" : {
       "type" : "Symptom",
       "symptom": "Mucus",
-      "range": { "low" : 50, "high" : 100 },
+      "range": { "low" : 0, "high" : 100 },
       "direct_transition" : "Bronchitis_Symptom3"
     },
     
@@ -111,7 +111,7 @@
         { "distribution" : 0.05, "transition" : "Chest_Xray" },
         { "distribution" : 0.20, "transition" : "Sputum_Test" },
         { "distribution" : 0.50, "transition" : "Lung_Function_Test" },
-        { "distribution" : 0.20, "transition" : "Wait_for_condition_to_resolve" }
+        { "distribution" : 0.20, "transition" : "OTC_Medicine" }
       ],
       "remarks" : ["There are no reliable diagnostic signs or laboratory tests, so the diagnosis of acute bronchitis is essentially a clinical one. ",
                    "The most important condition to rule out is acute pneumonia. "]
@@ -125,7 +125,7 @@
         "code": "399208008",
         "display": "Plain chest X-ray (procedure)"
       }],
-      "direct_transition" : "Wait_for_condition_to_resolve"
+      "direct_transition" : "OTC_Medicine"
     },
 
     "Sputum_Test" : {
@@ -136,7 +136,7 @@
         "code": "269911007",
         "display": "Sputum examination (procedure)"
       }],
-      "direct_transition" : "Wait_for_condition_to_resolve"
+      "direct_transition" : "OTC_Medicine"
     },
 
     "Lung_Function_Test" : {
@@ -146,6 +146,55 @@
         "system": "SNOMED-CT",
         "code": "23426006",
         "display": "Measurement of respiratory function (procedure)"
+      }],
+      "direct_transition" : "OTC_Medicine"
+    },
+
+    "OTC_Medicine" : {
+      "type" : "Simple",
+      "remarks" : ["Up to 95% of bronchitis cases are viral so antibiotics are rarely prescribed",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2278319/"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Symptom",
+            "symptom" : "Mucus",
+            "operator" : "<",
+            "value" : 20
+          },
+          "distributions" : [
+            { "distribution" : 0.80, "transition" : "Cough_suppressant" },
+            { "distribution" : 0.20, "transition" : "Acetaminophen" }
+          ],
+          "remarks" : "cough suppressants shouldn't be given if the cough brings up mucus"
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.10, "transition" : "Cough_suppressant" },
+            { "distribution" : 0.90, "transition" : "Acetaminophen" }
+          ]
+        }
+      ]
+    },
+
+    "Cough_suppressant" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "1020137",
+        "display" : "Dextromethorphan Hydrobromide 1 MG/ML"
+      }],
+      "direct_transition" : "Wait_for_condition_to_resolve"
+    },
+
+    "Acetaminophen" : {
+      "type" : "MedicationOrder",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "608680",
+        "display" : "Acetaminophen 160 MG"
       }],
       "direct_transition" : "Wait_for_condition_to_resolve"
     },
@@ -157,8 +206,6 @@
         "high": 3,
         "unit": "weeks"
       },
-      "remarks" : ["Note that there is no prescription here. Up to 95% of bronchitis cases are viral so antibiotics are rarely prescribed",
-                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2278319/"],
       "direct_transition" : "Bronchitis_Subsides"
     },
 
@@ -186,6 +233,24 @@
       "type" : "Symptom",
       "symptom": "Shortness of Breath",
       "exact" : { "quantity" : 0 },
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type": "Attribute",
+            "attribute": "OTC_Bronchitis_Med",
+            "operator": "is not nil"
+          },
+          "transition" : "End_OTC_Medication"
+        },
+        {
+          "transition" : "Potential_Infection"
+        }
+      ]
+    },
+
+    "End_OTC_Medication" : {
+      "type" : "MedicationEnd",
+      "referenced_by_attribute" : "OTC_Bronchitis_Med",
       "direct_transition" : "Potential_Infection"
     }
 

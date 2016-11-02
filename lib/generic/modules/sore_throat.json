@@ -50,7 +50,7 @@
         {
           "distributions" : [
             {
-              "distribution": 0.00583,
+              "distribution": 0.005,
               "transition": "Acquire_Viral_Infection"
             },
             {
@@ -59,7 +59,7 @@
               "remarks" : ["[in adults] only about 5%-10% of sore throats are caused by a bacterial infection"]
             },
             {
-              "distribution": 0.9933,
+              "distribution": 0.9942,
               "transition": "Potential_Infection"
             }
           ]
