@@ -1,0 +1,446 @@
+{
+  "name": "Sore Throat",
+  "remarks" : ["Covers both bacterial and viral sore throat. Focuses on strep for bacterial, although gonorrhea and syphilis are also causes.",
+               "Viral sore throats are caused by cold, flu, coxsackie virus, mononucleosis.",
+               "Primary references:",
+               "http://www.medicinenet.com/sore_throat_virus_or_strep/views.htm",
+               "http://emedicine.medscape.com/article/225362-overview"],
+  "states": {
+
+    "Initial": {
+      "type" : "Initial",
+      "direct_transition" : "Potential_Infection"
+    },
+
+    "Potential_Infection" : {
+      "type" : "Delay",
+      "exact" : {
+        "quantity" : 1,
+        "unit" : "months"
+      },
+      "remarks" : ["Each year, pharyngitis is responsible for more than 40 million visits to health care providers. ",
+                   "Most children and adults experience 3-5 viral upper respiratory tract infections (including pharyngitis) per year.",
+                   "Viral pharyngitis affects both children and adults, but it is more common in children.",
+                   "Approximately 10% of children seen by medical care providers each year have pharyngitis, and 25-50% of these children have GABHS pharyngitis.",
+                   "only about 5%-10% of sore throats are caused by a bacterial infection"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Age",
+            "operator" : "<",
+            "quantity" : 15,
+            "unit" : "years"
+          },
+          "distributions" : [
+            {
+              "distribution": 0.00583,
+              "transition": "Acquire_Viral_Infection"
+            },
+            {
+              "distribution": 0.00292,
+              "transition": "Acquire_Bacterial_Infection",
+              "remarks" : ["Bacterial is more common in children than in adults. Assume viral is only 2x as likely as bacterial for children"]
+            },
+            {
+              "distribution": 0.9913,
+              "transition": "Potential_Infection"
+            }
+          ]
+        },
+        {
+          "distributions" : [
+            {
+              "distribution": 0.005,
+              "transition": "Acquire_Viral_Infection"
+            },
+            {
+              "distribution": 0.000875,
+              "transition": "Acquire_Bacterial_Infection",
+              "remarks" : ["[in adults] only about 5%-10% of sore throats are caused by a bacterial infection"]
+            },
+            {
+              "distribution": 0.9942,
+              "transition": "Potential_Infection"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Acquire_Viral_Infection" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "195662009",
+        "display" : "Acute viral pharyngitis (disorder)"
+      }],
+      "assign_to_attribute" : "Sore Throat Condition",
+      "direct_transition" : "Viral_Symptom_1"
+    }, 
+
+    "Viral_Symptom_1" : {
+      "type" : "Symptom",
+      "symptom": "Cough",
+      "range": { "low" : 40, "high" : 100},
+      "direct_transition" : "Viral_Symptom_2"
+    },
+
+    "Viral_Symptom_2" : {
+      "type" : "Symptom",
+      "symptom": "Swollen Lymph Nodes",
+      "range": { "low" : 0, "high" : 60 },
+      "direct_transition" : "Viral_Symptom_3"
+    },
+
+    "Viral_Symptom_3" : {
+      "type" : "Symptom",
+      "symptom": "Swollen Tonsils",
+      "range": { "low": 0, "high": 60},
+      "direct_transition" : "Symptoms_dont_resolve"
+    },
+
+    "Acquire_Bacterial_Infection" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "43878008",
+        "display" : "Streptococcal sore throat (disorder)"
+      }],
+      "assign_to_attribute" : "Sore Throat Condition",
+      "direct_transition" : "Bacterial_Symptom_1"
+    },
+
+    "Bacterial_Symptom_1" : {
+      "type" : "Symptom",
+      "symptom": "Cough",
+      "exact" : { "quantity" : 0 },
+      "remarks" : "Strep generally does not present with cough",
+      "direct_transition" : "Bacterial_Symptom_2"
+    },
+
+    "Bacterial_Symptom_2" : {
+      "type" : "Symptom",
+      "symptom": "Swollen Lymph Nodes",
+      "range": { "low" : 40, "high" : 100 },
+      "remarks" : "Strep generally presents with swollen lymph nodes",
+      "direct_transition" : "Bacterial_Symptom_3"
+    },
+
+    "Bacterial_Symptom_3" : {
+      "type" : "Symptom",
+      "symptom": "Swollen Tonsils",
+      "range": { "low": 40, "high": 100},
+      "direct_transition" : "Symptoms_dont_resolve"
+    },
+
+    "Symptoms_dont_resolve" : {
+      "type" : "Delay",
+      "range" : {
+        "low" : 1,
+        "high" : 5,
+        "unit" : "days"
+      },
+      "direct_transition" : "Doctor_Visit"
+    },
+
+    "Doctor_Visit" : {
+      "type" : "Encounter",
+      "class" : "ambulatory",
+      "codes" : [{
+        "system": "SNOMED-CT",
+        "code": "185345009",
+        "display": "Encounter for symptom"
+      }],
+      "conditional_transition" : [
+        {
+          "condition": {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "43878008",
+              "display" : "Streptococcal sore throat (disorder)"
+            }]
+          },
+          "transition": "Take_Temperature_High",
+          "remarks" : "high fever is a hallmark of strep throat  http://www.webmd.com/cold-and-flu/news/20131104/two-questions-may-rule-out-strep-throat"
+        },
+        {
+          "transition": "Take_Temperature_Low"
+        }
+      ]
+    },
+
+    "Take_Temperature_High" : {
+      "type" : "Observation",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "8331-1",
+        "display" : "Oral temperature"
+      }],
+      "range" : {
+        "low" : 37.2,
+        "high" : 39.4
+      },
+      "remarks" : "37.2 - 39.4 Celsius == 99 - 103 Fahrenheit",
+      "unit" : "Cel",
+      "direct_transition" : "Determine_if_Bacterial"
+    },
+
+    "Take_Temperature_Low" : {
+      "type" : "Observation",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "8331-1",
+        "display" : "Oral temperature"
+      }],
+      "range" : {
+        "low" : 37.0,
+        "high" : 38.0
+      },
+      "remarks" : "37.0 - 38.0 Celsius == 98.6 - 100.4 Fahrenheit",
+      "unit" : "Cel",
+      "direct_transition" : "Determine_if_Bacterial"
+    },
+
+    "Determine_if_Bacterial" : {
+      "type" : "Simple",
+      "remarks" : ["the Centor criteria are used to determine if a sore throat is bacterial",
+                   "http://www.mdcalc.com/modified-centor-score-for-strep-pharyngitis/",
+                   "modified slightly here to account for our simpler logic",
+                   "(we can't do -1 for age > 44 so we do +1 for age <= 44, and require an extra +1)"],
+      "conditional_transition" : [
+        {
+          "condition": {
+            "condition_type" : "At Least",
+            "minimum" : 5,
+            "conditions" : [
+              {
+                "condition_type" : "Symptom",
+                "symptom" : "Cough",
+                "operator" : "<",
+                "value" : 50
+              },
+              {
+                "condition_type" : "Symptom",
+                "symptom" : "Swollen Lymph Nodes",
+                "operator" : ">",
+                "value" : 50
+              },
+              {
+                "condition_type" : "Symptom",
+                "symptom" : "Swollen Tonsils",
+                "operator" : ">",
+                "value" : 50
+              },
+              {
+                "condition_type" : "Observation",
+                "codes" : [{
+                  "system" : "LOINC",
+                  "code" : "8331-1",
+                  "display" : "Oral temperature"
+                }],
+                "operator" : ">",
+                "value" : 38.0
+              },
+              {
+                "condition_type" : "Age",
+                "operator" : "<",
+                "quantity" : 15,
+                "unit" : "years"
+              },
+              {
+                "condition_type" : "Age",
+                "operator" : "<=",
+                "quantity" : 44,
+                "unit" : "years"
+              }
+            ]
+          },
+          "transition": "Prescribe_Antibiotics"
+        },
+        {
+          "condition": {
+            "condition_type" : "At Least",
+            "minimum" : 3,
+            "conditions" : [
+              {
+                "condition_type" : "Symptom",
+                "symptom" : "Cough",
+                "operator" : "<",
+                "value" : 50
+              },
+              {
+                "condition_type" : "Symptom",
+                "symptom" : "Swollen Lymph Nodes",
+                "operator" : ">",
+                "value" : 50
+              },
+              {
+                "condition_type" : "Symptom",
+                "symptom" : "Swollen Tonsils",
+                "operator" : ">",
+                "value" : 50
+              },
+              {
+                "condition_type" : "Observation",
+                "codes" : [{
+                  "system" : "LOINC",
+                  "code" : "8331-1",
+                  "display" : "Oral temperature"
+                }],
+                "operator" : ">",
+                "value" : 38.0
+              },
+              {
+                "condition_type" : "Age",
+                "operator" : "<",
+                "quantity" : 15,
+                "unit" : "years"
+              },
+              {
+                "condition_type" : "Age",
+                "operator" : "<=",
+                "quantity" : 44,
+                "unit" : "years"
+              }
+            ]
+          },
+          "transition": "Throat_Culture"
+        },
+        {
+          "transition": "Time_Passes"
+        }
+      ]
+    },
+
+    "Prescribe_Antibiotics" : {
+      "type" : "Simple",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Age",
+            "operator" : "<",
+            "quantity" : 18,
+            "unit" : "years"
+          },
+          "transition" : "Prescribe_Antibiotics_Child"
+        },
+        {
+          "transition" : "Prescribe_Antibiotics_Adult"
+        }
+      ]
+    },
+
+    "Prescribe_Antibiotics_Child" : {
+      "type" : "MedicationOrder",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "834060",
+        "display" : "Penicillin V Potassium 250 MG"
+      }],
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sore Throat Antibiotic",
+      "direct_transition" : "Time_Passes",
+      "remarks" : "if we eventually add Penicillin allergies, we'll need a conditional to prescribe amoxicillin instead"
+    },
+
+    "Prescribe_Antibiotics_Adult" : {
+      "type" : "MedicationOrder",
+      "codes" : [{
+        "system" : "RxNorm",
+        "code" : "834101",
+        "display" : "Penicillin V Potassium 500 MG"
+      }],
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sore Throat Antibiotic",
+      "direct_transition" : "Time_Passes"
+    },
+
+    "Throat_Culture" : {
+      "type" : "Procedure",
+      "target_encounter" : "Doctor_Visit",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "117015009",
+        "display" : "Throat culture (procedure) "
+      }],
+      "conditional_transition" : [
+        {
+          "condition": {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "43878008",
+              "display" : "Streptococcal sore throat (disorder)"
+            }]
+          },
+          "transition": "Prescribe_Antibiotics",
+          "remarks" : "assuming here for simplicity that the test is 100% accurate. real world it's more like 90-95%"
+        },
+        {
+          "transition": "Time_Passes"
+        }
+      ]
+    },
+
+
+    "Time_Passes" : {
+      "type" : "Delay",
+      "range" : {
+        "low" : 7,
+        "high" : 14,
+        "unit" : "days"
+      },
+      "direct_transition" : "Symptom_1_Ends"
+    },
+
+    "Symptom_1_Ends" : {
+      "type" : "Symptom",
+      "symptom": "Cough",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Symptom_2_Ends"
+    },
+
+    "Symptom_2_Ends" : {
+      "type" : "Symptom",
+      "symptom": "Swollen Lymph Nodes",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Symptom_3_Ends"
+    },
+
+    "Symptom_3_Ends" : {
+      "type" : "Symptom",
+      "symptom": "Swollen Tonsils",
+      "exact" : { "quantity" : 0 },
+      "direct_transition" : "Condition_Resolves"
+    },
+
+    "Condition_Resolves" : {
+      "type" : "ConditionEnd",
+      "referenced_by_attribute" : "Sore Throat Condition",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Medication",
+            "referenced_by_attribute" : "Sore Throat Antibiotic"
+          },
+          "transition" : "End_Antibiotics"
+        },
+        {
+          "transition" : "Potential_Infection"
+        }
+      ]
+    },
+
+    "End_Antibiotics" : {
+      "type" : "MedicationEnd",
+      "referenced_by_attribute" : "Sore Throat Antibiotic",
+      "direct_transition" : "Potential_Infection"
+    }
+
+  }
+}

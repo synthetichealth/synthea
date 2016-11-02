@@ -23,6 +23,14 @@ module Synthea
         false
       end
 
+      def self.test_at_least(condition, context, time, entity)
+        condition['minimum'] <= condition['conditions'].count { |c| test(c, context, time, entity) }
+      end
+
+      def self.test_at_most(condition, context, time, entity)
+        condition['maximum'] >= condition['conditions'].count { |c| test(c, context, time, entity) }
+      end
+
       def self.test_not(condition, context, time, entity)
         !test(condition['condition'], context, time, entity)
       end
@@ -58,14 +66,7 @@ module Synthea
 
       def self.test_observation(condition, _context, _time, entity)
         # find the most recent instance of the given observation
-        obstype = if condition['codes']
-                    # based on state.symbol
-                    condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
-                  elsif condition['referenced_by_attribute']
-                    entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
-                  else
-                    raise 'Observation condition must be specified by code or attribute'
-                  end
+        obstype = find_referenced_type(condition, entity, 'Observation')
 
         obs = entity.record_synthea.observations.select { |o| o['type'] == obstype }
         operator = condition['operator']
@@ -83,14 +84,7 @@ module Synthea
 
       def self.test_active_condition(condition, _context, _time, entity)
         # return true if the given condition is currently active
-        contype = if condition['codes']
-                    # based on state.symbol
-                    condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
-                  elsif condition['referenced_by_attribute']
-                    entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
-                  else
-                    raise 'Condition condition must be specified by code or attribute'
-                  end
+        contype = find_referenced_type(condition, entity, 'Active Condition')
 
         entity.record_synthea.present[contype]
       end
@@ -99,17 +93,15 @@ module Synthea
         !context.most_recent_by_name(condition['name']).nil?
       end
 
-      def self.test_active_careplan(careplan, _context, _time, entity)
+      def self.test_active_careplan(condition, _context, _time, entity)
         # return true if the given careplan is currently active
-        contype = if careplan['codes']
-                    # based on the state.symbol
-                    careplan['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
-                  elsif careplan['referenced_by_attribute']
-                    entity[careplan['referenced_by_attribute']] || entity[careplan['referenced_by_attribute'].to_sym]
-                  else
-                    raise 'Condition careplan must be specified by code or attribute'
-                  end
+        contype = find_referenced_type(condition, entity, 'Active Careplan')
         entity.record_synthea.careplan_active?(contype)
+      end
+
+      def self.test_active_medication(condition, _context, _time, entity)
+        medtype = find_referenced_type(condition, entity, 'Active Medication')
+        entity.record_synthea.medication_active?(medtype)
       end
 
       def self.test_true(_condition, _context, _time, _entity)
@@ -118,6 +110,17 @@ module Synthea
 
       def self.test_false(_condition, _context, _time, _entity)
         false
+      end
+
+      def self.find_referenced_type(condition, entity, name)
+        if condition['codes']
+          # based on state.symbol
+          condition['codes'].first['display'].gsub(/\s+/, '_').downcase.to_sym
+        elsif condition['referenced_by_attribute']
+          entity[condition['referenced_by_attribute']] || entity[condition['referenced_by_attribute'].to_sym]
+        else
+          raise "#{name} condition must be specified by code or attribute"
+        end
       end
 
       def self.compare(lhs, rhs, operator)

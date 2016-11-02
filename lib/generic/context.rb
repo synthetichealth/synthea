@@ -57,14 +57,7 @@ module Synthea
           # No satisfied condition or fallback transition.  Go to the default terminal state.
           return States::Terminal.new(self, 'Terminal')
         elsif @current_state.complex_transition
-          @current_state.complex_transition.each do |ct|
-            cond = ct['condition']
-            if cond.nil? || Synthea::Generic::Logic.test(cond, self, time, entity)
-              return pick_distributed_transition(ct['distributions'])
-            end
-          end
-          # No satisfied condition or fallback transition.  Go to the default terminal state.
-          return States::Terminal.new(self, 'Terminal')
+          return pick_complex_transition(@current_state.complex_transition, time, entity)
         else
           # No transition was specified.  Go to the default terminal state.
           return States::Terminal.new(self, 'Terminal')
@@ -83,6 +76,21 @@ module Synthea
         # We only get here if the numbers didn't add to 1.0 or if one of the numbers caused
         # floating point imprecision (very, very rare).  Just go with the last one.
         create_state(transitions.last['transition'])
+      end
+
+      def pick_complex_transition(transitions, time, entity)
+        transitions.each do |ct|
+          cond = ct['condition']
+          next unless cond.nil? || Synthea::Generic::Logic.test(cond, self, time, entity)
+
+          if ct['transition']
+            return create_state(ct['transition'])
+          else
+            return pick_distributed_transition(ct['distributions'])
+          end
+        end
+        # No satisfied condition or fallback transition.  Go to the default terminal state.
+        States::Terminal.new(self, 'Terminal')
       end
 
       def most_recent_by_name(name)
