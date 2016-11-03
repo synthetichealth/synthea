@@ -1,6 +1,6 @@
 module Synthea
   module Generic
-    module Validation
+    module Metadata
       def self.included(base)
         base.extend(ClassMethods)
       end
@@ -14,10 +14,19 @@ module Synthea
           required_fields << field
         end
 
+        def class_metadata
+          @class_metadata ||= {}
+        end
+
+        def metadata(field, options)
+          class_metadata[field] = options
+        end
+
         def inherited(klass)
           super
           # this is needed because otherwise the children classes don't get the parent required fields
           klass.required_fields.push(*required_fields)
+          klass.class_metadata.merge!(class_metadata)
         end
       end
 
@@ -54,7 +63,7 @@ module Synthea
 
         if field.is_a?(Symbol)
           valid = send(field)
-          messages << "Required field #{field} is missing on #{self}" unless valid
+          messages << "Required field #{field} is missing on #{inspect}" unless valid
         elsif field.is_a?(Hash)
           valid = validate_field_hash(field, messages)
         else

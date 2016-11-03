@@ -3,7 +3,8 @@ module Synthea
     module States
       # define a base state with common functionality that can be inherited by all other states
       class State
-        include Synthea::Generic::Validation
+        include Synthea::Generic::Metadata
+        include Synthea::Generic::Hashable
 
         attr_accessor :name, :entered, :exited, :start_time,
                       :assign_to_attribute,
@@ -12,25 +13,23 @@ module Synthea
         required_field :name
         required_field :transition
 
+        # using this metadata format to allow for inheritance
+        metadata 'name', type: 'String', min: 1, max: 1
+        # TODO: transitions should work the same way as conditions,
+        # ie as "transition" : { "transition_type" : "abc" ...}
+        metadata 'direct_transition', store_as: 'transition', type: 'Transitions::DirectTransition'
+        metadata 'conditional_transition', store_as: 'transition', type: 'Transitions::ConditionalTransition'
+        metadata 'distributed_transition', store_as: 'transition', type: 'Transitions::DistributedTransition'
+        metadata 'complex_transition', store_as: 'transition', type: 'Transitions::ComplexTransition'
+        metadata 'type', ignore: true
+
         def initialize(context, name)
           @context = context
           @name = name
 
           @config = context.state_config(name) || {}
 
-          # automatically assign the keys in the state to attributes
-          @config.each do |key, value|
-            next if %w(type remarks).include?(key)
-            if key.include?('_transition')
-              set_transition(key, value)
-            else
-              send("#{key}=", value)
-            end
-          end
-        end
-
-        def set_transition(type, transition)
-          @transition = Object.const_get("Synthea::Generic::Transitions::#{type.camelize}").new(transition)
+          from_hash(@config)
         end
 
         def run(time, entity)
@@ -56,7 +55,7 @@ module Synthea
         def symbol
           # prefer a code display value since the state name may not be unique between modules
           if !@codes.nil? && !@codes.empty?
-            @codes.first['display'].gsub(/\s+/, '_').downcase.to_sym
+            @codes.first.display.gsub(/\s+/, '_').downcase.to_sym
           else
             @name.gsub(/\s+/, '_').downcase.to_sym
           end
@@ -76,12 +75,12 @@ module Synthea
 
           sym = symbol
           value = {
-            description: @codes.first['display'],
+            description: @codes.first.display,
             codes: {}
           }
           @codes.each do |c|
-            value[:codes][c['system']] ||= []
-            value[:codes][c['system']] << c['code']
+            value[:codes][c.system] ||= []
+            value[:codes][c.system] << c.code
           end
 
           # intentionally returning the value for further modification (see Encounter.perform_encounter)
@@ -117,15 +116,16 @@ module Synthea
 
         required_field or: [:range, :exact]
 
+        metadata 'range', type: 'Components::RangeWithUnit', min: 0, max: 1
+        metadata 'exact', type: 'Components::ExactWithUnit', min: 0, max: 1
+
         def process(time, _entity)
           if @expiration.nil?
             if !@range.nil?
               # choose a random duration within the specified range
-              low = @range['low'].send(@range['unit'])
-              high = @range['high'].send(@range['unit'])
-              @expiration = rand(low..high).since(@start_time)
+              @expiration = @range.value.since(@start_time)
             elsif !@exact.nil?
-              @expiration = @exact['quantity'].send(@exact['unit']).since(@start_time)
+              @expiration = @exact.value.since(@start_time)
             else
               @expiration = @start_time
             end
@@ -139,9 +139,12 @@ module Synthea
 
         required_field :allow
 
+        metadata 'allow', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 1, max: 1
+
         def process(time, entity)
           # only indicate successful processing if the condition evaluates to true
-          Synthea::Generic::Logic.test(@allow, @context, time, entity)
+          @allow.test(@context, time, entity)
+          # Synthea::Generic::Logic.test(@allow, @context, time, entity)
         end
       end
 
@@ -158,6 +161,8 @@ module Synthea
         attr_accessor :wellness, :processed, :time, :codes, :encounter_class
 
         required_field or: [:wellness, and: [:codes, :encounter_class]]
+
+        metadata 'codes', type: 'Components::Code', min: 1, max: 999
 
         def process(time, entity)
           unless @wellness
@@ -194,6 +199,8 @@ module Synthea
 
         required_field and: [:target_encounter, :codes]
 
+        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+
         def process(time, entity)
           diagnose(time, entity) if concurrent_with_target_encounter(time)
           true
@@ -210,6 +217,8 @@ module Synthea
         attr_accessor :referenced_by_attribute, :condition_onset, :codes
 
         required_field or: [:referenced_by_attribute, :condition_onset, :codes]
+
+        metadata 'codes', type: 'Components::Code', min: 0, max: 999
 
         def process(time, entity)
           if @referenced_by_attribute
@@ -231,6 +240,8 @@ module Synthea
         attr_accessor :prescribed, :target_encounter, :codes, :reason
 
         required_field and: [:target_encounter, :codes]
+
+        metadata 'codes', type: 'Components::Code', min: 1, max: 999
 
         def process(time, entity)
           prescribe(time, entity) if concurrent_with_target_encounter(time)
@@ -255,6 +266,8 @@ module Synthea
 
       class MedicationEnd < State
         attr_accessor :referenced_by_attribute, :medication_order, :reason, :codes
+
+        metadata 'codes', type: 'Components::Code', min: 0, max: 999
 
         def initialize(context, name)
           super
@@ -283,6 +296,8 @@ module Synthea
 
       class CarePlanStart < State
         attr_accessor :target_encounter, :codes, :activities, :reason
+
+        metadata 'codes', type: 'Components::Code', min: 1, max: 999
 
         def process(time, entity)
           start_plan(time, entity) if concurrent_with_target_encounter(time)
@@ -335,6 +350,8 @@ module Synthea
       class CarePlanEnd < State
         attr_accessor :careplan, :reason, :codes, :referenced_by_attribute
 
+        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+
         def initialize(context, name)
           super
           @reason ||= :careplan_ended
@@ -365,6 +382,8 @@ module Synthea
 
         required_field and: [:target_encounter, :codes]
 
+        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+
         def process(time, entity)
           operate(time, entity) if concurrent_with_target_encounter(time)
           true
@@ -393,6 +412,10 @@ module Synthea
         required_field and: [:target_encounter, :codes, :unit]
         required_field or: [:range, :exact]
 
+        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'range', type: 'Components::Range', min: 0, max: 1
+        metadata 'exact', type: 'Components::Exact', min: 0, max: 1
+
         def initialize(context, name)
           super
           @type = symbol
@@ -403,16 +426,16 @@ module Synthea
           # and then delete this method
           return if @codes.nil? || @codes.empty?
           code = @codes.first
-          lookup_hash[@type] = { description: code['display'], code: code['code'], unit: @unit }
+          lookup_hash[@type] = { description: code.display, code: code.code, unit: @unit }
         end
 
         def process(time, entity)
           add_lookup_code(Synthea::OBS_LOOKUP)
 
           if @range
-            @value = rand(@range['low']..@range['high'])
+            @value = @range.value
           elsif exact
-            @value = @exact['quantity']
+            @value = @exact.value
           else
             raise 'Observation state must specify value using either "range" or "exact"'
           end
@@ -427,6 +450,9 @@ module Synthea
       class Symptom < State
         attr_accessor :symptom, :cause, :range, :exact
 
+        metadata 'range', type: 'Components::Range', min: 0, max: 1
+        metadata 'exact', type: 'Components::Exact', min: 0, max: 1
+
         def initialize(context, name)
           super
           @cause ||= context.config['name']
@@ -434,9 +460,9 @@ module Synthea
 
         def process(_time, entity)
           if range
-            @value = rand(@range['low']..@range['high'])
+            @value = @range.value
           elsif exact
-            @value = @exact['quantity']
+            @value = @exact.value
           else
             raise 'Symptom state must specify value using either "range" or "exact"'
           end
@@ -447,13 +473,15 @@ module Synthea
       class Death < State
         attr_accessor :range, :exact, :referenced_by_attribute, :condition_onset, :codes
 
+        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'range', type: 'Components::RangeWithUnit', min: 0, max: 1
+        metadata 'exact', type: 'Components::ExactWithUnit', min: 0, max: 1
+
         def process(time, entity)
           if @range
-            low = @range['low'].send(@range['unit'])
-            high = @range['high'].send(@range['unit'])
-            value = rand(low..high).since(time)
+            value = @range.value.since(time)
           elsif @exact
-            value = @exact['quantity'].send(@exact['unit']).since(time)
+            value = @exact.value.since(time)
           end
 
           # this is the same as the ConditionEnd logic, maybe we want to extract this somewhere
