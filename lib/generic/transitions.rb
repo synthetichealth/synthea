@@ -30,7 +30,7 @@ module Synthea
         include Synthea::Generic::Metadata
         include Synthea::Generic::Hashable
 
-        attr_accessor :transition
+        attr_accessor :transition # not required here because complex transition doesn't require 'transition' property
 
         def initialize(transition)
           from_hash(transition)
@@ -42,8 +42,7 @@ module Synthea
         include Synthea::Generic::Hashable
 
         attr_accessor :distribution
-        required_field :transition
-        required_field :distribution
+        required_field and: [:transition, :distribution]
       end
 
       class DistributedTransition < Transition
@@ -79,7 +78,8 @@ module Synthea
       end
 
       class ConditionalTransitionOption < TransitionOption
-        attr_accessor :condition
+        attr_accessor :condition # not required
+        required_field :transition
 
         metadata 'condition', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 0, max: 1
       end
@@ -110,6 +110,7 @@ module Synthea
 
       class ComplexTransitionOption < TransitionOption
         attr_accessor :condition, :distributions
+        required_field or: [:transition, :distributions]
 
         metadata 'condition', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 0, max: 1
         metadata 'distributions', type: 'Transitions::DistributedTransitionOption', min: 1, max: 999
@@ -117,8 +118,6 @@ module Synthea
 
       class ComplexTransition < DistributedTransition
         # inherit from distributed to get access to pick_distributed_transition
-        attr_accessor :transitions
-
         metadata 'transitions', type: 'Transitions::ComplexTransitionOption', min: 1, max: 999
 
         def all_transitions

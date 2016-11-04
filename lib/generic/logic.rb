@@ -48,6 +48,7 @@ module Synthea
 
       class GroupedCondition < Condition
         attr_accessor :conditions
+        required_field :conditions
 
         metadata 'conditions', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 1, max: 999
       end
@@ -72,6 +73,7 @@ module Synthea
 
       class AtLeast < GroupedCondition
         attr_accessor :minimum
+        required_field :minimum
 
         def test(context, time, entity)
           minimum <= conditions.count { |c| c.test(context, time, entity) }
@@ -80,6 +82,7 @@ module Synthea
 
       class AtMost < GroupedCondition
         attr_accessor :maximum
+        required_field :maximum
 
         def test(context, time, entity)
           maximum >= conditions.count { |c| c.test(context, time, entity) }
@@ -88,6 +91,7 @@ module Synthea
 
       class Not < Condition
         attr_accessor :condition
+        required_field :condition
 
         metadata 'condition', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 1, max: 1
 
@@ -98,6 +102,7 @@ module Synthea
 
       class Gender < Condition
         attr_accessor :gender
+        required_field :gender
 
         def test(_context, _time, entity)
           gender == entity[:gender]
@@ -106,6 +111,7 @@ module Synthea
 
       class Age < Condition
         attr_accessor :quantity, :unit, :operator
+        required_field and: [:quantity, :unit, :operator]
 
         def test(_context, time, entity)
           birthdate = entity.event(:birth).time
@@ -116,6 +122,7 @@ module Synthea
 
       class SocioeconomicStatus < Condition
         attr_accessor :category
+        required_field :category
 
         def test(_context, _time, entity)
           raise "Unsupported category: #{category}" unless %w(High Middle Low).include?(category)
@@ -126,6 +133,7 @@ module Synthea
 
       class Date < Condition
         attr_accessor :year, :operator
+        required_field and: [:year, :operator]
 
         def test(_context, time, _entity)
           compare(time.year, year, operator)
@@ -134,6 +142,7 @@ module Synthea
 
       class Attribute < Condition
         attr_accessor :attribute, :value, :operator
+        required_field and: [:attribute, :operator] # value is allowed to be omitted if operator is 'is nil'
 
         def test(_context, _time, entity)
           entity_value = entity[attribute] || entity[attribute.to_sym]
@@ -143,6 +152,7 @@ module Synthea
 
       class Symptom < Condition
         attr_accessor :symptom, :value, :operator
+        required_field and: [:symptom, :value, :operator]
 
         def test(_context, _time, entity)
           compare(entity.get_symptom_value(symptom), value, operator)
@@ -151,6 +161,7 @@ module Synthea
 
       class Observation < Condition
         attr_accessor :codes, :referenced_by_attribute, :operator, :value
+        required_field and: [:operator, :value, or: [:codes, :referenced_by_attribute]]
 
         metadata 'codes', type: 'Components::Code', min: 0, max: 999
 
@@ -174,6 +185,7 @@ module Synthea
 
       class ActiveCondition < Condition
         attr_accessor :codes, :referenced_by_attribute
+        required_field or: [:codes, :referenced_by_attribute]
 
         metadata 'codes', type: 'Components::Code', min: 0, max: 999
 
@@ -185,6 +197,7 @@ module Synthea
 
       class PriorState < Condition
         attr_accessor :name
+        required_field :name
 
         def test(context, _time, _entity)
           !context.most_recent_by_name(name).nil?
@@ -193,6 +206,7 @@ module Synthea
 
       class ActiveCareplan < Condition
         attr_accessor :codes, :referenced_by_attribute
+        required_field or: [:codes, :referenced_by_attribute]
 
         metadata 'codes', type: 'Components::Code', min: 0, max: 999
 
@@ -204,6 +218,7 @@ module Synthea
 
       class ActiveMedication < Condition
         attr_accessor :codes, :referenced_by_attribute
+        required_field or: [:codes, :referenced_by_attribute]
 
         metadata 'codes', type: 'Components::Code', min: 0, max: 999
 

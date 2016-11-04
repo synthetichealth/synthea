@@ -144,7 +144,6 @@ module Synthea
         def process(time, entity)
           # only indicate successful processing if the condition evaluates to true
           @allow.test(@context, time, entity)
-          # Synthea::Generic::Logic.test(@allow, @context, time, entity)
         end
       end
 
