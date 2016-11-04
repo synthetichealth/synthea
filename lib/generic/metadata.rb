@@ -35,7 +35,18 @@ module Synthea
         self.class.required_fields.each do |field|
           validate_required_field(field, messages)
         end
-        messages
+        self.class.class_metadata.each do |field, config|
+          next if config[:ignore]
+          field = config[:store_as] if config[:store_as]
+          value = send(field)
+
+          if value.is_a?(Array)
+            value.each { |v| messages.push(*v.validate) }
+          elsif value.respond_to?(:validate)
+            messages.push(*value.validate)
+          end
+        end
+        messages.uniq
       end
 
       def validate_field_hash(field, messages)
@@ -44,13 +55,13 @@ module Synthea
         if field[:or]
           valid = field[:or].any? { |f| validate_required_field(f, []) }
           unless valid
-            messages << "At least one of #{to_string(field)} is required on #{inspect}"
+            messages << "At least one of #{to_string(field)} is required on #{self}"
             return false
           end
         elsif field[:and]
           valid = field[:and].all? { |f| validate_required_field(f, []) }
           unless valid
-            messages << "All of #{to_string(field)} are required on #{inspect}"
+            messages << "All of #{to_string(field)} are required on #{self}"
             return false
           end
         end
@@ -63,7 +74,7 @@ module Synthea
 
         if field.is_a?(Symbol)
           valid = send(field)
-          messages << "Required field #{field} is missing on #{inspect}" unless valid
+          messages << "Required '#{field}' is missing on #{inspect}" unless valid
         elsif field.is_a?(Hash)
           valid = validate_field_hash(field, messages)
         else
@@ -77,6 +88,7 @@ module Synthea
         if field.is_a?(Symbol)
           field.to_s
         elsif field.is_a?(Hash)
+          raise 'Validation hash must have exactly 1 top-level key' if field.size != 1
           key, list = field.first
           # there's only one element, either field[:or] or field[:and]
           operator = " #{key} "

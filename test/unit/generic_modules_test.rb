@@ -24,7 +24,8 @@ class GenericModulesTest < Minitest::Test
 
     all_states.each do |state_name|
       state = context.create_state(state_name)
-      assert_empty state.validate, "#{file}: State #{state_name} failed to validate"
+      errors = state.validate
+      assert errors.empty?, "#{file}: State #{state_name} failed to validate.\nErrors:\n#{errors.join('\n')}"
       check_transitions(state_name, state, all_states, file, reachable)
     end
 
