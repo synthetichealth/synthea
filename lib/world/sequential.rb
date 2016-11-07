@@ -15,6 +15,9 @@ module Synthea
         @stats[:race] = Hash.new(0)
         @stats[:ethnicity] = Hash.new(0)
         @stats[:blood_type] = Hash.new(0)
+        @stats[:dead_conditions] = Hash.new(0)
+        @stats[:living_conditions] = Hash.new(0)
+        @stats[:conditions] = Hash.new(0)
 
         @population_count = Synthea::Config.sequential.population
 
@@ -72,7 +75,8 @@ module Synthea
       end
 
       def run_random
-        @population_count.times do |i|
+        i = 0
+        while @stats[:living] < @population_count
           person = build_person
 
           if @export_workers
@@ -82,7 +86,7 @@ module Synthea
           end
 
           record_stats(person)
-          log_patient(person, number: i + 1, is_dead: person.had_event?(:death))
+          log_patient(person, number: i += 1, is_dead: person.had_event?(:death))
         end
       end
 
@@ -188,6 +192,7 @@ module Synthea
         conditions << 'Diabetic' if patient[:diabetes]
         conditions << 'Heart Disease' if patient[:coronary_heart_disease]
         conditions << 'Lung Cancer' if patient['Lung Cancer Type']
+        conditions << "Alzheimer's" if patient["Type of Alzheimer's"]
         conditions
       end
 
@@ -223,7 +228,12 @@ module Synthea
 
         conditions = track_conditions(patient)
         conditions.each do |condition|
-          @stats[condition] += 1
+          @stats[:conditions][condition] += 1
+          if patient.had_event?(:death)
+            @stats[:dead_conditions][condition] += 1
+          else
+            @stats[:living_conditions][condition] += 1
+          end
         end
       end
     end

@@ -60,6 +60,15 @@ module Synthea
       end
     end
 
+    def taking_medication_for?(reason)
+      return false if entity[:medications].nil?
+      meds = []
+      entity[:medications].each do |med, info|
+        meds << med if info['reasons'].include?(reason)
+      end
+      !meds.empty?
+    end
+
     # 'reason' is the condition that the medication was prescribed for but has since abated.
     def stop_medication(med, reason, _time, entity, changes)
       return if entity[:medications].nil? || entity[:medications][med].nil?
