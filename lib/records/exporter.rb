@@ -1,11 +1,11 @@
 module Synthea
   module Output
     module Exporter
-      def self.export(patient)
-        patient = filter_for_export(patient) unless Synthea::Config.exporter.years_of_history <= 0
+      def self.export(patient, end_time = Time.now)
+        patient = filter_for_export(patient, end_time) unless Synthea::Config.exporter.years_of_history <= 0
 
         if Synthea::Config.exporter.ccda.export || Synthea::Config.exporter.ccda.upload || Synthea::Config.exporter.html.export
-          ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient)
+          ccda_record = Synthea::Output::CcdaRecord.convert_to_ccda(patient, end_time)
 
           if Synthea::Config.exporter.ccda.export
             out_dir = get_output_folder('CCDA', patient)
@@ -23,7 +23,7 @@ module Synthea
         end
 
         if Synthea::Config.exporter.fhir.export || Synthea::Config.exporter.fhir.upload
-          fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient)
+          fhir_record = Synthea::Output::FhirRecord.convert_to_fhir(patient, end_time)
 
           if Synthea::Config.exporter.fhir.upload
             fhir_upload(fhir_record, Synthea::Config.exporter.fhir.upload)
@@ -100,11 +100,13 @@ module Synthea
         entry
       end
 
-      def self.filter_for_export(patient)
+      def self.filter_for_export(patient, end_time = Time.now)
         # filter the patient's history to only the last __ years
-        # but also include relevant history from before that
+        # but also include relevant history from before that. Exclude
+        # any history that occurs after the specified end_time (typically
+        # this is Time.now).
 
-        cutoff_date = Time.now - Synthea::Config.exporter.years_of_history.years
+        cutoff_date = end_time - Synthea::Config.exporter.years_of_history.years
 
         # dup the patient so that we export only the last _ years but the rest still exists, just in case
         patient = patient.dup
@@ -113,18 +115,18 @@ module Synthea
         [:encounters, :conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
           entries = patient.record_synthea.send(attribute).dup
 
-          entries.keep_if { |e| should_keep_entry(e, attribute, patient.record_synthea, cutoff_date) }
+          entries.keep_if { |e| should_keep_entry(e, attribute, patient.record_synthea, cutoff_date, end_time) }
           patient.record_synthea.send("#{attribute}=", entries)
         end
 
         patient
       end
 
-      def self.should_keep_entry(e, attribute, record, cutoff_date)
-        return true if e['time'] > cutoff_date # trivial case, when we're within the last __ years
+      def self.should_keep_entry(e, attribute, record, cutoff_date, end_time = Time.now)
+        return true if e['time'] > cutoff_date && e['time'] <= end_time # trivial case, when we're within the last __ years
 
         # if the entry has a stop time, check if the effective date range overlapped the last __ years
-        return true if e['stop'] && e['stop'] > cutoff_date
+        return true if e['stop'] && e['stop'] > cutoff_date && e['stop'] <= end_time
 
         # - encounters, observations, immunizations are single dates and have no "reason"
         #    so they can only be filtered by the single date
@@ -137,7 +139,7 @@ module Synthea
         when :careplans
           return record.careplan_active?(e['type'])
         when :conditions
-          return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date)
+          return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date && e['end_time'] <= end_time)
         when :encounters
           return e['type'] == :death_certification
         when :observations

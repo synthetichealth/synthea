@@ -1,11 +1,11 @@
 module Synthea
   module Output
     module CcdaRecord
-      def self.convert_to_ccda(entity)
+      def self.convert_to_ccda(entity, end_time = Time.now)
         synthea_record = entity.record_synthea
         indices = { observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0 }
         ccda_record = ::Record.new
-        basic_info(entity, ccda_record)
+        basic_info(entity, ccda_record, end_time)
         synthea_record.encounters.each do |encounter|
           encounter(encounter, ccda_record)
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
@@ -23,7 +23,7 @@ module Synthea
         ccda_record
       end
 
-      def self.basic_info(entity, ccda_record)
+      def self.basic_info(entity, ccda_record, end_time = Time.now)
         patient = ccda_record
         patient.title = entity[:prefix]
         patient.first = entity[:name_first]
@@ -58,7 +58,8 @@ module Synthea
         # patient.effective_time
         patient.race = { 'name' => entity[:race].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:race]] }
         patient.ethnicity = { 'name' => entity[:ethnicity].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:ethnicity]] }
-        unless entity.alive?
+
+        if !entity.alive? && entity.record_synthea.patient_info[:deathdate] <= end_time
           patient.deathdate = entity.record_synthea.patient_info[:deathdate].to_i
           patient.expired = true
           # TODO: would like to put cause of death on the record, though different IGs seem to provide different templates
