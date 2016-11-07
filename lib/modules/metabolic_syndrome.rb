@@ -15,6 +15,21 @@ module Synthea
         bmi = entity[:bmi]
         if bmi
           entity[:blood_glucose] = blood_glucose(bmi)
+          # How much does A1C need to be lowered to get to goal?
+          # Metformin and sulfonylureas may lower A1C 1.5 to 2 percentage points,
+          # GLP-1 agonists and DPP-4 inhibitors 0.5 to 1 percentage point on average, and
+          # insulin as much as 6 points or more, depending on where you start.
+          # -- http://www.diabetesforecast.org/2013/mar/your-a1c-achieving-personal-blood-glucose-goals.html
+          # [:metformin, :glp1ra, :sglt2i, :basal_insulin, :prandial_insulin]
+          #     mono        bi      tri        insulin          insulin++
+          if entity[:medications]
+            entity[:blood_glucose] -= 1.5 if entity[:medications][:metformin]
+            entity[:blood_glucose] -= 0.5 if entity[:medications][:glp1ra]
+            entity[:blood_glucose] -= 0.5 if entity[:medications][:sglt2i]
+            entity[:blood_glucose] -= 3.0 if entity[:medications][:basal_insulin]
+            entity[:blood_glucose] -= 6.0 if entity[:medications][:prandial_insulin]
+          end
+
           if entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.normal
             # normal person
           elsif entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.prediabetic
