@@ -141,8 +141,11 @@ module Synthea
                                                          'data' => Base64.strict_encode64(entity[:fingerprint].to_blob))
         end
         # record death if applicable
-        unless entity.alive?
+        if !entity.alive?(Time.now)
           patient_resource.deceasedDateTime = convert_fhir_date_time(entity.record_synthea.patient_info[:deathdate], 'time')
+          patient_resource.deceasedBoolean = true
+        else
+          patient_resource.deceasedBoolean = false
         end
 
         entry = FHIR::Bundle::Entry.new
