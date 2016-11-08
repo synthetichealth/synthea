@@ -50,7 +50,7 @@ module Synthea
         attr_accessor :conditions
         required_field :conditions
 
-        metadata 'conditions', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 1, max: 999
+        metadata 'conditions', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 1, max: Float::INFINITY
       end
 
       class And < GroupedCondition
@@ -163,7 +163,7 @@ module Synthea
         attr_accessor :codes, :referenced_by_attribute, :operator, :value
         required_field and: [:operator, :value, or: [:codes, :referenced_by_attribute]]
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def test(_context, _time, entity)
           # find the most recent instance of the given observation
@@ -187,7 +187,7 @@ module Synthea
         attr_accessor :codes, :referenced_by_attribute
         required_field or: [:codes, :referenced_by_attribute]
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def test(_context, _time, entity)
           contype = find_referenced_type(entity, 'Active Condition')
@@ -208,7 +208,7 @@ module Synthea
         attr_accessor :codes, :referenced_by_attribute
         required_field or: [:codes, :referenced_by_attribute]
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def test(_context, _time, entity)
           contype = find_referenced_type(entity, 'Active Careplan')
@@ -220,7 +220,7 @@ module Synthea
         attr_accessor :codes, :referenced_by_attribute
         required_field or: [:codes, :referenced_by_attribute]
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def test(_context, _time, entity)
           medtype = find_referenced_type(entity, 'Active Medication')

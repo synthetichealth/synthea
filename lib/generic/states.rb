@@ -161,7 +161,7 @@ module Synthea
 
         required_field or: [:wellness, and: [:codes, :encounter_class]]
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
 
         def process(time, entity)
           unless @wellness
@@ -266,7 +266,7 @@ module Synthea
       class MedicationEnd < State
         attr_accessor :referenced_by_attribute, :medication_order, :reason, :codes
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def initialize(context, name)
           super
@@ -349,7 +349,7 @@ module Synthea
       class CarePlanEnd < State
         attr_accessor :careplan, :reason, :codes, :referenced_by_attribute
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def initialize(context, name)
           super
@@ -411,7 +411,7 @@ module Synthea
         required_field and: [:target_encounter, :codes, :unit]
         required_field or: [:range, :exact]
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'range', type: 'Components::Range', min: 0, max: 1
         metadata 'exact', type: 'Components::Exact', min: 0, max: 1
 
@@ -472,7 +472,7 @@ module Synthea
       class Death < State
         attr_accessor :range, :exact, :referenced_by_attribute, :condition_onset, :codes
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
         metadata 'range', type: 'Components::RangeWithUnit', min: 0, max: 1
         metadata 'exact', type: 'Components::ExactWithUnit', min: 0, max: 1
 

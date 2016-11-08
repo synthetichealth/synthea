@@ -48,7 +48,7 @@ module Synthea
       class DistributedTransition < Transition
         attr_accessor :transitions
 
-        metadata 'transitions', type: 'Transitions::DistributedTransitionOption', min: 1, max: 999
+        metadata 'transitions', type: 'Transitions::DistributedTransitionOption', min: 1, max: Float::INFINITY
 
         def initialize(transition)
           super('transitions' => transition)
@@ -87,7 +87,7 @@ module Synthea
       class ConditionalTransition < Transition
         attr_accessor :transitions
 
-        metadata 'transitions', type: 'Transitions::ConditionalTransitionOption', min: 1, max: 999
+        metadata 'transitions', type: 'Transitions::ConditionalTransitionOption', min: 1, max: Float::INFINITY
 
         def initialize(transition)
           super('transitions' => transition)
@@ -113,12 +113,12 @@ module Synthea
         required_field or: [:transition, :distributions]
 
         metadata 'condition', type: 'Logic::Condition', polymorphism: { key: 'condition_type', package: 'Logic' }, min: 0, max: 1
-        metadata 'distributions', type: 'Transitions::DistributedTransitionOption', min: 1, max: 999
+        metadata 'distributions', type: 'Transitions::DistributedTransitionOption', min: 1, max: Float::INFINITY
       end
 
       class ComplexTransition < DistributedTransition
         # inherit from distributed to get access to pick_distributed_transition
-        metadata 'transitions', type: 'Transitions::ComplexTransitionOption', min: 1, max: 999
+        metadata 'transitions', type: 'Transitions::ComplexTransitionOption', min: 1, max: Float::INFINITY
 
         def all_transitions
           ts = @transitions.collect do |ct|
