@@ -4,7 +4,7 @@
 
         "Initial": {
             "type": "Initial",
-            "direct_transition": "Wellness_Encounter"
+            "direct_transition": "The_Condition"
         },
 
         "The_Condition": {

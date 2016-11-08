@@ -51,7 +51,7 @@
     },
     "Week_10_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -81,7 +81,7 @@
     },
     "Week_15_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -112,7 +112,7 @@
     },
     "Week_26_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -158,7 +158,7 @@
     },
     "Week_32_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -204,7 +204,7 @@
     },
     "Week_36_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -234,7 +234,7 @@
     },
     "Week_38_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -264,7 +264,7 @@
     },
     "Week_39_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -294,7 +294,7 @@
     },
     "Week_40_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -323,7 +323,7 @@
     },
     "Week_41_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -353,7 +353,7 @@
     },
     "Week_42_Visit": {
       "type": "Encounter",
-      "class": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -366,7 +366,7 @@
     },
     "Premature_Birth": {
       "type": "Encounter",
-      "class": "emergency",
+      "encounter_class": "emergency",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -378,7 +378,7 @@
     },
     "Normal_Birth": {
       "type": "Encounter",
-      "class": "emergency",
+      "encounter_class": "emergency",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -390,7 +390,7 @@
     },
     "Induced_Birth": {
       "type": "Encounter",
-      "class": "emergency",
+      "encounter_class": "emergency",
       "codes": [
         {
           "system": "SNOMED-CT",

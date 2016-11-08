@@ -7,7 +7,7 @@
         },
         "Inpatient_Encounter": {
             "type": "Encounter",
-            "class": "inpatient",
+            "encounter_class": "inpatient",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "32485007",

@@ -145,7 +145,7 @@
 
     "Enter_Directed_Use_Encounter1" : {
       "type" : "Encounter",
-      "class" : "inpatient",
+      "encounter_class" : "inpatient",
       "codes" : [{
           "system": "SNOMED-CT",
           "code": "183452005",
@@ -190,7 +190,7 @@
 
     "Enter_Directed_Use_Encounter2" : {
       "type" : "Encounter",
-      "class" : "inpatient",
+      "encounter_class" : "inpatient",
       "codes" : [{
           "system": "SNOMED-CT",
           "code": "183452005",
@@ -366,7 +366,7 @@
 
     "Enter_Addiction_Treatment" : {
       "type" : "Encounter",
-      "class" : "inpatient",
+      "encounter_class" : "inpatient",
       "codes" : [{
           "system": "SNOMED-CT",
           "code": "56876005",
@@ -399,7 +399,7 @@
 
     "Recovery_Management" : {
       "type" : "Encounter",
-      "class" : "outpatient",
+      "encounter_class" : "outpatient",
       "codes" : [{
           "system": "SNOMED-CT",
           "code": "266707007",
@@ -440,7 +440,7 @@
 
     "Directed_Use_Overdose_Encounter" : { 
       "type" : "Encounter",
-      "class" : "outpatient",
+      "encounter_class" : "outpatient",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -471,7 +471,7 @@
 
     "Misuse_Overdose_Encounter" : {
       "type" : "Encounter",
-      "class" : "outpatient",
+      "encounter_class" : "outpatient",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -502,7 +502,7 @@
 
     "Addiction_Overdose_Encounter" : {
       "type" : "Encounter",
-      "class" : "outpatient",
+      "encounter_class" : "outpatient",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",

@@ -3,12 +3,12 @@
     "states": {
         "Initial": {
             "type": "Initial",
-            "direct_transition": "SomeObservation"
+            "direct_transition": "SomeEncounter"
         },
 
         "SomeEncounter" : {
             "type" : "Encounter",
-            "class": "inpatient",
+            "encounter_class": "inpatient",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "32485007",
@@ -28,7 +28,8 @@
             "exact" : { 
                 "quantity" : "120/80"
             },
-            "unit" : "mmHg"
+            "unit" : "mmHg",
+            "direct_transition" : "Terminal"
         },
 
         "Terminal": {

@@ -23,7 +23,9 @@ class GenericLogicTest < Minitest::Test
   end
 
   def do_test(name)
-    Synthea::Generic::Logic::test(@logic[name], @context, @time, @patient)
+    logic = @logic[name]
+    type = logic['condition_type'].gsub(/\s+/, '_').camelize
+    Object.const_get("Synthea::Generic::Logic::#{type}").new(logic).test(@context, @time, @patient)
   end
 
   def test_true

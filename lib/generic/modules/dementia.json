@@ -323,7 +323,7 @@
 
     "ModeratelySevere_Encounter": {
       "type": "Encounter",
-      "class": "ambulatory",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -454,7 +454,7 @@
     
     "Severe_Encounter": {
       "type": "Encounter",
-      "class": "ambulatory",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -497,7 +497,7 @@
     
     "VerySevere_Encounter": {
       "type": "Encounter",
-      "class": "ambulatory",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -567,7 +567,7 @@
 
     "PneumoniaEncounter" : {
       "type" : "Encounter",
-      "class" : "inpatient",
+      "encounter_class" : "inpatient",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "34285007",

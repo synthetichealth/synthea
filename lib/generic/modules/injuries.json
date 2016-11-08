@@ -196,7 +196,7 @@
 
     "RI_Minor_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -218,7 +218,7 @@
 
     "RI_Major_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -316,7 +316,7 @@
 
     "FI_Minor_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -338,7 +338,7 @@
 
     "FI_Major_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -430,7 +430,7 @@
 
     "BOI_Minor_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -452,7 +452,7 @@
 
     "BOI_Major_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -502,7 +502,7 @@
 
     "SOI_Minor_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",
@@ -524,7 +524,7 @@
 
     "SOI_Major_Encounter" : {
       "type" : "Encounter",
-      "class" : "emergency",
+      "encounter_class" : "emergency",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "50849002",

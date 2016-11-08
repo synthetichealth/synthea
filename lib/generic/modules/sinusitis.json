@@ -96,7 +96,7 @@
 
     "Doctor_Visit" : {
       "type" : "Encounter",
-      "class" : "ambulatory",
+      "encounter_class" : "ambulatory",
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
@@ -230,7 +230,7 @@
 
     "Chronic_Sinusitis_Followup" : {
       "type" : "Encounter",
-      "class" : "ambulatory",
+      "encounter_class" : "ambulatory",
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
