@@ -3,12 +3,12 @@ module Synthea
     module FhirRecord
       SHR_EXT = 'http://standardhealthrecord.org/fhir/extensions/'.freeze
 
-      def self.convert_to_fhir(entity)
+      def self.convert_to_fhir(entity, end_time = Time.now)
         synthea_record = entity.record_synthea
         indices = { observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0 }
         fhir_record = FHIR::Bundle.new
         fhir_record.type = 'collection'
-        patient = basic_info(entity, fhir_record)
+        patient = basic_info(entity, fhir_record, end_time)
         synthea_record.encounters.each do |encounter|
           curr_encounter = encounter(encounter, fhir_record, patient)
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
@@ -25,7 +25,7 @@ module Synthea
         fhir_record
       end
 
-      def self.basic_info(entity, fhir_record)
+      def self.basic_info(entity, fhir_record, end_time = Time.now)
         if entity[:race] == :hispanic
           race_fhir = :other
           ethnicity_fhir = entity[:ethnicity]
@@ -141,7 +141,7 @@ module Synthea
                                                          'data' => Base64.strict_encode64(entity[:fingerprint].to_blob))
         end
         # record death if applicable
-        unless entity.alive?
+        unless entity.alive?(end_time)
           patient_resource.deceasedDateTime = convert_fhir_date_time(entity.record_synthea.patient_info[:deathdate], 'time')
         end
 
