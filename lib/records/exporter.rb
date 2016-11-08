@@ -116,6 +116,19 @@ module Synthea
           entries = patient.record_synthea.send(attribute).dup
 
           entries.keep_if { |e| should_keep_entry(e, attribute, patient.record_synthea, cutoff_date, end_time) }
+
+          # If any entries have an end date in the future but are within the cutoff_date,
+          # remove the end date but keep the entry (since it's still active).
+          entries.each do |e|
+            if e['stop'] && e['stop'] > end_time
+              e['stop'] = nil
+            end
+
+            if e['end_time'] && e['end_time'] > end_time
+              e['end_time'] = nil
+            end
+          end
+
           patient.record_synthea.send("#{attribute}=", entries)
         end
 
@@ -126,7 +139,7 @@ module Synthea
         return true if e['time'] > cutoff_date && e['time'] <= end_time # trivial case, when we're within the last __ years
 
         # if the entry has a stop time, check if the effective date range overlapped the last __ years
-        return true if e['stop'] && e['stop'] > cutoff_date && e['stop'] <= end_time
+        return true if e['stop'] && e['stop'] > cutoff_date
 
         # - encounters, observations, immunizations are single dates and have no "reason"
         #    so they can only be filtered by the single date
@@ -139,7 +152,7 @@ module Synthea
         when :careplans
           return record.careplan_active?(e['type'])
         when :conditions
-          return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date && e['end_time'] <= end_time)
+          return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date)
         when :encounters
           return e['type'] == :death_certification
         when :observations
