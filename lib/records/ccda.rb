@@ -59,7 +59,7 @@ module Synthea
         patient.race = { 'name' => entity[:race].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:race]] }
         patient.ethnicity = { 'name' => entity[:ethnicity].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:ethnicity]] }
 
-        if !entity.alive? && entity.record_synthea.patient_info[:deathdate] <= end_time
+        if !entity.alive?(end_time)
           patient.deathdate = entity.record_synthea.patient_info[:deathdate].to_i
           patient.expired = true
           # TODO: would like to put cause of death on the record, though different IGs seem to provide different templates
