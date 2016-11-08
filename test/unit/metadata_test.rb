@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 class MetadataTest < Minitest::Test
 
-  def test_validate
+  def test_validate_field_errors
     cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic/validation/", __FILE__), 'field_errors.json')))
     context = Synthea::Generic::Context.new(cfg)
 
@@ -50,7 +50,17 @@ class MetadataTest < Minitest::Test
     errors = validation_errors(context, 'Date_Condition_Missing_Operator')
     assert_equal 1, errors.count, "Expected 1 error, got #{errors}"
     assert_starts_with('All of (year and operator) are required on', errors[0])
+  end
 
+  def test_validate_reference_errors
+    cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic/validation/", __FILE__), 'reference_errors.json')))
+    context = Synthea::Generic::Context.new(cfg)
+
+    errors = context.validate
+    assert_equal 3, errors.count, "Expected 3 errors, got #{errors}"
+    assert_starts_with('target_encounter references state \'Nonexistent_State\' which does not exist', errors[0])
+    assert_starts_with('condition_onset is expected to refer to a \'ConditionOnset\' but value \'Doctor_Visit\' is actually a \'Encounter\'', errors[1])
+    assert_starts_with('State \'Unreachable_State\' is unreachable', errors[2])
   end
 
   def validation_errors(context, state_name)

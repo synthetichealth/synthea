@@ -10,8 +10,11 @@ class GenericModulesTest < Minitest::Test
     end
 
     Dir.glob('./test/fixtures/generic/*.json') do |file|
-      next if file == './test/fixtures/generic/logic.json' # logic.json has only conditions, not real states
-      check_file(file)
+      if file == './test/fixtures/generic/logic.json' # logic.json has only conditions, not real states
+        check_logic(file)
+      else
+        check_file(file)
+      end
     end
   end
 
@@ -28,5 +31,28 @@ class GenericModulesTest < Minitest::Test
     end
 
     pass
+  end
+
+  def check_logic(file)
+    tests = JSON.parse(File.read(file))
+    context = Synthea::Generic::Context.new({
+                    "name" => "Logic",
+                    "states" => {
+                      "Initial" => { "type" => "Initial" },
+                      "DoctorVisit" => { "type" => "Simple" } # needed for the PriorState test
+                    }
+                  })
+    tests.each do |name, logic|
+      condition = Object.const_get("Synthea::Generic::Logic::#{logic['condition_type'].gsub(/\s+/, '_').camelize}").new(logic)
+      errors = condition.validate(context, [])
+
+      unless errors.empty?
+        puts "#{file} / Test #{name} failed to validate.\nError List:"
+        errors.each { |e| puts e }
+        flunk
+      end
+
+      pass
+    end
   end
 end

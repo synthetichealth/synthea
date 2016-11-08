@@ -161,7 +161,7 @@ module Synthea
 
       class Observation < Condition
         attr_accessor :codes, :referenced_by_attribute, :operator, :value
-        required_field and: [:operator, :value, or: [:codes, :referenced_by_attribute]]
+        required_field and: [:operator, or: [:codes, :referenced_by_attribute]] # value is allowed to be omitted if operator is 'is nil'
 
         metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
