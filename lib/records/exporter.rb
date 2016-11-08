@@ -120,13 +120,8 @@ module Synthea
           # If any entries have an end date in the future but are within the cutoff_date,
           # remove the end date but keep the entry (since it's still active).
           entries.each do |e|
-            if e['stop'] && e['stop'] > end_time
-              e['stop'] = nil
-            end
-
-            if e['end_time'] && e['end_time'] > end_time
-              e['end_time'] = nil
-            end
+            e['stop'] = nil if e['stop'] && e['stop'] > end_time
+            e['end_time'] = nil if e['end_time'] && e['end_time'] > end_time
           end
 
           patient.record_synthea.send("#{attribute}=", entries)
