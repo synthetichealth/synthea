@@ -199,6 +199,8 @@ module Synthea
         attr_accessor :name
         required_field :name
 
+        metadata 'name', reference_to_state_type: 'State', min: 1, max: 1
+
         def test(context, _time, _entity)
           !context.most_recent_by_name(name).nil?
         end

@@ -5,6 +5,7 @@ module Synthea
 
       def initialize(config)
         @config = config
+        @name = @config['name']
         @history = []
         @current_state = create_state('Initial')
       end
@@ -58,6 +59,10 @@ module Synthea
         @config['states'][name]
       end
 
+      def all_states
+        @config['states'].keys
+      end
+
       def create_state(name)
         return States::Terminal.new(self, 'Terminal') if name.nil?
 
@@ -81,6 +86,24 @@ module Synthea
       def log_state(state)
         exit_str = state.exited ? state.exited.strftime('%FT%T%:z') : '                         '
         puts "| #{state.entered.strftime('%FT%T%:z')} | #{exit_str} | #{state.name}"
+      end
+
+      def validate
+        messages = []
+
+        reachable = ['Initial']
+
+        all_states.each do |state_name|
+          state = create_state(state_name)
+          messages.push(*state.validate(self, []))
+
+          reachable.push(*state.transition.all_transitions) if state.transition && state.transition.all_transitions != []
+        end
+
+        unreachable = all_states - reachable
+        unreachable.each { |st| messages << "State '#{st}' is unreachable" }
+
+        messages.uniq
       end
 
       def inspect

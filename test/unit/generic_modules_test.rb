@@ -19,37 +19,14 @@ class GenericModulesTest < Minitest::Test
     wf = JSON.parse(File.read(file))
     context = Synthea::Generic::Context.new(wf)
 
-    all_states = wf['states'].keys
-    reachable = ['Initial']
+    errors = context.validate
 
-    all_states.each do |state_name|
-      state = context.create_state(state_name)
-      errors = state.validate
-      assert errors.empty?, "#{file}: State #{state_name} failed to validate.\nErrors:\n#{errors.join('\n')}"
-      check_transitions(state_name, state, all_states, file, reachable)
+    unless errors.empty?
+      puts "#{file} failed to validate.\nError List:"
+      errors.each { |e| puts e }
+      flunk
     end
 
-    unreachable = all_states - reachable
-    assert_empty(unreachable, "#{file}: Unreachable states detected")
-  end
-
-  def check_transitions(state_name, state, all_states, file, reachable)
-    if state.is_a?(Synthea::Generic::States::Terminal)
-      assert_equal(nil, state.transition, "#{file}: Terminal state #{state_name} has a transition defined")
-    else
-      msg = "#{file}: State #{state_name} has no transitions defined"
-      refute_equal(nil, state.transition, msg)
-      refute_empty(state.transition.all_transitions, msg)
-      all_transitions = state.transition.all_transitions
-      all_transitions.each do |transition|
-        check_transition_possible(state_name, all_states, transition, file)
-        reachable << transition
-      end
-    end
-  end
-
-  def check_transition_possible(state_name, all_states, transition, file)
-    assert_includes(all_states, transition,
-                    "#{file}: State '#{state_name}' transitions to '#{transition}' but this state does not exist")
+    pass
   end
 end

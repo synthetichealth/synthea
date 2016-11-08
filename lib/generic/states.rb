@@ -86,6 +86,10 @@ module Synthea
           # intentionally returning the value for further modification (see Encounter.perform_encounter)
           lookup_hash[sym] = value
         end
+
+        def to_s
+          "#<#{self.class}::#{object_id}> #{@name}"
+        end
       end
 
       class Initial < State
@@ -103,7 +107,15 @@ module Synthea
       end
 
       class Terminal < State
-        required_fields.delete(:transition)
+        required_fields.delete(:transition) # transitions are explicitly disallowed for Terminal states
+
+        def validate(context, path)
+          messages = super
+          if transition
+            messages << build_message("Terminal state #{@name} has a transition defined", path)
+          end
+          messages.uniq
+        end
 
         def process(_time, _entity)
           # never pass through the terminal state
@@ -198,7 +210,8 @@ module Synthea
 
         required_field and: [:target_encounter, :codes]
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
           diagnose(time, entity) if concurrent_with_target_encounter(time)
@@ -217,7 +230,8 @@ module Synthea
 
         required_field or: [:referenced_by_attribute, :condition_onset, :codes]
 
-        metadata 'codes', type: 'Components::Code', min: 0, max: 999
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
+        metadata 'condition_onset', reference_to_state_type: 'ConditionOnset', min: 0, max: 1
 
         def process(time, entity)
           if @referenced_by_attribute
@@ -240,7 +254,8 @@ module Synthea
 
         required_field and: [:target_encounter, :codes]
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
           prescribe(time, entity) if concurrent_with_target_encounter(time)
@@ -296,7 +311,8 @@ module Synthea
       class CarePlanStart < State
         attr_accessor :target_encounter, :codes, :activities, :reason
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
           start_plan(time, entity) if concurrent_with_target_encounter(time)
@@ -381,7 +397,8 @@ module Synthea
 
         required_field and: [:target_encounter, :codes]
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: 999
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
           operate(time, entity) if concurrent_with_target_encounter(time)
@@ -414,6 +431,7 @@ module Synthea
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'range', type: 'Components::Range', min: 0, max: 1
         metadata 'exact', type: 'Components::Exact', min: 0, max: 1
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def initialize(context, name)
           super
@@ -475,6 +493,7 @@ module Synthea
         metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
         metadata 'range', type: 'Components::RangeWithUnit', min: 0, max: 1
         metadata 'exact', type: 'Components::ExactWithUnit', min: 0, max: 1
+        metadata 'condition_onset', reference_to_state_type: 'ConditionOnset', min: 0, max: 1
 
         def process(time, entity)
           if @range

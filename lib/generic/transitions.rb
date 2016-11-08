@@ -32,6 +32,8 @@ module Synthea
 
         attr_accessor :transition # not required here because complex transition doesn't require 'transition' property
 
+        metadata 'transition', reference_to_state_type: 'State', min: 0, max: 1
+
         def initialize(transition)
           from_hash(transition)
         end

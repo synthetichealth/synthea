@@ -54,7 +54,7 @@ class MetadataTest < Minitest::Test
   end
 
   def validation_errors(context, state_name)
-    context.create_state(state_name).validate
+    context.create_state(state_name).validate(context, [])
   end
 
   def assert_starts_with(prefix, obj, msg = nil)
