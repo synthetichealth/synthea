@@ -1,179 +1,381 @@
 {
-  "name" : "Injuries",
-  "states" : {
+  "name": "Injuries",
+  "remarks": [
+    "This module waits for an injury to occur then plays out that injury's typical ",
+    "progress in a patient's medical record. Some injuries may be both fatal or ",
+    "non-fatal.",
 
-    "Initial" : {
-      "type" : "Initial",
-      "direct_transition" : "No_Injury"
+    "Related attributes: ",
+    " 'injured'      - boolean - Indicates if an injury occured and triggers this module ",
+    "                            to process that injury. ",
+    " 'injury_type'  - string  - Indicates the type of injury. See supported types below. ",
+    " 'fatal_injury' - boolean - Indicates if the injury is fatal (only applies to some ",
+    "                            injuries, see below).",
+
+    "Most of these statistics come from a 2007 report prepared by the CDC: ",
+    "http://www.cdc.gov/nchs/data/misc/injury2007.pdf",
+
+    "Additional sources are included throughout the module where supplemental information ",
+    "was needed."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_For_Injury"
     },
 
-    "No_Injury" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "months"
+    "Wait_For_Injury": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "injured",
+        "operator": "==",
+        "value": true
       },
-      "complex_transition" : [{
-        "condition" : {
-            "condition_type" : "Age",
-            "operator" : "<",
-            "quantity" : 18,
-            "unit" : "years"
+      "direct_transition": "Evaluate_Injury"
+    },
+
+    "Evaluate_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "Selects the type of injury to play out depending on the 'injury_type' attribute.",
+
+        "Supported attribute values are: ",
+        "1. 'spinal'       - injuries to the spinal cord or fractures of the spine ",
+        "2. 'gunshot'      - gunshot wounds ",
+        "3. 'concussion'   - common concussion ",
+        "4. 'whiplash'     - common injury in automobile accidents ",
+        "5. 'broken_bone'  - randomly selects between arms, legs, ribs, and collarbone ",
+        "6. 'burn'         - 1st, 2nd, or 3rd degree burns ",
+        "7. 'cut'          - A contusion or laceration, severity is randomized ",
+        "8. 'sprain'       - A sprained ankle ",
+        "9. 'ligament'     - A torn ligament (knee, shoulder) ",
+
+        "The following injuries can also be fatal: ",
+        "'spinal', 'gunshot', 'burn'"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "spinal"
           },
-        "distributions" : [
-          {
-            "distribution": 0.0011,
-            "transition": "Road_Injury_Minor",
-            "remarks" : ["On average, people have 3-4 minor accidents in their lifetime. We'll assume not all of those are bad enough to warrant an ER visit",
-                         "So given a 75-yr lifespan, assume 1 every 75 yrs, the chance of a minor accident in any month == P(t) = 1-e^(-t/75*12), P(1) = .0011"]
+          "transition": "Spinal_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "gunshot"
           },
-          {
-            "distribution": 0.00039, 
-            "transition": "Road_Injury_Major",
-            "remarks" : ["Odds of being in a major accident = 30% lifetime --> odds of having a major car accident this month, assuming 75 yr lifespan ==",
-                          "1-(1-(.3))^(1/75*12) = .00039"]
+          "transition": "Gunshot_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "concussion"
           },
-          {
-            "distribution": 0.0000086, 
-            "transition": "Road_Injury_Severe",
-            "remarks" : ["Odds of dying in a car accident = 1 in 18,585. --> odds of dying in a car accident this month, assuming 75 yr lifespan == ",
-                         "1-(1-(1/18585))^(1/75*12)  == roughly .0000086"]
+          "transition": "Concussion_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "whiplash"
           },
-          {
-            "distribution": 0.003, 
-            "transition": "Falling_Injury_Minor",
-            "remarks" : ["For people under 18, ER visits are roughly equally likely for falls and being struck by object, and 3x more likely than car accidents.",
-                         "https://www.hcup-us.ahrq.gov/reports/statbriefs/sb156.jsp",
-                         "We assume the major injury is 50x less likely to occur than the minor injury."]
+          "transition": "Whiplash_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "broken_bone"
           },
-          {
-            "distribution": 0.00006, 
-            "transition": "Falling_Injury_Major"
+          "transition": "Broken_Bone_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "burn"
           },
-          {
-            "distribution": 0.003, 
-            "transition": "Blunt_Object_Injury_Minor"
+          "transition": "Burn_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "cut"
           },
-          {
-            "distribution": 0.00006, 
-            "transition": "Blunt_Object_Injury_Major"
+          "transition": "Cut_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "sprain"
           },
-          {
-            "distribution": 0.0015, 
-            "transition": "Sharp_Object_Injury_Minor",
-            "remarks" : "cuts requiring a trip to the ER are slightly more likely than motor vehicle accidents"
+          "transition": "Sprain_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "ligament"
           },
-          {
-            "distribution": 0.00005, 
-            "transition": "Sharp_Object_Injury_Major"
-          },
-          {
-            "distribution" : 0.991,
-            "transition": "No_Injury"
-          }
-        ]
+          "transition": "Ligament_Injury"
+        }
+      ]
+    },
+
+    "Spinal_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SPINAL INJURY                                                        ",
+        "======================================================================",
+
+        "Further supported by the following incidence statistics (from 2010): ",
+        "http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures ",
+
+        "16 - 25% of spinal fractures result in neurological damage. This aligns with ",
+        "The incidence of spinal cord injury folowing a spinal fracture. For simplicity ",
+        "All spinal fractures with spinal cord damage also result in neurological damage."
+      ],
+      "direct_transition": "ED_Visit_For_Spinal_Injury"
+    },
+
+    "ED_Visit_For_Spinal_Injury": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.25,
+          "transition": "Spinal_Cord_Damage"
+        },
+        {
+          "distribution": 0.75,
+          "transition": "No_Spinal_Cord_Damage"
+        }
+      ]
+    },
+
+    "Spinal_Cord_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "assign_to_attribute": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1734006",
+          "display": "Fracture of the vertebral column with spinal cord injury"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.49,
+          "remarks": [
+            "Nearly half of all patients die from traumatic spinal cord injury. ",
+            "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3831332/"
+          ],
+          "transition": "Death"
+        },
+        {
+          "distribution": 0.51,
+          "transition": "Neurological_Damage"
+        }
+      ]
+    },
+
+    "Neurological_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698754002",
+          "display": "Chronic paralysis due to lesion of spinal cord"
+        }
+      ],
+      "direct_transition": "Spinal_Surgery"
+    },
+
+    "No_Spinal_Cord_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "assign_to_attribute": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "15724005",
+          "display": "Fracture of vertebral column without spinal cord injury"
+        }
+      ],
+      "direct_transition": "Spinal_Injury_Treatment_Encounter"
+    },
+
+    "Spinal_Surgery": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305425002",
+          "display": "Admission to neurosurgical department"
+        }
+      ],
+      "direct_transition": "Delay_After_Spinal_Surgery"
+    },
+
+    "Delay_After_Spinal_Surgery": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
       },
-      {
-        "condition" : {
-            "condition_type" : "Age",
-            "operator" : "<",
-            "quantity" : 65,
-            "unit" : "years"
-          },
-        "distributions" : [
-          {
-            "distribution": 0.0011,
-            "transition": "Road_Injury_Minor",
-            "remarks" : "road injuries can occur as driver or passenger so we won't make a distinction by age here"
-          },
-          {
-            "distribution": 0.00039, 
-            "transition": "Road_Injury_Major"
-          },
-          {
-            "distribution": 0.0000086, 
-            "transition": "Road_Injury_Severe"
-          },
-          {
-            "distribution": 0.001, 
-            "transition": "Falling_Injury_Minor",
-            "remarks" : "Falling, object injuries, and road injuries are all roughly similar for ages 18+"
-          },
-          {
-            "distribution": 0.00002, 
-            "transition": "Falling_Injury_Major"
-          },
-          {
-            "distribution": 0.001, 
-            "transition": "Blunt_Object_Injury_Minor"
-          },
-          {
-            "distribution": 0.00002, 
-            "transition": "Blunt_Object_Injury_Major"
-          },
-          {
-            "distribution": 0.001, 
-            "transition": "Sharp_Object_Injury_Minor"
-          },
-          {
-            "distribution": 0.00002, 
-            "transition": "Sharp_Object_Injury_Major"
-          },
-          {
-            "distribution" : 0.996,
-            "transition": "No_Injury"
-          }
-        ]
+      "direct_transition": "Spinal_Injury_Treatment_Encounter"
+    },
+
+    "Spinal_Injury_Treatment_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Spinal_Injury_CarePlan"
+    },
+
+    "Spinal_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Spinal_Injury_Treatment_Encounter",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "75162002",
+          "display": "Spinal cord injury rehabilitation"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "231181000000100",
+          "display": "Delivery of rehabilitation for spinal cord injury"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "77476009",
+          "display": "Application of back brace"
+        }
+      ],
+      "direct_transition": "Spinal_Treatment_Period"
+    },
+
+    "Spinal_Treatment_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
       },
-      {
-        "condition" : {
-            "condition_type" : "Age",
-            "operator" : ">=",
-            "quantity" : 65,
-            "unit" : "years"
+      "direct_transition": "Spinal_Injury_Followup"
+    },
+
+    "Spinal_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Spinal_Injury"
+    },
+
+    "End_Spinal_Injury": {
+      "type": "ConditionEnd",
+      "remarks": [
+        "This only ends the initial, acute spinal injury. If the patient had spinal ",
+        "cord damage and survived, his/her chronic paralysis will persist for life."
+      ],
+      "referenced_by_attribute": "spinal_injury",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Gunshot_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " GUNSHOT INJURY                                                       ",
+        "======================================================================",
+
+        "Further supported by the following statistics (2010): ",
+        "http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
+
+        "Gunshot deaths:                  31,076  => 29.8%",
+        "Non-fatal hospital discharges:   73,505  => 70.2%",
+        "Total gunshot injuries:         104,581"
+      ],
+      "direct_transition": "ED_Visit_For_Gunshot_Injury"
+    },
+
+    "ED_Visit_For_Gunshot_Injury": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound"
+    },
+
+    "Gunshot_Wound": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "262574004",
+          "display": "Bullet wound"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "fatal_injury",
+            "operator": "is nil"
           },
-        "distributions" : [
-          {
-            "distribution": 0.0011,
-            "transition": "Road_Injury_Minor"
-          },
-          {
-            "distribution": 0.00039, 
-            "transition": "Road_Injury_Major"
-          },
-          {
-            "distribution": 0.0000086, 
-            "transition": "Road_Injury_Severe"
-          },
-          {
-            "distribution": 0.012, 
-            "transition": "Falling_Injury_Minor",
-            "remarks" : "Falling injuries are much more common among the elderly and are more likely to be major. Assume minor is only 20x less likely to happen than major here"
-          },
-          {
-            "distribution": 0.0006, 
-            "transition": "Falling_Injury_Major",
-            "remarks" : ["Each year over 300,000 older people-those 65 and older-are hospitalized for hip fractures. - http://www.cdc.gov/homeandrecreationalsafety/falls/adulthipfx.html",
-                         "About 13% of US population is > 65 - https://www.census.gov/quickfacts/table/PST045215/00",
-                         "13% of 300 million  == 39,000,000",
-                         "300,000/39,000,000 = .77% chance per year = 1-((1-.0077)^(1/12)) = 0.00064394242 = .06% chance per month"]
-          },
-          {
-            "distribution": 0.001, 
-            "transition": "Blunt_Object_Injury_Minor"
-          },
-          {
-            "distribution": 0.00002, 
-            "transition": "Blunt_Object_Injury_Major"
-          },
-          {
-            "distribution": 0.001, 
-            "transition": "Sharp_Object_Injury_Minor"
-          },
-          {
-            "distribution": 0.00002, 
-            "transition": "Sharp_Object_Injury_Major"
-          },
+<<<<<<< 89281d8b5c0ddea0d822614bbbaaad05cafda3fb
           {
             "distribution" : 0.984,
             "transition": "No_Injury"
@@ -247,15 +449,41 @@
                   "operator" : "is not nil"
                 }
               ]
+=======
+          "remarks": [
+            "Default probabilities if 'fatal_injury' attribute is not used"
+          ],
+          "distributions": [
+            {
+              "distribution": 0.298,
+              "transition": "Death"
+>>>>>>> Spinal injuries and gunshot wounds
             },
-            "transition": "RI_Major_Medication_Nonopioid"
+            {
+              "distribution": 0.702,
+              "transition": "Gunshot_Injury_Treatment"
+            }
+          ]
         },
         {
-            "transition": "RI_Major_Medication_Opioid"
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "fatal_injury",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Death"
+        },
+        {
+          "remarks": [
+            "Fallback transition"
+          ],
+          "transition": "Gunshot_Injury_Treatment"
         }
       ]
     },
 
+<<<<<<< 89281d8b5c0ddea0d822614bbbaaad05cafda3fb
     "RI_Major_Medication_Nonopioid" : {
       "type" : "MedicationOrder",
       "target_encounter" : "RI_Major_Encounter",
@@ -551,30 +779,185 @@
         "low" : 7,
         "high" : 14,
         "unit" : "days"
+=======
+    "Gunshot_Injury_Treatment": {
+      "type": "Simple",
+      "remarks": [
+        "This is an aribitrary distribution between wounds requiring surgery ",
+        "and wounds that do not (just grazed by the bullet). Assuming that most ",
+        "gunshot wounds will require surgery."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Gunshot_Wound_Surgery"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Gunshot_Wound_CarePlan"
+        }
+      ]
+    },
+
+    "Gunshot_Wound_Surgery": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305433001",
+          "display": "Admission to trauma surgery department"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound_CarePlan"
+    },
+
+    "Gunshot_Wound_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225358003",
+          "display": "Wound care"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound_Healing_Period"
+    },
+
+    "Gunshot_Wound_Healing_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "months"
+>>>>>>> Spinal injuries and gunshot wounds
       },
-      "direct_transition" : "SOI_Major_Medication_End"
+      "direct_transition": "Gunshot_Injury_Followup"
     },
 
-    "SOI_Major_Medication_End" : {
-      "type" : "MedicationEnd",
-      "medication_order" : "SOI_Major_Medication",
-      "direct_transition" : "Loop_back_to_no_injury"
+    "Gunshot_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound_Ends"
     },
 
-    "Death" : {
-      "type" : "Death",
-      "direct_transition" : "Terminal"
+    "Gunshot_Wound_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "Gunshot_Wound",
+      "direct_transition": "Conclude_Injury"
     },
 
-    "Terminal" : {
-      "type" : "Terminal"
+    "Concussion_Injury": {
+      "remarks": [
+        "======================================================================",
+        " CONCUSSION                                                           ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
     },
 
-    "Loop_back_to_no_injury" : {
-      "type" : "Simple",
-      "direct_transition" : "No_Injury",
-      "remarks" : "this state only exists to make the graph look nicer"
+    "Whiplash_Injury": {
+      "remarks": [
+        "======================================================================",
+        " WHIPLASH                                                             ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Broken_Bone_Injury": {
+      "remarks": [
+        "======================================================================",
+        " BROKEN BONE                                                          ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Burn_Injury": {
+      "remarks": [
+        "======================================================================",
+        " BURN                                                                 ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Cut_Injury": {
+      "remarks": [
+        "======================================================================",
+        " CUT                                                                  ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Sprain_Injury": {
+      "remarks": [
+        "======================================================================",
+        " SPRAIN                                                               ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Ligament_Injury": {
+      "remarks": [
+        "======================================================================",
+        " LIGAMENT                                                             ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Conclude_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " INJURY CONCLUSION                                                    ",
+        "======================================================================",
+
+        "NOTE: This section is not resposible for ending conditions, only resetting ",
+        "attributes and ending care plans. This allows chronic injuries to continue ",
+        "while short-term injuries should be ended earlier in this module."
+      ],
+      "direct_transition": "Unset_Injury_Attribute"
+    },
+
+    "Unset_Injury_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "injured",
+      "direct_transition": "Unset_Injury_Type_Attribute"
+    },
+
+    "Unset_Injury_Type_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "direct_transition": "End_Injury_CarePlan"
+    },
+
+    "End_Injury_CarePlan": {
+      "type": "CarePlanEnd",
+      "referenced_by_attribute": "injury_careplan",
+      "direct_transition": "Wait_For_Injury"
+    },
+
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
     }
-
   }
 }
