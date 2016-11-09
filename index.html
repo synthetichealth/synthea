@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
+    <link rel="stylesheet" type="text/css" href="stylesheets/blueimp-gallery.min.css">
+    <script src="javascripts/jquery-3.1.1.min.js"></script> 
+    <script src="javascripts/blueimp-gallery.min.js"></script>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
     <title>Synthea by synthetichealth</title>
   </head>
 
@@ -34,12 +35,22 @@
 <p>Synthea is a synthetic patient generator that models the medical history of synthetic patients. Our mission is to output high-quality synthetic, realistic but not real, patient data and associated health records covering every aspect of healthcare. The resulting data is free from cost, privacy, and security restrictions. It can be used without restriction for a variety of secondary uses in academia, research, industry, and government (although a citation would be appreciated).</p>
 
 <h3>
-<a id="supported-models" class="anchor" href="#supported-models" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Models</h3>
-
-<h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
 
 <p>Submit <a href="https://github.com/synthetichealth/synthea/issues">issues</a>, check out our <a href="https://github.com/synthetichealth/synthea/blob/master/README.md">readme</a> and <a href="https://github.com/synthetichealth/synthea/wiki">documentation</a> or <a href="mailto:jwalonoski@mitre.org">contact us</a>.</p>
+
+<h3>
+<a id="supported-models" class="anchor" href="#supported-models" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current Module Gallery</h3>
+   <div id="blueimp-gallery-carousel" class="blueimp-gallery blueimp-gallery-carousel">
+      <div class="slides"></div>
+      <h3 class="title"></h3>
+      <a class="prev">‹</a>
+      <a class="next">›</a>
+      <a class="play-pause"></a>
+      <ol class="indicator"></ol>
+  </div>
+  <div id="galleryLinks"></div>
+  <div id="error"></div>
         </section>
 
         <aside id="sidebar">
@@ -58,7 +69,23 @@
         </aside>
       </div>
     </div>
-
-  
+    <script> 
+      $( "#galleryLinks" ).load( "graphviz/graphviz.html", function( response, status, xhr ) {
+        if ( status == "error" ) {
+          var msg = "Sorry but there was an error: ";
+          $( "#error" ).html( msg + xhr.status + " " + xhr.statusText );
+        } else {
+          $( "#galleryLinks" ).innerHtml = response;
+          blueimp.Gallery(
+            document.getElementById('galleryLinks').getElementsByTagName('a'),
+            {
+                container: '#blueimp-gallery-carousel',
+                carousel: true 
+            }
+          );
+        }
+      });
+    </script> 
+    
   </body>
 </html>
