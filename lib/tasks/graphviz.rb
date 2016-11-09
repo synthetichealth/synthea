@@ -10,8 +10,21 @@ module Synthea
         FileUtils.mkdir_p folder unless File.exists? folder
 
         puts "Rendering graphs to `#{folder}` folder..."
-        generateRulesBasedGraph()
-        generateWorkflowBasedGraphs()
+        image_files = []
+        image_files << generateRulesBasedGraph()
+        image_files += generateWorkflowBasedGraphs()
+        puts 'Writing index file...'
+        index_file = File.join(folder, 'graphviz.html')
+        f = File.open(index_file,'w:UTF-8')
+        # f.write("<div id=\"links\">\n")
+        image_files.each do |img|
+          title = img[0..-5]
+          f.write("<a href=\"graphviz/#{img}\" title=\"#{title}\">")
+          # f.write("<img src=\"#{img}\" alt=\"#{title}\">")
+          f.write("</a>\n")
+        end
+        # f.write("</div>\n")
+        f.close
         puts 'Done.'
       end
 
@@ -76,16 +89,19 @@ module Synthea
                 edges << "#{key}:#{output}"
               end
             end
-          rescue Exception => e
-            binding.pry
+          rescue Exception
+            puts "There was an error rendering the rule #{key}"
           end
         end
 
         # Generate output image
-        g.output( :png => File.join(Synthea::Config.graphviz.output, 'synthea_rules.png') )
+        filename = 'synthea_rules.png'
+        g.output( :png => File.join(Synthea::Config.graphviz.output, filename) )
+        filename
       end
 
       def self.generateWorkflowBasedGraphs()
+        filenames = []
         Dir.glob('../synthea/lib/generic/modules/*.json') do |wf_file|
           # Create a new graph
           g = GraphViz.new( :G, :type => :digraph )
@@ -93,8 +109,11 @@ module Synthea
           populate_graph(g, wf)
 
           # Generate output image
-          g.output( :png => File.join(Synthea::Config.graphviz.output, "#{wf['name']}.png") )
+          filename = "#{wf['name']}.png"
+          filenames << filename
+          g.output( :png => File.join(Synthea::Config.graphviz.output, filename) )
         end
+        filenames
       end
 
       def self.populate_graph(g, wf)
