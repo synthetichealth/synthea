@@ -12,11 +12,7 @@
     " 'fatal_injury' - boolean - Indicates if the injury is fatal (only applies to some ",
     "                            injuries, see below).",
 
-    "Most of these statistics come from a 2007 report prepared by the CDC: ",
-    "http://www.cdc.gov/nchs/data/misc/injury2007.pdf",
-
-    "Additional sources are included throughout the module where supplemental information ",
-    "was needed.",
+    "Sources are included throughout the module where supplemental information was needed.",
 
     "Every injury pathway in this module assigns a care plan for the patient. This care ",
     "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
@@ -50,7 +46,7 @@
         "2. 'gunshot'      - gunshot wounds ",
         "3. 'concussion'   - common concussion from accidents, falls, and sports ",
         "4. 'whiplash'     - common injury in automobile accidents, falls, and sports ",
-        "5. 'broken_bone'  - randomly selects between arms, legs, ribs, and collarbone ",
+        "5. 'broken_bone'  - randomly selects between collarbone, arm, wrist, hip, and ankle (top 5)",
         "6. 'burn'         - 1st, 2nd, or 3rd degree burns ",
         "7. 'cut'          - A contusion or laceration, severity is randomized ",
         "8. 'sprain'       - A sprained ankle ",
@@ -1118,21 +1114,437 @@
     },
 
     "Broken_Bone_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
         " BROKEN BONE                                                          ",
-        "======================================================================"
+        "======================================================================",
+
+        "Further supported by the following sources: ",
+        "Most commonly broken bones: https://askabiologist.asu.edu/how-bone-breaks"
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Broken_Bone"
+    },
+
+    "ED_Visit_For_Broken_Bone": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Broken_Bone"
+    },
+
+    "Broken_Bone": {
+      "type": "Simple",
+      "remarks": [
+        "A reasonable distribution of broken bones. Based on a Top 5 list: ",
+        "1. Clavicle ",
+        "2. Arm ",
+        "3. Wrist ",
+        "4. Hip (but this occurs mostly in older women with osteoporosis) ",
+        "5. Anlke "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Broken_Clavicle"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Broken_Arm"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Broken_Wrist"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Broken_Ankle"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Broken_Rib"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Broken_Hip"
+        }
+      ]
+    },
+
+    "Broken_Clavicle": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "58150001",
+          "display": "Fracture of clavicle"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Surgery"
+    },
+
+    "Broken_Arm": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65966004",
+          "display": "Fracture of forearm"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Wrist": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "263102004",
+          "display": "Fracture subluxation of wrist"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Ankle": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "16114001",
+          "display": "Fracture of ankle"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Rib": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "33737001",
+          "display": "Fracture of rib"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Hip": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "359817006",
+          "display": "Closed fracture of hip"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Surgery"
+    },
+
+    "Broken_Bone_Immobilization": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "274474001",
+          "display": "Bone immobilization"
+        }
+      ],
+      "direct_transition": "Broken_Bone_CarePlan"
+    },
+
+    "Broken_Bone_Surgery": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305428000",
+          "display": "Admission to orthopedic department"
+        }
+      ],
+      "direct_transition": "Broken_Bone_CarePlan"
+    },
+
+    "Broken_Bone_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385691007",
+          "display": "Fracture care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest",
+          "remarks": [
+            "Until the broken bone heals"
+          ]
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "408580007",
+          "display": "Physical activity target light exercise",
+          "remarks": [
+            "After the broken bone heals"
+          ]
+        }
+      ],
+      "direct_transition": "Broken_Bone_Recovery_Period"
+    },
+
+    "Broken_Bone_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "months"
+      },
+      "direct_transition": "Broken_Bone_Injury_Followup"
+    },
+
+    "Broken_Bone_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "Encounter for 'check-up'",
+          "display": "185349003"
+        }
+      ],
+      "direct_transition": "End_Broken_Bone_Injury"
+    },
+
+    "End_Broken_Bone_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "broken_bone",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Burn_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
         " BURN                                                                 ",
-        "======================================================================"
+        "======================================================================",
+
+        "Further supported by the following sources: ",
+        "http://www.ameriburn.org/resources_factsheet.php",
+        "http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6 (1999 incidence)",
+
+        "Since the early 1990's the burn rates in the U.S. have declined almost 50%;",
+        "however, the relative proportions of severity has stayed the same."
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Burn"
+    },
+
+    "ED_Visit_For_Burn": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Burn"
+    },
+
+    "Burn": {
+      "type": "Simple",
+      "remarks": [
+        "Used the 1990 incidence rates to determine the relative proportions of burns only.",
+        "ED Visits:      1.25M",
+        "Hospital Stays:   51k  => 0.0408",
+        "Deaths:          5500  => 0.0044",
+
+        "Distributed the burns that don't result in death or a hospital stay between first ",
+        "and second degree burns. (0.6 first degree, 0.4 second degree of the 0.9548 remaining)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.57288,
+          "transition": "First_Degree_Burn"
+        },
+        {
+          "distribution": 0.38192,
+          "transition": "Second_Degree_Burn"
+        },
+        {
+          "distribution": 0.0408,
+          "transition": "Third_Degree_Burn"
+        },
+        {
+          "distribution": 0.0044,
+          "transition": "Death"
+        }
+      ]
+    },
+
+    "First_Degree_Burn": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "403190006",
+          "display": "First degree burn"
+        }
+      ],
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Second_Degree_Burn": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "403191005",
+          "display": "Second degree burn"
+        }
+      ],
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Third_Degree_Burn": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "403192003",
+          "display": "Second degree burn"
+        }
+      ],
+      "direct_transition": "Severe_Burn_Care"
+    },
+
+    "Severe_Burn_Care": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Burn",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183450002",
+          "display": "Admission to burn unit"
+        }
+      ],
+      "direct_transition": "Severe_Burn_Hospitalization"
+    },
+
+    "Severe_Burn_Hospitalization": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Burn",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305340004",
+          "display": "Admission to long stay hospital"
+        }
+      ],
+      "direct_transition": "Severe_Burn_Hospital_Stay"
+    },
+
+    "Severe_Burn_Hospital_Stay": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Burn_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "133901003",
+          "display": "Burn care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "440381005",
+          "display": "Behavior to prevent sun exposure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
+      "direct_transition": "Burn_Recovery_Period"
+    },
+
+    "Burn_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Burn_Injury_Followup"
+    },
+
+    "Burn_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "Encounter for 'check-up'",
+          "display": "185349003"
+        }
+      ],
+      "direct_transition": "End_Burn_Injury"
+    },
+
+    "End_Burn_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "burn_injury",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Cut_Injury": {
