@@ -42,15 +42,16 @@
         "Selects the type of injury to play out depending on the 'injury_type' attribute.",
 
         "Supported attribute values are: ",
-        "1. 'spinal'       - injuries to the spinal cord or fractures of the spine ",
-        "2. 'gunshot'      - gunshot wounds ",
-        "3. 'concussion'   - common concussion from accidents, falls, and sports ",
-        "4. 'whiplash'     - common injury in automobile accidents, falls, and sports ",
-        "5. 'broken_bone'  - randomly selects between collarbone, arm, wrist, hip, and ankle (top 5)",
-        "6. 'burn'         - 1st, 2nd, or 3rd degree burns ",
-        "7. 'laceration'   - randomly selects between hand, foot, face, arm, and leg ",
-        "8. 'sprain'       - a sprained ankle or wrist ",
-        "9. 'ligament'     - a torn ligament (knee, shoulder) ",
+        "1.  'spinal'       - injuries to the spinal cord or fractures of the spine ",
+        "2.  'gunshot'      - gunshot wounds ",
+        "3.  'concussion'   - common concussion from accidents, falls, and sports ",
+        "4.  'whiplash'     - common injury in automobile accidents, falls, and sports ",
+        "5.  'broken_bone'  - randomly selects between collarbone, arm, wrist, hip, and ankle (top 5)",
+        "6.  'burn'         - 1st, 2nd, or 3rd degree burns ",
+        "7.  'laceration'   - randomly selects between hand, foot, face, arm, and leg ",
+        "8.  'sprain'       - a sprained ankle or wrist ",
+        "9.  'knee'         - a torn ligament (ACL, MCL, meniscus) ",
+        "10. 'shoulder'     - a torn rotator cuff ",
 
         "The following injuries can also be fatal: ",
         "'spinal', 'gunshot', 'burn'",
@@ -142,9 +143,18 @@
             "condition_type": "Attribute",
             "attribute": "injury_type",
             "operator": "==",
-            "value": "ligament"
+            "value": "knee"
           },
-          "transition": "Ligament_Injury"
+          "transition": "Knee_Injury"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "==",
+            "value": "shoulder"
+          },
+          "transition": "Shoulder_Injury"
         }
       ]
     },
@@ -1752,7 +1762,7 @@
         " SPRAIN                                                               ",
         "======================================================================",
 
-        "Arbitrary distribution of sprained ankles and wrists for variety "
+        "Arbitrary distribution of sprained ankles and wrists for variety."
       ],
       "direct_transition": "ED_Visit_For_Sprain"
     },
@@ -1849,13 +1859,334 @@
       "direct_transition": "Conclude_Injury"
     },
 
-    "Ligament_Injury": {
+    "Knee_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
-        " LIGAMENT                                                             ",
-        "======================================================================"
+        " KNEE                                                                 ",
+        "======================================================================",
+
+        "Tears of the following structures: ",
+        "1. ACL      (25.4%)",
+        "2. MCL      (36.1%)",
+        "3. Meniscus (23.0%)",
+        "4. Patella  (29.5%)",
+
+        "These percentages add up to >100 since multiple tears could occur from one knee ",
+        "injury. To simplify I normalized these percentages out of 100 but maintained ",
+        "the relative proportions. Only one of the above occurs at any given time.",
+
+        "Sources: ",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3768257/"
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Knee_Injury"
+    },
+
+    "ED_Visit_For_Knee_Injury": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2235,
+          "transition": "Torn_ACL"
+        },
+        {
+          "distribution": 0.3177,
+          "transition": "Torn_MCL"
+        },
+        {
+          "distribution": 0.2024,
+          "transition": "Torn_Meniscus"
+        },
+        {
+          "distribution": 0.2564,
+          "transition": "Torn_Patellar_Tendon"
+        }
+      ]
+    },
+
+    "Torn_ACL": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "444470001",
+          "display": "Injury of anterior cruciate ligament"
+        }
+      ],
+      "direct_transition": "Wait_For_Knee_Surgery"
+    },
+
+    "Torn_MCL": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "444448004",
+          "display": "Injury of medial collateral ligament of knee"
+        }
+      ],
+      "direct_transition": "Wait_For_Knee_Surgery"
+    },
+
+    "Torn_Meniscus": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "239720000",
+          "display": "Tear of meniscus of knee"
+        }
+      ],
+      "remarks": [
+        "These typically don't require surgery, so go straight to therapy."
+      ],
+      "direct_transition": "Knee_Injury_CarePlan"
+    },
+
+    "Torn_Patellar_Tendon": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "30832001",
+          "display": "Rupture of patellar tendon"
+        }
+      ],
+      "direct_transition": "Wait_For_Knee_Surgery"
+    },
+
+    "Wait_For_Knee_Surgery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Knee_Surgery_Encounter"
+    },
+
+    "Knee_Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183495009",
+          "display": "Non-urgent orthopedic admission"
+        }
+      ],
+      "direct_transition": "Knee_Surgery_Procedure"
+    },
+
+    "Knee_Surgery_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Knee_Surgery_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "699253003",
+          "display": "Surgical manipulation of joint of knee"
+        }
+      ],
+      "direct_transition": "Knee_Injury_CarePlan"
+    },
+
+    "Knee_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition": "Knee_Injury_Recovery_Period"
+    },
+
+    "Knee_Injury_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "End_Knee_Injury"
+    },
+
+    "End_Knee_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "knee_injury",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Shoulder_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SHOULDER                                                             ",
+        "======================================================================",
+
+        "Tears of the rotator cuff. Typically this doesn't require an immediate trip ",
+        "to the emergency department. An ambulatory encounter and PT (or in some cases,",
+        "surgery) will do. Interestingly enough, in most cases surgery won't help a ",
+        "torn rotator cuff any more than physical therapy. The percentages are arbitraty ",
+        "but I directed most patients directly to PT instead of surgery."
+      ],
+      "direct_transition": "Torn_Rotator_Cuff"
+    },
+
+    "Torn_Rotator_Cuff": {
+      "type": "ConditionOnset",
+      "target_encounter": "Encounter_For_Shoulder_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "307731004",
+          "display": "Injury of tendon of the rotator cuff of shoulder"
+        }
+      ],
+      "direct_transition": "Encounter_For_Shoulder_Injury"
+    },
+
+    "Encounter_For_Shoulder_Injury": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "184347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.9,
+          "transition": "Shoulder_Injury_CarePlan"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Wait_For_Shoulder_Surgery"
+        }
+      ]
+    },
+
+    "Wait_For_Shoulder_Surgery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Shoulder_Surgery_Encounter"
+    },
+
+    "Shoulder_Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183495009",
+          "display": "Non-urgent orthopedic admission"
+        }
+      ],
+      "direct_transition": "Shoulder_Surgery_Procedure"
+    },
+
+    "Shoulder_Surgery_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Shoulder_Surgery_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387685009",
+          "display": "Surgical manipulation of shoulder joint"
+        }
+      ],
+      "direct_transition": "Shoulder_Injury_CarePlan"
+    },
+
+    "Shoulder_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Encounter_For_Shoulder_Injury",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition": "Shoulder_Injury_Recovery_Period"
+    },
+
+    "Shoulder_Injury_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Shoulder_Injury_Followup"
+    },
+
+    "Shoulder_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "Encounter for 'check-up'",
+          "display": "185349003"
+        }
+      ],
+      "direct_transition": "End_Shoulder_Injury"
+    },
+
+    "End_Shoulder_Injury": {
+      "type": "ConditionEnd",
+      "condition_onset": "Torn_Rotator_Cuff",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Conclude_Injury": {
@@ -1865,7 +2196,7 @@
         " INJURY CONCLUSION                                                    ",
         "======================================================================",
 
-        "NOTE: This section is not resposible for ending conditions, only resetting ",
+        "This section is not resposible for ending conditions, only resetting ",
         "attributes and ending care plans. This allows chronic injuries to continue ",
         "while short-term injuries should be ended earlier in this module."
       ],
