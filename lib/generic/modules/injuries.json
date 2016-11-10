@@ -16,7 +16,11 @@
     "http://www.cdc.gov/nchs/data/misc/injury2007.pdf",
 
     "Additional sources are included throughout the module where supplemental information ",
-    "was needed."
+    "was needed.",
+
+    "Every injury pathway in this module assigns a care plan for the patient. This care ",
+    "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
+    "of the injury."
   ],
   "states": {
 
@@ -44,8 +48,8 @@
         "Supported attribute values are: ",
         "1. 'spinal'       - injuries to the spinal cord or fractures of the spine ",
         "2. 'gunshot'      - gunshot wounds ",
-        "3. 'concussion'   - common concussion ",
-        "4. 'whiplash'     - common injury in automobile accidents ",
+        "3. 'concussion'   - common concussion from accidents, falls, and sports ",
+        "4. 'whiplash'     - common injury in automobile accidents, falls, and sports ",
         "5. 'broken_bone'  - randomly selects between arms, legs, ribs, and collarbone ",
         "6. 'burn'         - 1st, 2nd, or 3rd degree burns ",
         "7. 'cut'          - A contusion or laceration, severity is randomized ",
@@ -857,21 +861,260 @@
     },
 
     "Concussion_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
         " CONCUSSION                                                           ",
-        "======================================================================"
+        "======================================================================",
+
+        "Further supported by the following CDC reports: ",
+        "http://www.cdc.gov/traumaticbraininjury/data/rates.html",
+        "https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
+        "http://www.cdc.gov/traumaticbraininjury/pdf/bluebook_factsheet-a.pdf"
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Concussion"
+    },
+
+    "ED_Visit_For_Concussion": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Mild_Concussion"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Moderate_Concussion"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Severe_Concussion"
+        }
+      ]
+    },
+
+    "Mild_Concussion": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "62106007",
+          "display": "Concussion with no loss of consciousness"
+        }
+      ],
+      "direct_transition": "Concussion_CarePlan"
+    },
+
+    "Moderate_Concussion": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "62564004",
+          "display": "Concussion with loss of consciousness"
+        }
+      ],
+      "direct_transition": "Concussion_CarePlan"
+    },
+
+    "Severe_Concussion": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "110030002",
+          "display": "Concussion injury of brain"
+        }
+      ],
+      "remarks": [
+        "Distributions based on this article: ",
+        "http://www.cdc.gov/traumaticbraininjury/severe.html"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.57,
+          "transition": "Concussion_CarePlan"
+        },
+        {
+          "distribution": 0.33,
+          "transition": "Permanent_Brain_Damage"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Death"
+        }
+      ]
+    },
+
+    "Permanent_Brain_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "remarks": [
+        "There will never be a ConditionEnd for this state - this brain damage is permanent."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "275272006",
+          "display": "Brain damage - traumatic"
+        }
+      ],
+      "direct_transition": "Concussion_CarePlan"
+    },
+
+    "Concussion_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "47387005",
+          "display": "Head injury rehabilitation"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "226138001",
+          "display": "Alcohol-free diet"
+        }
+      ],
+      "direct_transition": "Concussion_Recovery_Period"
+    },
+
+    "Concussion_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Concussion_Injury_Followup"
+    },
+
+    "Concussion_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "Encounter for 'check-up'",
+          "display": "185349003"
+        }
+      ],
+      "direct_transition": "End_Concussion_Injury"
+    },
+
+    "End_Concussion_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "concussion_injury",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Whiplash_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
         " WHIPLASH                                                             ",
-        "======================================================================"
+        "======================================================================",
+
+        "Further supported by the following sources: ",
+        "http://www.srisd.com/consumer_site/epidemiology.htm",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2564031/",
+
+        "Many whiplash injuries do not present themselves immediately and are not ",
+        "treated by an emergency department. If they're ever addressed at all they ",
+        "are treated in an ambulatory setting by a PCP. For simplicity however, all ",
+        "of the whiplash injuries seen in this module are treated by an ED department."
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Whiplash"
+    },
+
+    "ED_Visit_For_Whiplash": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Whiplash"
+    },
+
+    "Whiplash": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Whiplash",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "39848009",
+          "display": "Whiplash injury to neck"
+        }
+      ],
+      "direct_transition": "Whiplash_CarePlan"
+    },
+
+    "Whiplash_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "266694003",
+          "display": "Heat therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest"
+        }
+      ],
+      "direct_transition": "Whiplash_Recovery_Period"
+    },
+
+    "Whiplash_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Whiplash_Injury"
+    },
+
+    "End_Whiplash_Injury": {
+      "type": "ConditionEnd",
+      "condition_onset": "Whiplash",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Broken_Bone_Injury": {
