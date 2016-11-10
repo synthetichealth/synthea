@@ -48,12 +48,21 @@
         "4. 'whiplash'     - common injury in automobile accidents, falls, and sports ",
         "5. 'broken_bone'  - randomly selects between collarbone, arm, wrist, hip, and ankle (top 5)",
         "6. 'burn'         - 1st, 2nd, or 3rd degree burns ",
-        "7. 'cut'          - A contusion or laceration, severity is randomized ",
-        "8. 'sprain'       - A sprained ankle ",
-        "9. 'ligament'     - A torn ligament (knee, shoulder) ",
+        "7. 'laceration'   - randomly selects between hand, foot, face, arm, and leg ",
+        "8. 'sprain'       - a sprained ankle or wrist ",
+        "9. 'ligament'     - a torn ligament (knee, shoulder) ",
 
         "The following injuries can also be fatal: ",
-        "'spinal', 'gunshot', 'burn'"
+        "'spinal', 'gunshot', 'burn'",
+
+        "Non-opioids are prescribed for the following injuries: ",
+        "'whiplash', 'broken_bone' (if not severe), 'laceration', 'sprain'",
+
+        "Opioids are prescribed for the following injuries: ",
+        "'spinal', 'gunshot', 'broken_bone' (if severe), 'burn' (if 2nd or 3rd degree), 'ligament'",
+
+        "Antibiotics are presecribed for the following injuries: ",
+        "'gunshot', 'burn' (if 2nd or 3rd degree), 'laceration'"
       ],
       "conditional_transition": [
         {
@@ -115,9 +124,9 @@
             "condition_type": "Attribute",
             "attribute": "injury_type",
             "operator": "==",
-            "value": "cut"
+            "value": "laceration"
           },
-          "transition": "Cut_Injury"
+          "transition": "Laceration_Injury"
         },
         {
           "condition": {
@@ -823,6 +832,18 @@
           "display": "Wound care"
         }
       ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
       "direct_transition": "Gunshot_Wound_Healing_Period"
     },
 
@@ -1387,7 +1408,7 @@
         "Deaths:          5500  => 0.0044",
 
         "Distributed the burns that don't result in death or a hospital stay between first ",
-        "and second degree burns. (0.6 first degree, 0.4 second degree of the 0.9548 remaining)."
+        "and second degree burns. (60% first degree, 40% second degree of the 0.9548 remaining)."
       ],
       "distributed_transition": [
         {
@@ -1547,22 +1568,285 @@
       "direct_transition": "Conclude_Injury"
     },
 
-    "Cut_Injury": {
+    "Laceration_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
-        " CUT                                                                  ",
-        "======================================================================"
+        " LACERATION                                                           ",
+        "======================================================================",
+
+        "Added a mix of lacerations for variety. It seems like most common ",
+        "lacerations are equally likely."
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Laceration"
+    },
+
+    "ED_Visit_For_Laceration": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Laceration"
+    },
+
+    "Laceration": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Hand"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Arm"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Leg"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Face"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Foot"
+        }
+      ]
+    },
+
+    "Laceration_Of_Hand": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "284549007",
+          "display": "Laceration of hand"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Arm": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "283371005",
+          "display": "Laceration of forearm"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Leg": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "283385000",
+          "display": "Laceration of thigh"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Face": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "370247008",
+          "display": "Facial laceration"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Foot": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "284551006",
+          "display": "Laceration of foot"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225358003",
+          "display": "Wound care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
+      "direct_transition": "Suture_Laceration"
+    },
+
+    "Suture_Laceration": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "288086009",
+          "display": "Suture open wound"
+        }
+      ],
+      "direct_transition": "Laceration_Recovery_Period"
+    },
+
+    "Laceration_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Laceration_Injury"
+    },
+
+    "End_Laceration_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "laceration_injury",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Sprain_Injury": {
+      "type": "Simple",
       "remarks": [
         "======================================================================",
         " SPRAIN                                                               ",
-        "======================================================================"
+        "======================================================================",
+
+        "Arbitrary distribution of sprained ankles and wrists for variety "
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "ED_Visit_For_Sprain"
+    },
+
+    "ED_Visit_For_Sprain": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "Sprained_Ankle"
+        },
+        {
+          "distribution": 0.3,
+          "transition": "Sprained_Wrist"
+        }
+      ]
+    },
+
+    "Sprained_Ankle": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Sprain",
+      "assign_to_attribute": "sprain_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44465007",
+          "display": "Sprain of ankle"
+        }
+      ],
+      "direct_transition": "Sprain_CarePlan"
+    },
+
+    "Sprained_Wrist": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Sprain",
+      "assign_to_attribute": "sprain_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "70704007",
+          "display": "Sprain of wrist"
+        }
+      ],
+      "direct_transition": "Sprain_CarePlan"
+    },
+
+    "Sprain_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Sprain",
+      "assign_to_attribute": "injury_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition": "Sprain_Recovery_Period"
+    },
+
+    "Sprain_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Sprain_Injury"
+    },
+
+    "End_Sprain_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "sprain_injury",
+      "direct_transition": "Conclude_Injury"
     },
 
     "Ligament_Injury": {
