@@ -37,10 +37,20 @@
     "Wait_For_Injury": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Attribute",
-        "attribute": "injured",
-        "operator": "==",
-        "value": true
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "injured",
+            "operator": "==",
+            "value": true
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "is not nil"
+          }
+        ]
       },
       "direct_transition": "Evaluate_Injury"
     },

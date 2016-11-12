@@ -1,0 +1,345 @@
+{
+  "name": "Injury Incidence",
+  "remarks": [
+    "This module computes the incidence for a variety of injuries. This module ",
+    "is seprate from the injuries.json module so all incidences are in the same ",
+    "place and can be easily adjusted independent of any injury's progression.",
+
+    "Related attributes: ",
+    " 'injured'      - boolean - Indicates if an injury occured and triggers the injuries ",
+    "                            module to process that injury. ",
+    " 'injury_type'  - string  - Indicates the type of injury. See supported types below. ",
+    " 'fatal_injury' - boolean - Indicates if the injury is fatal (only applies to some ",
+    "                            injuries, see below).",
+
+    "Supported injury types are: ",
+    "1.  'spinal'       - injuries to the spinal cord or fractures of the spine ",
+    "2.  'gunshot'      - gunshot wounds ",
+    "3.  'concussion'   - common concussion from accidents, falls, and sports ",
+    "4.  'whiplash'     - common injury in automobile accidents, falls, and sports ",
+    "5.  'broken_bone'  - randomly selects between collarbone, arm, wrist, hip, and ankle (top 5)",
+    "6.  'burn'         - 1st, 2nd, or 3rd degree burns ",
+    "7.  'laceration'   - randomly selects between hand, foot, face, arm, and leg ",
+    "8.  'sprain'       - a sprained ankle or wrist ",
+    "9.  'knee'         - a torn ligament (ACL, MCL, meniscus) ",
+    "10. 'shoulder'     - a torn rotator cuff ",
+
+    "Incidence is complicated. There are a lot of variables that play into incidence including ",
+    "age, gender, race, socioeconomic status, etc. I made some simplifications for now that we can ",
+    "adjust later if the prevalence is glaringly inaccurate. For now, I assume:",
+
+    "1. Men and women get injured at the same rates (not true in all cases...) ",
+    "2. Race and socioeconomic status don't significantly affect injury rates (they probably do...) ",
+    "3. A person can't have multiple injuries at the same time (in reality, they can...) ",
+
+    "To distribute total incidence rates for the entire population across the different ",
+    "age groups I use the following calculated factors based on this source: ",
+    "https://www.census.gov/popest/data/national/asrh/2015/index.html",
+
+    "Pop < Age 18:      74.18M  => 0.24",
+    "Pop Age 19 - 65:  194.30M  => 0.63",
+    "Pop > Age 65:      40.27M  => 0.13",
+    "----------------------------------",
+    "U.S. Total Pop:   308.75M     1.00"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_For_Injury"
+    },
+
+    "Wait_For_No_Injury": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "injured",
+            "operator": "is nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "injury_type",
+            "operator": "is nil"
+          }
+        ]
+      },
+      "direct_transition": "Wait_For_Injury"
+    },
+
+    "Wait_For_Injury": {
+      "type": "Delay",
+      "remarks": [
+        "We give patients the opportunity to get injured about once per year. The range ",
+        "here is inteded to introduce some randomness to the data so patients aren't all ",
+        "getting injured on the same day each year.",
+
+        "Distributions of injuries are based on the 2015 U.S. population."
+      ],
+      "range": {
+        "low": "10",
+        "high": "14",
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "transition": "Child_Incidence_Rates"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 65,
+            "unit": "years"
+          },
+          "transition": "Adult_Incidence_Rates"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 65,
+            "unit": "years"
+          },
+          "transition": "Elderly_Incidence_Rates"
+        }
+      ]
+    },
+
+    "Child_Incidence_Rates": {
+      "type": "Simple",
+      "remarks": [
+        "The incidence rates for children (0 - 17)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0,
+          "transition": "Injures_Spine"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Shot"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Concussion"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Whiplash"
+        },
+        {
+          "distribution": 0,
+          "transition": "Breaks_A_Bone"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Burned"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_A_Laceration"
+        },
+        {
+          "distribution": 0,
+          "transition": "Sprains_Something"
+        },
+        {
+          "distribution": 0,
+          "transition": "Injures_Knee"
+        },
+        {
+          "distribution": 0,
+          "transition": "Injures_Shoulder"
+        }
+      ]
+    },
+
+    "Adult_Incidence_Rates": {
+      "type": "Simple",
+      "remarks": [
+        "The incidence rates for adults (18 - 65)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0,
+          "transition": "Injures_Spine"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Shot"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Concussion"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Whiplash"
+        },
+        {
+          "distribution": 0,
+          "transition": "Breaks_A_Bone"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Burned"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_A_Laceration"
+        },
+        {
+          "distribution": 0,
+          "transition": "Sprains_Something"
+        },
+        {
+          "distribution": 0,
+          "transition": "Injures_Knee"
+        },
+        {
+          "distribution": 0,
+          "transition": "Injures_Shoulder"
+        }
+      ]
+    },
+
+    "Elderly_Incidence_Rates": {
+      "type": "Simple",
+      "remarks": [
+        "The incidence rates for elderly (65+)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0,
+          "transition": "Injures_Spine"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Shot"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Concussion"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Whiplash"
+        },
+        {
+          "distribution": 0,
+          "transition": "Breaks_A_Bone"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_Burned"
+        },
+        {
+          "distribution": 0,
+          "transition": "Gets_A_Laceration"
+        },
+        {
+          "distribution": 0,
+          "transition": "Sprains_Something"
+        },
+        {
+          "distribution": 0,
+          "transition": "Injures_Knee"
+        },
+        {
+          "distribution": 0,
+          "transition": "Injures_Shoulder"
+        }
+      ]
+    },
+
+    "Injures_Spine": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "spinal",
+      "direct_transition": "Injured"
+    },
+
+    "Gets_Shot": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "gunshot",
+      "direct_transition": "Injured"
+    },
+
+    "Gets_Concussion": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "concussion",
+      "direct_transition": "Injured"
+    },
+
+    "Gets_Whiplash": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "whiplash",
+      "direct_transition": "Injured"
+    },
+
+    "Breaks_A_Bone": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "broken_bone",
+      "direct_transition": "Injured"
+    },
+
+    "Gets_Burned": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "burn",
+      "direct_transition": "Injured"
+    },
+
+    "Gets_A_Laceration": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "laceration",
+      "direct_transition": "Injured"
+    },
+
+    "Sprains_Something": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "sprain",
+      "direct_transition": "Injured"
+    },
+
+    "Injures_Knee": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "knee",
+      "direct_transition": "Injured"
+    },
+
+    "Injures_Shoulder": {
+      "type": "SetAttribute",
+      "attribute": "injury_type",
+      "value": "shoulder",
+      "direct_transition": "Injured"
+    },
+
+    "Injured": {
+      "type": "SetAttribute",
+      "attribute": "injured",
+      "value": true,
+      "direct_transition": "Wait_For_No_Injury"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
