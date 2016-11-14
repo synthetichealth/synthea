@@ -150,8 +150,12 @@
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.01425984,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.0022815744,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Children and young adults have the highest incidence of broken bones.",
+            "Increased the incidence for children by 60% from 0.01425984 to above."
+          ]
         },
         {
           "distribution": 0.000972192,
@@ -208,8 +212,12 @@
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.03743208,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.022459248,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Too many adults are repeatedly getting broken bones. Reducing this ",
+            "incidence by 40% from 0.03743208 to the above."
+          ]
         },
         {
           "distribution": 0.00255654,
@@ -232,7 +240,7 @@
           "transition": "Shoulder_Injury"
         },
         {
-          "distribution": 0.99,
+          "distribution": 0.5,
           "transition": "Wait_For_Injury",
           "remarks": [
             "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
@@ -266,8 +274,11 @@
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.00772408,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.009268896,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Increasing incidence by 20% from 0.00772408 to the above."
+          ]
         },
         {
           "distribution": 0.00052754,
@@ -290,7 +301,7 @@
           "transition": "Shoulder_Injury"
         },
         {
-          "distribution": 0.99,
+          "distribution": 0.5,
           "transition": "Wait_For_Injury",
           "remarks": [
             "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
