@@ -33,7 +33,7 @@
     "3. A person can't have multiple injuries at the same time (in reality, they can...) ",
 
     "To distribute total incidence rates for the entire population across the different ",
-    "age groups I use the following calculated factors based on this source: ",
+    "age groups I use the following factors based on this source: ",
     "https://www.census.gov/popest/data/national/asrh/2015/index.html",
 
     "Pop < Age 18:      74.18M  => 0.24",
@@ -76,7 +76,22 @@
         "here is inteded to introduce some randomness to the data so patients aren't all ",
         "getting injured on the same day each year.",
 
-        "Distributions of injuries are based on the 2015 U.S. population."
+        "Distributions of injuries are initially based on the 2015 U.S. population (308.75M) and the ",
+        "following incidence rates: ",
+
+        "Spinal:          48k/yr   0.000156   http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures",
+        "Gunshots:       104k/yr   0.000338   http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
+        "Concussions:    4.8M/yr   0.015844   https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
+        "Whiplash:       3.0M/yr   0.009740   http://www.srisd.com/consumer_site/epidemiology.htm (This may be an overestimate)",
+        "Broken bones:  18.3M/yr   0.059416   http://www.boneandjointburden.org/docs/By%20The%20Numbers%20-%20MSK%20Injuries.pdf",
+        "Burns:         1.25M/yr   0.004058   http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6",
+        "Lacerations:    8.2M/yr   0.026623   (see broken bones, above)",
+        "Sprains:        600k/yr   0.001948   https://www.ncbi.nlm.nih.gov/pubmed/20926721",
+        "Knees:          705k/yr   0.002289   https://www.ncbi.nlm.nih.gov/pubmed/22506941",
+        "Shoulders:      452k/yr   0.001468   http://rheumatology.oxfordjournals.org/content/45/2/215.full",
+
+        "From these estimates the incidences may be adjusted slightly (see notes when a rate is adjusted) ",
+        "to yield reasonable prevalences."
       ],
       "range": {
         "low": "10",
@@ -117,48 +132,57 @@
     "Child_Incidence_Rates": {
       "type": "Simple",
       "remarks": [
-        "The incidence rates for children (0 - 17)"
+        "The incidence rates for children (0 - 17). Initially scaled the total incidence ",
+        "rates (above) by 0.24 to get an estimate for childhood incidence."
       ],
       "distributed_transition": [
         {
-          "distribution": 0,
+          "distribution": 0.00003744,
           "transition": "Injures_Spine"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00008112,
           "transition": "Gets_Shot"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00380256,
           "transition": "Gets_Concussion"
         },
         {
-          "distribution": 0,
+          "distribution": 0.0023376,
           "transition": "Gets_Whiplash"
         },
         {
-          "distribution": 0,
+          "distribution": 0.01425984,
           "transition": "Breaks_A_Bone"
         },
         {
-          "distribution": 0,
+          "distribution": 0.000972192,
           "transition": "Gets_Burned"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00638952,
           "transition": "Gets_A_Laceration"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00046752,
           "transition": "Sprains_Something"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00054936,
           "transition": "Injures_Knee"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00035232,
           "transition": "Injures_Shoulder"
+        },
+        {
+          "distribution": 0.0,
+          "transition": "Wait_For_Injury",
+          "remarks": [
+            "The GMF's distributed transition will take this transition if none of the others are taken, see: ",
+            "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+          ]
         }
       ]
     },
@@ -166,47 +190,47 @@
     "Adult_Incidence_Rates": {
       "type": "Simple",
       "remarks": [
-        "The incidence rates for adults (18 - 65)"
+        "The incidence rates for adults (18 - 65). Initially scaled the total incidence rates by 0.63."
       ],
       "distributed_transition": [
         {
-          "distribution": 0,
+          "distribution": 0.00009828,
           "transition": "Injures_Spine"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00021294,
           "transition": "Gets_Shot"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00998172,
           "transition": "Gets_Concussion"
         },
         {
-          "distribution": 0,
+          "distribution": 0.0061362,
           "transition": "Gets_Whiplash"
         },
         {
-          "distribution": 0,
+          "distribution": 0.03743208,
           "transition": "Breaks_A_Bone"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00255654,
           "transition": "Gets_Burned"
         },
         {
-          "distribution": 0,
+          "distribution": 0.01677249,
           "transition": "Gets_A_Laceration"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00122724,
           "transition": "Sprains_Something"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00144207,
           "transition": "Injures_Knee"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00092484,
           "transition": "Injures_Shoulder"
         }
       ]
@@ -219,43 +243,43 @@
       ],
       "distributed_transition": [
         {
-          "distribution": 0,
+          "distribution": 0.00002028,
           "transition": "Injures_Spine"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00004394,
           "transition": "Gets_Shot"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00205972,
           "transition": "Gets_Concussion"
         },
         {
-          "distribution": 0,
+          "distribution": 0.0012622,
           "transition": "Gets_Whiplash"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00772408,
           "transition": "Breaks_A_Bone"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00052754,
           "transition": "Gets_Burned"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00346099,
           "transition": "Gets_A_Laceration"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00025324,
           "transition": "Sprains_Something"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00029757,
           "transition": "Injures_Knee"
         },
         {
-          "distribution": 0,
+          "distribution": 0.00019084,
           "transition": "Injures_Shoulder"
         }
       ]

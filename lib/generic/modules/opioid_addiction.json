@@ -40,7 +40,7 @@
         {
             "condition" : {
               "condition_type" : "Attribute",
-              "attribute" : "Opioid Prescription",
+              "attribute" : "opioid_prescription",
               "operator" : "is not nil"
             },
             "distributions" : [
@@ -53,7 +53,7 @@
         {
             "condition": {
               "condition_type": "Socioeconomic Status",
-              "category": "High" 
+              "category": "High"
             },
             "distributions" : [
               {
@@ -61,7 +61,7 @@
                 "transition": "Enter_Directed_Use"
               },
               {
-                "distribution": 0.00001, 
+                "distribution": 0.00001,
                 "transition": "Misuse"
               },
               {
@@ -81,7 +81,7 @@
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.00002, 
+              "distribution": 0.00002,
               "transition": "Misuse"
             },
             {
@@ -93,7 +93,7 @@
         {
         "condition": {
             "condition_type": "Socioeconomic Status",
-            "category": "Low" 
+            "category": "Low"
           },
           "distributions" : [
             {
@@ -101,7 +101,7 @@
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.00004, 
+              "distribution": 0.00004,
               "transition": "Misuse"
             },
             {
@@ -122,7 +122,7 @@
             "transition": "Enter_Directed_Use_Condition1"
           },
           {
-            "distribution": 0.333, 
+            "distribution": 0.333,
             "transition": "Enter_Directed_Use_Condition2"
           },
           {
@@ -151,7 +151,7 @@
           "code": "183452005",
           "display": "Encounter Inpatient"
       }],
-      "direct_transition" : "Enter_Directed_Use_Procedure1" 
+      "direct_transition" : "Enter_Directed_Use_Procedure1"
     },
 
     "Enter_Directed_Use_Procedure1" : {
@@ -162,7 +162,7 @@
         "code": "65546002",
         "display": "Extraction of wisdom tooth"
       }],
-      "direct_transition" : "Directed_Use_Prescription1" 
+      "direct_transition" : "Directed_Use_Prescription1"
     },
 
     "Directed_Use_Prescription1" : {
@@ -173,7 +173,7 @@
           "code" : "1310197",
           "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
       }],
-      "assign_to_attribute" : "Opioid Prescription",
+      "assign_to_attribute" : "opioid_prescription",
       "direct_transition" : "Directed_Use"
     },
 
@@ -196,7 +196,7 @@
           "code": "183452005",
           "display": "Encounter Inpatient"
       }],
-      "direct_transition" : "Directed_Use_Prescription2" 
+      "direct_transition" : "Directed_Use_Prescription2"
     },
 
     "Directed_Use_Prescription2" : {
@@ -207,7 +207,7 @@
           "code" : "1049544",
           "display" : "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
       }],
-      "assign_to_attribute" : "Opioid Prescription",
+      "assign_to_attribute" : "opioid_prescription",
       "direct_transition" : "Directed_Use"
     },
 
@@ -225,7 +225,7 @@
     "Enter_Directed_Use_Encounter3" : {
       "type" : "Encounter",
       "wellness" : true,
-      "direct_transition" : "Directed_Use_Prescription3" 
+      "direct_transition" : "Directed_Use_Prescription3"
     },
 
     "Directed_Use_Prescription3" : {
@@ -236,7 +236,7 @@
           "code" : "1049639",
           "display" : "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
       }],
-      "assign_to_attribute" : "Opioid Prescription",
+      "assign_to_attribute" : "opioid_prescription",
       "direct_transition" : "Directed_Use"
     },
 
@@ -264,30 +264,30 @@
           "transition": "Directed_Use"
         }
       ]
-    }, 
+    },
 
     "End_Prescription_Towards_Gen_Pop" : {
       "type" : "MedicationEnd",
-      "referenced_by_attribute" : "Opioid Prescription",
+      "referenced_by_attribute" : "opioid_prescription",
       "direct_transition" : "Reset_Opioid_var_Towards_Gen_Pop"
     },
 
     "Reset_Opioid_var_Towards_Gen_Pop" : {
       "type" : "SetAttribute",
-      "attribute" : "Opioid Prescription",
+      "attribute" : "opioid_prescription",
       "remarks" : "no value here means the variable is reset to nil",
       "direct_transition" : "General_Population"
     },
 
     "End_Prescription_Towards_Misuse" : {
       "type" : "MedicationEnd",
-      "referenced_by_attribute" : "Opioid Prescription",
+      "referenced_by_attribute" : "opioid_prescription",
       "remarks": "Note that the variable is not reset on this sequence, because we still want to know which medication they were on",
       "direct_transition" : "Misuse"
     },
 
     "Misuse" : {
-      "type" : "Delay", 
+      "type" : "Delay",
       "exact" : {
         "quantity" : 1,
         "unit" : "days"
@@ -314,7 +314,7 @@
           "transition": "Misuse"
         }
       ]
-    }, 
+    },
 
     "Active_Addiction" : {
       "type" : "Delay",
@@ -336,7 +336,7 @@
           "transition": "Addiction_Overdose"
         }
       ]
-    }, 
+    },
 
     "Detoxification" : {
       "type" : "Delay",
@@ -362,7 +362,7 @@
           "transition": "Recovery_Management"
         }
       ]
-    }, 
+    },
 
     "Enter_Addiction_Treatment" : {
       "type" : "Encounter",
@@ -372,10 +372,10 @@
           "code": "56876005",
           "display": "Drug rehabilitation and detoxification"
       }],
-      "direct_transition" : "Addiction_Treatment" 
+      "direct_transition" : "Addiction_Treatment"
     },
 
-    "Addiction_Treatment" : { 
+    "Addiction_Treatment" : {
       "type" : "Delay",
       "exact" : {
         "quantity" : 1,
@@ -395,7 +395,7 @@
           "transition": "Recovery_Management"
         }
       ]
-    }, 
+    },
 
     "Recovery_Management" : {
       "type" : "Encounter",
@@ -405,7 +405,7 @@
           "code": "266707007",
           "display": "Drug addiction therapy"
       }],
-      "direct_transition" : "Recovery_Management_Delay" 
+      "direct_transition" : "Recovery_Management_Delay"
     },
 
     "Recovery_Management_Delay" : {
@@ -425,7 +425,7 @@
           "remarks" : "Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"
         }
       ]
-    }, 
+    },
 
     "Directed_Use_Overdose" : {
       "type" : "ConditionOnset",
@@ -438,7 +438,7 @@
       "direct_transition" : "Directed_Use_Overdose_Encounter"
     },
 
-    "Directed_Use_Overdose_Encounter" : { 
+    "Directed_Use_Overdose_Encounter" : {
       "type" : "Encounter",
       "encounter_class" : "outpatient",
       "codes" : [{
@@ -456,7 +456,7 @@
           "transition": "Death"
         }
       ]
-    }, 
+    },
 
     "Misuse_Overdose" : {
       "type" : "ConditionOnset",
@@ -487,7 +487,7 @@
           "transition": "Death"
         }
       ]
-    }, 
+    },
 
     "Addiction_Overdose" : {
       "type" : "ConditionOnset",
@@ -518,7 +518,7 @@
           "transition": "Death"
         }
       ]
-    }, 
+    },
 
     "Death" : {
       "type" : "Death",
