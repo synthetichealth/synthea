@@ -433,81 +433,6 @@
             "attribute": "fatal_injury",
             "operator": "is nil"
           },
-<<<<<<< 89281d8b5c0ddea0d822614bbbaaad05cafda3fb
-          {
-            "distribution" : 0.984,
-            "transition": "No_Injury"
-          }
-        ]
-      }]
-    },
-
-
-    "Road_Injury_Minor" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "RI_Minor_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "39848009",
-        "display" : "Whiplash injury to neck"
-      }],
-      "direct_transition" : "RI_Minor_Encounter"
-    },
-
-    "RI_Minor_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Road_Injury_Major" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "RI_Major_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "125606003",
-        "display" : "Fracture of cervical spine"
-      }],
-      "direct_transition" : "RI_Major_Encounter"
-    },
-
-    "RI_Major_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "conditional_transition" : 
-        [
-          {
-            "condition": {
-              "condition_type" : "Or",
-              "conditions" : [
-                {
-                  "condition_type" : "Age",
-                  "operator" : "<",
-                  "quantity" : 14,
-                  "unit" : "years"
-                },
-                {
-                  "condition_type" : "Date",
-                  "operator" : "<",
-                  "year" : 1990
-                },
-                {
-                  "condition_type" : "Attribute",
-                  "attribute" : "Opioid Prescription",
-                  "operator" : "is not nil"
-                }
-              ]
-=======
           "remarks": [
             "Default probabilities if 'fatal_injury' attribute is not used"
           ],
@@ -515,7 +440,6 @@
             {
               "distribution": 0.298,
               "transition": "Death"
->>>>>>> Spinal injuries and gunshot wounds
             },
             {
               "distribution": 0.702,
@@ -541,303 +465,6 @@
       ]
     },
 
-<<<<<<< 89281d8b5c0ddea0d822614bbbaaad05cafda3fb
-    "RI_Major_Medication_Nonopioid" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "RI_Major_Encounter",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "646457",
-        "display" : "Acetaminophen 650 MG [Tylenol]"
-      }],
-      "reason" : "Road_Injury_Major",
-      "direct_transition" : "RI_Major_Medication_Nonopioid_Taken"
-    },
-
-    "RI_Major_Medication_Nonopioid_Taken" : {
-      "type" : "Delay",
-      "range" : {
-        "low" : 8,
-        "high" : 12,
-        "unit" : "weeks"
-      },
-      "direct_transition" : "RI_Major_Medication_Nonopioid_End"
-    },
-
-    "RI_Major_Medication_Nonopioid_End" : {
-      "type" : "MedicationEnd",
-      "medication_order" : "RI_Major_Medication_Nonopioid",
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "RI_Major_Medication_Opioid" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "RI_Major_Encounter",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "1310197",
-        "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-      }],
-      "reason" : "Road_Injury_Major",
-      "assign_to_attribute" : "Opioid Prescription",
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Road_Injury_Severe" : {
-      "type" : "Simple",
-      "direct_transition" : "Death"
-    },
-
-
-    "Falling_Injury_Minor" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "FI_Minor_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "44465007",
-        "display" : "Sprain of ankle"
-      }],
-      "direct_transition" : "FI_Minor_Encounter"
-    },
-
-    "FI_Minor_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Falling_Injury_Major" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "FI_Major_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "77493009",
-        "display" : "Fracture of pelvis"
-      }],
-      "direct_transition" : "FI_Major_Encounter"
-    },
-
-    "FI_Major_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-       "conditional_transition" : [
-                {
-                    "condition": {
-                      "condition_type" : "Or",
-                      "conditions" : [
-                        {
-                          "condition_type" : "Age",
-                          "operator" : "<",
-                          "quantity" : 14,
-                          "unit" : "years"
-                        },
-                        {
-                          "condition_type" : "Date",
-                          "operator" : "<",
-                          "year" : 1990
-                        },
-                        {
-                          "condition_type" : "Attribute",
-                          "attribute" : "Opioid Prescription",
-                          "operator" : "is not nil"
-                        }
-                      ]
-                    },
-                    "transition": "FI_Major_Medication_Nonopioid"
-                },
-                {
-                    "transition": "FI_Major_Medication_Opioid"
-                }
-            ]
-    },
-
-    "FI_Major_Medication_Opioid" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "FI_Major_Encounter",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "1310197",
-        "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-      }],
-      "reason" : "Falling_Injury_Major",
-      "assign_to_attribute" : "Opioid Prescription",
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-
-    "FI_Major_Medication_Nonopioid" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "FI_Major_Encounter",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "646457",
-        "display" : "Acetaminophen 650 MG [Tylenol]"
-      }],
-      "reason" : "Falling_Injury_Major",
-      "direct_transition" : "FI_Major_Medication_Nonopioid_Taken"
-    },
-
-    "FI_Major_Medication_Nonopioid_Taken" : {
-      "type" : "Delay",
-      "range" : {
-        "low" : 4,
-        "high" : 8,
-        "unit" : "weeks"
-      },
-      "direct_transition" : "FI_Major_Medication_Nonopioid_End"
-    },
-
-    "FI_Major_Medication_Nonopioid_End" : {
-      "type" : "MedicationEnd",
-      "medication_order" : "FI_Major_Medication_Nonopioid",
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Blunt_Object_Injury_Minor" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "BOI_Minor_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "62106007",
-        "display" : "Concussion with no loss of consciousness"
-      }],
-      "direct_transition" : "BOI_Minor_Encounter"
-    },
-
-    "BOI_Minor_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Blunt_Object_Injury_Major" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "BOI_Major_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "419945001",
-        "display" : "Traumatic injury due to event"
-      }],
-      "direct_transition" : "BOI_Major_Encounter"
-    },
-
-    "BOI_Major_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "direct_transition" : "BOI_Major_Medication"
-    },
-
-    "BOI_Major_Medication" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "BOI_Major_Encounter",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "142442",
-        "display" : "Naproxen sodium"
-      }],
-      "reason" : "Blunt_Object_Injury_Major",
-      "direct_transition" : "BOI_Major_Medication_Taken"
-    },
-
-    "BOI_Major_Medication_Taken" : {
-      "type" : "Delay",
-      "range" : {
-        "low" : 2,
-        "high" : 6,
-        "unit" : "weeks"
-      },
-      "direct_transition" : "BOI_Major_Medication_End"
-    },
-
-    "BOI_Major_Medication_End" : {
-      "type" : "MedicationEnd",
-      "medication_order" : "BOI_Major_Medication",
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Sharp_Object_Injury_Minor" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "SOI_Minor_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "284549007",
-        "display" : "Laceration of hand"
-      }],
-      "direct_transition" : "SOI_Minor_Encounter"
-    },
-
-    "SOI_Minor_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "direct_transition" : "Loop_back_to_no_injury"
-    },
-
-    "Sharp_Object_Injury_Major" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "SOI_Major_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "446455004",
-        "display" : "Deep laceration of thigh"
-      }],
-      "direct_transition" : "SOI_Major_Encounter"
-    },
-
-    "SOI_Major_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "emergency",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "direct_transition" : "SOI_Major_Medication"
-    },
-
-    "SOI_Major_Medication" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "SOI_Major_Encounter",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "572514",
-        "display" : "Cephalexin 250 MG [Keflex]"
-      }],
-      "reason" : "Sharp_Object_Injury_Major",
-      "direct_transition" : "SOI_Major_Medication_Taken"
-    },
-
-    "SOI_Major_Medication_Taken" : {
-      "type" : "Delay",
-      "range" : {
-        "low" : 7,
-        "high" : 14,
-        "unit" : "days"
-=======
     "Gunshot_Injury_Treatment": {
       "type": "Simple",
       "remarks": [
@@ -981,7 +608,6 @@
         "low": 1,
         "high": 4,
         "unit": "months"
->>>>>>> Spinal injuries and gunshot wounds
       },
       "direct_transition": "Gunshot_Injury_Followup"
     },
@@ -2243,9 +1869,6 @@
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Knee_Injury",
       "assign_to_attribute": "knee_injury",
-      "remarks": [
-        "A torn meniscus usually doesn't require surgery, just physical therapy."
-      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2274,6 +1897,9 @@
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Knee_Injury",
       "assign_to_attribute": "knee_injury",
+      "remarks": [
+        "A torn meniscus usually doesn't require surgery, just physical therapy."
+      ],
       "codes": [
         {
           "system": "SNOMED-CT",

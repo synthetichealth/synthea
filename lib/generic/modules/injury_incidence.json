@@ -94,8 +94,8 @@
         "to yield reasonable prevalences."
       ],
       "range": {
-        "low": "10",
-        "high": "14",
+        "low": 10,
+        "high": 14,
         "unit": "months"
       },
       "conditional_transition": [
@@ -232,6 +232,14 @@
         {
           "distribution": 0.00092484,
           "transition": "Injures_Shoulder"
+        },
+        {
+          "distribution": 0.0,
+          "transition": "Wait_For_Injury",
+          "remarks": [
+            "The GMF's distributed transition will take this transition if none of the others are taken, see: ",
+            "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+          ]
         }
       ]
     },
@@ -281,6 +289,14 @@
         {
           "distribution": 0.00019084,
           "transition": "Injures_Shoulder"
+        },
+        {
+          "distribution": 0.0,
+          "transition": "Wait_For_Injury",
+          "remarks": [
+            "The GMF's distributed transition will take this transition if none of the others are taken, see: ",
+            "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+          ]
         }
       ]
     },
