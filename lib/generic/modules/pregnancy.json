@@ -1353,7 +1353,7 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "number_of_pregnancies",
+                "attribute": "pregnancy_iterator",
                 "operator": "!=",
                 "value": "6",
                 "remarks": [
