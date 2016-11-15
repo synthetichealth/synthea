@@ -111,7 +111,7 @@
     "Will_Have_One_Child": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 4,
+      "value": "4",
       "remarks": [
         "This leaves the mother with 2 remaining passes through the pregnancy module (out of 6 total). ",
         "The second pass accounts for the potential for a miscarriage or abortion."
@@ -122,7 +122,7 @@
     "Will_Have_Two_Children": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 2,
+      "value": "2",
       "remarks": [
         "This leaves the mother with 4 remaining passes through the pregnancy module (out of 6 total). ",
         "Additional passes account for potential miscarriages or abortions."
@@ -133,7 +133,7 @@
     "Will_Have_Three_Or_More_Children": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 0,
+      "value": "0",
       "remarks": [
         "This leaves the mother with 6 remaining passes through the pregnancy module (out of 6 total). ",
         "Additional passes account for potential miscarriages or abortions."
@@ -168,7 +168,7 @@
             "condition_type": "Attribute",
             "attribute": "pregnancy_iterator",
             "operator": "==",
-            "value": 0
+            "value": "0"
           },
           "transition": "Pregnancy_Iterator_1"
         },
@@ -177,7 +177,7 @@
             "condition_type": "Attribute",
             "attribute": "pregnancy_iterator",
             "operator": "==",
-            "value": 1
+            "value": "1"
           },
           "transition": "Pregnancy_Iterator_2"
         },
@@ -186,7 +186,7 @@
             "condition_type": "Attribute",
             "attribute": "pregnancy_iterator",
             "operator": "==",
-            "value": 2
+            "value": "2"
           },
           "transition": "Pregnancy_Iterator_3"
         },
@@ -195,7 +195,7 @@
             "condition_type": "Attribute",
             "attribute": "pregnancy_iterator",
             "operator": "==",
-            "value": 3
+            "value": "3"
           },
           "transition": "Pregnancy_Iterator_4"
         },
@@ -204,7 +204,7 @@
             "condition_type": "Attribute",
             "attribute": "pregnancy_iterator",
             "operator": "==",
-            "value": 4
+            "value": "4"
           },
           "transition": "Pregnancy_Iterator_5"
         },
@@ -213,7 +213,7 @@
             "condition_type": "Attribute",
             "attribute": "pregnancy_iterator",
             "operator": "==",
-            "value": 5
+            "value": "5"
           },
           "transition": "Pregnancy_Iterator_6"
         }
@@ -223,42 +223,42 @@
     "Pregnancy_Iterator_1": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 1,
+      "value": "1",
       "direct_transition": "Become_Pregnant"
     },
 
     "Pregnancy_Iterator_2": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 2,
+      "value": "2",
       "direct_transition": "Become_Pregnant"
     },
 
     "Pregnancy_Iterator_3": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 3,
+      "value": "3",
       "direct_transition": "Become_Pregnant"
     },
 
     "Pregnancy_Iterator_4": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 4,
+      "value": "4",
       "direct_transition": "Become_Pregnant"
     },
 
     "Pregnancy_Iterator_5": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 5,
+      "value": "5",
       "direct_transition": "Become_Pregnant"
     },
 
     "Pregnancy_Iterator_6": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": 6,
+      "value": "6",
       "direct_transition": "Become_Pregnant"
     },
 
@@ -291,7 +291,7 @@
 
     "Prenatal_Initial_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -399,7 +399,7 @@
 
     "Week_15_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -436,7 +436,7 @@
 
     "Week_26_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -481,7 +481,7 @@
 
     "Week_32_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -552,7 +552,7 @@
 
     "Week_36_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -590,7 +590,7 @@
 
     "Week_38_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -621,7 +621,7 @@
 
     "Week_39_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -659,7 +659,7 @@
 
     "Week_40_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -690,7 +690,7 @@
 
     "Week_41_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -721,7 +721,7 @@
 
     "Week_42_Visit": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1149,7 +1149,7 @@
 
     "Ectopic_Pregnancy_Surgery_Encounter": {
       "type": "Encounter",
-      "type": "inpatient",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1234,7 +1234,7 @@
 
     "Miscarriage_Followup_Encounter": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1274,7 +1274,7 @@
 
     "Induced_Abortion_Encounter": {
       "type": "Encounter",
-      "class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1354,8 +1354,8 @@
               {
                 "condition_type": "Attribute",
                 "attribute": "number_of_pregnancies",
-                "operator": "<",
-                "value": 6,
+                "operator": "!=",
+                "value": "6",
                 "remarks": [
                   "We use 6 as a hard limit. Given the probabilities of miscarriage and abortion ",
                   "if a woman goes through the module all 6 times we expect 3-4 pregnancies."
