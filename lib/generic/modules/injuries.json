@@ -13,20 +13,6 @@
     "2. Race and socioeconomic status don't significantly affect injury rates (they probably do...) ",
     "3. A person can't have multiple injuries at the same time (in reality, they can...) ",
 
-    "To distribute total incidence rates for the entire population across the different ",
-    "age groups I use the following factors based on this source: ",
-    "https://www.census.gov/popest/data/national/asrh/2015/index.html",
-
-    "Pop < Age 18:      74.18M  => 0.24",
-    "Pop Age 19 - 65:  194.30M  => 0.63",
-    "Pop > Age 65:      40.27M  => 0.13",
-    "----------------------------------",
-    "U.S. Total Pop:   308.75M     1.00",
-
-    "If this seems a little low for 2015 it is - this is the U.S. RESIDENT population ",
-    "obtained by the 2015 census. There are additional persons in the U.S. (undocumented ",
-    "immigrants, visitors, visas, etc.) that are not part of the count.",
-
     "Supported injury types are: ",
     "1.  'spinal'       - injuries to the spinal cord or fractures of the spine ",
     "2.  'gunshot'      - gunshot wounds ",
@@ -76,16 +62,16 @@
         "Distributions of injuries are initially based on the 2015 U.S. resident population (308.75M) and the ",
         "following incidence rates: ",
 
-        "Spinal:          48k/yr   0.000156   http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures",
-        "Gunshots:       104k/yr   0.000338   http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
-        "Concussions:    4.8M/yr   0.015844   https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
-        "Whiplash:       3.0M/yr   0.009740   http://www.srisd.com/consumer_site/epidemiology.htm (This may be an overestimate)",
-        "Broken bones:  18.3M/yr   0.059416   http://www.boneandjointburden.org/docs/By%20The%20Numbers%20-%20MSK%20Injuries.pdf",
-        "Burns:         1.25M/yr   0.004058   http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6",
-        "Lacerations:    8.2M/yr   0.026623   (see broken bones, above)",
-        "Sprains:        600k/yr   0.001948   https://www.ncbi.nlm.nih.gov/pubmed/20926721",
-        "Knees:          705k/yr   0.002289   https://www.ncbi.nlm.nih.gov/pubmed/22506941",
-        "Shoulders:      452k/yr   0.001468   http://rheumatology.oxfordjournals.org/content/45/2/215.full",
+        "Spinal:        0.000153   http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures",
+        "Gunshots:      0.000318   http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
+        "Concussions:   0.005100   https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
+        "Whiplash:      0.004780   http://www.srisd.com/consumer_site/epidemiology.htm (This may be an overestimate)",
+        "Broken bones:  0.058300   http://www.boneandjointburden.org/docs/By%20The%20Numbers%20-%20MSK%20Injuries.pdf",
+        "Burns:         0.003980   http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6",
+        "Lacerations:   0.026100   (see broken bones, above)",
+        "Sprains:       0.054400   https://www.ncbi.nlm.nih.gov/pubmed/20926721",
+        "Knees:         0.002290   https://www.ncbi.nlm.nih.gov/pubmed/22506941",
+        "Shoulders:     0.001470   http://rheumatology.oxfordjournals.org/content/45/2/215.full",
 
         "From these estimates the incidences may be adjusted slightly (see notes when a rate is adjusted) ",
         "to yield reasonable prevalences."
@@ -129,52 +115,47 @@
     "Child_Incidence_Rates": {
       "type": "Simple",
       "remarks": [
-        "The incidence rates for children (0 - 17). Initially scaled the total incidence ",
-        "rates (above) by 0.24 to get an estimate for childhood incidence."
+        "The incidence rates for children (0 - 17)."
       ],
       "distributed_transition": [
         {
-          "distribution": 0.00003744,
+          "distribution": 0.000153,
           "transition": "Spinal_Injury"
         },
         {
-          "distribution": 0.00008112,
+          "distribution": 0.000318,
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.00380256,
+          "distribution": 0.005100,
           "transition": "Concussion_Injury"
         },
         {
-          "distribution": 0.0023376,
+          "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.0022815744,
-          "transition": "Broken_Bone_Injury",
-          "remarks": [
-            "Children and young adults have the highest incidence of broken bones.",
-            "Increased the incidence for children by 60% from 0.01425984 to above."
-          ]
+          "distribution": 0.058300,
+          "transition": "Broken_Bone_Injury"
         },
         {
-          "distribution": 0.000972192,
+          "distribution": 0.003980,
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.00638952,
+          "distribution": 0.026100,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.00046752,
+          "distribution": 0.054400,
           "transition": "Sprain_Injury"
         },
         {
-          "distribution": 0.00054936,
+          "distribution": 0.002290,
           "transition": "Knee_Injury"
         },
         {
-          "distribution": 0.00035232,
+          "distribution": 0.001470,
           "transition": "Shoulder_Injury"
         },
         {
@@ -192,51 +173,47 @@
     "Adult_Incidence_Rates": {
       "type": "Simple",
       "remarks": [
-        "The incidence rates for adults (18 - 65). Initially scaled the total incidence rates by 0.63."
+        "The incidence rates for adults (18 - 65)."
       ],
       "distributed_transition": [
         {
-          "distribution": 0.00009828,
+          "distribution": 0.000153,
           "transition": "Spinal_Injury"
         },
         {
-          "distribution": 0.00021294,
+          "distribution": 0.000318,
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.00998172,
+          "distribution": 0.005100,
           "transition": "Concussion_Injury"
         },
         {
-          "distribution": 0.0061362,
+          "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.022459248,
-          "transition": "Broken_Bone_Injury",
-          "remarks": [
-            "Too many adults are repeatedly getting broken bones. Reducing this ",
-            "incidence by 40% from 0.03743208 to the above."
-          ]
+          "distribution": 0.058300,
+          "transition": "Broken_Bone_Injury"
         },
         {
-          "distribution": 0.00255654,
+          "distribution": 0.003980,
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.01677249,
+          "distribution": 0.026100,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.00122724,
+          "distribution": 0.054400,
           "transition": "Sprain_Injury"
         },
         {
-          "distribution": 0.00144207,
+          "distribution": 0.002290,
           "transition": "Knee_Injury"
         },
         {
-          "distribution": 0.00092484,
+          "distribution": 0.001470,
           "transition": "Shoulder_Injury"
         },
         {
@@ -254,50 +231,47 @@
     "Elderly_Incidence_Rates": {
       "type": "Simple",
       "remarks": [
-        "The incidence rates for elderly (65+)"
+        "The incidence rates for elderly (65+)."
       ],
       "distributed_transition": [
         {
-          "distribution": 0.00002028,
+          "distribution": 0.000153,
           "transition": "Spinal_Injury"
         },
         {
-          "distribution": 0.00004394,
+          "distribution": 0.000318,
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.00205972,
+          "distribution": 0.005100,
           "transition": "Concussion_Injury"
         },
         {
-          "distribution": 0.0012622,
+          "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.009268896,
-          "transition": "Broken_Bone_Injury",
-          "remarks": [
-            "Increasing incidence by 20% from 0.00772408 to the above."
-          ]
+          "distribution": 0.058300,
+          "transition": "Broken_Bone_Injury"
         },
         {
-          "distribution": 0.00052754,
+          "distribution": 0.003980,
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.00346099,
+          "distribution": 0.026100,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.00025324,
+          "distribution": 0.054400,
           "transition": "Sprain_Injury"
         },
         {
-          "distribution": 0.00029757,
+          "distribution": 0.002290,
           "transition": "Knee_Injury"
         },
         {
-          "distribution": 0.00019084,
+          "distribution": 0.001470,
           "transition": "Shoulder_Injury"
         },
         {
