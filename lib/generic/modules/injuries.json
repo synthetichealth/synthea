@@ -127,16 +127,25 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.005100,
-          "transition": "Concussion_Injury"
+          "distribution": 0.01010,
+          "transition": "Concussion_Injury",
+          "remarks": [
+            "Our initial estimate for concussions seem too low. Since most concussion injuries ",
+            "happen in sports and children are more likely to get concussions (for this reason) ",
+            "doubling the concussion rate for children from 0.0051 --> 0.0101."
+          ]
         },
         {
           "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.058300,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.1166,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Children get broken bones far more often than adults. Shifting a good portion ",
+            "from adults to children. Doubled the original distribution 0.0583 --> 0.1166"
+          ]
         },
         {
           "distribution": 0.003980,
@@ -185,16 +194,26 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.005100,
-          "transition": "Concussion_Injury"
+          "distribution": 0.007650,
+          "transition": "Concussion_Injury",
+          "remarks": [
+            "Adults are likely to get concussions from sports, work-related accidents, and ",
+            "motor vehicle accidents. Increasing the incidence in adults by 1.5 from ",
+            "0.0051 --> 0.00765"
+          ]
         },
         {
           "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.058300,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.02915,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Adults break fewer bones than children or the elderly. Shifting incidence away ",
+            "from adults towards children. Reducing this incidence by half from ",
+            "0.0583 --> 0.02915 "
+          ]
         },
         {
           "distribution": 0.003980,
@@ -1402,7 +1421,7 @@
         {
           "system": "SNOMED-CT",
           "code": "403192003",
-          "display": "Second degree burn"
+          "display": "Third degree burn"
         }
       ],
       "direct_transition": "Severe_Burn_Care"
