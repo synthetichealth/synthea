@@ -74,7 +74,9 @@
         "Shoulders:     0.001470   http://rheumatology.oxfordjournals.org/content/45/2/215.full",
 
         "From these estimates the incidences may be adjusted slightly (see notes when a rate is adjusted) ",
-        "to yield reasonable prevalences."
+        "to yield reasonable prevalences.",
+
+        ">>>> Turn down fractures, lacerations, and sprains"
       ],
       "range": {
         "low": 10,
@@ -140,7 +142,7 @@
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.1166,
+          "distribution": 0.025,
           "transition": "Broken_Bone_Injury",
           "remarks": [
             "Children get broken bones far more often than adults. Shifting a good portion ",
@@ -152,11 +154,14 @@
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.026100,
+          "distribution": 0.015,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.054400,
+          "distribution": 0.025,
+          "remarks": [
+            "Sprains are slightly more likely in kids."
+          ],
           "transition": "Sprain_Injury"
         },
         {
@@ -207,7 +212,7 @@
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.02915,
+          "distribution": 0.007,
           "transition": "Broken_Bone_Injury",
           "remarks": [
             "Adults break fewer bones than children or the elderly. Shifting incidence away ",
@@ -220,11 +225,11 @@
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.026100,
+          "distribution": 0.015,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.054400,
+          "distribution": 0.0125,
           "transition": "Sprain_Injury"
         },
         {
@@ -271,6 +276,9 @@
         },
         {
           "distribution": 0.058300,
+          "remarks": [
+            "Retain highest probability for elderly."
+          ],
           "transition": "Broken_Bone_Injury"
         },
         {
@@ -278,11 +286,11 @@
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.026100,
+          "distribution": 0.015,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.054400,
+          "distribution": 0.0125,
           "transition": "Sprain_Injury"
         },
         {
