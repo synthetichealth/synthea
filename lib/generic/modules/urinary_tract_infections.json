@@ -1,0 +1,473 @@
+{
+  "name": "Urinary Tract Infections",
+  "remarks": [
+    "These are quite common in women but rare in men. Most of the incidence statistics I got from the NIH: ",
+    "https://www.nichd.nih.gov/health/topics/urinary/conditioninfo/Pages/affected.aspx",
+
+    "Incidence for recurrent UTIs: ",
+    "https://www.kidney.org/sites/default/files/uti.pdf",
+
+    "The NIH claims 8.1M doctor visits each year are because of UTIs. However, some of these could be recurrent ",
+    "visits for the same woman. Estimates show that 1 in 5 women have UTIs, and about a quarter of those are ",
+    "recurring, so more realistically about 75% of those visits to the physician are unique patients. I therefore ",
+    "estimate (0.75 * 8.1M) = 6.08M unique patients get UTIs every year, or about 1.9% of the population ",
+    "(out of 320M Americans in 2016).",
+
+    "UTIs are practically nonexistent in young men but can occur in elderly men. I couldn't find any stats on ",
+    "incidence in elderly men but I'm estimating 2%, which is 1/10th the rate of women.",
+
+    "Several risk factors also increase the likelihood of a UTI including diabetes and obseity. Obesity doubles ",
+    "the risk for a UTI in women. For now these are not represented in this module."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+
+        "https://www.kidney.org/sites/default/files/uti.pdf:",
+        " ''One in five women will have at least one UTI in her lifetime.      ",
+        "   Nearly 20 percent of women who have a UTI will have another,       ",
+        "   and 30 percent of those will have yet another. Of this last        ",
+        "   group, 80 percent will have recurrences.''                         ",
+
+        "https://www.betterhealth.vic.gov.au/health/conditionsandtreatments/urinary-tract-infections-uti:",
+        " ''Around one in two women and one in 20 men will get a UTI in their lifetime'' "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.95,
+              "transition": "Terminal",
+              "remarks": [
+                "Most men will never get a UTI."
+              ]
+            },
+            {
+              "distribution": 0.05,
+              "transition": "Wait_For_Old_Age"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Delay_Until_Right_Age",
+              "remarks": [
+                "1 in 2 women gets a UTI."
+              ]
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wait_For_Old_Age": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 55,
+        "unit": "years"
+      },
+      "direct_transition": "Will_Get_One_UTI",
+      "remarks": [
+        "For now we don't model recurrent UTIs in men, only women."
+      ]
+    },
+
+    "Delay_Until_Right_Age": {
+      "type": "Delay",
+      "remarks": [
+        "Women may start getting UTIs at different points in their life."
+      ],
+      "range": {
+        "low": 16,
+        "high": 55,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.792,
+          "transition": "Will_Get_One_UTI"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Will_Get_Two_UTIs"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Will_Get_Three_UTIs"
+        },
+        {
+          "distribution": 0.048,
+          "transition": "Recurring_Urinary_Tract_Infections"
+        }
+      ]
+    },
+
+    "Will_Get_One_UTI": {
+      "type": "SetAttribute",
+      "remarks": [
+        "======================================================================",
+        " UTI ITERATOR                                                         ",
+        "======================================================================",
+
+        "Counts the number of UTIs a woman has in her lifetime. Once 3 UTIs are ",
+        "counted the module terminates."
+      ],
+      "attribute": "uti_iterator",
+      "value": "2",
+      "direct_transition": "UTI_Iterator"
+    },
+
+    "Will_Get_Two_UTIs": {
+      "type": "SetAttribute",
+      "attribute": "uti_iterator",
+      "value": "1",
+      "direct_transition": "UTI_Iterator"
+    },
+
+    "Will_Get_Three_UTIs": {
+      "type": "SetAttribute",
+      "attribute": "uti_iterator",
+      "value": "0",
+      "direct_transition": "UTI_Iterator"
+    },
+
+    "UTI_Iterator": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "uti_iterator",
+            "operator": "==",
+            "value": "0"
+          },
+          "transition": "UTI_Iterator_1"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "uti_iterator",
+            "operator": "==",
+            "value": "1"
+          },
+          "transition": "UTI_Iterator_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "uti_iterator",
+            "operator": "==",
+            "value": "2"
+          },
+          "transition": "UTI_Iterator_3"
+        },
+        {
+          "transition": "Wait_For_Next_UTI"
+        }
+      ]
+    },
+
+    "Recurring_Urinary_Tract_Infections": {
+      "type": "SetAttribute",
+      "attribute": "reccuring_utis",
+      "value": true,
+      "direct_transition": "Recurrent_Urinary_Tract_Infection"
+    },
+
+    "UTI_Iterator_1": {
+      "type": "SetAttribute",
+      "attribute": "uti_iterator",
+      "value": "1",
+      "direct_transition": "Wait_For_Next_UTI"
+    },
+
+    "UTI_Iterator_2": {
+      "type": "SetAttribute",
+      "attribute": "uti_iterator",
+      "value": "2",
+      "direct_transition": "Wait_For_Next_UTI"
+    },
+
+    "UTI_Iterator_3": {
+      "type": "SetAttribute",
+      "attribute": "uti_iterator",
+      "value": "3",
+      "direct_transition": "Wait_For_Next_UTI"
+    },
+
+    "Wait_For_Next_UTI": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " URINARY TRACT INFECTION                                              ",
+        "======================================================================",
+
+        "This is most commonly a bacterial infection of the urethra or bladder ",
+        "(urethritis and cystitis, respectively). In rare cases this could also ",
+        "be an infection of the kidneys (pyelonephritis)."
+      ],
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "years"
+      },
+      "direct_transition": "Urinary_Tract_Infection"
+    },
+
+    "Urinary_Tract_Infection": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.6,
+          "transition": "Urethritis"
+        },
+        {
+          "distribution": 0.39,
+          "transition": "Cystitis"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Pyelonephritis"
+        }
+      ]
+    },
+
+    "Urethritis": {
+      "type": "ConditionOnset",
+      "target_encounter": "UTI_Diagnosis",
+      "assign_to_attribute": "uti",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "301011002",
+          "display": "Escherichia coli urinary tract infection"
+        }
+      ],
+      "direct_transition": "UTI_Diagnosis"
+    },
+
+    "Cystitis": {
+      "type": "ConditionOnset",
+      "target_encounter": "UTI_Diagnosis",
+      "assign_to_attribute": "uti",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "38822007",
+          "display": "Cystitis"
+        }
+      ],
+      "direct_transition": "UTI_Diagnosis"
+    },
+
+    "Pyelonephritis": {
+      "type": "ConditionOnset",
+      "target_encounter": "UTI_Diagnosis",
+      "assign_to_attribute": "uti",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "45816000",
+          "display": "Pyelonephritis"
+        }
+      ],
+      "direct_transition": "UTI_Diagnosis"
+    },
+
+    "UTI_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Prescribe_UTI_Antibiotic"
+    },
+
+    "Recurrent_Urinary_Tract_Infection": {
+      "type": "ConditionOnset",
+      "target_encounter": "UTI_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "197927001",
+          "display": "Recurrent urinary tract infection"
+        }
+      ],
+      "direct_transition": "Wait_For_Next_UTI"
+    },
+
+    "Prescribe_UTI_Antibiotic": {
+      "type": "MedicationOrder",
+      "target_encounter": "UTI_Diagnosis",
+      "remarks": [
+        "This is an antibiotic commonly prescribed for UTIs."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "568530",
+          "display": "Nitrofurantoin 5 MG/ML [Furadantin]"
+        }
+      ],
+      "direct_transition": "Prescribe_OTC_Painkiller_For_UTIs"
+    },
+
+    "Prescribe_OTC_Painkiller_For_UTIs": {
+      "type": "MedicationOrder",
+      "target_encounter": "UTI_Diagnosis",
+      "remarks": [
+        "This is an OTC pain medication specifically for the urinary tract."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1094108",
+          "display": "Phenazopyridine hydrochloride 100 MG [Pyridium]"
+        }
+      ],
+      "direct_transition": "Take_Antibiotics"
+    },
+
+    "Take_Antibiotics": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 7,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.15,
+          "transition": "End_First_Round_Of_Antibiotics"
+        },
+        {
+          "distribution": 0.85,
+          "transition": "End_Urinary_Tract_Infection"
+        }
+      ]
+    },
+
+    "End_First_Round_Of_Antibiotics": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_UTI_Antibiotic",
+      "direct_transition": "Followup_Encounter"
+    },
+
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Prescribe_Second_Round_Of_Antibiotics"
+    },
+
+    "Prescribe_Second_Round_Of_Antibiotics": {
+      "type": "MedicationOrder",
+      "target_encounter": "Followup_Encounter",
+      "remarks": [
+        "This is a stronger antibiotic."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1648767",
+          "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG [Macrodantin]"
+        }
+      ],
+      "direct_transition": "Take_More_Antibiotics"
+    },
+
+    "Take_More_Antibiotics": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 7,
+        "unit": "days"
+      },
+      "direct_transition": "End_Second_Round_Of_Antibiotics"
+    },
+
+    "End_Second_Round_Of_Antibiotics": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_Second_Round_Of_Antibiotics",
+      "direct_transition": "End_Urinary_Tract_Infection"
+    },
+
+    "End_Urinary_Tract_Infection": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "uti",
+      "direct_transition": "End_OTC_Painkiller"
+    },
+
+    "End_OTC_Painkiller": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_OTC_Painkiller_For_UTIs",
+      "direct_transition": "Get_Additional_UTIs"
+    },
+
+    "Get_Additional_UTIs": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "reccuring_utis",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Wait_For_Recurring_UTI"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "uti_iterator",
+            "operator": "!=",
+            "value": "3"
+          },
+          "transition": "UTI_Iterator"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Wait_For_Recurring_UTI": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 4,
+        "unit": "months"
+      },
+      "direct_transition": "Urinary_Tract_Infection"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
