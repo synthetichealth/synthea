@@ -121,7 +121,6 @@ synthea:
     sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
       risk: 0.00076
       death: 0.00069
-    smoker: 0.161 # 16.1% of MA are smokers. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
   socioeconomic_status:
     weighting: # these should add up to 1.0
     # weighting and categories are inspired by the following but there are no specific hard numbers to point to

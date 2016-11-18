@@ -107,10 +107,28 @@ module Synthea
 
       # 9/10 smokers start before age 18. We will use 16.
       # http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
-      rule :start_smoking, [:age], [:smoker] do |_time, entity|
+      rule :start_smoking, [:age], [:smoker] do |time, entity|
         if entity[:smoker].nil? && entity[:age] == 16
-          entity[:smoker] = rand < Synthea::Config.cardiovascular.smoker ? true : false
+          entity[:smoker] = rand < likelihood_of_smoker(time) ? true : false
         end
+      end
+
+      def likelihood_of_smoker(time)
+        # 16.1% of MA are smokers in 2016. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
+        # but the rate is decreasing over time
+        # http://www.cdc.gov/tobacco/data_statistics/tables/trends/cig_smoking/
+        # selected #s:
+        # 1965 - 42.4%
+        # 1975 - 37.1%
+        # 1985 - 30.1%
+        # 1995 - 24.7%
+        # 2005 - 20.9%
+        # 2015 - 16.1%
+        # assume that it was never significantly higher than 42% pre-1960s, but will continue to drop slowly after 2016
+        # it's decreasing about .5% per year
+        return 0.424 if time.year < 1965
+
+        ((time.year * -0.4865) + 996.41) / 100.0
       end
 
       rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoker], [:coronary_heart_disease?] do |_time, entity|
