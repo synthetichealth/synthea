@@ -220,6 +220,31 @@
           "display": "Phenazopyridine hydrochloride 100 MG [Pyridium]"
         }
       ],
+      "direct_transition": "UTI_CarePlan"
+    },
+
+    "UTI_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "UTI_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "869761000000107",
+          "display": "Urinary tract infection care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "223472008",
+          "display": "Discussion about hygiene"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "171245007",
+          "display": "Urine screening"
+        }
+      ],
       "direct_transition": "Take_Antibiotics"
     },
 
@@ -300,6 +325,12 @@
     "End_OTC_Painkiller": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_OTC_Painkiller_For_UTIs",
+      "direct_transition": "End_UTI_CarePlan"
+    },
+
+    "End_UTI_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "UTI_CarePlan",
       "direct_transition": "Get_Additional_UTIs"
     },
 
