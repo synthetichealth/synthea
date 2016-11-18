@@ -1,52 +1,80 @@
 {
-  "name" : "Opioid Addiction",
-  "states" : {
+  "name": "Opioid Addiction",
+  "remarks": [
+    "Opioid addiction currently affects about 0.7% of the American population, or about 2.2M people. ",
+    "Since the 1990's prescription rates for opioids have increased exponentially. Today, doctors write ",
+    "between 50 and 150 opioid prescriptions per 100 people. see: ",
+    "http://www.cdc.gov/drugoverdose/data/prescribing.html",
 
-    "Initial" : {
-      "type" : "Initial",
-      "direct_transition" : "Guard"
+    "Currently the injuries module prescribed opioids at a rate of 25 - 30 per 100 people, but that's ",
+    "over a whole lifetime. 0-2 prescriptions are written for opioids for each patient after 1990, ",
+    "or about 1 / 25 = 0.04 per year. This is small compared to the total opioid prescriptions written ",
+    "each year. This module therefore picks up most of the remaining prescriptions, then evaluates all ",
+    "addiction rates using a modified model adapted from Project SAMMI: ",
+    "http://projectsammi.github.io/",
+
+    "Prior to 1990 we don't model opioid addiction - prescription rates were far lower and the ",
+    "'opioid crisis' of today is seen as beginning in the 90's and 00's."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Guard"
     },
 
-    "Guard" : {
-      "type" : "Guard",
-      "allow" : {
-        "condition_type" : "And",
-        "conditions" : [
+    "Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
           {
-            "condition_type" : "Age",
-            "operator" : ">=",
-            "quantity" : 14,
-            "unit" : "years"
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 14,
+            "unit": "years"
           },
           {
-            "condition_type" : "Date",
-            "operator" : ">=",
-            "year" : 1990
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1990
           }
         ]
       },
-      "direct_transition" : "General_Population",
-      "remarks" : ["Data on specific ages is limited but generally below 15 no source indicates a statistically significant % of opioid addiction.",
-                   "While opioids have been available for decades, the current 'opioid crisis' is generally shown to have begun in the 90s-00s"]
+      "direct_transition": "General_Population",
+      "remarks": [
+        "Data on specific ages is limited but generally below age 15 no source indicates a statistically ",
+        "significant % of opioid addiction."
+      ]
     },
 
-    "General_Population" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "days"
+    "General_Population": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
       },
-      "complex_transition" : [
+      "remarks": [
+        "Project SAMMI originally used a 1-day timestep and modeled opioid addiction over the course of ",
+        "one year. Our model runs for much longer - several decades, and we use a 1 month timestep. ",
+        "I reduced the incidence of new prescriptions by a factor of 4, and reduced misuse by a factor of 10. ",
+        "We need to generate fewer prescriptions since the injuries module regularly prescribes opioids for ",
+        "some injuries."
+      ],
+      "complex_transition": [
         {
-            "condition" : {
-              "condition_type" : "Attribute",
-              "attribute" : "opioid_prescription",
-              "operator" : "is not nil"
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "opioid_prescription",
+              "operator": "is not nil",
+              "remarks": [
+                "This catches the opioids prescribed by the injuries module."
+              ]
             },
-            "distributions" : [
+            "distributions": [
               {
-                "distribution" : 1.0,
-                "transition" : "Directed_Use"
+                "distribution": 1.0,
+                "transition": "Directed_Use"
               }
             ]
         },
@@ -55,17 +83,17 @@
               "condition_type": "Socioeconomic Status",
               "category": "High"
             },
-            "distributions" : [
+            "distributions": [
               {
-                "distribution": 0.00037,
+                "distribution": 0.00010,
                 "transition": "Enter_Directed_Use"
               },
               {
-                "distribution": 0.00001,
+                "distribution": 0.000003,
                 "transition": "Misuse"
               },
               {
-                "distribution" : 0.99962,
+                "distribution": 0.999897,
                 "transition": "General_Population"
               }
             ]
@@ -75,17 +103,17 @@
             "condition_type": "Socioeconomic Status",
             "category": "Middle"
           },
-          "distributions" : [
+          "distributions": [
             {
-              "distribution": 0.00037,
+              "distribution": 0.00010,
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.00002,
+              "distribution": 0.000005,
               "transition": "Misuse"
             },
             {
-              "distribution" : 0.99961,
+              "distribution": 0.999895,
               "transition": "General_Population"
             }
           ]
@@ -95,17 +123,17 @@
             "condition_type": "Socioeconomic Status",
             "category": "Low"
           },
-          "distributions" : [
+          "distributions": [
             {
-              "distribution": 0.00037,
+              "distribution": 0.00010,
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.00004,
+              "distribution": 0.000008,
               "transition": "Misuse"
             },
             {
-              "distribution" : 0.99959,
+              "distribution": 0.999892,
               "transition": "General_Population"
             }
           ]
@@ -113,9 +141,11 @@
       ]
     },
 
-    "Enter_Directed_Use" : {
-      "type" : "Simple",
-      "remarks" : "provide a few different ways that people are prescribed opioids",
+    "Enter_Directed_Use": {
+      "type": "Simple",
+      "remarks": [
+        "provide a few different ways that people are prescribed opioids"
+      ],
       "distributed_transition": [
           {
             "distribution": 0.333,
@@ -126,224 +156,279 @@
             "transition": "Enter_Directed_Use_Condition2"
           },
           {
-            "distribution" : 0.334,
+            "distribution": 0.334,
             "transition": "Enter_Directed_Use_Condition3"
           }
       ]
     },
 
-    "Enter_Directed_Use_Condition1" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "Enter_Directed_Use_Encounter1",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "196416002",
-        "display" : "Impacted molars"
-      }],
-      "direct_transition" : "Enter_Directed_Use_Encounter1"
-    },
-
-    "Enter_Directed_Use_Encounter1" : {
-      "type" : "Encounter",
-      "encounter_class" : "inpatient",
-      "codes" : [{
-          "system": "SNOMED-CT",
-          "code": "183452005",
-          "display": "Encounter Inpatient"
-      }],
-      "direct_transition" : "Enter_Directed_Use_Procedure1"
-    },
-
-    "Enter_Directed_Use_Procedure1" : {
-      "type" : "Procedure",
+    "Enter_Directed_Use_Condition1": {
+      "type": "ConditionOnset",
       "target_encounter": "Enter_Directed_Use_Encounter1",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "65546002",
-        "display": "Extraction of wisdom tooth"
-      }],
-      "direct_transition" : "Directed_Use_Prescription1"
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "196416002",
+          "display": "Impacted molars"
+        }
+      ],
+      "direct_transition": "Enter_Directed_Use_Encounter1"
     },
 
-    "Directed_Use_Prescription1" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "Enter_Directed_Use_Encounter1",
-      "codes" : [{
-          "system" : "RxNorm",
-          "code" : "1310197",
-          "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-      }],
-      "assign_to_attribute" : "opioid_prescription",
-      "direct_transition" : "Directed_Use"
-    },
-
-    "Enter_Directed_Use_Condition2" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "Enter_Directed_Use_Encounter2",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "82423001",
-        "display" : "Chronic pain"
-      }],
-      "direct_transition" : "Enter_Directed_Use_Encounter2"
-    },
-
-    "Enter_Directed_Use_Encounter2" : {
-      "type" : "Encounter",
-      "encounter_class" : "inpatient",
-      "codes" : [{
+    "Enter_Directed_Use_Encounter1": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
           "system": "SNOMED-CT",
           "code": "183452005",
           "display": "Encounter Inpatient"
-      }],
-      "direct_transition" : "Directed_Use_Prescription2"
+        }
+      ],
+      "direct_transition": "Enter_Directed_Use_Procedure1"
     },
 
-    "Directed_Use_Prescription2" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "Enter_Directed_Use_Encounter2",
-      "codes" : [{
-          "system" : "RxNorm",
-          "code" : "1049544",
-          "display" : "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
-      }],
-      "assign_to_attribute" : "opioid_prescription",
-      "direct_transition" : "Directed_Use"
+    "Enter_Directed_Use_Procedure1": {
+      "type": "Procedure",
+      "target_encounter": "Enter_Directed_Use_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65546002",
+          "display": "Extraction of wisdom tooth"
+        }
+      ],
+      "direct_transition": "Directed_Use_Prescription1"
     },
 
-    "Enter_Directed_Use_Condition3" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "Enter_Directed_Use_Encounter3",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "124171000119105",
-        "display" : "Chronic intractable migraine without aura"
-      }],
-      "direct_transition" : "Enter_Directed_Use_Encounter3"
+    "Directed_Use_Prescription1": {
+      "type": "MedicationOrder",
+      "target_encounter": "Enter_Directed_Use_Encounter1",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1310197",
+          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+        }
+      ],
+      "assign_to_attribute": "opioid_prescription",
+      "direct_transition": "Directed_Use"
     },
 
-    "Enter_Directed_Use_Encounter3" : {
-      "type" : "Encounter",
-      "wellness" : true,
-      "direct_transition" : "Directed_Use_Prescription3"
+    "Enter_Directed_Use_Condition2": {
+      "type": "ConditionOnset",
+      "target_encounter": "Enter_Directed_Use_Encounter2",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "82423001",
+          "display": "Chronic pain"
+        }
+      ],
+      "direct_transition": "Enter_Directed_Use_Encounter2"
     },
 
-    "Directed_Use_Prescription3" : {
-      "type" : "MedicationOrder",
-      "target_encounter" : "Enter_Directed_Use_Encounter3",
-      "codes" : [{
-          "system" : "RxNorm",
-          "code" : "1049639",
-          "display" : "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
-      }],
-      "assign_to_attribute" : "opioid_prescription",
-      "direct_transition" : "Directed_Use"
+    "Enter_Directed_Use_Encounter2": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183452005",
+          "display": "Encounter Inpatient"
+        }
+      ],
+      "direct_transition": "Directed_Use_Prescription2"
     },
 
-    "Directed_Use" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "days"
+    "Directed_Use_Prescription2": {
+      "type": "MedicationOrder",
+      "target_encounter": "Enter_Directed_Use_Encounter2",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1049544",
+          "display": "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
+        }
+      ],
+      "assign_to_attribute": "opioid_prescription",
+      "direct_transition": "Directed_Use"
+    },
+
+    "Enter_Directed_Use_Condition3": {
+      "type": "ConditionOnset",
+      "target_encounter": "Enter_Directed_Use_Encounter3",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "124171000119105",
+          "display": "Chronic intractable migraine without aura"
+        }
+      ],
+      "direct_transition": "Enter_Directed_Use_Encounter3"
+    },
+
+    "Enter_Directed_Use_Encounter3": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Directed_Use_Prescription3"
+    },
+
+    "Directed_Use_Prescription3": {
+      "type": "MedicationOrder",
+      "target_encounter": "Enter_Directed_Use_Encounter3",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1049639",
+          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
+        }
+      ],
+      "assign_to_attribute": "opioid_prescription",
+      "direct_transition": "Directed_Use"
+    },
+
+    "Directed_Use": {
+      "type": "Delay",
+      "remarks": [
+        "Project SAMMI modeled addiction rates on a per-day basis. We model ours per-week. The ",
+        "formula used for conversion: ",
+        "weekly_incidence = 1 - (1 - daily_incidence)^7 "
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
       },
       "distributed_transition": [
         {
-          "distribution": 0.03810,
+          "distribution": 0.2381,
+          "remarks": [
+            "0.03810 return to general population each day, so that's 1 - (1 - 0.0381)^7, or 23.81%/wk"
+          ],
           "transition": "End_Prescription_Towards_Gen_Pop"
         },
         {
-          "distribution": 0.00004,
+          "distribution": 0.000280,
+          "remarks": [
+            "0.004%/day = 0.000280/wk"
+          ],
           "transition": "Directed_Use_Overdose"
         },
         {
-          "distribution": 0.00948,
+          "distribution": 0.02150,
+          "remarks": [
+            "0.95% transition to misuse each day, so that's 1 - (1 - 0.0095)^7, or 6.46%/wk. However, ",
+            "this incidence of patients misusing opioid prescriptions came from a particularly opioid- ",
+            "heavy city: Worcester, MA. Reducing this incidence by a factor of 3."
+          ],
           "transition": "End_Prescription_Towards_Misuse"
         },
         {
-          "distribution": 0.95238,
+          "distribution": 0.74037,
           "transition": "Directed_Use"
         }
       ]
     },
 
-    "End_Prescription_Towards_Gen_Pop" : {
-      "type" : "MedicationEnd",
-      "referenced_by_attribute" : "opioid_prescription",
-      "direct_transition" : "Reset_Opioid_var_Towards_Gen_Pop"
+    "End_Prescription_Towards_Gen_Pop": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "opioid_prescription",
+      "direct_transition": "Reset_Opioid_var_Towards_Gen_Pop"
     },
 
-    "Reset_Opioid_var_Towards_Gen_Pop" : {
-      "type" : "SetAttribute",
-      "attribute" : "opioid_prescription",
-      "remarks" : "no value here means the variable is reset to nil",
-      "direct_transition" : "General_Population"
+    "Reset_Opioid_var_Towards_Gen_Pop": {
+      "type": "SetAttribute",
+      "attribute": "opioid_prescription",
+      "remarks": "no value here means the variable is reset to nil",
+      "direct_transition": "General_Population"
     },
 
-    "End_Prescription_Towards_Misuse" : {
-      "type" : "MedicationEnd",
-      "referenced_by_attribute" : "opioid_prescription",
+    "End_Prescription_Towards_Misuse": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "opioid_prescription",
       "remarks": "Note that the variable is not reset on this sequence, because we still want to know which medication they were on",
-      "direct_transition" : "Misuse"
+      "direct_transition": "Misuse"
     },
 
-    "Misuse" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "days"
+    "Misuse": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
       },
       "distributed_transition": [
         {
-          "distribution": 0.01000,
+          "distribution": 0.06793,
+          "remarks": [
+            "0.01 --> 0.06793"
+          ],
           "transition": "Enter_Directed_Use"
         },
         {
-          "distribution": 0.01700,
+          "distribution": 0.1131,
+          "remarks": [
+            "0.017 --> 0.1131"
+          ],
           "transition": "Reset_Opioid_var_Towards_Gen_Pop"
         },
         {
-          "distribution": 0.00075,
+          "distribution": 0.005238,
+          "remarks": [
+            "0.00075 --> 0.005238"
+          ],
           "transition": "Misuse_Overdose"
         },
         {
-          "distribution": 0.02000,
+          "distribution": 0.13187,
+          "remarks": [
+            "0.02 --> 0.13187"
+          ],
           "transition": "Active_Addiction"
         },
         {
-          "distribution": 0.95225,
+          "distribution": 0.681862,
           "transition": "Misuse"
         }
       ]
     },
 
-    "Active_Addiction" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "days"
+    "Active_Addiction": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
       },
       "distributed_transition": [
         {
-          "distribution": 0.00600,
+          "distribution": 0.04125,
+          "remarks": [
+            "0.006 --> 0.04125"
+          ],
           "transition": "Detoxification"
         },
         {
-          "distribution": 0.99250,
-          "transition": "Active_Addiction"
+          "distribution": 0.01045,
+          "remarks": [
+            "0.00150 --> 0.01045"
+          ],
+          "transition": "Addiction_Overdose"
         },
         {
-          "distribution": 0.00150,
-          "transition": "Addiction_Overdose"
+          "distribution": 0.9483,
+          "transition": "Active_Addiction"
         }
       ]
     },
 
-    "Detoxification" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "days"
+    "Detoxification": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
       },
+      "remarks": [
+        "Changed the time scale but not the percentages. These are timestep independent."
+      ],
       "distributed_transition": [
         {
           "distribution": 0.75000,
@@ -364,22 +449,24 @@
       ]
     },
 
-    "Enter_Addiction_Treatment" : {
-      "type" : "Encounter",
-      "encounter_class" : "inpatient",
-      "codes" : [{
+    "Enter_Addiction_Treatment": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
           "system": "SNOMED-CT",
           "code": "56876005",
           "display": "Drug rehabilitation and detoxification"
-      }],
-      "direct_transition" : "Addiction_Treatment"
+        }
+      ],
+      "direct_transition": "Addiction_Treatment"
     },
 
-    "Addiction_Treatment" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 1,
-        "unit" : "days"
+    "Addiction_Treatment": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
       },
       "distributed_transition": [
         {
@@ -397,22 +484,24 @@
       ]
     },
 
-    "Recovery_Management" : {
-      "type" : "Encounter",
-      "encounter_class" : "outpatient",
-      "codes" : [{
+    "Recovery_Management": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
           "system": "SNOMED-CT",
           "code": "266707007",
           "display": "Drug addiction therapy"
-      }],
-      "direct_transition" : "Recovery_Management_Delay"
+        }
+      ],
+      "direct_transition": "Recovery_Management_Delay"
     },
 
-    "Recovery_Management_Delay" : {
-      "type" : "Delay",
-      "exact" : {
-        "quantity" : 30,
-        "unit" : "days"
+    "Recovery_Management_Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
       },
       "distributed_transition": [
         {
@@ -422,30 +511,34 @@
         {
           "distribution": 0.7397,
           "transition": "Recovery_Management",
-          "remarks" : "Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"
+          "remarks": "Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"
         }
       ]
     },
 
-    "Directed_Use_Overdose" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "Directed_Use_Overdose_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "55680006",
-        "display" : "Drug overdose"
-      }],
-      "direct_transition" : "Directed_Use_Overdose_Encounter"
+    "Directed_Use_Overdose": {
+      "type": "ConditionOnset",
+      "target_encounter": "Directed_Use_Overdose_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "55680006",
+          "display": "Drug overdose"
+        }
+      ],
+      "direct_transition": "Directed_Use_Overdose_Encounter"
     },
 
-    "Directed_Use_Overdose_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "outpatient",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
+    "Directed_Use_Overdose_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency Room Admission"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -458,25 +551,29 @@
       ]
     },
 
-    "Misuse_Overdose" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "Misuse_Overdose_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "55680006",
-        "display" : "Drug overdose"
-      }],
-      "direct_transition" : "Misuse_Overdose_Encounter"
+    "Misuse_Overdose": {
+      "type": "ConditionOnset",
+      "target_encounter": "Misuse_Overdose_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "55680006",
+          "display": "Drug overdose"
+        }
+      ],
+      "direct_transition": "Misuse_Overdose_Encounter"
     },
 
-    "Misuse_Overdose_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "outpatient",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
+    "Misuse_Overdose_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency Room Admission"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -489,25 +586,29 @@
       ]
     },
 
-    "Addiction_Overdose" : {
-      "type" : "ConditionOnset",
-      "target_encounter" : "Addiction_Overdose_Encounter",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "55680006",
-        "display" : "Drug overdose"
-      }],
-      "direct_transition" : "Addiction_Overdose_Encounter"
+    "Addiction_Overdose": {
+      "type": "ConditionOnset",
+      "target_encounter": "Addiction_Overdose_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "55680006",
+          "display": "Drug overdose"
+        }
+      ],
+      "direct_transition": "Addiction_Overdose_Encounter"
     },
 
-    "Addiction_Overdose_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "outpatient",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
+    "Addiction_Overdose_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency Room Admission"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -520,18 +621,20 @@
       ]
     },
 
-    "Death" : {
-      "type" : "Death",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "55680006",
-        "display" : "Drug overdose"
-      }],
-      "direct_transition" : "Terminal"
+    "Death": {
+      "type": "Death",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "55680006",
+          "display": "Drug overdose"
+        }
+      ],
+      "direct_transition": "Terminal"
     },
 
-    "Terminal" : {
-      "type" : "Terminal"
+    "Terminal": {
+      "type": "Terminal"
     }
 
   }
