@@ -74,9 +74,7 @@
         "Shoulders:     0.001470   http://rheumatology.oxfordjournals.org/content/45/2/215.full",
 
         "From these estimates the incidences may be adjusted slightly (see notes when a rate is adjusted) ",
-        "to yield reasonable prevalences.",
-
-        ">>>> Turn down fractures, lacerations, and sprains"
+        "to yield reasonable prevalences."
       ],
       "range": {
         "low": 10,
@@ -145,8 +143,8 @@
           "distribution": 0.025,
           "transition": "Broken_Bone_Injury",
           "remarks": [
-            "Children get broken bones far more often than adults. Shifting a good portion ",
-            "from adults to children. Doubled the original distribution 0.0583 --> 0.1166"
+            "Children get broken bones far more often than adults. To make a patient's record ",
+            "realistic I still cut the original probability in half from 0.0583 --> 0.025 "
           ]
         },
         {
@@ -216,8 +214,8 @@
           "transition": "Broken_Bone_Injury",
           "remarks": [
             "Adults break fewer bones than children or the elderly. Shifting incidence away ",
-            "from adults towards children. Reducing this incidence by half from ",
-            "0.0583 --> 0.02915 "
+            "from adults towards children. Reducing this incidence by a factor of 8 from ",
+            "0.0583 --> 0.007 "
           ]
         },
         {
