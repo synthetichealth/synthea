@@ -7,14 +7,14 @@
     "Incidence for recurrent UTIs: ",
     "https://www.kidney.org/sites/default/files/uti.pdf",
 
-    "The NIH claims 8.1M doctor visits each year are because of UTIs. However, some of these could be recurrent ",
-    "visits for the same woman. Estimates show that 1 in 5 women have UTIs, and about a quarter of those are ",
-    "recurring, so more realistically about 75% of those visits to the physician are unique patients. I therefore ",
-    "estimate (0.75 * 8.1M) = 6.08M unique patients get UTIs every year, or about 1.9% of the population ",
-    "(out of 320M Americans in 2016).",
+    "Incidence for men: ",
+    "https://www.betterhealth.vic.gov.au/health/conditionsandtreatments/urinary-tract-infections-uti",
+    "UTIs are practically nonexistent in young men but can occur in elderly men.",
 
-    "UTIs are practically nonexistent in young men but can occur in elderly men. I couldn't find any stats on ",
-    "incidence in elderly men but I'm estimating 2%, which is 1/10th the rate of women.",
+    "The NIH claims 8.1M doctor visits each year are because of UTIs. However, some of these could be recurrent ",
+    "visits for the same woman. Estimates show about a quarter of UTIs are recurring, so more realistically ",
+    "about 75% of those visits to the physician are unique patients. I therefore estimate (0.75 * 8.1M) = 6.08M ",
+    "unique patients get UTIs every year, or about 1.9% of the population (out of 320M Americans in 2016).",
 
     "Several risk factors also increase the likelihood of a UTI including diabetes and obseity. Obesity doubles ",
     "the risk for a UTI in women. For now these are not represented in this module."
@@ -83,10 +83,7 @@
         "quantity": 55,
         "unit": "years"
       },
-      "direct_transition": "Will_Get_One_UTI",
-      "remarks": [
-        "For now we don't model recurrent UTIs in men, only women."
-      ]
+      "direct_transition": "Wait_For_Next_UTI"
     },
 
     "Delay_Until_Right_Age": {
@@ -95,120 +92,10 @@
         "Women may start getting UTIs at different points in their life."
       ],
       "range": {
-        "low": 16,
+        "low": 15,
         "high": 55,
         "unit": "years"
       },
-      "distributed_transition": [
-        {
-          "distribution": 0.792,
-          "transition": "Will_Get_One_UTI"
-        },
-        {
-          "distribution": 0.2,
-          "transition": "Will_Get_Two_UTIs"
-        },
-        {
-          "distribution": 0.06,
-          "transition": "Will_Get_Three_UTIs"
-        },
-        {
-          "distribution": 0.048,
-          "transition": "Recurring_Urinary_Tract_Infections"
-        }
-      ]
-    },
-
-    "Will_Get_One_UTI": {
-      "type": "SetAttribute",
-      "remarks": [
-        "======================================================================",
-        " UTI ITERATOR                                                         ",
-        "======================================================================",
-
-        "Counts the number of UTIs a woman has in her lifetime. Once 3 UTIs are ",
-        "counted the module terminates."
-      ],
-      "attribute": "uti_iterator",
-      "value": "2",
-      "direct_transition": "UTI_Iterator"
-    },
-
-    "Will_Get_Two_UTIs": {
-      "type": "SetAttribute",
-      "attribute": "uti_iterator",
-      "value": "1",
-      "direct_transition": "UTI_Iterator"
-    },
-
-    "Will_Get_Three_UTIs": {
-      "type": "SetAttribute",
-      "attribute": "uti_iterator",
-      "value": "0",
-      "direct_transition": "UTI_Iterator"
-    },
-
-    "UTI_Iterator": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "uti_iterator",
-            "operator": "==",
-            "value": "0"
-          },
-          "transition": "UTI_Iterator_1"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "uti_iterator",
-            "operator": "==",
-            "value": "1"
-          },
-          "transition": "UTI_Iterator_2"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "uti_iterator",
-            "operator": "==",
-            "value": "2"
-          },
-          "transition": "UTI_Iterator_3"
-        },
-        {
-          "transition": "Wait_For_Next_UTI"
-        }
-      ]
-    },
-
-    "Recurring_Urinary_Tract_Infections": {
-      "type": "SetAttribute",
-      "attribute": "reccuring_utis",
-      "value": true,
-      "direct_transition": "Recurrent_Urinary_Tract_Infection"
-    },
-
-    "UTI_Iterator_1": {
-      "type": "SetAttribute",
-      "attribute": "uti_iterator",
-      "value": "1",
-      "direct_transition": "Wait_For_Next_UTI"
-    },
-
-    "UTI_Iterator_2": {
-      "type": "SetAttribute",
-      "attribute": "uti_iterator",
-      "value": "2",
-      "direct_transition": "Wait_For_Next_UTI"
-    },
-
-    "UTI_Iterator_3": {
-      "type": "SetAttribute",
-      "attribute": "uti_iterator",
-      "value": "3",
       "direct_transition": "Wait_For_Next_UTI"
     },
 
@@ -304,19 +191,6 @@
       "direct_transition": "Prescribe_UTI_Antibiotic"
     },
 
-    "Recurrent_Urinary_Tract_Infection": {
-      "type": "ConditionOnset",
-      "target_encounter": "UTI_Diagnosis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "197927001",
-          "display": "Recurrent urinary tract infection"
-        }
-      ],
-      "direct_transition": "Wait_For_Next_UTI"
-    },
-
     "Prescribe_UTI_Antibiotic": {
       "type": "MedicationOrder",
       "target_encounter": "UTI_Diagnosis",
@@ -355,22 +229,22 @@
         "quantity": 7,
         "unit": "days"
       },
+      "direct_transition": "End_First_Round_Of_Antibiotics"
+    },
+
+    "End_First_Round_Of_Antibiotics": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_UTI_Antibiotic",
       "distributed_transition": [
         {
           "distribution": 0.15,
-          "transition": "End_First_Round_Of_Antibiotics"
+          "transition": "Followup_Encounter"
         },
         {
           "distribution": 0.85,
           "transition": "End_Urinary_Tract_Infection"
         }
       ]
-    },
-
-    "End_First_Round_Of_Antibiotics": {
-      "type": "MedicationEnd",
-      "medication_order": "Prescribe_UTI_Antibiotic",
-      "direct_transition": "Followup_Encounter"
     },
 
     "Followup_Encounter": {
@@ -431,37 +305,48 @@
 
     "Get_Additional_UTIs": {
       "type": "Simple",
-      "conditional_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "reccuring_utis",
-            "operator": "==",
-            "value": true
-          },
-          "transition": "Wait_For_Recurring_UTI"
+          "distribution": 0.2,
+          "transition": "Wait_For_Next_UTI",
+          "remarks": [
+            "Nearly 20% of women who have one UTI have another "
+          ]
         },
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "uti_iterator",
-            "operator": "!=",
-            "value": "3"
-          },
-          "transition": "UTI_Iterator"
+          "distribution": 0.048,
+          "transition": "Recurrent_Urinary_Tract_Infections",
+          "remarks": [
+            "About 4.8% get recurring UTIs: ",
+            "0.8 * 0.3 * 0.2 = 0.048 "
+          ]
         },
         {
+          "distribution": 0.752,
           "transition": "Terminal"
         }
       ]
+    },
+
+    "Recurrent_Urinary_Tract_Infections": {
+      "type": "ConditionOnset",
+      "target_encounter": "UTI_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "197927001",
+          "display": "Recurrent urinary tract infection"
+        }
+      ],
+      "direct_transition": "Wait_For_Recurring_UTI"
     },
 
     "Wait_For_Recurring_UTI": {
       "type": "Delay",
       "range": {
         "low": 3,
-        "high": 4,
-        "unit": "months"
+        "high": 6,
+        "unit": "weeks"
       },
       "direct_transition": "Urinary_Tract_Infection"
     },
