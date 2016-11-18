@@ -197,8 +197,68 @@
       "remarks" : "early diagnosis for COPD is the exception not the rule. assume that most people will be stage 2 at diagnosis",
       "unit" : "%",
       "target_encounter" : "DiagnosisEncounter",
-      "direct_transition" : "Living_with_COPD"
+      "conditional_transition" : [
+        {
+          "condition" : { "condition_type": "Attribute", "attribute": "smoker", "operator": "==", "value": true },
+          "transition" : "Smoker_CarePlan"
+        },
+        {
+          "transition" : "Nonsmoker_CarePlan"
+        }
+      ]
     },
+
+    "Nonsmoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "DiagnosisEncounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "412776001",
+          "display": "Chronic obstructive pulmonary disease clinical management plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229065009",
+          "display": "Exercise therapy"
+        },
+        {
+          "system" : "SNOMED-CT",
+          "code" : "15081005",
+          "display" : "Pulmonary rehabilitation (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Living_with_COPD"
+    },
+
+    "Smoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "DiagnosisEncounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "412776001",
+          "display": "Chronic obstructive pulmonary disease clinical management plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710081004",
+          "display": "Smoking cessation therapy"
+        },
+        {
+          "system" : "SNOMED-CT",
+          "code" : "426990007",
+          "display" : "Home oxygen therapy (procedure)"
+        }
+      ],
+      "direct_transition": "Living_with_COPD"
+    },
+
+
 
     "Living_with_COPD" : {
       "type" : "Simple",
