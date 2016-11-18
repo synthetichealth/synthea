@@ -269,6 +269,13 @@ module Synthea
         if state.has_key? 'referenced_by_attribute'
           details = details + "Referenced By Attribute: '#{state['referenced_by_attribute']}'\\l"
         end
+        if state.has_key? 'activities'
+          details = details + "\\lActivities:\\l"
+          state['activities'].each do |activity|
+            details = details + activity['system'] + "[" + activity['code'] + "]: " + activity['display'] + "\\l"
+          end
+        end
+
         details
       end
 
