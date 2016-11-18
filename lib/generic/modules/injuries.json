@@ -127,27 +127,39 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.005100,
-          "transition": "Concussion_Injury"
+          "distribution": 0.01010,
+          "transition": "Concussion_Injury",
+          "remarks": [
+            "Our initial estimate for concussions seem too low. Since most concussion injuries ",
+            "happen in sports and children are more likely to get concussions (for this reason) ",
+            "doubling the concussion rate for children from 0.0051 --> 0.0101."
+          ]
         },
         {
           "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.058300,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.025,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Children get broken bones far more often than adults. To make a patient's record ",
+            "realistic I still cut the original probability in half from 0.0583 --> 0.025 "
+          ]
         },
         {
           "distribution": 0.003980,
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.026100,
+          "distribution": 0.015,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.054400,
+          "distribution": 0.025,
+          "remarks": [
+            "Sprains are slightly more likely in kids."
+          ],
           "transition": "Sprain_Injury"
         },
         {
@@ -185,27 +197,37 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.005100,
-          "transition": "Concussion_Injury"
+          "distribution": 0.007650,
+          "transition": "Concussion_Injury",
+          "remarks": [
+            "Adults are likely to get concussions from sports, work-related accidents, and ",
+            "motor vehicle accidents. Increasing the incidence in adults by 1.5 from ",
+            "0.0051 --> 0.00765"
+          ]
         },
         {
           "distribution": 0.004780,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.058300,
-          "transition": "Broken_Bone_Injury"
+          "distribution": 0.007,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Adults break fewer bones than children or the elderly. Shifting incidence away ",
+            "from adults towards children. Reducing this incidence by a factor of 8 from ",
+            "0.0583 --> 0.007 "
+          ]
         },
         {
           "distribution": 0.003980,
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.026100,
+          "distribution": 0.015,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.054400,
+          "distribution": 0.0125,
           "transition": "Sprain_Injury"
         },
         {
@@ -252,6 +274,9 @@
         },
         {
           "distribution": 0.058300,
+          "remarks": [
+            "Retain highest probability for elderly."
+          ],
           "transition": "Broken_Bone_Injury"
         },
         {
@@ -259,11 +284,11 @@
           "transition": "Burn_Injury"
         },
         {
-          "distribution": 0.026100,
+          "distribution": 0.015,
           "transition": "Laceration_Injury"
         },
         {
-          "distribution": 0.054400,
+          "distribution": 0.0125,
           "transition": "Sprain_Injury"
         },
         {
@@ -1402,7 +1427,7 @@
         {
           "system": "SNOMED-CT",
           "code": "403192003",
-          "display": "Second degree burn"
+          "display": "Third degree burn"
         }
       ],
       "direct_transition": "Severe_Burn_Care"
