@@ -57,6 +57,14 @@
     "condition_type" : "Socioeconomic Status",
     "category" : "Low"
   },
+  "raceExistsTest": {
+    "condition_type" : "Race",
+    "race" : "White"
+  },
+  "raceDoesNotExistTest": {
+    "condition_type" : "Race",
+    "race" : "foo"
+  },
   "before2016Test" : {
     "condition_type" : "Date",
     "operator" : "<",

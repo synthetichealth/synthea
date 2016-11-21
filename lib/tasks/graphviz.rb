@@ -313,6 +313,8 @@ module Synthea
           "age \\#{logic['operator']} #{logic['quantity']} #{logic['unit']}\\l"
         when 'Socioeconomic Status'
           "#{logic['category']} Socioeconomic Status\\l"
+        when 'Race'
+          "race is '#{logic['race']}'\\l"
         when 'Date'
           "Year is \\#{logic['operator']} #{logic['year']}\\l"
         when 'Symptom'
