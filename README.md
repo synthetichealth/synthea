@@ -1,6 +1,6 @@
 # Synthea Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea)
 
-Synthea is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic but not real, patient data and associated health records in a variety of formats.
+Synthea is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
 Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
 
@@ -47,7 +47,7 @@ Or generating the population one at a time...
 bundle exec rake synthea:sequential
 ```
 
-Or generating the population for a county a time based on census statistics...
+Or generating the population for a county and time based on census statistics...
 
 ```
 bundle exec rake synthea:sequential['./config/Suffolk_County.json']
@@ -58,13 +58,13 @@ Some settings can be changed in `./config/synthea.yml`.
 Synthea will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `./output`.
 
 ### Upload to FHIR Server
-After generating data, upload it to a STU3 server
+After generating data, upload it to a STU3 FHIR server:
 ```
 bundle exec rake synthea:fhirupload[http://server/fhir/baseDstu3]
 ```
 
 ### Synthea GraphViz
-Generate a graphical visualization of Synthea rules. Requires GraphViz to be installed.
+Generate graphical visualizations of Synthea rules and modules. Requires GraphViz to be installed.
 
 ```
 brew install graphviz
