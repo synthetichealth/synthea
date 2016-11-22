@@ -332,7 +332,7 @@
             { "distribution": 0.10, "transition": "Stage III"},
             { "distribution": 0.74, "transition": "Stage IV"}
           ]
-        }        
+        }
       ],
       "remarks": [
         "See Stage Distribution (%) 2006-2012, Case Counts and Percentages",
@@ -428,7 +428,7 @@
           "transition": "NSCLC III"
         }
       ]
-    }, 
+    },
 
     "Stage IV": {
       "type": "Death",
@@ -563,6 +563,36 @@
         "code": "185347001",
         "display": "Encounter for problem"
       }],
+      "direct_transition": "Lung_Cancer_CarePlan"
+    },
+
+    "Lung_Cancer_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Diagnosis Encounter IV",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "182964004",
+          "display": "Terminal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "133918004",
+          "display": "Comfort measures"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "408957008",
+          "display": "Chronic pain control management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "243072006",
+          "display": "Cancer education"
+        }
+      ],
       "direct_transition": "MRI Brain"
     },
 
@@ -612,7 +642,7 @@
       "direct_transition": "SCLC Chemotheraphy I",
       "remarks": [
         "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
-      ]   
+      ]
     },
 
     "SCLC Chemotheraphy I": {
@@ -709,7 +739,7 @@
       "direct_transition": "NSCLC Chemotheraphy I",
       "remarks": [
         "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
-      ]   
+      ]
     },
 
     "NSCLC Chemotheraphy I": {

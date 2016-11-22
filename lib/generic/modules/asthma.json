@@ -137,7 +137,98 @@
             "display": "Fluticasone propionate 0.044MG [Flovent]"
           }
         ],
-        "direct_transition": "Maintaining_Asthma"
+        "direct_transition": "Asthma_CarePlan_Selector"
+    },
+
+    "Asthma_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "transition": "Smoker_CarePlan"
+        },
+        {
+          "transition": "Nonsmoker_CarePlan"
+        }
+      ]
+    },
+
+    "Smoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute": "asthma_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "699728000",
+          "display": "Asthma self management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710081004",
+          "display": "Smoking cessation therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "710818004",
+          "display": "Inhaled steroid therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "708409001",
+          "display": "Home nebulizer therapy"
+        }
+      ],
+      "direct_transition": "Maintaining_Asthma"
+    },
+
+    "Nonsmoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute": "asthma_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "699728000",
+          "display": "Asthma self management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710818004",
+          "display": "Inhaled steroid therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "708409001",
+          "display": "Home nebulizer therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229298005",
+          "display": "Breathing control"
+        }
+      ],
+      "direct_transition": "Maintaining_Asthma"
     },
 
     "Maintaining_Asthma": {
@@ -320,6 +411,12 @@
     "Childhood_Asthma_Subsides": {
       "type": "ConditionEnd",
       "condition_onset": "Childhood_Asthma_Begins",
+      "direct_transition": "End_Asthma_CarePlan"
+    },
+
+    "End_Asthma_CarePlan": {
+      "type": "CarePlanEnd",
+      "referenced_by_attribute": "asthma_careplan",
       "direct_transition": "Terminal"
     },
 

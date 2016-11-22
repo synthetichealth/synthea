@@ -81,7 +81,7 @@
       "range": { "low" : 0, "high" : 100 },
       "direct_transition" : "Bronchitis_Symptom3"
     },
-    
+
     "Bronchitis_Symptom3" : {
       "type" : "Symptom",
       "symptom": "Shortness of Breath",
@@ -111,7 +111,7 @@
         { "distribution" : 0.05, "transition" : "Chest_Xray" },
         { "distribution" : 0.20, "transition" : "Sputum_Test" },
         { "distribution" : 0.50, "transition" : "Lung_Function_Test" },
-        { "distribution" : 0.20, "transition" : "OTC_Medicine" }
+        { "distribution" : 0.20, "transition" : "Bronchitis_CarePlan_Selector" }
       ],
       "remarks" : ["There are no reliable diagnostic signs or laboratory tests, so the diagnosis of acute bronchitis is essentially a clinical one. ",
                    "The most important condition to rule out is acute pneumonia. "]
@@ -125,7 +125,7 @@
         "code": "399208008",
         "display": "Plain chest X-ray (procedure)"
       }],
-      "direct_transition" : "OTC_Medicine"
+      "direct_transition" : "Bronchitis_CarePlan_Selector"
     },
 
     "Sputum_Test" : {
@@ -136,7 +136,7 @@
         "code": "269911007",
         "display": "Sputum examination (procedure)"
       }],
-      "direct_transition" : "OTC_Medicine"
+      "direct_transition" : "Bronchitis_CarePlan_Selector"
     },
 
     "Lung_Function_Test" : {
@@ -147,7 +147,93 @@
         "code": "23426006",
         "display": "Measurement of respiratory function (procedure)"
       }],
-      "direct_transition" : "OTC_Medicine"
+      "direct_transition" : "Bronchitis_CarePlan_Selector"
+    },
+
+    "Bronchitis_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "transition": "Smoker_CarePlan"
+        },
+        {
+          "transition": "Nonsmoker_CarePlan"
+        }
+      ]
+    },
+
+    "Smoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Doctor_Visit",
+      "assign_to_attribute": "bronchitis_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "53950000",
+          "display": "Respiratory therapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710081004",
+          "display": "Smoking cessation therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "304510005",
+          "display": "Recommendation to avoid exercise"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "371605008",
+          "display": "Deep breathing and coughing exercises"
+        }
+      ],
+      "direct_transition": "OTC_Medicine"
+    },
+
+    "Nonsmoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Doctor_Visit",
+      "assign_to_attribute": "bronchitis_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "53950000",
+          "display": "Respiratory therapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "304510005",
+          "display": "Recommendation to avoid exercise"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "371605008",
+          "display": "Deep breathing and coughing exercises"
+        }
+      ],
+      "direct_transition": "OTC_Medicine"
     },
 
     "OTC_Medicine" : {
@@ -228,7 +314,7 @@
       "exact" : { "quantity" : 0 },
       "direct_transition" : "Bronchitis_Symptom3_Subsides"
     },
-    
+
     "Bronchitis_Symptom3_Subsides" : {
       "type" : "Symptom",
       "symptom": "Shortness of Breath",
@@ -243,7 +329,7 @@
           "transition" : "End_OTC_Medication"
         },
         {
-          "transition" : "Potential_Infection"
+          "transition" : "Next_Well_Visit"
         }
       ]
     },
@@ -251,8 +337,19 @@
     "End_OTC_Medication" : {
       "type" : "MedicationEnd",
       "referenced_by_attribute" : "OTC_Bronchitis_Med",
-      "direct_transition" : "Potential_Infection"
-    }
+      "direct_transition" : "Next_Well_Visit"
+    },
 
+    "Next_Well_Visit": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "End_Bronchitis_CarePlan"
+    },
+
+    "End_Bronchitis_CarePlan": {
+      "type": "CarePlanEnd",
+      "referenced_by_attribute": "bronchitis_careplan",
+      "direct_transition": "Potential_Infection"
+    }
   }
 }

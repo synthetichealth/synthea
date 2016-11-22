@@ -474,6 +474,54 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "Suicide_CarePlan_Selector"
+    },
+
+    "Suicide_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "suicide_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Suicide_CarePlan"
+        },
+        {
+          "transition": "Followup_Psychiatric_Evaluation"
+        }
+      ]
+    },
+
+    "Suicide_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Attempted_Suicide_Followup",
+      "assign_to_attribute": "suicide_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183401008",
+          "display": "Anti-suicide psychotherapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "784051000000106",
+          "display": "Depression care management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "415665002",
+          "display": "Suicide prevention"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "10029008",
+          "display": "Suicide precautions"
+        }
+      ],
       "direct_transition": "Followup_Psychiatric_Evaluation"
     },
 
