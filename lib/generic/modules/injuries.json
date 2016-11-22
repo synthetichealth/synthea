@@ -558,40 +558,13 @@
           "display": "Bullet wound"
         }
       ],
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "fatal_injury",
-            "operator": "is nil"
-          },
-          "remarks": [
-            "Default probabilities if 'fatal_injury' attribute is not used"
-          ],
-          "distributions": [
-            {
-              "distribution": 0.298,
-              "transition": "Death"
-            },
-            {
-              "distribution": 0.702,
-              "transition": "Gunshot_Injury_Treatment"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "fatal_injury",
-            "operator": "==",
-            "value": true
-          },
+          "distribution": 0.298,
           "transition": "Death"
         },
         {
-          "remarks": [
-            "Fallback transition"
-          ],
+          "distribution": 0.702,
           "transition": "Gunshot_Injury_Treatment"
         }
       ]

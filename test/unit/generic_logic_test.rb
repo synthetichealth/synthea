@@ -22,6 +22,10 @@ class GenericLogicTest < Minitest::Test
     @patient[:age] = ageInYears
   end
 
+  def setPatientRace(race_sym)
+    @patient[:race] = race_sym
+  end
+
   def do_test(name)
     logic = @logic[name]
     type = logic['condition_type'].gsub(/\s+/, '_').camelize
@@ -110,6 +114,16 @@ class GenericLogicTest < Minitest::Test
     refute(do_test('sesHighTest'))
     refute(do_test('sesMiddleTest'))
     assert(do_test('sesLowTest'))
+  end
+
+  def test_race_exists
+    setPatientRace(:white)
+    assert(do_test('raceExistsTest'))
+  end
+
+  def test_race_does_not_exist
+    setPatientRace(:native)
+    refute(do_test('raceDoesNotExistTest'))
   end
 
   def test_date

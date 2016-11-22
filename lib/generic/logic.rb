@@ -131,6 +131,15 @@ module Synthea
         end
       end
 
+      class Race < Condition
+        attr_accessor :race
+        required_field :race
+
+        def test(_context, _time, entity)
+          race.downcase.to_sym == entity[:race]
+        end
+      end
+
       class Date < Condition
         attr_accessor :year, :operator
         required_field and: [:year, :operator]
