@@ -1,0 +1,230 @@
+{
+  "name": "Attention Deficit Disorder",
+  "remarks": [
+    "The CDC estimates that 11% of children are diagnosed with ADD. ",
+    "Source: http://www.cdc.gov/ncbddd/adhd/data.html"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.11,
+          "transition": "Delay_Until_ADHD"
+        },
+        {
+          "distribution": 0.89,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_Until_ADHD": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 15,
+        "unit": "years"
+      },
+      "direct_transition": "ADHD"
+    },
+
+    "ADHD": {
+      "type": "ConditionOnset",
+      "target_encounter": "ADHD_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "192127007",
+          "display": "Child attention deficit disorder"
+        }
+      ],
+      "direct_transition": "ADHD_Diagnosis"
+    },
+
+    "ADHD_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "ADHD_CarePlan"
+    },
+
+    "ADHD_CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "386522008",
+          "display": "Overactivity/inattention behavior management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "409063005",
+          "display": "Counseling"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "405783006",
+          "display": "Psychological assessment"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "Behavior_Therapy"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Stimulant_Medication"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Cognition_Enhancing_Medication"
+        }
+      ]
+    },
+
+    "Behavior_Therapy": {
+      "type": "Delay",
+      "remarks": [
+        "Behavior therapy is favored over medication. We give behavior therapy for ",
+        "awhile, until the patient reaches his/her 20's or the condition subsides."
+      ],
+      "range": {
+        "low": 4,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Behavior_Treatment_Encounter"
+    },
+
+    "Behavior_Treatment_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Behavior_Treatment_Procedure"
+    },
+
+    "Behavior_Treatment_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Behavior_Treatment_Encounter",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "228557008",
+          "display": "Cognitive and behavioral therapy"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.05,
+              "transition": "ADHD_Ends",
+              "remarks": [
+                "We give the ADHD a chance to subside (meaning the behavioral treatment ",
+                "has worked) during childhood. ADHD will eventually subside anyway once ",
+                "the patient reaches adulthood."
+              ]
+            },
+            {
+              "distribution": 0.95,
+              "transition": "Behavior_Therapy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "ADHD_Ends"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Stimulant_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "ADHD_Diagnosis",
+      "assign_to_attribute": "adhd_medication",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1091166",
+          "display": "Methylphenidate Hydrochloride 20 MG [Ritalin]"
+        }
+      ],
+      "direct_transition": "Age_Guard"
+    },
+
+    "Cognition_Enhancing_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "ADHD_Diagnosis",
+      "assign_to_attribute": "adhd_medication",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "617944",
+          "display": "Atomoxetine 100 MG [Strattera]"
+        }
+      ],
+      "direct_transition": "Age_Guard"
+    },
+
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "End_ADHD_Medication"
+    },
+
+    "End_ADHD_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "adhd_medication",
+      "direct_transition": "ADHD_Ends"
+    },
+
+    "ADHD_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "ADHD",
+      "direct_transition": "ADHD_CarePlan_Ends"
+    },
+
+    "ADHD_CarePlan_Ends": {
+      "type": "CarePlanEnd",
+      "careplan": "ADHD_CarePlan",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
