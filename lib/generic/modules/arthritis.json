@@ -636,7 +636,7 @@
 
         "Shares the same medications and care pathways as gout."
       ],
-      "target_encounter": "RA_Diagnosis",
+      "target_encounter": "Gout_Diagnosis",
       "codes": [
         {
           "system": "SNOMED-CT",
