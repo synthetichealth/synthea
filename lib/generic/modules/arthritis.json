@@ -258,10 +258,10 @@
 
         "Estimated prevalence of Osteoarthritis is 34%. ",
 
-        "Estimated prevalence of hip replacements is 0.165% (80% for OA => 0.132%).",
+        "Estimated prevalence of hip replacements is 0.165% (80% are for OA => 0.132%).",
         "Therefore (0.00132 / (0.34 * 0.205)) => 0.0189 of all hip OA leads to hip replacement.",
 
-        "Estimated prevalence of knee replacements is 0.243% (95% for OA => 0.231%).",
+        "Estimated prevalence of knee replacements is 0.243% (95% are for OA => 0.231%).",
         "Therefore (0.00231 / (0.34 * 0.561)) => 0.0121 of all knee OA leads to knee replacement.",
 
         "Averaging the two at 0.015"
@@ -395,41 +395,337 @@
     },
 
     "Fibromyalgia": {
-      "type": "Simple",
+      "type": "ConditionOnset",
       "remarks": [
         "======================================================================",
         " FIBROMYALGIA                                                         ",
-        "======================================================================"
+        "======================================================================",
+
+        "Source: http://www.cdc.gov/arthritis/basics/fibromyalgia.htm",
+
+        "People with fibromyalgia have at least one hospitalization every 3 years.",
+        "5.5M ambulatory care visits every year."
       ],
-      "direct_transition": "Terminal"
+      "target_encounter": "Fibromyalgia_Diagnosis",
+      "assign_to_attribute": "arthritis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "95417003",
+          "display": "Primary fibromyalgia syndrome"
+        }
+      ],
+      "direct_transition": "Fibromyalgia_Diagnosis"
+    },
+
+    "Fibromyalgia_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Fibromyalgia_CarePlan"
+    },
+
+    "Fibromyalgia_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Fibromyalgia_Diagnosis",
+      "assign_to_attribute": "arthritis_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Joint mobility exercises"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "226060000",
+          "display": "Stress management"
+        }
+      ],
+      "direct_transition": "Fibromyalgia_Nonopioid_Pain_Medication"
+    },
+
+    "Fibromyalgia_Nonopioid_Pain_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "Fibromyalgia_Diagnosis",
+      "codes": [
+        {
+          "system" : "RxNorm",
+          "code" : "849727",
+          "display" : "Naproxen sodium 220 MG [Aleve]"
+        }
+      ],
+      "direct_transition": "Delay_Until_Fibromyalgia_Episode"
+    },
+
+    "Delay_Until_Fibromyalgia_Episode": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 4,
+        "unit": "years"
+      },
+      "direct_transition": "Fibromyalgia_Episode"
+    },
+
+    "Fibromyalgia_Episode": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "32485007",
+          "display": "Hospital admission"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "PriorState",
+              "name": "Fibromyalgia_Opioid_Pain_Medication"
+            }
+          },
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "Fibromyalgia_Opioid_Pain_Medication",
+              "remarks": [
+                "Some of the cases are bad enough to merit opioid pain medication."
+              ]
+            },
+            {
+              "distribution": 0.9,
+              "transition": "Delay_Until_Fibromyalgia_Episode"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Delay_Until_Fibromyalgia_Episode"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Fibromyalgia_Opioid_Pain_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "Fibromyalgia_Episode",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1049636",
+          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG [Percocet]"
+        }
+      ],
+      "direct_transition": "Delay_Until_Fibromyalgia_Episode"
     },
 
     "Gout": {
-      "type": "Simple",
+      "type": "ConditionOnset",
       "remarks": [
         "======================================================================",
         " GOUT                                                                 ",
-        "======================================================================"
+        "======================================================================",
+
+        "Source: http://www.cdc.gov/arthritis/basics/gout.html"
+      ],
+      "target_encounter": "Gout_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90560007",
+          "display": "Gout"
+        }
+      ],
+      "direct_transition": "Gout_Diagnosis"
+    },
+
+    "Gout_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Gout_CarePlan"
+    },
+
+    "Gout_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Fibromyalgia_Diagnosis",
+      "assign_to_attribute": "arthritis_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183301007",
+          "display": "Physical exercises"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229580007",
+          "display": "Ice therapy"
+        }
+      ],
+      "direct_transition": "Gout_Nonopioid_Pain_Medication"
+    },
+
+    "Gout_Nonopioid_Pain_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "Fibromyalgia_Diagnosis",
+      "remarks": [
+        "A stronger NSAID pain reliever than the basic Aleve."
+      ],
+      "codes": [
+        {
+          "system" : "RxNorm",
+          "code" : "849437",
+          "display" : "Naproxen sodium 550 MG [Anaprox]"
+        }
+      ],
+      "direct_transition": "Uric_Acid_Reducer"
+    },
+
+    "Uric_Acid_Reducer": {
+      "type": "MedicationOrder",
+      "target_encounter": "Fibromyalgia_Diagnosis",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "573839",
+          "display": "Allopurinol 100 MG [Zyloprim]"
+        }
       ],
       "direct_transition": "Terminal"
     },
 
     "Rheumatoid_Arthritis": {
-      "type": "Simple",
+      "type": "ConditionOnset",
       "remarks": [
         "======================================================================",
         " RHEUMATOID ARTHRITIS                                                 ",
-        "======================================================================"
+        "======================================================================",
+
+        "Source: http://www.cdc.gov/arthritis/basics/rheumatoid.htm",
+
+        "Shares the same medications and care pathways as gout."
       ],
-      "direct_transition": "Terminal"
+      "target_encounter": "RA_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "69896004",
+          "display": "Rheumatoid arthritis"
+        }
+      ],
+      "direct_transition": "Gout_Diagnosis"
     },
 
     "Lupus": {
-      "type": "Simple",
+      "type": "ConditionOnset",
       "remarks": [
         "======================================================================",
         " LUPUS                                                                ",
-        "======================================================================"
+        "======================================================================",
+
+        "Source: http://www.cdc.gov/arthritis/basics/lupus.htm"
+      ],
+      "target_encounter": "Lupus_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "200936003",
+          "display": "Lupus erythematosus"
+        }
+      ],
+      "direct_transition": "Lupus_Diagnosis"
+    },
+
+    "Lupus_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Lupus_CarePlan"
+    },
+
+    "Lupus_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Lupus_Diagnosis",
+      "assign_to_attribute": "arthritis_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "440381005",
+          "display": "Behavior to prevent sun exposure"
+        }
+      ],
+      "direct_transition": "Lupus_Nonopioid_Pain_Medication"
+    },
+
+    "Lupus_Nonopioid_Pain_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "Lupus_Diagnosis",
+      "remarks": [
+        "A stronger NSAID pain reliever than the basic Aleve."
+      ],
+      "codes": [
+        {
+          "system" : "RxNorm",
+          "code" : "849437",
+          "display" : "Naproxen sodium 550 MG [Anaprox]"
+        }
+      ],
+      "direct_transition": "Immune_Suppressant"
+    },
+
+    "Immune_Suppressant": {
+      "type": "MedicationOrder",
+      "target_encounter": "Lupus_Diagnosis",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "835900",
+          "display": "cycloSPORINE, modified 100 MG [Neoral]"
+        }
       ],
       "direct_transition": "Terminal"
     },
