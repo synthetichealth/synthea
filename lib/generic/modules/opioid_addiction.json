@@ -612,13 +612,56 @@
       "distributed_transition": [
         {
           "distribution": 0.98747,
-          "transition": "Detoxification"
+          "transition": "Addiction_CarePlan_Selector"
         },
         {
           "distribution": 0.01253,
           "transition": "Death"
         }
       ]
+    },
+
+    "Addiction_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid_addiction_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Opioid_Addiction_CarePlan"
+        },
+        {
+          "transition": "Detoxification"
+        }
+      ]
+    },
+
+    "Opioid_Addiction_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Addiction_Overdose_Encounter",
+      "assign_to_attribute": "opioid_addiction_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "266707007",
+          "display": "Drug addiction therapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "60112009",
+          "display": "Drug addiction counseling"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "61480009",
+          "display": "Drug detoxification"
+        }
+      ],
+      "direct_transition": "Detoxification"
     },
 
     "Death": {

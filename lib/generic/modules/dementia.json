@@ -33,7 +33,7 @@
       }],
       "remarks" : "Early onset Alzheimers affects roughly 5% of people with Alzheimer's. http://www.mayoclinic.org/diseases-conditions/alzheimers-disease/in-depth/alzheimers/art-20048356"
     },
-    
+
     "PreAlzheimers" : {
         "type" : "Delay",
         "range": {
@@ -42,7 +42,7 @@
             "unit": "years"
           },
         "remarks" : "There is evidence that higher education leads to a delay in the onset of alzheimers.",
-        "conditional_transition" : [        
+        "conditional_transition" : [
             {
                 "condition": {
                     "condition_type": "Socioeconomic Status",
@@ -65,7 +65,7 @@
           },
         "direct_transition" : "AlzheimersOnset"
     },
-    
+
     "AlzheimersOnset" : {
         "type" : "ConditionOnset",
         "target_encounter" : "DiagnosisEncounter",
@@ -77,7 +77,7 @@
         "assign_to_attribute" : "Type of Alzheimer's",
         "direct_transition" : "NoImpairment"
     },
-    
+
     "PreEarlyOnsetAlzheimers" : {
         "type" : "Delay",
         "range": {
@@ -87,7 +87,7 @@
           },
         "direct_transition" : "EarlyOnsetAlzheimersOnset"
     },
-    
+
     "EarlyOnsetAlzheimersOnset" : {
         "type" : "ConditionOnset",
         "target_encounter" : "DiagnosisEncounter",
@@ -110,7 +110,7 @@
         "remarks" : ["1. Normal"],
         "direct_transition" : "VeryMildDecline"
     },
-    
+
     "VeryMildDecline" : {
         "type" : "Delay",
         "range" : {
@@ -122,7 +122,7 @@
         "direct_transition" : "MildMemoryLoss"
     },
 
-    
+
     "MildMemoryLoss" : {
         "type" : "Symptom",
         "symptom" : "Memory Loss",
@@ -132,8 +132,8 @@
         },
         "direct_transition" : "MildDecline"
     },
-    
-        
+
+
     "MildDecline" : {
         "type" : "Delay",
         "range" : {
@@ -171,11 +171,11 @@
     },
 
 
-    
+
     "DiagnosisEncounter" : {
         "type" : "Encounter",
         "wellness" : true,
-        "remarks" : ["This is the enounter where alzheimer's is diagnosed. ", 
+        "remarks" : ["This is the enounter where alzheimer's is diagnosed. ",
                      "Typical life expectancy after an Alzheimer’s diagnosis is 4-to-8 years. (Alzheimer’s Association)"],
         "direct_transition" : "Diagnosis_MMSE_Score"
     },
@@ -198,7 +198,37 @@
                      "also available is the Clinical Dementia Rating (CDR)",
                      "http://alzheimer.wustl.edu/cdr/cdr.htm"],
         "unit" : "(score)",
-        "direct_transition" : "FirstPrescription"
+        "direct_transition" : "Dementia_CarePlan"
+    },
+
+    "Dementia_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "DiagnosisEncounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "386257007",
+          "display": "Demential management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "850261000000100",
+          "display": "Education about dementia"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "710125008",
+          "display": "Promotion of use of memeory skills"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "315043002",
+          "display": "Long term social support"
+        }
+      ],
+      "direct_transition": "FirstPrescription"
     },
 
     "FirstPrescription" : {
@@ -273,7 +303,7 @@
         "assign_to_attribute" : "Alzheimer's Medication",
         "direct_transition": "ModerateDecline"
     },
-    
+
     "ModerateDecline" : {
         "type" : "Delay",
         "range" : {
@@ -309,14 +339,14 @@
         }
       ]
     },
-    
+
     "ModerateMemoryLoss" : {
         "type" : "Symptom",
         "symptom" : "Memory Loss",
         "range" : {
             "low" : 40,
             "high" : 80
-        }, 
+        },
         "remarks" : "These numbers do not map to any real data, they are just picked mathematically to get the %s right",
         "direct_transition" : "ModerateDecline"
     },
@@ -439,7 +469,7 @@
         }],
         "direct_transition": "ModeratelySevereDecline"
     },
-    
+
     "ModeratelySevereDecline" : {
         "type" : "Delay",
         "range" : {
@@ -451,7 +481,7 @@
                      "https://www.alzinfo.org/understand-alzheimers/clinical-stages-of-alzheimers/"],
         "direct_transition" : "Severe_Encounter"
     },
-    
+
     "Severe_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -494,7 +524,7 @@
         "remarks" : ["6. Severe decline, or moderately severe Alzheimer's contains 5 defined substages, the total duration approximately 2.5 yrs"],
         "direct_transition" : "VerySevere_Encounter"
     },
-    
+
     "VerySevere_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -574,7 +604,7 @@
         "display" : "Hospital admission"
       }],
       "direct_transition" : "PneumoniaDeath"
-    }, 
+    },
 
     "PneumoniaDeath" : {
       "type" : "Death",
@@ -586,13 +616,13 @@
       "condition_onset" : "Pneumonia",
       "direct_transition" : "Terminal"
     },
-    
+
     "Death" : {
       "type" : "Death",
       "referenced_by_attribute" : "Type of Alzheimer's",
       "direct_transition" : "Terminal"
     },
-    
+
     "Terminal" : {
       "type" : "Terminal"
     }
