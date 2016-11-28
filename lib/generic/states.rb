@@ -191,7 +191,7 @@ module Synthea
           @time = time
 
           if record_encounter
-            value = add_lookup_code(ENCOUNTER_LOOKUP)
+            value = add_lookup_code(Synthea::ENCOUNTER_LOOKUP)
             value[:class] = @encounter_class
             entity.record_synthea.encounter(symbol, time)
           end
