@@ -33,6 +33,11 @@ synthea:
       export_workers: 10
     max_tries: 10 # max number of times it tries to create a person before it gives up (ie, nobody reached the target age)
     clean_output_each_run: true # clear out the output directory before running
+    abort_on_exception: false # when true, if any thread throws an exception, abort the whole process
+    enable_debug_logging: false
+    debug_log_interval:
+      generate: 100 # if enable_debug_logging is true, log every 100th patient generation
+      export: 100 # if enable_debug_logging is true, log every 100th patient export
   schedule:
     variance: 0.1
   lifecycle:
