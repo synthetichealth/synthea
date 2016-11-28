@@ -1,0 +1,251 @@
+{
+  "name": "Gout",
+  "remarks": [
+    "Gout is a painful inflammation of the joints caused by a buildup of uric acid. ",
+    "Gout is 3x more likely in men and is heavily influenced by diet. Gout appears as perioid ",
+    "flare-ups that are treated with medication and subside for a period of time.",
+
+    "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
+    "http://www.cdc.gov/arthritis/basics/types.html",
+
+    "Overall prevalence of arthritis: ",
+    "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+
+        " | Arthritis Type | Prevalence | Ratio F:M | ",
+        " ------------------------------------------- ",
+        " | Gout           |   0.03900  |    1:3    | ",
+        " ------------------------------------------- "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.02925,
+              "transition": "Delay_Until_Gout"
+            },
+            {
+              "distribution": 0.97075,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00975,
+              "transition": "Delay_Until_Gout"
+            },
+            {
+              "distribution": 0.99025,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Delay_Until_Gout": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 80,
+        "unit": "years"
+      },
+      "direct_transition": "Gout"
+    },
+
+    "Gout": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "======================================================================",
+        " GOUT                                                                 ",
+        "======================================================================",
+
+        "Source: http://www.cdc.gov/arthritis/basics/gout.html"
+      ],
+      "target_encounter": "Gout_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90560007",
+          "display": "Gout"
+        }
+      ],
+      "direct_transition": "Gout_CarePlan"
+    },
+
+    "Gout_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Gout_Diagnosis",
+      "assign_to_attribute": "gout_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183301007",
+          "display": "Physical exercises"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229580007",
+          "display": "Ice therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "226234005",
+          "display": "Healthy diet"
+        }
+      ],
+      "direct_transition": "Gout_Diagnosis"
+    },
+
+    "Gout_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Gout_Nonopioid_Pain_Medication"
+    },
+
+    "Gout_Nonopioid_Pain_Medication": {
+      "type": "Simple",
+      "remarks": [
+        "NSAIDs are used to quickly alleviate the pain and inflammation of gout."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.6,
+          "transition": "Strong_NSAID"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Colchicine"
+        }
+      ]
+    },
+
+    "Strong_NSAID": {
+      "type": "MedicationOrder",
+      "target_encounter": "Gout_Diagnosis",
+      "assign_to_attribute": "gout_nsaid",
+      "remarks": [
+        "A stronger NSAID pain reliever than the basic Aleve."
+      ],
+      "codes": [
+        {
+          "system" : "RxNorm",
+          "code" : "849437",
+          "display" : "Naproxen sodium 550 MG [Anaprox]"
+        }
+      ],
+      "direct_transition": "Uric_Acid_Reducer"
+    },
+
+    "Colchicine": {
+      "type": "MedicationOrder",
+      "target_encounter": "Gout_Diagnosis",
+      "assign_to_attribute": "gout_nsaid",
+      "remarks": [
+        "For those who can't stand the side effects of a strong NSAID."
+      ],
+      "codes": [
+        {
+          "system" : "RxNorm",
+          "code" : "858069",
+          "display" : "Colchicine 0.6 MG [Colcrys]"
+        }
+      ],
+      "direct_transition": "Uric_Acid_Reducer"
+    },
+
+    "Uric_Acid_Reducer": {
+      "type": "MedicationOrder",
+      "target_encounter": "Gout_Diagnosis",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "573839",
+          "display": "Allopurinol 100 MG [Zyloprim]"
+        }
+      ],
+      "direct_transition": "Gout_Treatment_Period"
+    },
+
+    "Gout_Treatment_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Gout_Nonopioid"
+    },
+
+    "End_Gout_Nonopioid": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "gout_nsaid",
+      "direct_transition": "End_Uric_Acid_Reducer"
+    },
+
+    "End_Uric_Acid_Reducer": {
+      "type": "MedicationEnd",
+      "medication_order": "Uric_Acid_Reducer",
+      "direct_transition": "Wait_For_Next_Gout_Attack"
+    },
+
+    "Wait_For_Next_Gout_Attack": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "years"
+      },
+      "remarks": [
+        "Gout has an annual incidence of about 5.7%. In an average 2-year period this is about 11.1%.",
+        "Source: http://rheumatology.oxfordjournals.org/content/early/2011/01/11/rheumatology.keq363.long"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.111,
+          "transition": "Gout_Diagnosis"
+        },
+        {
+          "distribution": 0.889,
+          "transition": "Wait_For_Next_Gout_Attack"
+        }
+      ]
+    },
+
+    "Terminal": {
+        "type": "Terminal"
+    }
+  }
+}

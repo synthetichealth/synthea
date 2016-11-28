@@ -1,0 +1,302 @@
+{
+  "name": "Rheumatoid Arthritis",
+  "remarks": [
+    "Rheumatoid arthritis (RA) is a chronic condition where joints and other organs are ",
+    "attacked by the body's own immune system. RA is treated aggressively and about 75% ",
+    "of cases go into remission within 5 years.",
+
+    "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
+    "http://www.cdc.gov/arthritis/basics/types.html",
+
+    "Overall prevalence of arthritis: ",
+    "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+
+        " | Arthritis Type | Prevalence | Ratio F:M | ",
+        " ------------------------------------------- ",
+        " | Rheumatoid     |   0.01000  |    1:1    | ",
+        " ------------------------------------------- "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.01,
+          "transition": "Delay_Until_Arthritis"
+        },
+        {
+          "distribution": 0.99,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_Until_Arthritis": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 80,
+        "unit": "years"
+      },
+      "direct_transition": "Rheumatoid_Arthritis"
+    },
+
+    "Rheumatoid_Arthritis": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "======================================================================",
+        " RHEUMATOID ARTHRITIS                                                 ",
+        "======================================================================",
+
+        "Source: http://www.cdc.gov/arthritis/basics/rheumatoid.htm"
+      ],
+      "target_encounter": "RA_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "69896004",
+          "display": "Rheumatoid arthritis"
+        }
+      ],
+      "direct_transition": "RA_Diagnosis"
+    },
+
+    "RA_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "RA_CarePlan"
+    },
+
+    "RA_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "RA_Diagnosis",
+      "assign_to_attribute": "ra_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183301007",
+          "display": "Physical exercises"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229580007",
+          "display": "Ice therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "226234005",
+          "display": "Healthy diet"
+        }
+      ],
+      "direct_transition": "RA_Nonopioid_Pain_Medication"
+    },
+
+    "RA_Nonopioid_Pain_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "RA_Diagnosis",
+      "remarks": [
+        "A stronger NSAID pain reliever than the basic Aleve."
+      ],
+      "codes": [
+        {
+          "system" : "RxNorm",
+          "code" : "849437",
+          "display" : "Naproxen sodium 550 MG [Anaprox]"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1990
+          },
+          "transition": "DMARD",
+          "remarks": [
+            "Aggressive treatment using DMARDs didn't start until the 1990's."
+          ]
+        },
+        {
+          "transition": "Corticosteroid"
+        }
+      ]
+    },
+
+    "DMARD": {
+      "type": "MedicationOrder",
+      "target_encounter": "RA_Diagnosis",
+      "remarks": [
+        "Disease-Modifying Anti-Rheumatic Drugs (DMARDs) inhibit or halt the progression ",
+        "of rheumatoid arthritis. Although there are side effects, prompt treatment with DMARDs ",
+        "can put RA into remission before more serious damage occurs. Typical treatment with ",
+        "DMARDs is 40-50 months. See: https://www.ncbi.nlm.nih.gov/pubmed/10813279"
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "575020",
+          "display": "Methotrexate 10 MG [Trexall]"
+        }
+      ],
+      "direct_transition": "DMARD_Treatment_Period"
+    },
+
+    "DMARD_Treatment_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 40,
+        "high": 60,
+        "unit": "months"
+      },
+      "direct_transition": "End_DMARD"
+    },
+
+    "End_DMARD": {
+      "type": "MedicationEnd",
+      "medication_order": "DMARD",
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "RA_Ends",
+          "remarks": [
+            "Treatment with DMARDs is fairly successful - 75% of cases go into remission."
+          ]
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Living_With_RA"
+        }
+      ]
+    },
+
+    "Corticosteroid": {
+      "type": "MedicationOrder",
+      "target_encounter": "RA_Diagnosis",
+      "remarks": [
+        "When introduced in higher levels than those produced by the body, corticosteroids ",
+        "inhibit inflammation. However, doctors prefer to use these for as short a time period ",
+        "as possible to avoid dangerous side effects."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "567645",
+          "display": "predniSONE 2.5 MG [Deltasone]"
+        }
+      ],
+      "direct_transition": "Corticosteroid_Treatment"
+    },
+
+    "Corticosteroid_Treatment": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Corticosteroid"
+    },
+
+    "End_Corticosteroid": {
+      "type": "MedicationEnd",
+      "medication_order": "Corticosteroid",
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "RA_Ends",
+          "remarks": [
+            "Although treatment with DMARDs is far more successful, some patients with mild ",
+            "RA can go into remission after only basic treatment."
+          ]
+        },
+        {
+          "distribution": 0.8,
+          "transition": "Living_With_RA"
+        }
+      ]
+    },
+
+    "Living_With_RA": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 15,
+        "unit": "years"
+      },
+      "remarks": [
+        "About 25% of severe RA cases result in total joint replacement. Source: ",
+        "http://www.uptodate.com/contents/total-joint-replacement-for-severe-rheumatoid-arthritis"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.125,
+          "transition": "Setup_Knee_Replacement"
+        },
+        {
+          "distribution": 0.125,
+          "transition": "Setup_Hip_Replacement"
+        },
+        {
+          "distribution": 0.75,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Setup_Knee_Replacement": {
+      "type": "SetAttribute",
+      "attribute": "joint_replacement",
+      "value": "knee",
+      "direct_transition": "Terminal"
+    },
+
+    "Setup_Hip_Replacement": {
+      "type": "SetAttribute",
+      "attribute": "joint_replacement",
+      "value": "hip",
+      "direct_transition": "Terminal"
+    },
+
+    "RA_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "Rheumatoid_Arthritis",
+      "direct_transition": "End_RA_CarePlan"
+    },
+
+    "End_RA_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "RA_CarePlan",
+      "direct_transition": "End_RA_Nonopioid"
+    },
+
+    "End_RA_Nonopioid": {
+      "type": "MedicationEnd",
+      "medication_order": "RA_Nonopioid_Pain_Medication",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+        "type": "Terminal"
+    }
+  }
+}
