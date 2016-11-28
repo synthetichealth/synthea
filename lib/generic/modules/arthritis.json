@@ -572,7 +572,7 @@
 
     "Gout_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Fibromyalgia_Diagnosis",
+      "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "arthritis_careplan",
       "codes": [
         {
@@ -598,7 +598,7 @@
 
     "Gout_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Diagnosis",
+      "target_encounter": "Gout_Diagnosis",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
       ],
@@ -614,7 +614,7 @@
 
     "Uric_Acid_Reducer": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Diagnosis",
+      "target_encounter": "Gout_Diagnosis",
       "codes": [
         {
           "system": "RxNorm",
