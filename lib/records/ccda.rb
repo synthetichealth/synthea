@@ -100,11 +100,17 @@ module Synthea
       def self.encounter(encounter, ccda_record)
         type = encounter['type']
         time = encounter['time']
+        reason_data = COND_LOOKUP[encounter['reason']] if encounter['reason']
+        # find the ccda condition based on the code
+        # encounter.reason is an entry
+        reason = ccda_record.conditions.find { |c| c.codes == reason_data[:codes] } if reason_data
+
         ccda_record.encounters << Encounter.new(
           'codes' => ENCOUNTER_LOOKUP[type][:codes],
           'description' => ENCOUNTER_LOOKUP[type][:description],
           'start_time' => time.to_i,
-          'end_time' => time.to_i + 15.minutes
+          'end_time' => time.to_i + 15.minutes,
+          'reason' => reason
           # "oid" => "2.16.840.1.113883.3.560.1.79"
         )
       end
