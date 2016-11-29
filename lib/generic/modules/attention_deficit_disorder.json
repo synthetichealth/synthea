@@ -1,21 +1,50 @@
 {
   "name": "Attention Deficit Disorder",
   "remarks": [
-    "The CDC estimates that 11% of children are diagnosed with ADD. ",
+    "The CDC estimates that 11% of children are diagnosed with ADHD. Althought ADHD ",
+    "is possible in adults we only model this in children. ",
+
     "Source: http://www.cdc.gov/ncbddd/adhd/data.html"
   ],
   "states": {
 
     "Initial": {
       "type": "Initial",
-      "distributed_transition": [
+      "remarks": [
+        "The CDC found that 13.2% of boys and 5.6% of girls were diagnosed with ADHD."
+      ],
+      "complex_transition": [
         {
-          "distribution": 0.11,
-          "transition": "Delay_Until_ADHD"
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.132,
+              "transition": "Delay_Until_ADHD"
+            },
+            {
+              "distribution": 0.868,
+              "transition": "Terminal"
+            }
+          ]
         },
         {
-          "distribution": 0.89,
-          "transition": "Terminal"
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.056,
+              "transition": "Delay_Until_ADHD"
+            },
+            {
+              "distribution": 0.944,
+              "transition": "Terminal"
+            }
+          ]
         }
       ]
     },
@@ -23,7 +52,7 @@
     "Delay_Until_ADHD": {
       "type": "Delay",
       "range": {
-        "low": 2,
+        "low": 7,
         "high": 15,
         "unit": "years"
       },
@@ -77,18 +106,29 @@
           "display": "Psychological assessment"
         }
       ],
+      "remarks": [
+        "The CDC found that as many as 17.5% of children were not receiving any form of treatment ",
+        "for their ADHD. Setting this at a round 15%."
+      ],
       "distributed_transition": [
         {
+          "distribution": 0.15,
+          "transition": "Age_Guard",
+          "remarks": [
+            "This will just wait until adulthood before ending the ADHD and terminating the module."
+          ]
+        },
+        {
+          "distribution": 0.35,
+          "transition": "Behavior_Therapy",
+          "remarks": [
+            "Additionally 50% of those treated with medication will also receive behavioral ",
+            "therapy, for about 55% in total."
+          ]
+        },
+        {
           "distribution": 0.5,
-          "transition": "Behavior_Therapy"
-        },
-        {
-          "distribution": 0.25,
-          "transition": "Stimulant_Medication"
-        },
-        {
-          "distribution": 0.25,
-          "transition": "Cognition_Enhancing_Medication"
+          "transition": "ADHD_Medication_Selection"
         }
       ]
     },
@@ -97,7 +137,7 @@
       "type": "Delay",
       "remarks": [
         "Behavior therapy is favored over medication. We give behavior therapy for ",
-        "awhile, until the patient reaches his/her 20's or the condition subsides."
+        "awhile, until the patient reaches adulthood or the condition subsides."
       ],
       "range": {
         "low": 4,
@@ -146,7 +186,7 @@
               "remarks": [
                 "We give the ADHD a chance to subside (meaning the behavioral treatment ",
                 "has worked) during childhood. ADHD will eventually subside anyway once ",
-                "the patient reaches adulthood."
+                "the patient reaches adulthood. "
               ]
             },
             {
@@ -166,7 +206,81 @@
       ]
     },
 
-    "Stimulant_Medication": {
+    "ADHD_Medication_Selection": {
+      "type": "Simple",
+      "remarks": [
+        "Ritalin was introduced in 1955. Strattera wasn't approved by the FDA for ",
+        "treating ADHD until 2006."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1955
+          },
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "Behavior_Therapy",
+              "remarks": [
+                "If no medication is available we defer additional patients to behavioral therapy. ",
+                "The rest get no form of treatment at all."
+              ]
+            },
+            {
+              "distribution": 0.6,
+              "transition": "Age_Guard"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2006
+          },
+          "distributions": [
+            {
+              "distribution": 0.6,
+              "transition": "Ritalin",
+              "remarks": [
+                "Even with Ritalin available not all patients are ideal candidates. ADHD medication ",
+                "was also prescribed at much lower rates historically. Deferring some of the remaining ",
+                "patients to behavioral therapy, the rest to no form of treatment."
+              ]
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Behavior_Therapy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Age_Guard"
+            }
+          ]
+        },
+        {
+          "remarks": [
+            "With both Ritalin and Strattera available, and ADHD medication prescribed at the higher ",
+            "rates of the 2000's all patients that reach this state are now directed to some form of ",
+            "medication."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Ritalin"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Strattera"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Ritalin": {
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
@@ -177,10 +291,19 @@
           "display": "Methylphenidate Hydrochloride 20 MG [Ritalin]"
         }
       ],
-      "direct_transition": "Age_Guard"
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "Behavior_Therapy"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Age_Guard"
+        }
+      ]
     },
 
-    "Cognition_Enhancing_Medication": {
+    "Strattera": {
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
@@ -191,7 +314,16 @@
           "display": "Atomoxetine 100 MG [Strattera]"
         }
       ],
-      "direct_transition": "Age_Guard"
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "Behavior_Therapy"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Age_Guard"
+        }
+      ]
     },
 
     "Age_Guard": {
@@ -202,12 +334,6 @@
         "quantity": 18,
         "unit": "years"
       },
-      "direct_transition": "End_ADHD_Medication"
-    },
-
-    "End_ADHD_Medication": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "adhd_medication",
       "direct_transition": "ADHD_Ends"
     },
 
@@ -220,6 +346,24 @@
     "ADHD_CarePlan_Ends": {
       "type": "CarePlanEnd",
       "careplan": "ADHD_CarePlan",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "adhd_medication",
+            "operator": "is not nil"
+          },
+          "transition": "End_ADHD_Medication"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "End_ADHD_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "adhd_medication",
       "direct_transition": "Terminal"
     },
 
