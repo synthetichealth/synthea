@@ -6,10 +6,10 @@ module Synthea
 
       def initialize
         super
-        @male_growth = Distribution::Normal.rng(Synthea::Config.lifecycle.growth_rate_male_average, Synthea::Config.lifecycle.growth_rate_male_stddev)
-        @male_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_male_average, Synthea::Config.lifecycle.weight_gain_male_stddev)
-        @female_growth = Distribution::Normal.rng(Synthea::Config.lifecycle.growth_rate_female_average, Synthea::Config.lifecycle.growth_rate_female_stddev)
-        @female_weight = Distribution::Normal.rng(Synthea::Config.lifecycle.weight_gain_female_average, Synthea::Config.lifecycle.weight_gain_female_stddev)
+        @male_growth = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.growth_rate_male_average, Synthea::Config.lifecycle.growth_rate_male_stddev)
+        @male_weight = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.weight_gain_male_average, Synthea::Config.lifecycle.weight_gain_male_stddev)
+        @female_growth = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.growth_rate_female_average, Synthea::Config.lifecycle.growth_rate_female_stddev)
+        @female_weight = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.weight_gain_female_average, Synthea::Config.lifecycle.weight_gain_female_stddev)
       end
 
       # People are born
