@@ -284,7 +284,6 @@
     "Allergy_Screening_Test": {
       "type": "Procedure",
       "target_encounter": "Immunotherapy_Consultation",
-      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -320,7 +319,6 @@
 
     "Immunotherapy_Procedure": {
       "type": "Procedure",
-      "reason": "has_allergic_rhinitis",
       "target_encounter": "Immunotherapy_Treatment",
       "codes": [
         {

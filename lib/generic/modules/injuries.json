@@ -894,8 +894,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "Encounter for 'check-up'",
-          "display": "185349003"
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
         }
       ],
       "direct_transition": "End_Concussion_Injury"
@@ -1290,8 +1290,9 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "Encounter for 'check-up'",
-          "display": "185349003"
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+
         }
       ],
       "direct_transition": "End_Broken_Bone_Injury"
@@ -1564,8 +1565,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "Encounter for 'check-up'",
-          "display": "185349003"
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
         }
       ],
       "direct_transition": "End_Burn_Injury"
@@ -2359,8 +2360,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "Encounter for 'check-up'",
-          "display": "185349003"
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
         }
       ],
       "direct_transition": "End_Shoulder_Injury"
