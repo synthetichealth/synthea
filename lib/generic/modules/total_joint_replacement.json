@@ -97,7 +97,7 @@
           "display": "Total knee replacement"
         }
       ],
-      "direct_transition": "Delay_Until_New_Replacement_Needed"
+      "direct_transition": "Post_Op_CarePlan"
     },
 
     "Hip_Replacement_Procedure": {
@@ -110,6 +110,46 @@
           "display": "Total replacement of hip"
         }
       ],
+      "direct_transition": "Post_Op_CarePlan"
+    },
+
+    "Post_Op_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Joint_Replacement_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "781831000000109",
+          "display": "Major surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition": "Delay_For_Recovery"
+    },
+
+    "Delay_For_Recovery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "End_Post_Op_CarePlan"
+    },
+
+    "End_Post_Op_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Post_Op_CarePlan",
       "direct_transition": "Delay_Until_New_Replacement_Needed"
     },
 
