@@ -21,6 +21,12 @@ module Synthea
 
         @population_count = Synthea::Config.sequential.population
 
+        @generate_count = Concurrent::AtomicFixnum.new(0)
+        @export_count = Concurrent::AtomicFixnum.new(0)
+        @generate_log_interval = Synthea::Config.sequential.debug_log_interval.generate
+        @export_log_interval = Synthea::Config.sequential.debug_log_interval.export
+        @enable_debug_logging = Synthea::Config.sequential.enable_debug_logging
+
         @scaling_factor = @population_count.to_f / Synthea::Config.sequential.real_world_population.to_f
         # if you want to generate a population smaller than 7M but still with accurate ratios,
         #  you can scale the populations of individual cities down by this amount.
@@ -47,9 +53,7 @@ module Synthea
 
         if @city_populations
           @city_populations.each do |city_name, city_stats|
-            if Synthea::Config.sequential.multithreading
-              @city_workers.post { process_city(city_name, city_stats) }
-            else
+            run_task(@city_workers) do
               process_city(city_name, city_stats)
             end
           end
@@ -60,11 +64,11 @@ module Synthea
         if Synthea::Config.sequential.multithreading
           @city_workers.shutdown # Tasks already in the queue will be executed, but no new tasks will be accepted.
           @city_workers.wait_for_termination
-          puts "All cities (#{@city_workers.scheduled_task_count}) have been processed, waiting for generation..."
+          puts "#{timestamp} All cities (#{@city_populations.count}) have been started, waiting for generation to finish..."
 
           @generate_workers.shutdown
           @generate_workers.wait_for_termination
-          puts "Generation completed (#{@generate_workers.scheduled_task_count} population), waiting for files to finish exporting..."
+          puts "#{timestamp} Generation completed (#{@generate_count.value} population), waiting for files to finish exporting..."
 
           @export_workers.shutdown
           @export_workers.wait_for_termination
@@ -79,9 +83,9 @@ module Synthea
         while @stats[:living] < @population_count
           person = build_person
 
-          if @export_workers
-            @export_workers.post { Synthea::Output::Exporter.export(person) }
-          else
+          run_task(@export_workers) do
+            @export_count.increment
+            log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?
             Synthea::Output::Exporter.export(person)
           end
 
@@ -97,9 +101,9 @@ module Synthea
 
         puts "Generating #{population} patients within #{city_name}"
         population.times do |i|
-          if @generate_workers
-            @generate_workers.post { process_person(city_name, population, demographics, i) }
-          else
+          run_task(@generate_workers) do
+            @generate_count.increment
+            log_thread_pool(@generate_workers, 'Generate Workers') if @enable_debug_logging && (@generate_count.value % @generate_log_interval).zero?
             process_person(city_name, population, demographics, i)
           end
         end
@@ -118,9 +122,9 @@ module Synthea
                                 race: target_race, ethnicity: target_ethnicity,
                                 income: target_income, education: target_education)
 
-          if @export_workers
-            @export_workers.post { Synthea::Output::Exporter.export(person) }
-          else
+          run_task(@export_workers) do
+            @export_count.increment
+            log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?
             Synthea::Output::Exporter.export(person)
           end
 
@@ -198,6 +202,7 @@ module Synthea
 
       def log_patient(person, options = {})
         str = ''
+        str << timestamp << ' '
         str << options[:city_name] << ' ' if options[:city_name]
         str << options[:number].to_s if options[:number]
         str << '/' << options[:city_pop].to_s if options[:city_pop]
@@ -210,6 +215,35 @@ module Synthea
         str << " #{weight} lbs. -- #{conditions.join(', ')}"
 
         puts str
+      end
+
+      def run_task(pool)
+        if pool
+          pool.post do
+            begin
+              yield
+            rescue => e
+              handle_exception(e)
+            end
+          end
+        else
+          begin
+            yield
+          rescue => e
+            handle_exception(e)
+          end
+        end
+      end
+
+      def handle_exception(e)
+        puts e
+        puts e.backtrace
+        exit! if Synthea::Config.sequential.abort_on_exception
+      end
+
+      def log_thread_pool(pool, name)
+        return unless pool
+        puts "#{timestamp} #{name} -- Queue Length: #{pool.queue_length}, Workers (Active/Max): #{pool.length}/#{pool.max_length}, Total Completed: #{pool.completed_task_count}"
       end
 
       def record_stats(patient)
@@ -235,6 +269,10 @@ module Synthea
             @stats[:living_conditions][condition] += 1
           end
         end
+      end
+
+      def timestamp
+        Time.now.strftime('[%F %T]')
       end
     end
   end
