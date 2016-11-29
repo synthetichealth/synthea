@@ -6,7 +6,6 @@ require 'rubygems'
 require 'yaml'
 require 'faker'
 require 'area'
-require 'distribution'
 require 'pickup'
 require 'recursive-open-struct'
 require 'fhir_models'
@@ -72,5 +71,9 @@ Dir.glob(File.join(root, 'lib', 'world', '**', '*.rb')).each do |file|
 end
 
 Dir.glob(File.join(root, 'lib', 'tasks', '**', '*.rb')).each do |file|
+  require file
+end
+
+Dir.glob(File.join(root, 'lib', 'utils', '**', '*.rb')).each do |file|
   require file
 end
