@@ -130,6 +130,7 @@
         "code": "50849002",
         "display": "Emergency Room Admission"
       }],
+      "reason" : "Suspected Lung Cancer",
       "direct_transition": "Chest X-Ray"
     },
 
@@ -162,6 +163,7 @@
         "code": "185347001",
         "display": "Encounter for problem"
       }],
+      "reason" : "Suspected Lung Cancer",
       "direct_transition": "Chest CT Scan"
     },
 
@@ -241,6 +243,7 @@
         "code": "185347001",
         "display": "Encounter for problem"
       }],
+      "reason" : "Lung Cancer",
       "distributed_transition": [
         { "distribution": 0.25, "transition": "Sputum Cytology (Phelgm)"},
         { "distribution": 0.25, "transition": "Thoracentesis (Fluid)"},

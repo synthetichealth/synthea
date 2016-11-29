@@ -185,6 +185,7 @@
           "display": "Encounter Inpatient"
         }
       ],
+      "reason" : "Enter_Directed_Use_Condition1",
       "direct_transition": "Enter_Directed_Use_Procedure1"
     },
 
@@ -238,6 +239,7 @@
           "display": "Encounter Inpatient"
         }
       ],
+      "reason" : "Enter_Directed_Use_Condition2",
       "direct_transition": "Directed_Use_Prescription2"
     },
 
@@ -539,6 +541,7 @@
           "display": "Emergency Room Admission"
         }
       ],
+      "reason" : "Directed_Use_Overdose",
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -574,6 +577,7 @@
           "display": "Emergency Room Admission"
         }
       ],
+      "reason" : "Misuse_Overdose",
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -609,6 +613,7 @@
           "display": "Emergency Room Admission"
         }
       ],
+      "reason" : "Addiction_Overdose",
       "distributed_transition": [
         {
           "distribution": 0.98747,

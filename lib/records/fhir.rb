@@ -180,12 +180,21 @@ module Synthea
       def self.encounter(encounter, fhir_record, patient)
         resource_id = SecureRandom.uuid.to_s
         encounter_data = ENCOUNTER_LOOKUP[encounter['type']]
+        reason_data = COND_LOOKUP[encounter['reason']] if encounter['reason']
+
         fhir_encounter = FHIR::Encounter.new('id' => resource_id,
                                              'status' => 'finished',
                                              'class' => { 'code' => encounter_data[:class] },
                                              'type' => [{ 'coding' => [{ 'code' => encounter_data[:codes]['SNOMED-CT'][0], 'system' => 'http://snomed.info/sct' }], 'text' => encounter_data[:description] }],
                                              'patient' => { 'reference' => patient.fullUrl.to_s },
                                              'period' => { 'start' => convert_fhir_date_time(encounter['time'], 'time'), 'end' => convert_fhir_date_time(encounter['time'] + 15.minutes, 'time') })
+        if reason_data
+          fhir_encounter.reason = FHIR::CodeableConcept.new('coding' => [{
+                                                              'code' => reason_data[:codes]['SNOMED-CT'][0],
+                                                              'display' => reason_data[:description],
+                                                              'system' => 'http://snomed.info/sct'
+                                                            }])
+        end
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = fhir_encounter

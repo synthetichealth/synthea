@@ -153,6 +153,7 @@
         "code": "185345009",
         "display": "Encounter for symptom"
       }],
+      "reason" : "Sore Throat Condition",
       "conditional_transition" : [
         {
           "condition": {

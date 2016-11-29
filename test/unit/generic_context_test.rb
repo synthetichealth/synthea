@@ -139,7 +139,7 @@ class GenericContextTest < Minitest::Test
 
     # Run number two should go all the way to Terminal, but should process Encounter and Death along the way
     # Ensure that the encounter really happens 2 days after the initial run
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2)])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), nil])
     # Ensure that death really happens 2 + 3 days after the initial run
     @patient.record_synthea.expect(:death, nil, [@time.advance(:days => 5)])
     # Run number 2: 7 days after run number 1

@@ -188,6 +188,7 @@
           "display": "Encounter for symptom"
         }
       ],
+      "reason" : "uti",
       "direct_transition": "Prescribe_UTI_Antibiotic"
     },
 
@@ -282,6 +283,7 @@
           "display": "Encounter for symptom"
         }
       ],
+      "reason" : "uti",
       "direct_transition": "Prescribe_Second_Round_Of_Antibiotics"
     },
 

@@ -169,7 +169,7 @@ module Synthea
       end
 
       class Encounter < State
-        attr_accessor :wellness, :processed, :time, :codes, :encounter_class
+        attr_accessor :wellness, :processed, :time, :codes, :encounter_class, :reason
 
         required_field or: [:wellness, and: [:codes, :encounter_class]]
 
@@ -190,10 +190,16 @@ module Synthea
           @processed = true
           @time = time
 
+          if @reason
+            cond = @context.most_recent_by_name(@reason)
+            cond = cond.symbol if cond
+            cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
+          end
+
           if record_encounter
             value = add_lookup_code(Synthea::ENCOUNTER_LOOKUP)
             value[:class] = @encounter_class
-            entity.record_synthea.encounter(symbol, time)
+            entity.record_synthea.encounter(symbol, time, cond)
           end
 
           # Look through the history for conditions to diagnose

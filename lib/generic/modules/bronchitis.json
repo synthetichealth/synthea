@@ -107,6 +107,7 @@
         "code": "185345009",
         "display": "Encounter for symptom"
       }],
+      "reason" : "Bronchitis_Infection",
       "distributed_transition" : [
         { "distribution" : 0.05, "transition" : "Chest_Xray" },
         { "distribution" : 0.20, "transition" : "Sputum_Test" },

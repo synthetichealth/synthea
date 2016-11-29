@@ -110,7 +110,7 @@ module Synthea
 
       #------------------------------------------------------------------------------------------#
 
-      def self.encounter(entity, time)
+      def self.encounter(entity, time, reason = nil)
         age = entity[:age]
         type = if age <= 1
                  :age_lt_1
@@ -127,11 +127,11 @@ module Synthea
                else
                  :age_senior
                end
-        entity.record_synthea.encounter(type, time)
+        entity.record_synthea.encounter(type, time, reason)
       end
 
-      def self.emergency_encounter(entity, time)
-        entity.record_synthea.encounter(:emergency, time)
+      def self.emergency_encounter(entity, time, reason = nil)
+        entity.record_synthea.encounter(:emergency, time, reason)
       end
     end
   end

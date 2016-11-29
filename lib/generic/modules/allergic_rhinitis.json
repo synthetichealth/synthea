@@ -126,6 +126,7 @@
           "display": "Encounter for symptom"
         }
       ],
+      "reason" : "has_allergic_rhinitis",
       "remarks": [
         "I select one of several over-the-counter (OTC) medications to be prescribed",
         "to the patient. These are uniformly distributed since they are all equally",
@@ -227,6 +228,7 @@
           "display": "Allergic disorder initial assessment"
         }
       ],
+      "reason" : "has_allergic_rhinitis",
       "distributed_transition": [
         {
           "distribution": 0.75,

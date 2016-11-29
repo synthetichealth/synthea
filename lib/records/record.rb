@@ -69,10 +69,11 @@ module Synthea
         }
       end
 
-      def encounter(type, time)
+      def encounter(type, time, reason = nil)
         @encounters << {
           'type' => type,
-          'time' => time
+          'time' => time,
+          'reason' => reason
         }
       end
 
