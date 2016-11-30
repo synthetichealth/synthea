@@ -122,6 +122,7 @@
           "display": "Encounter for symptom"
         }
       ],
+      "reason" : "Gets_Ear_Infection",
       "distributed_transition": [
         {
           "distribution": 0.859,

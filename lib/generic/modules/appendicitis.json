@@ -163,6 +163,7 @@
         "code" : "50849002",
         "display" : "Emergency Room Admission"
       }],
+      "reason" : "Appendicitis",
       "remarks" : "Currently the GMF does not include Vital Signs, if we decide to add that then there are some lab tests we could add at this Encounter."
     },
 
@@ -185,6 +186,7 @@
         "code": "183452005",
         "display": "Encounter Inpatient"
       }],
+      "reason" : "Appendicitis",
       "direct_transition": "Appendectomy"
     },
 

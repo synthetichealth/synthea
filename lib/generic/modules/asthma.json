@@ -71,6 +71,7 @@
           "display": "Childhood asthma"
         }
       ],
+      "assign_to_attribute" : "asthma_condition",
       "direct_transition": "Cough"
     },
 
@@ -84,6 +85,7 @@
           "display": "Asthma"
         }
       ],
+      "assign_to_attribute" : "asthma_condition",
       "direct_transition": "Cough"
     },
 
@@ -111,6 +113,7 @@
           "display": "Encounter for symptom"
         }
       ],
+      "reason" : "asthma_condition",
       "direct_transition": "Asthma_Screening"
     },
 

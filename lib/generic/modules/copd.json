@@ -646,9 +646,10 @@
       "encounter_class" : "inpatient",
       "codes" : [{
         "system" : "SNOMED-CT",
-        "code" : "",
-        "display" : ""
+        "code" : "305411003",
+        "display" : "Admission to thoracic surgery department"
       }],
+      "reason" : "copd_variant",
       "conditional_transition" : [
         {
           "condition" : {

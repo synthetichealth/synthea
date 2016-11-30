@@ -361,6 +361,7 @@
           "display": "Office Visit"
         }
       ],
+      "reason" : "Type of Alzheimer's",
       "direct_transition": "ModeratelySevere_MMSE_Score"
     },
 
@@ -492,6 +493,7 @@
           "display": "Office Visit"
         }
       ],
+      "reason" : "Type of Alzheimer's",
       "direct_transition": "Severe_MMSE_Score"
     },
 
@@ -535,6 +537,7 @@
           "display": "Office Visit"
         }
       ],
+      "reason" : "Type of Alzheimer's",
       "direct_transition": "VerySevere_MMSE_Score"
     },
 
@@ -603,6 +606,7 @@
         "code" : "34285007",
         "display" : "Hospital admission"
       }],
+      "reason" : "Pneumonia",
       "direct_transition" : "PneumoniaDeath"
     },
 

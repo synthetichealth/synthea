@@ -1157,6 +1157,7 @@
           "display": "Admission to surgical department"
         }
       ],
+      "reason" : "Ectopic_Pregnancy",
       "direct_transition": "Ectopic_Pregnancy_Surgery_Procedure"
     },
 
@@ -1242,6 +1243,7 @@
           "display": "Prenatal visit"
         }
       ],
+      "reason" : "fatal_pregnancy_complication",
       "direct_transition": "Miscarriage_End"
     },
 

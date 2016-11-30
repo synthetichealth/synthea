@@ -214,8 +214,33 @@ class GenericStatesTest < Minitest::Test
 
     ctx = get_context('encounter.json')
     # Non-wellness encounters happen immediately
+
+    # First, onset the Diabetes!
+    diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+    assert(diabetes.process(@time, @patient))
+    ctx.history << diabetes
+
     encounter = Synthea::Generic::States::Encounter.new(ctx, "ED_Visit")
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, :diabetes_mellitus])
+    assert(encounter.process(@time, @patient))
+    # Verify that the Encounter was added to the record
+    @patient.record_synthea.verify
+  end
+
+  def test_encounter_with_attribute_reason
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('encounter.json')
+
+    # First, onset the Diabetes!
+    diabetes = Synthea::Generic::States::ConditionOnset.new(ctx, "Diabetes")
+    assert(diabetes.run(@time, @patient))
+    ctx.history << diabetes
+
+    # Non-wellness encounters happen immediately
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "ED_Visit_AttributeReason")
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, :diabetes_mellitus])
     assert(encounter.process(@time, @patient))
     # Verify that the Encounter was added to the record
     @patient.record_synthea.verify
@@ -248,7 +273,7 @@ class GenericStatesTest < Minitest::Test
     ctx = get_context('condition_onset.json')
     # The encounter comes first (and add it to history)
     encounter = Synthea::Generic::States::Encounter.new(ctx, "ED_Visit")
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, nil])
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
 
@@ -708,7 +733,7 @@ class GenericStatesTest < Minitest::Test
 
     # The encounter comes first (and add it to history)
     encounter = Synthea::Generic::States::Encounter.new(ctx, "Inpatient_Encounter")
-    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time])
+    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, nil])
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
 
@@ -729,7 +754,7 @@ class GenericStatesTest < Minitest::Test
 
     # The encounter comes first (and add it to history)
     encounter = Synthea::Generic::States::Encounter.new(ctx, "SomeEncounter")
-    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time])
+    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, nil])
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
 
