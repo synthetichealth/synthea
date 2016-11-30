@@ -413,7 +413,6 @@ module Synthea
 
         def operate(time, entity)
           add_lookup_code(Synthea::PROCEDURE_LOOKUP)
-          cond = @context.most_recent_by_name(@reason) unless @reason.nil?
           unless @reason.nil?
             cond = @context.most_recent_by_name(@reason)
             cond = cond.symbol if cond
