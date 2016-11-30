@@ -5,11 +5,9 @@
     "recent statistics for pregnancy - they simply haven't been compiled yet. The latest",
     "comprehensive stats I could find for the United States were from 2010, compiled by the",
     "CDC in 2013, see: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm.",
-
     "Although the birth rate in the United States is still declining these statistics are still",
     "consistent (< 1 percentage point difference) with some 2014 statistics collected by",
     "the Guttmacher Institute, see: https://www.guttmacher.org/fact-sheet/induced-abortion-united-states.",
-
     "Some notable complications NOT modeled in this module:",
     "1. Maternal death (very low incidence in developed countries)",
     "2. Gestational diabetes (because of the complex interplay with the diabetes module)",
@@ -20,26 +18,26 @@
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
-          {
-            "condition": {
-              "condition_type": "Gender",
-              "gender": "F"
-            },
-            "transition": "Wait_For_Maturity"
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
           },
-          {
-            "transition": "Terminal"
-          }
+          "transition": "Wait_For_Maturity"
+        },
+        {
+          "transition": "Terminal"
+        }
       ]
     },
 
     "Wait_For_Maturity": {
-        "type": "Delay",
-        "exact": {
-          "quantity": 15,
-          "unit": "years"
-        },
-        "direct_transition": "Wellness_Visit"
+      "type": "Delay",
+      "exact": {
+        "quantity": 15,
+        "unit": "years"
+      },
+      "direct_transition": "Wellness_Visit"
     },
 
     "Wellness_Visit": {
@@ -49,7 +47,6 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         "From the U.S. Census: https://www.census.gov/content/dam/Census/library/publications/2014/demo/p20-575.pdf ",
         "Of women age 15 - 50 about 59% are mothers. 17.2% had one child, 23.1% had two, and 18.5% had 3 or more. ",
         "About 11% of women are infertile."
@@ -302,11 +299,9 @@
       ],
       "remarks": [
         "Following an initial prenatal visit there are 3 broad outcomes for a pregnancy:",
-
         "1. Fetal Loss: 1.053M miscarriages --> 17.1% of all pregnancies",
         "2. Induced Abortion: 1.103M induced abortions --> 17.9% of all pregnancies",
         "3. Birth: 3.988M live births --> 65% of all pregnancies",
-
         "Total pregnancies:  6.155M",
         "Source: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm"
       ],
@@ -648,11 +643,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.20,
+          "distribution": 0.2,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.80,
+          "distribution": 0.8,
           "transition": "Week_40_Visit"
         }
       ]
@@ -687,11 +682,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.50,
+          "distribution": 0.5,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.50,
+          "distribution": 0.5,
           "transition": "Week_41_Visit"
         }
       ]
@@ -719,11 +714,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.70,
+          "distribution": 0.7,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.30,
+          "distribution": 0.3,
           "transition": "Week_42_Visit"
         }
       ]
@@ -756,12 +751,9 @@
         "======================================================================",
         " BIRTH                                                                ",
         "======================================================================",
-
         "Possible 'birth_type' values: 'normal', 'premature', 'induced' ",
-
         "Unless the birth was elected and intentional (in the case of an induced birth) ",
         "births follow the usual distribution of locations, complications, etc.",
-
         "A small portion of births (2%) happen at home or on the way to the hospital. For simplicity ",
         "all births in this module happen in a hospital setting. Future versions may add the additional ",
         "complexity of home and BBA births."
@@ -818,26 +810,26 @@
       "type": "Simple",
       "distributed_transition": [
         {
-					"distribution": 0.24,
-					"transition": "Induction"
-				},
-				{
-					"distribution": 0.2794,
-					"transition": "Epidural"
-				},
-				{
-					"distribution": 0.1245,
-					"transition": "Augmentation"
-				},
-				{
-					"distribution": 0.3561,
-					"transition": "Episiotomy"
-				}
+          "distribution": 0.24,
+          "transition": "Induction"
+        },
+        {
+          "distribution": 0.2794,
+          "transition": "Epidural"
+        },
+        {
+          "distribution": 0.1245,
+          "transition": "Augmentation"
+        },
+        {
+          "distribution": 0.3561,
+          "transition": "Episiotomy"
+        }
       ]
     },
 
     "Induction": {
-			"type": "Procedure",
+      "type": "Procedure",
       "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
@@ -847,20 +839,20 @@
           "display": "Medical induction of labor"
         }
       ],
-			"distributed_transition": [
-				{
-					"distribution": 0.8341,
-					"transition": "Give_Birth"
-				},
-				{
-					"distribution": 0.1659,
-					"transition": "Emergency_CS"
-				}
-			]
-		},
+      "distributed_transition": [
+        {
+          "distribution": 0.8341,
+          "transition": "Give_Birth"
+        },
+        {
+          "distribution": 0.1659,
+          "transition": "Emergency_CS"
+        }
+      ]
+    },
 
-		"Epidural": {
-			"type": "Procedure",
+    "Epidural": {
+      "type": "Procedure",
       "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
@@ -870,20 +862,20 @@
           "display": "Epidural anesthesia"
         }
       ],
-			"distributed_transition": [
-				{
-					"distribution": 0.8341,
-					"transition": "Spontaneous_Vaginal_Delivery"
-				},
-				{
-					"distribution": 0.1659,
-					"transition": "Emergency_CS"
-				}
-			]
-		},
+      "distributed_transition": [
+        {
+          "distribution": 0.8341,
+          "transition": "Spontaneous_Vaginal_Delivery"
+        },
+        {
+          "distribution": 0.1659,
+          "transition": "Emergency_CS"
+        }
+      ]
+    },
 
-		"Augmentation": {
-			"type": "Procedure",
+    "Augmentation": {
+      "type": "Procedure",
       "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
@@ -893,20 +885,20 @@
           "display": "Augmentation of labor"
         }
       ],
-			"distributed_transition": [
-				{
-					"distribution": 0.8341,
-					"transition": "Spontaneous_Vaginal_Delivery"
-				},
-				{
-					"distribution": 0.1659,
-					"transition": "Emergency_CS"
-				}
-			]
-		},
+      "distributed_transition": [
+        {
+          "distribution": 0.8341,
+          "transition": "Spontaneous_Vaginal_Delivery"
+        },
+        {
+          "distribution": 0.1659,
+          "transition": "Emergency_CS"
+        }
+      ]
+    },
 
-		"Episiotomy": {
-			"type": "Procedure",
+    "Episiotomy": {
+      "type": "Procedure",
       "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
@@ -916,17 +908,17 @@
           "display": "Episiotomy"
         }
       ],
-			"distributed_transition": [
-				{
-					"distribution": 0.8341,
-					"transition": "Spontaneous_Vaginal_Delivery"
-				},
-				{
-					"distribution": 0.1659,
-					"transition": "Emergency_CS"
-				}
-			]
-		},
+      "distributed_transition": [
+        {
+          "distribution": 0.8341,
+          "transition": "Spontaneous_Vaginal_Delivery"
+        },
+        {
+          "distribution": 0.1659,
+          "transition": "Emergency_CS"
+        }
+      ]
+    },
 
     "Assisted_Delivery": {
       "type": "Procedure",
@@ -974,36 +966,36 @@
     },
 
     "Give_Birth": {
-        "type": "Simple",
-        "conditional_transition": [
-          {
-            "condition": {
-              "condition_type": "Attribute",
-              "attribute": "birth_type",
-              "operator": "==",
-              "value": "normal"
-            },
-            "transition": "Normal_Birth_Procedure"
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "birth_type",
+            "operator": "==",
+            "value": "normal"
           },
-          {
-            "condition": {
-              "condition_type": "Attribute",
-              "attribute": "birth_type",
-              "operator": "==",
-              "value": "premature"
-            },
-            "transition": "Premature_Birth_Procedure"
+          "transition": "Normal_Birth_Procedure"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "birth_type",
+            "operator": "==",
+            "value": "premature"
           },
-          {
-            "condition": {
-              "condition_type": "Attribute",
-              "attribute": "birth_type",
-              "operator": "==",
-              "value": "induced"
-            },
-            "transition": "Induced_Birth_Procedure"
-          }
-        ]
+          "transition": "Premature_Birth_Procedure"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "birth_type",
+            "operator": "==",
+            "value": "induced"
+          },
+          "transition": "Induced_Birth_Procedure"
+        }
+      ]
     },
 
     "Normal_Birth_Procedure": {
@@ -1066,7 +1058,7 @@
       "assign_to_attribute": "miscarriage",
       "distributed_transition": [
         {
-          "distribution":0.600,
+          "distribution": 0.6,
           "transition": "Early_Fetal_Chromosomal_Anomaly"
         },
         {
@@ -1093,15 +1085,15 @@
       "assign_to_attribute": "miscarriage",
       "distributed_transition": [
         {
-          "distribution": 0.600,
+          "distribution": 0.6,
           "transition": "Late_Fetal_Chromosomal_Anomaly"
         },
         {
-          "distribution": 0.250,
+          "distribution": 0.25,
           "transition": "Uterine_Anomaly"
         },
         {
-          "distribution": 0.150,
+          "distribution": 0.15,
           "transition": "Unknown_Complication"
         }
       ]
@@ -1162,7 +1154,7 @@
     "Ectopic_Pregnancy_Surgery_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason" : "Ectopic_Pregnancy",
+      "reason": "Ectopic_Pregnancy",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1206,7 +1198,6 @@
       "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
     },
 
-
     "Uterine_Anomaly": {
       "type": "ConditionOnset",
       "target_encounter": "Week_15_Visit",
@@ -1248,7 +1239,7 @@
     "Miscarriage_Followup_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason" : "fatal_pregnancy_complication",
+      "reason": "fatal_pregnancy_complication",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1321,7 +1312,7 @@
         " PREGNANCY COMPLETION                                                 ",
         "======================================================================"
       ],
-      "conditional_transition":[
+      "conditional_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
@@ -1405,7 +1396,7 @@
       },
       "direct_transition": "Increment_Pregnancy_Count"
     },
-
+    
     "Terminal": {
       "type": "Terminal"
     }

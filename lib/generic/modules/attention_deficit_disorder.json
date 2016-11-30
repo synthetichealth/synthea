@@ -3,7 +3,6 @@
   "remarks": [
     "The CDC estimates that 11% of children are diagnosed with ADHD. Althought ADHD ",
     "is possible in adults we only model this in children. ",
-
     "Source: http://www.cdc.gov/ncbddd/adhd/data.html"
   ],
   "states": {
@@ -372,7 +371,7 @@
       "referenced_by_attribute": "adhd_medication",
       "direct_transition": "Terminal"
     },
-
+    
     "Terminal": {
       "type": "Terminal"
     }

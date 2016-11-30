@@ -1,10 +1,12 @@
 {
   "name": "Allergic Rhinitis",
-  "remarks": ["Better known as 'hay fever' or 'seasonal allergies'.",
-              "Statistics are from the American College of Allergy, Asthma, & Immunology (ACAAI):",
-              "http://acaai.org/news/facts-statistics/allergies",
-              "or the Allergy and Asthma Foundation of America (AAFA):",
-              "http://www.aafa.org/page/allergy-facts.aspx"],
+  "remarks": [
+    "Better known as 'hay fever' or 'seasonal allergies'.",
+    "Statistics are from the American College of Allergy, Asthma, & Immunology (ACAAI):",
+    "http://acaai.org/news/facts-statistics/allergies",
+    "or the Allergy and Asthma Foundation of America (AAFA):",
+    "http://www.aafa.org/page/allergy-facts.aspx"
+  ],
   "states": {
 
     "Initial": {
@@ -97,8 +99,10 @@
           "display": "Allergic rhinitis caused by house dust mite"
         }
       ],
-      "remarks": ["These people do not have seasonal hay fever like the other cases.",
-                  "These allergies are mainly to pet dander and dust."],
+      "remarks": [
+        "These people do not have seasonal hay fever like the other cases.",
+        "These allergies are mainly to pet dander and dust."
+      ],
       "direct_transition": "Allergic_Rhinitis_Diagnosis"
     },
 
@@ -119,7 +123,7 @@
     "Allergic_Rhinitis_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -153,7 +157,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
       "assign_to_attribute": "otc_medication",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -168,7 +172,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
       "assign_to_attribute": "otc_medication",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -183,7 +187,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
       "assign_to_attribute": "otc_medication",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -198,7 +202,6 @@
       "type": "Simple",
       "direct_transition": "Immunotherapy_Guard"
     },
-
     "Immunotherapy_Guard": {
       "type": "Guard",
       "allow": {
@@ -209,7 +212,9 @@
             "operator": ">=",
             "quantity": 12,
             "unit": "years",
-            "remarks": ["They typically don't give immunotherapy treatment to young children"]
+            "remarks": [
+              "They typically don't give immunotherapy treatment to young children"
+            ]
           },
           {
             "condition_type": "Attribute",
@@ -224,7 +229,7 @@
     "Immunotherapy_Consultation": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -267,7 +272,7 @@
     "Immunotherapy_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Immunotherapy_Consultation",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -288,7 +293,7 @@
     "Allergy_Screening_Test": {
       "type": "Procedure",
       "target_encounter": "Immunotherapy_Consultation",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -312,7 +317,7 @@
     "Immunotherapy_Treatment": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -326,7 +331,7 @@
     "Immunotherapy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Immunotherapy_Treatment",
-      "reason" : "has_allergic_rhinitis",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -369,8 +374,8 @@
 
     "Immunotherapy_Followup": {
       "type": "Encounter",
-      "encounter_class" : "ambulatory",
-      "reason" : "has_allergic_rhinitis",
+      "encounter_class": "ambulatory",
+      "reason": "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -386,7 +391,7 @@
       "careplan": "Immunotherapy_CarePlan",
       "direct_transition": "Terminal"
     },
-
+    
     "Terminal": {
       "type": "Terminal"
     }

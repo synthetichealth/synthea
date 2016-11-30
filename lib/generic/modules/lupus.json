@@ -4,10 +4,8 @@
     "Lupus is a somewhat uncommon autoimmune disease that causes widespread inflammation. ",
     "It is also categorized as a type of arthritis. Prior to the discovery of corticosteroids ",
     "in the mid 1900's lupus was treated with quinine and salicylates.",
-
     "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
     "http://www.cdc.gov/arthritis/basics/types.html",
-
     "Overall prevalence of arthritis: ",
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
@@ -19,7 +17,6 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         " | Arthritis Type | Prevalence | Ratio F:M | ",
         " ------------------------------------------- ",
         " | Lupus          |   0.00054  |    6:1    | ",
@@ -77,7 +74,6 @@
         "======================================================================",
         " LUPUS                                                                ",
         "======================================================================",
-
         "Source: http://www.cdc.gov/arthritis/basics/lupus.htm"
       ],
       "target_encounter": "Lupus_Diagnosis",
@@ -138,9 +134,9 @@
       "reason": "Lupus",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "849727",
-          "display" : "Naproxen sodium 220 MG [Aleve]"
+          "system": "RxNorm",
+          "code": "849727",
+          "display": "Naproxen sodium 220 MG [Aleve]"
         }
       ],
       "direct_transition": "Corticosteroid"
@@ -195,7 +191,7 @@
     "Wait_For_Lupus_Flareup": {
       "type": "Delay",
       "remarks": [
-          "About 60% of patients have a flare-up each year. 84% every 2 years."
+        "About 60% of patients have a flare-up each year. 84% every 2 years."
       ],
       "range": {
         "low": 1,
@@ -250,9 +246,9 @@
       "medication_order": "Immune_Suppressant",
       "direct_transition": "Wait_For_Lupus_Flareup"
     },
-
+    
     "Terminal": {
-        "type": "Terminal"
+      "type": "Terminal"
     }
   }
 }

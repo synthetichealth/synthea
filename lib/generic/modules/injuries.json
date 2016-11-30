@@ -8,7 +8,6 @@
     "Incidence is complicated. There are a lot of variables that play into incidence including ",
     "age, gender, race, socioeconomic status, etc. I made some simplifications for now that we can ",
     "adjust later if the prevalence is glaringly inaccurate. For now, I assume:",
-
     "1. Men and women get injured at the same rates (not true in all cases...) ",
     "2. Race and socioeconomic status don't significantly affect injury rates (they probably do...) ",
     "3. A person can't have multiple injuries at the same time (in reality, they can...) ",
@@ -26,7 +25,6 @@
     "10. 'shoulder'     - a torn rotator cuff ",
 
     "Sources are included throughout the module where supplemental information was needed.",
-
     "Every injury pathway in this module assigns a care plan for the patient. This care ",
     "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
     "of the injury.",
@@ -54,14 +52,12 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         "We give patients the opportunity to get injured about once per year. The range ",
         "here is inteded to introduce some randomness to the data so patients aren't all ",
         "getting injured on the same day each year.",
 
         "Distributions of injuries are initially based on the 2015 U.S. resident population (308.75M) and the ",
         "following incidence rates: ",
-
         "Spinal:        0.000153   http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures",
         "Gunshots:      0.000318   http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
         "Concussions:   0.005100   https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
@@ -127,7 +123,7 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.01010,
+          "distribution": 0.0101,
           "transition": "Concussion_Injury",
           "remarks": [
             "Our initial estimate for concussions seem too low. Since most concussion injuries ",
@@ -136,7 +132,7 @@
           ]
         },
         {
-          "distribution": 0.004780,
+          "distribution": 0.00478,
           "transition": "Whiplash_Injury"
         },
         {
@@ -148,7 +144,7 @@
           ]
         },
         {
-          "distribution": 0.003980,
+          "distribution": 0.00398,
           "transition": "Burn_Injury"
         },
         {
@@ -163,11 +159,11 @@
           "transition": "Sprain_Injury"
         },
         {
-          "distribution": 0.002290,
+          "distribution": 0.00229,
           "transition": "Knee_Injury"
         },
         {
-          "distribution": 0.001470,
+          "distribution": 0.00147,
           "transition": "Shoulder_Injury"
         },
         {
@@ -197,7 +193,7 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.007650,
+          "distribution": 0.00765,
           "transition": "Concussion_Injury",
           "remarks": [
             "Adults are likely to get concussions from sports, work-related accidents, and ",
@@ -206,7 +202,7 @@
           ]
         },
         {
-          "distribution": 0.004780,
+          "distribution": 0.00478,
           "transition": "Whiplash_Injury"
         },
         {
@@ -219,7 +215,7 @@
           ]
         },
         {
-          "distribution": 0.003980,
+          "distribution": 0.00398,
           "transition": "Burn_Injury"
         },
         {
@@ -231,11 +227,11 @@
           "transition": "Sprain_Injury"
         },
         {
-          "distribution": 0.002290,
+          "distribution": 0.00229,
           "transition": "Knee_Injury"
         },
         {
-          "distribution": 0.001470,
+          "distribution": 0.00147,
           "transition": "Shoulder_Injury"
         },
         {
@@ -265,22 +261,22 @@
           "transition": "Gunshot_Injury"
         },
         {
-          "distribution": 0.005100,
+          "distribution": 0.0051,
           "transition": "Concussion_Injury"
         },
         {
-          "distribution": 0.004780,
+          "distribution": 0.00478,
           "transition": "Whiplash_Injury"
         },
         {
-          "distribution": 0.058300,
+          "distribution": 0.0583,
           "remarks": [
             "Retain highest probability for elderly."
           ],
           "transition": "Broken_Bone_Injury"
         },
         {
-          "distribution": 0.003980,
+          "distribution": 0.00398,
           "transition": "Burn_Injury"
         },
         {
@@ -292,11 +288,11 @@
           "transition": "Sprain_Injury"
         },
         {
-          "distribution": 0.002290,
+          "distribution": 0.00229,
           "transition": "Knee_Injury"
         },
         {
-          "distribution": 0.001470,
+          "distribution": 0.00147,
           "transition": "Shoulder_Injury"
         },
         {
@@ -317,10 +313,8 @@
         "======================================================================",
         " SPINAL INJURY                                                        ",
         "======================================================================",
-
         "Further supported by the following incidence statistics (from 2010): ",
         "http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures ",
-
         "16 - 25% of spinal fractures result in neurological damage. This aligns with ",
         "The incidence of spinal cord injury folowing a spinal fracture. For simplicity ",
         "All spinal fractures with spinal cord damage also result in neurological damage."
@@ -529,10 +523,8 @@
         "======================================================================",
         " GUNSHOT INJURY                                                       ",
         "======================================================================",
-
         "Further supported by the following statistics (2010): ",
         "http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
-
         "Gunshot deaths:                  31,076  => 29.8%",
         "Non-fatal hospital discharges:   73,505  => 70.2%",
         "Total gunshot injuries:         104,581"
@@ -619,9 +611,9 @@
       "reason": "Gunshot_Wound",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "1359008",
-          "display" : "Amoxicillin 200 MG [Amoxi-tabs]"
+          "system": "RxNorm",
+          "code": "1359008",
+          "display": "Amoxicillin 200 MG [Amoxi-tabs]"
         }
       ],
       "direct_transition": "Gunshot_Wound_Prescribe_Pain_Medication"
@@ -682,9 +674,9 @@
       "reason": "Gunshot_Wound",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "1310197",
-          "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+          "system": "RxNorm",
+          "code": "1310197",
+          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
       "direct_transition": "Gunshot_Wound_CarePlan"
@@ -753,7 +745,6 @@
         "======================================================================",
         " CONCUSSION                                                           ",
         "======================================================================",
-
         "Further supported by the following CDC reports: ",
         "http://www.cdc.gov/traumaticbraininjury/data/rates.html",
         "https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
@@ -926,11 +917,9 @@
         "======================================================================",
         " WHIPLASH                                                             ",
         "======================================================================",
-
         "Further supported by the following sources: ",
         "http://www.srisd.com/consumer_site/epidemiology.htm",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2564031/",
-
         "Many whiplash injuries do not present themselves immediately and are not ",
         "treated by an emergency department. If they're ever addressed at all they ",
         "are treated in an ambulatory setting by a PCP. For simplicity however, all ",
@@ -972,9 +961,9 @@
       "reason": "Whiplash",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "849727",
-          "display" : "Naproxen sodium 220 MG [Aleve]"
+          "system": "RxNorm",
+          "code": "849727",
+          "display": "Naproxen sodium 220 MG [Aleve]"
         }
       ],
       "direct_transition": "Whiplash_CarePlan"
@@ -1028,7 +1017,6 @@
         "======================================================================",
         " BROKEN BONE                                                          ",
         "======================================================================",
-
         "Further supported by the following sources: ",
         "Most commonly broken bones: https://askabiologist.asu.edu/how-bone-breaks"
       ],
@@ -1313,7 +1301,6 @@
           "system": "SNOMED-CT",
           "code": "185349003",
           "display": "Encounter for 'check-up'"
-
         }
       ],
       "direct_transition": "End_Broken_Bone_Injury"
@@ -1331,11 +1318,9 @@
         "======================================================================",
         " BURN                                                                 ",
         "======================================================================",
-
         "Further supported by the following sources: ",
         "http://www.ameriburn.org/resources_factsheet.php",
         "http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6 (1999 incidence)",
-
         "Since the early 1990's the burn rates in the U.S. have declined almost 50%;",
         "however, the relative proportions of severity has stayed the same."
       ],
@@ -1362,7 +1347,6 @@
         "ED Visits:      1.25M",
         "Hospital Stays:   51k  => 0.0408",
         "Deaths:          5500  => 0.0044",
-
         "Distributed the burns that don't result in death or a hospital stay between first ",
         "and second degree burns. (60% first degree, 40% second degree of the 0.9548 remaining)."
       ],
@@ -1536,9 +1520,9 @@
       "reason": "burn_injury",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "1049624",
-          "display" : "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
+          "system": "RxNorm",
+          "code": "1049624",
+          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1612,10 +1596,8 @@
         "======================================================================",
         " LACERATION                                                           ",
         "======================================================================",
-
         "Added a mix of lacerations for variety. It seems like most common ",
         "lacerations are equally likely.",
-
         "TODO: In the future, lacerations that are poorly treated by the patient may ",
         "develop an infection. Could be interesting to add this into the mix."
       ],
@@ -1838,7 +1820,6 @@
         "======================================================================",
         " SPRAIN                                                               ",
         "======================================================================",
-
         "Arbitrary distribution of sprained ankles and wrists for variety."
       ],
       "direct_transition": "ED_Visit_For_Sprain"
@@ -1958,17 +1939,14 @@
         "======================================================================",
         " KNEE                                                                 ",
         "======================================================================",
-
         "Tears of the following structures: ",
         "1. ACL      (25.4%)",
         "2. MCL      (36.1%)",
         "3. Meniscus (23.0%)",
         "4. Patella  (29.5%)",
-
         "These percentages add up to >100 since multiple tears could occur from one knee ",
         "injury. To simplify I normalized these percentages out of 100 but maintained ",
         "the relative proportions. Only one of the above occurs at any given time.",
-
         "Sources: ",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3768257/"
       ],
@@ -2038,7 +2016,7 @@
       "target_encounter": "ED_Visit_For_Knee_Injury",
       "assign_to_attribute": "knee_injury",
       "remarks": [
-        "A torn meniscus usually doesn't require surgery, just physical therapy."
+        "These typically don't require surgery, so go straight to therapy."
       ],
       "codes": [
         {
@@ -2046,9 +2024,6 @@
           "code": "239720000",
           "display": "Tear of meniscus of knee"
         }
-      ],
-      "remarks": [
-        "These typically don't require surgery, so go straight to therapy."
       ],
       "direct_transition": "Knee_Injury_CarePlan"
     },
@@ -2159,9 +2134,9 @@
       "reason": "knee_injury",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "1310197",
-          "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+          "system": "RxNorm",
+          "code": "1310197",
+          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
       "direct_transition": "Knee_Injury_CarePlan"
@@ -2193,7 +2168,6 @@
       ],
       "direct_transition": "Knee_Injury_Recovery_Period"
     },
-
     "Knee_Injury_Recovery_Period": {
       "type": "Delay",
       "range": {
@@ -2216,7 +2190,6 @@
         "======================================================================",
         " SHOULDER                                                             ",
         "======================================================================",
-
         "Tears of the rotator cuff. Typically this doesn't require an immediate trip ",
         "to the emergency department. An ambulatory encounter and PT (or in some cases,",
         "surgery) will do. Interestingly enough, in most cases surgery won't help a ",
@@ -2354,9 +2327,9 @@
       "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "1310197",
-          "display" : "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+          "system": "RxNorm",
+          "code": "1310197",
+          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
       "direct_transition": "Shoulder_Injury_CarePlan"
@@ -2425,7 +2398,6 @@
         "======================================================================",
         " INJURY CONCLUSION                                                    ",
         "======================================================================",
-
         "This section is not resposible for ending conditions, only resetting ",
         "attributes and ending care plans and medications. This allows chronic ",
         "injuries to continue while short-term injuries should be ended earlier ",
@@ -2509,7 +2481,7 @@
       "type": "Death",
       "direct_transition": "Terminal"
     },
-
+    
     "Terminal": {
       "type": "Terminal"
     }

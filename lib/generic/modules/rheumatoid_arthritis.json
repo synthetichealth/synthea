@@ -4,10 +4,8 @@
     "Rheumatoid arthritis (RA) is a chronic condition where joints and other organs are ",
     "attacked by the body's own immune system. RA is treated aggressively and about 75% ",
     "of cases go into remission within 5 years.",
-
     "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
     "http://www.cdc.gov/arthritis/basics/types.html",
-
     "Overall prevalence of arthritis: ",
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
@@ -19,7 +17,6 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         " | Arthritis Type | Prevalence | Ratio F:M | ",
         " ------------------------------------------- ",
         " | Rheumatoid     |   0.01000  |    1:1    | ",
@@ -53,7 +50,6 @@
         "======================================================================",
         " RHEUMATOID ARTHRITIS                                                 ",
         "======================================================================",
-
         "Source: http://www.cdc.gov/arthritis/basics/rheumatoid.htm"
       ],
       "target_encounter": "RA_Diagnosis",
@@ -122,9 +118,9 @@
       ],
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "849437",
-          "display" : "Naproxen sodium 550 MG [Anaprox]"
+          "system": "RxNorm",
+          "code": "849437",
+          "display": "Naproxen sodium 550 MG [Anaprox]"
         }
       ],
       "conditional_transition": [
@@ -299,9 +295,9 @@
       "medication_order": "RA_Nonopioid_Pain_Medication",
       "direct_transition": "Terminal"
     },
-
+    
     "Terminal": {
-        "type": "Terminal"
+      "type": "Terminal"
     }
   }
 }

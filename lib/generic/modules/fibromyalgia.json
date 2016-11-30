@@ -4,13 +4,10 @@
     "Fibromyalgia is a disorder of the central nervous system causing widespread chronic pain. It ",
     "is categorized as a type of arthritis and is 7x more likely in women than in men. The chronic ",
     "pain of fibromyalgia is sometimes treated with opioids if it's particularly severe.",
-
     "Fibromyalgia wasn't officially recognized as a disease until 1987 by the AMA. Specialized drugs ",
     "to treat fibromyalgia (Lyrica, Cymbalta, Savella) didn't become available until the mid 2000's.",
-
     "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
     "http://www.cdc.gov/arthritis/basics/types.html",
-
     "Overall prevalence of arthritis: ",
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
@@ -22,7 +19,6 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         " | Arthritis Type | Prevalence | Ratio F:M | ",
         " ------------------------------------------- ",
         " | Fibromyalgia   |   0.01670  |    7:1    | ",
@@ -94,9 +90,7 @@
         "======================================================================",
         " FIBROMYALGIA                                                         ",
         "======================================================================",
-
         "Source: http://www.cdc.gov/arthritis/basics/fibromyalgia.htm",
-
         "People with fibromyalgia have at least one hospitalization every 3 years.",
         "5.5M ambulatory care visits every year."
       ],
@@ -161,9 +155,9 @@
       ],
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "849437",
-          "display" : "Naproxen sodium 550 MG [Anaprox]"
+          "system": "RxNorm",
+          "code": "849437",
+          "display": "Naproxen sodium 550 MG [Anaprox]"
         }
       ],
       "direct_transition": "Delay_Until_Fibromyalgia_Episode"
@@ -216,16 +210,16 @@
           "condition": {
             "condition_type": "And",
             "conditions": [
-                {
-                  "condition_type": "Date",
-                  "operator": ">=",
-                  "year": 1990
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "opioid_prescription",
-                  "operator": "is nil"
-                }
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 1990
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "opioid_prescription",
+                "operator": "is nil"
+              }
             ]
           },
           "distributions": [
@@ -331,9 +325,9 @@
       "referenced_by_attribute": "fibromyalgia_prescription",
       "direct_transition": "Delay_Until_Fibromyalgia_Episode"
     },
-
+    
     "Terminal": {
-        "type": "Terminal"
+      "type": "Terminal"
     }
   }
 }

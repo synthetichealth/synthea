@@ -3,19 +3,15 @@
   "remarks": [
     "These are quite common in women but rare in men. Most of the incidence statistics I got from the NIH: ",
     "https://www.nichd.nih.gov/health/topics/urinary/conditioninfo/Pages/affected.aspx",
-
     "Incidence for recurrent UTIs: ",
     "https://www.kidney.org/sites/default/files/uti.pdf",
-
     "Incidence for men: ",
     "https://www.betterhealth.vic.gov.au/health/conditionsandtreatments/urinary-tract-infections-uti",
     "UTIs are practically nonexistent in young men but can occur in elderly men.",
-
     "The NIH claims 8.1M doctor visits each year are because of UTIs. However, some of these could be recurrent ",
     "visits for the same woman. Estimates show about a quarter of UTIs are recurring, so more realistically ",
     "about 75% of those visits to the physician are unique patients. I therefore estimate (0.75 * 8.1M) = 6.08M ",
     "unique patients get UTIs every year, or about 1.9% of the population (out of 320M Americans in 2016).",
-
     "Several risk factors also increase the likelihood of a UTI including diabetes and obseity. Obesity doubles ",
     "the risk for a UTI in women. For now these are not represented in this module."
   ],
@@ -27,13 +23,11 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         "https://www.kidney.org/sites/default/files/uti.pdf:",
         " ''One in five women will have at least one UTI in her lifetime.      ",
         "   Nearly 20 percent of women who have a UTI will have another,       ",
         "   and 30 percent of those will have yet another. Of this last        ",
         "   group, 80 percent will have recurrences.''                         ",
-
         "https://www.betterhealth.vic.gov.au/health/conditionsandtreatments/urinary-tract-infections-uti:",
         " ''Around one in two women and one in 20 men will get a UTI in their lifetime'' "
       ],
@@ -105,7 +99,6 @@
         "======================================================================",
         " URINARY TRACT INFECTION                                              ",
         "======================================================================",
-
         "This is most commonly a bacterial infection of the urethra or bladder ",
         "(urethritis and cystitis, respectively). In rare cases this could also ",
         "be an infection of the kidneys (pyelonephritis)."
@@ -181,7 +174,7 @@
     "UTI_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason" : "uti",
+      "reason": "uti",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -195,7 +188,7 @@
     "Prescribe_UTI_Antibiotic": {
       "type": "MedicationOrder",
       "target_encounter": "UTI_Diagnosis",
-      "reason" : "uti",
+      "reason": "uti",
       "remarks": [
         "This is an antibiotic commonly prescribed for UTIs."
       ],
@@ -212,7 +205,7 @@
     "Prescribe_OTC_Painkiller_For_UTIs": {
       "type": "MedicationOrder",
       "target_encounter": "UTI_Diagnosis",
-      "reason" : "uti",
+      "reason": "uti",
       "remarks": [
         "This is an OTC pain medication specifically for the urinary tract."
       ],
@@ -229,7 +222,7 @@
     "UTI_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "UTI_Diagnosis",
-      "reason" : "uti",
+      "reason": "uti",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -251,7 +244,6 @@
       ],
       "direct_transition": "Take_Antibiotics"
     },
-
     "Take_Antibiotics": {
       "type": "Delay",
       "exact": {
@@ -279,7 +271,7 @@
     "Followup_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason" : "uti",
+      "reason": "uti",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -293,7 +285,7 @@
     "Prescribe_Second_Round_Of_Antibiotics": {
       "type": "MedicationOrder",
       "target_encounter": "Followup_Encounter",
-      "reason" : "uti",
+      "reason": "uti",
       "remarks": [
         "This is a stronger antibiotic."
       ],
@@ -387,7 +379,7 @@
       },
       "direct_transition": "Urinary_Tract_Infection"
     },
-
+    
     "Terminal": {
       "type": "Terminal"
     }
