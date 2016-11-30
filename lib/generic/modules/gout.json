@@ -95,6 +95,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "gout_careplan",
+      "reason": "Gout",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -125,6 +126,7 @@
     "Gout_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Gout",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -156,6 +158,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "gout_nsaid",
+      "reason": "Gout",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
       ],
@@ -173,6 +176,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "gout_nsaid",
+      "reason": "Gout",
       "remarks": [
         "For those who can't stand the side effects of a strong NSAID."
       ],
@@ -189,6 +193,7 @@
     "Uric_Acid_Reducer": {
       "type": "MedicationOrder",
       "target_encounter": "Gout_Diagnosis",
+      "reason": "Gout",
       "codes": [
         {
           "system": "RxNorm",

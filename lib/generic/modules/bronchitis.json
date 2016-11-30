@@ -102,25 +102,26 @@
     "Doctor_Visit" : {
       "type" : "Encounter",
       "encounter_class" : "ambulatory",
+      "reason" : "Bronchitis_Infection",
+      "remarks" : ["There are no reliable diagnostic signs or laboratory tests, so the diagnosis of acute bronchitis is essentially a clinical one. ",
+                   "The most important condition to rule out is acute pneumonia. "],
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
         "display": "Encounter for symptom"
       }],
-      "reason" : "Bronchitis_Infection",
       "distributed_transition" : [
         { "distribution" : 0.05, "transition" : "Chest_Xray" },
         { "distribution" : 0.20, "transition" : "Sputum_Test" },
         { "distribution" : 0.50, "transition" : "Lung_Function_Test" },
         { "distribution" : 0.20, "transition" : "Bronchitis_CarePlan_Selector" }
-      ],
-      "remarks" : ["There are no reliable diagnostic signs or laboratory tests, so the diagnosis of acute bronchitis is essentially a clinical one. ",
-                   "The most important condition to rule out is acute pneumonia. "]
+      ]
     },
 
     "Chest_Xray" : {
       "type" : "Procedure",
       "target_encounter" : "Doctor_Visit",
+      "reason" : "Bronchitis_Infection",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "399208008",
@@ -132,6 +133,7 @@
     "Sputum_Test" : {
       "type" : "Procedure",
       "target_encounter" : "Doctor_Visit",
+      "reason" : "Bronchitis_Infection",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "269911007",
@@ -143,6 +145,7 @@
     "Lung_Function_Test" : {
       "type" : "Procedure",
       "target_encounter" : "Doctor_Visit",
+      "reason" : "Bronchitis_Infection",
       "codes": [{
         "system": "SNOMED-CT",
         "code": "23426006",
@@ -184,6 +187,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Doctor_Visit",
       "assign_to_attribute": "bronchitis_careplan",
+      "reason" : "Bronchitis_Infection",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -215,6 +219,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Doctor_Visit",
       "assign_to_attribute": "bronchitis_careplan",
+      "reason" : "Bronchitis_Infection",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -253,7 +258,9 @@
             { "distribution" : 0.80, "transition" : "Cough_suppressant" },
             { "distribution" : 0.20, "transition" : "Acetaminophen" }
           ],
-          "remarks" : "cough suppressants shouldn't be given if the cough brings up mucus"
+          "remarks" : [
+            "cough suppressants shouldn't be given if the cough brings up mucus"
+          ]
         },
         {
           "distributions" : [
@@ -267,6 +274,7 @@
     "Cough_suppressant" : {
       "type" : "MedicationOrder",
       "target_encounter" : "Doctor_Visit",
+      "reason" : "Bronchitis_Infection",
       "codes" : [{
         "system" : "RxNorm",
         "code" : "1020137",
@@ -278,6 +286,7 @@
     "Acetaminophen" : {
       "type" : "MedicationOrder",
       "target_encounter" : "Doctor_Visit",
+      "reason" : "Bronchitis_Infection",
       "codes" : [{
         "system" : "RxNorm",
         "code" : "608680",

@@ -119,25 +119,25 @@
 
     "Emphysema" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "DiagnosisEncounter",
+      "assign_to_attribute" : "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "87433001",
         "display" : "Pulmonary emphysema (disorder)"
       }],
-      "target_encounter" : "DiagnosisEncounter",
-      "assign_to_attribute" : "copd_variant",
       "direct_transition" : "Emphysema_Symptom1"
     },
 
     "Chronic_Bronchitis" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "DiagnosisEncounter",
+      "assign_to_attribute" : "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "185086009",
         "display" : "Chronic obstructive bronchitis (disorder)"
       }],
-      "target_encounter" : "DiagnosisEncounter",
-      "assign_to_attribute" : "copd_variant",
       "direct_transition" : "Bronchitis_Symptom1"
     },
 
@@ -177,12 +177,13 @@
 
     "Initial_FEV_Test" : {
       "type" : "Procedure",
+      "target_encounter" : "DiagnosisEncounter",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "127783003",
         "display" : "Spirometry (procedure)"
       }],
-      "target_encounter" : "DiagnosisEncounter",
       "direct_transition" : "Initial_FEV_Result"
     },
 
@@ -194,7 +195,9 @@
         "display" : "FEV1/​FVC"
       }],
       "range" : { "low" : 45, "high" : 81 },
-      "remarks" : "early diagnosis for COPD is the exception not the rule. assume that most people will be stage 2 at diagnosis",
+      "remarks" : [
+        "early diagnosis for COPD is the exception not the rule. assume that most people will be stage 2 at diagnosis"
+      ],
       "unit" : "%",
       "target_encounter" : "DiagnosisEncounter",
       "conditional_transition" : [
@@ -211,6 +214,7 @@
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "DiagnosisEncounter",
+      "reason": "copd_variant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -236,6 +240,7 @@
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "DiagnosisEncounter",
+      "reason": "copd_variant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -427,12 +432,13 @@
 
     "Followup_FEV_Test" : {
       "type" : "Procedure",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "127783003",
         "display" : "Spirometry (procedure)"
       }],
-      "target_encounter" : "COPD_Followup_Encounter",
       "conditional_transition" : [
         {
           "condition" : {
@@ -445,7 +451,9 @@
             "operator" : ">=",
             "value" : 80
           },
-          "remarks" : "people with an FEV1 of >= 80% are in the 'Mild' or 'At Risk' stage of COPD",
+          "remarks" : [
+            "people with an FEV1 of >= 80% are in the 'Mild' or 'At Risk' stage of COPD"
+          ],
           "transition" : "Stage1_FEV_Result"
         },
         {
@@ -459,7 +467,7 @@
             "operator" : ">=",
             "value" : 50
           },
-          "remarks" : "people with 80% > FEV1 >= 50% are in the 'Moderate' stage of COPD",
+          "remarks" : ["people with 80% > FEV1 >= 50% are in the 'Moderate' stage of COPD"],
           "transition" : "Stage2_FEV_Result"
         },
         {
@@ -473,7 +481,7 @@
             "operator" : ">=",
             "value" : 30
           },
-          "remarks" : "people with 50% > FEV1 >= 30% are in the 'Severe' stage of COPD",
+          "remarks" : ["people with 50% > FEV1 >= 30% are in the 'Severe' stage of COPD"],
           "transition" : "Stage3_FEV_Result"
         },
         {
@@ -487,7 +495,7 @@
             "operator" : "<",
             "value" : 30
           },
-          "remarks" : "people with an FEV1 of < 80% are in the 'Very Severe' or end stage of COPD",
+          "remarks" : ["people with an FEV1 of < 80% are in the 'Very Severe' or end stage of COPD"],
           "transition" : "Stage4_FEV_Result"
         }
       ]
@@ -495,57 +503,57 @@
 
     "Stage1_FEV_Result" : {
       "type" : "Observation",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "range" : { "low" : 75, "high" : 90 },
+      "remarks" : ["currently in stage 1 so they can stay in 1 or drop to 2"],
+      "unit" : "%",
       "codes" : [{
         "system" : "LOINC",
         "code" : "19926-5",
         "display" : "FEV1/​FVC"
       }],
-      "range" : { "low" : 75, "high" : 90 },
-      "remarks" : "currently in stage 1 so they can stay in 1 or drop to 2",
-      "unit" : "%",
-      "target_encounter" : "COPD_Followup_Encounter",
       "direct_transition" : "Loop_back_to_Living_with_COPD"
     },
 
 
     "Stage2_FEV_Result" : {
       "type" : "Observation",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "range" : { "low" : 48, "high" : 79 },
+      "remarks" : ["currently in stage 2 so they can stay in 2 or drop to 3"],
+      "unit" : "%",
       "codes" : [{
         "system" : "LOINC",
         "code" : "19926-5",
         "display" : "FEV1/​FVC"
       }],
-      "range" : { "low" : 48, "high" : 79 },
-      "remarks" : "currently in stage 2 so they can stay in 2 or drop to 3",
-      "unit" : "%",
-      "target_encounter" : "COPD_Followup_Encounter",
       "direct_transition" : "Check_Medication"
     },
 
     "Stage3_FEV_Result" : {
       "type" : "Observation",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "range" : { "low" : 26, "high" : 49 },
+      "remarks" : ["currently in stage 3 so they can stay in 3 or drop to 4"],
+      "unit" : "%",
       "codes" : [{
         "system" : "LOINC",
         "code" : "19926-5",
         "display" : "FEV1/​FVC"
       }],
-      "range" : { "low" : 26, "high" : 49 },
-      "remarks" : "currently in stage 3 so they can stay in 3 or drop to 4",
-      "unit" : "%",
-      "target_encounter" : "COPD_Followup_Encounter",
       "direct_transition" : "Check_Medication"
     },
 
     "Stage4_FEV_Result" : {
       "type" : "Observation",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "range" : { "low" : 10, "high" : 29 },
+      "unit" : "%",
       "codes" : [{
         "system" : "LOINC",
         "code" : "19926-5",
         "display" : "FEV1/​FVC"
       }],
-      "range" : { "low" : 10, "high" : 29 },
-      "unit" : "%",
-      "target_encounter" : "COPD_Followup_Encounter",
       "direct_transition" : "Pulmonary_Rehab"
     },
 
@@ -562,7 +570,7 @@
             }]
           },
           "transition" : "Consider_Surgery"
-        }, 
+        },
         {
           "transition" : "Prescribe_Medication"
         }
@@ -571,12 +579,13 @@
 
     "Prescribe_Medication" : {
       "type" : "MedicationOrder",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "RxNorm",
         "code" : "896188",
         "display" : "Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT [Advair]"
       }],
-      "target_encounter" : "COPD_Followup_Encounter",
       "direct_transition" : "Consider_Surgery"
     },
 
@@ -590,7 +599,7 @@
               {
                 "condition_type": "PriorState",
                 "name" : "Surgery_Encounter",
-                "remarks" : "only allow people to have surgery once"
+                "remarks" : ["only allow people to have surgery once"]
               },
               {
                 "condition_type" : "Observation",
@@ -601,21 +610,21 @@
                 }],
                 "operator" : ">",
                 "value" : 30,
-                "remarks" : "surgery is only considered for severe COPD - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4608618/"
+                "remarks" : ["surgery is only considered for severe COPD - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4608618/"]
               },
               {
                 "condition_type" : "Age",
                 "operator" : ">",
                 "quantity" : 65,
                 "unit" : "years",
-                "remarks" : "surgery in older patients is not recommended due to the risk to the patient"
+                "remarks" : ["surgery in older patients is not recommended due to the risk to the patient"]
               },
-              { 
-                "condition_type" : "Attribute", 
-                "attribute" : "smoker", 
-                "operator": "==", 
+              {
+                "condition_type" : "Attribute",
+                "attribute" : "smoker",
+                "operator": "==",
                 "value": true,
-                "remarks" : "patients must quit smoking to be considered"
+                "remarks" : ["patients must quit smoking to be considered"]
               }
             ]
           },
@@ -626,7 +635,7 @@
             { "distribution" : 0.15, "transition" : "Wait_for_Surgery" },
             { "distribution" : 0.85, "transition" : "Loop_back_to_Living_with_COPD" }
           ],
-          "remarks" : "there is little data about what % of eligible patients actually have surgery - these #s are guesses"
+          "remarks" : ["there is little data about what % of eligible patients actually have surgery - these #s are guesses"]
         }
       ]
     },
@@ -644,12 +653,12 @@
     "Surgery_Encounter" : {
       "type" : "Encounter",
       "encounter_class" : "inpatient",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "305411003",
         "display" : "Admission to thoracic surgery department"
       }],
-      "reason" : "copd_variant",
       "conditional_transition" : [
         {
           "condition" : {
@@ -661,11 +670,11 @@
             }],
             "operator" : ">",
             "value" : 20,
-            "remarks" : "LVRS is more common for patients with FEV1 > 20% - http://www.medscape.com/viewarticle/502203_7"
+            "remarks" : ["LVRS is more common for patients with FEV1 > 20% - http://www.medscape.com/viewarticle/502203_7"]
           },
           "transition" : "Lung_Volume_Reduction"
         },
-        { 
+        {
           "transition" : "Lung_Transplant"
         }
       ]
@@ -673,40 +682,43 @@
 
     "Lung_Transplant" : {
       "type" : "Procedure",
+      "target_encounter" : "Surgery_Encounter",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "88039007",
         "display" : "Transplant of lung (procedure)"
       }],
-      "target_encounter" : "Surgery_Encounter",
       "direct_transition" : "Loop_back_to_Living_with_COPD"
     },
 
     "Lung_Volume_Reduction" : {
       "type" : "Procedure",
+      "target_encounter" : "Surgery_Encounter",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "429609002",
         "display" : "Lung volume reduction surgery (procedure)"
       }],
-      "target_encounter" : "Surgery_Encounter",
       "direct_transition" : "Loop_back_to_Living_with_COPD"
     },
 
     "Pulmonary_Rehab" : {
       "type" : "Procedure",
+      "target_encounter" : "COPD_Followup_Encounter",
+      "reason": "copd_variant",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "15081005",
         "display" : "Pulmonary rehabilitation (regime/therapy)"
       }],
-      "target_encounter" : "COPD_Followup_Encounter",
       "direct_transition" : "Check_Medication"
     },
 
     "Loop_back_to_Living_with_COPD" : {
       "type" : "Simple",
-      "remarks" : "this state only exists to make the graphviz look cleaner",
+      "remarks" : ["this state only exists to make the graphviz look cleaner"],
       "direct_transition" : "Living_with_COPD"
     },
 

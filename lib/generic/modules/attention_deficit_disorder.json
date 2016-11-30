@@ -75,6 +75,7 @@
     "ADHD_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -87,6 +88,8 @@
 
     "ADHD_CarePlan": {
       "type": "CarePlanStart",
+      "target_encounter": "ADHD_Diagnosis",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -150,6 +153,7 @@
     "Behavior_Treatment_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -284,6 +288,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "RxNorm",
@@ -307,6 +312,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "RxNorm",

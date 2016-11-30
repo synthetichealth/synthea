@@ -70,14 +70,14 @@
     "Acquire_Viral_Infection" : {
       "type" : "ConditionOnset",
       "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sore Throat Condition",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "195662009",
         "display" : "Acute viral pharyngitis (disorder)"
       }],
-      "assign_to_attribute" : "Sore Throat Condition",
       "direct_transition" : "Viral_Symptom_1"
-    }, 
+    },
 
     "Viral_Symptom_1" : {
       "type" : "Symptom",
@@ -103,12 +103,12 @@
     "Acquire_Bacterial_Infection" : {
       "type" : "ConditionOnset",
       "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sore Throat Condition",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "43878008",
         "display" : "Streptococcal sore throat (disorder)"
       }],
-      "assign_to_attribute" : "Sore Throat Condition",
       "direct_transition" : "Bacterial_Symptom_1"
     },
 
@@ -116,7 +116,7 @@
       "type" : "Symptom",
       "symptom": "Cough",
       "exact" : { "quantity" : 0 },
-      "remarks" : "Strep generally does not present with cough",
+      "remarks" : ["Strep generally does not present with cough"],
       "direct_transition" : "Bacterial_Symptom_2"
     },
 
@@ -124,7 +124,7 @@
       "type" : "Symptom",
       "symptom": "Swollen Lymph Nodes",
       "range": { "low" : 40, "high" : 100 },
-      "remarks" : "Strep generally presents with swollen lymph nodes",
+      "remarks" : ["Strep generally presents with swollen lymph nodes"],
       "direct_transition" : "Bacterial_Symptom_3"
     },
 
@@ -148,12 +148,12 @@
     "Doctor_Visit" : {
       "type" : "Encounter",
       "encounter_class" : "ambulatory",
+      "reason" : "Sore Throat Condition",
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
         "display": "Encounter for symptom"
       }],
-      "reason" : "Sore Throat Condition",
       "conditional_transition" : [
         {
           "condition": {
@@ -165,7 +165,7 @@
             }]
           },
           "transition": "Take_Temperature_High",
-          "remarks" : "high fever is a hallmark of strep throat  http://www.webmd.com/cold-and-flu/news/20131104/two-questions-may-rule-out-strep-throat"
+          "remarks" : ["high fever is a hallmark of strep throat  http://www.webmd.com/cold-and-flu/news/20131104/two-questions-may-rule-out-strep-throat"]
         },
         {
           "transition": "Take_Temperature_Low"
@@ -176,34 +176,34 @@
     "Take_Temperature_High" : {
       "type" : "Observation",
       "target_encounter" : "Doctor_Visit",
+      "range" : {
+        "low" : 37.2,
+        "high" : 39.4
+      },
+      "remarks" : ["37.2 - 39.4 Celsius == 99 - 103 Fahrenheit"],
+      "unit" : "Cel",
       "codes" : [{
         "system" : "LOINC",
         "code" : "8331-1",
         "display" : "Oral temperature"
       }],
-      "range" : {
-        "low" : 37.2,
-        "high" : 39.4
-      },
-      "remarks" : "37.2 - 39.4 Celsius == 99 - 103 Fahrenheit",
-      "unit" : "Cel",
       "direct_transition" : "Determine_if_Bacterial"
     },
 
     "Take_Temperature_Low" : {
       "type" : "Observation",
       "target_encounter" : "Doctor_Visit",
+      "range" : {
+        "low" : 37.0,
+        "high" : 38.0
+      },
+      "remarks" : ["37.0 - 38.0 Celsius == 98.6 - 100.4 Fahrenheit"],
+      "unit" : "Cel",
       "codes" : [{
         "system" : "LOINC",
         "code" : "8331-1",
         "display" : "Oral temperature"
       }],
-      "range" : {
-        "low" : 37.0,
-        "high" : 38.0
-      },
-      "remarks" : "37.0 - 38.0 Celsius == 98.6 - 100.4 Fahrenheit",
-      "unit" : "Cel",
       "direct_transition" : "Determine_if_Bacterial"
     },
 
@@ -338,32 +338,37 @@
 
     "Prescribe_Antibiotics_Child" : {
       "type" : "MedicationOrder",
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sore Throat Antibiotic",
+      "reason": "Sore Throat Condition",
+      "remarks" : [
+        "if we eventually add Penicillin allergies, we'll need a conditional to prescribe amoxicillin instead"
+      ],
       "codes" : [{
         "system" : "RxNorm",
         "code" : "834060",
         "display" : "Penicillin V Potassium 250 MG"
       }],
-      "target_encounter" : "Doctor_Visit",
-      "assign_to_attribute" : "Sore Throat Antibiotic",
-      "direct_transition" : "Time_Passes",
-      "remarks" : "if we eventually add Penicillin allergies, we'll need a conditional to prescribe amoxicillin instead"
+      "direct_transition" : "Time_Passes"
     },
 
     "Prescribe_Antibiotics_Adult" : {
       "type" : "MedicationOrder",
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sore Throat Antibiotic",
+      "reason": "Sore Throat Condition",
       "codes" : [{
         "system" : "RxNorm",
         "code" : "834101",
         "display" : "Penicillin V Potassium 500 MG"
       }],
-      "target_encounter" : "Doctor_Visit",
-      "assign_to_attribute" : "Sore Throat Antibiotic",
       "direct_transition" : "Time_Passes"
     },
 
     "Throat_Culture" : {
       "type" : "Procedure",
       "target_encounter" : "Doctor_Visit",
+      "reason": "Sore Throat Condition",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "117015009",
@@ -380,7 +385,7 @@
             }]
           },
           "transition": "Prescribe_Antibiotics",
-          "remarks" : "assuming here for simplicity that the test is 100% accurate. real world it's more like 90-95%"
+          "remarks" : ["assuming here for simplicity that the test is 100% accurate. real world it's more like 90-95%"]
         },
         {
           "transition": "Time_Passes"

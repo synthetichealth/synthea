@@ -64,6 +64,7 @@
     "Childhood_Asthma_Begins": {
       "type": "ConditionOnset",
       "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -71,13 +72,13 @@
           "display": "Childhood asthma"
         }
       ],
-      "assign_to_attribute" : "asthma_condition",
       "direct_transition": "Cough"
     },
 
     "Adult_Asthma_Begins": {
       "type": "ConditionOnset",
       "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -85,7 +86,6 @@
           "display": "Asthma"
         }
       ],
-      "assign_to_attribute" : "asthma_condition",
       "direct_transition": "Cough"
     },
 
@@ -105,7 +105,8 @@
 
     "Asthma_Diagnosis": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "ambulatory",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -113,13 +114,13 @@
           "display": "Encounter for symptom"
         }
       ],
-      "reason" : "asthma_condition",
       "direct_transition": "Asthma_Screening"
     },
 
     "Asthma_Screening": {
       "type": "Procedure",
       "target_encounter": "Asthma_Diagnosis",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -133,6 +134,7 @@
     "Prescribe_Maintenance_Inhaler": {
         "type": "MedicationOrder",
         "target_encounter": "Asthma_Diagnosis",
+        "reason" : "asthma_condition",
         "codes": [
           {
             "system": "RxNorm",
@@ -176,6 +178,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Asthma_Diagnosis",
       "assign_to_attribute": "asthma_careplan",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -207,6 +210,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Asthma_Diagnosis",
       "assign_to_attribute": "asthma_careplan",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -293,6 +297,7 @@
     "Lifelong_Asthma_Begins": {
         "type": "ConditionOnset",
         "target_encounter": "Next_Adult_Welness_Encounter",
+        "assign_to_attribute": "asthma_condition",
         "codes": [
           {
             "system": "SNOMED-CT",
@@ -343,6 +348,7 @@
     "Asthma_ED_Visit": {
       "type": "Encounter",
       "encounter_class": "emergency",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -355,7 +361,8 @@
 
     "Asthma_Attack_Followup": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "ambulatory",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -389,6 +396,7 @@
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
       "target_encounter": "Asthma_Attack_Followup",
+      "reason" : "asthma_condition",
       "codes": [
         {
           "system": "RxNorm",

@@ -407,6 +407,7 @@
     "Spinal_Surgery": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "reason": "spinal_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -430,6 +431,7 @@
     "Spinal_Injury_Treatment_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "spinal_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -444,6 +446,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Spinal_Injury_Treatment_Encounter",
       "assign_to_attribute": "opioid_prescription",
+      "reason": "spinal_injury",
       "remarks": [
         "Since spinal injuries are so close to the central nervous system they ",
         "are typically very, very painful. Regardless of the age, year, etc. we ",
@@ -463,6 +466,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Spinal_Injury_Treatment_Encounter",
       "assign_to_attribute": "injury_careplan",
+      "reason": "spinal_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -498,6 +502,7 @@
     "Spinal_Injury_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "spinal_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -592,6 +597,7 @@
     "Gunshot_Wound_Surgery": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "reason": "Gunshot_Wound",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -609,6 +615,8 @@
       ],
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "assign_to_attribute": "antibiotic_prescription",
+      "reason": "Gunshot_Wound",
       "codes": [
         {
           "system" : "RxNorm",
@@ -616,7 +624,6 @@
           "display" : "Amoxicillin 200 MG [Amoxi-tabs]"
         }
       ],
-      "assign_to_attribute": "antibiotic_prescription",
       "direct_transition": "Gunshot_Wound_Prescribe_Pain_Medication"
     },
 
@@ -657,6 +664,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Gunshot_Injury",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "Gunshot_Wound",
       "codes": [
         {
           "system": "RxNorm",
@@ -671,6 +679,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Gunshot_Injury",
       "assign_to_attribute": "opioid_prescription",
+      "reason": "Gunshot_Wound",
       "codes": [
         {
           "system" : "RxNorm",
@@ -685,6 +694,7 @@
       "type": "CarePlanStart",
       "assign_to_attribute": "injury_careplan",
       "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "reason": "Gunshot_Wound",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -720,6 +730,7 @@
     "Gunshot_Injury_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Gunshot_Wound",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -856,6 +867,7 @@
       "type": "CarePlanStart",
       "target_encounter": "ED_Visit_For_Concussion",
       "assign_to_attribute": "injury_careplan",
+      "reason": "concussion_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -891,6 +903,7 @@
     "Concussion_Injury_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "concussion_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -956,6 +969,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Whiplash",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "Whiplash",
       "codes": [
         {
           "system" : "RxNorm",
@@ -969,6 +983,7 @@
     "Whiplash_CarePlan": {
       "type": "CarePlanStart",
       "assign_to_attribute": "injury_careplan",
+      "reason": "Whiplash",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1158,6 +1173,7 @@
     "Broken_Bone_Immobilization": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Broken_Bone",
+      "reason": "broken_bone",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1171,6 +1187,7 @@
     "Broken_Bone_Surgery": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Broken_Bone",
+      "reason": "broken_bone",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1218,6 +1235,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Broken_Bone",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "broken_bone",
       "codes": [
         {
           "system": "RxNorm",
@@ -1232,6 +1250,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Broken_Bone",
       "assign_to_attribute": "opioid_prescription",
+      "reason": "broken_bone",
       "codes": [
         {
           "system": "RxNorm",
@@ -1246,6 +1265,7 @@
       "type": "CarePlanStart",
       "target_encounter": "ED_Visit_For_Broken_Bone",
       "assign_to_attribute": "injury_careplan",
+      "reason": "broken_bone",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1287,6 +1307,7 @@
     "Broken_Bone_Injury_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "broken_bone",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1410,6 +1431,7 @@
     "Severe_Burn_Care": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Burn",
+      "reason": "burn_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1423,6 +1445,7 @@
     "Severe_Burn_Hospitalization": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Burn",
+      "reason": "burn_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1447,6 +1470,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Burn",
       "assign_to_attribute": "antibiotic_prescription",
+      "reason": "burn_injury",
       "codes": [
         {
           "system": "RxNorm",
@@ -1494,6 +1518,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Burn",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "burn_injury",
       "codes": [
         {
           "system": "RxNorm",
@@ -1508,6 +1533,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Burn",
       "assign_to_attribute": "opioid_prescription",
+      "reason": "burn_injury",
       "codes": [
         {
           "system" : "RxNorm",
@@ -1522,6 +1548,7 @@
       "type": "CarePlanStart",
       "target_encounter": "ED_Visit_For_Burn",
       "assign_to_attribute": "injury_careplan",
+      "reason": "burn_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1562,6 +1589,7 @@
     "Burn_Injury_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "burn_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1707,6 +1735,7 @@
       "type": "CarePlanStart",
       "target_encounter": "ED_Visit_For_Laceration",
       "assign_to_attribute": "injury_careplan",
+      "reason": "laceration_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1732,6 +1761,7 @@
     "Suture_Laceration": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Laceration",
+      "reason": "laceration_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1760,6 +1790,7 @@
     "Laceration_Tetanus_Shot": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Laceration",
+      "reason": "laceration_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1774,6 +1805,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Laceration",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "laceration_injury",
       "codes": [
         {
           "system": "RxNorm",
@@ -1866,6 +1898,7 @@
       "type": "CarePlanStart",
       "target_encounter": "ED_Visit_For_Sprain",
       "assign_to_attribute": "injury_careplan",
+      "reason": "sprain_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1892,6 +1925,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ED_Visit_For_Sprain",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "sprain_injury",
       "codes": [
         {
           "system": "RxNorm",
@@ -2045,6 +2079,7 @@
     "Knee_Surgery_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
+      "reason": "knee_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2058,6 +2093,7 @@
     "Knee_Surgery_Procedure": {
       "type": "Procedure",
       "target_encounter": "Knee_Surgery_Encounter",
+      "reason": "knee_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2105,6 +2141,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Knee_Surgery_Encounter",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "knee_injury",
       "codes": [
         {
           "system": "RxNorm",
@@ -2119,6 +2156,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Knee_Surgery_Encounter",
       "assign_to_attribute": "opioid_prescription",
+      "reason": "knee_injury",
       "codes": [
         {
           "system" : "RxNorm",
@@ -2133,6 +2171,7 @@
       "type": "CarePlanStart",
       "target_encounter": "ED_Visit_For_Knee_Injury",
       "assign_to_attribute": "injury_careplan",
+      "reason": "knee_injury",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2203,6 +2242,7 @@
     "Encounter_For_Shoulder_Injury": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2234,6 +2274,7 @@
     "Shoulder_Surgery_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2247,6 +2288,7 @@
     "Shoulder_Surgery_Procedure": {
       "type": "Procedure",
       "target_encounter": "Shoulder_Surgery_Encounter",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2294,6 +2336,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Shoulder_Surgery_Encounter",
       "assign_to_attribute": "nonopioid_prescription",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system": "RxNorm",
@@ -2308,6 +2351,7 @@
       "type": "MedicationOrder",
       "target_encounter": "Shoulder_Surgery_Encounter",
       "assign_to_attribute": "opioid_prescription",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system" : "RxNorm",
@@ -2322,6 +2366,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Encounter_For_Shoulder_Injury",
       "assign_to_attribute": "injury_careplan",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2357,6 +2402,7 @@
     "Shoulder_Injury_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Torn_Rotator_Cuff",
       "codes": [
         {
           "system": "SNOMED-CT",

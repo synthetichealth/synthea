@@ -143,6 +143,7 @@
     "OA_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "osteoarthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -157,6 +158,7 @@
       "type": "CarePlanStart",
       "target_encounter": "OA_Diagnosis",
       "assign_to_attribute": "arthritis_careplan",
+      "reason": "osteoarthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -182,6 +184,7 @@
     "OA_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "OA_Diagnosis",
+      "reason": "osteoarthritis",
       "codes": [
         {
           "system" : "RxNorm",

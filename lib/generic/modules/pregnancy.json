@@ -292,6 +292,7 @@
     "Prenatal_Initial_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -355,6 +356,7 @@
     "Pregnancy_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
       "remarks": [
         "There are MANY activities that could be associated with a pregnancy care plan.",
         "I selected a set of generic activities (physical, educational, psychiatric)",
@@ -400,6 +402,7 @@
     "Week_15_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -437,6 +440,7 @@
     "Week_26_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -482,6 +486,7 @@
     "Week_32_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -553,6 +558,7 @@
     "Week_36_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -591,6 +597,7 @@
     "Week_38_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -622,6 +629,7 @@
     "Week_39_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -660,6 +668,7 @@
     "Week_40_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -691,6 +700,7 @@
     "Week_41_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -722,6 +732,7 @@
     "Week_42_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -761,6 +772,7 @@
     "Hospital_Admission_For_Birth": {
       "type": "Encounter",
       "encounter_class": "emergency",
+      "reason": "Become_Pregnant",
       "remarks": [
         "The birth section of this module is adapted from Jeff Eastman's (https://github.com/jeffeastman) ",
         "initial birth module contributed to Synthea. All remaining probabilities in this section are ",
@@ -1150,6 +1162,7 @@
     "Ectopic_Pregnancy_Surgery_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
+      "reason" : "Ectopic_Pregnancy",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1157,7 +1170,6 @@
           "display": "Admission to surgical department"
         }
       ],
-      "reason" : "Ectopic_Pregnancy",
       "direct_transition": "Ectopic_Pregnancy_Surgery_Procedure"
     },
 
@@ -1178,6 +1190,7 @@
     "Late_Fetal_Chromosomal_Anomaly": {
       "type": "ConditionOnset",
       "target_encounter": "Week_15_Visit",
+      "assign_to_attribute": "fatal_pregnancy_complication",
       "remarks": [
         "This is the same condition that's assigned in Early_Fetal_Chromosomal_Anomaly ",
         "but is a separate state due to the limitation that a ConditionOnset must occur ",
@@ -1190,7 +1203,6 @@
           "display": "Fetus with chromosomal abnormality"
         }
       ],
-      "assign_to_attribute": "fatal_pregnancy_complication",
       "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
     },
 
@@ -1198,6 +1210,7 @@
     "Uterine_Anomaly": {
       "type": "ConditionOnset",
       "target_encounter": "Week_15_Visit",
+      "assign_to_attribute": "fatal_pregnancy_complication",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1205,13 +1218,13 @@
           "display": "Congenital uterine anomaly"
         }
       ],
-      "assign_to_attribute": "fatal_pregnancy_complication",
       "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
     },
 
     "Unknown_Complication": {
       "type": "ConditionOnset",
       "target_encounter": "Week_15_Visit",
+      "assign_to_attribute": "fatal_pregnancy_complication",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1219,7 +1232,6 @@
           "display": "Complication occuring during pregnancy"
         }
       ],
-      "assign_to_attribute": "fatal_pregnancy_complication",
       "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
     },
 
@@ -1236,6 +1248,7 @@
     "Miscarriage_Followup_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason" : "fatal_pregnancy_complication",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1243,7 +1256,6 @@
           "display": "Prenatal visit"
         }
       ],
-      "reason" : "fatal_pregnancy_complication",
       "direct_transition": "Miscarriage_End"
     },
 
@@ -1277,6 +1289,7 @@
     "Induced_Abortion_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1290,6 +1303,7 @@
     "Induced_Abortion_Procedure": {
       "type": "Procedure",
       "target_encounter": "Induced_Abortion_Encounter",
+      "reason": "Become_Pregnant",
       "codes": [
         {
           "system": "SNOMED-CT",

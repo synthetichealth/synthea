@@ -115,6 +115,7 @@
     "Ear_Infection_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
+      "reason" : "Gets_Ear_Infection",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -122,7 +123,6 @@
           "display": "Encounter for symptom"
         }
       ],
-      "reason" : "Gets_Ear_Infection",
       "distributed_transition": [
         {
           "distribution": 0.859,
@@ -142,6 +142,7 @@
     "Ear_Infection_Prescribed_Antibiotic": {
       "type": "MedicationOrder",
       "target_encounter": "Ear_Infection_Encounter",
+      "reason" : "Gets_Ear_Infection",
       "codes": [
           {
             "system": "RxNorm",
@@ -149,7 +150,6 @@
             "display": "Amoxicillin 500MG"
           }
       ],
-      "reason": "Gets_Ear_Infection",
       "direct_transition": "Ear_Infection_Antibiotic_Taken"
     },
 
@@ -172,6 +172,7 @@
     "Ear_Infection_Prescribed_OTC_Painkiller": {
       "type": "MedicationOrder",
       "target_encounter": "Ear_Infection_Encounter",
+      "reason" : "Gets_Ear_Infection",
       "codes": [
         {
           "system": "RxNorm",
@@ -180,7 +181,6 @@
           "remarks": ["Dosage based on a single, standard Acetaminophen tablet of 325MG"]
         }
       ],
-      "reason": "Gets_Ear_Infection",
       "direct_transition": "Ear_Infection_OTC_Painkiller_Taken"
     },
 
@@ -215,7 +215,7 @@
     "Loopback_No_Infection": {
         "type": "Simple",
         "direct_transition": "No_Infection",
-        "remarks" : "this state only exists to make the graph look nicer"
+        "remarks" : ["this state only exists to make the graph look nicer"]
     }
   }
 }

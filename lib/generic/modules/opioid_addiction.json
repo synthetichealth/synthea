@@ -25,6 +25,10 @@
 
     "Guard": {
       "type": "Guard",
+      "remarks": [
+        "Data on specific ages is limited but generally below age 15 no source indicates a statistically ",
+        "significant % of opioid addiction."
+      ],
       "allow": {
         "condition_type": "And",
         "conditions": [
@@ -41,11 +45,7 @@
           }
         ]
       },
-      "direct_transition": "General_Population",
-      "remarks": [
-        "Data on specific ages is limited but generally below age 15 no source indicates a statistically ",
-        "significant % of opioid addiction."
-      ]
+      "direct_transition": "General_Population"
     },
 
     "General_Population": {
@@ -178,6 +178,7 @@
     "Enter_Directed_Use_Encounter1": {
       "type": "Encounter",
       "encounter_class": "inpatient",
+      "reason" : "Enter_Directed_Use_Condition1",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -185,7 +186,6 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "reason" : "Enter_Directed_Use_Condition1",
       "direct_transition": "Enter_Directed_Use_Procedure1"
     },
 
@@ -205,6 +205,7 @@
     "Directed_Use_Prescription1": {
       "type": "MedicationOrder",
       "target_encounter": "Enter_Directed_Use_Encounter1",
+      "assign_to_attribute": "opioid_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -212,7 +213,6 @@
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
-      "assign_to_attribute": "opioid_prescription",
       "direct_transition": "Directed_Use"
     },
 
@@ -232,6 +232,7 @@
     "Enter_Directed_Use_Encounter2": {
       "type": "Encounter",
       "encounter_class": "inpatient",
+      "reason" : "Enter_Directed_Use_Condition2",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -239,13 +240,13 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "reason" : "Enter_Directed_Use_Condition2",
       "direct_transition": "Directed_Use_Prescription2"
     },
 
     "Directed_Use_Prescription2": {
       "type": "MedicationOrder",
       "target_encounter": "Enter_Directed_Use_Encounter2",
+      "assign_to_attribute": "opioid_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -253,7 +254,6 @@
           "display": "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
         }
       ],
-      "assign_to_attribute": "opioid_prescription",
       "direct_transition": "Directed_Use"
     },
 
@@ -279,6 +279,7 @@
     "Directed_Use_Prescription3": {
       "type": "MedicationOrder",
       "target_encounter": "Enter_Directed_Use_Encounter3",
+      "assign_to_attribute": "opioid_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -286,7 +287,6 @@
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
         }
       ],
-      "assign_to_attribute": "opioid_prescription",
       "direct_transition": "Directed_Use"
     },
 
@@ -341,14 +341,14 @@
     "Reset_Opioid_var_Towards_Gen_Pop": {
       "type": "SetAttribute",
       "attribute": "opioid_prescription",
-      "remarks": "no value here means the variable is reset to nil",
+      "remarks": ["no value here means the variable is reset to nil"],
       "direct_transition": "General_Population"
     },
 
     "End_Prescription_Towards_Misuse": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "opioid_prescription",
-      "remarks": "Note that the variable is not reset on this sequence, because we still want to know which medication they were on",
+      "remarks": ["Note that the variable is not reset on this sequence, because we still want to know which medication they were on"],
       "direct_transition": "Misuse"
     },
 
@@ -513,7 +513,7 @@
         {
           "distribution": 0.7397,
           "transition": "Recovery_Management",
-          "remarks": "Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"
+          "remarks": ["Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"]
         }
       ]
     },
@@ -534,6 +534,7 @@
     "Directed_Use_Overdose_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
+      "reason" : "Directed_Use_Overdose",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -541,7 +542,6 @@
           "display": "Emergency Room Admission"
         }
       ],
-      "reason" : "Directed_Use_Overdose",
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -570,6 +570,7 @@
     "Misuse_Overdose_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
+      "reason" : "Misuse_Overdose",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -577,7 +578,6 @@
           "display": "Emergency Room Admission"
         }
       ],
-      "reason" : "Misuse_Overdose",
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -606,6 +606,7 @@
     "Addiction_Overdose_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
+      "reason" : "Addiction_Overdose",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -613,7 +614,6 @@
           "display": "Emergency Room Admission"
         }
       ],
-      "reason" : "Addiction_Overdose",
       "distributed_transition": [
         {
           "distribution": 0.98747,
@@ -647,6 +647,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Addiction_Overdose_Encounter",
       "assign_to_attribute": "opioid_addiction_careplan",
+      "reason" : "Addiction_Overdose",
       "codes": [
         {
           "system": "SNOMED-CT",

@@ -403,6 +403,7 @@
     "ED_Visit_For_Attempted_Suicide": {
       "type": "Encounter",
       "encounter_class": "emergency",
+      "reason": "suicide_attempt",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -416,6 +417,7 @@
     "Psychiatric_Evaluation": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "reason": "suicide_attempt",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -429,6 +431,7 @@
     "Short_Hospital_Stay": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "reason": "suicide_attempt",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -467,6 +470,7 @@
     "Attempted_Suicide_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "suicide_attempt",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -498,6 +502,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Attempted_Suicide_Followup",
       "assign_to_attribute": "suicide_careplan",
+      "reason": "suicide_attempt",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -528,6 +533,7 @@
     "Followup_Psychiatric_Evaluation": {
       "type": "Procedure",
       "target_encounter": "Attempted_Suicide_Followup",
+      "reason": "suicide_attempt",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -659,6 +665,7 @@
     "Autopsy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "suicide",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -672,6 +679,7 @@
     "Autopsy_Examination": {
       "type": "Procedure",
       "target_encounter": "Autopsy_Encounter",
+      "reason": "suicide",
       "codes": [
         {
           "system": "SNOMED-CT",

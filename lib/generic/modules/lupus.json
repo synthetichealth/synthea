@@ -94,6 +94,7 @@
     "Lupus_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -108,6 +109,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Lupus_Diagnosis",
       "assign_to_attribute": "lupus_careplan",
+      "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -133,6 +135,7 @@
     "Lupus_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
+      "reason": "Lupus",
       "codes": [
         {
           "system" : "RxNorm",
@@ -146,6 +149,7 @@
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
+      "reason": "Lupus",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",
         "inhibit inflammation. However, doctors prefer to use these for as short a time period ",
@@ -213,6 +217,7 @@
     "Lupus_Flareup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -225,10 +230,11 @@
 
     "Immune_Suppressant": {
       "type": "MedicationOrder",
+      "target_encounter": "Lupus_Flareup",
+      "reason": "Lupus",
       "remarks": [
         "More aggressive immune suppressants are used for subsequent flares."
       ],
-      "target_encounter": "Lupus_Flareup",
       "codes": [
         {
           "system": "RxNorm",

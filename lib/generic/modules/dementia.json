@@ -1,6 +1,8 @@
 {
   "name": "Dementia",
-  "remarks" : "right now this is just Alzheimer's but there are other dementias that could be adapted into this model",
+  "remarks" : [
+    "right now this is just Alzheimer's but there are other dementias that could be adapted into this model"
+  ],
   "states": {
     "Initial" : {
       "type" : "Initial",
@@ -31,7 +33,7 @@
           "distribution" : 0.05,
           "transition" : "PreEarlyOnsetAlzheimers"
       }],
-      "remarks" : "Early onset Alzheimers affects roughly 5% of people with Alzheimer's. http://www.mayoclinic.org/diseases-conditions/alzheimers-disease/in-depth/alzheimers/art-20048356"
+      "remarks" : ["Early onset Alzheimers affects roughly 5% of people with Alzheimer's. http://www.mayoclinic.org/diseases-conditions/alzheimers-disease/in-depth/alzheimers/art-20048356"]
     },
 
     "PreAlzheimers" : {
@@ -41,7 +43,7 @@
             "high": 80,
             "unit": "years"
           },
-        "remarks" : "There is evidence that higher education leads to a delay in the onset of alzheimers.",
+        "remarks" : ["There is evidence that higher education leads to a delay in the onset of alzheimers."],
         "conditional_transition" : [
             {
                 "condition": {
@@ -69,12 +71,12 @@
     "AlzheimersOnset" : {
         "type" : "ConditionOnset",
         "target_encounter" : "DiagnosisEncounter",
+        "assign_to_attribute" : "Type of Alzheimer's",
         "codes" : [{
             "system" : "SNOMED-CT",
             "code" : "26929004",
             "display" : "Alzheimer's disease (disorder)"
         }],
-        "assign_to_attribute" : "Type of Alzheimer's",
         "direct_transition" : "NoImpairment"
     },
 
@@ -91,12 +93,12 @@
     "EarlyOnsetAlzheimersOnset" : {
         "type" : "ConditionOnset",
         "target_encounter" : "DiagnosisEncounter",
+        "assign_to_attribute" : "Type of Alzheimer's",
         "codes" : [{
             "system" : "SNOMED-CT",
             "code" : "230265002",
             "display" : "Familial Alzheimer's disease of early onset (disorder)"
         }],
-        "assign_to_attribute" : "Type of Alzheimer's",
         "direct_transition" : "NoImpairment"
     },
 
@@ -153,7 +155,7 @@
                 "value" : 40
             },
             "transition": "DiagnosisEncounter",
-            "remarks" : "if the symptom is sufficiently noticeable enough people can be diagnosed in this stage, if not they will be diagnosed in the next stage"
+            "remarks" : ["if the symptom is sufficiently noticeable enough people can be diagnosed in this stage, if not they will be diagnosed in the next stage"]
         },
         {
             "condition": {
@@ -183,11 +185,6 @@
     "Diagnosis_MMSE_Score" : {
         "type" : "Observation",
         "target_encounter" : "DiagnosisEncounter",
-        "codes" : [{
-          "system" : "LOINC",
-          "code" : "72106-8",
-          "display" : "Total score [MMSE]"
-        }],
         "range" : {
             "low" : 18,
             "high" : 25
@@ -198,12 +195,18 @@
                      "also available is the Clinical Dementia Rating (CDR)",
                      "http://alzheimer.wustl.edu/cdr/cdr.htm"],
         "unit" : "(score)",
+        "codes" : [{
+          "system" : "LOINC",
+          "code" : "72106-8",
+          "display" : "Total score [MMSE]"
+        }],
         "direct_transition" : "Dementia_CarePlan"
     },
 
     "Dementia_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "DiagnosisEncounter",
+      "reason" : "Type of Alzheimer's",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -241,7 +244,7 @@
                 "year" : 2001
             },
             "transition": "FirstPrescription1",
-            "remarks" : "galantamine(razadyne) fda approved in 2001"
+            "remarks" : ["galantamine(razadyne) fda approved in 2001"]
         },
         {
             "condition": {
@@ -250,7 +253,7 @@
                 "year" : 1996
             },
             "transition": "FirstPrescription2",
-            "remarks" : "donepezil(aricept) fda approved in 1996"
+            "remarks" : ["donepezil(aricept) fda approved in 1996"]
         },
         {
             "condition": {
@@ -259,11 +262,11 @@
                 "year" : 1993
             },
             "transition": "FirstPrescription3",
-            "remarks" : "tarine first available in 1993"
+            "remarks" : ["tarine first available in 1993"]
         },
         {
             "transition": "ModerateDecline",
-            "remarks" : "before 1993 there were no specific drugs approved for Alzheimer’s by the fda"
+            "remarks" : ["before 1993 there were no specific drugs approved for Alzheimer’s by the fda"]
         }
       ]
     },
@@ -271,36 +274,39 @@
     "FirstPrescription1": {
         "type": "MedicationOrder",
         "target_encounter": "DiagnosisEncounter",
+        "assign_to_attribute" : "Alzheimer's Medication",
+        "reason" : "Type of Alzheimer's",
         "codes": [{
             "system": "RxNorm",
             "code": "602735",
             "display": "Galantamine 4 MG [Razadyne]"
         }],
-        "assign_to_attribute" : "Alzheimer's Medication",
         "direct_transition": "ModerateDecline"
     },
 
     "FirstPrescription2": {
         "type": "MedicationOrder",
         "target_encounter": "DiagnosisEncounter",
+        "assign_to_attribute" : "Alzheimer's Medication",
+        "reason" : "Type of Alzheimer's",
         "codes": [{
             "system": "RxNorm",
             "code": "997221",
             "display": "Donepezil hydrochloride 10 MG [Aricept]"
         }],
-        "assign_to_attribute" : "Alzheimer's Medication",
         "direct_transition": "ModerateDecline"
     },
 
     "FirstPrescription3": {
         "type": "MedicationOrder",
         "target_encounter": "DiagnosisEncounter",
+        "assign_to_attribute" : "Alzheimer's Medication",
+        "reason" : "Type of Alzheimer's",
         "codes": [{
             "system": "RxNorm",
             "code": "313185",
             "display": "Tacrine 10 MG Oral Capsule"
         }],
-        "assign_to_attribute" : "Alzheimer's Medication",
         "direct_transition": "ModerateDecline"
     },
 
@@ -347,13 +353,14 @@
             "low" : 40,
             "high" : 80
         },
-        "remarks" : "These numbers do not map to any real data, they are just picked mathematically to get the %s right",
+        "remarks" : ["These numbers do not map to any real data, they are just picked mathematically to get the %s right"],
         "direct_transition" : "ModerateDecline"
     },
 
     "ModeratelySevere_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason" : "Type of Alzheimer's",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -361,7 +368,6 @@
           "display": "Office Visit"
         }
       ],
-      "reason" : "Type of Alzheimer's",
       "direct_transition": "ModeratelySevere_MMSE_Score"
     },
 
@@ -412,7 +418,7 @@
                 "year" : 2014
             },
             "transition": "SecondPrescription1",
-            "remarks" : "memantine+donepezil(namzaric) fda approved in 2014"
+            "remarks" : ["memantine+donepezil(namzaric) fda approved in 2014"]
         },
         {
             "condition": {
@@ -421,7 +427,7 @@
                 "year" : 2003
             },
             "transition": "SecondPrescription2",
-            "remarks" : "memantine(namenda) fda approved in 2003"
+            "remarks" : ["memantine(namenda) fda approved in 2003"]
         },
         {
             "condition": {
@@ -430,7 +436,7 @@
                 "year" : 1996
             },
             "transition": "SecondPrescription3",
-            "remarks" : "donepezil(aricept) fda approved in 1996"
+            "remarks" : ["donepezil(aricept) fda approved in 1996"]
         },
         {
             "transition": "ModeratelySevereDecline"
@@ -441,6 +447,7 @@
     "SecondPrescription1": {
         "type": "MedicationOrder",
         "target_encounter": "ModeratelySevere_Encounter",
+        "reason" : "Type of Alzheimer's",
         "codes": [{
             "system": "RxNorm",
             "code": "1602593",
@@ -452,6 +459,7 @@
     "SecondPrescription2": {
         "type": "MedicationOrder",
         "target_encounter": "ModeratelySevere_Encounter",
+        "reason" : "Type of Alzheimer's",
         "codes": [{
             "system": "RxNorm",
             "code": "996741",
@@ -463,6 +471,7 @@
     "SecondPrescription3": {
         "type": "MedicationOrder",
         "target_encounter": "ModeratelySevere_Encounter",
+        "reason" : "Type of Alzheimer's",
         "codes": [{
             "system": "RxNorm",
             "code": "998582",
@@ -486,6 +495,7 @@
     "Severe_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason" : "Type of Alzheimer's",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -493,7 +503,6 @@
           "display": "Office Visit"
         }
       ],
-      "reason" : "Type of Alzheimer's",
       "direct_transition": "Severe_MMSE_Score"
     },
 
@@ -530,6 +539,7 @@
     "VerySevere_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason" : "Type of Alzheimer's",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -537,7 +547,6 @@
           "display": "Office Visit"
         }
       ],
-      "reason" : "Type of Alzheimer's",
       "direct_transition": "VerySevere_MMSE_Score"
     },
 
@@ -594,19 +603,19 @@
         "code" : "233604007",
         "display" : "Pneumonia"
       }],
-      "remarks" : "Pneumonia is one of the most common causes of death among Alzheimer’s patients",
+      "remarks" : ["Pneumonia is one of the most common causes of death among Alzheimer’s patients"],
       "direct_transition" : "PneumoniaEncounter"
     },
 
     "PneumoniaEncounter" : {
       "type" : "Encounter",
       "encounter_class" : "inpatient",
+      "reason" : "Pneumonia",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "34285007",
         "display" : "Hospital admission"
       }],
-      "reason" : "Pneumonia",
       "direct_transition" : "PneumoniaDeath"
     },
 

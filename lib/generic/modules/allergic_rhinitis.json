@@ -118,7 +118,8 @@
 
     "Allergic_Rhinitis_Diagnosis": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "ambulatory",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -126,7 +127,6 @@
           "display": "Encounter for symptom"
         }
       ],
-      "reason" : "has_allergic_rhinitis",
       "remarks": [
         "I select one of several over-the-counter (OTC) medications to be prescribed",
         "to the patient. These are uniformly distributed since they are all equally",
@@ -152,6 +152,8 @@
     "Prescribe_OTC_Medication_Option_1": {
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "assign_to_attribute": "otc_medication",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -159,13 +161,14 @@
           "display": "Loratadine 10 MG [Claritin]"
         }
       ],
-      "assign_to_attribute": "otc_medication",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
     "Prescribe_OTC_Medication_Option_2": {
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "assign_to_attribute": "otc_medication",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -173,13 +176,14 @@
           "display": "Cetirizine hydrochloride 10 MG [ZyrTEC]"
         }
       ],
-      "assign_to_attribute": "otc_medication",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
     "Prescribe_OTC_Medication_Option_3": {
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "assign_to_attribute": "otc_medication",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -187,7 +191,6 @@
           "display": "Fluticasone propionate 0.05 MG [Flonase]"
         }
       ],
-      "assign_to_attribute": "otc_medication",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
@@ -220,7 +223,8 @@
 
     "Immunotherapy_Consultation": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "ambulatory",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -228,7 +232,6 @@
           "display": "Allergic disorder initial assessment"
         }
       ],
-      "reason" : "has_allergic_rhinitis",
       "distributed_transition": [
         {
           "distribution": 0.75,
@@ -264,6 +267,7 @@
     "Immunotherapy_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Immunotherapy_Consultation",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -284,6 +288,7 @@
     "Allergy_Screening_Test": {
       "type": "Procedure",
       "target_encounter": "Immunotherapy_Consultation",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -306,7 +311,8 @@
 
     "Immunotherapy_Treatment": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "ambulatory",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -320,6 +326,7 @@
     "Immunotherapy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Immunotherapy_Treatment",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -363,6 +370,7 @@
     "Immunotherapy_Followup": {
       "type": "Encounter",
       "encounter_class" : "ambulatory",
+      "reason" : "has_allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",

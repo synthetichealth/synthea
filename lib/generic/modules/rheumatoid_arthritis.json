@@ -70,6 +70,7 @@
     "RA_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Rheumatoid_Arthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -84,6 +85,7 @@
       "type": "CarePlanStart",
       "target_encounter": "RA_Diagnosis",
       "assign_to_attribute": "ra_careplan",
+      "reason": "Rheumatoid_Arthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -114,6 +116,7 @@
     "RA_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
+      "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
       ],
@@ -145,6 +148,7 @@
     "DMARD": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
+      "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "Disease-Modifying Anti-Rheumatic Drugs (DMARDs) inhibit or halt the progression ",
         "of rheumatoid arthritis. Although there are side effects, prompt treatment with DMARDs ",
@@ -192,6 +196,7 @@
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
+      "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",
         "inhibit inflammation. However, doctors prefer to use these for as short a time period ",

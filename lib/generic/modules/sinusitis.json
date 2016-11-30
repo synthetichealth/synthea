@@ -29,25 +29,25 @@
 
     "Viral_Infection_Starts" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sinusitis Condition",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "444814009",
         "display" : "Viral sinusitis (disorder)"
       }],
-      "target_encounter" : "Doctor_Visit",
-      "assign_to_attribute" : "Sinusitis Condition",
       "direct_transition" : "Symptom_of_Infection"
     },
 
     "Bacterial_Infection_Starts" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sinusitis Condition",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "75498004",
         "display" : "Acute bacterial sinusitis (disorder)"
       }],
-      "target_encounter" : "Doctor_Visit",
-      "assign_to_attribute" : "Sinusitis Condition",
       "direct_transition" : "Symptom_of_Infection"
     },
 
@@ -60,13 +60,13 @@
 
     "Inflammation_Starts" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "Doctor_Visit",
+      "assign_to_attribute" : "Sinusitis Condition",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "36971009",
         "display" : "Sinusitis (disorder)"
       }],
-      "target_encounter" : "Doctor_Visit",
-      "assign_to_attribute" : "Sinusitis Condition",
       "direct_transition" : "Symptom_of_Inflammation"
     },
 
@@ -97,28 +97,33 @@
     "Doctor_Visit" : {
       "type" : "Encounter",
       "encounter_class" : "ambulatory",
+      "reason" : "Sinusitis Condition",
+      "remarks" : [
+        "Antibiotics are overprescribed for sinus infections"
+      ],
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
         "display": "Encounter for symptom"
       }],
-      "reason" : "Sinusitis Condition",
       "distributed_transition" : [
         { "distribution" : 0.80, "transition" : "Wait_for_condition_to_resolve" },
         { "distribution" : 0.20, "transition" : "Prescribe_Antibiotic" }
-      ],
-      "remarks" : "Antibiotics are overprescribed for sinus infections"
+      ]
     },
 
     "Prescribe_Antibiotic" : {
       "type" : "MedicationOrder",
+      "remarks" : [
+        "https://www.drugs.com/dosage/amoxicillin.html#Usual_Adult_Dose_for_Sinusitis"
+      ],
+      "target_encounter" : "Doctor_Visit",
+      "reason" : "Sinusitis Condition",
       "codes" : [{
         "system" : "RxNorm",
         "code" : "824184",
         "display" : " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
       }],
-      "remarks" : "https://www.drugs.com/dosage/amoxicillin.html#Usual_Adult_Dose_for_Sinusitis",
-      "target_encounter" : "Doctor_Visit",
       "direct_transition" : "Wait_for_condition_to_resolve"
     },
 
@@ -141,7 +146,7 @@
                   "code" : "824184",
                   "display" : " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
                 }]
-              }, 
+              },
               {
                 "condition_type" : "Active Condition",
                 "codes" : [{
@@ -184,7 +189,7 @@
               "display" : " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
             }]
           },
-          "transition" : "End_Antibiotic"  
+          "transition" : "End_Antibiotic"
         },
         {
           "transition" : "Symptom1_Subsides"
@@ -232,12 +237,12 @@
     "Chronic_Sinusitis_Followup" : {
       "type" : "Encounter",
       "encounter_class" : "ambulatory",
+      "reason" : "Inflammation_Starts",
       "codes" : [{
         "system": "SNOMED-CT",
         "code": "185345009",
         "display": "Encounter for symptom"
       }],
-      "reason" : "Inflammation_Starts",
       "complex_transition" : [
         {
           "condition" : {
@@ -264,23 +269,23 @@
 
     "Diagnose_Chronic_Sinusitis" : {
       "type" : "ConditionOnset",
+      "target_encounter" : "Chronic_Sinusitis_Followup",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "40055000",
         "display" : "Chronic sinusitis (disorder)"
       }],
-      "target_encounter" : "Chronic_Sinusitis_Followup",
       "direct_transition" : "Chronic_Sinusitis_Continues"
     },
 
     "Sinus_Surgery" : {
       "type" : "Procedure",
+      "target_encounter" : "Chronic_Sinusitis_Followup",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "112790001",
         "display" : "Nasal sinus endoscopy (procedure)"
       }],
-      "target_encounter" : "Chronic_Sinusitis_Followup",
       "conditional_transition" : [
         {
           "condition" : {
@@ -291,7 +296,7 @@
               "display" : "Chronic sinusitis (disorder)"
             }]
           },
-          "transition" : "Chronic_Sinusisitis_Ends"  
+          "transition" : "Chronic_Sinusisitis_Ends"
         },
         {
           "transition" : "Sinusitis_Ends"
