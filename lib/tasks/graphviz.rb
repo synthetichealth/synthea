@@ -233,6 +233,8 @@ module Synthea
             e = state['exact']
             details = "#{e['quantity']} #{unit}\\l"
           end
+        when 'Counter'
+          details = "#{state['action']} value of attribute '#{state['attribute']}' by 1"
         end
 
         # Things common to many states
