@@ -4,10 +4,8 @@
     "Rheumatoid arthritis (RA) is a chronic condition where joints and other organs are ",
     "attacked by the body's own immune system. RA is treated aggressively and about 75% ",
     "of cases go into remission within 5 years.",
-
     "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
     "http://www.cdc.gov/arthritis/basics/types.html",
-
     "Overall prevalence of arthritis: ",
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
@@ -19,7 +17,6 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         " | Arthritis Type | Prevalence | Ratio F:M | ",
         " ------------------------------------------- ",
         " | Rheumatoid     |   0.01000  |    1:1    | ",
@@ -53,7 +50,6 @@
         "======================================================================",
         " RHEUMATOID ARTHRITIS                                                 ",
         "======================================================================",
-
         "Source: http://www.cdc.gov/arthritis/basics/rheumatoid.htm"
       ],
       "target_encounter": "RA_Diagnosis",
@@ -70,6 +66,7 @@
     "RA_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Rheumatoid_Arthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -84,6 +81,7 @@
       "type": "CarePlanStart",
       "target_encounter": "RA_Diagnosis",
       "assign_to_attribute": "ra_careplan",
+      "reason": "Rheumatoid_Arthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -114,14 +112,15 @@
     "RA_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
+      "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
       ],
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "849437",
-          "display" : "Naproxen sodium 550 MG [Anaprox]"
+          "system": "RxNorm",
+          "code": "849437",
+          "display": "Naproxen sodium 550 MG [Anaprox]"
         }
       ],
       "conditional_transition": [
@@ -145,6 +144,7 @@
     "DMARD": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
+      "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "Disease-Modifying Anti-Rheumatic Drugs (DMARDs) inhibit or halt the progression ",
         "of rheumatoid arthritis. Although there are side effects, prompt treatment with DMARDs ",
@@ -192,6 +192,7 @@
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
+      "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",
         "inhibit inflammation. However, doctors prefer to use these for as short a time period ",
@@ -294,9 +295,9 @@
       "medication_order": "RA_Nonopioid_Pain_Medication",
       "direct_transition": "Terminal"
     },
-
+    
     "Terminal": {
-        "type": "Terminal"
+      "type": "Terminal"
     }
   }
 }

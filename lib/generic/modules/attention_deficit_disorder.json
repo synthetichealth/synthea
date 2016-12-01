@@ -3,7 +3,6 @@
   "remarks": [
     "The CDC estimates that 11% of children are diagnosed with ADHD. Althought ADHD ",
     "is possible in adults we only model this in children. ",
-
     "Source: http://www.cdc.gov/ncbddd/adhd/data.html"
   ],
   "states": {
@@ -75,6 +74,7 @@
     "ADHD_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -87,6 +87,8 @@
 
     "ADHD_CarePlan": {
       "type": "CarePlanStart",
+      "target_encounter": "ADHD_Diagnosis",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -150,6 +152,7 @@
     "Behavior_Treatment_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -284,6 +287,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "RxNorm",
@@ -307,6 +311,7 @@
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
+      "reason": "ADHD",
       "codes": [
         {
           "system": "RxNorm",
@@ -366,7 +371,7 @@
       "referenced_by_attribute": "adhd_medication",
       "direct_transition": "Terminal"
     },
-
+    
     "Terminal": {
       "type": "Terminal"
     }

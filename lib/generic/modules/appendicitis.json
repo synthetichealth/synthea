@@ -1,31 +1,32 @@
 {
   "name": "Appendicitis",
   "states": {
-    "Initial" : {
-      "type" : "Initial",
+
+    "Initial": {
+      "type": "Initial",
       "conditional_transition": [
         {
           "condition": {
             "condition_type": "Gender",
-            "gender": "M" 
+            "gender": "M"
           },
           "transition": "Male"
         },
         {
           "condition": {
             "condition_type": "Gender",
-            "gender": "F" 
+            "gender": "F"
           },
           "transition": "Female"
         },
         {
-          "transition" : "Terminal"
+          "transition": "Terminal"
         }
       ]
     },
 
-    "Male" : {
-      "type" : "Simple",
+    "Male": {
+      "type": "Simple",
       "distributed_transition": [
         {
           "distribution": 0.086,
@@ -36,11 +37,13 @@
           "transition": "Terminal"
         }
       ],
-      "remarks" : "Men have an approx lifetime risk of appendicitis of 8.6%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
+      "remarks": [
+        "Men have an approx lifetime risk of appendicitis of 8.6%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
+      ]
     },
 
-    "Female" : {
-      "type" : "Simple",
+    "Female": {
+      "type": "Simple",
       "distributed_transition": [
         {
           "distribution": 0.067,
@@ -51,11 +54,13 @@
           "transition": "Terminal"
         }
       ],
-      "remarks" : "Women have an approx lifetime risk of appendicitis of 6.7%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
+      "remarks": [
+        "Women have an approx lifetime risk of appendicitis of 6.7%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
+      ]
     },
 
-    "Pre_appendicitis" : {
-      "type" : "Simple",
+    "Pre_appendicitis": {
+      "type": "Simple",
       "distributed_transition": [
         {
           "distribution": 0.263,
@@ -74,7 +79,9 @@
           "transition": "Ages_65_Plus"
         }
       ],
-      "remarks" : "Age distribution of appendicitis from https://www.ncbi.nlm.nih.gov/books/NBK169006/ , Table 1"
+      "remarks": [
+        "Age distribution of appendicitis from https://www.ncbi.nlm.nih.gov/books/NBK169006/ , Table 1"
+      ]
     },
 
     "Ages_1_17": {
@@ -84,7 +91,7 @@
         "high": 17,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis" 
+      "direct_transition": "Appendicitis"
     },
 
     "Ages_18_44": {
@@ -94,7 +101,7 @@
         "high": 44,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis" 
+      "direct_transition": "Appendicitis"
     },
 
     "Ages_45_64": {
@@ -104,7 +111,7 @@
         "high": 64,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis" 
+      "direct_transition": "Appendicitis"
     },
 
     "Ages_65_Plus": {
@@ -114,17 +121,19 @@
         "high": 99,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis" 
+      "direct_transition": "Appendicitis"
     },
 
     "Appendicitis": {
       "type": "ConditionOnset",
-      "target_encounter" : "Appendicitis_Encounter",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "74400008",
-        "display": "Appendicitis"
-      }],
+      "target_encounter": "Appendicitis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "74400008",
+          "display": "Appendicitis"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.7,
@@ -135,76 +144,89 @@
           "transition": "Rupture"
         }
       ],
-      "remarks" : ["The rate of perforation varies from 16% to 40%, with a higher frequency occurring in younger age groups (40-57%)",
-                   "and in patients older than 50 years (55-70%), in whom misdiagnosis and delayed diagnosis are common.",
-                   "(ref: http://emedicine.medscape.com/article/773895-overview#a7 )",
-                   "From table 1 here: https://www.ncbi.nlm.nih.gov/books/NBK169006/ it's about 30%",
-                   "For simplicity here I just round to 30% for all age groups."]
+      "remarks": [
+        "The rate of perforation varies from 16% to 40%, with a higher frequency occurring in younger age groups (40-57%)",
+        "and in patients older than 50 years (55-70%), in whom misdiagnosis and delayed diagnosis are common.",
+        "(ref: http://emedicine.medscape.com/article/773895-overview#a7 )",
+        "From table 1 here: https://www.ncbi.nlm.nih.gov/books/NBK169006/ it's about 30%",
+        "For simplicity here I just round to 30% for all age groups."
+      ]
     },
 
     "Rupture": {
       "type": "ConditionOnset",
       "target_encounter": "Appendicitis_Encounter",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "47693006",
-        "display": "Rupture of appendix"
-      }],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "47693006",
+          "display": "Rupture of appendix"
+        }
+      ],
       "direct_transition": "Appendicitis_Encounter"
     },
 
     "Appendicitis_Encounter": {
       "type": "Encounter",
       "wellness": false,
-      "encounter_class" : "emergency",
-      "direct_transition": "History_of_Appendectomy",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "50849002",
-        "display" : "Emergency Room Admission"
-      }],
-      "reason" : "Appendicitis",
-      "remarks" : "Currently the GMF does not include Vital Signs, if we decide to add that then there are some lab tests we could add at this Encounter."
+      "encounter_class": "emergency",
+      "reason": "Appendicitis",
+      "remarks": [
+        "Currently the GMF does not include Vital Signs, if we decide to add that then there are some lab tests we could add at this Encounter."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency Room Admission"
+        }
+      ],
+      "direct_transition": "History_of_Appendectomy"
     },
 
     "History_of_Appendectomy": {
       "type": "ConditionOnset",
       "target_encounter": "Appendectomy_Encounter",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "428251008",
-        "display": "History of appendectomy"
-      }],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "428251008",
+          "display": "History of appendectomy"
+        }
+      ],
       "direct_transition": "Appendectomy_Encounter"
     },
 
     "Appendectomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "daytime",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "183452005",
-        "display": "Encounter Inpatient"
-      }],
-      "reason" : "Appendicitis",
+      "reason": "Appendicitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183452005",
+          "display": "Encounter Inpatient"
+        }
+      ],
       "direct_transition": "Appendectomy"
     },
 
     "Appendectomy": {
       "type": "Procedure",
       "target_encounter": "Appendectomy_Encounter",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "80146002",
-        "display": "Appendectomy"
-      }],
       "reason": "Appendicitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "80146002",
+          "display": "Appendectomy"
+        }
+      ],
       "direct_transition": "Terminal"
     },
-
-
-    "Terminal" : {
-      "type" : "Terminal"
+    
+    "Terminal": {
+      "type": "Terminal"
     }
   }
 }

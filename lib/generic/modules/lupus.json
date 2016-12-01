@@ -4,10 +4,8 @@
     "Lupus is a somewhat uncommon autoimmune disease that causes widespread inflammation. ",
     "It is also categorized as a type of arthritis. Prior to the discovery of corticosteroids ",
     "in the mid 1900's lupus was treated with quinine and salicylates.",
-
     "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
     "http://www.cdc.gov/arthritis/basics/types.html",
-
     "Overall prevalence of arthritis: ",
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
@@ -19,7 +17,6 @@
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
-
         " | Arthritis Type | Prevalence | Ratio F:M | ",
         " ------------------------------------------- ",
         " | Lupus          |   0.00054  |    6:1    | ",
@@ -77,7 +74,6 @@
         "======================================================================",
         " LUPUS                                                                ",
         "======================================================================",
-
         "Source: http://www.cdc.gov/arthritis/basics/lupus.htm"
       ],
       "target_encounter": "Lupus_Diagnosis",
@@ -94,6 +90,7 @@
     "Lupus_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -108,6 +105,7 @@
       "type": "CarePlanStart",
       "target_encounter": "Lupus_Diagnosis",
       "assign_to_attribute": "lupus_careplan",
+      "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -133,11 +131,12 @@
     "Lupus_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
+      "reason": "Lupus",
       "codes": [
         {
-          "system" : "RxNorm",
-          "code" : "849727",
-          "display" : "Naproxen sodium 220 MG [Aleve]"
+          "system": "RxNorm",
+          "code": "849727",
+          "display": "Naproxen sodium 220 MG [Aleve]"
         }
       ],
       "direct_transition": "Corticosteroid"
@@ -146,6 +145,7 @@
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
+      "reason": "Lupus",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",
         "inhibit inflammation. However, doctors prefer to use these for as short a time period ",
@@ -191,7 +191,7 @@
     "Wait_For_Lupus_Flareup": {
       "type": "Delay",
       "remarks": [
-          "About 60% of patients have a flare-up each year. 84% every 2 years."
+        "About 60% of patients have a flare-up each year. 84% every 2 years."
       ],
       "range": {
         "low": 1,
@@ -213,6 +213,7 @@
     "Lupus_Flareup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -225,10 +226,11 @@
 
     "Immune_Suppressant": {
       "type": "MedicationOrder",
+      "target_encounter": "Lupus_Flareup",
+      "reason": "Lupus",
       "remarks": [
         "More aggressive immune suppressants are used for subsequent flares."
       ],
-      "target_encounter": "Lupus_Flareup",
       "codes": [
         {
           "system": "RxNorm",
@@ -244,9 +246,9 @@
       "medication_order": "Immune_Suppressant",
       "direct_transition": "Wait_For_Lupus_Flareup"
     },
-
+    
     "Terminal": {
-        "type": "Terminal"
+      "type": "Terminal"
     }
   }
 }
