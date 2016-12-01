@@ -883,6 +883,29 @@ class GenericStatesTest < Minitest::Test
     @patient.record_synthea.verify
   end
 
+  def test_counter
+    ctx = get_context('counter.json')
+
+    assert @patient['loop_index'].nil?
+
+    counter = Synthea::Generic::States::Counter.new(ctx, "Counter")
+    assert(counter.process(@time, @patient))
+    assert_equal 1, @patient['loop_index']
+
+    assert(counter.process(@time, @patient))
+    assert_equal 2, @patient['loop_index']
+
+    assert(counter.process(@time, @patient))
+    assert_equal 3, @patient['loop_index']
+
+    decrement = Synthea::Generic::States::Counter.new(ctx, "Counter_Decrement")
+    assert(decrement.process(@time, @patient))
+    assert_equal 2, @patient['loop_index']
+
+    assert(decrement.process(@time, @patient))
+    assert_equal 1, @patient['loop_index']
+  end
+
   def get_context(file_name)
     cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
     Synthea::Generic::Context.new(cfg)

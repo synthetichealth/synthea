@@ -168,6 +168,24 @@ module Synthea
         end
       end
 
+      class Counter < State
+        attr_accessor :action, :attribute
+
+        required_field and: [:action, :attribute]
+
+        def process(_time, entity)
+          entity[@attribute] ||= 0
+
+          if @action == 'increment'
+            entity[@attribute] += 1
+          elsif @action == 'decrement'
+            entity[@attribute] -= 1
+          end
+
+          true
+        end
+      end
+
       class Encounter < State
         attr_accessor :wellness, :processed, :time, :codes, :encounter_class, :reason
 
