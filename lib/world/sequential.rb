@@ -64,7 +64,7 @@ module Synthea
         if Synthea::Config.sequential.multithreading
           @city_workers.shutdown # Tasks already in the queue will be executed, but no new tasks will be accepted.
           @city_workers.wait_for_termination
-          puts "#{timestamp} All cities (#{@city_populations.count}) have been started, waiting for generation to finish..."
+          puts "#{timestamp} All cities have been started, waiting for generation to finish..."
 
           @generate_workers.shutdown
           @generate_workers.wait_for_termination
