@@ -11,7 +11,9 @@
     "1. Colorectal cancer in children. Although possible it's highly unlikely. ",
     "2. Diabetes, obesity, and poor diet as risk factors. I could not find any ",
     "   conclusive statistics or reports linking these to an increased incidence ",
-    "   of colorectal cancer."
+    "   of colorectal cancer. ",
+    "3. The progression of cancer from one stage to another. Whatever stage the patient ",
+    "   is initially diagnosed at they remain at."
   ],
   "states": {
 
@@ -245,7 +247,7 @@
 
     "Benign_Adenoma": {
       "type": "Observation",
-      "target_encounter": "Colonoscopy_Encounter",
+      "target_encounter": "Routine_Colonoscopy_Encounter",
       "range": {
         "low": 2,
         "high": 7
@@ -263,7 +265,7 @@
 
     "Malignant_Adenoma": {
       "type": "Observation",
-      "target_encounter": "Colonoscopy_Encounter",
+      "target_encounter": "Routine_Colonoscopy_Encounter",
       "range": {
         "low": 10,
         "high": 25
@@ -774,7 +776,16 @@
           "display": "Primary malignant neoplasm of colon"
         }
       ],
-      "direct_transition": "Wait_For_Oncologist_Encounter"
+      "distributed_transition": [
+        {
+          "distribution": 0.08,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.92,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
     },
 
     "Colorectal_Cancer_Stage_II": {
@@ -788,7 +799,16 @@
           "display": "Overlapping malignant neoplasm of colon"
         }
       ],
-      "direct_transition": "Wait_For_Oncologist_Encounter"
+      "distributed_transition": [
+        {
+          "distribution": 0.25,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.75,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
     },
 
     "Colorectal_Cancer_Stage_III": {
@@ -802,7 +822,16 @@
           "display": "Malignant tumor of colon"
         }
       ],
-      "direct_transition": "Wait_For_Oncologist_Encounter"
+      "distributed_transition": [
+        {
+          "distribution": 0.35,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.65,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
     },
 
     "Colorectal_Cancer_Stage_IV": {
@@ -816,6 +845,28 @@
           "display": "Secondary malignant neoplasm of colon"
         }
       ],
+      "distributed_transition": [
+        {
+          "distribution": 0.89,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.11,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
+    },
+
+    "Eventual_Death": {
+      "type": "Death",
+      "remarks": [
+        "These patients will eventually die from their colorectal cancer."
+      ],
+      "range": {
+        "low": 2,
+        "high": 5,
+        "unit": "years"
+      },
       "direct_transition": "Wait_For_Oncologist_Encounter"
     },
 
@@ -833,6 +884,10 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "colorectal_cancer",
+      "remarks": [
+        "Annual incidence of progression: ",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2095643/"
+      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -840,6 +895,512 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "Colorectal_Cancer_CarePlan"
+    },
+
+    "Colorectal_Cancer_CarePlan": {
+      "type": "CarePlanStart",
+      "remarks": [
+        "======================================================================",
+        " COLORECTAL CANCER TREATMENTS                                         ",
+        "======================================================================",
+        "Caring for colorectal cancer differs by stage. Source for all treatment information: ",
+        "http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-treating-by-stage-colon"
+      ],
+      "target_encounter": "Oncologist_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395082007",
+          "display": "Cancer care plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226234005",
+          "display": "Healthy diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "703993001",
+          "display": "Colonoscopy planned"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "243072006",
+          "display": "Cancer education"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 1
+          },
+          "remarks": [
+            "The treatment for stage 1 typically requires only a polypectomy (already performed ",
+            "as part of the last colonoscopy) or occasionally a partial colectomy of the affected ",
+            "portion of the colon."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Wait_For_Partial_Colectomy"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Remission_Period"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          },
+          "remarks": [
+            "The treatment for stage 2 typically requires a partial colectomy. Additional ",
+            "chemotherapy treatment is sometimes used post-surgery if the cancer is likely ",
+            "to recur."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Wait_For_Partial_Colectomy"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          },
+          "remarks": [
+            "The treatment for stage 3 is a partial colectomy followed by chemo. Additional ",
+            "radiation therapy is sometimes used, especially for patients that are not healthy ",
+            "enough for surgery."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Wait_For_Partial_Colectomy"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 4
+          },
+          "remarks": [
+            "The treatment for stage 4 is chemo an occasionally surgery. However, surgery is ",
+            "only recommended to relieve symptoms or in rare cases where chemo has shrunk the ",
+            "tumors enough to make surgery viable. Survival from stage 4 is unlikely."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Wait_For_Diverting_Colostomy"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Wait_For_Initial_Chemotherapy_Treatment"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wait_For_Partial_Colectomy": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " PARTIAL COLECTOMY                                                    ",
+        "======================================================================",
+        "Surgical removal of the affected portion of the colon."
+      ],
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Partial_Colectomy_Encounter"
+    },
+
+    "Partial_Colectomy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Partial_Colectomy_Procedure"
+    },
+
+    "Partial_Colectomy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Partial_Colectomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "43075005",
+          "display": "Partial resection of colon"
+        }
+      ],
+      "direct_transition": "Partial_Colectomy_CarePlan"
+    },
+
+    "Partial_Colectomy_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Partial_Colectomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "781831000000109",
+          "display": "Major surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "10888001",
+          "display": "Liquid diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "103744005",
+          "display": "Administration of intravenous fluids"
+        }
+      ],
+      "direct_transition": "Delay_For_Partial_Colectomy_Recovery"
+    },
+
+    "Delay_For_Partial_Colectomy_Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "End_Partial_Colectomy_CarePlan"
+    },
+
+    "End_Partial_Colectomy_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Partial_Colectomy_CarePlan",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Wait_For_Initial_Chemotherapy_Treatment"
+            },
+            {
+              "distribution": 0.67,
+              "transition": "Remission_Period"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Wait_For_Initial_Chemotherapy_Treatment"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Remission_Period"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wait_For_Diverting_Colostomy": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " DIVERTING COLECTOMY                                                  ",
+        "======================================================================",
+        "Used to treat advanced colorectal cancer. Bypasses blockage of the colon ",
+        "to an external bag that collects waste. This is mainly a treatment of ",
+        "symptoms rather than a treatment of the cancer itself."
+      ],
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Diverting_Colostomy_Encounter"
+    },
+
+    "Diverting_Colostomy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Diverting_Colostomy_Procedure"
+    },
+
+    "Diverting_Colostomy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Diverting_Colostomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387607004",
+          "display": "Construction of diverting colostomy"
+        }
+      ],
+      "direct_transition": "Diverting_Colostomy_CarePlan"
+    },
+
+    "Diverting_Colostomy_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Diverting_Colostomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "781831000000109",
+          "display": "Major surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "10888001",
+          "display": "Liquid diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "103744005",
+          "display": "Administration of intravenous fluids"
+        }
+      ],
+      "direct_transition": "Delay_For_Diverting_Colostomy_Recovery"
+    },
+
+    "Delay_For_Diverting_Colostomy_Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "End_Diverting_Colostomy_CarePlan"
+    },
+
+    "End_Diverting_Colostomy_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Diverting_Colostomy_CarePlan",
+      "remarks": [
+        "TODO: Chemo for stage II"
+      ],
+      "direct_transition": "Wait_For_Initial_Chemotherapy_Treatment"
+    },
+
+    "Wait_For_Initial_Chemotherapy_Treatment": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Chemotherapy_Treatment_Path"
+    },
+
+    "Chemotherapy_Treatment_Path": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " CHEMOTHERAPY                                                         ",
+        "======================================================================",
+        "Chemotherapy of the affected areas using one of: ",
+        "FOLFOX: leucovorin, 5-FU, and oxaliplatin (Eloxatin) ",
+        "FOLFIRI: leucovorin, 5-FU, and irinotecan (Camptosar) ",
+        "CapeOX: capecitabine (Xeloda) and oxaliplatin",
+
+        "Chemotherapy treatment is typically given for about 6 months. This ",
+        "equates to 6 chemo treatments."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cr_chemo_count",
+            "operator": ">=",
+            "value": 6
+          },
+          "transition": "Remission_Period"
+        },
+        {
+          "transition": "Chemotherapy_Encounter"
+        }
+      ]
+    },
+
+    "Chemotherapy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Drugs_I"
+    },
+
+    "Chemotherapy_Drugs_I": {
+      "type": "MedicationOrder",
+      "target_encounter": "Chemotherapy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1803932",
+          "display": "Leucovorin 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Drugs_II"
+    },
+
+    "Chemotherapy_Drugs_II": {
+      "type": "MedicationOrder",
+      "target_encounter": "Chemotherapy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "575971",
+          "display": "oxaliplatin 5 MG/ML [Eloxatin]"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Procedure"
+    },
+
+    "Chemotherapy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Chemotherapy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "703423002",
+          "display": "Combined chemotherapy and radiation therapy (procedure)"
+        }
+      ],
+      "direct_transition": "Count_A_Chemo_Treatment"
+    },
+
+    "Count_A_Chemo_Treatment": {
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "cr_chemo_count",
+      "direct_transition": "Chemotherapy_Treatment_Delay"
+    },
+
+    "Chemotherapy_Treatment_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 28,
+        "high": 35,
+        "unit": "days"
+      },
+      "direct_transition": "Chemotherapy_Treatment_Path"
+    },
+
+    "Remission_Period": {
+      "type": "Delay",
+      "remarks": [
+        "If the patient isn't going to die at a later date we give them some time to ",
+        "go into remission following treatment. For those that achieve remission they ",
+        "are returned back to the general pool of candidates for colorectal cancer."
+      ],
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Eventual_Death"
+          },
+          "transition": "Terminal"
+        },
+        {
+          "transition": "Remission_Encounter"
+        }
+      ]
+    },
+
+    "Remission_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Colorectal_Cancer_CarePlan"
+    },
+
+    "End_Colorectal_Cancer_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Colorectal_Cancer_CarePlan",
+      "direct_transition": "End_Colorectal_Cancer"
+    },
+
+    "End_Colorectal_Cancer": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "colorectal_cancer",
       "direct_transition": "Terminal"
     },
 
