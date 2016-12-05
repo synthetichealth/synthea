@@ -9,8 +9,8 @@ Currently, Synthea features:
 - Modular Rule System
   - Drop in [Generic Modules](https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework)
   - Custom Ruby rules modules for additional capabilities
-- Primary Care Encounters and Emergency Room Encounters
-- Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs
+- Primary Care Encounters, Emergency Room Encounters, and symptom-driven Encounters
+- Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, CarePlans
 - Formats
  - FHIR (STU3)
  - C-CDA
@@ -19,13 +19,8 @@ Currently, Synthea features:
 
 ### Installation
 
-**System Requirements:** Synthea requires macOS or Linux with Ruby 2.0.0 or above. (While Windows is not officially supported, it is possible to get it running on Windows)
-
-The output of C-CDA documents requires Mongo DB.
-```
-brew install mongodb
-mongod &
-```
+**System Requirements:** 
+Synthea requires Ruby 2.0.0 or above.
 
 To clone the Synthea repo and install the necessary gems:
 ```
