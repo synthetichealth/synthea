@@ -289,7 +289,13 @@
         "======================================================================",
         "This test is used to detect trace amounts of blood in the stool that ",
         "is indicative of colorectal cancer. The estimated cutoff level for this ",
-        "test is 100 ng/mL. Source: http://cebp.aacrjournals.org/content/20/2/272"
+        "test is 100 ng/mL. Source: http://cebp.aacrjournals.org/content/20/2/272",
+
+        "Interestingly, if the patient previously had a positive test result (from ",
+        "a malignant adenoma) the 'Malignant_Adenoma' PriorState will remain true. ",
+        "If the patient is then later diagnosed with a benign adenoma the fecal test ",
+        "will still return postive. This aligns with the likelihood of recurrent ",
+        "adenomas being cancerous."
       ],
       "target_encounter": "Routine_Colonoscopy_Encounter",
       "reason": "colorectal_adenoma",
@@ -1246,6 +1252,13 @@
         "high": 2,
         "unit": "weeks"
       },
+      "direct_transition": "Initialize_Chemo_Counter"
+    },
+
+    "Initialize_Chemo_Counter": {
+      "type": "SetAttribute",
+      "attribute": "cr_chemo_count",
+      "value": 0,
       "direct_transition": "Chemotherapy_Treatment_Path"
     },
 

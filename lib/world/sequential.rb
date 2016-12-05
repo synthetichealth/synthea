@@ -196,6 +196,7 @@ module Synthea
         conditions << 'Diabetic' if patient[:diabetes]
         conditions << 'Heart Disease' if patient[:coronary_heart_disease]
         conditions << 'Lung Cancer' if patient['Lung Cancer Type']
+        conditions << 'Colorectal Cancer' if patient['colorectal_cancer']
         conditions << "Alzheimer's" if patient["Type of Alzheimer's"]
         conditions
       end
