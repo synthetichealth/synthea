@@ -223,6 +223,21 @@
           }
         ]
       },
+      "direct_transition": "Delay_For_Consultation"
+    },
+
+    "Delay_For_Consultation": {
+      "type": "Delay",
+      "remarks": [
+        "This state is used to stagger the age that patient's consider/begin ",
+        "immunotherapy treatment. Patients can now begin receiving treatment ",
+        "between age 12 and age 17."
+      ],
+      "range": {
+        "low": 0,
+        "high": 5,
+        "unit": "years"
+      },
       "direct_transition": "Immunotherapy_Consultation"
     },
 
@@ -301,17 +316,42 @@
           "display": "Allergy screening test"
         }
       ],
+      "direct_transition": "Initialize_Immunotherapy_Counter"
+    },
+
+    "Initialize_Immunotherapy_Counter": {
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_counter",
+      "value": 0,
       "direct_transition": "Undergoing_Immunotherapy_Treatment"
     },
 
     "Undergoing_Immunotherapy_Treatment": {
       "type": "Delay",
+      "remarks": [
+        "Patients get immunotherapy treatments for an average of 5 years.",
+        "Given monthly appointments we count a total of 60 appointments before ",
+        "ending the immunotherapy."
+      ],
       "range": {
         "low": 3,
         "high": 4,
         "unit": "weeks"
       },
-      "direct_transition": "Immunotherapy_Treatment"
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "immunotherapy_counter",
+            "operator": "<",
+            "value": 60
+          },
+          "transition": "Immunotherapy_Treatment"
+        },
+        {
+          "transition": "Immunotherapy_Treatment_Complete"
+        }
+      ]
     },
 
     "Immunotherapy_Treatment": {
@@ -339,20 +379,14 @@
           "display": "Subcutaneous immunotherapy"
         }
       ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 15,
-            "unit": "years"
-          },
-          "transition": "Immunotherapy_Treatment_Complete"
-        },
-        {
-          "transition": "Undergoing_Immunotherapy_Treatment"
-        }
-      ]
+      "direct_transition": "Count_A_Treatment"
+    },
+
+    "Count_A_Treatment": {
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "immunotherapy_counter",
+      "direct_transition": "Undergoing_Immunotherapy_Treatment"
     },
 
     "Immunotherapy_Treatment_Complete": {
@@ -391,7 +425,7 @@
       "careplan": "Immunotherapy_CarePlan",
       "direct_transition": "Terminal"
     },
-    
+
     "Terminal": {
       "type": "Terminal"
     }
