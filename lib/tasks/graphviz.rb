@@ -4,15 +4,23 @@ module Synthea
 
       # color (true) or black & white (false)
       COLOR = true
+      # setting styled to false will render bare nodes and edges
+      # and also output a giant graph with all nodes and edges for all modules
+      @@styled = true
 
       def self.generate_graphs
         folder = Synthea::Config.graphviz.output
         FileUtils.mkdir_p folder unless File.exists? folder
 
         puts "Rendering graphs to `#{folder}` folder..."
+        @@count = 0
+
         image_files = []
-        image_files << generateRulesBasedGraph()
-        image_files += generateWorkflowBasedGraphs()
+        image_files << generateRulesBasedGraph
+        image_files += generateWorkflowBasedGraphs
+
+        @giant.output( :png => File.join(Synthea::Config.graphviz.output, 'giant.png') ) unless @@styled
+
         puts 'Writing index file...'
         index_file = File.join(folder, 'graphviz.html')
         f = File.open(index_file,'w:UTF-8')
@@ -28,9 +36,14 @@ module Synthea
         puts 'Done.'
       end
 
-      def self.generateRulesBasedGraph()
+      def self.next_id
+        @@count += 1
+        @@count.to_s
+      end
+
+      def self.generateRulesBasedGraph
         # Create a new graph
-        g = GraphViz.new( :G, :type => :digraph )
+        @giant = GraphViz.new( :G, :type => :digraph )
 
         # Create the list of items
         items = []
@@ -53,7 +66,20 @@ module Synthea
 
         # Create a node for each item
         nodes = {}
-        items.each{|i|nodes[i]=g.add_node(i.to_s)}
+        if @@styled
+          items.each{|i|nodes[i] = @giant.add_node(i.to_s)}
+        else
+          items.each do |i|
+            if 'birth' == i.to_s
+              label = 'Initial'
+            elsif 'death' == i.to_s
+              label = 'Terminal'
+            else
+              label = next_id
+            end
+            nodes[i] = @giant.add_node(label)
+          end
+        end
 
         # Make items that are not rules boxes
         components = nodes.keys - Synthea::Rules.metadata.keys
@@ -63,7 +89,7 @@ module Synthea
             nodes[i]['color']=attribute_color
             nodes[i]['style']='filled'
           end
-        end
+        end if @@styled
 
         # Create the edges
         edges = []
@@ -71,21 +97,22 @@ module Synthea
         Synthea::Rules.metadata.each do |key,rule|
           node = nodes[key]
           if COLOR
-            node['color'] = modules[rule[:module_name]]
+            node['color'] = 'grey'
+            node['color'] = modules[rule[:module_name]] if @@styled
             node['style'] = 'filled'
           end
           begin
             rule[:inputs].each do |input|
               other = nodes[input]
               if !edges.include?("#{input}:#{key}")
-                g.add_edge( other, node)
+                @giant.add_edge( other, node)
                 edges << "#{input}:#{key}"
               end
             end
             rule[:outputs].each do |output|
               other = nodes[output]
               if !edges.include?("#{key}:#{output}")
-                g.add_edge( node, other)
+                @giant.add_edge( node, other)
                 edges << "#{key}:#{output}"
               end
             end
@@ -96,17 +123,18 @@ module Synthea
 
         # Generate output image
         filename = 'synthea_rules.png'
-        g.output( :png => File.join(Synthea::Config.graphviz.output, filename) )
+        @giant.output( :png => File.join(Synthea::Config.graphviz.output, filename) )
         filename
       end
 
-      def self.generateWorkflowBasedGraphs()
+      def self.generateWorkflowBasedGraphs
         filenames = []
         Dir.glob('../synthea/lib/generic/modules/*.json') do |wf_file|
           # Create a new graph
           g = GraphViz.new( :G, :type => :digraph )
           wf = JSON.parse(File.read(wf_file))
           populate_graph(g, wf)
+          populate_graph(@giant, wf) unless @@styled
 
           # Generate output image
           filename = "#{wf['name']}.png"
@@ -121,18 +149,30 @@ module Synthea
         nodeMap = {}
 
         wf['states'].each do |name, state|
-          node = g.add_nodes(name, {'shape' => 'record', 'style' => 'rounded'})
+          if @@styled
+            node = g.add_nodes(name, {'shape' => 'record', 'style' => 'rounded'})
+          else
+            label = name
+            label = next_id unless ['Initial','Terminal'].include?(name)
+            node = g.add_node(label)
+          end
+
           if state['type'] == 'Initial' || state['type'] == 'Terminal'
             node['color'] = 'black'
             node['style'] = 'rounded,filled'
             node['fontcolor'] = 'white'
           end
 
-          details = state_description(state)
-          if details.empty?
-            node['label'] = (name == state['type']) ? name : "{ #{name} | #{state['type']} }"
+          if @@styled
+            details = state_description(state)
+            if details.empty?
+              node['label'] = (name == state['type']) ? name : "{ #{name} | #{state['type']} }"
+            else
+              node['label'] = "{ #{name} | { #{state['type']} | #{details} } }"
+            end
           else
-            node['label'] = "{ #{name} | { #{state['type']} | #{details} } }"
+            node['color'] = 'grey'
+            node['style'] = 'filled'
           end
 
           nodeMap[name] = node
@@ -151,7 +191,7 @@ module Synthea
               pct = t['distribution'] * 100
               pct = pct.to_i if pct == pct.to_i
               begin
-                g.add_edges( nodeMap[name], nodeMap[t['transition']], {'label'=> "#{pct}%"})
+                g.add_edges( nodeMap[name], nodeMap[t['transition']], label("#{pct}%") )
               rescue
                 raise "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
               end
@@ -160,7 +200,7 @@ module Synthea
             state['conditional_transition'].each_with_index do |t,i|
               cnd = t.has_key?('condition') ? logicDetails(t['condition']) : 'else'
               begin
-                g.add_edges( nodeMap[name], nodeMap[t['transition']], {'label'=> "#{i+1}. #{cnd}"})
+                g.add_edges( nodeMap[name], nodeMap[t['transition']], label("#{i+1}. #{cnd}") )
               rescue
                 raise "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
               end
@@ -185,12 +225,20 @@ module Synthea
 
             transitions.each do |nodes, labels|
               begin
-                g.add_edges( nodeMap[nodes[0]], nodeMap[nodes[1]], {'label'=> labels.join(',\n')})
+                g.add_edges( nodeMap[nodes[0]], nodeMap[nodes[1]], label(labels.join(',\n')) )
               rescue
                 raise "State '#{nodes[0]}' is transitioning to an unknown state: '#{nodes[1]}'"
               end
             end
           end
+        end
+      end
+
+      def self.label(message)
+        if @@styled
+          { 'label' => message }
+        else
+          {}
         end
       end
 
