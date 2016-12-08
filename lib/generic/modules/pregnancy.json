@@ -108,10 +108,10 @@
     "Will_Have_One_Child": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": "4",
+      "value": 4,
       "remarks": [
-        "This leaves the mother with 2 remaining passes through the pregnancy module (out of 6 total). ",
-        "The second pass accounts for the potential for a miscarriage or abortion."
+        "This leaves the mother with 3 remaining passes through the pregnancy module (out of 7 total). ",
+        "Additional passes account for potential miscarriages or abortions."
       ],
       "direct_transition": "Wait_For_First_Conception"
     },
@@ -119,9 +119,9 @@
     "Will_Have_Two_Children": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": "2",
+      "value": 2,
       "remarks": [
-        "This leaves the mother with 4 remaining passes through the pregnancy module (out of 6 total). ",
+        "This leaves the mother with 5 remaining passes through the pregnancy module (out of 7 total). ",
         "Additional passes account for potential miscarriages or abortions."
       ],
       "direct_transition": "Wait_For_First_Conception"
@@ -130,9 +130,9 @@
     "Will_Have_Three_Or_More_Children": {
       "type": "SetAttribute",
       "attribute": "pregnancy_iterator",
-      "value": "0",
+      "value": 0,
       "remarks": [
-        "This leaves the mother with 6 remaining passes through the pregnancy module (out of 6 total). ",
+        "This leaves the mother with 7 remaining passes through the pregnancy module (out of 7 total). ",
         "Additional passes account for potential miscarriages or abortions."
       ],
       "direct_transition": "Wait_For_First_Conception"
@@ -149,113 +149,6 @@
         "high": 20,
         "unit": "years"
       },
-      "direct_transition": "Increment_Pregnancy_Count"
-    },
-
-    "Increment_Pregnancy_Count": {
-      "type": "Simple",
-      "remarks": [
-        "======================================================================",
-        " PREGNANCY COUNTER                                                    ",
-        "======================================================================"
-      ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "pregnancy_iterator",
-            "operator": "==",
-            "value": "0"
-          },
-          "transition": "Pregnancy_Iterator_1"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "pregnancy_iterator",
-            "operator": "==",
-            "value": "1"
-          },
-          "transition": "Pregnancy_Iterator_2"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "pregnancy_iterator",
-            "operator": "==",
-            "value": "2"
-          },
-          "transition": "Pregnancy_Iterator_3"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "pregnancy_iterator",
-            "operator": "==",
-            "value": "3"
-          },
-          "transition": "Pregnancy_Iterator_4"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "pregnancy_iterator",
-            "operator": "==",
-            "value": "4"
-          },
-          "transition": "Pregnancy_Iterator_5"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "pregnancy_iterator",
-            "operator": "==",
-            "value": "5"
-          },
-          "transition": "Pregnancy_Iterator_6"
-        }
-      ]
-    },
-
-    "Pregnancy_Iterator_1": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": "1",
-      "direct_transition": "Become_Pregnant"
-    },
-
-    "Pregnancy_Iterator_2": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": "2",
-      "direct_transition": "Become_Pregnant"
-    },
-
-    "Pregnancy_Iterator_3": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": "3",
-      "direct_transition": "Become_Pregnant"
-    },
-
-    "Pregnancy_Iterator_4": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": "4",
-      "direct_transition": "Become_Pregnant"
-    },
-
-    "Pregnancy_Iterator_5": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": "5",
-      "direct_transition": "Become_Pregnant"
-    },
-
-    "Pregnancy_Iterator_6": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": "6",
       "direct_transition": "Become_Pregnant"
     },
 
@@ -1361,11 +1254,11 @@
               {
                 "condition_type": "Attribute",
                 "attribute": "pregnancy_iterator",
-                "operator": "!=",
-                "value": "6",
+                "operator": "<",
+                "value": 7,
                 "remarks": [
-                  "We use 6 as a hard limit. Given the probabilities of miscarriage and abortion ",
-                  "if a woman goes through the module all 6 times we expect 3-4 pregnancies."
+                  "We use 7 as a hard limit. Given the probabilities of miscarriage and abortion ",
+                  "if a woman goes through the module all 7 times we expect 3-4 pregnancies."
                 ]
               },
               {
@@ -1396,7 +1289,14 @@
       },
       "direct_transition": "Increment_Pregnancy_Count"
     },
-    
+
+    "Increment_Pregnancy_Count": {
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "pregnancy_iterator",
+      "direct_transition": "Become_Pregnant"
+    },
+
     "Terminal": {
       "type": "Terminal"
     }
