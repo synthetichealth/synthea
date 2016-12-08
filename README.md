@@ -6,14 +6,16 @@ Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more inform
 
 Currently, Synthea features:
 - Birth to Death Lifecycle
+- Configuration-based statistics and demographics (defaults with Massachusetts Census data)
 - Modular Rule System
   - Drop in [Generic Modules](https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework)
   - Custom Ruby rules modules for additional capabilities
-- Primary Care Encounters, Emergency Room Encounters, and symptom-driven Encounters
-- Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, CarePlans
+- Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
+- Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
- - FHIR (STU3)
+ - FHIR (STU3 v1.6)
  - C-CDA
+- Rendering Rules and Disease Modules with Graphviz
 
 ## Quick Start
 

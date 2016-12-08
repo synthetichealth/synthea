@@ -4,10 +4,10 @@ Gem::Specification.new do |s|
   s.name = 'synthea'
   s.summary = 'Synthetic Patient Populations'
   s.description = 'A Gem for Synthetic Patient Population Simulator'
-  s.email = 'aquina@mitre.org'
-  s.homepage = 'https://github.com/'
+  s.email = 'jwalonoski@mitre.org'
+  s.homepage = 'https://github.com/synthetichealth/synthea'
   s.authors = ['Andre Quina', 'Jason Walonoski', 'Peter Krautscheid', 'Joey Nichols', 'Dylan Hall', 'Carlton Duffett']
-  s.version = '1.0.0'
+  s.version = '1.1.0'
 
   s.files = s.files = `git ls-files`.split("\n")
 
