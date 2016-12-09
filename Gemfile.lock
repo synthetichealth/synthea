@@ -26,7 +26,7 @@ PATH
       chunky_png
       concurrent-ruby
       faker (~> 1.6, >= 1.6.0)
-      fhir_client
+      fhir_client (~> 1.8)
       fhir_models
       georuby
       highline
@@ -78,16 +78,16 @@ GEM
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
     ffi (1.9.14-java)
-    fhir_client (1.6.10)
+    fhir_client (1.8.0)
       activesupport (>= 3)
       addressable (>= 2.3)
-      fhir_models (>= 1.6.8)
+      fhir_models (>= 1.8.0)
       nokogiri
       oauth2 (~> 1.1)
       rack (>= 1.5)
       rest-client (~> 1.8)
       tilt (>= 1.1)
-    fhir_models (1.6.8)
+    fhir_models (1.8.1)
       bcp47 (>= 0.3)
       date_time_precision (>= 0.8)
       mime-types (>= 1.16, < 3)
@@ -125,7 +125,7 @@ GEM
       connection_pool (~> 2.0)
       optionable (~> 0.2.0)
     multi_json (1.12.1)
-    multi_xml (0.5.5)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
@@ -207,8 +207,6 @@ DEPENDENCIES
   cane (~> 2.3.0)
   concurrent-ruby
   faker
-  fhir_client
-  fhir_models (>= 1.6)
   georuby
   health-data-standards!
   minitest (~> 5.3)

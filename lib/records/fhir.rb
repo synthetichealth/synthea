@@ -204,8 +204,8 @@ module Synthea
 
       def self.allergy(allergy, fhir_record, patient, _encounter)
         snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
-        allergy = FHIR::AllergyIntolerance.new('attestedDate' => convert_fhir_date_time(allergy['time'], 'time'),
-                                               'status' => 'active-confirmed',
+        allergy = FHIR::AllergyIntolerance.new('assertedDate' => convert_fhir_date_time(allergy['time'], 'time'),
+                                               'clinicalStatus' => 'active',
                                                'type' => 'allergy',
                                                'category' => 'food',
                                                'criticality' => %w(low high).sample,
@@ -323,7 +323,7 @@ module Synthea
                                               },
                                               'patient' => { 'reference' => patient.fullUrl.to_s },
                                               'wasNotGiven' => false,
-                                              'reported' => false,
+                                              'primarySource' => true,
                                               'encounter' => { 'reference' => encounter.fullUrl.to_s })
         entry = FHIR::Bundle::Entry.new
         entry.resource = immunization
@@ -357,12 +357,15 @@ module Synthea
         if plan['stop']
           careplan.period.end = convert_fhir_date_time(plan['stop'])
           careplan.status = 'completed'
+          activity_status = 'completed'
         else
           careplan.status = 'active'
+          activity_status = 'in-progress'
         end
         plan['activities'].each do |activity|
           activity_data = CAREPLAN_LOOKUP[activity]
           careplan.activity << FHIR::CarePlan::Activity.new('detail' => {
+                                                              'status' => activity_status,
                                                               'code' => {
                                                                 'coding' => [{
                                                                   'code' => activity_data[:codes]['SNOMED-CT'][0],
@@ -385,39 +388,31 @@ module Synthea
           r = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && reason_code == e.resource.code.coding[0].code }
           reasons << r unless r.nil?
         end
-        med_order = FHIR::MedicationOrder.new('medicationCodeableConcept' => {
-                                                'coding' => [{
-                                                  'code' => med_data[:codes]['RxNorm'][0],
-                                                  'display' => med_data[:description],
-                                                  'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
-                                                }]
-                                              },
-                                              'patient' => { 'reference' => patient.fullUrl.to_s },
-                                              'encounter' => { 'reference' => encounter.fullUrl.to_s },
-                                              'dateWritten' => convert_fhir_date_time(prescription['start_time']),
-                                              'reasonReference' => [],
-                                              'eventHistory' => [])
+        med_order = FHIR::MedicationRequest.new('medicationCodeableConcept' => {
+                                                  'coding' => [{
+                                                    'code' => med_data[:codes]['RxNorm'][0],
+                                                    'display' => med_data[:description],
+                                                    'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
+                                                  }]
+                                                },
+                                                'stage' => {
+                                                  'coding' => {
+                                                    'code' => 'original-order',
+                                                    'system' => 'http://hl7.org/fhir/request-stage'
+                                                  }
+                                                },
+                                                'patient' => { 'reference' => patient.fullUrl.to_s },
+                                                'context' => { 'reference' => encounter.fullUrl.to_s },
+                                                'dateWritten' => convert_fhir_date_time(prescription['start_time']),
+                                                'reasonReference' => [])
         reasons.each do |r|
           med_order.reasonReference << FHIR::Reference.new('reference' => r.fullUrl.to_s)
         end
-        if prescription['stop']
-          med_order.status = 'stopped'
-
-          event = FHIR::MedicationOrder::EventHistory.new('status' => 'stopped',
-                                                          'dateTime' => convert_fhir_date_time(prescription['stop']))
-
-          reason_data = REASON_LOOKUP[prescription['stop_reason']]
-          if reason_data
-            event.reason = FHIR::CodeableConcept.new('coding' => [{
-                                                       'code' => reason_data[:codes]['SNOMED-CT'][0],
-                                                       'display' => reason_data[:description],
-                                                       'system' => 'http://snomed.info/sct'
-                                                     }])
-          end
-          med_order.eventHistory << event
-        else
-          med_order.status = 'active'
-        end
+        med_order.status = if prescription['stop']
+                             'stopped'
+                           else
+                             'active'
+                           end
         entry = FHIR::Bundle::Entry.new
         entry.resource = med_order
         fhir_record.entry << entry

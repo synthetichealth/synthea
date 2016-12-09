@@ -147,10 +147,10 @@ class FhirTest < Minitest::Test
     assert_equal("#{@patientID}",allergy.patient.reference)
     assert_equal('91935009', allergy.code.coding[0].code)
     assert_equal('peanuts', allergy.code.coding[0].display)
-    assert_equal('active-confirmed', allergy.status)
+    assert_equal('active', allergy.clinicalStatus)
     assert(allergy.criticality == 'low' || allergy.criticality == 'high')
-    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), allergy.attestedDate)
-    assert_equal('food', allergy.category)
+    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), allergy.assertedDate)
+    assert_equal(['food'], allergy.category)
     assert_empty @fhir_record.validate
   end
 
@@ -258,7 +258,7 @@ class FhirTest < Minitest::Test
     assert_equal('Hep B, adolescent or pediatric', imm.vaccineCode.coding[0].display)
     assert_equal("#{@patientID}", imm.patient.reference)
     assert_equal(false, imm.wasNotGiven)
-    assert_equal(false, imm.reported)
+    assert_equal(true, imm.primarySource)
     assert_equal("#{@encounterID}", imm.encounter.reference)
     assert_empty @fhir_record.validate
   end
@@ -274,17 +274,15 @@ class FhirTest < Minitest::Test
     med_hash = { 'type' => :amiodarone, 'time' =>  @time, 'start_time' => @time, 'reasons' => [:cardiac_arrest, :coronary_heart_disease],
      'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
-    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationOrder)}.resource
+    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}.resource
     med_coding = med.medicationCodeableConcept.coding[0]
     assert_equal('834357', med_coding.code)
     assert_equal('3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe', med_coding.display)
     assert_equal('http://www.nlm.nih.gov/research/umls/rxnorm',med_coding.system)
     assert_equal("#{@patientID}", med.patient.reference)
-    assert_equal("#{@encounterID}", med.encounter.reference)
+    assert_equal("#{@encounterID}", med.context.reference)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time), med.dateWritten)
     assert_equal('stopped', med.status)
-    assert_equal('stopped', med.eventHistory[0].status)
-    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time +  15.minutes), med.eventHistory[0].dateTime)
     assert_equal("#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
     assert_empty @fhir_record.validate
