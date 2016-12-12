@@ -335,6 +335,8 @@ module Synthea
       class CarePlanStart < State
         attr_accessor :target_encounter, :codes, :activities, :reason
 
+        required_field and: [:target_encounter, :codes]
+
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
