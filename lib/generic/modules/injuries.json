@@ -971,6 +971,7 @@
 
     "Whiplash_CarePlan": {
       "type": "CarePlanStart",
+      "target_encounter" : "ED_Visit_For_Whiplash",
       "assign_to_attribute": "injury_careplan",
       "reason": "Whiplash",
       "codes": [
