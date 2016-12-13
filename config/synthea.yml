@@ -153,3 +153,8 @@ synthea:
   version_identifier: <%= `git rev-parse HEAD` %> # get the current git commit hash
   graphviz:
     output: './output/graphviz/'
+  docker:
+    dockerized: false
+    # If dockerized, write Synthea's output to this location, which should match
+    # a volume mounted to a persistent data volume container.
+    location: '/mnt/synthea'
