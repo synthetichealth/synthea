@@ -488,8 +488,14 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Recurrent_Colorectal_Adenoma",
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "713197008",
+                "display": "Recurrent rectal polyp"
+              }
+            ],
             "remarks": [
               "For variety, if the patient was referred to a followup and not ",
               "immediately diagnosed with colorectal cancer that means his/her ",
