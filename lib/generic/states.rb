@@ -448,10 +448,10 @@ module Synthea
       end
 
       class Observation < State
-        attr_accessor :codes, :range, :exact, :unit, :target_encounter
+        attr_accessor :codes, :range, :exact, :unit, :target_encounter, :attribute
 
         required_field and: [:target_encounter, :codes, :unit]
-        required_field or: [:range, :exact]
+        required_field or: [:range, :exact, :attribute]
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'range', type: 'Components::Range', min: 0, max: 1
@@ -476,10 +476,10 @@ module Synthea
 
           if @range
             @value = @range.value
-          elsif exact
+          elsif @exact
             @value = @exact.value
-          else
-            raise 'Observation state must specify value using either "range" or "exact"'
+          elsif @attribute
+            @value = entity[@attribute] || entity[@attribute.to_sym]
           end
 
           if concurrent_with_target_encounter(time)

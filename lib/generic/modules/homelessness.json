@@ -1,0 +1,337 @@
+{
+  "name": "Homelessness",
+  "remarks" : ["Primary source of info is the 2016 U.S. Department of Housing and Urban Development (HUD) ",
+               "2016 Annual Homeless Assessment Report (AHAR) to Congress (AHAR)",
+               "https://www.hudexchange.info/resources/documents/2016-AHAR-Part-1.pdf"],
+  "states": {
+
+    "Initial" : {
+      "type" : "Initial",
+      "direct_transition" : "Potential_Homelessness"
+    },
+
+    "Potential_Homelessness" : {
+      "type" : "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "remarks" : ["On a single night in 2016, 549,928 people were experiencing homelessness in the United States.",
+                   "Assuming a US population of 300M, 550k/300M == ~0.18%",
+                   "we assume that these are more likely to be of low SES, but not guaranteed. ",
+                   "these transition %s result higher than .18% because people do not stay homeless forever.",
+                   "from http://www.endhomelessness.org/library/entry/the-state-of-homelessness-in-america-2012 : ",
+                   "  'The odds for a person in the general U.S. population of experiencing homelessness in the course of a year are 1 in 194.",
+                   "For an individual living doubled up the odds are 1 in 12.",
+                   "For a released prisoner they are 1 in 13.",
+                   "For a young adult who has aged out of foster care they are 1 in 11.'  ",
+                   "synthea doesn't model these factors so we'll give a higher risk to people of low SES",
+                   "'doubled up population' is ~ 6 million == ~ 2%, prison population is ~ 1%"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "PriorState",
+            "name" : "Begin_Homelessness"
+          },
+          "remarks" : "people who have ever been homeless have the highest risk of becoming homeless again",
+          "distributions" : [
+            { "distribution" : 0.99, "transition" : "Potential_Homelessness" },
+            { "distribution" : 0.01, "transition" : "Begin_Homelessness" } 
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Socioeconomic Status",
+            "category" : "Low"
+          },
+          "distributions" : [
+            { "distribution" : 0.009975, "transition" : "Potential_Homelessness" },
+            { "distribution" : 0.990025, "transition" : "Begin_Homelessness" } 
+          ]
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.999, "transition" : "Potential_Homelessness" },
+            { "distribution" : 0.001, "transition" : "Begin_Homelessness" } 
+          ]
+        }
+      ]
+    },
+
+
+    "Begin_Homelessness" : {
+      "type" : "SetAttribute",
+      "attribute": "homeless",
+      "value": true,
+      "direct_transition" : "Homelessness_Counter"
+    },
+
+    "Homelessness_Counter" : {
+      "type" : "Counter",
+      "attribute" : "instances_of_homelessness",
+      "action" : "increment",
+      "conditional_transition" : [
+        {
+          "condition": {
+            "condition_type" : "Attribute",
+            "attribute" : "instances_of_homelessness",
+            "operator" : ">=",
+            "value" : 4
+          },
+          "remarks" : ["Chronic homelessness is defined as either 12 consecutive months of homelessness",
+                       "OR 4+ occasions of homelessness over 3 years. For simplicity in this model assume",
+                       "4 total occasions --> chronic",
+                       "January 2016 - ~1 in 5 individuals experiencing homelessness had chronic patterns of homelessness."],
+          "transition" : "Chronic_Homelessness"
+        },
+        {
+          "transition" : "Temporary_Homelessness"
+        }
+      ]
+    },
+
+    "Chronic_Homelessness" : {
+      "type" : "SetAttribute",
+      "attribute": "homelessness_category",
+      "value": "chronic",
+      "direct_transition" : "Living_Homeless"
+    },
+
+    "Temporary_Homelessness" : {
+      "type" : "SetAttribute",
+      "attribute": "homelessness_category",
+      "value": "temporary",
+      "direct_transition" : "Living_Homeless"
+    },
+
+    "Living_Homeless" : {
+      "type" : "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "homelessness_category",
+            "operator" : "==",
+            "value" : "temporary"
+          },
+          "remarks" : ["About 44% of homeless people are sheltered. ",
+                       "The average length of stay in emergency shelter was 69 days for single men, 51 days for single women, and 70 days for families.",
+                       "For those staying in transitional housing, the avg stay for single men was 175 days, 196 days for single women, and 223 days for families.",
+                       "Permanent supportive housing had the longest stay, with 556 days for single men, 571 days for single women",
+                       "http://www.nationalhomeless.org/factsheets/How_Many.html",
+                       "we assume the expected length of homelessness to be ~6 months"],
+          "distributions" : [
+            { "distribution" : 0.44, "transition" : "Visit_Homeless_Shelter" },
+            { "distribution" : 0.16, "transition" : "End_Homelessness" },
+            { "distribution" : 0.40, "transition" : "Living_Homeless" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "homelessness_category",
+            "operator" : "==",
+            "value" : "chronic"
+          },
+          "remarks" : ["Of chronically homeless individuals, more than two thirds (68% or 52,890 people) were staying",
+                       "in unsheltered locations such as under bridges, in cars, or in abandoned buildings. ",
+                       "This is much greater than the unsheltered rate for all people ",
+                       "experiencing homelessness as individuals in the United States, which was 44 percent.",
+                       "--We assume that chronically homeless individuals are less likely to visit a homeless shelter"],
+          "distributions" : [
+            { "distribution" : 0.32, "transition" : "Visit_Homeless_Shelter" },
+            { "distribution" : 0.08, "transition" : "End_Homelessness" },
+            { "distribution" : 0.60, "transition" : "Living_Homeless" }
+          ]
+        }
+      ]
+    },
+
+    "Visit_Homeless_Shelter" : {
+      "type" : "Encounter",
+      "encounter_class" : "ambulatory",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "210098006",
+        "display" : "Domiciliary or rest home patient evaluation and management"
+      }],
+      "direct_transition" : "Information_Gathering"
+    },
+
+    "Information_Gathering" : {
+      "type" : "Procedure",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "311791003",
+        "display" : "Information gathering (procedure)"
+      }],
+      "direct_transition" : "Question_1",
+      "remarks" : ["the following questions are temporary. going forward we would like these risk factors to be modeled directly",
+                   "the LOINC codes selected & responses are a best guess at modeling the information here"]
+    },
+
+    "Question_1" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "76690-7",
+        "display" : "Sexual orientation"
+      }],
+      "attribute" : "sexual_orientation",
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_2"
+    },
+
+    "Question_2" : {
+      "type" : "Simple",
+      "remarks" : ["simple random statistics here until we have a real HIV model",
+                   "National Alliance to End Homelessness estimates that 3.4% of homeless people are HIV+",
+                   "compared to 0.4% in the general population. (2006 data)",
+                   "http://www.nationalhomeless.org/factsheets/hiv.html"],
+      "distributed_transition" : [
+        { "distribution" : 0.966, "transition" : "Question_2_Negative" },
+        { "distribution" : 0.034, "transition" : "Question_2_Positive" }
+      ]
+    },
+
+    "Question_2_Positive" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "55277-8",
+        "display" : "HIV status"
+      }],
+      "exact" : { "quantity" : "HIV positive" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_3"
+    },
+
+    "Question_2_Negative" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "55277-8",
+        "display" : "HIV status"
+      }],
+      "exact" : { "quantity" : "not HIV positive" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_3"
+    },
+
+    "Question_3" : {
+      "type" : "Simple",
+      "remarks" : ["see http://www.nationalhomeless.org/factsheets/addiction.pdf "],
+      "distributed_transition" : [
+        { "distribution" : 0.26, "transition" : "Question_3_Abuser" },
+        { "distribution" : 0.74, "transition" : "Question_3_Nonabuser" }
+      ]    
+    },
+
+    "Question_3_Abuser" : {
+      "type" : "Observation",
+      "remarks" : ["here we leverage our existing opioids model, for simplicity.",
+                   "in the real world homelessness has a stronger asssociation with drug abuse",
+                   "see http://www.nationalhomeless.org/factsheets/addiction.pdf "],
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "28245-9",
+        "display" : "Abuse Status [OMAHA]"
+      }],
+      "exact" : { "quantity" : "Severe signs/symptoms" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_4"
+    },
+
+    "Question_3_Nonabuser" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "28245-9",
+        "display" : "Abuse Status [OMAHA]"
+      }],
+      "exact" : { "quantity" : "No signs/symptoms" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_4"
+    },
+
+    "Question_4" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "71802-3",
+        "display" : "Housing status"
+      }],
+      "exact" : { "quantity" : "Patient is homeless" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_5"
+    },
+
+    "Question_5" : {
+      "type" : "Simple",
+      "remarks" : ["estimated >70% of homeless do not have health insurance http://www.nationalhomeless.org/factsheets/health.html"],
+      "distributed_transition" : [
+        { "distribution" : 0.25, "transition" : "Question_5_Yes" },
+        { "distribution" : 0.75, "transition" : "Question_5_No" }
+      ]      
+    },
+
+    "Question_5_Yes" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "63513-6",
+        "display" : "Are you covered by health insurance or some other kind of health care plan [PhenX]"
+      }],
+      "exact" : { "quantity" : "Yes" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_6"
+    },
+
+    "Question_5_No" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "63513-6",
+        "display" : "Are you covered by health insurance or some other kind of health care plan [PhenX]"
+      }],
+      "exact" : { "quantity" : "No" },
+      "unit" : "{nominal}",
+      "direct_transition" : "Question_6"
+    },
+
+    "Question_6" : {
+      "type" : "Observation",
+      "target_encounter" : "Visit_Homeless_Shelter",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "46240-8",
+        "display" : "History of Hospitalizations+​Outpatient visits"
+      }],
+      "range" : { "low" : 0, "high" : 10 },
+      "unit" : "{count}",
+      "direct_transition" : "Living_Homeless"
+    },
+
+
+    "End_Homelessness" : {
+      "type" : "SetAttribute",
+      "attribute": "homeless",
+      "value": false,
+      "direct_transition" : "Potential_Homelessness"
+    }
+
+  }
+}

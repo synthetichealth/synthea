@@ -273,13 +273,15 @@ module Synthea
             details = "#{s}: #{e['quantity']}"
           end
         when 'Observation'
-          unit = state['unit']
+          unit = state['unit'].gsub('{','(').gsub('}',')') # replace curly braces with parens, braces can cause issues
           if state.has_key? 'range'
             r = state['range']
             details = "#{r['low']} - #{r['high']} #{unit}\\l"
           elsif state.has_key? 'exact'
             e = state['exact']
             details = "#{e['quantity']} #{unit}\\l"
+          elsif state.has_key? 'attribute'
+            details = "Value from Attribute: '#{state['attribute']}', Unit: #{unit}\\l"
           end
         when 'Counter'
           details = "#{state['action']} value of attribute '#{state['attribute']}' by 1"
