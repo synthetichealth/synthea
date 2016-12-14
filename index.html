@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
     <link rel="stylesheet" type="text/css" href="stylesheets/blueimp-gallery.min.css">
-    <script src="javascripts/jquery-3.1.1.min.js"></script> 
+    <script src="javascripts/jquery-3.1.1.min.js"></script>
     <script src="javascripts/blueimp-gallery.min.js"></script>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -41,7 +41,8 @@
 
 <h3>Sample Data</h3>
 <p>Synthea outputs data in standard formats: HL7 C-CDA and <a href="http://hl7.org/fhir/2016Sep/index.html">FHIR&reg;</a></p>
-<p>Sample data is available via the FHIR STU3 RESTful API at <a href="https://syntheticmass.mitre.org/fhir">https://syntheticmass.mitre.org/fhir</a> and can also be <a href="https://projectcrucible.org/testdata">generated as a service</a> for your own public FHIR server.<p>
+<p>Browse sample data at <a href="https://syntheticmass.mitre.org">SyntheticMass</a> or access directly via the FHIR STU3 RESTful API at <a href="https://syntheticmass.mitre.org/fhir/metadata">https://syntheticmass.mitre.org/fhir</a>.</p>
+<p>Synthetic data can also be <a href="https://projectcrucible.org/testdata">generated as a service</a> for your own public FHIR server.</p>
 
 <h3>
 <a id="supported-models" class="anchor" href="#supported-models" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current Module Gallery</h3>
@@ -73,7 +74,7 @@
         </aside>
       </div>
     </div>
-    <script> 
+    <script>
       $( "#galleryLinks" ).load( "graphviz/graphviz.html", function( response, status, xhr ) {
         if ( status == "error" ) {
           var msg = "Sorry but there was an error: ";
@@ -84,12 +85,12 @@
             document.getElementById('galleryLinks').getElementsByTagName('a'),
             {
                 container: '#blueimp-gallery-carousel',
-                carousel: true 
+                carousel: true
             }
           );
         }
       });
-    </script> 
-    
+    </script>
+
   </body>
 </html>
