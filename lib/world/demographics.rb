@@ -36,6 +36,13 @@ module Synthea
         other: Pickup.new(arab: 1)
       }.freeze
 
+      # http://www.cdc.gov/nchs/data/nhsr/nhsr077.pdf
+      # Among all U.S. adults aged 18 and over, 96.6% identified as straight, 1.6% identified as gay or lesbian, and 0.7% identified as bisexual.
+      # The remaining 1.1% of adults identified as 'something else' (0.2%), selected 'I dont know the answer' (0.4%), or refused to provide an answer (0.6%).
+      SEXUAL_ORIENTATION = Pickup.new(heterosexual: 96.6,
+                                      homosexual: 1.6,
+                                      bisexual: 0.7)
+
       # blood type data from http://www.redcrossblood.org/learn-about-blood/blood-types
       # data for :native and :other from https://en.wikipedia.org/wiki/Blood_type_distribution_by_country
       BLOOD_TYPES = {

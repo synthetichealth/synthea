@@ -26,7 +26,8 @@ module Synthea
           entity[:race] ||= Synthea::World::Demographics::RACES.pick
           entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[entity[:race]].pick
           entity[:blood_type] = Synthea::World::Demographics::BLOOD_TYPES[entity[:race]].pick
-          entity[:fingerprint] = Synthea::Fingerprint.generate
+          entity[:sexual_orientation] = Synthea::World::Demographics::SEXUAL_ORIENTATION.pick.to_s
+          entity[:fingerprint] = Synthea::Fingerprint.generate if Synthea::Config.population.generate_fingerprints
           # new babies are average weight and length for American newborns
           entity[:height] = 51 # centimeters
           entity[:weight] = 3.5 # kilograms
