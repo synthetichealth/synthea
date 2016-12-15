@@ -80,8 +80,8 @@ class FhirTest < Minitest::Test
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time),person.birthDate)
     assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,entry[0].fullUrl)
     race = person.extension[0].valueCodeableConcept.coding[0]
-    assert_equal('Italian',race.display)
-    assert_equal('2114-7',race.code)
+    assert_equal('White',race.display)
+    assert_equal('2106-3',race.code)
     ethnicity = person.extension[1].valueCodeableConcept.coding[0]
     assert_equal('Nonhispanic',ethnicity.display)
     assert_equal('2186-5',ethnicity.code)
