@@ -12,6 +12,7 @@ synthea:
     location: './output/'  # should either start with . for relative path or / for absolute
     folder_per_city: false
     subfolders_by_id_substring: true # if true, creates subfolders based on the first characters of the patient guid. this reduces the # of files in any single folder
+    use_uuid_filenames: true # if true, uses patient uuid, otherwise patient name and age
   start_date: <%= Time.now - 100.years %>
   end_date: <%= Time.now - 1.day %>
   time_step: 7 # days
