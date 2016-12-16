@@ -30,7 +30,7 @@ module Synthea
           race_fhir = :other
           ethnicity_fhir = entity[:ethnicity]
         else
-          race_fhir = entity[:ethnicity]
+          race_fhir = entity[:race]
           ethnicity_fhir = :nonhispanic
         end
         resource_id = SecureRandom.uuid.to_s.strip

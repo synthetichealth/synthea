@@ -10,14 +10,14 @@ module Synthea
           if Synthea::Config.exporter.ccda.export
             out_dir = get_output_folder('CCDA', patient)
             xml = HealthDataStandards::Export::CCDA.new.export(ccda_record)
-            out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.xml")
+            out_file = File.join(out_dir, "#{filename(patient)}.xml")
             File.open(out_file, 'w') { |file| file.write(xml) }
           end
 
           if Synthea::Config.exporter.html.export
             out_dir = get_output_folder('html', patient)
             html = HealthDataStandards::Export::HTML.new.export(ccda_record)
-            out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.html")
+            out_file = File.join(out_dir, "#{filename(patient)}.html")
             File.open(out_file, 'w') { |file| file.write(html) }
           end
         end
@@ -32,9 +32,17 @@ module Synthea
           if Synthea::Config.exporter.fhir.export
             out_dir = get_output_folder('fhir', patient)
             data = fhir_record.to_json
-            out_file = File.join(out_dir, "#{patient.record_synthea.patient_info[:uuid]}.json")
+            out_file = File.join(out_dir, "#{filename(patient)}.json")
             File.open(out_file, 'w') { |file| file.write(data) }
           end
+        end
+      end
+
+      def self.filename(patient)
+        if Synthea::Config.exporter.use_uuid_filenames
+          patient.record_synthea.patient_info[:uuid]
+        else
+          "#{patient[:name_last]}_#{patient[:name_first]}_#{patient[:age]}"
         end
       end
 
