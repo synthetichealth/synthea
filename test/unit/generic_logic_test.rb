@@ -6,15 +6,20 @@ class GenericLogicTest < Minitest::Test
     @time = Time.now
     @patient = Synthea::Person.new
     @patient[:gender] = 'F'
-    @context = Synthea::Generic::Context.new({
+    Synthea::MODULES['logic'] = {
       "name" => "Logic",
       "states" => {
         "Initial" => {
           "type" => "Initial"
         }
       }
-    })
+    }
+    @context = Synthea::Generic::Context.new('logic')
     @logic = JSON.parse(File.read(File.expand_path("../../fixtures/generic/logic.json", __FILE__)))
+  end
+
+  def teardown
+    Synthea::MODULES.clear
   end
 
   def setPatientAge(ageInYears)

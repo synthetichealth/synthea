@@ -43,14 +43,17 @@ module Synthea
           field = config[:store_as] if config[:store_as]
           value = send(field)
 
-          if value && config[:reference_to_state_type]
-            state = context.config['states'][value]
-            if state.nil?
-              messages << build_message("#{field} references state '#{value}' which does not exist", path)
-            elsif config[:reference_to_state_type] != 'State' && config[:reference_to_state_type] != state['type']
-              messages << build_message("#{field} is expected to refer to a '#{config[:reference_to_state_type]}' but value '#{value}' is actually a '#{state['type']}'", path)
-            end
-          end
+          # TODO: Update validation of references to states to accomodate submodules.
+          # Disabling validation of references to states for the time being.
+          #
+          # if value && config[:reference_to_state_type]
+          #   state = context.config['states'][value]
+          #   if state.nil?
+          #     messages << build_message("#{field} references state '#{value}' which does not exist", path)
+          #   elsif config[:reference_to_state_type] != 'State' && config[:reference_to_state_type] != state['type']
+          #     messages << build_message("#{field} is expected to refer to a '#{config[:reference_to_state_type]}' but value '#{value}' is actually a '#{state['type']}'", path)
+          #   end
+          # end
 
           if value.is_a?(Array)
             value.each { |v| messages.push(*v.validate(context, path)) if v.respond_to?(:validate) }

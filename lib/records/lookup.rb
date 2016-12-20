@@ -1,5 +1,8 @@
 module Synthea
 
+  # GMF modules
+  MODULES = {}
+
   #Store all code lookups here:
 
   OBS_LOOKUP = {

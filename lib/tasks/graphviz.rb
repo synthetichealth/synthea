@@ -129,19 +129,27 @@ module Synthea
 
       def self.generateWorkflowBasedGraphs
         filenames = []
-        Dir.glob('../synthea/lib/generic/modules/*.json') do |wf_file|
-          # Create a new graph
-          g = GraphViz.new( :G, :type => :digraph )
-          wf = JSON.parse(File.read(wf_file))
-          populate_graph(g, wf)
-          populate_graph(@giant, wf) unless @@styled
+        module_dir = File.expand_path('../../generic/modules', __FILE__)
+        graphviz_dir = Synthea::Config.graphviz.output
 
-          # Generate output image
-          filename = "#{wf['name']}.png"
-          filenames << filename
-          g.output( :png => File.join(Synthea::Config.graphviz.output, filename) )
+        # all modules and submodules
+        Dir.glob(File.join(module_dir, '**', '*.json')) do |wf_file|
+          filenames << generate_workflow_based_graph(graphviz_dir, wf_file)
         end
         filenames
+      end
+
+      def self.generate_workflow_based_graph(dir, wf_file)
+        # Create a new graph
+        g = GraphViz.new( :G, :type => :digraph )
+        wf = JSON.parse(File.read(wf_file))
+        populate_graph(g, wf)
+        populate_graph(@giant, wf) unless @@styled
+
+        # Generate output image
+        filename = "#{wf['name']}.png"
+        g.output( :png => File.join(dir, filename) )
+        filename
       end
 
       def self.populate_graph(g, wf)
@@ -285,6 +293,8 @@ module Synthea
           end
         when 'Counter'
           details = "#{state['action']} value of attribute '#{state['attribute']}' by 1"
+        when 'CallSubmodule'
+          details = "Call submodule '#{state['submodule']}'"
         end
 
         # Things common to many states
@@ -410,7 +420,6 @@ module Synthea
           raise "#{logic['condition_type']} condition must be specified by code or attribute"
         end
       end
-
     end
   end
 end
