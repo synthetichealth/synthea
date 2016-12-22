@@ -223,7 +223,7 @@ module Synthea
 
           # Look through the history for conditions to diagnose
           @context.history.each do |h|
-            if h.is_a?(ConditionOnset) && !h.diagnosed && h.target_encounter == @name
+            if (h.is_a?(ConditionOnset) || h.is_a?(AllergyOnset)) && !h.diagnosed && h.target_encounter == @name
               h.diagnose(time, entity)
             end
           end
@@ -267,6 +267,50 @@ module Synthea
             @type = symbol
           else
             raise 'Condition End must define the condition to end either by code, a referenced entity attribute, or the name of the original ConditionOnset state'
+          end
+
+          entity.record_synthea.end_condition(@type, time)
+          true
+        end
+      end
+
+      class AllergyOnset < State
+        attr_accessor :diagnosed, :target_encounter, :codes
+
+        required_field and: [:target_encounter, :codes]
+
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+
+        def process(time, entity)
+          diagnose(time, entity) if concurrent_with_target_encounter(time)
+          true
+        end
+
+        def diagnose(time, entity)
+          add_lookup_code(Synthea::COND_LOOKUP)
+          entity.record_synthea.condition(symbol, time, :allergy, :condition)
+          @diagnosed = true
+        end
+      end
+
+      class AllergyEnd < State
+        attr_accessor :referenced_by_attribute, :allergy_onset, :codes
+
+        required_field or: [:referenced_by_attribute, :allergy_onset, :codes]
+
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
+        metadata 'allergy_onset', reference_to_state_type: 'AllergyOnset', min: 0, max: 1
+
+        def process(time, entity)
+          if @referenced_by_attribute
+            @type = entity[@referenced_by_attribute].to_sym
+          elsif @allergy_onset
+            @type = @context.most_recent_by_name(@allergy_onset).symbol
+          elsif @codes
+            @type = symbol
+          else
+            raise 'Allergy End must define the allergy to end either by code, a referenced entity attribute, or the name of the original AllergyOnset state'
           end
 
           entity.record_synthea.end_condition(@type, time)
@@ -428,7 +472,7 @@ module Synthea
       end
 
       class Procedure < State
-        attr_accessor :operated, :target_encounter, :reason, :codes
+        attr_accessor :target_encounter, :reason, :codes
 
         required_field and: [:target_encounter, :codes]
 
@@ -456,7 +500,6 @@ module Synthea
           else
             entity.record_synthea.procedure(symbol, time, cond)
           end
-          @operated = true
         end
       end
 

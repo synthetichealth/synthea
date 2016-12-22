@@ -146,7 +146,7 @@ class FhirTest < Minitest::Test
     allergy = allergy_entry.resource
     assert_equal("#{@patientID}",allergy.patient.reference)
     assert_equal('91935009', allergy.code.coding[0].code)
-    assert_equal('peanuts', allergy.code.coding[0].display)
+    assert_equal('Food Allergy: Peanuts', allergy.code.coding[0].display)
     assert_equal('active', allergy.clinicalStatus)
     assert(allergy.criticality == 'low' || allergy.criticality == 'high')
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), allergy.assertedDate)

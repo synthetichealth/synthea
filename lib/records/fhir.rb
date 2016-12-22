@@ -205,14 +205,14 @@ module Synthea
       def self.allergy(allergy, fhir_record, patient, _encounter)
         snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
         allergy = FHIR::AllergyIntolerance.new('assertedDate' => convert_fhir_date_time(allergy['time'], 'time'),
-                                               'clinicalStatus' => 'active',
+                                               'clinicalStatus' => allergy['end_time'] ? 'inactive' : 'active',
                                                'type' => 'allergy',
                                                'category' => 'food',
                                                'criticality' => %w(low high).sample,
                                                'patient' => { 'reference' => patient.fullUrl.to_s },
                                                'code' => { 'coding' => [{
                                                  'code' => snomed_code,
-                                                 'display' => allergy['type'].to_s.split('food_allergy_')[1],
+                                                 'display' => COND_LOOKUP[allergy['type']][:description],
                                                  'system' => 'http://snomed.info/sct'
                                                }] })
         entry = FHIR::Bundle::Entry.new

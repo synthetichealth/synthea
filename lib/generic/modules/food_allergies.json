@@ -1,0 +1,288 @@
+{
+  "name": "Food Allergies",
+  "remarks" : ["Module migrated from ruby to GMF. Allows for the possibility that allergies can end",
+               "Primary reference: https://web.archive.org/web/20100407195412/http://www.niaid.nih.gov/topics/foodAllergy/understanding/Pages/quickFacts.aspx"],
+  "states": {
+
+    "Initial" : {
+      "type" : "Initial",
+      "direct_transition" : "Childhood_Allergies"
+    },
+
+    "Childhood_Allergies" : {
+      "type" : "Delay",
+      "range" : { "low" : 1, "high" : 3, "unit" : "years" },
+      "direct_transition" : "Chance_of_Peanut_Allergy"
+    },
+
+    "Adult_Allergies_Guard" : {
+      "type" : "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition" : "Delay_until_onset"
+    },
+
+    "Delay_until_onset" : {
+      "type" : "Delay",
+      "range" : { "low" : 0, "high" : 15, "unit" : "years" },
+      "remarks" : ["allergies can occur at any age, but we'll assume they're 'set' by mid 30s or so"],
+      "direct_transition" : "Chance_of_Peanut_Allergy"
+    },
+
+
+    "Chance_of_Peanut_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+                   "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "91935009",
+              "display" : "Food Allergy: Peanuts"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.25, "transition" : "Peanut_Allergy_End" },
+            { "distribution" : 0.75, "transition" : "Chance_of_TreeNut_Allergy" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.008, "transition" : "Peanut_Allergy" },
+            { "distribution" : 0.992, "transition" : "Chance_of_TreeNut_Allergy" }
+          ]
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.004, "transition" : "Peanut_Allergy" },
+            { "distribution" : 0.996, "transition" : "Chance_of_TreeNut_Allergy" }
+          ]
+        }
+      ]
+    },
+
+    "Peanut_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "91935009",
+        "display" : "Food Allergy: Peanuts"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "Chance_of_TreeNut_Allergy"
+    },
+
+    "Peanut_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Peanut_Allergy",
+      "direct_transition" : "Chance_of_TreeNut_Allergy"
+    },
+
+    "Chance_of_TreeNut_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+                   "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "91934008",
+              "display" : "Food Allergy: Tree Nuts"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.5, "transition" : "TreeNut_Allergy_End" },
+            { "distribution" : 0.5, "transition" : "Chance_of_Fish_Allergy" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.002, "transition" : "TreeNut_Allergy" },
+            { "distribution" : 0.998, "transition" : "Chance_of_Fish_Allergy" }
+          ]
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.004, "transition" : "TreeNut_Allergy" },
+            { "distribution" : 0.996, "transition" : "Chance_of_Fish_Allergy" }
+          ]
+        }
+      ]
+    },
+
+    "TreeNut_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "91934008",
+        "display" : "Food Allergy: Tree Nuts"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "Chance_of_Fish_Allergy"
+    },
+
+    "TreeNut_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "TreeNut_Allergy",
+      "direct_transition" : "Chance_of_Fish_Allergy"
+    },
+
+    "Chance_of_Fish_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+                   "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "417532002",
+              "display" : "Food Allergy: Fish"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.5, "transition" : "Fish_Allergy_End" },
+            { "distribution" : 0.5, "transition" : "Chance_of_Shellfish_Allergy" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.006, "transition" : "Fish_Allergy" },
+            { "distribution" : 0.994, "transition" : "Chance_of_Shellfish_Allergy" }
+          ]
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.002, "transition" : "Fish_Allergy" },
+            { "distribution" : 0.998, "transition" : "Chance_of_Shellfish_Allergy" }
+          ]
+        }
+      ]
+    },
+
+    "Fish_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "417532002",
+        "display" : "Food Allergy: Fish"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "Chance_of_Shellfish_Allergy"
+    },
+
+    "Fish_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Fish_Allergy",
+      "direct_transition" : "Chance_of_Shellfish_Allergy"
+    },
+
+    "Chance_of_Shellfish_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+                   "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "300913006",
+              "display" : "Food Allergy: Shellfish"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.5, "transition" : "Shellfish_Allergy_End" },
+            { "distribution" : 0.5, "transition" : "DiagnosisEncounter" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.006, "transition" : "Shellfish_Allergy" },
+            { "distribution" : 0.994, "transition" : "DiagnosisEncounter" }
+          ]
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.025, "transition" : "Shellfish_Allergy" },
+            { "distribution" : 0.975, "transition" : "DiagnosisEncounter" }
+          ]
+        }
+      ]
+    },
+
+    "Shellfish_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "300913006",
+        "display" : "Food Allergy: Shellfish"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "DiagnosisEncounter"
+    },
+
+    "Shellfish_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Shellfish_Allergy",
+      "direct_transition" : "DiagnosisEncounter"
+    },
+
+
+    "DiagnosisEncounter" : {
+      "type" : "Encounter",
+      "wellness" : true,
+      "conditional_transition" : [
+        { 
+          "condition" : {
+            "condition_type" : "PriorState",
+            "name" : "Adult_Allergies_Guard"
+          },
+          "transition" : "Terminal"
+        },
+        {
+          "transition" : "Adult_Allergies_Guard"
+        }
+      ]
+    },
+
+    "Terminal" : {
+      "type" : "Terminal"
+    }
+
+  }
+}
