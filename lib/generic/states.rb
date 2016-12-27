@@ -64,7 +64,8 @@ module Synthea
         def concurrent_with_target_encounter(time)
           unless @target_encounter.nil?
             past = @context.most_recent_by_name(@target_encounter)
-            return !past.nil? && past.time == time
+            raise "Target encounter #{@target_encounter} was not processed before state #{@name}" if past.nil? && !is_a?(ConditionOnset)
+            !past.nil? && past.time == time
           end
         end
 

@@ -337,7 +337,7 @@
 
     "Spinal_Injury_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Spinal_Injury_Treatment_Encounter",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
       "assign_to_attribute": "injury_careplan",
       "reason": "spinal_injury",
       "codes": [

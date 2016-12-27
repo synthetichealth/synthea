@@ -319,6 +319,7 @@ class GenericStatesTest < Minitest::Test
   def test_medication_order_assigns_entity_attribute
     @patient['Diabetes Medication'] = nil
     ctx = get_context('medication_order.json')
+    ctx.history << Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
     med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
     med.run(@time, @patient)
 
@@ -571,6 +572,7 @@ class GenericStatesTest < Minitest::Test
   def test_careplan_assigns_entity_attribute
       @patient['Diabetes_CarePlan'] = nil
       ctx = get_context('careplan_start.json')
+      ctx.history << Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
       plan = Synthea::Generic::States::CarePlanStart.new(ctx, "Diabetes_Self_Management")
       plan.run(@time, @patient)
 
@@ -719,6 +721,7 @@ class GenericStatesTest < Minitest::Test
   def test_procedure_assigns_entity_attribute
     @patient['Most Recent Surgery'] = 'nil'
     ctx = get_context('procedure.json')
+    ctx.history << Synthea::Generic::States::Encounter.new(ctx, "Inpatient_Encounter")
     appendectomy = Synthea::Generic::States::Procedure.new(ctx, "Appendectomy")
     appendectomy.run(@time, @patient)
 
