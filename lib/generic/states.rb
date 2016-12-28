@@ -570,45 +570,116 @@ module Synthea
         end
       end
 
-      class Observation < State
-        # target_encounter is deprecated and may be removed in a future release. Leaving it in for
-        # now to maintain backwards compatibility with existing GMF modules.
-        attr_accessor :codes, :range, :exact, :unit, :attribute, :target_encounter
+      class VitalSign < State
+        attr_accessor :vital_sign, :range, :exact, :unit
 
-        required_field and: [:codes, :unit]
-        required_field or: [:range, :exact, :attribute]
+        required_field or: [:range, :exact]
+        required_field and: [:vital_sign, :unit]
 
-        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'range', type: 'Components::Range', min: 0, max: 1
         metadata 'exact', type: 'Components::Exact', min: 0, max: 1
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
-        def initialize(context, name)
-          super(context, name)
-          @type = symbol
+        def process(_time, entity)
+          if @range
+            @value = @range.value
+          elsif @exact
+            @value = @exact.value
+          end
+
+          entity.set_vital_sign(@vital_sign, @value, @unit)
+
+          true
         end
+      end
+
+      class Observation < State
+        # target_encounter is deprecated and may be removed in a future release. Leaving it in for
+        # now to maintain backwards compatibility with existing GMF modules.
+        attr_accessor :codes, :unit, :target_encounter, :attribute, :vital_sign, :range, :exact
+
+        required_field and: [:target_encounter, :codes]
+        required_field or: [:vital_sign, and: [:unit, or: [:attribute, :range, :exact]]]
+
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+        metadata 'range', type: 'Components::Range', min: 0, max: 1
+        metadata 'exact', type: 'Components::Exact', min: 0, max: 1
+        # continue to allow range and exact here, but prefer to use Vital Signs and Attributes where possible
+        # some things, such as the MMSE score for Alzheimer's, don't feel like a good fit for 'Vital Sign'
+        # since it's a quantitative evaluation and not a physical property of the patient
 
         def add_lookup_code(lookup_hash)
           # TODO: update the observation lookup hash so it's the same format as all the others
           # and then delete this method
           return if @codes.nil? || @codes.empty?
           code = @codes.first
-          lookup_hash[@type] = { description: code.display, code: code.code, unit: @unit }
+          lookup_hash[symbol] = { description: code.display, code: code.code, unit: @unit }
         end
 
         def process(time, entity)
-          add_lookup_code(Synthea::OBS_LOOKUP)
+          if @vital_sign
+            vs = entity.vital_sign(@vital_sign)
+            raise "Value of vital sign #{@vital_sign} is nil" unless vs
+            @value = vs[:value]
 
-          if @range
+            if @unit && @unit != vs[:unit]
+              raise "Observation #{@name} specifies unit '#{@unit}' but the Vital Sign specified unit '#{vs[:unit]}'"
+            else
+              @unit = vs[:unit]
+            end
+          elsif @range
             @value = @range.value
           elsif @exact
             @value = @exact.value
           elsif @attribute
             @value = entity[@attribute] || entity[@attribute.to_sym]
           end
+          add_lookup_code(Synthea::OBS_LOOKUP)
 
           if concurrent_with_target_encounter(time)
-            entity.record_synthea.observation(@type, time, @value)
+            entity.record_synthea.observation(symbol, time, @value)
+          end
+          true
+        end
+      end
+
+      class ObservationGroup < State
+        attr_accessor :codes, :number_of_observations, :target_encounter
+
+        required_field and: [:codes, :number_of_observations, :target_encounter]
+
+        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+
+        def add_lookup_code(lookup_hash)
+          # TODO: update the observation lookup hash so it's the same format as all the others
+          # and then delete this method
+          return if @codes.nil? || @codes.empty?
+          code = @codes.first
+          lookup_hash[symbol] = { description: code.display, code: code.code, unit: @unit }
+        end
+      end
+
+      class MultiObservation < ObservationGroup
+        def process(time, entity)
+          add_lookup_code(Synthea::OBS_LOOKUP)
+          if concurrent_with_target_encounter(time)
+            entity.record_synthea.observation(symbol, time, @number_of_observations, :multi_observation, :no_action)
+          else
+            raise "MultiObservation '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
+          end
+          true
+        end
+      end
+
+      class DiagnosticReport < ObservationGroup
+        def process(time, entity)
+          add_lookup_code(Synthea::OBS_LOOKUP)
+          if concurrent_with_target_encounter(time)
+            entity.record_synthea.diagnostic_report(symbol, time, @number_of_observations)
+          else
+            raise "DiagnosticReport '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
           end
           true
         end

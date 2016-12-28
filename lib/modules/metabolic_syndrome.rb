@@ -12,9 +12,10 @@ module Synthea
         end
 
         # check for diabetes given BMI
-        bmi = entity[:bmi]
+        bmi = entity.vital_sign(:bmi)
         if bmi
-          entity[:blood_glucose] = blood_glucose(bmi)
+          bmi = bmi[:value]
+          entity.set_vital_sign(:blood_glucose, blood_glucose(bmi), '%')
           # How much does A1C need to be lowered to get to goal?
           # Metformin and sulfonylureas may lower A1C 1.5 to 2 percentage points,
           # GLP-1 agonists and DPP-4 inhibitors 0.5 to 1 percentage point on average, and
@@ -23,20 +24,24 @@ module Synthea
           # [:metformin, :glp1ra, :sglt2i, :basal_insulin, :prandial_insulin]
           #     mono        bi      tri        insulin          insulin++
           if entity[:medications]
-            entity[:blood_glucose] -= 1.5 if entity[:medications][:metformin]
-            entity[:blood_glucose] -= 0.5 if entity[:medications][:glp1ra]
-            entity[:blood_glucose] -= 0.5 if entity[:medications][:sglt2i]
-            entity[:blood_glucose] -= 3.0 if entity[:medications][:basal_insulin]
-            entity[:blood_glucose] -= 6.0 if entity[:medications][:prandial_insulin]
+            bloodglucose = entity.get_vital_sign_value(:blood_glucose)
+            bloodglucose -= 1.5 if entity[:medications][:metformin]
+            bloodglucose -= 0.5 if entity[:medications][:glp1ra]
+            bloodglucose -= 0.5 if entity[:medications][:sglt2i]
+            bloodglucose -= 3.0 if entity[:medications][:basal_insulin]
+            bloodglucose -= 6.0 if entity[:medications][:prandial_insulin]
+            entity.set_vital_sign(:blood_glucose, bloodglucose, '%')
           end
 
-          if entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.normal
+          bloodglucose = entity.get_vital_sign_value(:blood_glucose)
+
+          if bloodglucose < Synthea::Config.metabolic.blood_glucose.normal
             # normal person
-          elsif entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.prediabetic
+          elsif bloodglucose < Synthea::Config.metabolic.blood_glucose.prediabetic
             update_prediabetes(time, entity)
-          elsif entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.diabetic
+          elsif bloodglucose < Synthea::Config.metabolic.blood_glucose.diabetic
             update_diabetes(1, time, entity)
-          elsif entity[:blood_glucose] < Synthea::Config.metabolic.blood_glucose.severe
+          elsif bloodglucose < Synthea::Config.metabolic.blood_glucose.severe
             update_diabetes(2, time, entity)
           elsif !entity[:diabetes]
             update_diabetes(3, time, entity)
@@ -49,9 +54,11 @@ module Synthea
 
         # estimate values
         if entity[:hypertension]
-          entity[:blood_pressure] = [pick(Synthea::Config.metabolic.blood_pressure.hypertensive.systolic), pick(Synthea::Config.metabolic.blood_pressure.hypertensive.diastolic)]
+          entity.set_vital_sign(:systolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.hypertensive.systolic), 'mmHg')
+          entity.set_vital_sign(:diastolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.hypertensive.diastolic), 'mmHg')
         else
-          entity[:blood_pressure] = [pick(Synthea::Config.metabolic.blood_pressure.normal.systolic), pick(Synthea::Config.metabolic.blood_pressure.normal.diastolic)]
+          entity.set_vital_sign(:systolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.normal.systolic), 'mmHg')
+          entity.set_vital_sign(:diastolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.normal.diastolic), 'mmHg')
         end
         # calculate the components of a lipid panel
         index = 0
@@ -60,29 +67,41 @@ module Synthea
         cholesterol = Synthea::Config.metabolic.lipid_panel.cholesterol
         triglycerides = Synthea::Config.metabolic.lipid_panel.triglycerides
         hdl = Synthea::Config.metabolic.lipid_panel.hdl
-        entity[:cholesterol] = {
-          total: rand(cholesterol[index]..cholesterol[index + 1]),
-          triglycerides: rand(triglycerides[index]..triglycerides[index + 1]),
-          hdl: rand(hdl[index + 1]..hdl[index])
-        }
-        entity[:cholesterol][:ldl] = entity[:cholesterol][:total] - entity[:cholesterol][:hdl] - (0.2 * entity[:cholesterol][:triglycerides])
-        entity[:cholesterol][:ldl] = entity[:cholesterol][:ldl].to_i
+
+        entity.set_vital_sign(:total_cholesterol, rand(cholesterol[index]..cholesterol[index + 1]), 'mg/dL')
+        entity.set_vital_sign(:triglycerides, rand(triglycerides[index]..triglycerides[index + 1]), 'mg/dL')
+        entity.set_vital_sign(:hdl, rand(hdl[index + 1]..hdl[index]), 'mg/dL')
+
+        ldl = entity.get_vital_sign_value(:total_cholesterol) - entity.get_vital_sign_value(:hdl) - (0.2 * entity.get_vital_sign_value(:triglycerides))
+        entity.set_vital_sign(:ldl, ldl.to_i, 'mg/dL')
+
+        # entity[:cholesterol] = {
+        #   total: rand(cholesterol[index]..cholesterol[index + 1]),
+        #   triglycerides: rand(triglycerides[index]..triglycerides[index + 1]),
+        #   hdl: rand(hdl[index + 1]..hdl[index])
+        # }
+        # entity[:cholesterol][:ldl] = entity[:cholesterol][:total] - entity[:cholesterol][:hdl] - (0.2 * entity[:cholesterol][:triglycerides])
+        # entity[:cholesterol][:ldl] = entity[:cholesterol][:ldl].to_i
 
         # calculate the components of a metabolic panel and associated observations
         normal = Synthea::Config.metabolic.basic_panel.normal
-        entity[:metabolic] = {
+        metabolic_panel = {
           urea_nitrogen: rand(normal.urea_nitrogen.first..normal.urea_nitrogen.last),
-          carbon_dioxide: rand(normal.co2.first..normal.co2.last),
           creatinine: rand(normal.creatinine.first..normal.creatinine.last),
-          chloride: rand(normal.chloride.first..normal.chloride.last),
-          potassium: rand(normal.potassium.first..normal.potassium.last),
-          sodium: rand(normal.sodium.first..normal.sodium.last),
           calcium: rand(normal.calcium.first..normal.calcium.last)
         }
+
+        electrolytes_panel = {
+          chloride: rand(normal.chloride.first..normal.chloride.last),
+          potassium: rand(normal.potassium.first..normal.potassium.last),
+          carbon_dioxide: rand(normal.co2.first..normal.co2.last),
+          sodium: rand(normal.sodium.first..normal.sodium.last)
+        }
+
         # calculate glucose out of the normal
         glucose = Synthea::Config.metabolic.basic_panel.glucose
         index = 2 if index > 2
-        entity[:metabolic][:glucose] = rand(glucose[index]..glucose[index + 1])
+        metabolic_panel[:glucose] = rand(glucose[index]..glucose[index + 1])
         # calculate creatine values
         range = nil
         if entity[:gender] && entity[:gender] == 'M'
@@ -91,14 +110,17 @@ module Synthea
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.female
         end
         creatinine_clearance = rand(range.first..range.last)
-        entity[:metabolic][:creatinine_clearance] = creatinine_clearance
-        entity[:metabolic][:creatinine] = begin
-                                            reverse_calculate_creatine(entity)
-                                          rescue
-                                            1.0
-                                          end
+        metabolic_panel[:creatinine] = begin
+                                         reverse_calculate_creatine(entity, creatinine_clearance)
+                                       rescue
+                                         1.0
+                                       end
         range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
-        entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last)
+        entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
+        entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
+
+        metabolic_panel.each { |k, v| entity.set_vital_sign(k, v, 'mg/dL') }
+        electrolytes_panel.each { |k, v| entity.set_vital_sign(k, v, 'mmol/L') }
       end
 
       def update_prediabetes(time, entity)
@@ -163,12 +185,14 @@ module Synthea
         if diabetes && diabetes[:nephropathy]
           # update the creatinine levels...
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.mild_kidney_damage
-          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
-          entity[:metabolic][:creatinine] = begin
-                                              reverse_calculate_creatine(entity)
-                                            rescue
-                                              1.0
-                                            end
+          creatinine_clearance = rand(range.first..range.last)
+          creatinine = begin
+                         reverse_calculate_creatine(entity, creatinine_clearance)
+                       rescue
+                         1.0
+                       end
+          entity.set_vital_sign(:creatinine, creatinine, 'mg/dL')
+          entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
           # see if the disease progresses another stage...
           if diabetes[:microalbuminuria].nil? && (rand < (0.01 * diabetes[:severity]))
             diabetes[:microalbuminuria] = true
@@ -183,15 +207,17 @@ module Synthea
         if diabetes && diabetes[:microalbuminuria]
           # update the creatinine levels...
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage
-          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
-          entity[:metabolic][:creatinine] = begin
-                                              reverse_calculate_creatine(entity)
-                                            rescue
-                                              1.0
-                                            end
+          creatinine_clearance = rand(range.first..range.last)
+          creatinine = begin
+                         reverse_calculate_creatine(entity, creatinine_clearance)
+                       rescue
+                         1.0
+                       end
+          entity.set_vital_sign(:creatinine, creatinine, 'mg/dL')
+          entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
           # update the microalbumin levels...
           range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.microalbuminuria_uncontrolled
-          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last)
+          entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
           # see if the disease progresses another stage...
           if diabetes[:proteinuria].nil? && (rand < (0.01 * diabetes[:severity]))
             diabetes[:proteinuria] = true
@@ -206,15 +232,17 @@ module Synthea
         if diabetes && diabetes[:proteinuria]
           # update the creatinine levels...
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.severe_kidney_damage
-          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
-          entity[:metabolic][:creatinine] = begin
-                                              reverse_calculate_creatine(entity)
-                                            rescue
-                                              1.0
-                                            end
+          creatinine_clearance = rand(range.first..range.last)
+          creatinine = begin
+                         reverse_calculate_creatine(entity, creatinine_clearance)
+                       rescue
+                         1.0
+                       end
+          entity.set_vital_sign(:creatinine, creatinine, 'mg/dL')
+          entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
           # update the microalbumin levels...
           range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.proteinuria
-          entity[:metabolic][:microalbumin_creatine_ratio] = rand(range.first..range.last)
+          entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
           # see if the disease progresses another stage...
           if diabetes[:end_stage_renal_disease].nil? && (rand < (0.01 * diabetes[:severity]))
             diabetes[:end_stage_renal_disease] = true
@@ -231,12 +259,14 @@ module Synthea
         if diabetes && diabetes[:end_stage_renal_disease]
           # update the creatinine levels...
           range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.esrd
-          entity[:metabolic][:creatinine_clearance] = rand(range.first..range.last)
-          entity[:metabolic][:creatinine] = begin
-                                              reverse_calculate_creatine(entity)
-                                            rescue
-                                              1.0
-                                            end
+          creatinine_clearance = rand(range.first..range.last)
+          creatinine = begin
+                         reverse_calculate_creatine(entity, creatinine_clearance)
+                       rescue
+                         1.0
+                       end
+          entity.set_vital_sign(:creatinine, creatinine, 'mg/dL')
+          entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
           # see if the disease progresses another stage...
           if rand < (0.0001 * diabetes[:severity])
             entity.events.create(time, :death, :end_stage_renal_disease, true)
@@ -396,12 +426,11 @@ module Synthea
       end
 
       # http://www.mcw.edu/calculators/creatinine.htm
-      def reverse_calculate_creatine(entity)
+      def reverse_calculate_creatine(entity, crcl)
         age = entity[:age] # years
         female = (entity[:gender] == 'F')
         weight = entity[:weight] # kilograms
-        crcl = entity[:metabolic][:creatinine_clearance] # mg/dL
-        crcl = 100 if crcl.nil?
+        crcl = 100 if crcl.nil? # mg/dL
         crcl = 1 if crcl < 1
         creatine = ((140 - age) * weight) / (72 * crcl)
         creatine *= 0.85 if female
@@ -411,15 +440,6 @@ module Synthea
       def self.perform_encounter(entity, time)
         [:prediabetes, :diabetes, :hypertension].each do |diagnosis|
           process_diagnosis(diagnosis, entity, entity, time)
-        end
-
-        # record blood pressure
-        record_blood_pressure(entity, time) if entity[:blood_pressure]
-
-        if entity[:prediabetes] || entity[:diabetes]
-          # process any labs
-          record_ha1c(entity, time)
-          record_metabolic_panel(entity, time)
         end
 
         if entity[:diabetes]
@@ -433,16 +453,7 @@ module Synthea
           # process any necessary amputations
           amputations = entity[:diabetes][:amputation]
           process_amputations(amputations, entity, time) if amputations
-
-          # process any labs
-          record_lipid_panel(entity, time)
-          record_microalbumin_creatinine_ratio(entity, time)
-        elsif entity[:age] > 30 && entity.events.since(time - 3.years, :lipid_panel).empty?
-          # run a lipid panel for non-diabetics if it has been more than 3 years
-          record_lipid_panel(entity, time)
         end
-
-        record_egfr(entity, time) if entity[:diabetes] || entity[:hypertension]
 
         if entity[:careplan] && entity[:careplan][:diabetes]
           # Add a diabetes self-management careplan if one isn't active
@@ -483,46 +494,6 @@ module Synthea
         end
       end
 
-      def self.record_blood_pressure(entity, time)
-        patient = entity.record_synthea
-        patient.observation(:systolic_blood_pressure, time, entity[:blood_pressure].first, :observation, :vital_sign)
-        patient.observation(:diastolic_blood_pressure, time, entity[:blood_pressure].last, :observation, :vital_sign)
-        # This dummy 'Observation' indicates the two previous are linked together into one for fhir.
-        patient.observation(:blood_pressure, time, 2, :multi_observation, :no_action)
-      end
-
-      def self.record_ha1c(entity, time)
-        patient = entity.record_synthea
-        patient.observation(:ha1c, time, entity[:blood_glucose].round(1), :observation, :vital_sign)
-      end
-
-      def self.record_metabolic_panel(entity, time)
-        patient = entity.record_synthea
-
-        # basic metabolic panel
-        patient.observation(:glucose, time, entity[:metabolic][:glucose])
-        patient.observation(:urea_nitrogen, time, entity[:metabolic][:urea_nitrogen])
-        patient.observation(:creatinine, time, entity[:metabolic][:creatinine])
-        patient.observation(:calcium, time, entity[:metabolic][:calcium])
-        patient.observation(:sodium, time, entity[:metabolic][:sodium])
-        patient.observation(:potassium, time, entity[:metabolic][:potassium])
-        patient.observation(:chloride, time, entity[:metabolic][:chloride])
-        patient.observation(:carbon_dioxide, time, entity[:metabolic][:carbon_dioxide])
-        patient.diagnostic_report(:basic_metabolic_panel, time, 8)
-      end
-
-      def self.record_microalbumin_creatinine_ratio(entity, time)
-        patient = entity.record_synthea
-        patient.observation(:microalbumin_creatine_ratio, time, entity[:metabolic][:microalbumin_creatine_ratio])
-      end
-
-      def self.record_egfr(entity, time)
-        patient = entity.record_synthea
-        egfr = entity[:metabolic][:creatinine_clearance]
-        egfr = '>60' if egfr > 60
-        patient.observation(:egfr, time, egfr)
-      end
-
       def self.process_amputations(amputations, entity, time)
         amputations.each do |amputation|
           amp_str = amputation.to_s
@@ -548,19 +519,6 @@ module Synthea
             entity.record_synthea.condition(cond_key, time)
           end
         end
-      end
-
-      def self.record_lipid_panel(entity, time)
-        return if entity[:cholesterol].nil?
-
-        entity.events.create(time, :lipid_panel, :encounter, true)
-        patient = entity.record_synthea
-
-        patient.observation(:cholesterol, time, entity[:cholesterol][:total], :observation, :vital_sign)
-        patient.observation(:triglycerides, time, entity[:cholesterol][:triglycerides], :observation, :vital_sign)
-        patient.observation(:hdl, time, entity[:cholesterol][:hdl], :observation, :vital_sign)
-        patient.observation(:ldl, time, entity[:cholesterol][:ldl], :observation, :vital_sign)
-        patient.diagnostic_report(:lipid_panel, time, 4, :diagnostic_report, :no_action)
       end
     end
   end

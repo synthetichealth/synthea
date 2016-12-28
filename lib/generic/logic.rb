@@ -192,6 +192,16 @@ module Synthea
         end
       end
 
+      class VitalSign < Condition
+        attr_accessor :vital_sign, :value, :operator
+        required_field and: [:vital_sign, :operator] # value is allowed to be omitted if operator is 'is nil'
+
+        def test(_context, _time, entity)
+          vs = entity.vital_sign(vital_sign) || {}
+          compare(vs[:value], value, operator)
+        end
+      end
+
       class ActiveCondition < Condition
         attr_accessor :codes, :referenced_by_attribute
         required_field or: [:codes, :referenced_by_attribute]
@@ -217,13 +227,20 @@ module Synthea
       end
 
       class PriorState < Condition
-        attr_accessor :name
+        attr_accessor :name, :since, :within
         required_field :name
 
         metadata 'name', reference_to_state_type: 'State', min: 1, max: 1
+        metadata 'since', reference_to_state_type: 'State', min: 0, max: 1
+        metadata 'within', type: 'Components::ExactWithUnit', min: 0, max: 1
 
-        def test(context, _time, _entity)
-          !context.most_recent_by_name(name).nil?
+        def test(context, time, _entity)
+          context.history.reverse_each do |h|
+            return false if within && h.exited && h.exited < (time - within.value)
+            return true if h.name == name
+            return false if h.name == since
+          end
+          false
         end
       end
 

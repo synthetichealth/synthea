@@ -287,20 +287,32 @@ module Synthea
             details = "#{s}: #{e['quantity']}"
           end
         when 'Observation'
-          unit = state['unit'].gsub('{','(').gsub('}',')') # replace curly braces with parens, braces can cause issues
-          if state.has_key? 'range'
-            r = state['range']
-            details = "#{r['low']} - #{r['high']} #{unit}\\l"
-          elsif state.has_key? 'exact'
-            e = state['exact']
-            details = "#{e['quantity']} #{unit}\\l"
+          unit = state['unit']
+          if unit
+            unit = 'in ' + unit.gsub('{','(').gsub('}',')') # replace curly braces with parens, braces can cause issues
+          end
+          
+          if state.has_key? 'vital_sign'
+            details = "Record value from Vital Sign '#{state['vital_sign']}' #{unit}\\l"
           elsif state.has_key? 'attribute'
-            details = "Value from Attribute: '#{state['attribute']}', Unit: #{unit}\\l"
+            details = "Record value from Attribute '#{state['attribute']}' #{unit}\\l"
           end
         when 'Counter'
           details = "#{state['action']} value of attribute '#{state['attribute']}' by 1"
+        when 'VitalSign'
+          vs = state['vital_sign']
+          unit = state['unit']
+          if state.has_key? 'range'
+            r = state['range']
+            details = "Set #{vs}: #{r['low']} - #{r['high']} #{unit}"
+          elsif state.has_key? 'exact'
+            e = state['exact']
+            details = "Set #{vs}: #{e['quantity']} #{unit}"
+          end
         when 'CallSubmodule'
           details = "Call submodule '#{state['submodule']}'"
+        when 'MultiObservation', 'DiagnosticReport'
+          details = "Group the last #{state['number_of_observations']} Observations\\l"
         end
 
         # Things common to many states
@@ -401,6 +413,8 @@ module Synthea
         when 'Observation'
           obs = find_referenced_type(logic)
           "Observation #{obs} \\#{logic['operator']} #{logic['value']}\\l"
+        when 'Vital Sign'
+          "Vital Sign #{logic['vital_sign']} \\#{logic['operator']} #{logic['value']}\\l"
         when 'Active Condition'
           cond = find_referenced_type(logic)
           "Condition #{cond} is active\\l"
