@@ -64,7 +64,8 @@ module Synthea
         def concurrent_with_target_encounter(time)
           unless @target_encounter.nil?
             past = @context.most_recent_by_name(@target_encounter)
-            return !past.nil? && past.time == time
+            raise "Target encounter #{@target_encounter} was not processed before state #{@name}" if past.nil? && !is_a?(ConditionOnset)
+            !past.nil? && past.time == time
           end
         end
 
@@ -282,7 +283,11 @@ module Synthea
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
-          prescribe(time, entity) if concurrent_with_target_encounter(time)
+          if concurrent_with_target_encounter(time)
+            prescribe(time, entity)
+          else
+            raise "MedicationOrder '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
+          end
           true
         end
 
@@ -341,7 +346,11 @@ module Synthea
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
-          start_plan(time, entity) if concurrent_with_target_encounter(time)
+          if concurrent_with_target_encounter(time)
+            start_plan(time, entity)
+          else
+            raise "CarePlanStart '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
+          end
           true
         end
 
@@ -427,7 +436,11 @@ module Synthea
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
 
         def process(time, entity)
-          operate(time, entity) if concurrent_with_target_encounter(time)
+          if concurrent_with_target_encounter(time)
+            operate(time, entity)
+          else
+            raise "Procedure '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
+          end
           true
         end
 
@@ -484,6 +497,8 @@ module Synthea
 
           if concurrent_with_target_encounter(time)
             entity.record_synthea.observation(@type, time, @value)
+          else
+            raise "Observation '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
           end
           true
         end

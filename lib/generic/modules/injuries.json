@@ -332,6 +332,33 @@
           "display": "Emergency room admission"
         }
       ],
+      "direct_transition": "Spinal_Injury_CarePlan"
+    },
+
+    "Spinal_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "75162002",
+          "display": "Spinal cord injury rehabilitation"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "231181000000100",
+          "display": "Delivery of rehabilitation for spinal cord injury"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "77476009",
+          "display": "Application of back brace"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.25,
@@ -451,33 +478,6 @@
           "system": "RxNorm",
           "code": "1049624",
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
-        }
-      ],
-      "direct_transition": "Spinal_Injury_CarePlan"
-    },
-
-    "Spinal_Injury_CarePlan": {
-      "type": "CarePlanStart",
-      "target_encounter": "Spinal_Injury_Treatment_Encounter",
-      "assign_to_attribute": "injury_careplan",
-      "reason": "spinal_injury",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "75162002",
-          "display": "Spinal cord injury rehabilitation"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "231181000000100",
-          "display": "Delivery of rehabilitation for spinal cord injury"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "77476009",
-          "display": "Application of back brace"
         }
       ],
       "direct_transition": "Spinal_Treatment_Period"
@@ -1382,7 +1382,7 @@
           "display": "First degree burn"
         }
       ],
-      "direct_transition": "Burn_Injury_Prescribe_Non_Opioid"
+      "direct_transition": "Burn_CarePlan"
     },
 
     "Second_Degree_Burn": {
@@ -1396,7 +1396,7 @@
           "display": "Second degree burn"
         }
       ],
-      "direct_transition": "Burn_Injury_Prescribe_Antibiotic"
+      "direct_transition": "Burn_CarePlan"
     },
 
     "Third_Degree_Burn": {
@@ -1410,7 +1410,79 @@
           "display": "Third degree burn"
         }
       ],
-      "direct_transition": "Severe_Burn_Care"
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Burn_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "133901003",
+          "display": "Burn care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "440381005",
+          "display": "Behavior to prevent sun exposure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "403190006",
+                "display": "First degree burn"
+              }
+            ]
+          },
+          "transition": "Burn_Injury_Prescribe_Non_Opioid"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "403191005",
+                "display": "Second degree burn"
+              }
+            ]
+          },
+          "transition": "Burn_Injury_Prescribe_Antibiotic"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "403192003",
+                "display": "Third degree burn"
+              }
+            ]
+          },
+          "transition": "Severe_Burn_Care"
+        }
+      ]
     },
 
     "Severe_Burn_Care": {
@@ -1438,16 +1510,6 @@
           "display": "Admission to long stay hospital"
         }
       ],
-      "direct_transition": "Severe_Burn_Hospital_Stay"
-    },
-
-    "Severe_Burn_Hospital_Stay": {
-      "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 3,
-        "unit": "months"
-      },
       "direct_transition": "Burn_Injury_Prescribe_Antibiotic"
     },
 
@@ -1511,7 +1573,7 @@
           "display": "Acetaminophen 650 MG [Tylenol]"
         }
       ],
-      "direct_transition": "Burn_CarePlan"
+      "direct_transition": "Burn_Recovery_Period"
     },
 
     "Burn_Injury_Prescribe_Opioid": {
@@ -1524,38 +1586,6 @@
           "system": "RxNorm",
           "code": "1049624",
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
-        }
-      ],
-      "direct_transition": "Burn_CarePlan"
-    },
-
-    "Burn_CarePlan": {
-      "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Burn",
-      "assign_to_attribute": "injury_careplan",
-      "reason": "burn_injury",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "133901003",
-          "display": "Burn care"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "385949008",
-          "display": "Dressing change management"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "440381005",
-          "display": "Behavior to prevent sun exposure"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "439830001",
-          "display": "Behavior to prevent infection"
         }
       ],
       "direct_transition": "Burn_Recovery_Period"
@@ -1964,6 +1994,33 @@
           "display": "Emergency room admission"
         }
       ],
+      "direct_transition": "Knee_Injury_CarePlan"
+    },
+
+    "Knee_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.2235,
@@ -2026,7 +2083,7 @@
           "display": "Tear of meniscus of knee"
         }
       ],
-      "direct_transition": "Knee_Injury_CarePlan"
+      "direct_transition": "Knee_Injury_Recovery_Period"
     },
 
     "Torn_Patellar_Tendon": {
@@ -2125,7 +2182,7 @@
           "display": "Acetaminophen 650 MG [Tylenol]"
         }
       ],
-      "direct_transition": "Knee_Injury_CarePlan"
+      "direct_transition": "Knee_Injury_Recovery_Period"
     },
 
     "Knee_Injury_Prescribe_Opioid": {
@@ -2140,35 +2197,9 @@
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
-      "direct_transition": "Knee_Injury_CarePlan"
-    },
-
-    "Knee_Injury_CarePlan": {
-      "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Knee_Injury",
-      "assign_to_attribute": "injury_careplan",
-      "reason": "knee_injury",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
-        }
-      ],
       "direct_transition": "Knee_Injury_Recovery_Period"
     },
+
     "Knee_Injury_Recovery_Period": {
       "type": "Delay",
       "range": {
@@ -2224,10 +2255,37 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "Shoulder_Injury_CarePlan"
+    },
+
+    "Shoulder_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Encounter_For_Shoulder_Injury",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "Torn_Rotator_Cuff",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
       "distributed_transition": [
         {
           "distribution": 0.9,
-          "transition": "Shoulder_Injury_CarePlan"
+          "transition": "Shoulder_Injury_Recovery_Period"
         },
         {
           "distribution": 0.1,
@@ -2318,7 +2376,7 @@
           "display": "Acetaminophen 650 MG [Tylenol]"
         }
       ],
-      "direct_transition": "Shoulder_Injury_CarePlan"
+      "direct_transition": "Shoulder_Injury_Recovery_Period"
     },
 
     "Shoulder_Surgery_Prescribe_Opioid": {
@@ -2331,33 +2389,6 @@
           "system": "RxNorm",
           "code": "1310197",
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-        }
-      ],
-      "direct_transition": "Shoulder_Injury_CarePlan"
-    },
-
-    "Shoulder_Injury_CarePlan": {
-      "type": "CarePlanStart",
-      "target_encounter": "Encounter_For_Shoulder_Injury",
-      "assign_to_attribute": "injury_careplan",
-      "reason": "Torn_Rotator_Cuff",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
         }
       ],
       "direct_transition": "Shoulder_Injury_Recovery_Period"
@@ -2482,7 +2513,7 @@
       "type": "Death",
       "direct_transition": "Terminal"
     },
-    
+
     "Terminal": {
       "type": "Terminal"
     }
