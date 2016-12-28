@@ -115,14 +115,20 @@
             "condition_type" : "Or",
             "conditions" : [
               {
-                "condition_type": "Attribute",
-                "attribute": "diabetes",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "44054006",
+                  "display" : "Diabetes"
+                }]
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "prediabetes",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "15777000",
+                  "display" : "Prediabetes"
+                }]
               }
             ]
           },
@@ -155,14 +161,20 @@
             "condition_type" : "Or",
             "conditions" : [
               {
-                "condition_type": "Attribute",
-                "attribute": "diabetes",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "44054006",
+                  "display" : "Diabetes"
+                }]
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "prediabetes",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "15777000",
+                  "display" : "Prediabetes"
+                }]
               }
             ]
           },
@@ -292,9 +304,12 @@
             "condition_type" : "Or",
             "conditions" : [
               {
-                "condition_type": "Attribute",
-                "attribute": "diabetes",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "44054006",
+                  "display" : "Diabetes"
+                }]
               },
               {
                 "condition_type": "And",
@@ -394,9 +409,12 @@
       "conditional_transition" : [
         {
           "condition" : {
-            "condition_type": "Attribute",
-            "attribute": "diabetes",
-            "operator": "is not nil"
+            "condition_type": "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "44054006",
+              "display" : "Diabetes"
+            }]
           },
           "transition" : "Record_ACR"
         },
@@ -427,14 +445,20 @@
             "condition_type" : "Or",
             "conditions" : [
               {
-                "condition_type": "Attribute",
-                "attribute": "diabetes",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "44054006",
+                  "display" : "Diabetes"
+                }]
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "hypertension",
-                "operator": "is not nil"
+                "condition_type": "Active Condition",
+                "codes" : [{
+                  "system" : "SNOMED-CT",
+                  "code" : "38341003",
+                  "display" : "Hypertension"
+                }]
               }
             ]
           },
