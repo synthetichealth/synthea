@@ -617,7 +617,7 @@
 
     "VerySevere_MMSE_Score": {
       "type": "Observation",
-      "target_encounter": "Severe_Encounter",
+      "target_encounter": "VerySevere_Encounter",
       "codes": [
         {
           "system": "LOINC",
