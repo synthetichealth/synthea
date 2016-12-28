@@ -64,7 +64,7 @@ module Synthea
         def concurrent_with_target_encounter(time)
           unless @target_encounter.nil?
             past = @context.most_recent_by_name(@target_encounter)
-            raise "Target encounter #{@target_encounter} was not processed before state #{@name}" if past.nil? && !is_a?(ConditionOnset)
+            raise "Target encounter #{@target_encounter} was not processed before state #{@name}" if past.nil? && !is_a?(OnsetState)
             !past.nil? && past.time == time
           end
         end
@@ -223,14 +223,14 @@ module Synthea
 
           # Look through the history for conditions to diagnose
           @context.history.each do |h|
-            if (h.is_a?(ConditionOnset) || h.is_a?(AllergyOnset)) && !h.diagnosed && h.target_encounter == @name
+            if h.is_a?(OnsetState) && !h.diagnosed && h.target_encounter == @name
               h.diagnose(time, entity)
             end
           end
         end
       end
 
-      class ConditionOnset < State
+      class OnsetState < State
         attr_accessor :diagnosed, :target_encounter, :codes
 
         required_field and: [:target_encounter, :codes]
@@ -242,7 +242,9 @@ module Synthea
           diagnose(time, entity) if concurrent_with_target_encounter(time)
           true
         end
+      end
 
+      class ConditionOnset < OnsetState
         def diagnose(time, entity)
           add_lookup_code(Synthea::COND_LOOKUP)
           entity.record_synthea.condition(symbol, time)
@@ -274,19 +276,7 @@ module Synthea
         end
       end
 
-      class AllergyOnset < State
-        attr_accessor :diagnosed, :target_encounter, :codes
-
-        required_field and: [:target_encounter, :codes]
-
-        metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
-        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
-
-        def process(time, entity)
-          diagnose(time, entity) if concurrent_with_target_encounter(time)
-          true
-        end
-
+      class AllergyOnset < OnsetState
         def diagnose(time, entity)
           add_lookup_code(Synthea::COND_LOOKUP)
           entity.record_synthea.condition(symbol, time, :allergy, :condition)
