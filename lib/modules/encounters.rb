@@ -50,7 +50,6 @@ module Synthea
             Synthea::Modules::Lifecycle.record_height_weight(entity, event.time)
             Synthea::Modules::Immunizations.perform_encounter(entity, event.time)
             Synthea::Modules::MetabolicSyndrome.perform_encounter(entity, event.time)
-            Synthea::Modules::FoodAllergies.record_diagnoses(entity, event.time)
             Synthea::Modules::CardiovascularDisease.perform_encounter(entity, event.time)
             Synthea::Modules::Generic.perform_wellness_encounter(entity, event.time)
             # Schedule the next general encounter unless this one was driven by symptoms

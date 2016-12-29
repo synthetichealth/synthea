@@ -204,6 +204,18 @@ module Synthea
         end
       end
 
+      class ActiveAllergy < Condition
+        attr_accessor :codes, :referenced_by_attribute
+        required_field or: [:codes, :referenced_by_attribute]
+
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
+
+        def test(_context, _time, entity)
+          contype = find_referenced_type(entity, 'Active Allergy')
+          entity.record_synthea.present[contype]
+        end
+      end
+
       class PriorState < Condition
         attr_accessor :name
         required_field :name

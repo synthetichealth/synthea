@@ -296,7 +296,7 @@ module Synthea
         if state.has_key? 'target_encounter'
           verb = 'Perform'
           case state['type']
-          when 'ConditionOnset'
+          when 'ConditionOnset', 'AllergyOnset'
             verb = 'Diagnose'
           when 'MedicationOrder'
             verb = 'Prescribe'
@@ -311,6 +311,9 @@ module Synthea
         end
         if state.has_key? 'condition_onset'
           details = details + "Onset at: #{state['condition_onset']}\\l"
+        end
+        if state.has_key? 'allergy_onset'
+          details = details + "Onset at: #{state['allergy_onset']}\\l"
         end
         if state.has_key? 'careplan'
           details = details + "Prescribed at: #{state['careplan']}\\l"
@@ -387,6 +390,9 @@ module Synthea
         when 'Active Medication'
           med = find_referenced_type(logic)
           "Medication #{med} is active\\l"
+        when 'Active Allergy'
+          alg = find_referenced_type(logic)
+          "Allergy #{alg} is active\\l"
         when 'True', 'False'
           logic['condition_type']
         else

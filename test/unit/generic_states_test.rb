@@ -286,6 +286,59 @@ class GenericStatesTest < Minitest::Test
     @patient.record_synthea.verify
   end
 
+  def test_allergy_onset
+    # Setup a mock to track calls to the patient record
+    # In this case, the record shouldn't be called at all
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('allergies.json')
+    allergy = Synthea::Generic::States::AllergyOnset.new(ctx, "Allergy_to_Eggs")
+    # Should pass through this state immediately without calling the record
+    assert(allergy.process(@time, @patient))
+  end
+
+  def test_allergy_onset_during_encounter
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('allergies.json')
+    allergy = Synthea::Generic::States::AllergyOnset.new(ctx, "Allergy_to_Eggs")
+    # Should pass through this state immediately without calling the record
+    assert(allergy.process(@time, @patient))
+    ctx.history << allergy
+
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Dr_Visit")
+    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_symptom, @time, nil])
+    @patient.record_synthea.expect(:condition, nil, [:allergy_to_eggs, @time, :allergy, :condition])
+    assert(encounter.process(@time, @patient))
+
+    # Verify that the Encounter and Allergy were added to the record
+    @patient.record_synthea.verify
+  end
+
+  def test_allergy_end_by_state_name
+    # Setup a mock to track calls to the patient record
+    @patient.record_synthea = MiniTest::Mock.new
+
+    ctx = get_context('allergies.json')
+    allergy = Synthea::Generic::States::AllergyOnset.new(ctx, "Allergy_to_Eggs")
+    # Should pass through this state immediately without calling the record
+    assert(allergy.process(@time, @patient))
+    ctx.history << allergy
+
+    encounter = Synthea::Generic::States::Encounter.new(ctx, "Dr_Visit")
+    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_symptom, @time, nil])
+    @patient.record_synthea.expect(:condition, nil, [:allergy_to_eggs, @time, :allergy, :condition])
+    assert(encounter.process(@time, @patient))
+
+    # Now process the end of the prescription
+    med_end = Synthea::Generic::States::AllergyEnd.new(ctx, "Allergy_Ends")
+    @patient.record_synthea.expect(:end_condition, nil, [:allergy_to_eggs, @time])
+    assert(med_end.process(@time, @patient))
+
+    @patient.record_synthea.verify
+  end
+
   def test_medication_order_during_wellness_encounter
     # Setup a mock to track calls to the patient record
     @patient.record_synthea = MiniTest::Mock.new
