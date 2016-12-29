@@ -373,24 +373,6 @@ module Synthea
           entity.record_synthea.medication_start(symbol, time, reasons, rx_info)
           @prescribed = true
         end
-
-        def add_instruction_lookup_codes(lookup_hash)
-          symbols = []
-          unless @prescription.nil? || @prescription.instructions.nil? || @prescription.instructions.empty?
-            @prescription.instructions.each do |instr|
-              sym = instruction_symbol(instr)
-              symbols << sym
-              value = {
-                description: instr['display'],
-                codes: {}
-              }
-              value[:codes][instr['system']] ||= []
-              value[:codes][instr['system']] << a['code']
-              lookup_hash[sym] = value
-            end
-          end
-          symbols
-        end
       end
 
       class MedicationEnd < State
