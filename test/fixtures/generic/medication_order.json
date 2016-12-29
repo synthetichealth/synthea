@@ -30,7 +30,56 @@
             }],
             "assign_to_attribute" : "Diabetes Medication",
             "reason": "Diabetes",
-            "direct_transition": "Terminal"
+            "direct_transition": "Metformin_With_Dosage"
+        },
+        "Metformin_With_Dosage": {
+            "type": "MedicationOrder",
+            "target_encounter": "Wellness_Encounter",
+            "reason": "Diabetes",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "860975",
+                "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+              }
+            ],
+            "prescription": {
+              "refills": 1,
+              "dosage": {
+                "amount": 1,
+                "frequency": 1,
+                "period": 1,
+                "unit": "days"
+              },
+              "duration": {
+                "quantity": 1,
+                "unit": "months"
+              },
+              "instructions": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "311501008",
+                  "display": "Half to one hour before food"
+                }
+              ]
+            },
+            "direct_transition": "Tylenol_As_Needed"
+        },
+        "Tylenol_As_Needed": {
+          "type": "MedicationOrder",
+          "target_encounter": "Wellness_Encounter",
+          "reason": "Diabetes",
+          "codes": [
+            {
+              "system": "RxNorm",
+              "code": "123456",
+              "display": "Acetaminophen 325mg [Tylenol]"
+            }
+          ],
+          "prescription": {
+            "as_needed": true
+          },
+          "direct_transition": "Terminal"
         },
         "Terminal": {
             "type": "Terminal"
