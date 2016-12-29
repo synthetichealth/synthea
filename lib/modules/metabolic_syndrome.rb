@@ -75,14 +75,6 @@ module Synthea
         ldl = entity.get_vital_sign_value(:total_cholesterol) - entity.get_vital_sign_value(:hdl) - (0.2 * entity.get_vital_sign_value(:triglycerides))
         entity.set_vital_sign(:ldl, ldl.to_i, 'mg/dL')
 
-        # entity[:cholesterol] = {
-        #   total: rand(cholesterol[index]..cholesterol[index + 1]),
-        #   triglycerides: rand(triglycerides[index]..triglycerides[index + 1]),
-        #   hdl: rand(hdl[index + 1]..hdl[index])
-        # }
-        # entity[:cholesterol][:ldl] = entity[:cholesterol][:total] - entity[:cholesterol][:hdl] - (0.2 * entity[:cholesterol][:triglycerides])
-        # entity[:cholesterol][:ldl] = entity[:cholesterol][:ldl].to_i
-
         # calculate the components of a metabolic panel and associated observations
         normal = Synthea::Config.metabolic.basic_panel.normal
         metabolic_panel = {
