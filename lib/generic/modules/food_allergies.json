@@ -221,7 +221,7 @@
           },
           "distributions" : [
             { "distribution" : 0.5, "transition" : "Shellfish_Allergy_End" },
-            { "distribution" : 0.5, "transition" : "DiagnosisEncounter" }
+            { "distribution" : 0.5, "transition" : "Chance_of_Wheat_Allergy" }
           ]
         },
         {
@@ -233,13 +233,13 @@
           },
           "distributions" : [
             { "distribution" : 0.006, "transition" : "Shellfish_Allergy" },
-            { "distribution" : 0.994, "transition" : "DiagnosisEncounter" }
+            { "distribution" : 0.994, "transition" : "Chance_of_Wheat_Allergy" }
           ]
         },
         {
           "distributions" : [
             { "distribution" : 0.025, "transition" : "Shellfish_Allergy" },
-            { "distribution" : 0.975, "transition" : "DiagnosisEncounter" }
+            { "distribution" : 0.975, "transition" : "Chance_of_Wheat_Allergy" }
           ]
         }
       ]
@@ -253,12 +253,179 @@
         "display" : "Food Allergy: Shellfish"
       }],
       "target_encounter" : "DiagnosisEncounter",
-      "direct_transition" : "DiagnosisEncounter"
+      "direct_transition" : "Chance_of_Wheat_Allergy"
     },
 
     "Shellfish_Allergy_End" : {
       "type" : "AllergyEnd",
       "allergy_onset" : "Shellfish_Allergy",
+      "direct_transition" : "Chance_of_Wheat_Allergy"
+    },
+
+    "Chance_of_Wheat_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["Wheat allergy is different than celiac disease. There are few studies on prevalence of wheat allergy .",
+                   " a recent study 0.4% of US adults reported an allergy to wheat diagnosed via a doctor [6]. The prevalence of wheat allergy is high amongst children in the US, ranging from 0.4% to 1.0% of the population.",
+                   "http://www.drschaer-institute.com/us/wheat-allergy/epidemiology-1043.html",
+                   "Wheat allergy is typically outgrown by adulthood — about 65 percent of children with a wheat allergy will outgrow it by the time they are 12.",
+                   "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "420174000",
+              "display" : "Allergy to wheat"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.65, "transition" : "Wheat_Allergy_End" },
+            { "distribution" : 0.35, "transition" : "Chance_of_Eggs_Allergy" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.006, "transition" : "Wheat_Allergy" },
+            { "distribution" : 0.994, "transition" : "Chance_of_Eggs_Allergy" }
+          ]
+        },
+        {
+          "transition" : "Chance_of_Eggs_Allergy"
+        }
+      ]
+    },
+
+    "Wheat_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "420174000",
+        "display" : "Allergy to wheat"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "Chance_of_Eggs_Allergy"
+    },
+
+    "Wheat_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Wheat_Allergy",
+      "direct_transition" : "Chance_of_Eggs_Allergy"
+    },
+
+    "Chance_of_Eggs_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["Experts estimate that as many as 2 percent of children are allergic to eggs. Fortunately, studies show that about 70 percent of children with an egg allergy will outgrow the condition by age 16.",
+                   "http://acaai.org/allergies/types/food-allergies/types-food-allergy/egg-allergy",
+                   "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code": "91930004",
+              "display": "Allergy to eggs"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.70, "transition" : "Eggs_Allergy_End" },
+            { "distribution" : 0.30, "transition" : "Chance_of_Dairy_Allergy" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.002, "transition" : "Eggs_Allergy" },
+            { "distribution" : 0.98, "transition" : "Chance_of_Dairy_Allergy" }
+          ]
+        },
+        {
+          "transition" : "Chance_of_Dairy_Allergy"
+        }
+      ]
+    },
+
+    "Eggs_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code": "91930004",
+        "display": "Allergy to eggs"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "Chance_of_Dairy_Allergy"
+    },
+
+    "Eggs_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Eggs_Allergy",
+      "direct_transition" : "Chance_of_Dairy_Allergy"
+    },
+
+    "Chance_of_Dairy_Allergy" : {
+      "type" : "Simple",
+      "remarks" : ["The prevalence of dairy/milk allergy in the general population is 1-2% for young children and 0.2-0.4% in the general population",
+                   "about 80 percent of children are likely to outgrow their milk allergy before they are 16.",
+                   "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Allergy",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "425525006",
+              "display" : "Allergy to dairy product"
+            }]
+          },
+          "distributions" : [
+            { "distribution" : 0.8, "transition" : "Dairy_Allergy_End" },
+            { "distribution" : 0.2, "transition" : "DiagnosisEncounter" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions" : [
+            { "distribution" : 0.015, "transition" : "Dairy_Allergy" },
+            { "distribution" : 0.985, "transition" : "DiagnosisEncounter" }
+          ]
+        },
+        {
+          "transition" : "DiagnosisEncounter"
+        }
+      ]
+    },
+
+    "Dairy_Allergy" : {
+      "type" : "AllergyOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "425525006",
+        "display" : "Allergy to dairy product"
+      }],
+      "target_encounter" : "DiagnosisEncounter",
+      "direct_transition" : "DiagnosisEncounter"
+    },
+
+    "Dairy_Allergy_End" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Dairy_Allergy",
       "direct_transition" : "DiagnosisEncounter"
     },
 
