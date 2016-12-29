@@ -127,7 +127,10 @@ module Synthea
   }
 
   # http://hl7.org/fhir/2017Jan/valueset-additional-instructions-codes.html
-  INSTRUCTION_LOOKUP = {}
+  # The only instruction here is used just for testing
+  INSTRUCTION_LOOKUP = {
+    half_to_one_hour_before_food: { description: 'Half to one hour before food', codes: {'SNOMED-CT'=>['311501008']}}
+  }
 
   RACE_ETHNICITY_CODES = {
     :white => '2106-3',

@@ -388,6 +388,60 @@ module Synthea
           r = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && reason_code == e.resource.code.coding[0].code }
           reasons << r unless r.nil?
         end
+
+        # Additional dosage information, if available
+        dosage_instruction = {}
+        dispense_request = {}
+
+        unless prescription['rx_info'].empty?
+          rx_info = prescription['rx_info']
+          dosage_instruction = {
+            'sequence' => 1,
+            'asNeededBoolean' => rx_info['as_needed']
+          }
+
+          unless rx_info['as_needed']
+            # Timing of each dose
+            dosage_instruction['timing'] = {
+              'repeat' => {
+                'frequency' => rx_info['dosage'].frequency,
+                'period' => rx_info['dosage'].period,
+                'periodUnit' => convert_ucum_code(rx_info['dosage'].unit)
+              }
+            }
+            # Amount of each dose
+            dosage_instruction['doseQuantity'] = {
+              'value' => rx_info['dosage'].amount
+            }
+            # Additional instructions
+            dosage_instruction['additionalInstructions'] = []
+            rx_info['instructions'].each do |sym|
+              instr = INSTRUCTION_LOOKUP[sym]
+              dosage_instruction['additionalInstructions'] << {
+                'coding' => [{
+                  'code' => instr[:codes]['SNOMED-CT'][0],
+                  'display' => instr[:description],
+                  'system' => 'http://snomed.info/sct'
+                }]
+              }
+            end
+            # Prescription information
+            dispense_request = {
+              'numberOfRepeatsAllowed' => rx_info['refills'],
+              'quantity' => {
+                'value' => rx_info['total_doses'],
+                'unit' => 'doses'
+              },
+              'expectedSupplyDuration' => {
+                'value' => rx_info['duration'].quantity,
+                'unit' => rx_info['duration'].unit,
+                'system' => 'http://hl7.org/fhir/ValueSet/units-of-time',
+                'code' => convert_ucum_code(rx_info['duration'].unit)
+              }
+            }
+          end
+        end
+
         med_order = FHIR::MedicationRequest.new('medicationCodeableConcept' => {
                                                   'coding' => [{
                                                     'code' => med_data[:codes]['RxNorm'][0],
@@ -404,10 +458,13 @@ module Synthea
                                                 'patient' => { 'reference' => patient.fullUrl.to_s },
                                                 'context' => { 'reference' => encounter.fullUrl.to_s },
                                                 'dateWritten' => convert_fhir_date_time(prescription['start_time']),
-                                                'reasonReference' => [])
+                                                'reasonReference' => [],
+                                                'dosageInstruction' => [dosage_instruction],
+                                                'dispenseRequest' => dispense_request)
         reasons.each do |r|
           med_order.reasonReference << FHIR::Reference.new('reference' => r.fullUrl.to_s)
         end
+
         med_order.status = if prescription['stop']
                              'stopped'
                            else
@@ -428,6 +485,27 @@ module Synthea
         else
           return Regexp.new(FHIR::PRIMITIVES['date']['regex']).match(date.to_s).to_s
         end
+      end
+
+      # From: http://hl7.org/fhir/ValueSet/units-of-time
+      def self.convert_ucum_code(unit)
+        case unit
+        when 'seconds'
+          return 's'
+        when 'minutes'
+          return 'min'
+        when 'hours'
+          return 'h'
+        when 'days'
+          return 'd'
+        when 'weeks'
+          return 'wk'
+        when 'months'
+          return 'mo'
+        when 'years'
+          return 'a'
+        end
+        raise "#{unit} is not a recognized unit of time"
       end
     end
   end

@@ -272,7 +272,7 @@ class FhirTest < Minitest::Test
     Synthea::Output::FhirRecord.condition(condition2, @fhir_record, @patient_entry, @encounter_entry)
     condition2fhir = @fhir_record.entry[-1]
     med_hash = { 'type' => :amiodarone, 'time' =>  @time, 'start_time' => @time, 'reasons' => [:cardiac_arrest, :coronary_heart_disease],
-     'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved}
+     'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved, 'rx_info' => {}}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
     med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}.resource
     med_coding = med.medicationCodeableConcept.coding[0]
@@ -286,6 +286,51 @@ class FhirTest < Minitest::Test
     assert_equal("#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
     assert_empty @fhir_record.validate
+  end
+
+  def test_medication_with_dosage
+    # The medication should be taken once daily for a month
+    dosage = Synthea::Generic::Components::Dosage.new({
+      'amount' => 1,
+      'frequency' => 1,
+      'period' => 1,
+      'unit' => 'days'
+    })
+    duration = Synthea::Generic::Components::ExactWithUnit.new({
+      'quantity' => 1,
+      'unit' => 'months'
+    })
+    med_hash = {
+      'type' => :metformin,
+      'time' =>  @time,
+      'start_time' => @time,
+      'reasons' => [],
+      'rx_info' => {
+        'as_needed' => false,
+        'total_doses' => 30,
+        'refills' => 2,
+        'dosage' => dosage,
+        'duration' => duration,
+        'instructions' => [:half_to_one_hour_before_food]
+      }
+    }
+    Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
+    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}.resource
+    # Validate the dosage instruction
+    assert_equal(1, med.dosageInstruction[0].sequence)
+    assert_equal(false, med.dosageInstruction[0].asNeededBoolean)
+    assert_equal(1, med.dosageInstruction[0].timing.repeat.frequency)
+    assert_equal(1, med.dosageInstruction[0].timing.repeat.period)
+    assert_equal('d', med.dosageInstruction[0].timing.repeat.periodUnit)
+    assert_equal(1, med.dosageInstruction[0].doseQuantity.value)
+    # Validate that dispense request
+    assert_equal(2, med.dispenseRequest.numberOfRepeatsAllowed)
+    assert_equal(30, med.dispenseRequest.quantity.value)
+    assert_equal('doses', med.dispenseRequest.quantity.unit)
+    assert_equal(1, med.dispenseRequest.expectedSupplyDuration.value)
+    assert_equal('months', med.dispenseRequest.expectedSupplyDuration.unit)
+    assert_equal('mo', med.dispenseRequest.expectedSupplyDuration.code)
+    assert_equal('http://hl7.org/fhir/ValueSet/units-of-time', med.dispenseRequest.expectedSupplyDuration.system)
   end
 
   def test_careplan
