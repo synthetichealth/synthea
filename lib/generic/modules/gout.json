@@ -84,6 +84,20 @@
           "display": "Gout"
         }
       ],
+      "direct_transition": "Gout_Diagnosis"
+    },
+
+    "Gout_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Gout",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
       "direct_transition": "Gout_CarePlan"
     },
 
@@ -114,20 +128,6 @@
           "system": "SNOMED-CT",
           "code": "226234005",
           "display": "Healthy diet"
-        }
-      ],
-      "direct_transition": "Gout_Diagnosis"
-    },
-
-    "Gout_Diagnosis": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "Gout",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "Gout_Nonopioid_Pain_Medication"
