@@ -145,6 +145,7 @@
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
+      "assign_to_attribute": "lupus_corticosteroid",
       "reason": "Lupus",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",
@@ -173,7 +174,7 @@
 
     "End_Corticosteroid": {
       "type": "MedicationEnd",
-      "medication_order": "Corticosteroid",
+      "referenced_by_attribute": "lupus_corticosteroid",
       "conditional_transition": [
         {
           "condition": {
@@ -238,7 +239,27 @@
           "display": "cycloSPORINE, modified 100 MG [Neoral]"
         }
       ],
-      "direct_transition": "Corticosteroid"
+      "direct_transition": "Flareup_Corticosteroid"
+    },
+
+    "Flareup_Corticosteroid": {
+      "type": "MedicationOrder",
+      "target_encounter": "Lupus_Flareup",
+      "assign_to_attribute": "lupus_corticosteroid",
+      "reason": "Lupus",
+      "remarks": [
+        "When introduced in higher levels than those produced by the body, corticosteroids ",
+        "inhibit inflammation. However, doctors prefer to use these for as short a time period ",
+        "as possible to avoid dangerous side effects."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "567645",
+          "display": "predniSONE 2.5 MG [Deltasone]"
+        }
+      ],
+      "direct_transition": "Corticosteroid_Treatment"
     },
 
     "End_Immune_Suppressant": {
