@@ -36,6 +36,13 @@ module Synthea
             File.open(out_file, 'w') { |file| file.write(data) }
           end
         end
+
+        if Synthea::Config.exporter.text.export
+          text_record = Synthea::Output::TextRecord.convert_to_text(patient, end_time)
+          out_dir = get_output_folder('text', patient)
+          out_file = File.join(out_dir, "#{filename(patient)}.txt")
+          File.open(out_file, 'w') { |file| file.write(text_record) }
+        end
       end
 
       def self.filename(patient)
