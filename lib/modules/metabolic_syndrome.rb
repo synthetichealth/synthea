@@ -493,7 +493,7 @@ module Synthea
 
       def self.record_ha1c(entity, time)
         patient = entity.record_synthea
-        patient.observation(:ha1c, time, entity[:blood_glucose], :observation, :vital_sign)
+        patient.observation(:ha1c, time, entity[:blood_glucose].round(1), :observation, :vital_sign)
       end
 
       def self.record_metabolic_panel(entity, time)
