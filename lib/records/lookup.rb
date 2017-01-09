@@ -114,7 +114,7 @@ module Synthea
     clopidogrel: { description: 'Clopidogrel 75 MG Oral Tablet', codes: {'RxNorm'=>['309362']}},
     simvastatin: { description: 'Simvastatin 20 MG Oral Tablet', codes: {'RxNorm'=>['312961']}},
     amlodipine: { description: 'Amlodipine 5 MG Oral Tablet', codes: {'RxNorm'=>['197361']}},
-    nitroglycerin: { description: 'Nitroglycerin 0.4 MG/ML Injectible Solution', codes: {'RxNorm'=>['312006']}},
+    nitroglycerin: { description: 'Nitroglycerin 0.4 MG/ACTUAT [Nitrolingual]', codes: {'RxNorm'=>['564666']}},
     atorvastatin: { description: 'Atorvastatin 80 MG Oral Tablet', codes: {'RxNorm'=>['259255']}},
     captopril: { description: 'Captopril 25 MG Oral Tablet', codes: {'RxNorm'=>['833036']}},
     warfarin: { description: 'Warfarin Sodium 5 MG Oral Tablet', codes: {'RxNorm'=>['855332']}},

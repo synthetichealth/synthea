@@ -417,9 +417,19 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "prescribed_emergency_inhaler",
-            "operator": "is nil"
+            "condition_type" : "And",
+            "conditions" : [
+              {
+                "condition_type": "Attribute",
+                "attribute": "prescribed_emergency_inhaler",
+                "operator": "is nil"
+              },
+              {
+                "condition_type" : "Date",
+                "operator" : ">=",
+                "year" : 1982
+              }
+            ]
           },
           "transition": "Needs_Emergency_Inhaler"
         },
@@ -446,8 +456,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "361796",
-          "display": "Albuterol 2.5MG"
+          "code": "801093",
+          "display": "Albuterol 0.09MG/ACTUAT [Ventolin]"
         }
       ],
       "direct_transition": "Loopback_Maintaining_Asthma"

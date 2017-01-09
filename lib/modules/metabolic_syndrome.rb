@@ -493,7 +493,7 @@ module Synthea
 
       def self.record_ha1c(entity, time)
         patient = entity.record_synthea
-        patient.observation(:ha1c, time, entity[:blood_glucose], :observation, :vital_sign)
+        patient.observation(:ha1c, time, entity[:blood_glucose].round(1), :observation, :vital_sign)
       end
 
       def self.record_metabolic_panel(entity, time)
@@ -518,7 +518,9 @@ module Synthea
 
       def self.record_egfr(entity, time)
         patient = entity.record_synthea
-        patient.observation(:egfr, time, entity[:metabolic][:creatinine_clearance])
+        egfr = entity[:metabolic][:creatinine_clearance]
+        egfr = '>60' if egfr > 60
+        patient.observation(:egfr, time, egfr)
       end
 
       def self.process_amputations(amputations, entity, time)

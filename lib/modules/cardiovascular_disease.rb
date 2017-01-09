@@ -105,6 +105,26 @@ module Synthea
         }
       }
 
+      MEDICATION_AVAILABLE = {
+        clopidogrel: 1997,
+        simvastatin: 1991,
+        amlodipine: 1994,
+        nitroglycerin: 1878,
+        warfarin: 1954,
+        verapamil: 1981,
+        digoxin: 1954,
+        atorvastatin: 1996,
+        captopril: 1981,
+        alteplase: 1987,
+        epinephrine: 1906,
+        amiodarone: 1962,
+        atropine: 1903
+      }.freeze
+
+      def self.filter_meds_by_year(meds, time)
+        meds.keep_if { |med| time.year >= MEDICATION_AVAILABLE[med] }
+      end
+
       # 9/10 smokers start before age 18. We will use 16.
       # http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
       rule :start_smoking, [:age], [:smoker] do |time, entity|
@@ -381,7 +401,7 @@ module Synthea
       end
 
       rule :chd_treatment, [:coronary_heart_disease], [:coronary_heart_disease] do |time, entity|
-        meds = [:clopidogrel, :simvastatin, :amlodipine, :nitroglycerin]
+        meds = CardiovascularDisease.filter_meds_by_year([:clopidogrel, :simvastatin, :amlodipine, :nitroglycerin], time)
         if entity[:coronary_heart_disease]
           entity[:medications] ||= {}
           meds.each { |m| prescribe_medication(m, :coronary_heart_disease, time, entity, entity[:med_changes][:cardiovascular_disease]) }
@@ -393,7 +413,7 @@ module Synthea
       end
 
       rule :atrial_fibrillation_treatment, [:atrial_fibrillation], [:atrial_fibrillation] do |time, entity|
-        meds = [:warfarin, :verapamil, :digoxin]
+        meds = CardiovascularDisease.filter_meds_by_year([:warfarin, :verapamil, :digoxin], time)
         if entity[:atrial_fibrillation]
           entity[:medications] ||= {}
           meds.each { |m| prescribe_medication(m, :atrial_fibrillation, time, entity, entity[:med_changes][:cardiovascular_disease]) }
@@ -480,7 +500,8 @@ module Synthea
         patient = entity.record_synthea
         if [:myocardial_infarction, :stroke, :cardiac_arrest].include?(diagnosis)
           patient.condition(diagnosis, time, :condition, :condition)
-          emergency_meds[diagnosis].each do |med|
+          meds = filter_meds_by_year(emergency_meds[diagnosis], time)
+          meds.each do |med|
             entity.record_synthea.medication_start(med, time, [diagnosis])
             entity.record_synthea.medication_stop(med, time + 15.minutes, :stop_drug)
           end
