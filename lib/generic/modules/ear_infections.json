@@ -151,15 +151,57 @@
       ]
     },
 
-    "Ear_Infection_Prescribed_Antibiotic": {
+    "Ear_Infection_Prescribed_Antibiotic" : {
+      "type" : "Simple",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Date",
+            "operator" : ">=",
+            "year" : 1972
+          },
+          "transition" : "Ear_Infection_Prescribed_Amoxicillin"
+        },
+        {
+          "condition" : {
+            "condition_type" : "Date",
+            "operator" : ">=",
+            "year" : 1956
+          },
+          "transition" : "Ear_Infection_Prescribed_Penicillin"
+        },
+        {
+          "transition" : "Ear_Infection_Prescribed_OTC_Painkiller",
+          "remarks" : ["Antibiotics not available yet, just go to the painkillers"]
+        }
+      ]
+    },
+
+    "Ear_Infection_Prescribed_Amoxicillin": {
       "type": "MedicationOrder",
       "target_encounter": "Ear_Infection_Encounter",
+      "assign_to_attribute" : "ear_infection_antibiotic",
       "reason": "Gets_Ear_Infection",
       "codes": [
         {
           "system": "RxNorm",
           "code": "317616",
           "display": "Amoxicillin 500MG"
+        }
+      ],
+      "direct_transition": "Ear_Infection_Antibiotic_Taken"
+    },
+
+    "Ear_Infection_Prescribed_Penicillin": {
+      "type": "MedicationOrder",
+      "target_encounter": "Ear_Infection_Encounter",
+      "assign_to_attribute" : "ear_infection_antibiotic",
+      "reason": "Gets_Ear_Infection",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "834060",
+          "display": "Penicillin V Potassium 250 MG"
         }
       ],
       "direct_transition": "Ear_Infection_Antibiotic_Taken"
@@ -176,7 +218,7 @@
     },
     "Ear_Infection_Antibiotic_End": {
       "type": "MedicationEnd",
-      "medication_order": "Ear_Infection_Prescribed_Antibiotic",
+      "referenced_by_attribute" : "ear_infection_antibiotic",
       "direct_transition": "Next_Wellness_Encounter"
     },
 
