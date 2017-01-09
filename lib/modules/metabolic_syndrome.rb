@@ -518,7 +518,9 @@ module Synthea
 
       def self.record_egfr(entity, time)
         patient = entity.record_synthea
-        patient.observation(:egfr, time, entity[:metabolic][:creatinine_clearance])
+        egfr = entity[:metabolic][:creatinine_clearance]
+        egfr = '>60' if egfr > 60
+        patient.observation(:egfr, time, egfr)
       end
 
       def self.process_amputations(amputations, entity, time)
