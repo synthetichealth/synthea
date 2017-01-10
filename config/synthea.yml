@@ -7,7 +7,9 @@ synthea:
       export: true
       upload: null # url of the server, ex 'http://fhirserver.example.com:8080'
     html:
-      export: true
+      export: false
+    text:
+      export: false
     years_of_history: 5
     location: './output/'  # should either start with . for relative path or / for absolute
     folder_per_city: false

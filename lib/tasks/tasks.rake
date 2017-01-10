@@ -41,7 +41,7 @@ namespace :synthea do
     Mongoid.configure { |config| config.connect_to('synthea_test') }
 
     if Synthea::Config.sequential.clean_output_each_run
-      %w(html fhir CCDA).each do |type|
+      %w(html fhir CCDA text).each do |type|
         out_dir = Synthea::Output::Exporter.get_output_folder(type)
         FileUtils.rm_r out_dir if File.exist? out_dir
         FileUtils.mkdir_p out_dir
