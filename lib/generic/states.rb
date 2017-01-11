@@ -368,6 +368,7 @@ module Synthea
               rx_info['dosage'] = @prescription.dosage
               rx_info['duration'] = @prescription.duration
               rx_info['instructions'] = add_lookup_codes(@prescription.instructions, Synthea::INSTRUCTION_LOOKUP)
+              rx_info['patient_instructions'] = @prescription.patient_instructions # for CCDA export
             end
           end
           entity.record_synthea.medication_start(symbol, time, reasons, rx_info)

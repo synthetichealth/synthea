@@ -407,7 +407,8 @@ class GenericStatesTest < Minitest::Test
         'refills' => 1,
         'dosage' => med.prescription.dosage,
         'duration' => med.prescription.duration,
-        'instructions' => [:half_to_one_hour_before_food]
+        'instructions' => [:half_to_one_hour_before_food],
+        'patient_instructions' => 'Half to one hour before food'
       }
     ])
     assert(med.process(@time, @patient))

@@ -83,6 +83,21 @@ module Synthea
             (duration.value / dosage.period_value) * dosage.amount * dosage.frequency
           end
         end
+
+        def patient_instructions
+          # Returns a single string representing any and all instructions.
+          # Format: "<instr_1>; <instr_2>; <instr_3>" etc.
+          # Used primarilly for CCDA export.
+          fi = ''
+          unless @instructions.length.zero?
+            fi += @instructions[0].display
+            additional_instrs = @instructions.drop(1)
+            additional_instrs.each do |instr|
+              fi += '; ' + instr.display
+            end
+          end
+          fi
+        end
       end
     end
   end
