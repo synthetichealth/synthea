@@ -156,12 +156,40 @@ module Synthea
       def self.medications(prescription, ccda_record)
         type = prescription['type']
         time = prescription['time']
+
         medication = Medication.new(
           'codes' => MEDICATION_LOOKUP[type][:codes],
           'description' => MEDICATION_LOOKUP[type][:description],
           'start_time' => time.to_i,
           'reason' => COND_LOOKUP[prescription['reasons'][0]] # some data is lost here b/c HDS does not support multiple reasons.
         )
+
+        unless prescription['rx_info'].empty?
+          rx_info = prescription['rx_info']
+          fills = rx_info['refills'] + 1
+
+          # Medication embeds FulfillmentHistory
+          fulfillment_history = FulfillmentHistory.new(
+            'quantity_dispensed' => rx_info['total_doses'],
+            'dispense_date' => time.to_i
+          )
+
+          # And OrderInformation
+          # Each separate refill is not recorded, only the number of refills and the initial order date
+          order_information = OrderInformation.new(
+            'order_number' => '1',
+            'fills' => fills,
+            'quantity_ordered' => rx_info['total_doses'],
+            'order_date_time' => time.to_i
+          )
+
+          medication.allowed_administrations = rx_info['total_doses'] * fills
+          medication.cumulative_medication_duration = rx_info['duration']
+          medication.patient_instructions = rx_info['patient_instructions'] # The instruction SNOMED codes are not captured here.
+          medication.fulfillment_history = fulfillment_history
+          medication.order_information = order_information
+        end
+
         if prescription['stop']
           medication['end_time'] = prescription['stop'].to_i
           medication.status = 'inactive'

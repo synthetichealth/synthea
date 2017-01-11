@@ -126,6 +126,12 @@ module Synthea
     alteplase: { description: 'Alteplase 1 MG/ML Injectable Solution', codes: {'RxNorm'=>['308056']}}
   }
 
+  # http://hl7.org/fhir/2017Jan/valueset-additional-instructions-codes.html
+  # The only instruction here is used just for testing
+  INSTRUCTION_LOOKUP = {
+    half_to_one_hour_before_food: { description: 'Half to one hour before food', codes: {'SNOMED-CT'=>['311501008']}}
+  }
+
   RACE_ETHNICITY_CODES = {
     :white => '2106-3',
     :hispanic => '2131-1',

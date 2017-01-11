@@ -88,6 +88,23 @@ module Synthea
           lookup_hash[sym] = value
         end
 
+        def add_lookup_codes(codes, lookup_hash)
+          return if codes.nil? || codes.empty?
+          symbols = []
+          codes.each do |code|
+            sym = code.to_sym
+            symbols << sym
+            value = {
+              description: code.display,
+              codes: {}
+            }
+            value[:codes][code.system] ||= []
+            value[:codes][code.system] << code.code
+            lookup_hash[sym] = value
+          end
+          symbols
+        end
+
         def to_s
           "#<#{self.class}::#{object_id}> #{@name}"
         end
@@ -309,12 +326,13 @@ module Synthea
       end
 
       class MedicationOrder < State
-        attr_accessor :prescribed, :target_encounter, :codes, :reason
+        attr_accessor :prescribed, :target_encounter, :codes, :reason, :prescription
 
         required_field and: [:target_encounter, :codes]
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+        metadata 'prescription', type: 'Components::Prescription', min: 0, max: 1
 
         def process(time, entity)
           if concurrent_with_target_encounter(time)
@@ -332,11 +350,28 @@ module Synthea
             cond = cond.symbol if cond
             cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
           end
-          if cond.nil?
-            entity.record_synthea.medication_start(symbol, time, [])
-          else
-            entity.record_synthea.medication_start(symbol, time, [cond])
+          reasons = if cond.nil?
+                      []
+                    else
+                      [cond]
+                    end
+
+          # Handle the prescription object
+          rx_info = {}
+          unless @prescription.nil?
+            rx_info['as_needed'] = @prescription.as_needed || false
+            unless @prescription.as_needed
+              raise 'Prescription information must include dosage' if @prescription.dosage.nil?
+              raise 'Prescription information must include duration' if @prescription.duration.nil?
+              rx_info['total_doses'] = @prescription.doses
+              rx_info['refills'] = @prescription.refills || 0
+              rx_info['dosage'] = @prescription.dosage
+              rx_info['duration'] = @prescription.duration
+              rx_info['instructions'] = add_lookup_codes(@prescription.instructions, Synthea::INSTRUCTION_LOOKUP)
+              rx_info['patient_instructions'] = @prescription.patient_instructions # for CCDA export
+            end
           end
+          entity.record_synthea.medication_start(symbol, time, reasons, rx_info)
           @prescribed = true
         end
       end
@@ -378,6 +413,7 @@ module Synthea
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+        metadata 'activities', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def process(time, entity)
           if concurrent_with_target_encounter(time)
@@ -390,7 +426,7 @@ module Synthea
 
         def start_plan(time, entity)
           add_lookup_code(Synthea::CAREPLAN_LOOKUP)
-          activities = add_activity_lookup_codes(Synthea::CAREPLAN_LOOKUP)
+          activities = add_lookup_codes(@activities, Synthea::CAREPLAN_LOOKUP)
 
           unless @reason.nil?
             rsn = @context.most_recent_by_name(@reason)
@@ -402,31 +438,6 @@ module Synthea
             entity.record_synthea.careplan_start(symbol, activities, time, [rsn])
           else
             entity.record_synthea.careplan_start(symbol, activities, time, [])
-          end
-        end
-
-        def add_activity_lookup_codes(lookup_hash)
-          return if @activities.nil? || @activities.empty?
-          symbols = []
-          @activities.each do |a|
-            sym = activity_symbol(a)
-            symbols << sym
-            value = {
-              description: a['display'],
-              codes: {}
-            }
-            value[:codes][a['system']] ||= []
-            value[:codes][a['system']] << a['code']
-            lookup_hash[sym] = value
-          end
-          symbols
-        end
-
-        def activity_symbol(activity)
-          if activity.key?('display')
-            activity['display'].gsub(/\s+/, '_').downcase.to_sym
-          else
-            raise 'Activity must have a display name to hash'
           end
         end
       end
