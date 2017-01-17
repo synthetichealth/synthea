@@ -54,8 +54,11 @@ module Synthea
       end
 
       def self.get_output_folder(folder_name, patient = nil)
-        base = Synthea::Config.exporter.location
-
+        base = if Synthea::Config.docker.dockerized
+                 Synthea::Config.docker.location
+               else
+                 Synthea::Config.exporter.location
+               end
         dirs = [base, folder_name]
 
         if patient
