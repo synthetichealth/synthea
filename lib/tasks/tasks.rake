@@ -38,7 +38,11 @@ namespace :synthea do
       datafile = File.read(datafile)
     end
     # we need to configure mongo to export for some reason... not ideal
-    Mongoid.configure { |config| config.connect_to('synthea_test') }
+    if Synthea::Config.docker.dockerized
+      Mongoid.load!("docker/mongoid.yml", :ccda)
+    else
+      Mongoid.load!("config/mongoid.yml", :ccda)
+    end
 
     if Synthea::Config.sequential.clean_output_each_run
       %w(html fhir CCDA text).each do |type|
