@@ -10,8 +10,12 @@ class AppendicitisTest < Minitest::Test
     # Setup a mock to track calls to the patient record
     @patient.record_synthea = MiniTest::Mock.new
 
-    cfg = JSON.parse(File.read(File.join(File.expand_path("../../../../lib/generic/modules", __FILE__), 'appendicitis.json')))
-    @context = Synthea::Generic::Context.new(cfg)
+    Synthea::MODULES['appendicitis'] = JSON.parse(File.read(File.join(File.expand_path("../../../../lib/generic/modules", __FILE__), 'appendicitis.json')))
+    @context = Synthea::Generic::Context.new('appendicitis')
+  end
+
+  def teardown
+    Synthea::MODULES.clear
   end
 
   def test_patient_without_appendicitis

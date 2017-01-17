@@ -25,7 +25,7 @@
               "display" : "Blood Pressure"
             }],
             "target_encounter" : "SomeEncounter",
-            "exact" : { 
+            "exact" : {
                 "quantity" : "120/80"
             },
             "unit" : "mmHg",
@@ -37,8 +37,3 @@
         }
     }
 }
-
-
-
-
-

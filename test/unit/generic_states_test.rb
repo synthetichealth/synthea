@@ -10,6 +10,10 @@ class GenericStatesTest < Minitest::Test
     @patient[:age] = 35
   end
 
+  def teardown
+    Synthea::MODULES.clear
+  end
+
   def test_initial_always_passes
     ctx = get_context('initial_to_terminal.json')
     initial = Synthea::Generic::States::Initial.new(ctx, "Initial")
@@ -21,6 +25,19 @@ class GenericStatesTest < Minitest::Test
     terminal = Synthea::Generic::States::Terminal.new(ctx, "Terminal")
     refute(terminal.process(@time, @patient))
     refute(terminal.process(@time + 7.days, @patient))
+  end
+
+  def test_callsubmodule
+    ctx = get_context('calls_submodule.json')
+    load_module(File.join('submodules', 'basic_submodule.json'))
+    cs = Synthea::Generic::States::CallSubmodule.new(ctx, "CallSubmodule")
+    suppress(Exception) do
+      # Since CallSubmodule.process() calls @context.run(), the CallSubmodule
+      # state cannot be tested independently of states around it. Using active
+      # support to ignore the exceptions raised during the @context.run().
+      refute(cs.process(@time, @patient))
+      assert(cs.process(@time, @patient))
+    end
   end
 
   def test_guard_passes_when_condition_is_met
@@ -359,6 +376,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the prescription
     med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
@@ -394,6 +412,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the prescription
     med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin_With_Dosage")
@@ -437,6 +456,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the prescription
     med = Synthea::Generic::States::MedicationOrder.new(ctx, "Tylenol_As_Needed")
@@ -459,8 +479,9 @@ class GenericStatesTest < Minitest::Test
     ctx = get_context('medication_order.json')
     encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
     assert(encounter.perform_encounter(@time, @patient, false))
-
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
+
     med = Synthea::Generic::States::MedicationOrder.new(ctx, "Metformin")
     med.run(@time, @patient)
 
@@ -487,6 +508,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     medication_id = "insulin,_aspart,_human_100_unt/ml_[novolog]".to_sym
 
@@ -525,6 +547,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     medication_id = "bromocriptine_5_mg_[parlodel]".to_sym
 
@@ -563,6 +586,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     medication_id = "24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet".to_sym
 
@@ -580,7 +604,6 @@ class GenericStatesTest < Minitest::Test
 
     @patient.record_synthea.verify
   end
-
 
   def test_condition_end_by_entity_attribute
     # Setup a mock to track calls to the patient record
@@ -699,6 +722,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the careplan
     plan = Synthea::Generic::States::CarePlanStart.new(ctx, "Diabetes_Self_Management")
@@ -714,6 +738,7 @@ class GenericStatesTest < Minitest::Test
       @patient['Diabetes_CarePlan'] = nil
       ctx = get_context('careplan_start.json')
       encounter = Synthea::Generic::States::Encounter.new(ctx, "Wellness_Encounter")
+      ctx.current_encounter = encounter.name
       encounter.perform_encounter(@time, @patient, false)
       ctx.history << encounter
 
@@ -745,6 +770,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the careplan
     plan_id = 'diabetes_self_management_plan'.to_sym
@@ -786,6 +812,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the careplan
     plan_id = 'angina_self_management_plan'.to_sym
@@ -825,6 +852,7 @@ class GenericStatesTest < Minitest::Test
     encounter.perform_encounter(@time, @patient, false)
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
+    ctx.current_encounter = encounter.name
 
     # Now process the careplan
     plan_id = 'immunological_care_management'.to_sym
@@ -1056,8 +1084,20 @@ class GenericStatesTest < Minitest::Test
     assert_equal 1, @patient['loop_index']
   end
 
-  def get_context(file_name)
-    cfg = JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
-    Synthea::Generic::Context.new(cfg)
+  def get_context(file)
+    key = load_module(file)
+    Synthea::Generic::Context.new(key)
+  end
+
+  def load_module(file)
+    module_dir = File.expand_path('../../fixtures/generic/', __FILE__)
+    # loads a module into the global MODULES hash given an absolute path
+    key = module_key(file)
+    Synthea::MODULES[key] = JSON.parse(File.read(File.join(module_dir, file)))
+    key
+  end
+
+  def module_key(file)
+    file.sub('.json', '')
   end
 end

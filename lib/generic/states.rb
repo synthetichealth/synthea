@@ -26,9 +26,7 @@ module Synthea
         def initialize(context, name)
           @context = context
           @name = name
-
           @config = context.state_config(name) || {}
-
           from_hash(@config)
         end
 
@@ -37,12 +35,12 @@ module Synthea
           @start_time ||= time
           exit = process(time, entity)
           if exit
-            # Special handling for Delay, which may expire between run cycles
-            if is_a? Delay
+            if is_a?(Delay)
+              # Special handling for Delay, which may expire between run cycles
               @exited = @expiration
               @expiration = nil
               @start_time = @exited if @start_time > @exited
-            else
+            elsif !is_a?(CallSubmodule)
               @exited = time
             end
           end
@@ -62,11 +60,36 @@ module Synthea
         end
 
         def concurrent_with_target_encounter(time)
-          unless @target_encounter.nil?
-            past = @context.most_recent_by_name(@target_encounter)
-            raise "Target encounter #{@target_encounter} was not processed before state #{@name}" if past.nil? && !is_a?(OnsetState)
-            !past.nil? && past.time == time
+          current_encounter = @context.current_encounter
+          if is_a?(OnsetState)
+            # ConditionOnset and AllergyOnset are allowed to be processed before any Encounter state.
+            # They must therefore specify a target_encounter and will be diagnosed when that state
+            # is processed.
+            if @target_encounter.nil? && current_encounter.nil?
+              raise "State '#{@name}' must specify a target_encounter when processed before any encounter occurs"
+            end
+            # We allow OnsetStates to omit the target_encounter property if the OnsetState occurs directly
+            # after AND concurrently with an Encounter state.
+            target = @target_encounter || current_encounter
+            past = @context.most_recent_by_name(target)
+          else
+            # All other clinical states are recorded at an encounter. They must come after
+            # AND be concurrent with an Encounter state, otherwise an error is raised.
+            unless current_encounter.nil?
+              past = @context.most_recent_by_name(current_encounter)
+            end
+
+            if past.nil?
+              raise "No encounter state was processed before state '#{@name}'"
+            end
+
+            unless past.time == time
+              puts "past: #{past.time}"
+              puts "now: #{time}"
+              raise "State '#{@name}' is not concurrent with the most recent encounter '#{current_encounter}'"
+            end
           end
+          !past.nil? && past.time == time
         end
 
         # the record methods require the use of lookup tables.  Other (non-generic) modules statically define
@@ -124,6 +147,25 @@ module Synthea
         end
       end
 
+      class CallSubmodule < State
+        attr_accessor :submodule
+
+        def initialize(context, name)
+          super(context, name)
+          @processed = false
+        end
+
+        def process(time, entity)
+          if !@processed
+            @context.call_submodule(time, entity, @submodule)
+            @processed = true
+            false
+          else
+            true
+          end
+        end
+      end
+
       class Terminal < State
         required_fields.delete(:transition) # transitions are explicitly disallowed for Terminal states
 
@@ -135,7 +177,10 @@ module Synthea
           messages.uniq
         end
 
-        def process(_time, _entity)
+        def process(time, entity)
+          if @context.active_submodule?
+            @context.return_from_submodule(time, entity)
+          end
           # never pass through the terminal state
           false
         end
@@ -214,6 +259,7 @@ module Synthea
         def process(time, entity)
           unless @wellness
             # This is a stand-alone (non-wellness) encounter, so proceed immediately!
+            @context.current_encounter = @name
             perform_encounter(time, entity)
           end
           @processed
@@ -250,10 +296,10 @@ module Synthea
       class OnsetState < State
         attr_accessor :diagnosed, :target_encounter, :codes
 
-        required_field and: [:target_encounter, :codes]
+        required_field :codes
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
-        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def process(time, entity)
           diagnose(time, entity) if concurrent_with_target_encounter(time)
@@ -326,20 +372,18 @@ module Synthea
       end
 
       class MedicationOrder < State
-        attr_accessor :prescribed, :target_encounter, :codes, :reason, :prescription
+        # target_encounter is deprecated and may be removed in a future release. Leaving it in for
+        # now to maintain backwards compatibility with existing GMF modules.
+        attr_accessor :prescribed, :codes, :reason, :prescription, :target_encounter
 
-        required_field and: [:target_encounter, :codes]
+        required_field :codes
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
-        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
         metadata 'prescription', type: 'Components::Prescription', min: 0, max: 1
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def process(time, entity)
-          if concurrent_with_target_encounter(time)
-            prescribe(time, entity)
-          else
-            raise "MedicationOrder '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
-          end
+          prescribe(time, entity) if concurrent_with_target_encounter(time)
           true
         end
 
@@ -382,7 +426,7 @@ module Synthea
         metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def initialize(context, name)
-          super
+          super(context, name)
           @reason ||= :prescription_expired
         end
 
@@ -407,20 +451,18 @@ module Synthea
       end
 
       class CarePlanStart < State
-        attr_accessor :target_encounter, :codes, :activities, :reason
+        # target_encounter is deprecated and may be removed in a future release. Leaving it in for
+        # now to maintain backwards compatibility with existing GMF modules.
+        attr_accessor :codes, :activities, :reason, :target_encounter
 
-        required_field and: [:target_encounter, :codes]
+        required_field :codes
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
-        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
         metadata 'activities', type: 'Components::Code', min: 0, max: Float::INFINITY
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def process(time, entity)
-          if concurrent_with_target_encounter(time)
-            start_plan(time, entity)
-          else
-            raise "CarePlanStart '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
-          end
+          start_plan(time, entity) if concurrent_with_target_encounter(time)
           true
         end
 
@@ -448,7 +490,7 @@ module Synthea
         metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def initialize(context, name)
-          super
+          super(context, name)
           @reason ||= :careplan_ended
         end
 
@@ -473,19 +515,21 @@ module Synthea
       end
 
       class Procedure < State
-        attr_accessor :target_encounter, :reason, :codes
+        # target_encounter is deprecated and may be removed in a future release. Leaving it in for
+        # now to maintain backwards compatibility with existing GMF modules.
+        attr_accessor :reason, :codes, :target_encounter
 
-        required_field and: [:target_encounter, :codes]
+        required_field :codes
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
-        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
+
+        def initialize(context, name)
+          super(context, name)
+        end
 
         def process(time, entity)
-          if concurrent_with_target_encounter(time)
-            operate(time, entity)
-          else
-            raise "Procedure '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
-          end
+          operate(time, entity) if concurrent_with_target_encounter(time)
           true
         end
 
@@ -505,18 +549,20 @@ module Synthea
       end
 
       class Observation < State
-        attr_accessor :codes, :range, :exact, :unit, :target_encounter, :attribute
+        # target_encounter is deprecated and may be removed in a future release. Leaving it in for
+        # now to maintain backwards compatibility with existing GMF modules.
+        attr_accessor :codes, :range, :exact, :unit, :attribute, :target_encounter
 
-        required_field and: [:target_encounter, :codes, :unit]
+        required_field and: [:codes, :unit]
         required_field or: [:range, :exact, :attribute]
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'range', type: 'Components::Range', min: 0, max: 1
         metadata 'exact', type: 'Components::Exact', min: 0, max: 1
-        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
+        metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def initialize(context, name)
-          super
+          super(context, name)
           @type = symbol
         end
 
@@ -541,8 +587,6 @@ module Synthea
 
           if concurrent_with_target_encounter(time)
             entity.record_synthea.observation(@type, time, @value)
-          else
-            raise "Observation '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
           end
           true
         end
@@ -555,7 +599,7 @@ module Synthea
         metadata 'exact', type: 'Components::Exact', min: 0, max: 1
 
         def initialize(context, name)
-          super
+          super(context, name)
           @cause ||= context.config['name']
         end
 

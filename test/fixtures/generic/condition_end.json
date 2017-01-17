@@ -66,7 +66,7 @@
           "display": "Diabetes mellitus"
       }],
       "direct_transition" : "Terminal"
-    },
+		},
 
     "Terminal" : {
       "type" : "Terminal"

@@ -10,6 +10,21 @@ class GenericContextTest < Minitest::Test
     @patient[:age] = 35
   end
 
+  def teardown
+    Synthea::MODULES.clear
+  end
+
+  def test_new_context
+    ctx = get_context('example_module.json')
+    assert_equal("Examplitis", ctx.name)
+    assert_equal("example_module", ctx.current_module)
+    assert_equal("Initial", ctx.current_state.name)
+    assert_equal(nil, ctx.current_encounter)
+    assert_equal([], ctx.history)
+    assert(ctx.active?)
+    refute(ctx.active_submodule?)
+  end
+
   def test_direct_transition
     ctx = get_context('direct_transition.json')
     assert_equal("Initial", ctx.current_state.name)
@@ -26,11 +41,10 @@ class GenericContextTest < Minitest::Test
       "Terminal2" => 0,
       "Terminal3" => 0
     }
-    cfg = get_config('distributed_transition.json')
 
     # Over the course of 100 runs, we should get about the expected distribution
     100.times do
-      ctx = Synthea::Generic::Context.new(cfg)
+      ctx = get_context('distributed_transition.json')
       ctx.run(@time, @patient)
       results[ctx.current_state.name] += 1
     end
@@ -43,61 +57,54 @@ class GenericContextTest < Minitest::Test
   end
 
   def test_conditional_transition
-    cfg = get_config('conditional_transition.json')
-
     # First run as a male
     @patient[:gender] = 'M'
-    ctx = Synthea::Generic::Context.new(cfg)
-    assert_equal("Initial", ctx.current_state.name)
+    ctx = get_context('conditional_transition.json')
     ctx.run(@time, @patient)
     assert_equal("Terminal1", ctx.current_state.name)
 
     # Then run as a female
     @patient[:gender] = 'F'
-    ctx = Synthea::Generic::Context.new(cfg)
+    ctx = get_context('conditional_transition.json')
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert_equal("Terminal2", ctx.current_state.name)
 
     # Then run as unknown
     @patient[:gender] = 'U'
-    ctx = Synthea::Generic::Context.new(cfg)
+    ctx = get_context('conditional_transition.json')
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert_equal("Terminal3", ctx.current_state.name)
   end
 
   def test_incomplete_conditional_transition
-    cfg = get_config('incomplete_conditional_transition.json')
-
     # First run as a male
     @patient[:gender] = 'M'
-    ctx = Synthea::Generic::Context.new(cfg)
+    ctx = get_context('incomplete_conditional_transition.json')
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert_equal("Terminal1", ctx.current_state.name)
 
     # Then run as a female (which shouldn't be caught by any transition)
     @patient[:gender] = 'F'
-    ctx = Synthea::Generic::Context.new(cfg)
+    ctx = get_context('incomplete_conditional_transition.json')
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert_equal("Terminal", ctx.current_state.name)
   end
 
   def test_complex_transition
-    cfg = get_config('complex_transition.json')
-
       # First run as a male
     @patient[:gender] = 'M'
-    ctx = Synthea::Generic::Context.new(cfg)
+    ctx = get_context('complex_transition.json')
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert(ctx.current_state.name.start_with?("TerminalM"))
 
     # Then run as a female
     @patient[:gender] = 'F'
-    ctx = Synthea::Generic::Context.new(cfg)
+    ctx = get_context('complex_transition.json')
     assert_equal("Initial", ctx.current_state.name)
     ctx.run(@time, @patient)
     assert(ctx.current_state.name.start_with?("TerminalF"))
@@ -172,35 +179,127 @@ class GenericContextTest < Minitest::Test
     assert_equal(nil, ctx.current_state.exited)
   end
 
+  def test_call_submodule
+    ctx = get_context('calls_submodule.json')
+    load_module(File.join('submodules', 'basic_submodule.json'))
+
+    assert_equal("Initial", ctx.current_state.name)
+    assert(ctx.active?)
+    refute(ctx.active_submodule?)
+
+    # Eventually blocks at a guard state in the submodule
+    ctx.run(@time, @patient)
+    assert(ctx.active?)
+    assert(ctx.active_submodule?)
+    assert_equal(nil, ctx.current_encounter)
+    assert_equal(6, ctx.history.length)
+    assert_equal("MedicationOrder", ctx.history.last.name)
+    # The wellness state hasn't been processed yet
+    assert_equal("Gender_Guard", ctx.current_state.name)
+
+    # change gender to satisfy the condition and resume execution
+    @patient[:gender] = 'M'
+    ctx.run(@time, @patient)
+
+    # The module should have finished executing. The last state should be
+    # the Terminal state of the submodule.
+    refute(ctx.active?)
+    assert_equal("Sub_Terminal", ctx.history.last.name)
+  end
+
+  def test_recursive_call_submodule
+    ctx = get_context('recursively_calls_submodules.json')
+    load_module(File.join('submodules', 'encounter_submodule.json'))
+    load_module(File.join('submodules', 'medication_submodule.json'))
+
+    assert_equal("Initial", ctx.current_state.name)
+    assert(ctx.active?)
+    refute(ctx.active_submodule?)
+
+    # Should block in the encounter submodule, before the encounter
+    ctx.run(@time, @patient)
+    assert(ctx.active_submodule?)
+    assert_equal(nil, ctx.current_encounter)
+    assert_equal("Delay", ctx.current_state.name)
+    assert_equal("Initial", ctx.history.last.name) # the submodule's initial state
+
+    # Should block in the sub-submodule, after the MedicationOrder
+    @time += 1.years
+    med_stop_time = @time + 2.weeks
+    ctx.run(@time, @patient)
+    assert(ctx.active_submodule?)
+    assert_equal(nil, ctx.current_encounter)
+    assert_equal("Delay_Yet_Again", ctx.current_state.name)
+    assert_equal("Examplitis_Medication", ctx.history.last.name)
+
+    # Should run back to the encounter submodule and block before its terminal state
+    @time += 2.weeks
+    ctx.run(@time, @patient)
+    assert(ctx.active_submodule?)
+    assert_equal("Delay_Some_More", ctx.current_state.name)
+    assert_equal("Med_Terminal", ctx.history.last.name)
+
+    # Should run to completion after this last Delay, ending the condition
+    # and the medication.
+    @time += 4.weeks
+    ctx.run(@time, @patient)
+    refute(ctx.active?)
+    refute(ctx.active_submodule?)
+    assert_equal("End_Condition", ctx.history.last.name)
+
+    # Check that the patient's record was updated correctly
+    cond = @patient.record_synthea.conditions.last
+    assert_equal(:examplitis, cond['type'])
+    assert_equal(@time, cond['end_time'])
+
+    enc = @patient.record_synthea.encounters.last
+    assert_equal(:examplitis, enc['reason'])
+
+    med = @patient.record_synthea.medications.last
+    assert_equal(:examplitis, med['reasons'][0])
+    assert_equal(med_stop_time, med['stop'])
+
+    # All should have started concurrently
+    assert_equal(cond['time'], enc['time'])
+    assert_equal(enc['time'], med['time'])
+  end
+
   def test_logging
     # Can't really test the quality of the logs, but at least ensure it logs when it should and that nothing crashes
-
     old_log_value = Synthea::Config.generic.log
 
     # First check it doesn't log when it shouldn't
     Synthea::Config.generic.log = false
-    ctx = get_context('direct_transition.json')
-    assert_equal("Initial", ctx.current_state.name)
+    ctx = get_context('allergies.json')
     ctx.run(@time, @patient)
-    assert_equal("Terminal", ctx.current_state.name)
+    assert_equal("Allergy_Ends", ctx.history.last.name)
     refute(ctx.logged)
 
     # Then check it does log when it should
     Synthea::Config.generic.log = true
-    ctx = get_context('direct_transition.json')
-    assert_equal("Initial", ctx.current_state.name)
+    ctx = get_context('allergies.json')
     ctx.run(@time, @patient)
-    assert_equal("Terminal", ctx.current_state.name)
+    assert_equal("Allergy_Ends", ctx.history.last.name)
     assert(ctx.logged)
 
     # Set the log value back
     Synthea::Config.generic.log = old_log_value
   end
 
-  def get_config(file_name)
-    JSON.parse(File.read(File.join(File.expand_path("../../fixtures/generic", __FILE__), file_name)))
+  def get_context(file)
+    key = load_module(file)
+    Synthea::Generic::Context.new(key)
   end
-  def get_context(file_name)
-    Synthea::Generic::Context.new(get_config(file_name))
+
+  def load_module(file)
+    module_dir = File.expand_path('../../fixtures/generic/', __FILE__)
+    # loads a module into the global MODULES hash given an absolute path
+    key = module_key(file)
+    Synthea::MODULES[key] = JSON.parse(File.read(File.join(module_dir, file)))
+    key
+  end
+
+  def module_key(file)
+    file.sub('.json', '')
   end
 end
