@@ -11,9 +11,11 @@ module Synthea
         patient = basic_info(entity, fhir_record, end_time)
         synthea_record.encounters.each do |encounter|
           curr_encounter = encounter(encounter, fhir_record, patient)
+          encounter_end = encounter['end_time'] || synthea_record.patient_info[:deathdate] || end_time
+          # if an encounter doesn't have an end date, either the patient died during the encounter, or they are still in the encounter
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
             entry = synthea_record.send(attribute)[indices[attribute]]
-            while entry && entry['time'] <= encounter['time']
+            while entry && entry['time'] <= encounter_end
               method = entry['fhir']
               method = attribute.to_s if method.nil?
               send(method, entry, fhir_record, patient, curr_encounter)
@@ -182,12 +184,14 @@ module Synthea
         encounter_data = ENCOUNTER_LOOKUP[encounter['type']]
         reason_data = COND_LOOKUP[encounter['reason']] if encounter['reason']
 
+        end_time = encounter['end_time'] || encounter['time'] + 15.minutes
+
         fhir_encounter = FHIR::Encounter.new('id' => resource_id,
                                              'status' => 'finished',
                                              'class' => { 'code' => encounter_data[:class] },
                                              'type' => [{ 'coding' => [{ 'code' => encounter_data[:codes]['SNOMED-CT'][0], 'system' => 'http://snomed.info/sct' }], 'text' => encounter_data[:description] }],
                                              'patient' => { 'reference' => patient.fullUrl.to_s },
-                                             'period' => { 'start' => convert_fhir_date_time(encounter['time'], 'time'), 'end' => convert_fhir_date_time(encounter['time'] + 15.minutes, 'time') })
+                                             'period' => { 'start' => convert_fhir_date_time(encounter['time'], 'time'), 'end' => convert_fhir_date_time(end_time, 'time') })
         if reason_data
           fhir_encounter.reason = FHIR::CodeableConcept.new('coding' => [{
                                                               'code' => reason_data[:codes]['SNOMED-CT'][0],
@@ -195,6 +199,17 @@ module Synthea
                                                               'system' => 'http://snomed.info/sct'
                                                             }])
         end
+
+        if encounter['discharge']
+          fhir_encounter.hospitalization = FHIR::Hospitalization.new('dischargeDisposition' => {
+                                                                       'coding' => [{
+                                                                         'code' => encounter['discharge'].code,
+                                                                         'display' => encounter['discharge'].display,
+                                                                         'system' => 'http://www.nubc.org/patient-discharge'
+                                                                       }]
+                                                                     })
+        end
+
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = fhir_encounter
@@ -306,9 +321,16 @@ module Synthea
                                              },
                                              # 'reasonReference' => { 'reference' => reason.resource.id },
                                              # 'performer' => { 'reference' => doctor_no_good },
-                                             'performedDateTime' => convert_fhir_date_time(procedure['time'], 'time'),
                                              'encounter' => { 'reference' => encounter.fullUrl.to_s })
         fhir_procedure.reasonReference = FHIR::Reference.new('reference' => reason.fullUrl.to_s, 'display' => reason.resource.code.text) if reason
+
+        start_time = convert_fhir_date_time(procedure['time'], 'time')
+        if procedure['duration']
+          end_time = convert_fhir_date_time(procedure['time'] + procedure['duration'], 'time')
+          fhir_procedure.performedPeriod = FHIR::Period.new('start' => start_time, 'end' => end_time)
+        else
+          fhir_procedure.performedDateTime = start_time
+        end
 
         entry = FHIR::Bundle::Entry.new
         entry.resource = fhir_procedure

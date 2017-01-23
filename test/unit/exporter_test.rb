@@ -127,7 +127,7 @@ class ExporterTest < Minitest::Test
   end
 
   def test_export_filter_should_not_keep_old_stuff
-    @record.procedure(:appendectomy, @time - 20.years, :appendicitis)
+    @record.procedure(:appendectomy, @time - 20.years, reason: :appendicitis)
     @record.encounter(:er_visit, @time - 18.years)
     @record.immunization(:flu_shot, @time - 12.years)
     @record.observation(:weight, @time - 10.years, 123)

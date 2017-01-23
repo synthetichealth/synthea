@@ -74,7 +74,6 @@ module Synthea
 
           st = context.current_state
           next unless st.is_a?(Synthea::Generic::States::Encounter) && st.wellness && !st.processed
-          context.current_encounter = st.name
           st.perform_encounter(time, entity, false)
           # The encounter got unjammed -- progress through the subsequent states
           context.run(time, entity)

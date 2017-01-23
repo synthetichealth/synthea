@@ -35,7 +35,7 @@ module Synthea
           @start_time ||= time
           exit = process(time, entity)
           if exit
-            if is_a?(Delay)
+            if is_a?(Delay) || (is_a?(Procedure) && @duration)
               # Special handling for Delay, which may expire between run cycles
               @exited = @expiration
               @expiration = nil
@@ -259,9 +259,9 @@ module Synthea
         def process(time, entity)
           unless @wellness
             # This is a stand-alone (non-wellness) encounter, so proceed immediately!
-            @context.current_encounter = @name
             perform_encounter(time, entity)
           end
+
           @processed
         end
 
@@ -272,6 +272,14 @@ module Synthea
           @processed = true
           @time = time
 
+          if @context.current_encounter
+            # if there is a current non-wellness encounter, end it with no discharge type
+            enc = @context.most_recent_by_name(@context.current_encounter)
+            puts "it broke at #{@context.current_encounter} / #{@context.name}" if enc.nil?
+            entity.record_synthea.encounter_end(enc.symbol, time) unless enc.wellness
+          end
+          @context.current_encounter = @name
+
           if @reason
             cond = @context.most_recent_by_name(@reason)
             cond = cond.symbol if cond
@@ -281,7 +289,8 @@ module Synthea
           if record_encounter
             value = add_lookup_code(Synthea::ENCOUNTER_LOOKUP)
             value[:class] = @encounter_class
-            entity.record_synthea.encounter(symbol, time, cond)
+            options = { 'reason' => cond }.compact
+            entity.record_synthea.encounter(symbol, time, options)
           end
 
           # Look through the history for conditions to diagnose
@@ -290,6 +299,22 @@ module Synthea
               h.diagnose(time, entity)
             end
           end
+        end
+      end
+
+      class EncounterEnd < State
+        attr_accessor :discharge_disposition
+
+        metadata 'discharge_disposition', type: 'Components::Code', min: 0, max: 1
+
+        def process(time, entity)
+          enc = @context.most_recent_by_name(@context.current_encounter)
+          @context.current_encounter = nil
+          return true if enc.wellness # don't record the end for wellness encounters, that happens elsewhere
+
+          options = { 'discharge' => @discharge_disposition }.compact
+          entity.record_synthea.encounter_end(enc.symbol, time, options)
+          true
         end
       end
 
@@ -517,20 +542,23 @@ module Synthea
       class Procedure < State
         # target_encounter is deprecated and may be removed in a future release. Leaving it in for
         # now to maintain backwards compatibility with existing GMF modules.
-        attr_accessor :reason, :codes, :target_encounter
+        attr_accessor :reason, :codes, :target_encounter, :duration
 
         required_field :codes
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
-
-        def initialize(context, name)
-          super(context, name)
-        end
+        metadata 'duration', type: 'Components::RangeWithUnit', min: 0, max: 1
 
         def process(time, entity)
-          operate(time, entity) if concurrent_with_target_encounter(time)
-          true
+          operate(time, entity) if !@performed && concurrent_with_target_encounter(time)
+          if @duration
+            # choose a random duration within the specified range
+            @expiration ||= @duration.value.since(@start_time)
+            time >= @expiration
+          else
+            true
+          end
         end
 
         def operate(time, entity)
@@ -540,11 +568,12 @@ module Synthea
             cond = cond.symbol if cond
             cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
           end
-          if cond.nil?
-            entity.record_synthea.procedure(symbol, time, nil)
-          else
-            entity.record_synthea.procedure(symbol, time, cond)
-          end
+
+          options = { 'reason' => cond,
+                      'duration' => @duration ? @duration.value : nil }.compact
+
+          entity.record_synthea.procedure(symbol, time, options)
+          @performed = true
         end
       end
 

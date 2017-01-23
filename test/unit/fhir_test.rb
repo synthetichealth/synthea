@@ -22,7 +22,7 @@ class FhirTest < Minitest::Test
     @time = Time.now
     @patient.events.create(@time, :birth, :birth)
     @patient_entry = Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
-    @encounter = {'type' => :age_lt_11, 'time' => @time}
+    @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour }
     @encounter_entry = Synthea::Output::FhirRecord.encounter(@encounter, @fhir_record, @patient_entry)
     @patientID = @fhir_record.entry[0].fullUrl
     @encounterID = @fhir_record.entry[1].fullUrl
@@ -32,16 +32,18 @@ class FhirTest < Minitest::Test
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)
     record.condition(:prediabetes, @time, :condition, nil)
-    record.procedure(:amputation_left_hand, @time, :diabetes, :procedure, nil)
+    record.procedure(:amputation_left_hand, @time, reason: :diabetes)
     record.immunization(:rv_mono, @time, :immunization, nil)
     record.observation(:ha1c, @time, 5, :observation, nil)
+    record.encounter_end(:age_lt_11, @time + 10.minutes)
     record.end_condition(:prediabetes, @time + 10.minutes)
     time_adv = @time + 15.minutes
     record.encounter(:age_lt_11, time_adv)
     record.condition(:diabetes, time_adv, :condition, nil)
-    record.procedure(:amputation_right_leg, time_adv, :diabetes, :procedure, nil)
+    record.procedure(:amputation_right_leg, time_adv, reason: :diabetes)
     record.immunization(:dtap, time_adv, :immunization, nil)
     record.observation(:height, time_adv, 5, :observation, nil)
+    record.encounter_end(:age_lt_11, time_adv + 10.minutes)
 
     #Add an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
@@ -132,7 +134,7 @@ class FhirTest < Minitest::Test
     assert_equal('http://snomed.info/sct', encounter.type[0].coding[0].system)
     assert_equal("#{@patientID}",encounter.patient.reference)
     startTime = Synthea::Output::FhirRecord.convert_fhir_date_time(@time,'time')
-    endTime = Synthea::Output::FhirRecord.convert_fhir_date_time(@time+15.minutes, 'time')
+    endTime = Synthea::Output::FhirRecord.convert_fhir_date_time(@time+1.hour, 'time')
     period = FHIR::Period.new({'start'=>startTime, 'end' => endTime})
     assert_equal(period.start,encounter.period.start)
     assert_equal(period.end, encounter.period.end)
@@ -243,6 +245,24 @@ class FhirTest < Minitest::Test
     assert_equal('13995008', procedure.code.coding[0].code)
     assert_equal('Amputation of left arm', procedure.code.coding[0].display)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), procedure.performedDateTime)
+    assert_equal("#{@encounterID}", procedure.encounter.reference)
+    assert_empty @fhir_record.validate
+  end
+
+  def test_procedure_with_duration
+    condition = {'type' => :nephropathy, 'time' => @time}
+    Synthea::Output::FhirRecord.condition(condition, @fhir_record, @patient_entry, @encounter_entry)
+    proc_hash = { 'type' => :amputation_left_arm , 'time' => @time, 'reason' => :nephropathy, 'duration' => 7.hours }
+    Synthea::Output::FhirRecord.procedure(proc_hash, @fhir_record, @patient_entry, @encounter_entry)
+    proc_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Procedure)}
+    procedure  = proc_entry.resource
+    assert_equal("#{@patientID}", procedure.subject.reference)
+    assert_equal('completed', procedure.status)
+    assert_equal('http://snomed.info/sct', procedure.code.coding[0].system)
+    assert_equal('13995008', procedure.code.coding[0].code)
+    assert_equal('Amputation of left arm', procedure.code.coding[0].display)
+    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), procedure.performedPeriod.start)
+    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time + 7.hours, 'time'), procedure.performedPeriod.end)
     assert_equal("#{@encounterID}", procedure.encounter.reference)
     assert_empty @fhir_record.validate
   end

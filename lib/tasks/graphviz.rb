@@ -268,6 +268,12 @@ module Synthea
           if state['wellness']
             details = 'Wait for regularly scheduled wellness encounter'
           end
+        when 'EncounterEnd'
+          details = 'End the current encounter'
+          if state['discharge_disposition']
+            code = state['discharge_disposition']
+            details = details + "\\lDischarge Disposition: [#{code['code']}] #{code['display']}"
+          end
         when 'SetAttribute'
           v = state['value']
           details = "Set '#{state['attribute']}' = #{v ? "'#{v}'" : 'nil'}"
@@ -339,6 +345,10 @@ module Synthea
           state['activities'].each do |activity|
             details = details + activity['system'] + "[" + activity['code'] + "]: " + activity['display'] + "\\l"
           end
+        end
+        if state.has_key? 'duration'
+          d = state['duration']
+          details = details + "\\lDuration: #{d['low']} - #{d['high']} #{d['unit']}\\l"
         end
 
         details
