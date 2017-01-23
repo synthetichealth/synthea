@@ -366,7 +366,7 @@
           "transition": "Throat_Culture"
         },
         {
-          "transition": "Time_Passes"
+          "transition": "End_Encounter"
         }
       ]
     },
@@ -404,7 +404,7 @@
           "display": "Penicillin V Potassium 250 MG"
         }
       ],
-      "direct_transition": "Time_Passes"
+      "direct_transition": "End_Encounter"
     },
 
     "Prescribe_Antibiotics_Adult": {
@@ -419,7 +419,7 @@
           "display": "Penicillin V Potassium 500 MG"
         }
       ],
-      "direct_transition": "Time_Passes"
+      "direct_transition": "End_Encounter"
     },
 
     "Throat_Culture": {
@@ -451,9 +451,14 @@
           ]
         },
         {
-          "transition": "Time_Passes"
+          "transition": "End_Encounter"
         }
       ]
+    },
+
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Time_Passes"
     },
 
     "Time_Passes": {

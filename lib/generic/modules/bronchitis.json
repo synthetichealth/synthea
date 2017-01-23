@@ -334,7 +334,7 @@
           "display": "Dextromethorphan Hydrobromide 1 MG/ML"
         }
       ],
-      "direct_transition": "Wait_for_condition_to_resolve"
+      "direct_transition": "End_Doctor_Visit"
     },
 
     "Acetaminophen": {
@@ -348,6 +348,11 @@
           "display": "Acetaminophen 160 MG"
         }
       ],
+      "direct_transition": "End_Doctor_Visit"
+    },
+
+    "End_Doctor_Visit" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Wait_for_condition_to_resolve"
     },
 

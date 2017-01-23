@@ -140,7 +140,7 @@
       "distributed_transition": [
         {
           "distribution": 0.8,
-          "transition": "Wait_for_condition_to_resolve"
+          "transition": "End_Encounter"
         },
         {
           "distribution": 0.2,
@@ -163,6 +163,11 @@
           "display": " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
         }
       ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Wait_for_condition_to_resolve"
     },
 
@@ -359,6 +364,11 @@
           "display": "Chronic sinusitis (disorder)"
         }
       ],
+      "direct_transition": "End_Chronic_Followup"
+    },
+
+    "End_Chronic_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Chronic_Sinusitis_Continues"
     },
 
@@ -372,6 +382,11 @@
           "display": "Nasal sinus endoscopy (procedure)"
         }
       ],
+      "direct_transition" : "End_Surgery_Encounter"
+    },
+
+    "End_Surgery_Encounter" : {
+      "type" : "EncounterEnd",
       "conditional_transition": [
         {
           "condition": {

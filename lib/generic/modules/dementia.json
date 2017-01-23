@@ -490,7 +490,7 @@
           ]
         },
         {
-          "transition": "ModeratelySevereDecline"
+          "transition": "End_ModeratelySevere_Encounter"
         }
       ]
     },
@@ -506,7 +506,7 @@
           "display": "Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG [Namzaric]"
         }
       ],
-      "direct_transition": "ModeratelySevereDecline"
+      "direct_transition": "End_ModeratelySevere_Encounter"
     },
 
     "SecondPrescription2": {
@@ -520,7 +520,7 @@
           "display": "Memantine hydrochloride 2 MG/ML [Namenda]"
         }
       ],
-      "direct_transition": "ModeratelySevereDecline"
+      "direct_transition": "End_ModeratelySevere_Encounter"
     },
 
     "SecondPrescription3": {
@@ -534,7 +534,12 @@
           "display": "Donepezil hydrochloride 23 MG [Aricept]"
         }
       ],
-      "direct_transition": "ModeratelySevereDecline"
+      "direct_transition": "End_ModeratelySevere_Encounter"
+    },
+
+    "End_ModeratelySevere_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "ModeratelySevereDecline"
     },
 
     "ModeratelySevereDecline": {
@@ -585,6 +590,11 @@
         "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"
       ],
       "unit": "(score)",
+      "direct_transition": "End_Severe_Encounter"
+    },
+
+    "End_Severe_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "SevereDecline"
     },
     
@@ -635,8 +645,14 @@
         "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"
       ],
       "unit": "(score)",
+      "direct_transition": "End_VerySevere_Encounter"
+    },
+
+    "End_VerySevere_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "VerySevereDecline"
     },
+    
 
     "VerySevereDecline": {
       "type": "Delay",

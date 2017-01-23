@@ -159,7 +159,12 @@
           "display": "predniSONE 2.5 MG [Deltasone]"
         }
       ],
-      "direct_transition": "Corticosteroid_Treatment"
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Corticosteroid_Treatment"
     },
 
     "Corticosteroid_Treatment": {
@@ -259,7 +264,12 @@
           "display": "predniSONE 2.5 MG [Deltasone]"
         }
       ],
-      "direct_transition": "Corticosteroid_Treatment"
+      "direct_transition": "End_Flareup_Encounter"
+    },
+
+    "End_Flareup_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Corticosteroid_Treatment"
     },
 
     "End_Immune_Suppressant": {

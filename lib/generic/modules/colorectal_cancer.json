@@ -141,7 +141,7 @@
           "distributions": [
             {
               "distribution": 0.9,
-              "transition": "Wait_For_Next_Routine_Colonoscopy"
+              "transition": "End_Routine_Colonoscopy_Encounter"
             },
             {
               "distribution": 0.1,
@@ -159,7 +159,7 @@
           "distributions": [
             {
               "distribution": 0.85,
-              "transition": "Wait_For_Next_Routine_Colonoscopy"
+              "transition": "End_Routine_Colonoscopy_Encounter"
             },
             {
               "distribution": 0.15,
@@ -177,7 +177,7 @@
           "distributions": [
             {
               "distribution": 0.8,
-              "transition": "Wait_For_Next_Routine_Colonoscopy"
+              "transition": "End_Routine_Colonoscopy_Encounter"
             },
             {
               "distribution": 0.2,
@@ -186,6 +186,11 @@
           ]
         }
       ]
+    },
+
+    "End_Routine_Colonoscopy_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Next_Routine_Colonoscopy"
     },
 
     "Wait_For_Next_Routine_Colonoscopy": {
@@ -384,9 +389,14 @@
           "transition": "Adenoma_Biopsy"
         },
         {
-          "transition": "Wait_For_Followup_Colonoscopy"
+          "transition": "End_Routine_Colonoscopy_with_Benign_Adenoma"
         }
       ]
+    },
+
+    "End_Routine_Colonoscopy_with_Benign_Adenoma" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Followup_Colonoscopy"
     },
 
     "Adenoma_Biopsy": {
@@ -400,7 +410,12 @@
           "display": "Biopsy of colon"
         }
       ],
-      "direct_transition": "Wait_For_Biopsy_Followup"
+      "direct_transition": "End_Routine_Colonoscopy_with_Malignant_Adenoma"
+    },
+
+    "End_Routine_Colonoscopy_with_Malignant_Adenoma" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Biopsy_Followup"
     },
 
     "Wait_For_Biopsy_Followup": {
@@ -424,6 +439,11 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition" : "End_Biopsy_Followup"
+    },
+
+    "End_Biopsy_Followup" : {
+      "type" : "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.4,
@@ -533,6 +553,11 @@
         "still have the option for their adenoma to recur later in the future."
       ],
       "referenced_by_attribute": "colorectal_adenoma",
+      "direct_transition": "End_Followup_Encounter_Clean"
+    },
+
+    "End_Followup_Encounter_Clean" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Wait_For_Next_Routine_Colonoscopy"
     },
 
@@ -570,6 +595,11 @@
           "display": "Rectal polypectomy"
         }
       ],
+      "direct_transition" : "End_Followup_Encounter_After_Adenoma_Removal"
+    },
+
+    "End_Followup_Encounter_After_Adenoma_Removal" : {
+      "type" : "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.3,
@@ -636,7 +666,12 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "Wait_For_Diagnostic_Colonoscopy"
+      "direct_transition": "End_Symptom_Encounter"
+    },
+
+    "End_Symptom_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Diagnostic_Colonoscopy"
     },
 
     "Wait_For_Diagnostic_Colonoscopy": {
@@ -680,6 +715,11 @@
           "display": "Colonoscopy"
         }
       ],
+      "direct_transition" : "End_Diagnostic_Colonoscopy_Encounter"
+    },
+
+    "End_Diagnostic_Colonoscopy_Encounter" : {
+      "type" : "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.5,
@@ -945,7 +985,12 @@
           "display": "Cancer education"
         }
       ],
-      "complex_transition": [
+      "direct_transition" : "End_Oncologist_Encounter"
+    },
+
+    "End_Oncologist_Encounter" : {
+      "type" : "EncounterEnd",
+       "complex_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
@@ -1030,7 +1075,7 @@
             }
           ]
         }
-      ]
+      ]     
     },
 
     "Wait_For_Partial_Colectomy": {
@@ -1100,6 +1145,11 @@
           "display": "Administration of intravenous fluids"
         }
       ],
+      "direct_transition": "End_Partial_Colectomy_Encounter"
+    },
+
+    "End_Partial_Colectomy_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Delay_For_Partial_Colectomy_Recovery"
     },
 
@@ -1229,6 +1279,11 @@
           "display": "Administration of intravenous fluids"
         }
       ],
+      "direct_transition": "End_Diverting_Colostomy_Encounter"
+    },
+
+    "End_Diverting_Colostomy_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Delay_For_Diverting_Colostomy_Recovery"
     },
 
@@ -1351,6 +1406,11 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
+      "direct_transition": "End_Chemotherapy_Encounter"
+    },
+
+    "End_Chemotherapy_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Count_A_Chemo_Treatment"
     },
 
@@ -1420,6 +1480,11 @@
     "End_Colorectal_Cancer": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "colorectal_cancer",
+      "direct_transition": "End_Remission_Encounter"
+    },
+
+    "End_Remission_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Terminal"
     },
 

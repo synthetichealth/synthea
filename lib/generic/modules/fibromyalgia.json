@@ -160,7 +160,12 @@
           "display": "Naproxen sodium 550 MG [Anaprox]"
         }
       ],
-      "direct_transition": "Delay_Until_Fibromyalgia_Episode"
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Delay_Until_Fibromyalgia_Episode"
     },
 
     "Delay_Until_Fibromyalgia_Episode": {
@@ -233,7 +238,7 @@
             },
             {
               "distribution": 0.8,
-              "transition": "Delay_Until_Fibromyalgia_Episode"
+              "transition": "End_Episode_Encounter"
             }
           ]
         },
@@ -241,7 +246,7 @@
           "distributions": [
             {
               "distribution": 1,
-              "transition": "Delay_Until_Fibromyalgia_Episode"
+              "transition": "End_Episode_Encounter"
             }
           ]
         }
@@ -260,7 +265,7 @@
           "display": "pregabalin 100 MG [Lyrica]"
         }
       ],
-      "direct_transition": "Take_Prescription"
+      "direct_transition": "End_Episode_Encounter"
     },
 
     "Prescribe_Cymbalta": {
@@ -275,7 +280,7 @@
           "display": "DULoxetine 20 MG [Cymbalta]"
         }
       ],
-      "direct_transition": "Take_Prescription"
+      "direct_transition": "End_Episode_Encounter"
     },
 
     "Prescribe_Savella": {
@@ -290,7 +295,7 @@
           "display": "Milnacipran hydrochloride 100 MG [Savella]"
         }
       ],
-      "direct_transition": "Take_Prescription"
+      "direct_transition": "End_Episode_Encounter"
     },
 
     "Prescribe_Opioid": {
@@ -308,7 +313,24 @@
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG [Percocet]"
         }
       ],
-      "direct_transition": "Delay_Until_Fibromyalgia_Episode"
+      "direct_transition": "End_Episode_Encounter"
+    },
+
+    "End_Episode_Encounter" : {
+      "type" : "EncounterEnd",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type": "Attribute",
+            "attribute": "fibromyalgia_prescription",
+            "operator": "is not nil"
+          },
+          "transition" : "Take_Prescription"
+        },
+        {
+          "transition" : "Delay_Until_Fibromyalgia_Episode"
+        }
+      ]
     },
 
     "Take_Prescription": {

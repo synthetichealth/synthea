@@ -218,7 +218,7 @@
           "display": "Home nebulizer therapy"
         }
       ],
-      "direct_transition": "Maintaining_Asthma"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
@@ -249,7 +249,12 @@
           "display": "Breathing control"
         }
       ],
-      "direct_transition": "Maintaining_Asthma"
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Maintaining_Asthma"
     },
 
     "Maintaining_Asthma": {
@@ -488,7 +493,7 @@
     },
 
     "Loopback_Maintaining_Asthma": {
-      "type": "Simple",
+      "type": "EncounterEnd",
       "direct_transition": "Maintaining_Asthma"
     },
     

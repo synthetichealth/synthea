@@ -211,6 +211,11 @@
           "display": "Plain chest X-ray (procedure)"
         }
       ],
+      "direct_transition": "End_Diagnosis_Encounter_I"
+    },
+
+    "End_Diagnosis_Encounter_I" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Schedule Follow Up I"
     },
 
@@ -249,6 +254,11 @@
           "display": "Computed tomography of chest and abdomen"
         }
       ],
+      "direct_transition": "End_Diagnosis_Encounter_II"
+    },
+
+    "End_Diagnosis_Encounter_II" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Schedule Follow Up II"
     },
 
@@ -360,7 +370,7 @@
           "display": "Sputum microscopy (procedure)"
         }
       ],
-      "direct_transition": "Schedule Follow Up III"
+      "direct_transition": "End_Diagnosis_Encounter_III"
     },
 
     "Thoracentesis (Fluid)": {
@@ -374,7 +384,7 @@
           "display": "Thoracentesis (procedure)"
         }
       ],
-      "direct_transition": "Schedule Follow Up III"
+      "direct_transition": "End_Diagnosis_Encounter_III"
     },
 
     "Needle Biopsy (Cells)": {
@@ -388,7 +398,7 @@
           "display": "Fine needle aspiration biopsy of lung (procedure)"
         }
       ],
-      "direct_transition": "Schedule Follow Up III"
+      "direct_transition": "End_Diagnosis_Encounter_III"
     },
 
     "Bronchoscopy (Tube)": {
@@ -402,6 +412,11 @@
           "display": "Diagnostic fiberoptic bronchoscopy (procedure)"
         }
       ],
+      "direct_transition": "End_Diagnosis_Encounter_III"
+    },
+
+    "End_Diagnosis_Encounter_III" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Schedule Follow Up III"
     },
 
@@ -763,6 +778,11 @@
           "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
         }
       ],
+      "direct_transition" : "End_Diagnosis_Encounter_IV"
+    },
+
+    "End_Diagnosis_Encounter_IV" : {
+      "type" : "EncounterEnd",
       "conditional_transition": [
         {
           "condition": {
@@ -872,6 +892,11 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
+      "direct_transition": "End_SCLC_Treatment_Encounter"
+    },
+
+    "End_SCLC_Treatment_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "SCLC Treatment Delay"
     },
 
@@ -978,6 +1003,11 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
+      "direct_transition": "End_NSCLC_Treatment_Encounter"
+    },
+
+    "End_NSCLC_Treatment_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "NSCLC Treatment Delay"
     },
 

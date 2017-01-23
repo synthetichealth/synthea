@@ -199,7 +199,7 @@
     },
 
     "Living_With_Allergic_Rhinitis": {
-      "type": "Simple",
+      "type": "EncounterEnd",
       "direct_transition": "Immunotherapy_Guard"
     },
     "Immunotherapy_Guard": {
@@ -278,9 +278,7 @@
     },
 
     "Immunotherapy_Not_Given": {
-      "type": "SetAttribute",
-      "attribute": "immunotherapy_status",
-      "value": "not-given",
+      "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
 
@@ -316,7 +314,12 @@
           "display": "Allergy screening test"
         }
       ],
-      "direct_transition": "Initialize_Immunotherapy_Counter"
+      "direct_transition": "End_Consultation"
+    },
+
+    "End_Consultation" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Initialize_Immunotherapy_Counter"
     },
 
     "Initialize_Immunotherapy_Counter": {
@@ -379,6 +382,11 @@
           "display": "Subcutaneous immunotherapy"
         }
       ],
+      "direct_transition": "End_Treatment_Session"
+    },
+
+    "End_Treatment_Session" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Count_A_Treatment"
     },
 
@@ -423,6 +431,11 @@
     "Immunotherapy_CarePlan_Ends": {
       "type": "CarePlanEnd",
       "careplan": "Immunotherapy_CarePlan",
+      "direct_transition": "Followup_End"
+    },
+
+    "Followup_End" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Terminal"
     },
 

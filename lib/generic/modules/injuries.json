@@ -480,6 +480,11 @@
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
         }
       ],
+      "direct_transition": "End_Spinal_Injury_Encounter"
+    },
+
+    "End_Spinal_Injury_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Spinal_Treatment_Period"
     },
 
@@ -514,6 +519,11 @@
         "cord damage and survived, his/her chronic paralysis will persist for life."
       ],
       "referenced_by_attribute": "spinal_injury",
+      "direct_transition": "End_Spinal_Injury_Followup"
+    },
+
+    "End_Spinal_Injury_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
 
@@ -706,6 +716,11 @@
           "display": "Behavior to prevent infection"
         }
       ],
+      "direct_transition": "End_Gunshot_Encounter"
+    },
+
+    "End_Gunshot_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Gunshot_Wound_Healing_Period"
     },
 
@@ -736,6 +751,11 @@
     "Gunshot_Wound_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Gunshot_Wound",
+      "direct_transition": "End_Gunshot_Followup"
+    },
+
+    "End_Gunshot_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
 
@@ -878,6 +898,11 @@
           "display": "Alcohol-free diet"
         }
       ],
+      "direct_transition": "End_Concussion_Encounter"
+    },
+
+    "End_Concussion_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Concussion_Recovery_Period"
     },
 
@@ -908,6 +933,11 @@
     "End_Concussion_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "concussion_injury",
+      "direct_transition": "End_Concussion_Followup"
+    },
+
+    "End_Concussion_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
 
@@ -993,6 +1023,11 @@
           "display": "Recommendation to rest"
         }
       ],
+      "direct_transition": "End_Whiplash_Encounter"
+    },
+
+    "End_Whiplash_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Whiplash_Recovery_Period"
     },
 
@@ -1280,6 +1315,11 @@
           ]
         }
       ],
+      "direct_transition": "End_Broken_Bone_Encounter"
+    },
+
+    "End_Broken_Bone_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Broken_Bone_Recovery_Period"
     },
 
@@ -1310,6 +1350,11 @@
     "End_Broken_Bone_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "broken_bone",
+      "direct_transition": "End_Broken_Bone_Followup"
+    },
+
+    "End_Broken_Bone_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
 
@@ -1573,7 +1618,7 @@
           "display": "Acetaminophen 650 MG [Tylenol]"
         }
       ],
-      "direct_transition": "Burn_Recovery_Period"
+      "direct_transition": "End_Burn_Encounter"
     },
 
     "Burn_Injury_Prescribe_Opioid": {
@@ -1588,6 +1633,11 @@
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
         }
       ],
+      "direct_transition": "End_Burn_Encounter"
+    },
+
+    "End_Burn_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Burn_Recovery_Period"
     },
 
@@ -1618,6 +1668,11 @@
     "End_Burn_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "burn_injury",
+      "direct_transition": "End_Burn_Followup"
+    },
+
+    "End_Burn_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
 
@@ -1826,6 +1881,11 @@
           "display": "Acetaminophen 325 MG [Tylenol]"
         }
       ],
+      "direct_transition": "End_Laceration_Encounter"
+    },
+
+    "End_Laceration_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Laceration_Recovery_Period"
     },
 
@@ -1945,6 +2005,11 @@
           "display": "Acetaminophen 325 MG [Tylenol]"
         }
       ],
+      "direct_transition": "End_Sprain_Encounter"
+    },
+
+    "End_Sprain_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Sprain_Recovery_Period"
     },
 
@@ -2052,7 +2117,7 @@
           "display": "Injury of anterior cruciate ligament"
         }
       ],
-      "direct_transition": "Wait_For_Knee_Surgery"
+      "direct_transition": "End_Knee_Injury_Encounter_I"
     },
 
     "Torn_MCL": {
@@ -2066,7 +2131,7 @@
           "display": "Injury of medial collateral ligament of knee"
         }
       ],
-      "direct_transition": "Wait_For_Knee_Surgery"
+      "direct_transition": "End_Knee_Injury_Encounter_I"
     },
 
     "Torn_Meniscus": {
@@ -2083,7 +2148,7 @@
           "display": "Tear of meniscus of knee"
         }
       ],
-      "direct_transition": "Knee_Injury_Recovery_Period"
+      "direct_transition": "End_Knee_Injury_Encounter_II"
     },
 
     "Torn_Patellar_Tendon": {
@@ -2097,7 +2162,12 @@
           "display": "Rupture of patellar tendon"
         }
       ],
-      "direct_transition": "Wait_For_Knee_Surgery"
+      "direct_transition": "End_Knee_Injury_Encounter_I"
+    },
+
+    "End_Knee_Injury_Encounter_I" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Knee_Surgery"
     },
 
     "Wait_For_Knee_Surgery": {
@@ -2182,7 +2252,7 @@
           "display": "Acetaminophen 650 MG [Tylenol]"
         }
       ],
-      "direct_transition": "Knee_Injury_Recovery_Period"
+      "direct_transition": "End_Knee_Injury_Encounter_II"
     },
 
     "Knee_Injury_Prescribe_Opioid": {
@@ -2197,6 +2267,12 @@
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
+      "direct_transition": "End_Knee_Injury_Encounter_II"
+    },
+
+    "End_Knee_Injury_Encounter_II" : 
+    {
+      "type" : "EncounterEnd",
       "direct_transition": "Knee_Injury_Recovery_Period"
     },
 
@@ -2282,6 +2358,11 @@
           "display": "Stretching exercises"
         }
       ],
+      "direct_transition" : "End_Shoulder_Injury_Encounter"
+    },
+
+    "End_Shoulder_Injury_Encounter" : {
+      "type" : "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.9,
@@ -2376,7 +2457,7 @@
           "display": "Acetaminophen 650 MG [Tylenol]"
         }
       ],
-      "direct_transition": "Shoulder_Injury_Recovery_Period"
+      "direct_transition": "End_Shoulder_Surgery_Encounter"
     },
 
     "Shoulder_Surgery_Prescribe_Opioid": {
@@ -2391,6 +2472,11 @@
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
+      "direct_transition": "End_Shoulder_Surgery_Encounter"
+    },
+
+    "End_Shoulder_Surgery_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Shoulder_Injury_Recovery_Period"
     },
 
@@ -2421,6 +2507,11 @@
     "End_Shoulder_Injury": {
       "type": "ConditionEnd",
       "condition_onset": "Torn_Rotator_Cuff",
+      "direct_transition": "End_Shoulder_Followup"
+    },
+
+    "End_Shoulder_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
 

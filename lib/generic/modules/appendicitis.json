@@ -222,7 +222,27 @@
           "display": "Appendectomy"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Recovery"
+    },
+
+    "Recovery" : {
+      "type" : "Delay",
+      "range" : { "low" : 1, "high" : 5, "unit" : "days" },
+      "remarks" : ["Traditionally, patients are hospitalized for 24 hours after laparoscopic appendectomy. ",
+                   "A retrospective review of 119 patients [...] ",
+                   "Forty-two patients were dismissed on the day of surgery and 77 were admitted for 1 to 5 days postoperatively.",
+                   "https://www.ncbi.nlm.nih.gov/pubmed/22369831"],
+      "direct_transition" : "End_Appendectomy_Encounter"
+    },
+
+    "End_Appendectomy_Encounter" : {
+      "type" : "EncounterEnd",
+      "discharge_disposition" : {
+        "system" : "NUBC",
+        "code" : "01",
+        "display" : "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition" : "Terminal"
     },
     
     "Terminal": {
