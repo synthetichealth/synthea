@@ -161,6 +161,7 @@
           "display": "Plain chest X-ray (procedure)"
         }
       ],
+      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
 
@@ -175,6 +176,7 @@
           "display": "Sputum examination (procedure)"
         }
       ],
+      "duration" : { "low" : 3, "high" : 15, "unit" : "minutes" },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
 
@@ -189,6 +191,7 @@
           "display": "Measurement of respiratory function (procedure)"
         }
       ],
+      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
 

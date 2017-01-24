@@ -211,6 +211,7 @@
           "display": "Plain chest X-ray (procedure)"
         }
       ],
+      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
       "direct_transition": "End_Diagnosis_Encounter_I"
     },
 
@@ -254,6 +255,7 @@
           "display": "Computed tomography of chest and abdomen"
         }
       ],
+      "duration" : { "low" : 20, "high" : 60, "unit" : "minutes" },
       "direct_transition": "End_Diagnosis_Encounter_II"
     },
 
@@ -778,6 +780,7 @@
           "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
         }
       ],
+      "duration" : { "low" : 30, "high" : 120, "unit" : "minutes" },
       "direct_transition" : "End_Diagnosis_Encounter_IV"
     },
 
@@ -892,6 +895,7 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
+      "duration" : { "low" : 0.5, "high" : 4.0, "unit" : "hours" },
       "direct_transition": "End_SCLC_Treatment_Encounter"
     },
 
@@ -1003,6 +1007,7 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
+      "duration" : { "low" : 0.5, "high" : 4.0, "unit" : "hours" },
       "direct_transition": "End_NSCLC_Treatment_Encounter"
     },
 

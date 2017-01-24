@@ -924,6 +924,7 @@
           "display": "Transplant of lung (procedure)"
         }
       ],
+      "duration" : { "low" : 5, "high" : 7, "unit" : "hours" },
       "direct_transition": "End_Surgery_Encounter"
     },
 

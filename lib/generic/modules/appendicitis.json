@@ -222,6 +222,9 @@
           "display": "Appendectomy"
         }
       ],
+      "duration" : { "low" : 40, "high" : 70, "unit" : "minutes" },
+      "remarks" : ["Avg operative time is ~55 minutes",
+                   "https://www.ncbi.nlm.nih.gov/pubmed/17658102"],
       "direct_transition": "Recovery"
     },
 

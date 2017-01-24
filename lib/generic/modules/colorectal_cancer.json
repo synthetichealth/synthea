@@ -130,6 +130,7 @@
           "display": "Colonoscopy"
         }
       ],
+      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
       "complex_transition": [
         {
           "condition": {
@@ -505,6 +506,7 @@
           "display": "Colonoscopy"
         }
       ],
+      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
       "complex_transition": [
         {
           "condition": {
@@ -532,6 +534,7 @@
         },
         {
           "distributions": [
+
             {
               "distribution": 0.75,
               "transition": "End_Colorectal_Adenoma"
@@ -715,6 +718,7 @@
           "display": "Colonoscopy"
         }
       ],
+      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
       "direct_transition" : "End_Diagnostic_Colonoscopy_Encounter"
     },
 
