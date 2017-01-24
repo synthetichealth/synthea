@@ -201,13 +201,13 @@ module Synthea
         end
 
         if encounter['discharge']
-          fhir_encounter.hospitalization = FHIR::Hospitalization.new('dischargeDisposition' => {
-                                                                       'coding' => [{
-                                                                         'code' => encounter['discharge'].code,
-                                                                         'display' => encounter['discharge'].display,
-                                                                         'system' => 'http://www.nubc.org/patient-discharge'
-                                                                       }]
-                                                                     })
+          fhir_encounter.hospitalization = FHIR::Encounter::Hospitalization.new('dischargeDisposition' => {
+                                                                                  'coding' => [{
+                                                                                    'code' => encounter['discharge'].code,
+                                                                                    'display' => encounter['discharge'].display,
+                                                                                    'system' => 'http://www.nubc.org/patient-discharge'
+                                                                                  }]
+                                                                                })
         end
 
         entry = FHIR::Bundle::Entry.new

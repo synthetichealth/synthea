@@ -141,6 +141,19 @@ class FhirTest < Minitest::Test
     assert_empty @fhir_record.validate
   end
 
+  def test_encounter_discharge
+    discharge = Synthea::Generic::Components::Code.new('system' => 'NUBC', 'code' => '01', 'display' => 'discharge to home')
+    encounter = { 'type' => :age_lt_11, 'time' => @time, 'discharge' => discharge }
+
+    fhir_encounter = Synthea::Output::FhirRecord.encounter(encounter, @fhir_record, @patient_entry)
+
+    fhir_discharge = fhir_encounter.resource.hospitalization.dischargeDisposition
+    assert_equal('01', fhir_discharge.coding[0].code)
+    assert_equal('discharge to home', fhir_discharge.coding[0].display)
+
+    assert_empty @fhir_record.validate
+  end
+
   def test_allergy
     condition = {'type' => :food_allergy_peanuts, 'time' => @time}
     Synthea::Output::FhirRecord.allergy(condition, @fhir_record, @patient_entry, @encounter_entry)
