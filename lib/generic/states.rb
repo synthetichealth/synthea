@@ -59,7 +59,7 @@ module Synthea
           end
         end
 
-        def concurrent_with_target_encounter(time)
+        def concurrent_with_target_encounter(_time)
           current_encounter = @context.current_encounter
           if is_a?(OnsetState)
             # ConditionOnset and AllergyOnset are allowed to be processed before any Encounter state.
@@ -83,7 +83,7 @@ module Synthea
               raise "No encounter state was processed before state '#{@name}'"
             end
           end
-          !past.nil? && past.time == time
+          !past.nil?
         end
 
         # the record methods require the use of lookup tables.  Other (non-generic) modules statically define
@@ -269,7 +269,6 @@ module Synthea
           if @context.current_encounter
             # if there is a current non-wellness encounter, end it with no discharge type
             enc = @context.most_recent_by_name(@context.current_encounter)
-            puts "it broke at #{@context.current_encounter} / #{@context.name}" if enc.nil?
             entity.record_synthea.encounter_end(enc.symbol, time) unless enc.wellness
           end
           @context.current_encounter = @name
