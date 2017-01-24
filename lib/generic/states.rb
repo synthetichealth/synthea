@@ -82,12 +82,6 @@ module Synthea
             if past.nil?
               raise "No encounter state was processed before state '#{@name}'"
             end
-
-            unless past.time == time
-              puts "past: #{past.time}"
-              puts "now: #{time}"
-              raise "State '#{@name}' is not concurrent with the most recent encounter '#{current_encounter}'"
-            end
           end
           !past.nil? && past.time == time
         end
