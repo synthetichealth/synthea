@@ -177,17 +177,16 @@ module Synthea
         def test(_context, _time, entity)
           # find the most recent instance of the given observation
           obstype = find_referenced_type(entity, 'Observation')
+          obs = entity.record_synthea.find_observation(obstype)
 
-          obs = entity.record_synthea.observations.select { |o| o['type'] == obstype }
-
-          if obs.empty?
+          if obs.nil?
             if ['is nil', 'is not nil'].include?(operator)
               compare(nil, value, operator)
             else
               raise "No observations exist for type #{obstype}, cannot compare values"
             end
           else
-            compare(obs.last['value'], value, operator)
+            compare(obs['value'], value, operator)
           end
         end
       end
@@ -200,7 +199,19 @@ module Synthea
 
         def test(_context, _time, entity)
           contype = find_referenced_type(entity, 'Active Condition')
-          entity.record_synthea.present[contype]
+          entity.active_condition?(contype)
+        end
+      end
+
+      class DiagnosedCondition < Condition
+        attr_accessor :codes, :referenced_by_attribute
+        required_field or: [:codes, :referenced_by_attribute]
+
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
+
+        def test(_context, _time, entity)
+          contype = find_referenced_type(entity, 'Diagnosed Condition')
+          entity.diagnosed_condition?(contype)
         end
       end
 
@@ -212,7 +223,7 @@ module Synthea
 
         def test(_context, _time, entity)
           contype = find_referenced_type(entity, 'Active Allergy')
-          entity.record_synthea.present[contype]
+          entity.diagnosed_condition?(contype)
         end
       end
 
@@ -234,8 +245,8 @@ module Synthea
         metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
 
         def test(_context, _time, entity)
-          contype = find_referenced_type(entity, 'Active Careplan')
-          entity.record_synthea.careplan_active?(contype)
+          cptype = find_referenced_type(entity, 'Active Careplan')
+          entity.record_synthea.active_careplan?(cptype)
         end
       end
 
@@ -247,7 +258,7 @@ module Synthea
 
         def test(_context, _time, entity)
           medtype = find_referenced_type(entity, 'Active Medication')
-          entity.record_synthea.medication_active?(medtype)
+          entity.record_synthea.active_medication?(medtype)
         end
       end
 

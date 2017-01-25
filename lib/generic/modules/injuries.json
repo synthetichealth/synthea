@@ -1490,7 +1490,7 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -1503,7 +1503,7 @@
         },
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -1516,7 +1516,7 @@
         },
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -2270,7 +2270,7 @@
       "direct_transition": "End_Knee_Injury_Encounter_II"
     },
 
-    "End_Knee_Injury_Encounter_II" : 
+    "End_Knee_Injury_Encounter_II" :
     {
       "type" : "EncounterEnd",
       "direct_transition": "Knee_Injury_Recovery_Period"

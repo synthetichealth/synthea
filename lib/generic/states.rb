@@ -320,14 +320,23 @@ module Synthea
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def process(time, entity)
-          diagnose(time, entity) if concurrent_with_target_encounter(time)
+          if concurrent_with_target_encounter(time)
+            onset(time, entity)
+            diagnose(time, entity) # also diagnose the condition
+          else
+            onset(time, entity)
+          end
           true
         end
       end
 
       class ConditionOnset < OnsetState
-        def diagnose(time, entity)
+        def onset(time, entity)
           add_lookup_code(Synthea::COND_LOOKUP)
+          entity.onset_condition(symbol, time)
+        end
+
+        def diagnose(time, entity)
           entity.record_synthea.condition(symbol, time)
           @diagnosed = true
         end
@@ -352,14 +361,19 @@ module Synthea
             raise 'Condition End must define the condition to end either by code, a referenced entity attribute, or the name of the original ConditionOnset state'
           end
 
-          entity.record_synthea.end_condition(@type, time)
+          # Ends the patient's active condition and records it in his/her record
+          entity.end_condition(@type, time)
           true
         end
       end
 
       class AllergyOnset < OnsetState
-        def diagnose(time, entity)
+        def onset(time, entity)
           add_lookup_code(Synthea::COND_LOOKUP)
+          entity.onset_condition(symbol, time)
+        end
+
+        def diagnose(time, entity)
           entity.record_synthea.condition(symbol, time, :allergy, :condition)
           @diagnosed = true
         end

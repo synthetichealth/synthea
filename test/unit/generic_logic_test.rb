@@ -222,32 +222,61 @@ class GenericLogicTest < Minitest::Test
     assert(do_test('hasDiabetesObservation'))
   end
 
-  def test_condition_condition
+  def test_condition_conditions_by_code
+    # A condition is 'active' if the patient has it. However, active conditions
+    # may not be diagnosed yet.
+    @patient.active_conditions = {}
     @patient.record_synthea.conditions = []
-    @patient.record_synthea.present = {}
 
-    refute(do_test('diabetesConditionTest'))
-    refute(do_test('alzheimersConditionTest'))
+    refute(do_test('diabetesActiveConditionTest'))
+    refute(do_test('diabetesDiagnosedConditionTest'))
 
+    # active condition, but not diagnosed
+    @patient.onset_condition(:diabetes_mellitus, @time)
+    assert(do_test('diabetesActiveConditionTest'))
+    refute(do_test('diabetesDiagnosedConditionTest'))
+
+    # diagnosed condition
     @patient.record_synthea.condition(:diabetes_mellitus, @time)
-    assert(do_test('diabetesConditionTest'))
-    refute(do_test('alzheimersConditionTest'))
+    assert(do_test('diabetesActiveConditionTest'))
+    assert(do_test('diabetesDiagnosedConditionTest'))
 
     @time += 10.years
 
+    # end the condition
+    @patient.end_condition(:diabetes_mellitus, @time)
     @patient.record_synthea.end_condition(:diabetes_mellitus, @time)
-    refute(do_test('diabetesConditionTest'))
+    refute(do_test('diabetesActiveConditionTest'))
+    refute(do_test('diabetesDiagnosedConditionTest'))
+  end
 
+  def test_condition_conditions_by_attribute
+    @patient.active_conditions = {}
+    @patient.record_synthea.conditions = []
 
-    @patient.record_synthea.condition(:early_onset_alzheimers, @time)
+    refute(do_test('alzheimersActiveConditionTest'))
+    refute(do_test('alzheimersDiagnosedConditionTest'))
+
+    # onset the condition
     @patient['Alzheimer\'s Variant'] = :early_onset_alzheimers
+    @patient.onset_condition(:early_onset_alzheimers, @time)
+    assert(do_test('alzheimersActiveConditionTest'))
+    refute(do_test('alzheimersDiagnosedConditionTest'))
 
-    assert(do_test('alzheimersConditionTest'))
+    # diagnose the condition
+    @patient.record_synthea.condition(:early_onset_alzheimers, @time)
+    assert(do_test('alzheimersActiveConditionTest'))
+    assert(do_test('alzheimersDiagnosedConditionTest'))
+
+    # end the condition
+    @patient.end_condition(:early_onset_alzheimers, @time)
+    @patient.record_synthea.end_condition(:early_onset_alzheimers, @time)
+    refute(do_test('alzheimersActiveConditionTest'))
+    refute(do_test('alzheimersDiagnosedConditionTest'))
   end
 
   def test_careplan_condition
     @patient.record_synthea.careplans = []
-    @patient.record_synthea.present = {}
 
     refute(do_test('diabetesCarePlanTest'))
     refute(do_test('anginaCarePlanTest'))

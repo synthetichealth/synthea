@@ -114,7 +114,7 @@
     "referenced_by_attribute" : "Diabetes Test Performed",
     "operator" : "is not nil"
   },
-  "diabetesConditionTest" : {
+  "diabetesActiveConditionTest" : {
     "condition_type" : "Active Condition",
     "codes": [{
         "system": "SNOMED-CT",
@@ -122,9 +122,21 @@
         "display": "Diabetes mellitus"
     }]
   },
-  "alzheimersConditionTest" : {
+  "diabetesDiagnosedConditionTest": {
+    "condition_type": "Diagnosed Condition",
+    "codes": [{
+        "system": "SNOMED-CT",
+        "code": "73211009",
+        "display": "Diabetes mellitus"
+    }]
+  },
+  "alzheimersActiveConditionTest" : {
     "condition_type" : "Active Condition",
     "referenced_by_attribute" : "Alzheimer's Variant"
+  },
+  "alzheimersDiagnosedConditionTest": {
+    "condition_type": "Diagnosed Condition",
+    "referenced_by_attribute": "Alzheimer's Variant"
   },
   "diabetesCarePlanTest": {
     "condition_type": "Active CarePlan",

@@ -510,7 +510,7 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -1079,7 +1079,7 @@
             }
           ]
         }
-      ]     
+      ]
     },
 
     "Wait_For_Partial_Colectomy": {

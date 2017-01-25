@@ -404,6 +404,9 @@ module Synthea
         when 'Active Condition'
           cond = find_referenced_type(logic)
           "Condition #{cond} is active\\l"
+        when 'Diagnosed Condition'
+          cond = find_referenced_type(logic)
+          "Condition #{cond} is diagnosed\\l"
         when 'Active CarePlan'
           plan = find_referenced_type(logic)
           "CarePlan #{plan} is active\\l"
@@ -416,7 +419,7 @@ module Synthea
         when 'True', 'False'
           logic['condition_type']
         else
-          raise "Unsupported Conditon: #{logic['condition_type']}"
+          raise "Unsupported Condition: #{logic['condition_type']}"
         end
       end
 

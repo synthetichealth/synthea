@@ -194,7 +194,7 @@
                 ]
               },
               {
-                "condition_type": "Active Condition",
+                "condition_type": "Diagnosed Condition",
                 "codes": [
                   {
                     "system": "SNOMED-CT",
@@ -209,7 +209,7 @@
         },
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -319,7 +319,7 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -390,7 +390,7 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -406,7 +406,7 @@
         }
       ]
     },
-    
+
     "Chronic_Sinusisitis_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Diagnose_Chronic_Sinusitis",

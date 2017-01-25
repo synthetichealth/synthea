@@ -22,9 +22,9 @@ class RecordTest < Minitest::Test
   end
 
   def test_medication_active?
-    assert(@record.medication_active?(:sglt2i))
+    assert(@record.active_medication?(:sglt2i))
     @record.medication_stop(:sglt2i, @time + 15.minutes, :diabetes_well_controlled)
-    assert(!@record.medication_active?(:sglt2i))
+    assert(!@record.active_medication?(:sglt2i))
   end
 
   def test_update_med_reasons
@@ -49,9 +49,9 @@ class RecordTest < Minitest::Test
   end
 
   def test_careplan_active
-    assert(@record.careplan_active?(:cardiovascular_disease))
+    assert(@record.active_careplan?(:cardiovascular_disease))
     @record.careplan_stop(:cardiovascular_disease,  @time + 15.minutes)
-    assert(!@record.careplan_active?(:cardiovascular_disease))
+    assert(!@record.active_careplan?(:cardiovascular_disease))
   end
 
   def test_update_careplan_reasons
