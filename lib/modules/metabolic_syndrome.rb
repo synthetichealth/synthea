@@ -447,12 +447,12 @@ module Synthea
         if entity[:careplan] && entity[:careplan][:diabetes]
           # Add a diabetes self-management careplan if one isn't active
           reason = entity[:diabetes] ? :diabetes : :prediabetes
-          if !entity.record_synthea.careplan_active?(:diabetes)
+          if !entity.record_synthea.active_careplan?(:diabetes)
             entity.record_synthea.careplan_start(:diabetes, entity[:careplan][:diabetes], time, [reason])
           else
             entity.record_synthea.update_careplan_reasons(:diabetes, [reason], time)
           end
-        elsif entity.record_synthea.careplan_active?(:diabetes)
+        elsif entity.record_synthea.active_careplan?(:diabetes)
           # We need to stop the current diabetes careplan
           entity.record_synthea.careplan_stop(:diabetes, time)
         end
@@ -461,10 +461,10 @@ module Synthea
           entity[:med_changes][:metabolic_syndrome].each do |med|
             if entity[:medications][med]
               # Add a prescription to the record if it hasn't been recorded yet
-              unless entity.record_synthea.medication_active?(med)
+              unless entity.record_synthea.active_medication?(med)
                 entity.record_synthea.medication_start(med, time, entity[:medications][med]['reasons'])
               end
-            elsif entity.record_synthea.medication_active?(med)
+            elsif entity.record_synthea.active_medication?(med)
               # This prescription can be stopped...
               entity.record_synthea.medication_stop(med, time, :diabetes_well_controlled)
             end
@@ -474,12 +474,13 @@ module Synthea
       end
 
       def self.process_diagnosis(diagnosis, diagnosis_hash, entity, time)
-        if diagnosis_hash[diagnosis] && !entity.record_synthea.present[diagnosis]
+        if diagnosis_hash[diagnosis] && !entity.active_condition?(diagnosis)
           # create the ongoing diagnosis
+          entity.onset_condition(diagnosis, time)
           entity.record_synthea.condition(diagnosis, time, :condition, :condition)
-        elsif !diagnosis_hash[diagnosis] && entity.record_synthea.present[diagnosis]
+        elsif !diagnosis_hash[diagnosis] && entity.diagnosed_condition?(diagnosis)
           # end the diagnosis
-          entity.record_synthea.end_condition(diagnosis, time)
+          entity.end_condition(diagnosis, time)
         end
       end
 
@@ -527,7 +528,7 @@ module Synthea
         amputations.each do |amputation|
           amp_str = amputation.to_s
           key = "amputation_#{amp_str}".to_sym
-          unless entity.record_synthea.present[key]
+          unless entity.record_synthea.procedure_performed?(key)
             entity.record_synthea.procedure(key, time, reason: :neuropathy)
           end
 
@@ -544,7 +545,7 @@ module Synthea
                         :history_of_upper_limb_amputation
                       end
 
-          unless entity.record_synthea.present[cond_key]
+          unless entity.record_synthea.diagnosed_condition?(cond_key)
             entity.record_synthea.condition(cond_key, time)
           end
         end

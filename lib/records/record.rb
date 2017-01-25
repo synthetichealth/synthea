@@ -1,15 +1,12 @@
 module Synthea
   module Output
     class Record
-      attr_accessor :patient_info, :encounters, :observations, :conditions, :present, :procedures, :immunizations, :medications, :careplans
+      attr_accessor :patient_info, :encounters, :observations, :conditions, :procedures, :immunizations, :medications, :careplans
       def initialize
         @patient_info = { expired: false, uuid: SecureRandom.uuid }
         @encounters = []
         @observations = []
-        # store condition info
         @conditions = []
-        # check presence of condition
-        @present = {}
         @procedures = []
         @immunizations = []
         @medications = []
@@ -33,29 +30,52 @@ module Synthea
         }
       end
 
+      def find_observation(type)
+        # Returns the most recent observation found matching the referenced type
+        @observations.reverse.find { |o| o['type'] == type }
+      end
+
       def condition(type, time, fhir_method = :condition, ccda_method = :condition)
-        @present[type] = {
+        @conditions << {
           'type' => type,
           'time' => time,
           'fhir' => fhir_method,
           'ccda' => ccda_method
         }
-        @conditions << @present[type]
+      end
+
+      def find_condition(type)
+        # Returns the most recent condition found matching the referenced type
+        @conditions.reverse.find { |c| c['type'] == type }
       end
 
       def end_condition(type, time)
-        @present[type]['end_time'] = time
-        @present[type] = nil
+        cond = find_condition(type)
+        cond['end_time'] = time
+      end
+
+      def diagnosed_condition?(type)
+        # The condition is recorded in the patient's record, and active
+        cond = find_condition(type)
+        !cond.nil? && cond['end_time'].nil?
       end
 
       def procedure(type, time, options = {})
-        @present[type] = {
+        @procedures << {
           'type' => type,
           'time' => time,
           'fhir' => :procedure,
           'ccda' => :procedure
         }.merge(options)
-        @procedures << @present[type]
+      end
+
+      def find_procedure(type)
+        @procedures.reverse.find { |p| p['type'] == type }
+      end
+
+      def procedure_performed?(type)
+        p = find_procedure(type)
+        !p.nil?
       end
 
       def diagnostic_report(type, time, num_obs, fhir_method = :diagnostic_report, ccda_method = :no_action)
@@ -75,9 +95,13 @@ module Synthea
         }.merge(options)
       end
 
+      def find_encounter(type)
+        @encounters.reverse.find { |e| e['type'] == type }
+      end
+
       def encounter_end(type, time, options = {})
-        enc = @encounters.find { |x| x['type'] == type && x['end_time'].nil? }
-        if enc
+        enc = find_encounter(type)
+        if !enc.nil? && enc['end_time'].nil?
           enc.merge(options)
           enc['end_time'] = time
         end
@@ -103,21 +127,27 @@ module Synthea
         @medications << med
       end
 
-      def medication_active?(type)
-        !@medications.find { |x| x['type'] == type && x['stop'].nil? }.nil?
+      def find_medication(type)
+        # Returns the most recent medication found matching the referenced type
+        @medications.reverse.find { |x| x['type'] == type }
+      end
+
+      def active_medication?(type)
+        med = find_medication(type)
+        !med.nil? && med['stop'].nil?
       end
 
       def update_med_reasons(type, reasons, update_time)
-        prescription = @medications.find { |x| x['type'] == type && x['stop'].nil? }
-        if prescription
+        prescription = find_medication(type)
+        if prescription && prescription['stop'].nil?
           prescription['reasons'] = reasons
           prescription['time'] = update_time
         end
       end
 
       def medication_stop(type, time, reason)
-        prescription = @medications.find { |x| x['type'] == type && x['stop'].nil? }
-        if prescription
+        prescription = find_medication(type)
+        if prescription && prescription['stop'].nil?
           prescription['stop'] = time
           prescription['stop_reason'] = reason
         end
@@ -133,18 +163,24 @@ module Synthea
         }
       end
 
-      def careplan_active?(type)
-        !@careplans.find { |x| x['type'] == type && x['stop'].nil? }.nil?
+      def find_careplan(type)
+        # Returns the most recent careplan found matching the referenced type
+        @careplans.reverse.find { |c| c['type'] == type }
+      end
+
+      def active_careplan?(type)
+        cp = find_careplan(type)
+        !cp.nil? && cp['stop'].nil?
       end
 
       def careplan_stop(type, time)
-        careplan = @careplans.find { |x| x['type'] == type && x['stop'].nil? }
-        careplan['stop'] = time if careplan
+        careplan = find_careplan(type)
+        careplan['stop'] = time if careplan && careplan['stop'].nil?
       end
 
       def update_careplan_reasons(type, reasons, update_time)
-        careplan = @careplans.find { |x| x['type'] == type && x['stop'].nil? }
-        if careplan
+        careplan = find_careplan(type)
+        if careplan && careplan['stop'].nil?
           careplan['reasons'] = reasons
           careplan['time'] = update_time
         end

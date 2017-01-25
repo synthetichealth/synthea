@@ -435,18 +435,18 @@ module Synthea
       def self.perform_encounter(entity, time)
         patient = entity.record_synthea
         [:coronary_heart_disease, :atrial_fibrillation].each do |diagnosis|
-          if entity[diagnosis] && !entity.record_synthea.present[diagnosis]
+          if entity[diagnosis] && !entity.record_synthea.diagnosed_condition?(diagnosis)
             patient.condition(diagnosis, time, :condition, :condition)
           end
         end
 
         if entity[:careplan] && entity[:careplan][:cardiovascular_disease]
-          if !entity.record_synthea.careplan_active?(:cardiovascular_disease)
+          if !entity.record_synthea.active_careplan?(:cardiovascular_disease)
             entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['activities'], time, entity[:careplan][:cardiovascular_disease]['reasons'])
           else
             entity.record_synthea.update_careplan_reasons(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['reasons'], time)
           end
-        elsif entity.record_synthea.careplan_active?(:cardiovascular_disease)
+        elsif entity.record_synthea.active_careplan?(:cardiovascular_disease)
           entity.record_synthea.careplan_stop(:cardiovascular_disease, time)
         end
 
@@ -454,12 +454,12 @@ module Synthea
           entity[:med_changes][:cardiovascular_disease].each do |med|
             if entity[:medications][med]
               # Add a prescription to the record if it hasn't been recorded yet
-              if !entity.record_synthea.medication_active?(med)
+              if !entity.record_synthea.active_medication?(med)
                 entity.record_synthea.medication_start(med, time, entity[:medications][med]['reasons'])
               else
                 entity.record_synthea.update_med_reasons(med, entity[:medications][med]['reasons'], time)
               end
-            elsif entity.record_synthea.medication_active?(med)
+            elsif entity.record_synthea.active_medication?(med)
               # This prescription can be stopped...
               entity.record_synthea.medication_stop(med, time, :cardiovascular_improved)
             end
@@ -470,7 +470,7 @@ module Synthea
         if entity[:cardiovascular_procedures]
           entity[:cardiovascular_procedures].each do |reason, procedures|
             procedures.each do |proc|
-              unless entity.record_synthea.present[proc]
+              unless entity.record_synthea.procedure_performed?(proc)
                 # TODO: assumes a procedure will only be performed once, might need to be revisited
                 entity.record_synthea.procedure(proc, time, reason: reason)
               end

@@ -436,7 +436,7 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Diagnosed Condition",
             "codes": [
               {
                 "system": "SNOMED-CT",
@@ -514,7 +514,7 @@
         }
       ]
     },
-    
+
     "End_Antibiotics": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "Sore Throat Antibiotic",

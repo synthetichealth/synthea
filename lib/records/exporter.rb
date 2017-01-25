@@ -161,11 +161,11 @@ module Synthea
         #    should also add a condition code such as "history of ___" (ex 429280009)
         case attribute
         when :medications
-          return record.medication_active?(e['type'])
+          return record.active_medication?(e['type'])
         when :careplans
-          return record.careplan_active?(e['type'])
+          return record.active_careplan?(e['type'])
         when :conditions
-          return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date)
+          return record.diagnosed_condition?(e['type']) || (e['end_time'] && e['end_time'] > cutoff_date)
         when :encounters
           return e['type'] == :death_certification
         when :observations
