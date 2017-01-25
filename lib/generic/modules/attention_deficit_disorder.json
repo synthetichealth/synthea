@@ -115,14 +115,14 @@
       "distributed_transition": [
         {
           "distribution": 0.15,
-          "transition": "Age_Guard",
+          "transition": "End_Diagnosis_Encounter_without_BT",
           "remarks": [
             "This will just wait until adulthood before ending the ADHD and terminating the module."
           ]
         },
         {
           "distribution": 0.35,
-          "transition": "Behavior_Therapy",
+          "transition": "End_Diagnosis_Encounter_with_BT",
           "remarks": [
             "Additionally 50% of those treated with medication will also receive behavioral ",
             "therapy, for about 55% in total."
@@ -174,6 +174,12 @@
           "display": "Cognitive and behavioral therapy"
         }
       ],
+      "duration" : { "low" : 1, "high" : 1, "unit" : "hours" },
+      "direct_transition" : "End_Behavior_Treatment_Encounter"
+    },
+
+    "End_Behavior_Treatment_Encounter" : {
+      "type" : "EncounterEnd",
       "complex_transition": [
         {
           "condition": {
@@ -225,7 +231,7 @@
           "distributions": [
             {
               "distribution": 0.4,
-              "transition": "Behavior_Therapy",
+              "transition": "End_Diagnosis_Encounter_with_BT",
               "remarks": [
                 "If no medication is available we defer additional patients to behavioral therapy. ",
                 "The rest get no form of treatment at all."
@@ -233,7 +239,7 @@
             },
             {
               "distribution": 0.6,
-              "transition": "Age_Guard"
+              "transition": "End_Diagnosis_Encounter_without_BT"
             }
           ]
         },
@@ -255,11 +261,11 @@
             },
             {
               "distribution": 0.15,
-              "transition": "Behavior_Therapy"
+              "transition": "End_Diagnosis_Encounter_with_BT"
             },
             {
               "distribution": 0.25,
-              "transition": "Age_Guard"
+              "transition": "End_Diagnosis_Encounter_without_BT"
             }
           ]
         },
@@ -298,11 +304,11 @@
       "distributed_transition": [
         {
           "distribution": 0.5,
-          "transition": "Behavior_Therapy"
+          "transition": "End_Diagnosis_Encounter_with_BT"
         },
         {
           "distribution": 0.5,
-          "transition": "Age_Guard"
+          "transition": "End_Diagnosis_Encounter_without_BT"
         }
       ]
     },
@@ -322,13 +328,24 @@
       "distributed_transition": [
         {
           "distribution": 0.5,
-          "transition": "Behavior_Therapy"
+          "transition": "End_Diagnosis_Encounter_with_BT"
         },
         {
           "distribution": 0.5,
-          "transition": "Age_Guard"
+          "transition": "End_Diagnosis_Encounter_without_BT"
         }
       ]
+    },
+
+    "End_Diagnosis_Encounter_without_BT" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Age_Guard"
+    },
+
+    "End_Diagnosis_Encounter_with_BT" : 
+    {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Behavior_Therapy"
     },
 
     "Age_Guard": {

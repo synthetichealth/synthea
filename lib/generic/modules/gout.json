@@ -197,7 +197,12 @@
           "display": "Allopurinol 100 MG [Zyloprim]"
         }
       ],
-      "direct_transition": "Gout_Treatment_Period"
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Gout_Treatment_Period"
     },
 
     "Gout_Treatment_Period": {

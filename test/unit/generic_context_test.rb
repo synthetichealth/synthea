@@ -146,7 +146,7 @@ class GenericContextTest < Minitest::Test
 
     # Run number two should go all the way to Terminal, but should process Encounter and Death along the way
     # Ensure that the encounter really happens 2 days after the initial run
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), nil])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {}])
     # Ensure that death really happens 2 + 3 days after the initial run
     @patient.record_synthea.expect(:death, nil, [@time.advance(:days => 5)])
     # Run number 2: 7 days after run number 1
@@ -191,7 +191,7 @@ class GenericContextTest < Minitest::Test
     ctx.run(@time, @patient)
     assert(ctx.active?)
     assert(ctx.active_submodule?)
-    assert_equal(nil, ctx.current_encounter)
+    assert_equal('Encounter', ctx.current_encounter)
     assert_equal(6, ctx.history.length)
     assert_equal("MedicationOrder", ctx.history.last.name)
     # The wellness state hasn't been processed yet
@@ -228,7 +228,7 @@ class GenericContextTest < Minitest::Test
     med_stop_time = @time + 2.weeks
     ctx.run(@time, @patient)
     assert(ctx.active_submodule?)
-    assert_equal(nil, ctx.current_encounter)
+    assert_equal("Encounter_In_Submodule", ctx.current_encounter)
     assert_equal("Delay_Yet_Again", ctx.current_state.name)
     assert_equal("Examplitis_Medication", ctx.history.last.name)
 

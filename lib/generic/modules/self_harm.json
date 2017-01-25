@@ -430,15 +430,12 @@
           "display": "Hospital admission, short-term, 24 hours"
         }
       ],
-      "direct_transition": "Attempted_Suicide_Observation_Period"
+      "duration" : { "low" : 24, "high" : 72, "unit": "hours" },
+      "direct_transition": "End_Attempted_Suicide_Observation_Period"
     },
 
-    "Attempted_Suicide_Observation_Period": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 24,
-        "unit": "hours"
-      },
+    "End_Attempted_Suicide_Observation_Period": {
+      "type": "EncounterEnd",
       "direct_transition": "End_Suicide_Attempt"
     },
 
@@ -532,6 +529,11 @@
           "display": "Psychiatric follow-up"
         }
       ],
+      "direct_transition" : "End_Followup_Encounter"
+    },
+
+    "End_Followup_Encounter" : {
+      "type" : "EncounterEnd",
       "remarks": [
         "From the Harvard University study on suicide attempts: ",
         " 7% are fatal ",

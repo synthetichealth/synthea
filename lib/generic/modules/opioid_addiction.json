@@ -211,7 +211,7 @@
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
-      "direct_transition": "Directed_Use"
+      "direct_transition": "End_Directed_Use_Encounter"
     },
 
     "Enter_Directed_Use_Condition2": {
@@ -252,7 +252,7 @@
           "display": "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
         }
       ],
-      "direct_transition": "Directed_Use"
+      "direct_transition": "End_Directed_Use_Encounter"
     },
 
     "Enter_Directed_Use_Condition3": {
@@ -285,7 +285,12 @@
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
         }
       ],
-      "direct_transition": "Directed_Use"
+      "direct_transition": "End_Directed_Use_Encounter"
+    },
+
+    "End_Directed_Use_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Directed_Use"
     },
 
     "Directed_Use": {
@@ -463,6 +468,11 @@
           "display": "Drug rehabilitation and detoxification"
         }
       ],
+      "direct_transition": "End_Addiction_Treatment_Encounter"
+    },
+
+    "End_Addiction_Treatment_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Addiction_Treatment"
     },
 
@@ -498,6 +508,11 @@
           "display": "Drug addiction therapy"
         }
       ],
+      "direct_transition": "End_Recovery_Management_Encounter"
+    },
+
+    "End_Recovery_Management_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Recovery_Management_Delay"
     },
 
@@ -549,13 +564,18 @@
       "distributed_transition": [
         {
           "distribution": 0.98747,
-          "transition": "Directed_Use"
+          "transition": "End_Directed_Use_Overdose_Encounter"
         },
         {
           "distribution": 0.01253,
           "transition": "Death"
         }
       ]
+    },
+
+    "End_Directed_Use_Overdose_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Directed_Use"
     },
 
     "Misuse_Overdose": {
@@ -585,13 +605,18 @@
       "distributed_transition": [
         {
           "distribution": 0.98747,
-          "transition": "Misuse"
+          "transition": "End_Misuse_Overdose_Encounter"
         },
         {
           "distribution": 0.01253,
           "transition": "Death"
         }
       ]
+    },
+
+    "End_Misuse_Overdose_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Misuse"
     },
 
     "Addiction_Overdose": {
@@ -642,7 +667,7 @@
           "transition": "Opioid_Addiction_CarePlan"
         },
         {
-          "transition": "Detoxification"
+          "transition": "End_Addiction_Overdose_Encounter"
         }
       ]
     },
@@ -671,7 +696,12 @@
           "display": "Drug detoxification"
         }
       ],
-      "direct_transition": "Detoxification"
+      "direct_transition": "End_Addiction_Overdose_Encounter"
+    },
+
+    "End_Addiction_Overdose_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Detoxification"
     },
     
     "Death": {

@@ -334,6 +334,11 @@
       }],
       "range" : { "low" : 0, "high" : 10 },
       "unit" : "{count}",
+      "direct_transition" : "End_Shelter_Visit"
+    },
+
+    "End_Shelter_Visit" : {
+      "type" : "EncounterEnd",
       "direct_transition" : "Living_Homeless"
     },
 

@@ -105,12 +105,20 @@ module Synthea
         # encounter.reason is an entry
         reason = ccda_record.conditions.find { |c| c.codes == reason_data[:codes] } if reason_data
 
+        end_time = encounter['end_time'] || encounter['time'] + 15.minutes
+
+        if encounter['discharge']
+          discharge = { 'code' => encounter['discharge'].code,
+                        'code_system' => '2.16.840.1.113883.6.96' }
+        end
+
         ccda_record.encounters << Encounter.new(
           'codes' => ENCOUNTER_LOOKUP[type][:codes],
           'description' => ENCOUNTER_LOOKUP[type][:description],
           'start_time' => time.to_i,
-          'end_time' => time.to_i + 15.minutes,
-          'reason' => reason
+          'end_time' => end_time.to_i,
+          'reason' => reason,
+          'discharge_disposition' => discharge
           # "oid" => "2.16.840.1.113883.3.560.1.79"
         )
       end
@@ -126,10 +134,11 @@ module Synthea
       def self.procedure(procedure, ccda_record)
         type = procedure['type']
         time = procedure['time']
+        duration = procedure['duration'] || 15.minutes
         ccda_record.procedures << Procedure.new('codes' => PROCEDURE_LOOKUP[type][:codes],
                                                 'description' => PROCEDURE_LOOKUP[type][:description],
                                                 'start_time' => time.to_i,
-                                                'end_time' => time.to_i + 15.minutes)
+                                                'end_time' => time.to_i + duration)
       end
 
       def self.careplans(plan, ccda_record)

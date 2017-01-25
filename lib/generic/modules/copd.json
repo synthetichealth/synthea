@@ -329,7 +329,7 @@
           "display": "Pulmonary rehabilitation (regime/therapy)"
         }
       ],
-      "direct_transition": "Living_with_COPD"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
 
     "Smoker_CarePlan": {
@@ -355,7 +355,12 @@
           "display": "Home oxygen therapy (procedure)"
         }
       ],
-      "direct_transition": "Living_with_COPD"
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Living_with_COPD"
     },
 
     "Living_with_COPD": {
@@ -919,7 +924,8 @@
           "display": "Transplant of lung (procedure)"
         }
       ],
-      "direct_transition": "Loop_back_to_Living_with_COPD"
+      "duration" : { "low" : 5, "high" : 7, "unit" : "hours" },
+      "direct_transition": "End_Surgery_Encounter"
     },
 
     "Lung_Volume_Reduction": {
@@ -933,6 +939,11 @@
           "display": "Lung volume reduction surgery (procedure)"
         }
       ],
+      "direct_transition": "End_Surgery_Encounter"
+    },
+
+    "End_Surgery_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Loop_back_to_Living_with_COPD"
     },
 

@@ -242,8 +242,14 @@
           "display": "Urine screening"
         }
       ],
-      "direct_transition": "Take_Antibiotics"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Take_Antibiotics"
+    },
+
     "Take_Antibiotics": {
       "type": "Delay",
       "exact": {
@@ -296,6 +302,11 @@
           "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG [Macrodantin]"
         }
       ],
+      "direct_transition": "End_Followup"
+    },
+
+    "End_Followup" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Take_More_Antibiotics"
     },
 

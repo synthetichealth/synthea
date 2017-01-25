@@ -528,7 +528,7 @@ module Synthea
           amp_str = amputation.to_s
           key = "amputation_#{amp_str}".to_sym
           unless entity.record_synthea.present[key]
-            entity.record_synthea.procedure(key, time, :neuropathy, :procedure, :procedure)
+            entity.record_synthea.procedure(key, time, reason: :neuropathy)
           end
 
           body_part = amp_str.split('_')[1]

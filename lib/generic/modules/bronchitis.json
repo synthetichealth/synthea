@@ -161,6 +161,7 @@
           "display": "Plain chest X-ray (procedure)"
         }
       ],
+      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
 
@@ -175,6 +176,7 @@
           "display": "Sputum examination (procedure)"
         }
       ],
+      "duration" : { "low" : 3, "high" : 15, "unit" : "minutes" },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
 
@@ -189,6 +191,7 @@
           "display": "Measurement of respiratory function (procedure)"
         }
       ],
+      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
 
@@ -334,7 +337,7 @@
           "display": "Dextromethorphan Hydrobromide 1 MG/ML"
         }
       ],
-      "direct_transition": "Wait_for_condition_to_resolve"
+      "direct_transition": "End_Doctor_Visit"
     },
 
     "Acetaminophen": {
@@ -348,6 +351,11 @@
           "display": "Acetaminophen 160 MG"
         }
       ],
+      "direct_transition": "End_Doctor_Visit"
+    },
+
+    "End_Doctor_Visit" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Wait_for_condition_to_resolve"
     },
 

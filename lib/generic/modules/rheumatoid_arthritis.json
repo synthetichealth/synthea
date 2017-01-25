@@ -158,6 +158,11 @@
           "display": "Methotrexate 10 MG [Trexall]"
         }
       ],
+      "direct_transition": "Encounter_Ends_After_DMARD"
+    },
+
+    "Encounter_Ends_After_DMARD" : {
+      "type" : "EncounterEnd",
       "direct_transition": "DMARD_Treatment_Period"
     },
 
@@ -205,6 +210,11 @@
           "display": "predniSONE 2.5 MG [Deltasone]"
         }
       ],
+      "direct_transition": "Encounter_Ends_After_Corticosteroids"
+    },
+
+    "Encounter_Ends_After_Corticosteroids" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Corticosteroid_Treatment"
     },
 

@@ -472,7 +472,7 @@ module Synthea
             procedures.each do |proc|
               unless entity.record_synthea.present[proc]
                 # TODO: assumes a procedure will only be performed once, might need to be revisited
-                entity.record_synthea.procedure(proc, time, reason, :procedure, :procedure)
+                entity.record_synthea.procedure(proc, time, reason: reason)
               end
             end
           end
@@ -507,7 +507,7 @@ module Synthea
           end
 
           emergency_procedures[diagnosis].each do |proc|
-            entity.record_synthea.procedure(proc, time, diagnosis, :procedure, :procedure)
+            entity.record_synthea.procedure(proc, time, reason: diagnosis)
           end
 
           history_conditions[diagnosis].each do |cond|

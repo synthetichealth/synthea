@@ -48,14 +48,13 @@ module Synthea
         @present[type] = nil
       end
 
-      def procedure(type, time, reason, fhir_method = :procedure, ccda_method = :procedure)
+      def procedure(type, time, options = {})
         @present[type] = {
           'type' => type,
           'time' => time,
-          'reason' => reason,
-          'fhir' => fhir_method,
-          'ccda' => ccda_method
-        }
+          'fhir' => :procedure,
+          'ccda' => :procedure
+        }.merge(options)
         @procedures << @present[type]
       end
 
@@ -69,12 +68,19 @@ module Synthea
         }
       end
 
-      def encounter(type, time, reason = nil)
+      def encounter(type, time, options = {})
         @encounters << {
           'type' => type,
-          'time' => time,
-          'reason' => reason
-        }
+          'time' => time
+        }.merge(options)
+      end
+
+      def encounter_end(type, time, options = {})
+        enc = @encounters.find { |x| x['type'] == type && x['end_time'].nil? }
+        if enc
+          enc.merge(options)
+          enc['end_time'] = time
+        end
       end
 
       def immunization(imm, time, fhir_method = :immunization, ccda_method = :immunization)

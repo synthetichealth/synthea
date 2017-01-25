@@ -180,7 +180,7 @@
     "Ear_Infection_Prescribed_Amoxicillin": {
       "type": "MedicationOrder",
       "target_encounter": "Ear_Infection_Encounter",
-      "assign_to_attribute" : "ear_infection_antibiotic",
+      "assign_to_attribute" : "ear_infection_prescription",
       "reason": "Gets_Ear_Infection",
       "codes": [
         {
@@ -189,13 +189,13 @@
           "display": "Amoxicillin 500MG"
         }
       ],
-      "direct_transition": "Ear_Infection_Antibiotic_Taken"
+      "direct_transition": "End_Encounter"
     },
 
     "Ear_Infection_Prescribed_Penicillin": {
       "type": "MedicationOrder",
       "target_encounter": "Ear_Infection_Encounter",
-      "assign_to_attribute" : "ear_infection_antibiotic",
+      "assign_to_attribute" : "ear_infection_prescription",
       "reason": "Gets_Ear_Infection",
       "codes": [
         {
@@ -204,27 +204,13 @@
           "display": "Penicillin V Potassium 250 MG"
         }
       ],
-      "direct_transition": "Ear_Infection_Antibiotic_Taken"
-    },
-
-    "Ear_Infection_Antibiotic_Taken": {
-      "type": "Delay",
-      "range": {
-        "low": 7,
-        "high": 14,
-        "unit": "days"
-      },
-      "direct_transition": "Ear_Infection_Antibiotic_End"
-    },
-    "Ear_Infection_Antibiotic_End": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute" : "ear_infection_antibiotic",
-      "direct_transition": "Next_Wellness_Encounter"
+      "direct_transition": "End_Encounter"
     },
 
     "Ear_Infection_Prescribed_OTC_Painkiller": {
       "type": "MedicationOrder",
       "target_encounter": "Ear_Infection_Encounter",
+      "assign_to_attribute" : "ear_infection_prescription",
       "reason": "Gets_Ear_Infection",
       "codes": [
         {
@@ -236,24 +222,29 @@
           ]
         }
       ],
-      "direct_transition": "Ear_Infection_OTC_Painkiller_Taken"
+      "direct_transition": "End_Encounter"
     },
 
-    "Ear_Infection_OTC_Painkiller_Taken": {
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Ear_Infection_Prescription_Taken"
+    },
+
+    "Ear_Infection_Prescription_Taken": {
       "type": "Delay",
       "range": {
         "low": 7,
         "high": 14,
         "unit": "days"
       },
-      "direct_transition": "Ear_Infection_OTC_Painkiller_End"
+      "direct_transition": "Ear_Infection_Prescription_End"
     },
-
-    "Ear_Infection_OTC_Painkiller_End": {
+    "Ear_Infection_Prescription_End": {
       "type": "MedicationEnd",
-      "medication_order": "Ear_Infection_Prescribed_OTC_Painkiller",
+      "referenced_by_attribute" : "ear_infection_prescription",
       "direct_transition": "Next_Wellness_Encounter"
     },
+
 
     "Next_Wellness_Encounter": {
       "type": "Encounter",

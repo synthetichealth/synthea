@@ -23,6 +23,7 @@
                 "code": "6025007",
                 "display": "Laparoscopic appendectomy"
             }],
+            "duration" : { "low": 45, "high" : 45, "unit": "minutes" },
             "assign_to_attribute" : "Most Recent Surgery",
             "direct_transition": "Terminal"
         },

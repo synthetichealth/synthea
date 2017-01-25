@@ -39,9 +39,6 @@ module Synthea
             end
           end
         end
-        # Each time a run expires, the current_encounter should be set to nil since
-        # any concurrent clinical states should have already been processed.
-        @current_encounter = nil
 
         if Synthea::Config.generic.log && !active? && @logged.nil?
           log_history

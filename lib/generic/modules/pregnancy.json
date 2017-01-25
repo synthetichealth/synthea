@@ -201,7 +201,7 @@
       "distributed_transition": [
         {
           "distribution": 0.179,
-          "transition": "Wait_For_Induced_Abortion",
+          "transition": "End_Initial_Visit_Towards_Abortion",
           "remarks": [
             "See bottom of this module for abortion and miscarriage handling"
           ]
@@ -211,6 +211,11 @@
           "transition": "Pregnancy_Test"
         }
       ]
+    },
+
+    "End_Initial_Visit_Towards_Abortion" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Induced_Abortion"
     },
 
     "Pregnancy_Test": {
@@ -275,7 +280,12 @@
         }
       ],
       "assign_to_attribute": "pregnancy_careplan",
-      "direct_transition": "Week_15"
+      "direct_transition": "End_Prenatal_Initial_Visit"
+    },
+
+    "End_Prenatal_Initial_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_15"
     },
 
     "Week_15": {
@@ -311,9 +321,14 @@
         },
         {
           "distribution": 0.962,
-          "transition": "Week_26"
+          "transition": "End_Week_15_Visit"
         }
       ]
+    },
+
+    "End_Week_15_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_26"
     },
 
     "Week_26": {
@@ -336,7 +351,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_32"
+      "direct_transition": "End_Week_26_Visit"
+    },
+
+    "End_Week_26_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_32"
     },
 
     "Week_32": {
@@ -382,7 +402,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_36"
+      "direct_transition": "End_Week_32_Visit"
+    },
+
+    "End_Week_32_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_36"
     },
 
     "Week_36": {
@@ -454,7 +479,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_38"
+      "direct_transition": "End_Week_36_Visit"
+    },
+
+    "End_Week_36_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_38"
     },
 
     "Week_38": {
@@ -493,7 +523,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_39"
+      "direct_transition": "End_Week_38_Visit"
+    },
+
+    "End_Week_38_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_39"
     },
 
     "Week_39": {
@@ -525,7 +560,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_40"
+      "direct_transition": "End_Week_39_Visit"
+    },
+
+    "End_Week_39_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_40"
     },
 
     "Week_40": {
@@ -564,7 +604,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_41"
+      "direct_transition": "End_Week_40_Visit"
+    },
+
+    "End_Week_40_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_41"
     },
 
     "Week_41": {
@@ -596,7 +641,12 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Week_42"
+      "direct_transition": "End_Week_41_Visit"
+    },
+
+    "End_Week_41_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_42"
     },
 
     "Week_42": {
@@ -628,7 +678,17 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "Induced_Birth"
+      "direct_transition": "End_Week_42_Visit"
+    },
+
+    "End_Week_42_Visit" : {
+      "type" : "EncounterEnd",
+      "discharge_disposition" : {
+        "system" : "NUBC",
+        "code" : "02",
+        "display" : "Transferred to a short term general hospital for inpatient care"
+      },
+      "direct_transition" : "Induced_Birth"
     },
 
     "Induced_Birth": {
@@ -960,9 +1020,14 @@
         },
         {
           "distribution": 0.115,
-          "transition": "Ectopic_Pregnancy"
+          "transition": "End_Initial_Visit_Towards_Ectopic_Pregnancy"
         }
       ]
+    },
+
+    "End_Initial_Visit_Towards_Ectopic_Pregnancy" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Ectopic_Pregnancy"
     },
 
     "Miscarriage_In_Second_Trimester": {
@@ -1003,7 +1068,7 @@
         }
       ],
       "assign_to_attribute": "fatal_pregnancy_complication",
-      "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
+      "direct_transition": "End_Miscarriage_Encounter"
     },
 
     "Blighted_Ovum": {
@@ -1017,7 +1082,7 @@
         }
       ],
       "assign_to_attribute": "fatal_pregnancy_complication",
-      "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
+      "direct_transition": "End_Miscarriage_Encounter"
     },
 
     "Ectopic_Pregnancy": {
@@ -1069,7 +1134,7 @@
           "display": "Excision of fallopian tube and surgical removal of ectopic pregnancy"
         }
       ],
-      "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
+      "direct_transition": "End_Miscarriage_Encounter"
     },
 
     "Late_Fetal_Chromosomal_Anomaly": {
@@ -1088,7 +1153,7 @@
           "display": "Fetus with chromosomal abnormality"
         }
       ],
-      "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
+      "direct_transition": "End_Miscarriage_Encounter"
     },
 
     "Uterine_Anomaly": {
@@ -1102,7 +1167,7 @@
           "display": "Congenital uterine anomaly"
         }
       ],
-      "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
+      "direct_transition": "End_Miscarriage_Encounter"
     },
 
     "Unknown_Complication": {
@@ -1116,7 +1181,12 @@
           "display": "Complication occuring during pregnancy"
         }
       ],
-      "direct_transition": "Wait_For_Miscarriage_Followup_Encounter"
+      "direct_transition": "End_Miscarriage_Encounter"
+    },
+
+    "End_Miscarriage_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Miscarriage_Followup_Encounter"
     },
 
     "Wait_For_Miscarriage_Followup_Encounter": {
@@ -1152,7 +1222,12 @@
     "Fatal_Pregnancy_Complication_Ends": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "fatal_pregnancy_complication",
-      "direct_transition": "Pregnancy_Ends"
+      "direct_transition": "End_Miscarriage_Followup_Encounter"
+    },
+
+    "End_Miscarriage_Followup_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Pregnancy_Ends"
     },
 
     "Wait_For_Induced_Abortion": {
@@ -1195,7 +1270,12 @@
           "display": "Induced termination of pregnancy"
         }
       ],
-      "direct_transition": "Pregnancy_Ends"
+      "direct_transition": "End_Induced_Abortion_Encounter"
+    },
+
+    "End_Induced_Abortion_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Pregnancy_Ends"
     },
 
     "Normal_Pregnancy_Completion": {
@@ -1235,6 +1315,11 @@
     "Pregnancy_CarePlan_Ends": {
       "type": "CarePlanEnd",
       "referenced_by_attribute": "pregnancy_careplan",
+      "direct_transition": "End_Birth_Encounter"
+    },
+
+    "End_Birth_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition": "Pregnancy_Ends"
     },
 

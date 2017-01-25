@@ -213,7 +213,7 @@
             },
             {
               "distribution": 0.9879,
-              "transition": "Terminal"
+              "transition": "End_Encounter"
             }
           ]
         },
@@ -229,7 +229,7 @@
             },
             {
               "distribution": 0.9811,
-              "transition": "Terminal"
+              "transition": "End_Encounter"
             }
           ]
         },
@@ -237,7 +237,7 @@
           "distributions": [
             {
               "distribution": 1,
-              "transition": "Terminal"
+              "transition": "End_Encounter"
             }
           ]
         }
@@ -248,14 +248,19 @@
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "knee",
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Encounter"
     },
 
     "Setup_Hip_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "hip",
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Encounter"
+    },
+
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Terminal"
     },
     
     "Terminal": {

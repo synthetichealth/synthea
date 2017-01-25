@@ -126,11 +126,18 @@ module Synthea
                else
                  :age_senior
                end
-        entity.record_synthea.encounter(type, time, reason)
+        entity.record_synthea.encounter(type, time, reason: reason)
+        # TODO: wellness encounters need their duration defined by the activities performed
+        # the trouble is those activities are split among many modules
+        entity.record_synthea.encounter_end(type, time + 1.hour)
       end
 
       def self.emergency_encounter(entity, time, reason = nil)
-        entity.record_synthea.encounter(:emergency, time, reason)
+        entity.record_synthea.encounter(:emergency, time, reason: reason)
+        # TODO: emergency encounters need their duration to be defined by the activities performed
+        # based on the emergencies given here (heart attack, stroke)
+        # assume people will be in the hospital for observation for a few days
+        entity.record_synthea.encounter_end(:emergency, time + 4.days)
       end
     end
   end

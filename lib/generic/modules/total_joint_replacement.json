@@ -135,7 +135,18 @@
           "display": "Stretching exercises"
         }
       ],
-      "direct_transition": "Delay_For_Recovery"
+      "direct_transition": "In_Hospital_Post_Surgery_Recovery"
+    },
+
+    "In_Hospital_Post_Surgery_Recovery" : {
+      "type" : "Delay",
+      "range" : { "low" : 3, "high" : 5, "unit" : "days" },
+      "direct_transition" : "End_Encounter"
+    },
+
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Delay_For_Recovery"
     },
 
     "Delay_For_Recovery": {
