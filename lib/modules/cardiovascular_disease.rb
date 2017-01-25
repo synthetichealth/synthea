@@ -152,7 +152,7 @@ module Synthea
       end
 
       rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoker], [:coronary_heart_disease?] do |_time, entity|
-        return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:cholesterol].nil?
+        return if entity[:age].nil? || entity.vital_sign(:systolic_blood_pressure).nil? || entity[:gender].nil? || entity[:cholesterol].nil?
         age = entity[:age]
         gender = entity[:gender]
         bp_treated = entity[:bp_treated?] || false
@@ -249,15 +249,15 @@ module Synthea
       }
 
       rule :calculate_atrial_fibrillation_risk, [:age, :bmi, :blood_pressure, :gender], [:atrial_fibrillation_risk] do |_time, entity|
-        if entity[:atrial_fibrillation] || entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil? || entity[:bmi].nil? || entity[:age] < 45
+        if entity[:atrial_fibrillation] || entity[:age].nil? || entity.vital_sign(:systolic_blood_pressure).nil? || entity[:gender].nil? || entity[:bmi].nil? || entity[:age] < 45
           return
         end
         age = entity[:age]
         af_score = 0
         age_range = [(age - 45) / 5, 8].min
         af_score += age_af[entity[:gender]][age_range]
-        af_score += 1 if entity[:bmi] >= 30
-        af_score += 1 if entity[:blood_pressure][0] >= 160
+        af_score += 1 if entity.get_vital_sign_value(:bmi) >= 30
+        af_score += 1 if entity.get_vital_sign_value(:systolic_blood_pressure) >= 160
         af_score += 1 if entity[:bp_treated?]
         af_score = [[af_score, 0].max, 10].min
 
@@ -323,10 +323,10 @@ module Synthea
       atrial_fibrillation_stroke_points = { 'M' => 4, 'F' => 6 }
 
       rule :calculate_stroke_risk, [:age, :diabetes, :coronary_heart_disease, :blood_pressure, :stroke_history, :smoker], [:stroke_risk] do |_time, entity|
-        return if entity[:age].nil? || entity[:blood_pressure].nil? || entity[:gender].nil?
+        return if entity[:age].nil? || entity.vital_sign(:systolic_blood_pressure).nil? || entity[:gender].nil?
         age = entity[:age]
         gender = entity[:gender]
-        blood_pressure = entity[:blood_pressure][0]
+        blood_pressure = entity.get_vital_sign_value(:systolic_blood_pressure)
         # https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
         # calculate stroke risk based off of prevalence of stroke in age group for people younger than 54. Framingham score system does not cover these.
 

@@ -212,7 +212,7 @@ module Synthea
         str << "#{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]}"
 
         conditions = track_conditions(person)
-        weight = (person[:weight] * 2.20462).to_i
+        weight = (person.get_vital_sign_value(:weight) * 2.20462).to_i
         str << " #{weight} lbs. -- #{conditions.join(', ')}"
 
         puts str

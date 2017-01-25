@@ -191,12 +191,53 @@ class GenericLogicTest < Minitest::Test
   def test_prior_state
     # @context.history = [] # can't actually set this here, but we know it's true
     refute(do_test('priorStateDoctorVisitTest'))
+    refute(do_test('priorStateCarePlanSinceDoctorVisitTest'))
+    refute(do_test('priorStateDoctorVisitWithin3YearsTest'))
+    refute(do_test('priorStateCarePlanSinceDoctorVisitWithin3YearsTest'))
 
-    @context.history << Synthea::Generic::States::Simple.new(@context, "SomeOtherState")
+    state = Synthea::Generic::States::Simple.new(@context, "CarePlan")
+    state.entered = state.exited = @time
+    @context.history << state
     refute(do_test('priorStateDoctorVisitTest'))
+    assert(do_test('priorStateCarePlanSinceDoctorVisitTest'))
+    refute(do_test('priorStateDoctorVisitWithin3YearsTest'))
+    assert(do_test('priorStateCarePlanSinceDoctorVisitWithin3YearsTest'))
 
-    @context.history << Synthea::Generic::States::Simple.new(@context, "DoctorVisit")
+    state = Synthea::Generic::States::Simple.new(@context, "DoctorVisit")
+    state.entered = state.exited = @time
+    @context.history << state
     assert(do_test('priorStateDoctorVisitTest'))
+    refute(do_test('priorStateCarePlanSinceDoctorVisitTest'))
+    assert(do_test('priorStateDoctorVisitWithin3YearsTest'))
+    refute(do_test('priorStateCarePlanSinceDoctorVisitWithin3YearsTest'))
+
+    @time += 2.years
+
+    state = Synthea::Generic::States::Simple.new(@context, "CarePlan")
+    state.entered = state.exited
+    @context.history << state
+    assert(do_test('priorStateDoctorVisitTest'))
+    assert(do_test('priorStateCarePlanSinceDoctorVisitTest'))
+    assert(do_test('priorStateDoctorVisitWithin3YearsTest'))
+    assert(do_test('priorStateCarePlanSinceDoctorVisitWithin3YearsTest'))
+
+    @time += 5.years
+
+    assert(do_test('priorStateDoctorVisitTest'))
+    assert(do_test('priorStateCarePlanSinceDoctorVisitTest'))
+    refute(do_test('priorStateDoctorVisitWithin3YearsTest'))
+    assert(do_test('priorStateCarePlanSinceDoctorVisitWithin3YearsTest'))
+  end
+
+  def test_vital_signs
+    @patient[:vital_signs] = {}
+    assert_raises { do_test('SystolicBloodPressureGt120') }
+
+    @patient.set_vital_sign(:systolic_blood_pressure, 100, 'mmHg')
+    refute(do_test('SystolicBloodPressureGt120'))
+
+    @patient.set_vital_sign(:systolic_blood_pressure, 140, 'mmHg')
+    assert(do_test('SystolicBloodPressureGt120'))
   end
 
   def test_observations

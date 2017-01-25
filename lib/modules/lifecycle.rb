@@ -29,8 +29,8 @@ module Synthea
           entity[:sexual_orientation] = Synthea::World::Demographics::SEXUAL_ORIENTATION.pick.to_s
           entity[:fingerprint] = Synthea::Fingerprint.generate if Synthea::Config.population.generate_fingerprints
           # new babies are average weight and length for American newborns
-          entity[:height] = 51 # centimeters
-          entity[:weight] = 3.5 # kilograms
+          entity.set_vital_sign(:height, 51.0, 'cm')
+          entity.set_vital_sign(:weight, 3.5, 'kg')
           entity[:multiple_birth] = rand(3) + 1 if rand < Synthea::Config.lifecycle.prevalence_of_twins
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
@@ -140,27 +140,31 @@ module Synthea
             entity.events.process(event)
             age = entity[:age]
             gender = entity[:gender]
+            height = entity.get_vital_sign_value(:height)
+            weight = entity.get_vital_sign_value(:weight)
             if age <= 20
               if gender == 'M'
-                entity[:height] += @male_growth.call # centimeters
-                entity[:weight] += @male_weight.call # kilograms
+                height += @male_growth.call # centimeters
+                weight += @male_weight.call # kilograms
               elsif gender == 'F'
-                entity[:height] += @female_growth.call # centimeters
-                entity[:weight] += @female_weight.call # kilograms
+                height += @female_growth.call # centimeters
+                weight += @female_weight.call # kilograms
               end
             elsif age <= Synthea::Config.lifecycle.adult_max_weight_age
               # getting older and fatter
               range = Synthea::Config.lifecycle.adult_weight_gain
               adult_weight_gain = rand(range.first..range.last)
-              entity[:weight] += adult_weight_gain
+              weight += adult_weight_gain
             elsif age >= Synthea::Config.lifecycle.geriatric_weight_loss_age
               # getting older and wasting away
               range = Synthea::Config.lifecycle.geriatric_weight_loss
               geriatric_weight_loss = rand(range.first..range.last)
-              entity[:weight] -= geriatric_weight_loss
+              weight -= geriatric_weight_loss
             end
             # set the BMI
-            entity[:bmi] = calculate_bmi(entity[:height], entity[:weight])
+            entity.set_vital_sign(:height, height, 'cm')
+            entity.set_vital_sign(:weight, weight, 'kg')
+            entity.set_vital_sign(:bmi, calculate_bmi(height, weight), 'kg/m2')
           end
         end
       end
@@ -330,12 +334,6 @@ module Synthea
           entity.record_synthea.observation(:cause_of_death, time, reason, :observation, :no_action)
           entity.record_synthea.diagnostic_report(:death_certificate, time, 1) # note: ccda already no action here
         end
-      end
-
-      def self.record_height_weight(entity, time)
-        entity.record_synthea.observation(:weight, time, entity[:weight], :observation, :vital_sign)
-        entity.record_synthea.observation(:height, time, entity[:height], :observation, :vital_sign)
-        entity.record_synthea.observation(:bmi, time, entity[:bmi], :observation, :vital_sign)
       end
     end
   end

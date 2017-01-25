@@ -114,6 +114,12 @@
     "referenced_by_attribute" : "Diabetes Test Performed",
     "operator" : "is not nil"
   },
+  "SystolicBloodPressureGt120" : {
+    "condition_type" : "Vital Sign",
+    "vital_sign" : "Systolic Blood Pressure",
+    "operator" : ">",
+    "value" : 120
+  },
   "diabetesConditionTest" : {
     "condition_type" : "Active Condition",
     "codes": [{
@@ -151,6 +157,22 @@
   "priorStateDoctorVisitTest" : {
     "condition_type": "PriorState",
     "name" : "DoctorVisit"
+  },
+  "priorStateCarePlanSinceDoctorVisitTest" : {
+    "condition_type": "PriorState",
+    "name" : "CarePlan",
+    "since" : "DoctorVisit"
+  },
+  "priorStateDoctorVisitWithin3YearsTest" : {
+    "condition_type": "PriorState",
+    "name" : "DoctorVisit",
+    "within" : { "quantity" : 3, "unit" : "years" }
+  },
+  "priorStateCarePlanSinceDoctorVisitWithin3YearsTest" : {
+    "condition_type": "PriorState",
+    "name" : "CarePlan",
+    "since" : "DoctorVisit",
+    "within" : { "quantity" : 3, "unit" : "years" }
   },
   "andAllTrueTest": {
     "condition_type": "And",
