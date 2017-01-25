@@ -470,7 +470,7 @@ module Synthea
         if entity[:cardiovascular_procedures]
           entity[:cardiovascular_procedures].each do |reason, procedures|
             procedures.each do |proc|
-              unless entity.record_synthea.procedure_perfomed?(proc)
+              unless entity.record_synthea.procedure_performed?(proc)
                 # TODO: assumes a procedure will only be performed once, might need to be revisited
                 entity.record_synthea.procedure(proc, time, reason: reason)
               end
