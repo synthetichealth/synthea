@@ -571,7 +571,7 @@ module Synthea
       end
 
       class VitalSign < State
-        attr_accessor :vital_sign, :range, :exact, :unit
+        attr_accessor :vital_sign, :range, :exact, :unit, :target_encounter
 
         required_field or: [:range, :exact]
         required_field and: [:vital_sign, :unit]
