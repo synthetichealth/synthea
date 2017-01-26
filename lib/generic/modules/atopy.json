@@ -1,0 +1,206 @@
+{
+  "name": "Atopy",
+  "remarks": [
+    "'Atopy' specifically refers to the genetic tendency to develop allergic diseases.",
+    "https://www.aaaai.org/conditions-and-treatments/conditions-dictionary/atopy",
+
+    "Atopy is the most significant factor in the 'atopic triad' of: ",
+    "1. Atopic Dermatitis (Eczema) ",
+    "2. Asthma ",
+    "3. Environmental and Food Allergies ",
+    "4. Allergic Rhinitis (Hay Fever) ",
+
+    "Okay... so maybe the atopic triad could be a 'quartet'.",
+
+    "Up to 20% of children display signs of atopy, 50% by age 1 and 95% by age 5.",
+    "75% of children with atopic symptoms outgrow them by adolescence or early ",
+    "adulthood. However, 25% show symptoms for life. It is of course possible to be ",
+    "non-atopic and still develop allergies and asthma.",
+
+    "The prevalence of atopy and allergies has increased substantially in the 20th ",
+    "century, especially after the 1960's, typically at a rate of 0.15 - 0.3% per ",
+    "year. To model this historical increase in allergy prevalence atopy is the driving ",
+    "factor. In this model the incidence of atopy increases at 1.875% per decade, or about ",
+    "0.19% per year since 1940.",
+
+    "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4629767/",
+
+    "There is a complex relationship between allergies, asthma, and eczema.",
+    "In a word, those with atopy have a significantly increased risk of severe ",
+    "and moderate allergies.",
+
+    "The final model: ",
+    "   Total                    ,-->  85% Allergic Rhinitis               (12.8% overall)",
+    " Population ---> 15% ATOPIC --->  55% Atopic Dermatitis               (8.25% overall)",
+    "                           |`-->  45% Asthma                          (6.75% overall)",
+    "                           `--->  25% Food & Environmental Allergies  (3.75% overall)",
+
+    "Above, 15% of all people are atopic by 2010."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1940
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1950
+          },
+          "distributions": [
+            {
+              "distribution": 0.01875,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.98125,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1960
+          },
+          "distributions": [
+            {
+              "distribution": 0.0375,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.9625,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1970
+          },
+          "distributions": [
+            {
+              "distribution": 0.05625,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.94375,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1980
+          },
+          "distributions": [
+            {
+              "distribution": 0.075,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.925,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1990
+          },
+          "distributions": [
+            {
+              "distribution": 0.09375,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.90625,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2000
+          },
+          "distributions": [
+            {
+              "distribution": 0.1125,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.8875,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2010
+          },
+          "distributions": [
+            {
+              "distribution": 0.13125,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.86875,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "remarks": [
+            "After 2010, the overall prevalence of atopy settles at 15%."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Is_Atopic"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Is_Atopic": {
+      "type": "SetAttribute",
+      "attribute": "atopic",
+      "value": true,
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
