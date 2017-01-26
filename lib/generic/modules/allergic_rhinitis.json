@@ -11,18 +11,66 @@
 
     "Initial": {
       "type": "Initial",
-      "distributed_transition": [
+      "direct_transition": "Delay_For_Atopy"
+    },
+
+    "Delay_For_Atopy": {
+      "type": "Delay",
+      "remarks": [
+        "The Atopy module must be processed before any of the allergy modules so ",
+        "atopy can appropriately influence allergies. Delaying the smallest possible ",
+        "time step to ensure this happens."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "conditional_transition": [
         {
-          "distribution": 0.157,
-          "transition": "Delay_Until_Early_Mid_Childhood",
-          "remarks": [
-            "Estimated 50 million Americans affected by nasal allergies (ACAAI). 50M / 318.9M => 15.7%.",
-            "It makes more sense to wait until early-mid childhood (2-6 years old) for these ",
-            "symptoms to appear and to be diagnosed by a doctor."
-          ]
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "transition": "Atopic"
         },
         {
-          "distribution": 0.843,
+          "transition": "Not_Atopic"
+        }
+      ]
+    },
+
+    "Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "85% of all atopic patients develop allergic rhinitis. See the Atopy model for more info."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Delay_Until_Early_Mid_Childhood"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Not_Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "Estimated 50 million Americans affected by nasal allergies (ACAAI). 50M / 318.9M => 15.7%.",
+        "It makes more sense to wait until early-mid childhood (2-6 years old) for these ",
+        "symptoms to appear and to be diagnosed by a doctor."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.029,
+          "transition": "Delay_Until_Early_Mid_Childhood"
+        },
+        {
+          "distribution": 0.971,
           "transition": "Terminal"
         }
       ]

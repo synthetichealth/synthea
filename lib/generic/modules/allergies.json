@@ -1,0 +1,425 @@
+{
+  "name": "Allergies and Treatment",
+  "remarks": [
+    "This module onsets allergies and manages the treatment of allergies and ",
+    "allergic diseases. After the initial series of AllergyOnset states, the ",
+    "module waits for an allergic condition (as a result of a person's allergies)",
+    "to prompt treatment.",
+
+    "Primary reference for allergy statistics: ",
+    "https://web.archive.org/web/20100407195412/http://www.niaid.nih.gov/topics/foodAllergy/understanding/Pages/quickFacts.aspx"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_For_Atopy"
+    },
+
+    "Delay_For_Atopy": {
+      "type": "Delay",
+      "remarks": [
+        "The Atopy module must be processed before any of the allergy modules so ",
+        "atopy can appropriately influence allergies. Delaying the smallest possible ",
+        "time step to ensure this happens."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Chance_of_Peanut_Allergy"
+    },
+
+    "Chance_of_Peanut_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Peanut_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_TreeNut_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Peanut_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_TreeNut_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Peanut_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91935009",
+          "display": "Allergy to peanuts"
+        }
+      ],
+      "direct_transition": "Chance_of_TreeNut_Allergy"
+    },
+
+    "Chance_of_TreeNut_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "TreeNut_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Fish_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "TreeNut_Allergy"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Chance_of_Fish_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "TreeNut_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91934008",
+          "display": "Allergy to nut"
+        }
+      ],
+      "direct_transition": "Chance_of_Fish_Allergy"
+    },
+
+    "Chance_of_Fish_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Fish_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Shellfish_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "Fish_Allergy"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Chance_of_Shellfish_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Fish_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "417532002",
+          "display": "Allergy to fish"
+        }
+      ],
+      "direct_transition": "Chance_of_Shellfish_Allergy"
+    },
+
+    "Chance_of_Shellfish_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Shellfish_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Wheat_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Shellfish_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Chance_of_Wheat_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Shellfish_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "300913006",
+          "display": "Shellfish allergy"
+        }
+      ],
+
+      "direct_transition": "Chance_of_Wheat_Allergy"
+    },
+
+    "Chance_of_Wheat_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "Wheat allergy is different than celiac disease. There are few studies on prevalence of wheat allergy.",
+        "A recent study 0.4% of US adults reported an allergy to wheat diagnosed via a doctor [6]. The prevalence ",
+        "of wheat allergy is highest amongst children in the US, ranging from 0.4% to 1.0% of the population.",
+        "http://www.drschaer-institute.com/us/wheat-allergy/epidemiology-1043.html",
+
+        "Wheat allergy is typically outgrown by adulthood — about 65 percent of children with a wheat allergy ",
+        "will outgrow it by the time they are 12. Based on prevalences we assume that adult onset of ",
+        "the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Wheat_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Eggs_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Wheat_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_Eggs_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wheat_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "420174000",
+          "display": "Allergy to wheat"
+        }
+      ],
+      "direct_transition": "Chance_of_Eggs_Allergy"
+    },
+
+    "Chance_of_Eggs_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "Experts estimate that as many as 2 percent of children are allergic to eggs. ",
+        "Fortunately, studies show that about 70 percent of children with an egg allergy ",
+        "will outgrow the condition by age 16.",
+
+        "http://acaai.org/allergies/types/food-allergies/types-food-allergy/egg-allergy",
+        "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Eggs_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Eggs_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Eggs_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91930004",
+          "display": "Allergy to eggs"
+        }
+      ],
+      "direct_transition": "Chance_of_Dairy_Allergy"
+    },
+
+    "Chance_of_Dairy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "The prevalence of dairy/milk allergy in the general population is 1-2% for young ",
+        "children and 0.2-0.4% in the general population. About 80 percent of children are ",
+        "likely to outgrow their milk allergy before they are 16. Based on prevalences we ",
+        "assume that adult onset of the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Dairy_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Living_With_Allergies"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.0015,
+              "transition": "Dairy_Allergy"
+            },
+            {
+              "distribution": 0.9985,
+              "transition": "Living_With_Allergies"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Dairy_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "425525006",
+          "display": "Allergy to dairy product"
+        }
+      ],
+      "direct_transition": "Living_With_Allergies"
+    },
+
+    "Living_With_Allergies": {
+      "type": "Simple",
+      "remarks": [
+        "Whatever allergies the patients have they will continue to passively ",
+        "live with them until an allergic condition or a severe reaction ",
+        "prompts a visit to their PCP and a referral to an allergist. Allergies ",
+        "aren't officially diagnosed until after an allergy test is performed."
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

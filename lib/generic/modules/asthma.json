@@ -10,54 +10,107 @@
 
     "Initial": {
       "type": "Initial",
-      "distributed_transition": [
+      "direct_transition": "Delay_For_Atopy"
+    },
+
+    "Delay_For_Atopy": {
+      "type": "Delay",
+      "remarks": [
+        "The Atopy module must be processed before any of the allergy modules so ",
+        "atopy can appropriately influence allergies. Delaying the smallest possible ",
+        "time step to ensure this happens."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "conditional_transition": [
         {
-          "distribution": 0.016,
-          "transition": "Childhood_Only_Asthma",
-          "remarks": [
-            "8.6% of children have asthma, 7.4% of adults. To model childhood-only, lifetime, and adult-onset",
-            "asthma I try to distribute the patients in a reasonable (but slightly arbitrary) manner:",
-            "       ,-> 1.6% childhood-only                              ",
-            " birth --> 7.0% lifetime             = 8.6% childhood asthma",
-            "       `-> 0.4% adult-onset          = 7.4% adult asthma    ",
-            "Collectively this sums to 9% of people getting asthma in their lifetime, which is consistent with",
-            "my extrapolation based on the AAAAI's estimates: (1/14 had asthma in 2001, 1/12 in 2009, so I extrapolate",
-            "1/11 for 2016)."
-          ]
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "transition": "Atopic"
         },
         {
-          "distribution": 0.07,
-          "transition": "Childhood_Asthma_Begins",
-          "remarks": [
-            "Most people with asthma will be dealing with it for life, starting with childhood"
-          ]
-        },
-        {
-          "distribution": 0.004,
-          "transition": "Adult_Onset_Asthma"
-        },
-        {
-          "distribution": 0.91,
-          "transition": "Terminal",
-          "remarks": [
-            "Most people will never get asthma in their lifetime"
-          ]
+          "transition": "Not_Atopic"
         }
       ]
     },
 
-    "Childhood_Only_Asthma": {
-      "type": "SetAttribute",
-      "attribute": "asthma_type",
-      "value": "childhood-only",
-      "direct_transition": "Childhood_Asthma_Begins"
+    "Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "45% of all atopic patients develop asthma. See the Atopy model for more info."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.45,
+          "transition": "Asthma_Incidence"
+        },
+        {
+          "distribution": 0.55,
+          "transition": "Terminal"
+        }
+      ]
     },
 
-    "Adult_Onset_Asthma": {
-      "type": "SetAttribute",
-      "attribute": "asthma_type",
-      "value": "adult-onset",
-      "direct_transition": "Delay_Until_Adulthood"
+    "Not_Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "There is a possibility that non-atopic patients develop asthma. However, ",
+        "this asthma is likely more environmental and more likely to develop in ",
+        "adulthood. Overall, 8-9% of the population gets asthma. In this model 6.8% ",
+        "of those patients are atopic. The remaining 1.2-2% are not."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.023,
+          "transition": "Asthma_Incidence"
+        },
+        {
+          "distribution": 0.977,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Asthma_Incidence": {
+      "type": "Simple",
+      "remarks": [
+        "8.6% of children have asthma, 7.4% of adults. To model childhood-only, lifetime, and adult-onset",
+        "asthma I try to distribute the patients in a reasonable (but slightly arbitrary) manner:",
+        "       ,-> 1.6% childhood-only                              ",
+        " birth --> 7.0% lifetime             = 8.6% childhood asthma",
+        "       `-> 0.4% adult-onset          = 7.4% adult asthma    ",
+        "Collectively this sums to 9% of people getting asthma in their lifetime, which is consistent with",
+        "my extrapolation based on the AAAAI's estimates: (1/14 had asthma in 2001, 1/12 in 2009, so I extrapolate",
+        "1/11 for 2016)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.95,
+          "transition": "Delay_For_Childhood_Asthma"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Delay_Until_Adulthood"
+        }
+      ]
+    },
+
+    "Delay_For_Childhood_Asthma": {
+      "type": "Delay",
+      "remarks": [
+        "Typically asthma symptoms don't appear until the child is at least 3."
+      ],
+      "range": {
+        "low": 2,
+        "high": 5,
+        "unit": "years"
+      },
+      "direct_transition": "Childhood_Asthma_Begins"
     },
 
     "Delay_Until_Adulthood": {
@@ -81,7 +134,7 @@
           "display": "Childhood asthma"
         }
       ],
-      "direct_transition": "Cough"
+      "direct_transition": "Asthma_Diagnosis"
     },
 
     "Adult_Asthma_Begins": {
@@ -95,26 +148,6 @@
           "display": "Asthma"
         }
       ],
-      "direct_transition": "Cough"
-    },
-
-    "Cough": {
-      "type": "Symptom",
-      "symptom": "Cough",
-      "range": {
-        "low": 50,
-        "high": 100
-      },
-      "direct_transition": "Shortness_Of_Breath"
-    },
-
-    "Shortness_Of_Breath": {
-      "type": "Symptom",
-      "symptom": "Shortness of Breath",
-      "range": {
-        "low": 50,
-        "high": 100
-      },
       "direct_transition": "Asthma_Diagnosis"
     },
 
@@ -496,7 +529,7 @@
       "type": "EncounterEnd",
       "direct_transition": "Maintaining_Asthma"
     },
-    
+
     "Terminal": {
       "type": "Terminal"
     }
