@@ -119,7 +119,7 @@
 
     "Has_Seasonal_Allergic_Rhinitis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "has_allergic_rhinitis",
+      "assign_to_attribute": "allergic_rhinitis",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
       "codes": [
         {
@@ -133,7 +133,7 @@
 
     "Has_Perennial_Allergic_Rhinitis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "has_allergic_rhinitis",
+      "assign_to_attribute": "allergic_rhinitis",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
       "codes": [
         {
@@ -156,7 +156,7 @@
 
     "Has_Perennial_And_Seasonal_Allergic_Rhinitis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "has_allergic_rhinitis",
+      "assign_to_attribute": "allergic_rhinitis",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
       "codes": [
         {
@@ -171,7 +171,7 @@
     "Allergic_Rhinitis_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "has_allergic_rhinitis",
+      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -185,18 +185,34 @@
         "common and equally likely to be prescribed for the treatment of seasonal",
         "nasal allergies."
       ],
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "distribution": 0.33,
-          "transition": "Prescribe_OTC_Medication_Option_1"
+          "condition": {
+            "condition_type": "Active Medication",
+            "referenced_by_attribute": "otc_antihistamine"
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Living_With_Allergic_Rhinitis"
+            }
+          ]
         },
         {
-          "distribution": 0.34,
-          "transition": "Prescribe_OTC_Medication_Option_2"
-        },
-        {
-          "distribution": 0.33,
-          "transition": "Prescribe_OTC_Medication_Option_3"
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_OTC_Medication_Option_1"
+            },
+            {
+              "distribution": 0.34,
+              "transition": "Prescribe_OTC_Medication_Option_2"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_OTC_Medication_Option_3"
+            }
+          ]
         }
       ]
     },
@@ -204,8 +220,8 @@
     "Prescribe_OTC_Medication_Option_1": {
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "assign_to_attribute": "otc_medication",
-      "reason": "has_allergic_rhinitis",
+      "assign_to_attribute": "otc_antihistamine",
+      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -219,8 +235,8 @@
     "Prescribe_OTC_Medication_Option_2": {
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "assign_to_attribute": "otc_medication",
-      "reason": "has_allergic_rhinitis",
+      "assign_to_attribute": "otc_antihistamine",
+      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -234,8 +250,8 @@
     "Prescribe_OTC_Medication_Option_3": {
       "type": "MedicationOrder",
       "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "assign_to_attribute": "otc_medication",
-      "reason": "has_allergic_rhinitis",
+      "assign_to_attribute": "otc_antihistamine",
+      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "RxNorm",
@@ -248,246 +264,18 @@
 
     "Living_With_Allergic_Rhinitis": {
       "type": "EncounterEnd",
-      "direct_transition": "Immunotherapy_Guard"
-    },
-    "Immunotherapy_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "And",
-        "conditions": [
-          {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 12,
-            "unit": "years",
-            "remarks": [
-              "They typically don't give immunotherapy treatment to young children"
-            ]
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "immunotherapy_status",
-            "operator": "is nil"
-          }
-        ]
-      },
-      "direct_transition": "Delay_For_Consultation"
-    },
-
-    "Delay_For_Consultation": {
-      "type": "Delay",
-      "remarks": [
-        "This state is used to stagger the age that patient's consider/begin ",
-        "immunotherapy treatment. Patients can now begin receiving treatment ",
-        "between age 12 and age 17."
-      ],
-      "range": {
-        "low": 0,
-        "high": 5,
-        "unit": "years"
-      },
-      "direct_transition": "Immunotherapy_Consultation"
-    },
-
-    "Immunotherapy_Consultation": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "has_allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "170837001",
-          "display": "Allergic disorder initial assessment"
-        }
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.75,
-          "transition": "Immunotherapy_Given"
-        },
-        {
-          "distribution": 0.25,
-          "transition": "Immunotherapy_Not_Given",
-          "remarks": [
-            "The distribution here is somewhat arbitrary. I could not find reasonable stats for",
-            "what percentage of people are given immunotherapy but it's not everyone.",
-            "I went with a 75/25 split. Reasons to not give immunotherapy include fear of needles,",
-            "pre-existing immune conditions (like AIDS), and prohibitive cost."
-          ]
-        }
-      ]
-    },
-
-    "Immunotherapy_Given": {
-      "type": "SetAttribute",
-      "attribute": "immunotherapy_status",
-      "value": "given",
-      "direct_transition": "Immunotherapy_CarePlan"
-    },
-
-    "Immunotherapy_Not_Given": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
-    },
-
-    "Immunotherapy_CarePlan": {
-      "type": "CarePlanStart",
-      "target_encounter": "Immunotherapy_Consultation",
-      "reason": "has_allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "170836005",
-          "display": "Allergic disorder monitoring"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "764101000000108",
-          "display": "Allergen immunotherapy drugs Band 1"
-        }
-      ],
-      "direct_transition": "Allergy_Screening_Test"
-    },
-
-    "Allergy_Screening_Test": {
-      "type": "Procedure",
-      "target_encounter": "Immunotherapy_Consultation",
-      "reason": "has_allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "395142003",
-          "display": "Allergy screening test"
-        }
-      ],
-      "duration" : { "low" : 30, "high" : 60, "unit" : "minutes" },
-      "remarks" : ["Skin testing is fast. For both types of skin tests, positive reactions usually appear within 20 minutes.",
-                   "http://acaai.org/allergies/treatment/allergy-testing"],
-      "direct_transition": "End_Consultation"
-    },
-
-    "End_Consultation" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Initialize_Immunotherapy_Counter"
-    },
-
-    "Initialize_Immunotherapy_Counter": {
-      "type": "SetAttribute",
-      "attribute": "immunotherapy_counter",
-      "value": 0,
-      "direct_transition": "Undergoing_Immunotherapy_Treatment"
-    },
-
-    "Undergoing_Immunotherapy_Treatment": {
-      "type": "Delay",
-      "remarks": [
-        "Patients get immunotherapy treatments for an average of 5 years.",
-        "Given monthly appointments we count a total of 60 appointments before ",
-        "ending the immunotherapy."
-      ],
-      "range": {
-        "low": 3,
-        "high": 4,
-        "unit": "weeks"
-      },
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "immunotherapy_counter",
-            "operator": "<",
-            "value": 60
-          },
-          "transition": "Immunotherapy_Treatment"
-        },
-        {
-          "transition": "Immunotherapy_Treatment_Complete"
-        }
-      ]
-    },
-
-    "Immunotherapy_Treatment": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "has_allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "371883000",
-          "display": "Outpatient procedure"
-        }
-      ],
-      "direct_transition": "Immunotherapy_Procedure"
-    },
-
-    "Immunotherapy_Procedure": {
-      "type": "Procedure",
-      "target_encounter": "Immunotherapy_Treatment",
-      "reason": "has_allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "180256009",
-          "display": "Subcutaneous immunotherapy"
-        }
-      ],
-      "duration" : { "low" : 15, "high" : 60, "unit" : "minutes" },
-      "direct_transition": "End_Treatment_Session"
-    },
-
-    "End_Treatment_Session" : {
-      "type" : "EncounterEnd",
-      "direct_transition": "Count_A_Treatment"
-    },
-
-    "Count_A_Treatment": {
-      "type": "Counter",
-      "action": "increment",
-      "attribute": "immunotherapy_counter",
-      "direct_transition": "Undergoing_Immunotherapy_Treatment"
-    },
-
-    "Immunotherapy_Treatment_Complete": {
-      "type": "Simple",
       "direct_transition": "Allergic_Rhinitis_Subsides"
     },
 
     "Allergic_Rhinitis_Subsides": {
       "type": "ConditionEnd",
-      "referenced_by_attribute": "has_allergic_rhinitis",
+      "referenced_by_attribute": "allergic_rhinitis",
       "direct_transition": "OTC_Medication_End"
     },
 
     "OTC_Medication_End": {
       "type": "MedicationEnd",
-      "referenced_by_attribute": "otc_medication",
-      "direct_transition": "Immunotherapy_Followup"
-    },
-
-    "Immunotherapy_Followup": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "has_allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "170838006",
-          "display": "Allergic disorder follow-up assessment"
-        }
-      ],
-      "direct_transition": "Immunotherapy_CarePlan_Ends"
-    },
-
-    "Immunotherapy_CarePlan_Ends": {
-      "type": "CarePlanEnd",
-      "careplan": "Immunotherapy_CarePlan",
-      "direct_transition": "Followup_End"
-    },
-
-    "Followup_End" : {
-      "type" : "EncounterEnd",
+      "referenced_by_attribute": "otc_antihistamine",
       "direct_transition": "Terminal"
     },
 
