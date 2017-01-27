@@ -27,440 +27,230 @@
         "quantity": 1,
         "unit": "weeks"
       },
-      "direct_transition": "Chance_of_Peanut_Allergy"
+      "direct_transition": "Allergy_Incidence_Submodule"
     },
 
-    "Chance_of_Peanut_Allergy": {
-      "type": "Simple",
+    "Allergy_Incidence_Submodule": {
+      "type": "CallSubmodule",
       "remarks": [
-        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
-        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+        "This submodule onsets the various food and environmental allergies that ",
+        "a person can get, with different incidences for atopic and non-atopic ",
+        "patients."
       ],
-      "complex_transition": [
+      "submodule": "allergies/allergy_incidence",
+      "direct_transition": "Allergist_Guard"
+    },
+
+    "Allergist_Guard": {
+      "type": "Guard",
+      "remarks": [
+        "======================================================================",
+        " ALLERGY TREATMENT/CARE                                               ",
+        "======================================================================",
+        "Now that the patient is suspected to have an allergy, we refer them to ",
+        "an allergist for specialized treatment.",
+
+        "The following can prompt a visit to the allergist: ",
+        "- Asthma attack ",
+        "- Moderate to severe eczema ",
+        "- Any allergic reaction to food ",
+        "- Moderate to severe allergic rhinitis symptoms ",
+
+        "The asthma, eczema, and allergic rhinitis submodules set the 'visit_allergist' ",
+        "attribute to trigger the visit. At the first visit to an allergist an ",
+        "allergy panel is always performed."
+      ],
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "visit_allergist",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Delay_For_Allergist_Initial_Visit"
+    },
+
+    "Delay_For_Allergist_Initial_Visit": {
+      "type": "Delay",
+      "remarks": [
+        "Other modules are not expected to make this delay after making a ",
+        "'visit_allergist' recommendation."
+      ],
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Allergist_Initial_Visit"
+    },
+
+    "Allergist_Initial_Visit": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the big one! Whatever allergies a patient has will be formally ",
+        "diagnosed at this encounter."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1974
           },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "Peanut_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Chance_of_TreeNut_Allergy"
-            }
-          ]
+          "transition": "Administer_Allergy_Test"
         },
         {
-          "distributions": [
-            {
-              "distribution": 0.006,
-              "transition": "Peanut_Allergy"
-            },
-            {
-              "distribution": 0.994,
-              "transition": "Chance_of_TreeNut_Allergy"
-            }
-          ]
+          "transition": "General_Allergy_CarePlan"
         }
       ]
     },
 
-    "Peanut_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
+    "Administer_Allergy_Test": {
+      "type": "Procedure",
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91935009",
-          "display": "Allergy to peanuts"
+          "code": "395142003",
+          "display": "Allergy screening test"
         }
       ],
-      "direct_transition": "Chance_of_TreeNut_Allergy"
+      "direct_transition": "Allergy_Panel"
     },
 
-    "Chance_of_TreeNut_Allergy": {
-      "type": "Simple",
+    "Allergy_Panel": {
+      "type": "CallSubmodule",
+      "submodule": "allergies/allergy_panel",
+      "direct_transition": "General_Allergy_CarePlan"
+    },
+
+    "General_Allergy_CarePlan": {
+      "type": "CarePlanStart",
       "remarks": [
-        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
-        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+        "Allergy maintenance is all about self care."
       ],
-      "complex_transition": [
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "326051000000105",
+          "display": "Self care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "58332002",
+          "display": "Allergy education"
+        }
+      ],
+      "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1987
           },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "TreeNut_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Chance_of_Fish_Allergy"
-            }
-          ]
+          "transition": "Prescribe_Epipen"
         },
         {
-          "distributions": [
-            {
-              "distribution": 0.004,
-              "transition": "TreeNut_Allergy"
-            },
-            {
-              "distribution": 0.996,
-              "transition": "Chance_of_Fish_Allergy"
-            }
-          ]
+          "transition": "End_Allergist_Initial_Visit"
         }
       ]
     },
 
-    "TreeNut_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "91934008",
-          "display": "Allergy to nut"
-        }
-      ],
-      "direct_transition": "Chance_of_Fish_Allergy"
-    },
-
-    "Chance_of_Fish_Allergy": {
-      "type": "Simple",
+    "Prescribe_Epipen": {
+      "type": "MedicationOrder",
       "remarks": [
-        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
-        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+        "FDA approved in 1987. It's highly likely that this prescription ",
+        "will never end - it will just be periodically renewed during the ",
+        "patient's lifetime."
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "Fish_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Chance_of_Shellfish_Allergy"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.004,
-              "transition": "Fish_Allergy"
-            },
-            {
-              "distribution": 0.996,
-              "transition": "Chance_of_Shellfish_Allergy"
-            }
-          ]
-        }
-      ]
-    },
-
-    "Fish_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
-          "system": "SNOMED-CT",
-          "code": "417532002",
-          "display": "Allergy to fish"
+          "system": "RxNorm",
+          "code": "727316",
+          "display": "0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector"
         }
       ],
-      "direct_transition": "Chance_of_Shellfish_Allergy"
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "End_Allergist_Initial_Visit"
     },
 
-    "Chance_of_Shellfish_Allergy": {
-      "type": "Simple",
-      "remarks": [
-        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
-        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "Shellfish_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Chance_of_Wheat_Allergy"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.02,
-              "transition": "Shellfish_Allergy"
-            },
-            {
-              "distribution": 0.98,
-              "transition": "Chance_of_Wheat_Allergy"
-            }
-          ]
-        }
-      ]
-    },
-
-    "Shellfish_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "300913006",
-          "display": "Shellfish allergy"
-        }
-      ],
-
-      "direct_transition": "Chance_of_Wheat_Allergy"
-    },
-
-    "Chance_of_Wheat_Allergy": {
-      "type": "Simple",
-      "remarks": [
-        "Wheat allergy is different than celiac disease. There are few studies on prevalence of wheat allergy.",
-        "A recent study 0.4% of US adults reported an allergy to wheat diagnosed via a doctor [6]. The prevalence ",
-        "of wheat allergy is highest amongst children in the US, ranging from 0.4% to 1.0% of the population.",
-        "http://www.drschaer-institute.com/us/wheat-allergy/epidemiology-1043.html",
-
-        "Wheat allergy is typically outgrown by adulthood — about 65 percent of children with a wheat allergy ",
-        "will outgrow it by the time they are 12. Based on prevalences we assume that adult onset of ",
-        "the allergy is rare enough to ignore."
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "Wheat_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Chance_of_Eggs_Allergy"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.006,
-              "transition": "Wheat_Allergy"
-            },
-            {
-              "distribution": 0.994,
-              "transition": "Chance_of_Eggs_Allergy"
-            }
-          ]
-        }
-      ]
-    },
-
-    "Wheat_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "420174000",
-          "display": "Allergy to wheat"
-        }
-      ],
-      "direct_transition": "Chance_of_Eggs_Allergy"
-    },
-
-    "Chance_of_Eggs_Allergy": {
-      "type": "Simple",
-      "remarks": [
-        "Experts estimate that as many as 2 percent of children are allergic to eggs. ",
-        "Fortunately, studies show that about 70 percent of children with an egg allergy ",
-        "will outgrow the condition by age 16.",
-
-        "http://acaai.org/allergies/types/food-allergies/types-food-allergy/egg-allergy",
-        "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore."
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "Eggs_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Chance_of_Dairy_Allergy"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.006,
-              "transition": "Eggs_Allergy"
-            },
-            {
-              "distribution": 0.994,
-              "transition": "Chance_of_Dairy_Allergy"
-            }
-          ]
-        }
-      ]
-    },
-
-    "Eggs_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "91930004",
-          "display": "Allergy to eggs"
-        }
-      ],
-      "direct_transition": "Chance_of_Dairy_Allergy"
-    },
-
-    "Chance_of_Dairy_Allergy": {
-      "type": "Simple",
-      "remarks": [
-        "The prevalence of dairy/milk allergy in the general population is 1-2% for young ",
-        "children and 0.2-0.4% in the general population. About 80 percent of children are ",
-        "likely to outgrow their milk allergy before they are 16. Based on prevalences we ",
-        "assume that adult onset of the allergy is rare enough to ignore."
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "atopic",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "distribution": 0.25,
-              "transition": "Dairy_Allergy"
-            },
-            {
-              "distribution": 0.75,
-              "transition": "Living_With_Allergies"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.0015,
-              "transition": "Dairy_Allergy"
-            },
-            {
-              "distribution": 0.9985,
-              "transition": "Living_With_Allergies"
-            }
-          ]
-        }
-      ]
-    },
-
-    "Dairy_Allergy": {
-      "type": "AllergyOnset",
-      "target_encounter": "Allergist_Initial_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "425525006",
-          "display": "Allergy to dairy product"
-        }
-      ],
+    "End_Allergist_Initial_Visit": {
+      "type": "EncounterEnd",
       "direct_transition": "Living_With_Allergies"
     },
 
     "Living_With_Allergies": {
       "type": "Simple",
       "remarks": [
+        "======================================================================",
+        " LIVING WITH ALLERGIES                                                ",
+        "======================================================================",
         "Whatever allergies the patients have they will continue to passively ",
         "live with them until an allergic condition or a severe reaction ",
         "prompts a visit to their PCP and a referral to an allergist. Allergies ",
         "aren't officially diagnosed until after an allergy test is performed."
       ],
-      "direct_transition": "Immunotherapy_Guard"
-    },
-
-    "Immunotherapy_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "And",
-        "conditions": [
-          {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 12,
-            "unit": "years",
-            "remarks": [
-              "They typically don't give immunotherapy treatment to young children"
+      "conditional_transition": [
+        {
+          "remarks": [
+            "For patient's 12 or older we can consider immunotherapy. This will ",
+            "not work for everyone but it's worth discussing. Immunotherapy is not ",
+            "an option before 1990."
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 12,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 1990
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "immunotherapy_status",
+                "operator": "is nil"
+              }
             ]
           },
-          {
-            "condition_type": "Attribute",
-            "attribute": "immunotherapy_status",
-            "operator": "is nil"
-          }
-        ]
-      },
-      "direct_transition": "Delay_For_Consultation"
-    },
-
-    "Delay_For_Consultation": {
-      "type": "Delay",
-      "remarks": [
-        "This state is used to stagger the age that patient's consider/begin ",
-        "immunotherapy treatment. Patients can now begin receiving treatment ",
-        "between age 12 and age 17."
-      ],
-      "range": {
-        "low": 0,
-        "high": 5,
-        "unit": "years"
-      },
-      "direct_transition": "Immunotherapy_Consultation"
+          "transition": "Immunotherapy_Consultation"
+        },
+        {
+          "transition": "Living_With_Allergies"
+        }
+      ]
     },
 
     "Immunotherapy_Consultation": {
       "type": "Encounter",
+      "remarks": [
+        "======================================================================",
+        " IMMUNOTHERAPY                                                        ",
+        "======================================================================",
+        "Allergen immunotherapy for hay fever has been common practice since the ",
+        "1930's. It was first proven by scientists in the UK in 1911. It has since ",
+        "been expanded to include additional environmental and food allergens."
+      ],
       "encounter_class": "ambulatory",
-      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -494,14 +284,15 @@
     },
 
     "Immunotherapy_Not_Given": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_status",
+      "value": "not-given",
+      "direct_transition": "End_Consultation"
     },
 
     "Immunotherapy_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Immunotherapy_Consultation",
-      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -516,23 +307,6 @@
           "display": "Allergen immunotherapy drugs Band 1"
         }
       ],
-      "direct_transition": "Allergy_Screening_Test"
-    },
-
-    "Allergy_Screening_Test": {
-      "type": "Procedure",
-      "target_encounter": "Immunotherapy_Consultation",
-      "reason": "allergic_rhinitis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "395142003",
-          "display": "Allergy screening test"
-        }
-      ],
-      "duration" : { "low" : 30, "high" : 60, "unit" : "minutes" },
-      "remarks" : ["Skin testing is fast. For both types of skin tests, positive reactions usually appear within 20 minutes.",
-                   "http://acaai.org/allergies/treatment/allergy-testing"],
       "direct_transition": "End_Consultation"
     },
 
@@ -579,7 +353,6 @@
     "Immunotherapy_Treatment": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -593,7 +366,6 @@
     "Immunotherapy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Immunotherapy_Treatment",
-      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -601,7 +373,11 @@
           "display": "Subcutaneous immunotherapy"
         }
       ],
-      "duration" : { "low" : 15, "high" : 60, "unit" : "minutes" },
+      "duration": {
+        "low": 15,
+        "high": 60,
+        "unit": "minutes"
+      },
       "direct_transition": "End_Treatment_Session"
     },
 
@@ -625,7 +401,6 @@
     "Immunotherapy_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "allergic_rhinitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -644,7 +419,7 @@
 
     "Followup_End" : {
       "type" : "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "Living_With_Allergies"
     },
 
     "Terminal": {

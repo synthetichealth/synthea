@@ -194,7 +194,7 @@
           "distributions": [
             {
               "distribution": 1,
-              "transition": "Living_With_Allergic_Rhinitis"
+              "transition": "End_Allergic_Rhinitis_Diagnosis"
             }
           ]
         },
@@ -229,7 +229,7 @@
           "display": "Loratadine 10 MG [Claritin]"
         }
       ],
-      "direct_transition": "Living_With_Allergic_Rhinitis"
+      "direct_transition": "Advise_To_Visit_Allergist"
     },
 
     "Prescribe_OTC_Medication_Option_2": {
@@ -244,7 +244,7 @@
           "display": "Cetirizine hydrochloride 10 MG [ZyrTEC]"
         }
       ],
-      "direct_transition": "Living_With_Allergic_Rhinitis"
+      "direct_transition": "Advise_To_Visit_Allergist"
     },
 
     "Prescribe_OTC_Medication_Option_3": {
@@ -259,11 +259,39 @@
           "display": "Fluticasone propionate 0.05 MG [Flonase]"
         }
       ],
+      "direct_transition": "Advise_To_Visit_Allergist"
+    },
+
+    "Advise_To_Visit_Allergist": {
+      "type": "SetAttribute",
+      "attribute": "visit_allergist",
+      "value": true,
+      "direct_transition": "End_Allergic_Rhinitis_Diagnosis"
+    },
+
+    "End_Allergic_Rhinitis_Diagnosis": {
+      "type": "EncounterEnd",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
 
     "Living_With_Allergic_Rhinitis": {
-      "type": "EncounterEnd",
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Outgrow_Allergic_Rhinitis?"
+    },
+
+    "Outgrow_Allergic_Rhinitis?": {
+      "type": "Simple",
+      "remarks": [
+        "It's very uncommon for a person to 'outgrow' allergic rhinitis, ",
+        "but symptoms can lessen or disappear as a child ages or if they ",
+        "are given immunotherapy."
+      ],
       "direct_transition": "Allergic_Rhinitis_Subsides"
     },
 
