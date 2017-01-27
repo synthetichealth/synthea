@@ -325,7 +325,7 @@
             },
             {
               "distribution": 0.75,
-              "transition": "Chance_of_Dairy_Allergy"
+              "transition": "Chance_of_Soy_Allergy"
             }
           ]
         },
@@ -337,7 +337,7 @@
             },
             {
               "distribution": 0.994,
-              "transition": "Chance_of_Dairy_Allergy"
+              "transition": "Chance_of_Soy_Allergy"
             }
           ]
         }
@@ -353,6 +353,62 @@
           "system": "SNOMED-CT",
           "code": "91930004",
           "display": "Allergy to eggs"
+        }
+      ],
+      "direct_transition": "Chance_of_Soy_Allergy"
+    },
+
+    "Chance_of_Soy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SOY ALLERGY                                                          ",
+        "======================================================================",
+        "Soy allergies are uncommon but closely related to peanut and milk allergies. ",
+        "http://www.soyconnection.com/newsletters/soy-connection/health-nutrition/articles/Estimating-Prevalence-Of-Soy-Protein-Allergy"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "Soy_Allergy"
+            },
+            {
+              "distribution": 0.9,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.002,
+              "transition": "Soy_Allergy"
+            },
+            {
+              "distribution": 0.998,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Soy_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "714035009",
+          "display": "Allergy to soya"
         }
       ],
       "direct_transition": "Chance_of_Dairy_Allergy"

@@ -33,8 +33,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Peanut_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91935009",
+                "display": "Allergy to peanuts"
+              }
+            ]
           },
           "transition": "Peanut_Test_Positive"
         },
@@ -88,8 +94,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "TreeNut_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91934008",
+                "display": "Allergy to nut"
+              }
+            ]
           },
           "transition": "Nut_Test_Positive"
         },
@@ -143,8 +155,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Fish_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "417532002",
+                "display": "Allergy to fish"
+              }
+            ]
           },
           "transition": "Fish_Test_Positive"
         },
@@ -200,8 +218,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Shellfish_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "300913006",
+                "display": "Shellfish allergy"
+              }
+            ]
           },
           "transition": "Shellfish_Test_Positive"
         },
@@ -255,8 +279,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Wheat_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "420174000",
+                "display": "Allergy to wheat"
+              }
+            ]
           },
           "transition": "Wheat_Test_Positive"
         },
@@ -310,8 +340,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Eggs_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91930004",
+                "display": "Allergy to eggs"
+              }
+            ]
           },
           "transition": "Egg_Test_Positive"
         },
@@ -335,7 +371,7 @@
         "low": 0.7,
         "high": 100
       },
-      "direct_transition": "Milk_Test"
+      "direct_transition": "Soy_Test"
     },
 
     "Egg_Test_Negative": {
@@ -345,6 +381,67 @@
           "system": "LOINC",
           "code": "6106-9",
           "display": "Egg white IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Soy_Test"
+    },
+
+    "Soy_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SOY ALLERGY TEST                                                     ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "714035009",
+                "display": "Allergy to soya"
+              }
+            ]
+          },
+          "transition": "Soy_Test_Positive"
+        },
+        {
+          "transition": "Soy_Test_Negative"
+        }
+      ]
+    },
+
+    "Soy_Test_Positive": {
+      "type": "Observation",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6248-9",
+          "display": "Soybean IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Milk_Test"
+    },
+
+    "Soy_Test_Negative": {
+      "type": "Observation",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6248-9",
+          "display": "Soybean IgE Ab in Serum"
         }
       ],
       "unit": "kU/L",
@@ -365,8 +462,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Dairy_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "425525006",
+                "display": "Allergy to dairy product"
+              }
+            ]
           },
           "transition": "Milk_Test_Positive"
         },
@@ -420,8 +523,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Tree_Pollen_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "419263009",
+                "display": "Allergy to tree pollen"
+              }
+            ]
           },
           "transition": "Tree_Test_Positive"
         },
@@ -475,8 +584,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Grass_Pollen_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "418689008",
+                "display": "Allergy to grass pollen"
+              }
+            ]
           },
           "transition": "Grass_Test_Positive"
         },
@@ -530,8 +645,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Pet_Dander_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "232347008",
+                "display": "Dander (animal) allergy"
+              }
+            ]
           },
           "transition": "Dander_Test_Positive"
         },
@@ -585,8 +706,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Dust_Mite_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "232350006",
+                "display": "House dust mite allergy"
+              }
+            ]
           },
           "transition": "Mite_Test_Positive"
         },
@@ -640,8 +767,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Mold_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "419474003",
+                "display": "Allergy to mould"
+              }
+            ]
           },
           "transition": "Mold_Test_Positive"
         },
@@ -695,8 +828,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Bee_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "424213003",
+                "display": "Allergy to bee venom"
+              }
+            ]
           },
           "transition": "Bee_Test_Positive"
         },
@@ -750,8 +889,14 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Latex_Allergy"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "300916003",
+                "display": "Latex allergy"
+              }
+            ]
           },
           "transition": "Latex_Test_Positive"
         },

@@ -8,19 +8,7 @@
 
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "food_allergy",
-            "operator": "is not nil"
-          },
-          "transition": "Delay_For_Allergic_Reaction_To_Food"
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
+      "direct_transition": "Delay_For_Allergic_Reaction_To_Food"
     },
 
     "Delay_For_Allergic_Reaction_To_Food": {
@@ -35,7 +23,19 @@
         "high": 18,
         "unit": "months"
       },
-      "direct_transition": "Allergic_Reaction_To_Food"
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "food_allergy",
+            "operator": "is not nil"
+          },
+          "transition": "Allergic_Reaction_To_Food"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
     },
 
     "Allergic_Reaction_To_Food": {
@@ -223,42 +223,27 @@
     },
 
     "Potential_To_Outgrow_Allergies": {
-      "type": "Simple",
+      "type": "CallSubmodule",
       "remarks": [
         "Sensisitivity to milk, egg, soy, and wheat is the easiest to overcome.",
         "However, peanut, treenut, fish, and shellfish allergies persist through ",
-        "adulthood."
+        "adulthood. This logic is handled by a submodule."
       ],
-      "distributed_transition": [
+      "submodule": "allergies/outgrow_food_allergies",
+      "conditional_transition": [
         {
-          "distribution": 0.75,
-          "transition": "Outgrow_Food_Allergies"
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "outgrew_food_allergies",
+            "operator": "==",
+            "value": "true"
+          },
+          "transition": "Terminal"
         },
         {
-          "distribution": 0.25,
-          "transition": "Allergies_Not_Outgrown"
+          "transition": "Potential_Allergic_Reaction_To_Food"
         }
       ]
-    },
-
-    "Outgrow_Food_Allergies": {
-      "type": "SetAttribute",
-      "attribute": "outgrew_food_allergies",
-      "value": "true",
-      "direct_transition": "Call_Outgrow_Submodule"
-    },
-
-    "Call_Outgrow_Submodule": {
-      "type": "CallSubmodule",
-      "submodule": "allergies/outgrow_food_allergies",
-      "direct_transition": "Potential_Allergic_Reaction_To_Food"
-    },
-
-    "Allergies_Not_Outgrown": {
-      "type": "SetAttribute",
-      "attribute": "outgrew_food_allergies",
-      "value": "false",
-      "direct_transition": "Potential_Allergic_Reaction_To_Food"
     },
 
     "Potential_Allergic_Reaction_To_Food": {
