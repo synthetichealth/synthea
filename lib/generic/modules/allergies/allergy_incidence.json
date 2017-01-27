@@ -1,0 +1,810 @@
+{
+  "name": "Allergy Incidence",
+  "remarks": [
+    "This submodule onsets various allergies and is intended to be called ",
+    "by the main allergies module."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_Peanut_Allergy"
+    },
+
+    "Chance_of_Peanut_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " PEANUT ALLERGY                                                       ",
+        "======================================================================",
+        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Peanut_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_TreeNut_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Peanut_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_TreeNut_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Peanut_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91935009",
+          "display": "Allergy to peanuts"
+        }
+      ],
+      "direct_transition": "Chance_of_TreeNut_Allergy"
+    },
+
+    "Chance_of_TreeNut_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " NUT ALLERGY                                                          ",
+        "======================================================================",
+        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "TreeNut_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Fish_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "TreeNut_Allergy"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Chance_of_Fish_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "TreeNut_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91934008",
+          "display": "Allergy to nut"
+        }
+      ],
+      "direct_transition": "Chance_of_Fish_Allergy"
+    },
+
+    "Chance_of_Fish_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FISH ALLERGY                                                         ",
+        "======================================================================",
+        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Fish_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Shellfish_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "Fish_Allergy"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Chance_of_Shellfish_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Fish_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "417532002",
+          "display": "Allergy to fish"
+        }
+      ],
+      "direct_transition": "Chance_of_Shellfish_Allergy"
+    },
+
+    "Chance_of_Shellfish_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SHELLFISH ALLERGY                                                    ",
+        "======================================================================",
+        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Shellfish_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Wheat_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Shellfish_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Chance_of_Wheat_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Shellfish_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "300913006",
+          "display": "Shellfish allergy"
+        }
+      ],
+
+      "direct_transition": "Chance_of_Wheat_Allergy"
+    },
+
+    "Chance_of_Wheat_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " WHEAT ALLERGY                                                        ",
+        "======================================================================",
+        "Wheat allergy is different than celiac disease. There are few studies on prevalence of wheat allergy.",
+        "A recent study 0.4% of US adults reported an allergy to wheat diagnosed via a doctor [6]. The prevalence ",
+        "of wheat allergy is highest amongst children in the US, ranging from 0.4% to 1.0% of the population.",
+        "http://www.drschaer-institute.com/us/wheat-allergy/epidemiology-1043.html",
+
+        "Wheat allergy is typically outgrown by adulthood — about 65 percent of children with a wheat allergy ",
+        "will outgrow it by the time they are 12. Based on prevalences we assume that adult onset of ",
+        "the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Wheat_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Eggs_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Wheat_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_Eggs_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wheat_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "420174000",
+          "display": "Allergy to wheat"
+        }
+      ],
+      "direct_transition": "Chance_of_Eggs_Allergy"
+    },
+
+    "Chance_of_Eggs_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " EGG ALLERGY                                                          ",
+        "======================================================================",
+        "Experts estimate that as many as 2 percent of children are allergic to eggs. ",
+        "Fortunately, studies show that about 70 percent of children with an egg allergy ",
+        "will outgrow the condition by age 16.",
+
+        "http://acaai.org/allergies/types/food-allergies/types-food-allergy/egg-allergy",
+        "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Eggs_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Eggs_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Eggs_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91930004",
+          "display": "Allergy to eggs"
+        }
+      ],
+      "direct_transition": "Chance_of_Dairy_Allergy"
+    },
+
+    "Chance_of_Dairy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " DAIRY ALLERGY                                                        ",
+        "======================================================================",
+        "The prevalence of dairy/milk allergy in the general population is 1-2% for young ",
+        "children and 0.2-0.4% in the general population. About 80 percent of children are ",
+        "likely to outgrow their milk allergy before they are 16. Based on prevalences we ",
+        "assume that adult onset of the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Dairy_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Tree_Pollen_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.0015,
+              "transition": "Dairy_Allergy"
+            },
+            {
+              "distribution": 0.9985,
+              "transition": "Chance_of_Tree_Pollen_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Dairy_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "425525006",
+          "display": "Allergy to dairy product"
+        }
+      ],
+      "direct_transition": "Chance_of_Tree_Pollen_Allergy"
+    },
+
+    "Chance_of_Tree_Pollen_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " TREE POLLEN ALLERGY                                                  ",
+        "======================================================================",
+        "At present, up to 20% of children are diagnosed with a tree pollen allergy. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4098757/",
+        "In this model most of those children are also atopic, aligning with the ",
+        "prevalence of allergic rhinitis."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Tree_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Chance_of_Grass_Pollen_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.03,
+              "transition": "Tree_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.97,
+              "transition": "Chance_of_Grass_Pollen_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Tree_Pollen_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "419263009",
+          "display": "Allergy to tree pollen"
+        }
+      ],
+      "direct_transition": "Chance_of_Grass_Pollen_Allergy"
+    },
+
+    "Chance_of_Grass_Pollen_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " GRASS POLLEN ALLERGY                                                 ",
+        "======================================================================",
+        "At present, up to 20% of children are diagnosed with a grass pollen allergy. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4098757/",
+        "In this model most of those children are also atopic, aligning with the ",
+        "prevalence of allergic rhinitis."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Grass_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Chance_of_Pet_Dander_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.03,
+              "transition": "Grass_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.97,
+              "transition": "Chance_of_Pet_Dander_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Grass_Pollen_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "418689008",
+          "display": "Allergy to grass pollen"
+        }
+      ],
+      "direct_transition": "Chance_of_Pet_Dander_Allergy"
+    },
+
+    "Chance_of_Pet_Dander_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " PET DANDER ALLERGY                                                   ",
+        "======================================================================",
+        "At present, up to 30% of people are diagnosed with a pet dander allergy. ",
+        "Source: http://allergicliving.com/2010/07/02/pet-allergies-a-gander-at-dander/",
+        "In this model most of these people are also atopic, aligning with the ",
+        "prevalence of allergic rhinitis and asthma."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Pet_Dander_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "Pet_Dander_Allergy"
+            },
+            {
+              "distribution": 0.9,
+              "transition": "Chance_of_Dust_Mite_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Pet_Dander_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232347008",
+          "display": "Dander (animal) allergy"
+        }
+      ],
+      "direct_transition": "Chance_of_Dust_Mite_Allergy"
+    },
+
+    "Chance_of_Dust_Mite_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " DUST MITE ALLERGY                                                    ",
+        "======================================================================",
+        "About 85% of all atopic patients have mite allergies. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pubmed/12190652"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Dust_Mite_Allergy"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Chance_of_Mold_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Dust_Mite_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Chance_of_Mold_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Dust_Mite_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232350006",
+          "display": "House dust mite allergy"
+        }
+      ],
+      "direct_transition": "Chance_of_Mold_Allergy"
+    },
+
+    "Chance_of_Mold_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MOLD ALLERGY                                                         ",
+        "======================================================================",
+        "Sensitization to mold is very common, but symptoms are usually mild.",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1240910/"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Mold_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Mold_Allergy"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Chance_of_Bee_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Mold_Allergy": {
+      "type": "AllergyOnset",
+      "remarks": [
+        "Note the British spelling of 'mold'."
+      ],
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "419474003",
+          "display": "Allergy to mould"
+        }
+      ],
+      "direct_transition": "Chance_of_Bee_Allergy"
+    },
+
+    "Chance_of_Bee_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " BEE STING ALLERGY                                                    ",
+        "======================================================================",
+        "Estimates range from 1-7%. Source: ",
+        "http://www.worldallergy.org/professional/allergic_diseases_center/insect_allergy/"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Bee_Allergy"
+            },
+            {
+              "distribution": 0.67,
+              "transition": "Chance_of_Latex_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.01,
+              "transition": "Bee_Allergy"
+            },
+            {
+              "distribution": 0.99,
+              "transition": "Chance_of_Latex_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Bee_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "424213003",
+          "display": "Allergy to bee venom"
+        }
+      ],
+      "direct_transition": "Chance_of_Latex_Allergy"
+    },
+
+    "Chance_of_Latex_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " LATEX ALLERGY                                                        ",
+        "======================================================================",
+        "Estimates range from 4-9%. Prevalence is especially high in healthcare ",
+        "workers and those who had frequent surgeries during childhood.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/27010091"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Latex_Allergy"
+            },
+            {
+              "distribution": 0.67,
+              "transition": "Allergy_Incidence_Terminal"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Latex_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Allergy_Incidence_Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Latex_Allergy": {
+      "type": "AllergyOnset",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "300916003",
+          "display": "Latex allergy"
+        }
+      ],
+      "direct_transition": "Allergy_Incidence_Terminal"
+    },
+
+    "Allergy_Incidence_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
