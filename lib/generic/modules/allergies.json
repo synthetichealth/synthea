@@ -194,236 +194,53 @@
     },
 
     "Living_With_Allergies": {
-      "type": "Simple",
+      "type": "Guard",
       "remarks": [
         "======================================================================",
         " LIVING WITH ALLERGIES                                                ",
         "======================================================================",
-        "Whatever allergies the patients have they will continue to passively ",
+        "Whatever allergies the patients have, they will continue to passively ",
         "live with them until an allergic condition or a severe reaction ",
         "prompts a visit to their PCP and a referral to an allergist. Allergies ",
-        "aren't officially diagnosed until after an allergy test is performed."
+        "aren't officially diagnosed until after an allergy test is performed.",
+
+        "For patient's 12 or older we can consider immunotherapy. This will ",
+        "not work for everyone but it's worth discussing. Immunotherapy is not ",
+        "an option before 1990."
       ],
-      "conditional_transition": [
-        {
-          "remarks": [
-            "For patient's 12 or older we can consider immunotherapy. This will ",
-            "not work for everyone but it's worth discussing. Immunotherapy is not ",
-            "an option before 1990."
-          ],
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": ">",
-                "quantity": 12,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Date",
-                "operator": ">=",
-                "year": 1990
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "immunotherapy_status",
-                "operator": "is nil"
-              }
-            ]
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 12,
+            "unit": "years"
           },
-          "transition": "Immunotherapy_Consultation"
-        },
-        {
-          "transition": "Living_With_Allergies"
-        }
-      ]
-    },
-
-    "Immunotherapy_Consultation": {
-      "type": "Encounter",
-      "remarks": [
-        "======================================================================",
-        " IMMUNOTHERAPY                                                        ",
-        "======================================================================",
-        "Allergen immunotherapy for hay fever has been common practice since the ",
-        "1930's. It was first proven by scientists in the UK in 1911. It has since ",
-        "been expanded to include additional environmental and food allergens."
-      ],
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "170837001",
-          "display": "Allergic disorder initial assessment"
-        }
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.75,
-          "transition": "Immunotherapy_Given"
-        },
-        {
-          "distribution": 0.25,
-          "transition": "Immunotherapy_Not_Given",
-          "remarks": [
-            "The distribution here is somewhat arbitrary. I could not find reasonable stats for",
-            "what percentage of people are given immunotherapy but it's not everyone.",
-            "I went with a 75/25 split. Reasons to not give immunotherapy include fear of needles,",
-            "pre-existing immune conditions (like AIDS), and prohibitive cost."
-          ]
-        }
-      ]
-    },
-
-    "Immunotherapy_Given": {
-      "type": "SetAttribute",
-      "attribute": "immunotherapy_status",
-      "value": "given",
-      "direct_transition": "Immunotherapy_CarePlan"
-    },
-
-    "Immunotherapy_Not_Given": {
-      "type": "SetAttribute",
-      "attribute": "immunotherapy_status",
-      "value": "not-given",
-      "direct_transition": "End_Consultation"
-    },
-
-    "Immunotherapy_CarePlan": {
-      "type": "CarePlanStart",
-      "target_encounter": "Immunotherapy_Consultation",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "170836005",
-          "display": "Allergic disorder monitoring"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "764101000000108",
-          "display": "Allergen immunotherapy drugs Band 1"
-        }
-      ],
-      "direct_transition": "End_Consultation"
-    },
-
-    "End_Consultation" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Initialize_Immunotherapy_Counter"
-    },
-
-    "Initialize_Immunotherapy_Counter": {
-      "type": "SetAttribute",
-      "attribute": "immunotherapy_counter",
-      "value": 0,
-      "direct_transition": "Undergoing_Immunotherapy_Treatment"
-    },
-
-    "Undergoing_Immunotherapy_Treatment": {
-      "type": "Delay",
-      "remarks": [
-        "Patients get immunotherapy treatments for an average of 5 years.",
-        "Given monthly appointments we count a total of 60 appointments before ",
-        "ending the immunotherapy."
-      ],
-      "range": {
-        "low": 3,
-        "high": 4,
-        "unit": "weeks"
-      },
-      "conditional_transition": [
-        {
-          "condition": {
+          {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1990
+          },
+          {
             "condition_type": "Attribute",
-            "attribute": "immunotherapy_counter",
-            "operator": "<",
-            "value": 60
-          },
-          "transition": "Immunotherapy_Treatment"
-        },
-        {
-          "transition": "Immunotherapy_Treatment_Complete"
-        }
-      ]
-    },
-
-    "Immunotherapy_Treatment": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "371883000",
-          "display": "Outpatient procedure"
-        }
-      ],
-      "direct_transition": "Immunotherapy_Procedure"
-    },
-
-    "Immunotherapy_Procedure": {
-      "type": "Procedure",
-      "target_encounter": "Immunotherapy_Treatment",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "180256009",
-          "display": "Subcutaneous immunotherapy"
-        }
-      ],
-      "duration": {
-        "low": 15,
-        "high": 60,
-        "unit": "minutes"
+            "attribute": "immunotherapy_status",
+            "operator": "is nil"
+          }
+        ]
       },
-      "direct_transition": "End_Treatment_Session"
+      "direct_transition": "Immunotherapy_Submodule"
     },
 
-    "End_Treatment_Session" : {
-      "type" : "EncounterEnd",
-      "direct_transition": "Count_A_Treatment"
-    },
-
-    "Count_A_Treatment": {
-      "type": "Counter",
-      "action": "increment",
-      "attribute": "immunotherapy_counter",
-      "direct_transition": "Undergoing_Immunotherapy_Treatment"
-    },
-
-    "Immunotherapy_Treatment_Complete": {
-      "type": "Simple",
-      "direct_transition": "Immunotherapy_Followup"
-    },
-
-    "Immunotherapy_Followup": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "170838006",
-          "display": "Allergic disorder follow-up assessment"
-        }
+    "Immunotherapy_Submodule": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule may or may not give the patient immunotherapy. If ",
+        "immunotherapy is given a series of 60 treatments will be provided ",
+        "over the course of 3-5 years."
       ],
-      "direct_transition": "Immunotherapy_CarePlan_Ends"
-    },
-
-    "Immunotherapy_CarePlan_Ends": {
-      "type": "CarePlanEnd",
-      "careplan": "Immunotherapy_CarePlan",
-      "direct_transition": "Followup_End"
-    },
-
-    "Followup_End" : {
-      "type" : "EncounterEnd",
+      "submodule": "allergies/immunotherapy",
       "direct_transition": "Living_With_Allergies"
-    },
-
-    "Terminal": {
-      "type": "Terminal"
     }
   }
 }

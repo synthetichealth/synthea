@@ -1,0 +1,289 @@
+{
+  "name": "Allergy Immunotherapy",
+  "remarks": [
+    "This submodule is called by 'allergies.json'. This models a series of ",
+    "immunotherapy treatments designed to lessen the severity of allergy ",
+    "symptoms, or even eliminate the sensitivity altogether. ",
+
+    "Immunotherapy is most effective against outdoor allergens (trees, grass), ",
+    "and common indoor allergens (mold, mites, pet dander). Immunotherapy is ",
+    "minimally effective against food allergens."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Immunotherapy_Consultation"
+    },
+
+    "Immunotherapy_Consultation": {
+      "type": "Encounter",
+      "remarks": [
+        "======================================================================",
+        " IMMUNOTHERAPY                                                        ",
+        "======================================================================",
+        "Allergen immunotherapy for hay fever has been common practice since the ",
+        "1930's. It was first proven by scientists in the UK in 1911. It has since ",
+        "been expanded to include additional environmental and food allergens."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "170837001",
+          "display": "Allergic disorder initial assessment"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Immunotherapy_Given"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Immunotherapy_Not_Given",
+          "remarks": [
+            "The distribution here is somewhat arbitrary. I could not find reasonable stats for",
+            "what percentage of people are given immunotherapy but it's not everyone.",
+            "I went with a 75/25 split. Reasons to not give immunotherapy include fear of needles,",
+            "pre-existing immune conditions (like AIDS), and prohibitive cost."
+          ]
+        }
+      ]
+    },
+
+    "Immunotherapy_Given": {
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_status",
+      "value": "given",
+      "direct_transition": "Immunotherapy_CarePlan"
+    },
+
+    "Immunotherapy_Not_Given": {
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_status",
+      "value": "not-given",
+      "direct_transition": "End_Consultation"
+    },
+
+    "Immunotherapy_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Immunotherapy_Consultation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "170836005",
+          "display": "Allergic disorder monitoring"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "764101000000108",
+          "display": "Allergen immunotherapy drugs Band 1"
+        }
+      ],
+      "direct_transition": "Benchmark_Allergy_Test"
+    },
+
+    "Benchmark_Allergy_Test": {
+      "type": "Procedure",
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395142003",
+          "display": "Allergy screening test"
+        }
+      ],
+      "direct_transition": "Benchmark_Allergy_Panel"
+    },
+
+    "Benchmark_Allergy_Panel": {
+      "type": "CallSubmodule",
+      "submodule": "allergies/allergy_panel",
+      "direct_transition": "End_Consultation"
+    },
+
+    "End_Consultation" : {
+      "type" : "EncounterEnd",
+      "conditional_transition" : [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "immunotherapy_status",
+            "operator": "==",
+            "value": "not-given"
+          },
+          "transition": "Terminal"
+        },
+        {
+          "transition": "Initialize_Immunotherapy_Counter"
+        }
+      ]
+    },
+
+    "Initialize_Immunotherapy_Counter": {
+      "type": "SetAttribute",
+      "attribute": "immunotherapy_counter",
+      "value": 0,
+      "direct_transition": "Undergoing_Immunotherapy_Treatment"
+    },
+
+    "Undergoing_Immunotherapy_Treatment": {
+      "type": "Delay",
+      "remarks": [
+        "Patients get immunotherapy treatments for an average of 5 years.",
+        "Given monthly appointments we count a total of 60 appointments before ",
+        "ending the immunotherapy."
+      ],
+      "range": {
+        "low": 3,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "immunotherapy_counter",
+            "operator": "<",
+            "value": 60
+          },
+          "transition": "Immunotherapy_Treatment"
+        },
+        {
+          "transition": "Immunotherapy_Treatment_Complete"
+        }
+      ]
+    },
+
+    "Immunotherapy_Treatment": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371883000",
+          "display": "Outpatient procedure"
+        }
+      ],
+      "direct_transition": "Immunotherapy_Procedure"
+    },
+
+    "Immunotherapy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Immunotherapy_Treatment",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "180256009",
+          "display": "Subcutaneous immunotherapy"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Treatment_Session"
+    },
+
+    "End_Treatment_Session" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Count_A_Treatment"
+    },
+
+    "Count_A_Treatment": {
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "immunotherapy_counter",
+      "direct_transition": "Undergoing_Immunotherapy_Treatment"
+    },
+
+    "Immunotherapy_Treatment_Complete": {
+      "type": "Simple",
+      "direct_transition": "Immunotherapy_Followup"
+    },
+
+    "Immunotherapy_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "170838006",
+          "display": "Allergic disorder follow-up assessment"
+        }
+      ],
+      "direct_transition": "Immunotherapy_CarePlan_Ends"
+    },
+
+    "Immunotherapy_CarePlan_Ends": {
+      "type": "CarePlanEnd",
+      "careplan": "Immunotherapy_CarePlan",
+      "direct_transition": "Immunotherapy_Success_Rate"
+    },
+
+    "Immunotherapy_Success_Rate": {
+      "type": "Simple",
+      "remarks": [
+        "My research has shown up to 85% of people respond positively to ",
+        "immunotherapy treatment. This allows patients to 'outgrow' their ",
+        "environmental allergies."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Outgrown_Environmental_Allergies"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Followup_Test"
+        }
+      ]
+    },
+
+    "Outgrown_Environmental_Allergies": {
+      "type": "CallSubmodule",
+      "submodule": "allergies/outgrow_env_allergies",
+      "direct_transition": "Followup_Test"
+    },
+
+    "Followup_Test": {
+      "type": "Procedure",
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395142003",
+          "display": "Allergy screening test"
+        }
+      ],
+      "direct_transition": "Followup_Allergy_Panel"
+    },
+
+    "Followup_Allergy_Panel": {
+      "type": "CallSubmodule",
+      "submodule": "allergies/allergy_panel",
+      "direct_transition": "Followup_End"
+    },
+
+    "Followup_End" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
