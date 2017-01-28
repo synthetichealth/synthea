@@ -146,13 +146,13 @@ module Synthea
 
         def initialize(context, name)
           super(context, name)
-          @processed = false
+          @submodule_called = false
         end
 
         def process(time, entity)
-          if !@processed
+          if !@submodule_called
+            @submodule_called = true
             @context.call_submodule(time, entity, @submodule)
-            @processed = true
             false
           else
             true
