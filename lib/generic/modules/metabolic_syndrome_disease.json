@@ -26,15 +26,26 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_nerve_damage",
       "value" : 0,
-      "direct_transition" : "BMI_Guard"
+      "direct_transition" : "Age_and_BG_Guard"
     },
 
-    "BMI_Guard" : {
+    "Age_and_BG_Guard" : {
       "type" : "Guard",
       "allow" : {
-        "condition_type" : "Vital Sign",
-        "vital_sign" : "blood_glucose",
-        "operator" : "is not nil"
+      "condition_type": "And",
+      "conditions": [
+        {
+          "condition_type": "Age",
+          "operator": ">=",
+          "quantity": 16,
+          "unit": "years"
+        },
+        {
+          "condition_type" : "Vital Sign",
+          "vital_sign" : "blood_glucose",
+          "operator" : "is not nil"
+        }
+      ]
       },
       "direct_transition" : "Potential_Diabetes"
     },
@@ -140,7 +151,7 @@
 
     "Prediabetes_Symptom_4" : {
       "type" : "Symptom",
-      "symptom" : "Tingling in Hands and Feet",
+      "symptom" : "Frequent Urination",
       "range" : { "low" : 1, "high" : 40 },
       "direct_transition" : "Potential_Diabetes"
     },
@@ -625,6 +636,11 @@
 
     "Death" : {
       "type" : "Death",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "46177005",
+        "display" : "End stage renal disease (disorder)"
+      }],
       "direct_transition" : "Terminal"
     },
 

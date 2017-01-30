@@ -34,6 +34,7 @@ module Synthea
       end
 
       def condition(type, time, fhir_method = :condition, ccda_method = :condition)
+        return if @present[type]
         @present[type] = {
           'type' => type,
           'time' => time,

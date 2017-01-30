@@ -165,7 +165,7 @@
               {
                 "condition_type" : "PriorState",
                 "name" : "Set_Severity_3",
-                "within" : { "quantity": 1, "unit" : "years"}
+                "within" : { "quantity": 1, "unit" : "years" }
               }
             ]
           },
@@ -1374,6 +1374,36 @@
 
     "Consider_Procedures" : {
       "type" : "Simple",
+      "direct_transition" : "Potential_Dialysis"
+    },
+
+    "Potential_Dialysis" : {
+      "type" : "Simple",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "46177005",
+              "display" : "End stage renal disease (disorder)"
+            }]
+          },
+          "transition" : "Dialysis"
+        },
+        {
+          "transition" : "Potential_Amputation"
+        }
+      ]
+    },
+
+    "Dialysis" : {
+      "type" : "Procedure",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "265764009",
+        "display" : "Renal dialysis (procedure)"
+      }],
       "direct_transition" : "Potential_Amputation"
     },
 
@@ -1390,9 +1420,11 @@
           }]
           },
           "distributions" : [
-            { "distribution" : 0.01, "transition" : "Amputation_Necessary" },
-            { "distribution" : 0.99, "transition" : "No_Amputation_Necessary" }
-          ]
+            { "distribution" : 0.0025, "transition" : "Amputation_Necessary" },
+            { "distribution" : 0.9975, "transition" : "No_Amputation_Necessary" }
+          ],
+          "remarks" : ["Amputations resulting from type-2 diabetes in the US occur in 0.25% of the population",
+                       "https://www.cdc.gov/diabetes/data/statistics/2014statisticsreport.html"]
         },
         {
           "transition" : "No_Amputation_Necessary"
@@ -1416,7 +1448,7 @@
 
 
     "Schedule_Followup" : {
-      "type" : "Simple",
+      "type" : "EncounterEnd",
       "conditional_transition" : [
         {
           "condition" : {
@@ -1425,7 +1457,7 @@
             "operator": "==",
             "value": true
           },
-          "transition" : "Amputation"
+          "transition" : "Delay_Before_Amputation"
         },
         {
           "transition" : "Living_With_Diabetes"
@@ -1433,17 +1465,34 @@
       ]
     },
 
+    "Delay_Before_Amputation" : {
+      "type" : "Delay",
+      "exact" : { "quantity" : "6", "unit" : "weeks" },
+      "direct_transition" : "Amputation"
+    },
+
     "Amputation" : {
-      "type" : "Simple",
+      "type" : "Encounter",
+      "encounter_class" : "inpatient",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "185347001",
+        "display" : "Encounter for problem"
+      }],
+      "reason" : "Diagnose_Neuropathy",
+      "remarks" : ["lower limb amputation occurs in 0.65% of the diabetic population",
+                   " with upper limb amputation occurring in an ever fewer 0.034%",
+                   "http://www.amputee-coalition.org/resources/massachusetts/",
+                   "== lower limb =~ 20x more likely than upper limb"],
       "distributed_transition" : [
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Left_Foot" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Left_Leg" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Right_Foot" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Right_Leg" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Left_Hand" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Left_Arm" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Right_Hand" },
-        { "distribution" : 0.125, "transition" : "Potential_Amputation_of_Right_Arm" }
+        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Left_Foot" },
+        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Left_Leg" },
+        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Right_Foot" },
+        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Right_Leg" },
+        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Left_Hand" },
+        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Left_Arm" },
+        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Right_Hand" },
+        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Right_Arm" }
       ]
     },
 
@@ -1452,10 +1501,19 @@
       "conditional_transition" : [
         {
           "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Left_Foot"
+            "condition_type" : "Or",
+            "conditions" : [
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Left_Foot"
+              },
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Left_Leg"
+              }
+            ]
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Left_Foot"
@@ -1470,19 +1528,9 @@
         "code" : "180030006",
         "display" : "Amputation of left foot"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Foot_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Foot_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Foot_Amputation"
     },
 
 
@@ -1491,10 +1539,19 @@
       "conditional_transition" : [
         {
           "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Right_Foot"
+            "condition_type" : "Or",
+            "conditions" : [
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Right_Foot"
+              },
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Right_Leg"
+              }
+            ]
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Right_Foot"
@@ -1509,19 +1566,9 @@
         "code" : "180030006",
         "display" : "Amputation of right foot"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Foot_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Foot_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Foot_Amputation"
     },
 
     "Potential_Amputation_of_Left_Leg" : {
@@ -1532,7 +1579,7 @@
             "condition_type" : "PriorState",
             "name" : "Amputation_of_Left_Leg"
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Left_Leg"
@@ -1547,19 +1594,9 @@
         "code" : "79733001",
         "display" : "Amputation of left leg"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Lower_Limb_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Lower_Limb_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Lower_Limb_Amputation"
     },
 
     "Potential_Amputation_of_Right_Leg" : {
@@ -1570,7 +1607,7 @@
             "condition_type" : "PriorState",
             "name" : "Amputation_of_Right_Leg"
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Right_Leg"
@@ -1585,19 +1622,9 @@
         "code" : "79733001",
         "display" : "Amputation of right leg"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Lower_Limb_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Lower_Limb_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Lower_Limb_Amputation"
     },
 
     "History_of_Lower_Limb_Amputation" : {
@@ -1607,7 +1634,7 @@
         "code" : "161622006",
         "display" : "History of lower limb amputation (situation)"
       }],
-      "direct_transition" : "Living_With_Diabetes"
+      "direct_transition" : "Recovery_After_Amputation"
     },
 
     "History_of_Foot_Amputation" : {
@@ -1617,7 +1644,7 @@
         "code" : "429280009",
         "display" : "History of amputation of foot (situation)"
       }],
-      "direct_transition" : "Living_With_Diabetes"
+      "direct_transition" : "Recovery_After_Amputation"
     },
 
 
@@ -1626,10 +1653,19 @@
       "conditional_transition" : [
         {
           "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Left_Hand"
+            "condition_type" : "Or",
+            "conditions" : [
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Left_Hand"
+              },
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Left_Arm"
+              }
+            ]
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Left_Hand"
@@ -1644,19 +1680,9 @@
         "code" : "46028000",
         "display" : "Amputation of left hand"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Hand_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Hand_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Hand_Amputation"
     },
 
     "Potential_Amputation_of_Right_Hand" : {
@@ -1664,10 +1690,19 @@
       "conditional_transition" : [
         {
           "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Right_Hand"
+            "condition_type" : "Or",
+            "conditions" : [
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Right_Hand"
+              },
+              {
+                "condition_type" : "PriorState",
+                "name" : "Amputation_of_Right_Arm"
+              }
+            ]
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Right_Hand"
@@ -1682,19 +1717,9 @@
         "code" : "46028000",
         "display" : "Amputation of right hand"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Hand_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Hand_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Hand_Amputation"
     },
 
     "Potential_Amputation_of_Right_Arm" : {
@@ -1705,7 +1730,7 @@
             "condition_type" : "PriorState",
             "name" : "Amputation_of_Right_Arm"
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Right_Arm"
@@ -1720,19 +1745,9 @@
         "code" : "13995008",
         "display" : "Amputation of right arm"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Upper_Limb_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Upper_Limb_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Upper_Limb_Amputation"
     },
 
     "Potential_Amputation_of_Left_Arm" : {
@@ -1743,7 +1758,7 @@
             "condition_type" : "PriorState",
             "name" : "Amputation_of_Left_Arm"
           },
-          "transition" : "Living_With_Diabetes"
+          "transition" : "End_Amputation_Encounter"
         },
         {
           "transition" : "Amputation_of_Left_Arm"
@@ -1758,19 +1773,9 @@
         "code" : "13995008",
         "display" : "Amputation of left arm"
       }],
+      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
       "reason" : "Diagnose_Neuropathy",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "History_of_Upper_Limb_Amputation"
-          },
-          "transition" : "Living_With_Diabetes"
-        },
-        {
-          "transition" : "History_of_Upper_Limb_Amputation"
-        }
-      ]
+      "direct_transition" : "History_of_Upper_Limb_Amputation"
     },
 
     "History_of_Upper_Limb_Amputation" : {
@@ -1780,7 +1785,7 @@
         "code" : "161621004",
         "display" : "History of upper limb amputation (situation)"
       }],
-      "direct_transition" : "Living_With_Diabetes"
+      "direct_transition" : "Recovery_After_Amputation"
     },
 
     "History_of_Hand_Amputation" : {
@@ -1790,18 +1795,62 @@
         "code" : "698423002",
         "display" : "History of disarticulation at wrist (situation)"
       }],
+      "direct_transition" : "Recovery_After_Amputation"
+    },
+
+    "Recovery_After_Amputation" : {
+      "type" : "Delay",
+      "range" : { "low" : 3, "high" : 6, "unit" : "weeks" },
+      "direct_transition" : "End_Amputation_Encounter"
+    },
+
+    "End_Amputation_Encounter" : {
+      "type" : "EncounterEnd",
       "direct_transition" : "Living_With_Diabetes"
     },
 
 
     "Living_With_Diabetes" : {
       "type" : "Simple",
-      "direct_transition" : "Followup_Encounter_After_Diagnosis"
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "46177005",
+              "display" : "End stage renal disease (disorder)"
+            }]
+          },
+          "transition" : "Delay_Before_Next_Dialysis_Encounter"
+        },
+        {
+          "transition" : "Followup_Encounter_After_Diagnosis"
+        }
+      ]
     },
 
     "Followup_Encounter_After_Diagnosis" : {
       "type" : "Encounter",
       "wellness" : true,
+      "direct_transition" : "Record_HA1C"
+    },
+
+    "Delay_Before_Next_Dialysis_Encounter" : {
+      "type" : "Delay",
+      "exact" : { "quantity" : 3, "unit" : "days" },
+      "direct_transition" : "Dialysis_Encounter"
+    },
+
+    "Dialysis_Encounter" : {
+      "type" : "Encounter",
+      "encounter_class" : "outpatient",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "185347001",
+        "display" : "Encounter for problem"
+      }],
+      "reason" : "Diagnose_End_Stage_Renal_Disease",
       "direct_transition" : "Record_HA1C"
     }
   }

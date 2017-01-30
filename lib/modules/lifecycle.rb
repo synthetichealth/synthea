@@ -210,12 +210,12 @@ module Synthea
           #     mono        bi      tri        insulin          insulin++
           record = entity.record_synthea
 
-          bloodglucose -= 1.5 if record.medication_active?(:metformin)
-          bloodglucose -= 0.5 if record.medication_active?(:glp1ra)
-          bloodglucose -= 0.5 if record.medication_active?(:sglt2i)
-          bloodglucose -= 3.0 if record.medication_active?(:basal_insulin)
-          bloodglucose -= 6.0 if record.medication_active?(:prandial_insulin)
-          entity.set_vital_sign(:blood_glucose, bloodglucose, '%')
+          bloodglucose -= 1.5 if record.medication_active?('24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet'.to_sym)
+          bloodglucose -= 0.5 if record.medication_active?('3_ml_liraglutide_6_mg/ml_pen_injector'.to_sym)
+          bloodglucose -= 0.5 if record.medication_active?('canagliflozin_100_mg_oral_tablet'.to_sym)
+          bloodglucose -= 3.0 if record.medication_active?('insulin_human,_isophane_70_unt/ml_/_regular_insulin,_human_30_unt/ml_injectable_suspension_[humulin]'.to_sym)
+          bloodglucose -= 6.0 if record.medication_active?('insulin_lispro_100_unt/ml_injectable_solution_[humalog]'.to_sym)
+          entity.set_vital_sign(:blood_glucose, bloodglucose.round(1), '%')
         end
 
         # estimate values
@@ -275,7 +275,11 @@ module Synthea
                                        end
         range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
         entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
-        entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
+        if creatinine_clearance > 60
+          entity.set_vital_sign(:egfr, '>60', 'mL/min/{1.73_m2}')
+        else
+          entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
+        end
 
         metabolic_panel.each { |k, v| entity.set_vital_sign(k, v, 'mg/dL') }
         electrolytes_panel.each { |k, v| entity.set_vital_sign(k, v, 'mmol/L') }
@@ -295,10 +299,18 @@ module Synthea
         entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
       end
 
-      # rough linear fit seen in Figure 1
-      # http://www.microbecolhealthdis.net/index.php/mehd/article/viewFile/22857/34046/125897
       def blood_glucose(bmi)
-        ((bmi - 6) / 5.5)
+        # numbers here are derived purely by trial & error
+        # we want ~10% of patients to have diabetes, ~37% to have prediabetes
+        # a trial run suggests that ~10% of patients have BMI >= 39 and ~37% have BMI >= 32
+        # we also want realistic %s of the medications, so this is a piecewise function so that higher BMI have much higher HBa1c and have to take more drugs
+        # data points: (20, 5), (39, 6.5), (40, 9)
+
+        if bmi < 39
+          0.077 * bmi + 3.4
+        else
+          0.625 * bmi - 16
+        end
       end
 
       # http://www.mcw.edu/calculators/creatinine.htm
