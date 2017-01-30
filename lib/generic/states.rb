@@ -598,7 +598,7 @@ module Synthea
         # now to maintain backwards compatibility with existing GMF modules.
         attr_accessor :codes, :unit, :target_encounter, :attribute, :vital_sign, :range, :exact
 
-        required_field and: [:target_encounter, :codes]
+        required_field :codes
         required_field or: [:vital_sign, and: [:unit, or: [:attribute, :range, :exact]]]
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
@@ -647,7 +647,7 @@ module Synthea
       class ObservationGroup < State
         attr_accessor :codes, :number_of_observations, :target_encounter
 
-        required_field and: [:codes, :number_of_observations, :target_encounter]
+        required_field and: [:codes, :number_of_observations]
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 1, max: 1
