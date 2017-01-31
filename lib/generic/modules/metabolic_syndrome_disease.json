@@ -100,10 +100,10 @@
     "Chance_to_Onset_Hypertension" : {
       "type" : "Simple",
       "distributed_transition" : [
-        { "distribution" : 0.594, "transition" : "Onset_Hypertension" },
-        { "distribution" : 0.406, "transition" : "No_Hypertension" }
+        { "distribution" : 0.296, "transition" : "Onset_Hypertension" },
+        { "distribution" : 0.704, "transition" : "No_Hypertension" }
       ],
-      "remarks" : "probability_given_diabetes: 0.594 #  (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
+      "remarks" : "probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
     },
 
     "Onset_Hypertension" : {
@@ -171,7 +171,8 @@
           "condition" : {
             "condition_type" : "Attribute",
             "attribute" : "hypertension",
-            "operator" : "is not nil"
+            "operator" : "==",
+            "value" : true
           },
           "transition" : "Nephropathy_Progression"
         },
@@ -401,31 +402,57 @@
       "type" : "Symptom",
       "symptom" : "Thirst",
       "range" : { "low" : 50, "high" : 100 },
-      "direct_transition" : "Chance_of_Death_From_End_Stage_Kidney_Disease"
+      "direct_transition" : "Expected_Lifespan_for_ESRD"
     },
 
-    "Chance_of_Death_From_End_Stage_Kidney_Disease" : {
-      "type" : "Simple",
-      "distributed_transition" : [
-        { "distribution" : 0.0001, "transition" : "Death" },
-        { "distribution" : 0.9999, "transition" : "Retinopathy_Progression" }
-      ]
+    "Expected_Lifespan_for_ESRD" : {
+      "type" : "Death",
+      "range" : { "low" : 4, "high" : 10, "unit" : "years" },
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "46177005",
+        "display" : "End stage renal disease (disorder)"
+      }],
+      "remarks" : ["Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
+                   "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"],
+      "direct_transition" : "Retinopathy_Progression"
     },
 
     "Retinopathy_Progression" : {
       "type" : "Simple",
+      "remarks" : ["In the USA, studies estimate that 28.5–40.3 % of patients with type 2 diabetes had DR, and 4.4–8.2 % of them had VTDR",
+                   "https://www.ncbi.nlm.nih.gov/pubmed/15078674",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4657234/",
+                   "https://eandv.biomedcentral.com/articles/10.1186/s40662-015-0026-2",
+                   "Currently the %s below do not take into consideration any medications the patient may be taking"],
       "complex_transition" : [
         {
           "condition" : {
             "condition_type" : "Attribute",
             "attribute" : "diabetic_eye_damage",
-            "operator" : "<=",
+            "operator" : "==",
+            "value" : 0
+          },
+          "distributions" : [
+            { "distribution" : 0.99972, "transition" : "Neuropathy_Progression" },
+            { "distribution" : 0.00028, "transition" : "Set_Mild_Eye_Damage" }
+          ],
+          "remarks" : ["these %s chosen such that ~30-40% of patients progress to Mild damage (retinopathy) over the course of ~35 yrs",
+                       ".99972 ^ (52 * 35) = .646 "]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_eye_damage",
+            "operator" : "==",
             "value" : 1
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Mild_Eye_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_Moderate_Eye_Damage" }
-          ]
+            { "distribution" : 0.998, "transition" : "Set_Mild_Eye_Damage" },
+            { "distribution" : 0.002, "transition" : "Set_Moderate_Eye_Damage" }
+          ],
+          "remarks" : ["Roughly 10% chance of DR progression per year == 0.2% chance per week",
+                       "https://eandv.biomedcentral.com/articles/10.1186/s40662-015-0026-2 (Table 3)"]
         },
         {
           "condition" : {
@@ -435,9 +462,11 @@
             "value" : 2
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Moderate_Eye_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_Severe_Eye_Damage" }
-          ]
+            { "distribution" : 0.9992, "transition" : "Set_Moderate_Eye_Damage" },
+            { "distribution" : 0.0008, "transition" : "Set_Severe_Eye_Damage" }
+          ],
+          "remarks" : ["Roughly 3% progression from NPDR to PDR per year == .08% per week",
+                       "https://eandv.biomedcentral.com/articles/10.1186/s40662-015-0026-2 (Table 3 again)"]
         },
         {
           "condition" : {
@@ -448,7 +477,6 @@
           },
           "transition" : "Set_Severe_Eye_Damage"
         }
-
       ]
     },
 
@@ -518,9 +546,12 @@
 
     "Chance_of_Macular_Edema" : {
       "type" : "Simple",
+      "remarks" : ["Incidence of DME is very low. Very rough estimate == ~1% per year.",
+                   "1% / yr = .02% / week",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4657234/table/Tab5/"],
       "distributed_transition" : [
-        { "distribution" : 0.01, "transition" : "Set_Macular_Edema" },
-        { "distribution" : 0.99, "transition" : "Chance_of_Blindness" }
+        { "distribution" : 0.0002, "transition" : "Set_Macular_Edema" },
+        { "distribution" : 0.9998, "transition" : "Chance_of_Blindness" }
       ]
     },
 
@@ -533,9 +564,12 @@
 
     "Chance_of_Blindness" : {
       "type" : "Simple",
+      "remarks" : ["estimated prevalence of blindness is ~1% in MA; among diabetics we estimate 3%",
+                   "3% / 30 yrs = ~ 0.002 % / week",
+                   "http://www.idf.org/sites/default/files/IDF%2520Toolkit_Backgrounder_FINAL.pdf"],
       "distributed_transition" : [
-        { "distribution" : 0.01, "transition" : "Set_Blindness" },
-        { "distribution" : 0.99, "transition" : "Neuropathy_Progression" }
+        { "distribution" : 0.00002, "transition" : "Set_Blindness" },
+        { "distribution" : 0.99998, "transition" : "Neuropathy_Progression" }
       ]
     },
 
@@ -633,19 +667,5 @@
       "direct_transition" : "Diabetes_Progression"
     },
 
-
-    "Death" : {
-      "type" : "Death",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "46177005",
-        "display" : "End stage renal disease (disorder)"
-      }],
-      "direct_transition" : "Terminal"
-    },
-
-    "Terminal" : {
-      "type" : "Terminal"
-    }
   }
 }
