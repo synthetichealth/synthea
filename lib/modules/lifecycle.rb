@@ -306,7 +306,7 @@ module Synthea
         # we also want realistic %s of the medications, so this is a piecewise function so that higher BMI have much higher HBa1c and have to take more drugs
         # data points: (20, 5), (39, 6.5), (40, 9)
 
-        if bmi < 39
+        if bmi < 40
           0.077 * bmi + 3.4
         else
           0.625 * bmi - 16
