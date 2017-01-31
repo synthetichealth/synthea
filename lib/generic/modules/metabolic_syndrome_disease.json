@@ -209,6 +209,14 @@
 
     "Nephropathy_Progression" : {
       "type" : "Simple",
+      "remarks" : ["https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4727808/",
+                   "There are 5 defined stages of kidney disease; stage 5 is End-stage where dialysis is necessary",
+                   "There is limited data on the statistics of individual stages, outside of end-stage",
+                   "These transition %s are intended to give realistic #s within end-stage, but the stages along the way may not match reality",
+                   "(of course, if we find numbers to compare to then we should update this)",
+                   "FTA: Crude incidence rates of ESRD among individuals with type 2 diabetes/NIDDM were reported from 104 (95% CI 56–194) per 100,000 PY among patients from Italy",
+                   " to 690 (95% CI na) and 937.6 (95% CI na) per 100,000 PY among American Indians.",
+                   "We assume 200/100,000 PPY --> 1/500 PPY --> .2% per year --> .004% per week"],
       "complex_transition" : [
         {
           "condition" : {
@@ -218,8 +226,8 @@
             "value" : 1
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Mild_Kidney_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_Moderate_Kidney_Damage" }
+            { "distribution" : 0.99996, "transition" : "Set_Mild_Kidney_Damage" },
+            { "distribution" : 0.00004, "transition" : "Set_Moderate_Kidney_Damage" }
           ]
         },
         {
@@ -230,8 +238,8 @@
             "value" : 2
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Moderate_Kidney_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_Severe_Kidney_Damage" }
+            { "distribution" : 0.99996, "transition" : "Set_Moderate_Kidney_Damage" },
+            { "distribution" : 0.00004, "transition" : "Set_Severe_Kidney_Damage" }
           ]
         },
         {
@@ -242,8 +250,8 @@
             "value" : 3
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Severe_Kidney_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_End_Stage_Kidney_Damage" }
+            { "distribution" : 0.99996, "transition" : "Set_Severe_Kidney_Damage" },
+            { "distribution" : 0.00004, "transition" : "Set_End_Stage_Kidney_Damage" }
           ]
         },
         {
@@ -369,6 +377,13 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_kidney_damage",
       "value" : 4,
+      "direct_transition" : "Set_End_Stage_Renal_Disease"
+    },
+
+    "Set_End_Stage_Renal_Disease" : {
+      "type" : "SetAttribute",
+      "attribute" : "end_stage_renal_disease",
+      "value" : true,
       "direct_transition" : "End_Stage_Kidney_Damage_Symptom_1"
     },
 
@@ -587,13 +602,28 @@
           "condition" : {
             "condition_type" : "Attribute",
             "attribute" : "diabetic_nerve_damage",
-            "operator" : "<=",
+            "operator" : "==",
+            "value" : 0
+          },
+          "distributions" : [
+            { "distribution" : 0.9996, "transition" : "Loop_back_to_Start" },
+            { "distribution" : 0.0004, "transition" : "Set_Mild_Nerve_Damage" }
+          ],
+          "remarks" : ["DPN affects as many as 1/2 of all patients with diabetes.",
+                       "50% over 35 years == ~ 0.04% per week"]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_nerve_damage",
+            "operator" : "==",
             "value" : 1
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Mild_Nerve_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_Moderate_Nerve_Damage" }
-          ]
+            { "distribution" : 0.999, "transition" : "Set_Mild_Nerve_Damage" },
+            { "distribution" : 0.001, "transition" : "Set_Moderate_Nerve_Damage" }
+          ],
+          "remarks" : ["at/beyond this point I can't find any well-defined #s on progression of diabetic neuropathy"]
         },
         {
           "condition" : {
@@ -603,8 +633,8 @@
             "value" : 2
           },
           "distributions" : [
-            { "distribution" : 0.99, "transition" : "Set_Moderate_Nerve_Damage" },
-            { "distribution" : 0.01, "transition" : "Set_Severe_Nerve_Damage" }
+            { "distribution" : 0.999, "transition" : "Set_Moderate_Nerve_Damage" },
+            { "distribution" : 0.001, "transition" : "Set_Severe_Nerve_Damage" }
           ]
         },
         {
@@ -665,7 +695,7 @@
     "Loop_back_to_Start" : {
       "type" : "Simple",
       "direct_transition" : "Diabetes_Progression"
-    },
+    }
 
   }
 }
