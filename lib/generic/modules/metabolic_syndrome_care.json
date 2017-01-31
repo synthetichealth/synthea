@@ -326,6 +326,7 @@
         "code" : "860975",
         "display" : "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
       }],
+      "reason" : "Diagnose_Diabetes",
       "direct_transition" : "Bitherapy"
     },
 
@@ -392,6 +393,7 @@
         "code" : "897122",
         "display" : "3 ML liraglutide 6 MG/ML Pen Injector"
       }],
+      "reason" : "Diagnose_Diabetes",
       "direct_transition" : "Tritherapy"
     },
 
@@ -469,6 +471,7 @@
         "code" : "1373463",
         "display" : "canagliflozin 100 MG Oral Tablet"
       }],
+      "reason" : "Diagnose_Diabetes",
       "direct_transition" : "Insulin"
     },
 
@@ -542,6 +545,7 @@
         "code" : "106892",
         "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
       }],
+      "reason" : "Diagnose_Diabetes",
       "direct_transition" : "Check_Complications"
     },
 
@@ -562,6 +566,7 @@
         "code" : "106892",
         "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
       }],
+      "reason" : "Diagnose_Diabetes",
       "direct_transition" : "Check_Complications"
     },
 
