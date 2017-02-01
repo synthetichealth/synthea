@@ -48,6 +48,13 @@ module Synthea
         end
         breakline(text_record)
 
+        # Immunizations
+        text_record << 'IMMUNIZATIONS:'
+        synthea_record.immunizations.reverse.each do |item|
+          immunization(item, text_record, nil, nil)
+        end
+        breakline(text_record)
+
         # Encounters
         text_record << 'ENCOUNTERS:'
         synthea_record.encounters.reverse.each do |item|
