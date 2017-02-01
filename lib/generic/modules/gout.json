@@ -98,7 +98,19 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Gout_CarePlan"
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "gout_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Gout_CarePlan"
+        },
+        {
+          "transition": "Gout_Nonopioid_Pain_Medication"
+        }
+      ]
     },
 
     "Gout_CarePlan": {
@@ -249,7 +261,7 @@
         }
       ]
     },
-    
+
     "Terminal": {
       "type": "Terminal"
     }
