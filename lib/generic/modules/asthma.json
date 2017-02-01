@@ -186,10 +186,30 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "895993",
-          "display": "Fluticasone propionate 0.044MG [Flovent]"
+          "code": "895994",
+          "display": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler"
         }
       ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Prescribe_Emergency_Inhaler"
+    },
+
+    "Prescribe_Emergency_Inhaler": {
+      "type": "MedicationOrder",
+      "target_encounter": "Asthma_Diagnosis",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "745679",
+          "display": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
       "direct_transition": "Asthma_CarePlan_Selector"
     },
 
@@ -438,6 +458,21 @@
           "display": "Emergency hospital admission for asthma"
         }
       ],
+      "direct_transition": "End_Asthma_ED_Visit"
+    },
+
+    "End_Asthma_ED_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_For_Followup"
+    },
+
+    "Delay_For_Followup": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
       "direct_transition": "Asthma_Attack_Followup"
     },
 
@@ -452,53 +487,12 @@
           "display": "Asthma follow-up"
         }
       ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type": "Attribute",
-                "attribute": "prescribed_emergency_inhaler",
-                "operator": "is nil"
-              },
-              {
-                "condition_type" : "Date",
-                "operator" : ">=",
-                "year" : 1982
-              }
-            ]
-          },
-          "transition": "Needs_Emergency_Inhaler"
-        },
-        {
-          "transition": "Loopback_Maintaining_Asthma",
-          "remarks": [
-            "Patient was already presecribed an emergency inhaler"
-          ]
-        }
-      ]
+      "direct_transition": "Followup_End"
     },
 
-    "Needs_Emergency_Inhaler": {
-      "type": "SetAttribute",
-      "attribute": "prescribed_emergency_inhaler",
-      "value": true,
-      "direct_transition": "Prescribe_Emergency_Inhaler"
-    },
-
-    "Prescribe_Emergency_Inhaler": {
-      "type": "MedicationOrder",
-      "target_encounter": "Asthma_Attack_Followup",
-      "reason": "asthma_condition",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "801093",
-          "display": "Albuterol 0.09MG/ACTUAT [Ventolin]"
-        }
-      ],
-      "direct_transition": "Loopback_Maintaining_Asthma"
+    "Followup_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Maintaining_Asthma"
     },
 
     "Next_Wellness_Encounter": {
@@ -510,6 +504,12 @@
     "Maintenance_Medication_End": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Maintenance_Inhaler",
+      "direct_transition": "Emergency_Medication_End"
+    },
+
+    "Emergency_Medication_End": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_Emergency_Inhaler",
       "direct_transition": "Childhood_Asthma_Subsides"
     },
 
@@ -523,11 +523,6 @@
       "type": "CarePlanEnd",
       "referenced_by_attribute": "asthma_careplan",
       "direct_transition": "Terminal"
-    },
-
-    "Loopback_Maintaining_Asthma": {
-      "type": "EncounterEnd",
-      "direct_transition": "Maintaining_Asthma"
     },
 
     "Terminal": {

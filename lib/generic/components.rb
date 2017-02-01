@@ -89,7 +89,7 @@ module Synthea
           # Format: "<instr_1>; <instr_2>; <instr_3>" etc.
           # Used primarilly for CCDA export.
           fi = ''
-          unless @instructions.length.zero?
+          unless @instructions.nil? || @instructions.length.zero?
             fi += @instructions[0].display
             additional_instrs = @instructions.drop(1)
             additional_instrs.each do |instr|

@@ -164,22 +164,32 @@
         "high": 35,
         "unit": "years"
       },
-      "direct_transition": "Adult_Onset_Dermatitis"
+      "direct_transition": "Adult_Contact_Dermatitis"
     },
 
     "Childhood_Atopic_Dermatitis": {
       "type": "ConditionOnset",
-      "remarks": [
-        "======================================================================",
-        " CHILDHOOD ATOPIC DERMATITS                                           ",
-        "======================================================================"
-      ],
       "target_encounter": "PCP_Encounter",
+      "assign_to_attribute": "dermatitis",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": "24079001",
           "display": "Atopic dermatitis"
+        }
+      ],
+      "direct_transition": "PCP_Encounter"
+    },
+
+    "Adult_Contact_Dermatitis": {
+      "type": "ConditionOnset",
+      "target_encounter": "PCP_Encounter",
+      "assign_to_attribute": "dermatitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40275004",
+          "display": "Contact dermatitis"
         }
       ],
       "direct_transition": "PCP_Encounter"
@@ -195,6 +205,7 @@
         "a dermatologist, followed by an allergist."
       ],
       "encounter_class": "ambulatory",
+      "reason": "dermatitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -202,17 +213,18 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "AD_Careplan"
+      "direct_transition": "Dermatitis_Careplan"
     },
 
-    "AD_Careplan": {
+    "Dermatitis_Careplan": {
       "type": "CarePlanStart",
       "remarks": [
-        "Treatment of AD is all about self care. Typically all a patient can ",
+        "Treatment of eczema is all about self care. Typically all a patient can ",
         "do is treat the symptoms and avoid allergens and irritants. Allergy ",
         "tests and specialized treatment by an allergist really didn't exist ",
         "before 1975 - 1980."
       ],
+      "reason": "dermatitis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -227,11 +239,16 @@
           "display": "Application of moisturizer to skin"
         }
       ],
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.33,
           "remarks": [
-            "The mild cases of AD receive no further treatment unless they get worse."
+            "The mild cases of eczema receive no further treatment unless they get worse."
           ],
           "transition": "Living_With_Dermatitis"
         },
@@ -255,7 +272,7 @@
     "Dermatologist_Visit": {
       "type": "Encounter",
       "remarks": [
-        "1/3 of all AD cases are severe. 0.5 * 0.67 ~= 0.33"
+        "1/3 of all eczema cases are severe. 0.5 * 0.67 ~= 0.33"
       ],
       "encounter_class": "ambulatory",
       "codes": [
@@ -283,10 +300,10 @@
           ]
         },
         {
-          "remarks": [
-            "Similar eczema observations can be made for children that get ",
-            "eczema in mid-late childhood."
-          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Mid_Childhood_AD"
+          },
           "distributions": [
             {
               "distribution": 0.5,
@@ -297,6 +314,22 @@
               "transition": "Mid_Childhood_AD_Severe_Observations"
             }
           ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Adult_Contact_Dermatitis"
+          },
+          "distributions": [
+            {
+              "distribution": 0.67,
+              "transition": "Moderate_Contact_Dermatitis_Observations"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Severe_Contact_Dermatitis_Observations"
+            }
+          ]
         }
       ]
     },
@@ -304,34 +337,333 @@
     "Early_Childhood_AD_Moderate_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/early_moderate_eczema_obs",
-      "direct_transition": "Living_With_Dermatitis"
+      "direct_transition": "Advise_To_Visit_Allergist"
     },
 
     "Early_Childhood_AD_Severe_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/early_severe_eczema_obs",
-      "direct_transition": "Living_With_Dermatitis"
+      "direct_transition": "Advise_To_Visit_Allergist"
     },
 
     "Mid_Childhood_AD_Moderate_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/mid_moderate_eczema_obs",
-      "direct_transition": "Living_With_Dermatitis"
+      "direct_transition": "Advise_To_Visit_Allergist"
     },
 
     "Mid_Childhood_AD_Severe_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/mid_severe_eczema_obs",
-      "direct_transition": "Living_With_Dermatitis"
+      "direct_transition": "Advise_To_Visit_Allergist"
     },
 
-    "Adult_Onset_Dermatitis": {
-      "type": "Simple",
+    "Moderate_Contact_Dermatitis_Observations": {
+      "type": "CallSubmodule",
+      "submodule": "dermatitis/moderate_cd_obs",
+      "direct_transition": "Prescribe_Corticosteroid"
+    },
+
+    "Severe_Contact_Dermatitis_Observations": {
+      "type": "CallSubmodule",
+      "submodule": "dermatitis/severe_cd_obs",
+      "direct_transition": "Prescribe_Corticosteroid"
+    },
+
+    "Prescribe_Corticosteroid": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "These are only prescribed to adults or older children."
+      ],
+      "reason": "dermatitis",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106258",
+          "display": "Hydrocortisone 10 MG/ML Topical Cream"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Advise_To_Visit_Allergist"
+    },
+
+    "Advise_To_Visit_Allergist": {
+      "type": "SetAttribute",
+      "attribute": "visit_allergist",
+      "value": true,
+      "direct_transition": "End_Dermatologist_Visit"
+    },
+
+    "End_Dermatologist_Visit": {
+      "type": "EncounterEnd",
       "direct_transition": "Living_With_Dermatitis"
     },
 
     "Living_With_Dermatitis": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " LIVING WITH DERMATITS                                                ",
+        "======================================================================"
+      ],
+      "range": {
+        "low": 8,
+        "high": 16,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Childhood_Atopic_Dermatitis"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "PriorState",
+                  "name": "Potentially_Outgrow_AD"
+                }
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 16,
+                "unit": "years"
+              }
+            ]
+          },
+          "transition": "Potentially_Outgrow_AD"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Childhood_Atopic_Dermatitis"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Potentially_Outgrow_AD"
+              }
+            ]
+          },
+          "transition": "Potential_AD_Flare_Up"
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Adult_Contact_Dermatitis"
+          },
+          "transition": "Potential_CD_Resolves"
+        }
+      ]
+    },
+
+    "Potentially_Outgrow_AD": {
       "type": "Simple",
+      "remarks": [
+        "About 75% of children with Atopic Dermatitis outgrow it by adolescence."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Dermatitis_Resolves"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Potential_AD_Flare_Up"
+        }
+      ]
+    },
+
+    "Potential_AD_Flare_Up": {
+      "type": "Simple",
+      "remarks": [
+        "A 'flare-up' is a heightening of the symptoms from Atopic Dermatitis, including ",
+        "very itchy skin, spreading rashes, and sensitivity. For older children (>12) and ",
+        "adults an immunosuppressant and topical corticosteroid are prescribed to control ",
+        "the symptoms. ",
+
+        "Only patients with moderate to severe AD paid a visit to the Dermatologist."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Dermatologist_Visit"
+          },
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "AD_Flare_Up"
+            },
+            {
+              "distribution": 0.9,
+              "transition": "Living_With_Dermatitis"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Living_With_Dermatitis"
+            }
+          ]
+        }
+      ]
+    },
+
+    "AD_Flare_Up": {
+      "type": "Delay",
+      "remarks": [
+        "A flare-up is bad enough to seek treatment. Usually another visit to the dermatologist ",
+        "will suffice."
+      ],
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Dermatologist_Visit_For_Flare_Up"
+    },
+
+    "Dermatologist_Visit_For_Flare_Up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "dermatitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 16,
+            "unit": "years"
+          },
+          "transition": "Prescribe_Immunosuppressant"
+        },
+        {
+          "transition": "Prescribe_Corticosteroid_For_Flare_Up"
+        }
+      ]
+    },
+
+    "Prescribe_Immunosuppressant": {
+      "type": "MedicationOrder",
+      "reason": "dermatitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "205168",
+          "display": "cycloSPORINE 50 MG Oral Capsule"
+        }
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 2,
+          "unit": "weeks"
+        }
+      },
+      "direct_transition": "Prescribe_Corticosteroid_For_Flare_Up"
+    },
+
+    "Prescribe_Corticosteroid_For_Flare_Up": {
+      "type": "MedicationOrder",
+      "reason": "dermatitis",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106258",
+          "display": "Hydrocortisone 10 MG/ML Topical Cream"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Treating_Flare_Up"
+    },
+
+    "Treating_Flare_Up": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "205168",
+                "display": "cycloSPORINE 50 MG Oral Capsule"
+              }
+            ]
+          },
+          "transition": "End_Immunosuppressant"
+        },
+        {
+          "transition": "End_Corticosteroid"
+        }
+      ]
+    },
+
+    "End_Immunosuppressant": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_Immunosuppressant",
+      "direct_transition": "End_Corticosteroid"
+    },
+
+    "End_Corticosteroid": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_Corticosteroid_For_Flare_Up",
+      "direct_transition": "Living_With_Dermatitis"
+    },
+
+    "Potential_CD_Resolves": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Dermatitis_Resolves"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Living_With_Dermatitis"
+        }
+      ]
+    },
+
+    "Dermatitis_Resolves": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "dermatitis",
+      "direct_transition": "End_Dermatitis_CarePlan"
+    },
+
+    "End_Dermatitis_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Dermatitis_Careplan",
       "direct_transition": "Terminal"
     },
 

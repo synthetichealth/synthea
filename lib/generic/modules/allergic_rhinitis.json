@@ -194,7 +194,7 @@
           "distributions": [
             {
               "distribution": 1,
-              "transition": "End_Allergic_Rhinitis_Diagnosis"
+              "transition": "Advise_To_Visit_Allergist"
             }
           ]
         },
@@ -286,24 +286,76 @@
     },
 
     "Outgrow_Allergic_Rhinitis?": {
-      "type": "Simple",
+      "type": "Guard",
       "remarks": [
         "It's very uncommon for a person to 'outgrow' allergic rhinitis, ",
         "but symptoms can lessen or disappear as a child ages or if they ",
-        "are given immunotherapy."
+        "are given immunotherapy (85%)."
       ],
+      "allow": {
+        "condition_type": "Not",
+        "condition": {
+          "condition_type": "Or",
+          "conditions": [
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "419263009",
+                  "display": "Allergy to tree pollen"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "418689008",
+                  "display": "Allergy to grass pollen"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "232347008",
+                  "display": "Dander (animal) allergy"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "232350006",
+                  "display": "House dust mite allergy"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "419474003",
+                  "display": "Allergy to mould"
+                }
+              ]
+            }
+          ]
+        }
+      },
       "direct_transition": "Allergic_Rhinitis_Subsides"
     },
 
     "Allergic_Rhinitis_Subsides": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "allergic_rhinitis",
-      "direct_transition": "OTC_Medication_End"
-    },
-
-    "OTC_Medication_End": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "otc_antihistamine",
       "direct_transition": "Terminal"
     },
 
