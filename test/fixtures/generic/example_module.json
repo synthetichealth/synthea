@@ -163,7 +163,8 @@
     },
 
     "Death": {
-      "type": "Death"
+      "type": "Death",
+      "direct_transition": "Terminal"
     },
 
     "Terminal": {
