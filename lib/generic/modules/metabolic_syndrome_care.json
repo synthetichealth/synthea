@@ -76,7 +76,7 @@
           "transition" : "Record_HA1C"
         },
         {
-          "transition" : "Initial"
+          "transition" : "Wellness_Encounter"
         }
       ]
     },
