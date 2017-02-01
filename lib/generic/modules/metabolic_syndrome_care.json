@@ -159,6 +159,11 @@
               {
                 "condition_type" : "Attribute",
                 "attribute" : "diabetes_severity",
+                "operator" : "is not nil"
+              },
+              {
+                "condition_type" : "Attribute",
+                "attribute" : "diabetes_severity",
                 "operator" : ">=",
                 "value" : 3
               },
