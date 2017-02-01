@@ -4,7 +4,7 @@ module Synthea
       attr_reader :config, :name, :current_module, :logged
       attr_accessor :history, :current_state, :current_encounter
 
-      @@counter = {}
+      @@counter = {} # rubocop:disable ClassVars
       def self.counter
         @@counter
       end
@@ -27,7 +27,7 @@ module Synthea
 
       def run(time, entity)
         # if @current_state.run returns true, it means we should progress to the next state
-        @@counter[@current_module][@current_state.name] += 1
+        count(@current_module, @current_state.name)
         while @current_state.run(time, entity)
           next_state = self.next(time, entity)
 
@@ -50,13 +50,18 @@ module Synthea
               run(@history.last.exited, entity)
             end
           end
-          @@counter[@current_module][@current_state.name] += 1
+          count(@current_module, @current_state.name)
         end
 
         if Synthea::Config.generic.log && !active? && @logged.nil?
           log_history
           @logged = true
         end
+      end
+
+      def count(module_name, state_name)
+        @@counter[module_name] = Hash.new(0) unless @@counter[module_name]
+        @@counter[module_name][state_name] += 1
       end
 
       def next(time, entity)
