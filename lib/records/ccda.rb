@@ -173,7 +173,7 @@ module Synthea
           'reason' => COND_LOOKUP[prescription['reasons'][0]] # some data is lost here b/c HDS does not support multiple reasons.
         )
 
-        unless prescription['rx_info'].empty?
+        unless prescription['rx_info'].empty? || prescription['rx_info']['as_needed']
           rx_info = prescription['rx_info']
           fills = rx_info['refills'] + 1
 
