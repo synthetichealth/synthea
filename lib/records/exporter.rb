@@ -167,9 +167,9 @@ module Synthea
         when :conditions
           return record.present[e['type']] || (e['end_time'] && e['end_time'] > cutoff_date)
         when :encounters
-          return e['type'] == :death_certification
+          return (e['type'] == :death_certification) && (e['time'] <= end_time)
         when :observations
-          return e['type'] == :cause_of_death || e['type'] == :death_certificate
+          return (e['type'] == :cause_of_death || e['type'] == :death_certificate) && (e['time'] <= end_time)
         end
 
         false
