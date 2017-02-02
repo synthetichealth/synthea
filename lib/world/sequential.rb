@@ -76,6 +76,9 @@ module Synthea
 
         puts 'Generated Demographics:'
         puts JSON.pretty_unparse(@stats)
+
+        puts 'State Statistics:'
+        puts JSON.pretty_unparse(Synthea::Generic::Context.counter)
       end
 
       def run_random
