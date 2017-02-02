@@ -280,7 +280,6 @@
       "direct_transition" : "Moderate_Kidney_Damage_Symptom_1"
     },
 
-
     "Moderate_Kidney_Damage_Symptom_1" : {
       "type" : "Symptom",
       "symptom" : "Hunger",
@@ -348,16 +347,41 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_kidney_damage",
       "value" : 4,
-      "direct_transition" : "Set_End_Stage_Renal_Disease"
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "end_stage_renal_disease",
+            "operator" : "==",
+            "value" : true
+          },
+          "transition" : "End_Stage_Kidney_Damage_Symptom_1"
+        },
+        {
+          "transition" : "Set_End_Stage_Renal_Disease"
+        }
+      ]
     },
 
     "Set_End_Stage_Renal_Disease" : {
       "type" : "SetAttribute",
       "attribute" : "end_stage_renal_disease",
       "value" : true,
-      "direct_transition" : "End_Stage_Kidney_Damage_Symptom_1"
+      "direct_transition" : "Expected_Lifespan_for_ESRD"
     },
 
+    "Expected_Lifespan_for_ESRD" : {
+      "type" : "Death",
+      "range" : { "low" : 4, "high" : 10, "unit" : "years" },
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "46177005",
+        "display" : "End stage renal disease"
+      }],
+      "remarks" : ["Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
+                   "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"],
+      "direct_transition" : "End_Stage_Kidney_Damage_Symptom_1"
+    },
 
     "End_Stage_Kidney_Damage_Symptom_1" : {
       "type" : "Symptom",
@@ -388,19 +412,6 @@
       "type" : "Symptom",
       "symptom" : "Thirst",
       "range" : { "low" : 50, "high" : 100 },
-      "direct_transition" : "Expected_Lifespan_for_ESRD"
-    },
-
-    "Expected_Lifespan_for_ESRD" : {
-      "type" : "Death",
-      "range" : { "low" : 4, "high" : 10, "unit" : "years" },
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "46177005",
-        "display" : "End stage renal disease (disorder)"
-      }],
-      "remarks" : ["Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
-                   "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"],
       "direct_transition" : "Retinopathy_Progression"
     },
 
