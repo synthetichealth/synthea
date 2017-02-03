@@ -5,3 +5,4 @@ output
 coverage
 resources
 *.log*
+concepts.csv
