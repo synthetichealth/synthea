@@ -169,6 +169,162 @@ module Synthea
         end
       end
 
+      rule :diabetic_vital_signs, [:gender, :weight, :bmi], [:blood_glucose, :blood_pressure] do |_time, entity|
+        range = case entity['diabetic_kidney_damage']
+                when 1
+                  Synthea::Config.metabolic.basic_panel.creatinine_clearance.mild_kidney_damage
+                when 2
+                  Synthea::Config.metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage
+                when 3
+                  Synthea::Config.metabolic.basic_panel.creatinine_clearance.severe_kidney_damage
+                when 4
+                  Synthea::Config.metabolic.basic_panel.creatinine_clearance.esrd
+                else
+                  if entity[:gender] == 'F'
+                    Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.female
+                  else
+                    Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.male
+                  end
+                end
+        creatinine_clearance = rand(range.first..range.last)
+        entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
+
+        creatinine = begin
+                       reverse_calculate_creatine(entity, creatinine_clearance)
+                     rescue
+                       1.0
+                     end
+        entity.set_vital_sign(:creatinine, creatinine, 'mg/dL')
+
+        bmi = entity.vital_sign(:bmi)
+        if bmi
+          bmi = bmi[:value]
+          bloodglucose = blood_glucose(bmi)
+
+          # How much does A1C need to be lowered to get to goal?
+          # Metformin and sulfonylureas may lower A1C 1.5 to 2 percentage points,
+          # GLP-1 agonists and DPP-4 inhibitors 0.5 to 1 percentage point on average, and
+          # insulin as much as 6 points or more, depending on where you start.
+          # -- http://www.diabetesforecast.org/2013/mar/your-a1c-achieving-personal-blood-glucose-goals.html
+          # [:metformin, :glp1ra, :sglt2i, :basal_insulin, :prandial_insulin]
+          #     mono        bi      tri        insulin          insulin++
+          record = entity.record_synthea
+
+          bloodglucose -= 1.5 if record.medication_active?('24_hr_metformin_hydrochloride_500_mg_extended_release_oral_tablet'.to_sym)
+          bloodglucose -= 0.5 if record.medication_active?('3_ml_liraglutide_6_mg/ml_pen_injector'.to_sym)
+          bloodglucose -= 0.5 if record.medication_active?('canagliflozin_100_mg_oral_tablet'.to_sym)
+          bloodglucose -= 3.0 if record.medication_active?('insulin_human,_isophane_70_unt/ml_/_regular_insulin,_human_30_unt/ml_injectable_suspension_[humulin]'.to_sym)
+          bloodglucose -= 6.0 if record.medication_active?('insulin_lispro_100_unt/ml_injectable_solution_[humalog]'.to_sym)
+          entity.set_vital_sign(:blood_glucose, bloodglucose.round(1), '%')
+        end
+
+        # estimate values
+        if entity['hypertension']
+          entity.set_vital_sign(:systolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.hypertensive.systolic), 'mmHg')
+          entity.set_vital_sign(:diastolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.hypertensive.diastolic), 'mmHg')
+        else
+          entity.set_vital_sign(:systolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.normal.systolic), 'mmHg')
+          entity.set_vital_sign(:diastolic_blood_pressure, pick(Synthea::Config.metabolic.blood_pressure.normal.diastolic), 'mmHg')
+        end
+        # calculate the components of a lipid panel
+        index = 0
+        index = 1 if entity['diabetes_severity']
+        index = entity['diabetes_severity'] if entity['diabetes_severity']
+        cholesterol = Synthea::Config.metabolic.lipid_panel.cholesterol
+        triglycerides = Synthea::Config.metabolic.lipid_panel.triglycerides
+        hdl = Synthea::Config.metabolic.lipid_panel.hdl
+
+        entity.set_vital_sign(:total_cholesterol, rand(cholesterol[index]..cholesterol[index + 1]), 'mg/dL')
+        entity.set_vital_sign(:triglycerides, rand(triglycerides[index]..triglycerides[index + 1]), 'mg/dL')
+        entity.set_vital_sign(:hdl, rand(hdl[index + 1]..hdl[index]), 'mg/dL')
+
+        ldl = entity.get_vital_sign_value(:total_cholesterol) - entity.get_vital_sign_value(:hdl) - (0.2 * entity.get_vital_sign_value(:triglycerides))
+        entity.set_vital_sign(:ldl, ldl.to_i, 'mg/dL')
+
+        # calculate the components of a metabolic panel and associated observations
+        normal = Synthea::Config.metabolic.basic_panel.normal
+        metabolic_panel = {
+          urea_nitrogen: rand(normal.urea_nitrogen.first..normal.urea_nitrogen.last),
+          creatinine: rand(normal.creatinine.first..normal.creatinine.last),
+          calcium: rand(normal.calcium.first..normal.calcium.last)
+        }
+
+        electrolytes_panel = {
+          chloride: rand(normal.chloride.first..normal.chloride.last),
+          potassium: rand(normal.potassium.first..normal.potassium.last),
+          carbon_dioxide: rand(normal.co2.first..normal.co2.last),
+          sodium: rand(normal.sodium.first..normal.sodium.last)
+        }
+
+        # calculate glucose out of the normal
+        glucose = Synthea::Config.metabolic.basic_panel.glucose
+        index = 2 if index > 2
+        metabolic_panel[:glucose] = rand(glucose[index]..glucose[index + 1])
+        # calculate creatine values
+        range = nil
+        if entity[:gender] && entity[:gender] == 'M'
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.male
+        else
+          range = Synthea::Config.metabolic.basic_panel.creatinine_clearance.normal.female
+        end
+        creatinine_clearance = rand(range.first..range.last)
+        metabolic_panel[:creatinine] = begin
+                                         reverse_calculate_creatine(entity, creatinine_clearance)
+                                       rescue
+                                         1.0
+                                       end
+        range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
+        entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
+        if creatinine_clearance > 60
+          entity.set_vital_sign(:egfr, '>60', 'mL/min/{1.73_m2}')
+        else
+          entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
+        end
+
+        metabolic_panel.each { |k, v| entity.set_vital_sign(k, v, 'mg/dL') }
+        electrolytes_panel.each { |k, v| entity.set_vital_sign(k, v, 'mmol/L') }
+
+        microalbumin_creatine_ratio = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio
+
+        range = case entity['diabetic_kidney_damage']
+                when 4
+                  microalbumin_creatine_ratio.proteinuria
+                when 3
+                  microalbumin_creatine_ratio.microalbuminuria_uncontrolled
+                when 2
+                  microalbumin_creatine_ratio.microalbuminuria_controlled
+                else
+                  microalbumin_creatine_ratio.normal
+                end
+        entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
+      end
+
+      def blood_glucose(bmi)
+        # numbers here are derived purely by trial & error
+        # we want ~10% of patients to have diabetes, ~37% to have prediabetes
+        # a trial run suggests that ~10% of patients have BMI >= 39 and ~37% have BMI >= 32
+        # we also want realistic %s of the medications, so this is a piecewise function so that higher BMI have much higher HBa1c and have to take more drugs
+        # data points: (20, 5), (39, 6.5), (40, 9)
+
+        if bmi < 40
+          0.077 * bmi + 3.4
+        else
+          0.625 * bmi - 16
+        end
+      end
+
+      # http://www.mcw.edu/calculators/creatinine.htm
+      def reverse_calculate_creatine(entity, crcl)
+        age = entity[:age] # years
+        female = (entity[:gender] == 'F')
+        weight = entity[:weight] # kilograms
+        crcl = 100 if crcl.nil? # mg/dL
+        crcl = 1 if crcl < 1
+        creatine = ((140 - age) * weight) / (72 * crcl)
+        creatine *= 0.85 if female
+        creatine
+      end
+
       # People die
       rule :death, [:age], [] do |time, entity|
         if entity.alive?(time)

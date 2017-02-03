@@ -1,0 +1,684 @@
+{
+  "name" : "Metabolic Syndrome Disease Progression",
+  "remarks" : [],
+  "states" : {
+
+    "Initial" : {
+      "type" : "Initial",
+      "direct_transition" : "Initial_Kidney_Health"
+    },
+
+    "Initial_Kidney_Health" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_kidney_damage",
+      "value" : 0,
+      "direct_transition" : "Initial_Eye_Health"
+    },
+
+    "Initial_Eye_Health" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_eye_damage",
+      "value" : 0,
+      "direct_transition" : "Initial_Nerve_Health"
+    },
+
+    "Initial_Nerve_Health" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_nerve_damage",
+      "value" : 0,
+      "direct_transition" : "Age_and_BG_Guard"
+    },
+
+    "Age_and_BG_Guard" : {
+      "type" : "Guard",
+      "allow" : {
+      "condition_type": "And",
+      "conditions": [
+        {
+          "condition_type": "Age",
+          "operator": ">=",
+          "quantity": 16,
+          "unit": "years"
+        },
+        {
+          "condition_type" : "Vital Sign",
+          "vital_sign" : "blood_glucose",
+          "operator" : "is not nil"
+        }
+      ]
+      },
+      "direct_transition" : "Potential_Diabetes"
+    },
+
+    "Potential_Diabetes" : {
+      "type" : "Delay",
+      "exact" : { "quantity" : 1, "unit" : "months" },
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "And",
+            "conditions" : [
+              {
+                "condition_type" : "Attribute",
+                "attribute" : "hypertension",
+                "operator" : "is nil"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years"
+              }
+            ]
+          },
+          "transition" : "Chance_to_Onset_Hypertension"
+        },
+        {
+          "condition" : {
+            "condition_type" : "Vital Sign",
+            "vital_sign" : "blood_glucose",
+            "operator" : ">",
+            "value" : 6.5
+          },
+          "transition" : "Onset_Diabetes"
+        },
+        {
+          "condition" : {
+            "condition_type" : "Vital Sign",
+            "vital_sign" : "blood_glucose",
+            "operator" : ">",
+            "value" : 5.7
+          },
+          "transition" : "Onset_Prediabetes"
+        },
+        {
+          "transition" : "Potential_Diabetes"
+        }
+      ]
+    },
+
+    "Chance_to_Onset_Hypertension" : {
+      "type" : "Simple",
+      "distributed_transition" : [
+        { "distribution" : 0.296, "transition" : "Onset_Hypertension" },
+        { "distribution" : 0.704, "transition" : "No_Hypertension" }
+      ],
+      "remarks" : "probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
+    },
+
+    "Onset_Hypertension" : {
+      "type" : "SetAttribute",
+      "attribute" : "hypertension",
+      "value" : true,
+      "direct_transition" : "Potential_Diabetes"
+    },
+
+    "No_Hypertension" : {
+      "type" : "SetAttribute",
+      "attribute" : "hypertension",
+      "value" : false,
+      "direct_transition" : "Potential_Diabetes"
+    },
+
+
+    "Onset_Prediabetes" : {
+      "type" : "SetAttribute",
+      "attribute" : "prediabetes",
+      "value" : true,
+      "direct_transition" : "Potential_Diabetes"
+    },
+
+    "Onset_Diabetes" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetes",
+      "value" : true,
+      "direct_transition" : "Chance_to_Onset_Hypertension_at_Diabetes_Onset"
+    },
+
+    "Chance_to_Onset_Hypertension_at_Diabetes_Onset" : {
+      "type" : "Simple",
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "hypertension",
+            "operator" : "==",
+            "value" : true
+          },
+          "transition" : "Nephropathy_Progression"
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.594, "transition" : "Onset_Hypertension_with_Diabetes" },
+            { "distribution" : 0.406, "transition" : "No_Hypertension_With_Diabetes" }
+          ],
+          "remarks" : "probability_given_diabetes: 0.594 #  (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
+        }
+      ]
+    },
+
+    "Onset_Hypertension_with_Diabetes" : {
+      "type" : "SetAttribute",
+      "attribute" : "hypertension",
+      "value" : true,
+      "direct_transition" : "Nephropathy_Progression"
+    },
+
+    "No_Hypertension_With_Diabetes" : {
+      "type" : "SetAttribute",
+      "attribute" : "hypertension",
+      "value" : false,
+      "direct_transition" : "Nephropathy_Progression"
+    },
+
+
+    "Diabetes_Progression" : {
+      "type" : "Delay",
+      "exact" : { "quantity" : 1, "unit" : "months" },
+      "direct_transition" : "Nephropathy_Progression"
+    },
+
+    "Nephropathy_Progression" : {
+      "type" : "Simple",
+      "remarks" : ["https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4727808/",
+                   "There are 5 defined stages of kidney disease; stage 5 is End-stage where dialysis is necessary",
+                   "There is limited data on the statistics of individual stages, outside of end-stage",
+                   "These transition %s are intended to give realistic #s within end-stage, but the stages along the way may not match reality",
+                   "(of course, if we find numbers to compare to then we should update this)",
+                   "FTA: Crude incidence rates of ESRD among individuals with type 2 diabetes/NIDDM were reported from 104 (95% CI 56–194) per 100,000 PY among patients from Italy",
+                   " to 690 (95% CI na) and 937.6 (95% CI na) per 100,000 PY among American Indians.",
+                   "We assume ESRD prevalance of 2% given diabetes, and average of 274 months/diabetic, progressing through 4 stages, or 0.1% chance of progression per month."],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_kidney_damage",
+            "operator" : "<=",
+            "value" : 1
+          },
+          "distributions" : [
+            { "distribution" : 0.999, "transition" : "Set_Mild_Kidney_Damage" },
+            { "distribution" : 0.001, "transition" : "Set_Moderate_Kidney_Damage" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_kidney_damage",
+            "operator" : "==",
+            "value" : 2
+          },
+          "distributions" : [
+            { "distribution" : 0.999, "transition" : "Set_Moderate_Kidney_Damage" },
+            { "distribution" : 0.001, "transition" : "Set_Severe_Kidney_Damage" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_kidney_damage",
+            "operator" : "==",
+            "value" : 3
+          },
+          "distributions" : [
+            { "distribution" : 0.999, "transition" : "Set_Severe_Kidney_Damage" },
+            { "distribution" : 0.001, "transition" : "Set_End_Stage_Kidney_Damage" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_kidney_damage",
+            "operator" : "==",
+            "value" : 4
+          },
+          "transition" : "Set_End_Stage_Kidney_Damage"
+        }
+
+      ]
+    },
+
+    "Set_Mild_Kidney_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_kidney_damage",
+      "value" : 1,
+      "direct_transition" : "Mild_Kidney_Damage_Symptom_1"
+    },
+
+    "Mild_Kidney_Damage_Symptom_1" : {
+      "type" : "Symptom",
+      "symptom" : "Hunger",
+      "range" : { "low" : 1, "high" : 100 },
+      "direct_transition" : "Mild_Kidney_Damage_Symptom_2"
+    },
+
+    "Mild_Kidney_Damage_Symptom_2" : {
+      "type" : "Symptom",
+      "symptom" : "Fatigue",
+      "range" : { "low" : 1, "high" : 100 },
+      "direct_transition" : "Mild_Kidney_Damage_Symptom_3"
+    },
+
+    "Mild_Kidney_Damage_Symptom_3" : {
+      "type" : "Symptom",
+      "symptom" : "Frequent Urination",
+      "range" : { "low" : 1, "high" : 100 },
+      "direct_transition" : "Mild_Kidney_Damage_Symptom_4"
+    },
+
+    "Mild_Kidney_Damage_Symptom_4" : {
+      "type" : "Symptom",
+      "symptom" : "Thirst",
+      "range" : { "low" : 1, "high" : 100 },
+      "direct_transition" : "Retinopathy_Progression"
+    },
+
+    "Set_Moderate_Kidney_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_kidney_damage",
+      "value" : 2,
+      "direct_transition" : "Moderate_Kidney_Damage_Symptom_1"
+    },
+
+    "Moderate_Kidney_Damage_Symptom_1" : {
+      "type" : "Symptom",
+      "symptom" : "Hunger",
+      "range" : { "low" : 20, "high" : 100 },
+      "direct_transition" : "Moderate_Kidney_Damage_Symptom_2"
+    },
+
+    "Moderate_Kidney_Damage_Symptom_2" : {
+      "type" : "Symptom",
+      "symptom" : "Fatigue",
+      "range" : { "low" : 20, "high" : 100 },
+      "direct_transition" : "Moderate_Kidney_Damage_Symptom_3"
+    },
+
+    "Moderate_Kidney_Damage_Symptom_3" : {
+      "type" : "Symptom",
+      "symptom" : "Frequent Urination",
+      "range" : { "low" : 20, "high" : 100 },
+      "direct_transition" : "Moderate_Kidney_Damage_Symptom_4"
+    },
+
+    "Moderate_Kidney_Damage_Symptom_4" : {
+      "type" : "Symptom",
+      "symptom" : "Thirst",
+      "range" : { "low" : 20, "high" : 100 },
+      "direct_transition" : "Retinopathy_Progression"
+    },
+
+    "Set_Severe_Kidney_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_kidney_damage",
+      "value" : 3,
+      "direct_transition" : "Severe_Kidney_Damage_Symptom_1"
+    },
+
+    "Severe_Kidney_Damage_Symptom_1" : {
+      "type" : "Symptom",
+      "symptom" : "Hunger",
+      "range" : { "low" : 40, "high" : 100 },
+      "direct_transition" : "Severe_Kidney_Damage_Symptom_2"
+    },
+
+    "Severe_Kidney_Damage_Symptom_2" : {
+      "type" : "Symptom",
+      "symptom" : "Fatigue",
+      "range" : { "low" : 40, "high" : 100 },
+      "direct_transition" : "Severe_Kidney_Damage_Symptom_3"
+    },
+
+    "Severe_Kidney_Damage_Symptom_3" : {
+      "type" : "Symptom",
+      "symptom" : "Frequent Urination",
+      "range" : { "low" : 40, "high" : 100 },
+      "direct_transition" : "Severe_Kidney_Damage_Symptom_4"
+    },
+
+    "Severe_Kidney_Damage_Symptom_4" : {
+      "type" : "Symptom",
+      "symptom" : "Thirst",
+      "range" : { "low" : 40, "high" : 100 },
+      "direct_transition" : "Retinopathy_Progression"
+    },
+
+    "Set_End_Stage_Kidney_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_kidney_damage",
+      "value" : 4,
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "end_stage_renal_disease",
+            "operator" : "==",
+            "value" : true
+          },
+          "transition" : "End_Stage_Kidney_Damage_Symptom_1"
+        },
+        {
+          "transition" : "Set_End_Stage_Renal_Disease"
+        }
+      ]
+    },
+
+    "Set_End_Stage_Renal_Disease" : {
+      "type" : "SetAttribute",
+      "attribute" : "end_stage_renal_disease",
+      "value" : true,
+      "direct_transition" : "Expected_Lifespan_for_ESRD"
+    },
+
+    "Expected_Lifespan_for_ESRD" : {
+      "type" : "Death",
+      "range" : { "low" : 4, "high" : 10, "unit" : "years" },
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "46177005",
+        "display" : "End stage renal disease"
+      }],
+      "remarks" : ["Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
+                   "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"],
+      "direct_transition" : "End_Stage_Kidney_Damage_Symptom_1"
+    },
+
+    "End_Stage_Kidney_Damage_Symptom_1" : {
+      "type" : "Symptom",
+      "symptom" : "Hunger",
+      "range" : { "low" : 50, "high" : 100 },
+      "remarks" : [
+        "Without intervention, 20-40 percent of patients with type 2 diabetes/microalbuminuria, will evolve to macroalbuminuria.",
+        "Shlipak, Michael. 'Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician'. www.aafp.org."
+      ],
+      "direct_transition" : "End_Stage_Kidney_Damage_Symptom_2"
+    },
+
+    "End_Stage_Kidney_Damage_Symptom_2" : {
+      "type" : "Symptom",
+      "symptom" : "Fatigue",
+      "range" : { "low" : 50, "high" : 100 },
+      "direct_transition" : "End_Stage_Kidney_Damage_Symptom_3"
+    },
+
+    "End_Stage_Kidney_Damage_Symptom_3" : {
+      "type" : "Symptom",
+      "symptom" : "Frequent Urination",
+      "range" : { "low" : 50, "high" : 100 },
+      "direct_transition" : "End_Stage_Kidney_Damage_Symptom_4"
+    },
+
+    "End_Stage_Kidney_Damage_Symptom_4" : {
+      "type" : "Symptom",
+      "symptom" : "Thirst",
+      "range" : { "low" : 50, "high" : 100 },
+      "direct_transition" : "Retinopathy_Progression"
+    },
+
+    "Retinopathy_Progression" : {
+      "type" : "Simple",
+      "remarks" : ["In the USA, studies estimate that 28.5–40.3 % of patients with type 2 diabetes had DR, and 4.4–8.2 % of them had VTDR",
+                   "https://www.ncbi.nlm.nih.gov/pubmed/15078674",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4657234/",
+                   "https://eandv.biomedcentral.com/articles/10.1186/s40662-015-0026-2",
+                   "Currently the %s below do not take into consideration any medications the patient may be taking"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_eye_damage",
+            "operator" : "==",
+            "value" : 0
+          },
+          "distributions" : [
+            { "distribution" : 0.999, "transition" : "Neuropathy_Progression" },
+            { "distribution" : 0.001, "transition" : "Set_Mild_Eye_Damage" }
+          ],
+          "remarks" : ["these %s chosen such that ~30-40% of patients progress to Mild damage (retinopathy) over the course of ~35 yrs",
+                       ".999 ^ (12 * 35) = .657 "]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_eye_damage",
+            "operator" : "==",
+            "value" : 1
+          },
+          "distributions" : [
+            { "distribution" : 0.9915, "transition" : "Set_Mild_Eye_Damage" },
+            { "distribution" : 0.0085, "transition" : "Set_Moderate_Eye_Damage" }
+          ],
+          "remarks" : ["Roughly 10% chance of DR progression per year == 0.85% chance per month",
+                       "https://eandv.biomedcentral.com/articles/10.1186/s40662-015-0026-2 (Table 3)"]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_eye_damage",
+            "operator" : "==",
+            "value" : 2
+          },
+          "distributions" : [
+            { "distribution" : 0.9975, "transition" : "Set_Moderate_Eye_Damage" },
+            { "distribution" : 0.0025, "transition" : "Set_Severe_Eye_Damage" }
+          ],
+          "remarks" : ["Roughly 3% progression from NPDR to PDR per year == .25% per month",
+                       "https://eandv.biomedcentral.com/articles/10.1186/s40662-015-0026-2 (Table 3 again)"]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_eye_damage",
+            "operator" : "==",
+            "value" : 3
+          },
+          "transition" : "Set_Severe_Eye_Damage"
+        }
+      ]
+    },
+
+    "Set_Mild_Eye_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_eye_damage",
+      "value" : 1,
+      "direct_transition" : "Mild_Eye_Damage_Symptom"
+    },
+
+    "Mild_Eye_Damage_Symptom" : {
+      "type" : "Symptom",
+      "symptom" : "Blurred Vision",
+      "range" : { "low" : 1, "high" : 60 },
+      "direct_transition" : "Set_Retinopathy"
+    },
+
+    "Set_Retinopathy" : {
+      "type" : "SetAttribute",
+      "attribute" : "retinopathy",
+      "value" : true,
+      "direct_transition" : "Neuropathy_Progression"
+    },
+
+    "Set_Moderate_Eye_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_eye_damage",
+      "value" : 2,
+      "direct_transition" : "Moderate_Eye_Damage_Symptom"
+    },
+
+    "Moderate_Eye_Damage_Symptom" : {
+      "type" : "Symptom",
+      "symptom" : "Blurred Vision",
+      "range" : { "low" : 20, "high" : 100 },
+      "direct_transition" : "Set_Nonproliferative_Retinopathy"
+    },
+
+    "Set_Nonproliferative_Retinopathy" : {
+      "type" : "SetAttribute",
+      "attribute" : "nonproliferative_retinopathy",
+      "value" : true,
+      "direct_transition" : "Chance_of_Macular_Edema"
+    },
+
+    "Set_Severe_Eye_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_eye_damage",
+      "value" : 3,
+      "direct_transition" : "Severe_Eye_Damage_Symptom"
+    },
+
+    "Severe_Eye_Damage_Symptom" : {
+      "type" : "Symptom",
+      "symptom" : "Blurred Vision",
+      "range" : { "low" : 50, "high" : 100 },
+      "direct_transition" : "Set_Proliferative_Retinopathy"
+    },
+
+    "Set_Proliferative_Retinopathy" : {
+      "type" : "SetAttribute",
+      "attribute" : "retinopathy",
+      "value" : true,
+      "direct_transition" : "Chance_of_Macular_Edema"
+    },
+
+
+    "Chance_of_Macular_Edema" : {
+      "type" : "Simple",
+      "remarks" : ["Incidence of DME is very low. Very rough estimate == ~1% per year.",
+                   "1% / yr = .08% / month",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4657234/table/Tab5/"],
+      "distributed_transition" : [
+        { "distribution" : 0.0008, "transition" : "Set_Macular_Edema" },
+        { "distribution" : 0.9992, "transition" : "Chance_of_Blindness" }
+      ]
+    },
+
+    "Set_Macular_Edema" : {
+      "type" : "SetAttribute",
+      "attribute" : "macular_edema",
+      "value" : true,
+      "direct_transition" : "Chance_of_Blindness"
+    },
+
+    "Chance_of_Blindness" : {
+      "type" : "Simple",
+      "remarks" : ["estimated prevalence of blindness is ~1% in MA; among diabetics we estimate 3%",
+                   "3% / 30 yrs = ~ 0.01 % / month",
+                   "http://www.idf.org/sites/default/files/IDF%2520Toolkit_Backgrounder_FINAL.pdf"],
+      "distributed_transition" : [
+        { "distribution" : 0.0001, "transition" : "Set_Blindness" },
+        { "distribution" : 0.9999, "transition" : "Neuropathy_Progression" }
+      ]
+    },
+
+    "Set_Blindness" : {
+      "type" : "SetAttribute",
+      "attribute" : "blindness",
+      "value" : true,
+      "direct_transition" : "Neuropathy_Progression"
+    },
+
+    "Neuropathy_Progression" : {
+      "type" : "Simple",
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_nerve_damage",
+            "operator" : "==",
+            "value" : 0
+          },
+          "distributions" : [
+            { "distribution" : 0.99835, "transition" : "Loop_back_to_Start" },
+            { "distribution" : 0.00165, "transition" : "Set_Mild_Nerve_Damage" }
+          ],
+          "remarks" : ["DPN affects as many as 1/2 of all patients with diabetes.",
+                       "50% over 35 years == ~ 0.165% per month"]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_nerve_damage",
+            "operator" : "==",
+            "value" : 1
+          },
+          "distributions" : [
+            { "distribution" : 0.997, "transition" : "Set_Mild_Nerve_Damage" },
+            { "distribution" : 0.003, "transition" : "Set_Moderate_Nerve_Damage" }
+          ],
+          "remarks" : ["at/beyond this point I can't find any well-defined #s on progression of diabetic neuropathy",
+                       "0.3% / month --> 3.5% / yr --> 66% over 30 yrs"]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_nerve_damage",
+            "operator" : "==",
+            "value" : 2
+          },
+          "distributions" : [
+            { "distribution" : 0.997, "transition" : "Set_Moderate_Nerve_Damage" },
+            { "distribution" : 0.003, "transition" : "Set_Severe_Nerve_Damage" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_nerve_damage",
+            "operator" : "==",
+            "value" : 3
+          },
+          "transition" : "Set_Severe_Nerve_Damage"
+        }
+
+      ]
+    },
+
+    "Set_Mild_Nerve_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_nerve_damage",
+      "value" : 1,
+      "direct_transition" : "Mild_Nerve_Damage_Symptom"
+    },
+
+    "Mild_Nerve_Damage_Symptom" : {
+      "type" : "Symptom",
+      "symptom" : "Tingling in Hands and Feet",
+      "range" : { "low" : 1, "high" : 80 },
+      "direct_transition" : "Loop_back_to_Start"
+    },
+
+    "Set_Moderate_Nerve_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_nerve_damage",
+      "value" : 2,
+      "direct_transition" : "Moderate_Nerve_Damage_Symptom"
+    },
+
+    "Moderate_Nerve_Damage_Symptom" : {
+      "type" : "Symptom",
+      "symptom" : "Tingling in Hands and Feet",
+      "range" : { "low" : 20, "high" : 100 },
+      "direct_transition" : "Loop_back_to_Start"
+    },
+
+    "Set_Severe_Nerve_Damage" : {
+      "type" : "SetAttribute",
+      "attribute" : "diabetic_nerve_damage",
+      "value" : 3,
+      "direct_transition" : "Severe_Nerve_Damage_Symptom"
+    },
+
+    "Severe_Nerve_Damage_Symptom" : {
+      "type" : "Symptom",
+      "symptom" : "Tingling in Hands and Feet",
+      "range" : { "low" : 50, "high" : 100 },
+      "direct_transition" : "Loop_back_to_Start"
+    },
+
+    "Loop_back_to_Start" : {
+      "type" : "Simple",
+      "direct_transition" : "Diabetes_Progression"
+    }
+
+  }
+}

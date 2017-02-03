@@ -276,7 +276,7 @@ module Synthea
           end
         when 'SetAttribute'
           v = state['value']
-          details = "Set '#{state['attribute']}' = #{v ? "'#{v}'" : 'nil'}"
+          details = "Set '#{state['attribute']}' = #{v.nil? ? 'nil' : "'#{v}'"}"
         when 'Symptom'
           s = state['symptom']
           if state.has_key? 'range'

@@ -4,6 +4,11 @@ module Synthea
       attr_reader :config, :name, :current_module, :logged
       attr_accessor :history, :current_state, :current_encounter
 
+      @@counter = {} # rubocop:disable ClassVars
+      def self.counter
+        @@counter
+      end
+
       def initialize(module_name)
         @config = Synthea::MODULES[module_name] # The JSON representation of a GMF module, as a hash
         @name = @config['name']
@@ -11,11 +16,18 @@ module Synthea
         @current_state = create_state('Initial')
         @current_encounter = nil
         @history = []
+        unless @@counter[module_name]
+          @@counter[module_name] = Hash.new(0)
+          all_states.each do |state|
+            @@counter[@current_module][state] = 0
+          end
+        end
         @stack = []
       end
 
       def run(time, entity)
         # if @current_state.run returns true, it means we should progress to the next state
+        count(@current_module, @current_state.name)
         while @current_state.run(time, entity)
           next_state = self.next(time, entity)
 
@@ -38,12 +50,18 @@ module Synthea
               run(@history.last.exited, entity)
             end
           end
+          count(@current_module, @current_state.name)
         end
 
         if Synthea::Config.generic.log && !active? && @logged.nil?
           log_history
           @logged = true
         end
+      end
+
+      def count(module_name, state_name)
+        @@counter[module_name] = Hash.new(0) unless @@counter[module_name]
+        @@counter[module_name][state_name] += 1
       end
 
       def next(time, entity)

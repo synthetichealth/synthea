@@ -48,7 +48,6 @@ module Synthea
             entity.events.process(event)
             self.class.encounter(entity, event.time)
             Synthea::Modules::Immunizations.perform_encounter(entity, event.time)
-            Synthea::Modules::MetabolicSyndrome.perform_encounter(entity, event.time)
             Synthea::Modules::CardiovascularDisease.perform_encounter(entity, event.time)
             Synthea::Modules::Generic.perform_wellness_encounter(entity, event.time)
             # Schedule the next general encounter unless this one was driven by symptoms
