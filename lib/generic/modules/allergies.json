@@ -1,0 +1,246 @@
+{
+  "name": "Allergies and Treatment",
+  "remarks": [
+    "This module onsets allergies and manages the treatment of allergies and ",
+    "allergic diseases. After the initial series of AllergyOnset states, the ",
+    "module waits for an allergic condition (as a result of a person's allergies)",
+    "to prompt treatment.",
+
+    "Primary reference for allergy statistics: ",
+    "https://web.archive.org/web/20100407195412/http://www.niaid.nih.gov/topics/foodAllergy/understanding/Pages/quickFacts.aspx"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_For_Atopy"
+    },
+
+    "Delay_For_Atopy": {
+      "type": "Delay",
+      "remarks": [
+        "The Atopy module must be processed before any of the allergy modules so ",
+        "atopy can appropriately influence allergies. Delaying the smallest possible ",
+        "time step to ensure this happens."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Allergy_Incidence_Submodule"
+    },
+
+    "Allergy_Incidence_Submodule": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule onsets the various food and environmental allergies that ",
+        "a person can get, with different incidences for atopic and non-atopic ",
+        "patients."
+      ],
+      "submodule": "allergies/allergy_incidence",
+      "direct_transition": "Allergist_Guard"
+    },
+
+    "Allergist_Guard": {
+      "type": "Guard",
+      "remarks": [
+        "======================================================================",
+        " ALLERGY TREATMENT/CARE                                               ",
+        "======================================================================",
+        "Now that the patient is suspected to have an allergy, we refer them to ",
+        "an allergist for specialized treatment.",
+
+        "The following can prompt a visit to the allergist: ",
+        "- Asthma attack ",
+        "- Moderate to severe eczema ",
+        "- Any allergic reaction to food ",
+        "- Moderate to severe allergic rhinitis symptoms ",
+
+        "The asthma, eczema, and allergic rhinitis submodules set the 'visit_allergist' ",
+        "attribute to trigger the visit. At the first visit to an allergist an ",
+        "allergy panel is always performed."
+      ],
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "visit_allergist",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Delay_For_Allergist_Initial_Visit"
+    },
+
+    "Delay_For_Allergist_Initial_Visit": {
+      "type": "Delay",
+      "remarks": [
+        "Other modules are not expected to make this delay after making a ",
+        "'visit_allergist' recommendation."
+      ],
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Allergist_Initial_Visit"
+    },
+
+    "Allergist_Initial_Visit": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the big one! Whatever allergies a patient has will be formally ",
+        "diagnosed at this encounter."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1974
+          },
+          "transition": "Administer_Allergy_Test"
+        },
+        {
+          "transition": "General_Allergy_CarePlan"
+        }
+      ]
+    },
+
+    "Administer_Allergy_Test": {
+      "type": "Procedure",
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395142003",
+          "display": "Allergy screening test"
+        }
+      ],
+      "direct_transition": "Allergy_Panel"
+    },
+
+    "Allergy_Panel": {
+      "type": "CallSubmodule",
+      "submodule": "allergies/allergy_panel",
+      "direct_transition": "General_Allergy_CarePlan"
+    },
+
+    "General_Allergy_CarePlan": {
+      "type": "CarePlanStart",
+      "remarks": [
+        "Allergy maintenance is all about self care."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "326051000000105",
+          "display": "Self care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "58332002",
+          "display": "Allergy education"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1987
+          },
+          "transition": "Prescribe_Epipen"
+        },
+        {
+          "transition": "End_Allergist_Initial_Visit"
+        }
+      ]
+    },
+
+    "Prescribe_Epipen": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "FDA approved in 1987. It's highly likely that this prescription ",
+        "will never end - it will just be periodically renewed during the ",
+        "patient's lifetime."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "727316",
+          "display": "0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "End_Allergist_Initial_Visit"
+    },
+
+    "End_Allergist_Initial_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_With_Allergies"
+    },
+
+    "Living_With_Allergies": {
+      "type": "Guard",
+      "remarks": [
+        "======================================================================",
+        " LIVING WITH ALLERGIES                                                ",
+        "======================================================================",
+        "Whatever allergies the patients have, they will continue to passively ",
+        "live with them until an allergic condition or a severe reaction ",
+        "prompts a visit to their PCP and a referral to an allergist. Allergies ",
+        "aren't officially diagnosed until after an allergy test is performed.",
+
+        "For patient's 12 or older we can consider immunotherapy. This will ",
+        "not work for everyone but it's worth discussing. Immunotherapy is not ",
+        "an option before 1990."
+      ],
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 12,
+            "unit": "years"
+          },
+          {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1990
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "immunotherapy_status",
+            "operator": "is nil"
+          }
+        ]
+      },
+      "direct_transition": "Immunotherapy_Submodule"
+    },
+
+    "Immunotherapy_Submodule": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule may or may not give the patient immunotherapy. If ",
+        "immunotherapy is given a series of 60 treatments will be provided ",
+        "over the course of 3-5 years."
+      ],
+      "submodule": "allergies/immunotherapy",
+      "direct_transition": "Living_With_Allergies"
+    }
+  }
+}

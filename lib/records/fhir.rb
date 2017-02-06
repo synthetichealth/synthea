@@ -437,15 +437,17 @@ module Synthea
             }
             # Additional instructions
             dosage_instruction['additionalInstructions'] = []
-            rx_info['instructions'].each do |sym|
-              instr = INSTRUCTION_LOOKUP[sym]
-              dosage_instruction['additionalInstructions'] << {
-                'coding' => [{
-                  'code' => instr[:codes]['SNOMED-CT'][0],
-                  'display' => instr[:description],
-                  'system' => 'http://snomed.info/sct'
-                }]
-              }
+            unless rx_info['instructions'].nil?
+              rx_info['instructions'].each do |sym|
+                instr = INSTRUCTION_LOOKUP[sym]
+                dosage_instruction['additionalInstructions'] << {
+                  'coding' => [{
+                    'code' => instr[:codes]['SNOMED-CT'][0],
+                    'display' => instr[:description],
+                    'system' => 'http://snomed.info/sct'
+                  }]
+                }
+              end
             end
             # Prescription information
             dispense_request = {
