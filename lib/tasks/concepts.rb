@@ -91,6 +91,12 @@ module Synthea
             concepts[code['system']][code['code']] = code['display']
           end
         end
+
+        if state.has_key? 'discharge_disposition'
+          code = state['discharge_disposition']
+          concepts[code['system']] = Hash.new unless concepts[code['system']]
+          concepts[code['system']][code['code']] = code['display']
+        end
       end
 
     end
