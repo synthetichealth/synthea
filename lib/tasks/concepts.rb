@@ -84,6 +84,13 @@ module Synthea
             concepts[code['system']][code['code']] = code['display']
           end
         end
+
+        if state.has_key?('prescription') && state['prescription'].has_key?('instructions')
+          state['prescription']['instructions'].each do |code|
+            concepts[code['system']] = Hash.new unless concepts[code['system']]
+            concepts[code['system']][code['code']] = code['display']
+          end
+        end
       end
 
     end
