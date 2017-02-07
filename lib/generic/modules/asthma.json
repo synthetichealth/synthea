@@ -134,6 +134,13 @@
           "display": "Childhood asthma"
         }
       ],
+      "direct_transition": "Set_Childhood_Asthma"
+    },
+
+    "Set_Childhood_Asthma": {
+      "type": "SetAttribute",
+      "attribute": "asthma_type",
+      "value": "childhood",
       "direct_transition": "Asthma_Diagnosis"
     },
 
@@ -148,6 +155,13 @@
           "display": "Asthma"
         }
       ],
+      "direct_transition": "Set_Adult_Asthma"
+    },
+
+    "Set_Adult_Asthma": {
+      "type": "SetAttribute",
+      "attribute": "asthma_type",
+      "value": "lifelong",
       "direct_transition": "Asthma_Diagnosis"
     },
 
@@ -334,34 +348,11 @@
                 "condition_type": "Attribute",
                 "attribute": "asthma_type",
                 "operator": "==",
-                "value": "childhood-only"
+                "value": "childhood"
               }
             ]
           },
-          "transition": "Next_Wellness_Encounter"
-        },
-        {
-          "condition": {
-            "remarks": [
-              "Childhood asthma eventually becomes adult asthma.",
-              "This applies to those without childhood-only or adult-onset attributes (about 7% of population)."
-            ],
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": ">",
-                "quantity": 18,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "asthma_type",
-                "operator": "is nil"
-              }
-            ]
-          },
-          "transition": "Childhood_Asthma_Becomes_Lifelong_Asthma"
+          "transition": "Childhood_Asthma_May_Subside"
         },
         {
           "transition": "Potential_Asthma_Attack"
@@ -369,9 +360,28 @@
       ]
     },
 
+    "Childhood_Asthma_May_Subside": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.83,
+          "transition": "Childhood_Asthma_Becomes_Lifelong_Asthma"
+        },
+        {
+          "distribution": 0.17,
+          "transition": "Next_Wellness_Encounter"
+        }
+      ],
+      "remarks": [
+        "After a validation study, 248 children were identified as having asthma; these children were reassessed annually until age 19 years when 205 (83%) remained.",
+        "\"Remission and persistence of asthma followed from 7 to 19 years of age.\" Andersson M, Hedman L, Bjerg A, Forsberg B, Lundbäck B, Rönmark E. Pediatrics. 2013 Aug;132(2):e435-42. doi: 10.1542/peds.2013-0741.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/23897917"
+      ]
+    },
+
     "Childhood_Asthma_Becomes_Lifelong_Asthma": {
       "type": "ConditionEnd",
-      "condition_onset": "Childhood_Asthma_Begins",
+      "referenced_by_attribute": "asthma_condition",
       "direct_transition": "Lifelong_Asthma"
     },
 
@@ -515,7 +525,7 @@
 
     "Childhood_Asthma_Subsides": {
       "type": "ConditionEnd",
-      "condition_onset": "Childhood_Asthma_Begins",
+      "referenced_by_attribute": "asthma_condition",
       "direct_transition": "End_Asthma_CarePlan"
     },
 
