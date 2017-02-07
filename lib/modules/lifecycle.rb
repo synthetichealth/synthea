@@ -199,7 +199,7 @@ module Synthea
         bmi = entity.vital_sign(:bmi)
         if bmi
           bmi = bmi[:value]
-          bloodglucose = blood_glucose(bmi)
+          bloodglucose = blood_glucose(bmi, entity[:prediabetes], entity[:diabetes])
 
           # How much does A1C need to be lowered to get to goal?
           # Metformin and sulfonylureas may lower A1C 1.5 to 2 percentage points,
@@ -299,17 +299,20 @@ module Synthea
         entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
       end
 
-      def blood_glucose(bmi)
-        # numbers here are derived purely by trial & error
-        # we want ~10% of patients to have diabetes, ~37% to have prediabetes
-        # a trial run suggests that ~10% of patients have BMI >= 39 and ~37% have BMI >= 32
-        # we also want realistic %s of the medications, so this is a piecewise function so that higher BMI have much higher HBa1c and have to take more drugs
-        # data points: (20, 5), (39, 6.5), (40, 9)
-
-        if bmi < 40
-          0.077 * bmi + 3.4
+      def blood_glucose(bmi, prediabetes, diabetes)
+        if diabetes
+          if bmi > 48
+            12.0
+          elsif bmi < 26
+            6.5
+          else
+            bmi / 4.0
+          end
+          # very simple BMI function so that BMI 40 --> blood glucose ~ 10, but with a bounded min at 6.5 and bounded max at 12.0
+        elsif prediabetes
+          rand(5.7..6.5)
         else
-          0.625 * bmi - 16
+          rand(5.0..5.6)
         end
       end
 

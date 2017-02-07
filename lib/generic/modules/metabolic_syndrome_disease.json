@@ -26,75 +26,18 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_nerve_damage",
       "value" : 0,
-      "direct_transition" : "Age_and_BG_Guard"
+      "direct_transition" : "Age_Guard"
     },
 
-    "Age_and_BG_Guard" : {
+    "Age_Guard" : {
       "type" : "Guard",
       "allow" : {
-      "condition_type": "And",
-      "conditions": [
-        {
-          "condition_type": "Age",
-          "operator": ">=",
-          "quantity": 16,
-          "unit": "years"
-        },
-        {
-          "condition_type" : "Vital Sign",
-          "vital_sign" : "blood_glucose",
-          "operator" : "is not nil"
-        }
-      ]
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
       },
-      "direct_transition" : "Potential_Diabetes"
-    },
-
-    "Potential_Diabetes" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 1, "unit" : "months" },
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "hypertension",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 18,
-                "unit": "years"
-              }
-            ]
-          },
-          "transition" : "Chance_to_Onset_Hypertension"
-        },
-        {
-          "condition" : {
-            "condition_type" : "Vital Sign",
-            "vital_sign" : "blood_glucose",
-            "operator" : ">",
-            "value" : 6.5
-          },
-          "transition" : "Onset_Diabetes"
-        },
-        {
-          "condition" : {
-            "condition_type" : "Vital Sign",
-            "vital_sign" : "blood_glucose",
-            "operator" : ">",
-            "value" : 5.7
-          },
-          "transition" : "Onset_Prediabetes"
-        },
-        {
-          "transition" : "Potential_Diabetes"
-        }
-      ]
+      "direct_transition" : "Chance_to_Onset_Hypertension"
     },
 
     "Chance_to_Onset_Hypertension" : {
@@ -110,23 +53,137 @@
       "type" : "SetAttribute",
       "attribute" : "hypertension",
       "value" : true,
-      "direct_transition" : "Potential_Diabetes"
+      "direct_transition" : "Diabetes_Prevalence"
     },
 
     "No_Hypertension" : {
       "type" : "SetAttribute",
       "attribute" : "hypertension",
       "value" : false,
-      "direct_transition" : "Potential_Diabetes"
+      "direct_transition" : "Diabetes_Prevalence"
     },
 
+    "Diabetes_Prevalence" : {
+      "type" : "Simple",
+      "remarks" : ["diabetes prevalence %s based on the following",
+                   "http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html",
+                   "prediabetes prevalence is ~38 % overall and similar among most races but slightly lower among Native americans",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3830901/",
+                   "http://www.diabetes.org/living-with-diabetes/treatment-and-care/high-risk-populations/treatment-american-indians.html"],
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Race",
+            "race" : "White"
+          },
+          "distributions" : [
+            { "distribution" : 0.065, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
+            { "distribution" : 0.555, "transition" : "No_Diabetes" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Race",
+            "race" : "Hispanic"
+          },
+          "distributions" : [
+            { "distribution" : 0.142, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
+            { "distribution" : 0.478, "transition" : "No_Diabetes" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Race",
+            "race" : "Black"
+          },
+          "distributions" : [
+            { "distribution" : 0.128, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
+            { "distribution" : 0.492, "transition" : "No_Diabetes" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Race",
+            "race" : "Asian"
+          },
+          "distributions" : [
+            { "distribution" : 0.16, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
+            { "distribution" : 0.46, "transition" : "No_Diabetes" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Race",
+            "race" : "Native"
+          },
+          "distributions" : [
+            { "distribution" : 0.143, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.30, "transition" : "Eventual_Prediabetes" },
+            { "distribution" : 0.557, "transition" : "No_Diabetes" }
+          ]
+        },
+        {
+          "remarks" : ["for Other races, just fall back to overall state %s"],
+          "distributions" : [
+            { "distribution" : 0.08, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
+            { "distribution" : 0.54, "transition" : "No_Diabetes" }
+          ]
+        }
+
+      ]
+    },
+
+    "Eventual_Prediabetes" : {
+      "type" : "Delay",
+      "range" : { "low" : 0, "high" : 37, "unit" : "years" },
+      "remarks" : ["we assume that diabetes and prediabetes generally onset between the ages of 18-55"],
+      "direct_transition" : "Onset_Prediabetes"
+    },
+
+    "Eventual_Diabetes" : {
+      "type" : "Delay",
+      "range" : { "low" : 0, "high" : 30, "unit" : "years" },
+      "remarks" : ["we assume that diabetes and prediabetes generally onset between the ages of 18-55",
+                   "this tracks a little lower so that we can diagnose prediabetes early and then diabetes later",
+                   "there is little info on how many patients with prediabetes progress to diabetes",
+                   "so we assume that 38% of patients with diabetes had a prediabetes diagnosis"],
+      "distributed_transition" : [
+        { "distribution" : 0.38, "transition" : "Onset_Prediabetes_Towards_Diabetes" },
+        { "distribution" : 0.62, "transition" : "Delay_before_Diabetes" }
+      ]
+    },
 
     "Onset_Prediabetes" : {
       "type" : "SetAttribute",
       "attribute" : "prediabetes",
       "value" : true,
-      "direct_transition" : "Potential_Diabetes"
+      "direct_transition" : "No_Diabetes"
     },
+
+    "No_Diabetes" : {
+      "type" : "Terminal"
+    },
+
+    "Onset_Prediabetes_Towards_Diabetes" : {
+      "type" : "SetAttribute",
+      "attribute" : "prediabetes",
+      "value" : true,
+      "direct_transition" : "Delay_before_Diabetes"
+    },
+
+    "Delay_before_Diabetes" : {
+      "type" : "Delay",
+      "range" : { "low" : 0, "high" : 7, "unit" : "years" },
+      "remarks" : ["we assume that diabetes and prediabetes generally onset between the ages of 18-55",
+                   "at this point we are between 18-48, so we wait 0-7 years"],
+      "direct_transition" : "Onset_Diabetes"
+    },
+
 
     "Onset_Diabetes" : {
       "type" : "SetAttribute",
@@ -171,7 +228,6 @@
       "direct_transition" : "Nephropathy_Progression"
     },
 
-
     "Diabetes_Progression" : {
       "type" : "Delay",
       "exact" : { "quantity" : 1, "unit" : "months" },
@@ -187,7 +243,7 @@
                    "(of course, if we find numbers to compare to then we should update this)",
                    "FTA: Crude incidence rates of ESRD among individuals with type 2 diabetes/NIDDM were reported from 104 (95% CI 56–194) per 100,000 PY among patients from Italy",
                    " to 690 (95% CI na) and 937.6 (95% CI na) per 100,000 PY among American Indians.",
-                   "We assume ESRD prevalance of 2% given diabetes, and average of 274 months/diabetic, progressing through 4 stages, or 0.1% chance of progression per month."],
+                   "We assume ESRD prevalence of 2% given diabetes, an average of 274 months/diabetic, progressing through 4 stages, or 0.2% chance of progression per month."],
       "complex_transition" : [
         {
           "condition" : {
@@ -197,8 +253,8 @@
             "value" : 1
           },
           "distributions" : [
-            { "distribution" : 0.999, "transition" : "Set_Mild_Kidney_Damage" },
-            { "distribution" : 0.001, "transition" : "Set_Moderate_Kidney_Damage" }
+            { "distribution" : 0.998, "transition" : "Set_Mild_Kidney_Damage" },
+            { "distribution" : 0.002, "transition" : "Set_Moderate_Kidney_Damage" }
           ]
         },
         {
@@ -209,8 +265,8 @@
             "value" : 2
           },
           "distributions" : [
-            { "distribution" : 0.999, "transition" : "Set_Moderate_Kidney_Damage" },
-            { "distribution" : 0.001, "transition" : "Set_Severe_Kidney_Damage" }
+            { "distribution" : 0.998, "transition" : "Set_Moderate_Kidney_Damage" },
+            { "distribution" : 0.002, "transition" : "Set_Severe_Kidney_Damage" }
           ]
         },
         {
@@ -221,8 +277,8 @@
             "value" : 3
           },
           "distributions" : [
-            { "distribution" : 0.999, "transition" : "Set_Severe_Kidney_Damage" },
-            { "distribution" : 0.001, "transition" : "Set_End_Stage_Kidney_Damage" }
+            { "distribution" : 0.998, "transition" : "Set_Severe_Kidney_Damage" },
+            { "distribution" : 0.002, "transition" : "Set_End_Stage_Kidney_Damage" }
           ]
         },
         {
@@ -242,6 +298,13 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_kidney_damage",
       "value" : 1,
+      "direct_transition" : "Set_Nephropathy"
+    },
+
+    "Set_Nephropathy" : {
+      "type" : "SetAttribute",
+      "attribute" : "nephropathy",
+      "value" : true,
       "direct_transition" : "Mild_Kidney_Damage_Symptom_1"
     },
 
@@ -277,6 +340,13 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_kidney_damage",
       "value" : 2,
+      "direct_transition" : "Set_Microalbuminuria"
+    },
+
+    "Set_Microalbuminuria" : {
+      "type" : "SetAttribute",
+      "attribute" : "microalbuminuria",
+      "value" : true,
       "direct_transition" : "Moderate_Kidney_Damage_Symptom_1"
     },
 
@@ -312,6 +382,13 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_kidney_damage",
       "value" : 3,
+      "direct_transition" : "Set_Proteinuria"
+    },
+
+    "Set_Proteinuria" : {
+      "type" : "SetAttribute",
+      "attribute" : "proteinuria",
+      "value" : true,
       "direct_transition" : "Severe_Kidney_Damage_Symptom_1"
     },
 
@@ -535,7 +612,7 @@
 
     "Set_Proliferative_Retinopathy" : {
       "type" : "SetAttribute",
-      "attribute" : "retinopathy",
+      "attribute" : "proliferative_retinopathy",
       "value" : true,
       "direct_transition" : "Chance_of_Macular_Edema"
     },
@@ -637,6 +714,13 @@
       "type" : "SetAttribute",
       "attribute" : "diabetic_nerve_damage",
       "value" : 1,
+      "direct_transition" : "Set_Neuropathy"
+    },
+
+    "Set_Neuropathy" : {
+      "type" : "SetAttribute",
+      "attribute" : "neuropathy",
+      "value" : true,
       "direct_transition" : "Mild_Nerve_Damage_Symptom"
     },
 

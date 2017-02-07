@@ -1422,18 +1422,29 @@
       "complex_transition" : [
         {
           "condition" : {
-          "condition_type" : "Active Condition",
-          "codes" : [{
-            "system" : "SNOMED-CT",
-            "code" : "368581000119106",
-            "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
-          }]
+            "condition_type" : "PriorState",
+            "name" : "Amputation_Necessary",
+            "within" : { "quantity" : 1, "unit" : "years" }
+          },
+          "remarks" : ["dialysis means this check is made every few days which can skew results.",
+                       "we only want to consider amputation once a year"],
+          "transition" : "No_Amputation_Necessary"
+        },
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "368581000119106",
+              "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
+            }]
           },
           "distributions" : [
             { "distribution" : 0.0025, "transition" : "Amputation_Necessary" },
             { "distribution" : 0.9975, "transition" : "No_Amputation_Necessary" }
           ],
-          "remarks" : ["Amputations resulting from type-2 diabetes in the US occur in 0.25% of the population",
+          "remarks" : ["In 2010, about 73,000 non-traumatic lower-limb amputations were performed in adults aged 20 years or older with diagnosed diabetes.",
+                       "28.9 million adults had diagnosed diabetes. 73,000/ 28,900,000 = 0.0025 or 0.25% per year",
                        "https://www.cdc.gov/diabetes/data/statistics/2014statisticsreport.html"]
         },
         {
@@ -1477,7 +1488,7 @@
 
     "Delay_Before_Amputation" : {
       "type" : "Delay",
-      "exact" : { "quantity" : "6", "unit" : "weeks" },
+      "exact" : { "quantity" : 6, "unit" : "weeks" },
       "direct_transition" : "Amputation"
     },
 
