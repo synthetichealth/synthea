@@ -14,6 +14,11 @@ namespace :synthea do
     Synthea::Tasks::Graphviz.generate_graphs
   end
 
+  desc 'create a list of simulated concepts'
+  task :concepts, [] do |_t, _args|
+    Synthea::Tasks::Concepts.inventory
+  end
+
   desc 'generate'
   task :generate, [] do |_t, _args|
     start = Time.now
