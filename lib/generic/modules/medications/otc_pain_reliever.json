@@ -1,0 +1,283 @@
+{
+  "name": "Over-The-Counter Pain Reliever",
+  "remarks": [
+    "This submodule correctly prescribes an over-the-counter pain reliever ",
+    "that has accurate dosage for adults and children and is accurate for the ",
+    "current year of the simulation. Medications are not prescribed before they ",
+    "were invented, and older medications (e.g. aspirin) are prescribed less ",
+    "frequently as alternatives (e.g. acetaminophen) become available.",
+
+    "The following medications may be prescribed by this module:  ",
+    "1. Aspirin                              available after 1899 ",
+    "2. Acetaminophen (Tylenol)              available after 1950 ",
+    "3. Ibuprofen (Motrin, Advil)            available after 1974 ",
+    "4. Naproxen Sodium (Aleve)              available after 1994 "
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1899
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "OTC_Pain_Reliever_Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1950
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Aspirin"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1974
+          },
+          "distributions": [
+            {
+              "distribution": 0.6,
+              "transition": "Prescribe_Aspirin"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Acetaminophen"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1994
+          },
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Prescribe_Aspirin"
+            },
+            {
+              "distribution": 0.6,
+              "transition": "Prescribe_Acetaminophen"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Prescribe_Ibuprofen"
+            }
+          ]
+        },
+        {
+          "remarks": [
+            "After 1994, all medications are available. At this point ",
+            "aspirin is phased out in favor of newer alternatives."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.34,
+              "transition": "Prescribe_Acetaminophen"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Ibuprofen"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Naproxen_Sodium"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prescribe_Aspirin": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "There is no children's dose of aspirin. Anyone prescribed aspirin ",
+        "gets the same 81mg dose."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "243670",
+          "display": "Aspirin 81 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
+    },
+
+    "Prescribe_Acetaminophen": {
+      "type": "Simple",
+      "remarks": [
+        "Although liquid acetaminophen is now available it's unclear when it first ",
+        "became available. For simplicity, all acetaminophen prescribed in this module ",
+        "is of the oral tablet type."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "transition": "Pediatric_Acetaminophen"
+        },
+        {
+          "transition": "Adult_Acetaminophen"
+        }
+      ]
+    },
+
+    "Pediatric_Acetaminophen": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "282464",
+          "display": "Acetaminophen 160 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
+    },
+
+    "Adult_Acetaminophen": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "313782",
+          "display": "Acetaminophen 325 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
+    },
+
+    "Prescribe_Ibuprofen": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "transition": "Pediatric_Ibuprofen"
+        },
+        {
+          "transition": "Adult_Ibuprofen"
+        }
+      ]
+    },
+
+    "Pediatric_Ibuprofen": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198405",
+          "display": "Ibuprofen 100 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
+    },
+
+    "Adult_Ibuprofen": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "310965",
+          "display": "Ibuprofen 200 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
+    },
+
+    "Prescribe_Naproxen_Sodium": {
+      "type": "Simple",
+      "remarks": [
+        "Naproxen Sodium is not prescribed for children. Patients < age 12 that ",
+        "reach this state are redirected to Acetaminophen or Ibuprofen."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Acetaminophen"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Ibuprofen"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Naproxen_Sodium"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Naproxen_Sodium": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "849574",
+          "display": "Naproxen sodium 220 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
+    },
+
+    "OTC_Pain_Reliever_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
