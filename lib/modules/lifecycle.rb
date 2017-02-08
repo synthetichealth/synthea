@@ -303,16 +303,16 @@ module Synthea
         if diabetes
           if bmi > 48
             12.0
-          elsif bmi < 26
-            6.5
+          elsif bmi <= 27
+            6.6
           else
             bmi / 4.0
           end
-          # very simple BMI function so that BMI 40 --> blood glucose ~ 10, but with a bounded min at 6.5 and bounded max at 12.0
+          # very simple BMI function so that BMI 40 --> blood glucose ~ 10, but with a bounded min at 6.6 and bounded max at 12.0
         elsif prediabetes
-          rand(5.7..6.5)
+          rand(5.8..6.4)
         else
-          rand(5.0..5.6)
+          rand(5.0..5.7)
         end
       end
 
