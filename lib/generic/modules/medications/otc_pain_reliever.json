@@ -7,6 +7,12 @@
     "were invented, and older medications (e.g. aspirin) are prescribed less ",
     "frequently as alternatives (e.g. acetaminophen) become available.",
 
+    "Dosage and availability information was primarilly obtained from FDA reports ",
+    "available at https://www.drugs.com. Although there are now liquid forms of ",
+    "some medications (especially for children), it's unclear when those became ",
+    "available and the dosing is too complicated. For simplicity, all OTC pain ",
+    "relievers prescribed in this module are of the oral tablet type.",
+
     "The following medications may be prescribed by this module:  ",
     "1. Aspirin                              available after 1899 ",
     "2. Acetaminophen (Tylenol)              available after 1950 ",
@@ -126,11 +132,6 @@
 
     "Prescribe_Acetaminophen": {
       "type": "Simple",
-      "remarks": [
-        "Although liquid acetaminophen is now available it's unclear when it first ",
-        "became available. For simplicity, all acetaminophen prescribed in this module ",
-        "is of the oral tablet type."
-      ],
       "conditional_transition": [
         {
           "condition": {

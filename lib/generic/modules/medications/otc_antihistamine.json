@@ -1,0 +1,438 @@
+{
+  "name": "Over-The-Counter Antihistamine",
+  "remarks": [
+    "This submodule correctly prescribes an over-the-counter antihistamine ",
+    "that has accurate dosage for adults and children and is accurate for the ",
+    "current year of the simulation. Medications are not prescribed before they ",
+    "were invented, and older medications (e.g. benadryl) are prescribed less ",
+    "frequently as alternatives (e.g. claritin) become available.",
+
+    "Dosage and availability information was primarilly obtained from FDA reports ",
+    "available at https://www.drugs.com. Although there are now liquid forms of ",
+    "some medications (especially for children), it's unclear when those became ",
+    "available and the dosing is too complicated. For simplicity, all OTC ",
+    "antihistamines prescribed in this module are of the oral tablet type.",
+
+    "Historically there has been 3 'generations' of antihistamines: ",
+
+    "Generaton 1 H1 antihistamines: ",
+    "1. Diphenhydramine (Benadryl)           available after 1946 ",
+    "2. Chlorphenamine (Chlor-Timeton)       available after 1951 ",
+
+    "Generation 2 H1 antihistamines. Some were discontinued in the 1990's due ",
+    "to rare but serious risk of cardiac arrest: ",
+    "3. Astemizole (Hismanal)                available 1977 - 1990 ",
+    "4. Terfenadine (Seldane)                available 1985 - 1992 ",
+    "5. Loratadine (Claritin)                available after 1993 ",
+    "6. Cetirizine (Zyrtec)                  available after 2007 ",
+
+    "Generation 3 H1 antihistamines: ",
+    "7. Fexofenadine (Allegra)               available after 1996 "
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1946
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "OTC_Anthistamine_Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1951
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Diphenhydramine"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1977
+          },
+          "distributions": [
+            {
+              "distribution": 0.6,
+              "transition": "Prescribe_Diphenhydramine"
+            },
+            {
+              "distribution": 0.6,
+              "transition": "Prescribe_Chlorphenamine"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1985
+          },
+          "distributions": [
+            {
+              "distribution": 0.34,
+              "transition": "Prescribe_Diphenhydramine"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Chlorphenamine"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Astemizole"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1992
+          },
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Diphenhydramine"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Chlorphenamine"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Astemizole"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Terfenadine"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1996
+          },
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Diphenhydramine"
+            },
+            {
+              "distribution": 0.8,
+              "transition": "Prescribe_Loratadine"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2007
+          },
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Loratadine"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Fexofenadine"
+            }
+          ]
+        },
+        {
+          "remarks": [
+            "After 2007, only the latest generation and most common antihistamines ",
+            "are still prescribed."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.34,
+              "transition": "Prescribe_Loratadine"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Fexofenadine"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Cetirizine"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prescribe_Diphenhydramine": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "There is no distinction between pediatric and adult forms of this ",
+        "medication. Adults just take more doses of the standard 25mg pill."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1049630",
+          "display": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Prescribe_Chlorphenamine": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "transition": "Pediatric_Chlorphenamine"
+        },
+        {
+          "transition": "Adult_Chlorphenamine"
+        }
+      ]
+    },
+
+    "Pediatric_Chlorphenamine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "239981",
+          "display": "Chlorpheniramine 2 MG Chewable Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Adult_Chlorphenamine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "389128",
+          "display": "Chlorpheniramine 8 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Prescribe_Astemizole": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "There is only one RxNorm code available for this medication.",
+        "Since it was withdrawn from the market in the 1990's there is ",
+        "only limited information available."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197378",
+          "display": "Astemizole 10 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Prescribe_Terfenadine": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "There are few RxNorm codes available for this medication.",
+        "Since it was withdrawn from the market in the 1990's there is ",
+        "only limited information available."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "141918",
+          "display": "Terfenadine 60 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Prescribe_Loratadine": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "transition": "Pediatric_Loratadine"
+        },
+        {
+          "transition": "Adult_Loratadine"
+        }
+      ]
+    },
+
+    "Pediatric_Loratadine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "665078",
+          "display": "Loratadine 5 MG Chewable Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Adult_Loratadine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "311372",
+          "display": "Loratadine 10 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Prescribe_Fexofenadine": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "transition": "Pediatric_Fexofenadine"
+        },
+        {
+          "transition": "Adult_Fexofenadine"
+        }
+      ]
+    },
+
+    "Pediatric_Fexofenadine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "997488",
+          "display": "Fexofenadine hydrochloride 30 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Adult_Fexofenadine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "997501",
+          "display": "Fexofenadine hydrochloride 60 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Prescribe_Cetirizine": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 12,
+            "unit": "years"
+          },
+          "transition": "Pediatric_Cetirizine"
+        },
+        {
+          "transition": "Adult_Cetirizine"
+        }
+      ]
+    },
+
+    "Pediatric_Cetirizine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1014676",
+          "display": "cetirizine hydrochloride 5 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "Adult_Cetirizine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1014678",
+          "display": "cetirizine hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "OTC_Anthistamine_Terminal"
+    },
+
+    "OTC_Anthistamine_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
