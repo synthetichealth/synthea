@@ -152,7 +152,6 @@
 
     "Chest_Xray": {
       "type": "Procedure",
-      "target_encounter": "Doctor_Visit",
       "reason": "Bronchitis_Infection",
       "codes": [
         {
@@ -167,7 +166,6 @@
 
     "Sputum_Test": {
       "type": "Procedure",
-      "target_encounter": "Doctor_Visit",
       "reason": "Bronchitis_Infection",
       "codes": [
         {
@@ -182,7 +180,6 @@
 
     "Lung_Function_Test": {
       "type": "Procedure",
-      "target_encounter": "Doctor_Visit",
       "reason": "Bronchitis_Infection",
       "codes": [
         {
@@ -226,7 +223,6 @@
 
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Doctor_Visit",
       "assign_to_attribute": "bronchitis_careplan",
       "reason": "Bronchitis_Infection",
       "codes": [
@@ -258,7 +254,6 @@
 
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Doctor_Visit",
       "assign_to_attribute": "bronchitis_careplan",
       "reason": "Bronchitis_Infection",
       "codes": [
@@ -328,7 +323,7 @@
 
     "Cough_suppressant": {
       "type": "MedicationOrder",
-      "target_encounter": "Doctor_Visit",
+      "assign_to_attribute": "OTC_Bronchitis_Med",
       "reason": "Bronchitis_Infection",
       "codes": [
         {
@@ -342,7 +337,7 @@
 
     "Acetaminophen": {
       "type": "MedicationOrder",
-      "target_encounter": "Doctor_Visit",
+      "assign_to_attribute": "OTC_Bronchitis_Med",
       "reason": "Bronchitis_Infection",
       "codes": [
         {
@@ -424,7 +419,7 @@
       "wellness": true,
       "direct_transition": "End_Bronchitis_CarePlan"
     },
-    
+
     "End_Bronchitis_CarePlan": {
       "type": "CarePlanEnd",
       "referenced_by_attribute": "bronchitis_careplan",
