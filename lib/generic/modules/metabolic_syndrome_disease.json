@@ -73,7 +73,9 @@
                    "It is estimated that 27.8% of people with diabetes are undiagnosed",
                    "https://www.cdc.gov/diabetes/pdfs/data/2014-report-estimates-of-diabetes-and-its-burden-in-the-united-states.pdf",
                    "therefore the diabetes %s are all scaled up by a factor of 1.278, ",
-                   "so that the total % of people that eventually get diabetes is higher, but the current population with diabetes should be around 8.8%"],
+                   "so that the total % of people that eventually get diabetes is higher, but the current population with diabetes should be around 8.8%",
+                   "because there is a delay before diabetes onsets",
+                   "similarly the prediabetes #s are scaled up (but by a little less) so the current prediabetic % at any time is ~38%"],
       "complex_transition" : [
         {
           "condition" : {
@@ -82,8 +84,8 @@
           },
           "distributions" : [
             { "distribution" : 0.083, "transition" : "Eventual_Diabetes", "remarks" : "0.065 * 1.278" },
-            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.537, "transition" : "No_Diabetes" }
+            { "distribution" : 0.45, "transition" : "Eventual_Prediabetes", "remarks" : "0.38 * 1.2" },
+            { "distribution" : 0.467, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -93,8 +95,8 @@
           },
           "distributions" : [
             { "distribution" : 0.1815, "transition" : "Eventual_Diabetes", "remarks" : "0.142 * 1.278" },
-            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.4385, "transition" : "No_Diabetes" }
+            { "distribution" : 0.45, "transition" : "Eventual_Prediabetes", "remarks" : "0.38 * 1.2" },
+            { "distribution" : 0.3685, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -104,8 +106,8 @@
           },
           "distributions" : [
             { "distribution" : 0.1636, "transition" : "Eventual_Diabetes", "remarks" : "0.128 * 1.278" },
-            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.4564, "transition" : "No_Diabetes" }
+            { "distribution" : 0.45, "transition" : "Eventual_Prediabetes", "remarks" : "0.38 * 1.2" },
+            { "distribution" : 0.3864, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -115,8 +117,8 @@
           },
           "distributions" : [
             { "distribution" : 0.2045, "transition" : "Eventual_Diabetes", "remarks" : "0.16 * 1.278" },
-            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.4155, "transition" : "No_Diabetes" }
+            { "distribution" : 0.45, "transition" : "Eventual_Prediabetes", "remarks" : "0.38 * 1.2" },
+            { "distribution" : 0.3455, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -126,16 +128,16 @@
           },
           "distributions" : [
             { "distribution" : 0.1828, "transition" : "Eventual_Diabetes", "remarks" : "0.143 * 1.278" },
-            { "distribution" : 0.30, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.5172, "transition" : "No_Diabetes" }
+            { "distribution" : 0.36, "transition" : "Eventual_Prediabetes", "remarks" : "0.30 * 1.2" },
+            { "distribution" : 0.4572, "transition" : "No_Diabetes" }
           ]
         },
         {
           "remarks" : ["for Other races, just fall back to overall state %s"],
           "distributions" : [
             { "distribution" : 0.1022, "transition" : "Eventual_Diabetes", "remarks" : "0.08 * 1.278" },
-            { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.5178, "transition" : "No_Diabetes" }
+            { "distribution" : 0.45, "transition" : "Eventual_Prediabetes", "remarks" : "0.38 * 1.2" },
+            { "distribution" : 0.4478, "transition" : "No_Diabetes" }
           ]
         }
 
@@ -536,11 +538,11 @@
             "value" : 0
           },
           "distributions" : [
-            { "distribution" : 0.9985, "transition" : "Neuropathy_Progression" },
-            { "distribution" : 0.0015, "transition" : "Set_Mild_Eye_Damage" }
+            { "distribution" : 0.998, "transition" : "Neuropathy_Progression" },
+            { "distribution" : 0.002, "transition" : "Set_Mild_Eye_Damage" }
           ],
-          "remarks" : ["Prevalence of DR = ~40%, we assume an estimated lifespan of ~30 yrs after diagnosis",
-                       ".15%/month  over 30 yrs, 1- (.9985 ^ (12*30)) = .417 "]
+          "remarks" : ["Prevalence of DR = ~40%, we assume an estimated lifespan of ~20 yrs after diagnosis",
+                       ".2%/month  over 20 yrs, 1- (.998 ^ (12*20)) = .38 "]
         },
         {
           "condition" : {
@@ -649,11 +651,12 @@
     "Chance_of_Macular_Edema" : {
       "type" : "Simple",
       "remarks" : ["Incidence of DME is very low. Very rough estimate == ~1% per year.",
-                   "1% / yr = .08% / month",
+                   "only around 20% of patients will hit this state, so we scale up to about 5% per year among those patients",
+                   "5% / yr = .4% / month",
                    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4657234/table/Tab5/"],
       "distributed_transition" : [
-        { "distribution" : 0.0008, "transition" : "Set_Macular_Edema" },
-        { "distribution" : 0.9992, "transition" : "Chance_of_Blindness" }
+        { "distribution" : 0.004, "transition" : "Set_Macular_Edema" },
+        { "distribution" : 0.996, "transition" : "Chance_of_Blindness" }
       ]
     },
 
@@ -693,11 +696,11 @@
             "value" : 0
           },
           "distributions" : [
-            { "distribution" : 0.99835, "transition" : "Loop_back_to_Start" },
-            { "distribution" : 0.00165, "transition" : "Set_Mild_Nerve_Damage" }
+            { "distribution" : 0.9971, "transition" : "Loop_back_to_Start" },
+            { "distribution" : 0.0029, "transition" : "Set_Mild_Nerve_Damage" }
           ],
           "remarks" : ["DPN affects as many as 1/2 of all patients with diabetes.",
-                       "50% over 35 years == ~ 0.165% per month"]
+                       "50% over 20 years == ~ 0.29% per month"]
         },
         {
           "condition" : {
