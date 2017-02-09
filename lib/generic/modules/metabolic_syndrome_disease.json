@@ -242,23 +242,40 @@
       "type" : "Simple",
       "remarks" : ["https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4727808/",
                    "There are 5 defined stages of kidney disease; stage 5 is End-stage where dialysis is necessary",
-                   "There is limited data on the statistics of individual stages, outside of end-stage",
-                   "These transition %s are intended to give realistic #s within end-stage, but the stages along the way may not match reality",
-                   "(of course, if we find numbers to compare to then we should update this)",
-                   "FTA: Crude incidence rates of ESRD among individuals with type 2 diabetes/NIDDM were reported from 104 (95% CI 56–194) per 100,000 PY among patients from Italy",
-                   " to 690 (95% CI na) and 937.6 (95% CI na) per 100,000 PY among American Indians.",
-                   "We assume ESRD prevalence of 2% given diabetes, an average of 274 months/diabetic, progressing through 4 stages, or 0.2% chance of progression per month."],
+                   "Prevalence of Nephropathy is 34.5% - http://link.springer.com/chapter/10.1007%2F978-1-4939-0793-9_2",
+                   "Prevalence of microalbuminuria is ~ 28.8% - https://www.ncbi.nlm.nih.gov/pubmed/11877563",
+                   "Prevalence of End stage renal disease is ~ .78% - ",
+                   "https://www.cdc.gov/diabetes/pdfs/data/2014-report-estimates-of-diabetes-and-its-burden-in-the-united-states.pdf"],
       "complex_transition" : [
         {
           "condition" : {
             "condition_type" : "Attribute",
             "attribute" : "diabetic_kidney_damage",
-            "operator" : "<=",
+            "operator" : "==",
+            "value" : 0
+          },
+          "remarks" : ["we want ~ 35% of patients to hit mild kidney disease",
+                       "assuming roughly 20 yrs, 0.18% / month ~~> 35% over 20 yrs "],
+          "distributions" : [
+            { "distribution" : 0.9982, "transition" : "Retinopathy_Progression" },
+            { "distribution" : 0.0018, "transition" : "Set_Mild_Kidney_Damage" }
+          ]
+        },
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "diabetic_kidney_damage",
+            "operator" : "==",
             "value" : 1
           },
+          "remarks" : ["moderate damage == microalbuminuria",
+                       "we want ~ 28.8% of patients to hit moderate, with ~35% hitting mild",
+                       "so 28.8% / 35% == 82%.  1.35% / month ~~> 83% over 10 yrs",
+                       "10 yrs because kidney damage accelerates as is it increases -",
+                       "http://www.edren.org/pages/edreninfo/ckd-chronic-renal-failure-and-its-progression.php"],
           "distributions" : [
-            { "distribution" : 0.998, "transition" : "Set_Mild_Kidney_Damage" },
-            { "distribution" : 0.002, "transition" : "Set_Moderate_Kidney_Damage" }
+            { "distribution" : 0.9865, "transition" : "Set_Mild_Kidney_Damage" },
+            { "distribution" : 0.0135, "transition" : "Set_Moderate_Kidney_Damage" }
           ]
         },
         {
@@ -268,9 +285,12 @@
             "operator" : "==",
             "value" : 2
           },
+          "remarks" : ["limited data on prevalence of proteinuria, so we assume roughly 14%",
+                       "(midway between the 28.8% of microalbuminuria and end-stage)",
+                       "so we want ~ 50% of patients with moderate damage to progress to severe"],
           "distributions" : [
-            { "distribution" : 0.998, "transition" : "Set_Moderate_Kidney_Damage" },
-            { "distribution" : 0.002, "transition" : "Set_Severe_Kidney_Damage" }
+            { "distribution" : 0.994, "transition" : "Set_Moderate_Kidney_Damage" },
+            { "distribution" : 0.006, "transition" : "Set_Severe_Kidney_Damage" }
           ]
         },
         {
@@ -280,9 +300,11 @@
             "operator" : "==",
             "value" : 3
           },
+          "remarks" : ["Prevalence of end_stage_renal_disease is 0.78%",
+                       "where ~14% make it to severe, so we want 0.78/14 = ~ 6% of patients to progress to end-stage"],
           "distributions" : [
-            { "distribution" : 0.998, "transition" : "Set_Severe_Kidney_Damage" },
-            { "distribution" : 0.002, "transition" : "Set_End_Stage_Kidney_Damage" }
+            { "distribution" : 0.9994, "transition" : "Set_Severe_Kidney_Damage" },
+            { "distribution" : 0.0006, "transition" : "Set_End_Stage_Kidney_Damage" }
           ]
         },
         {
@@ -512,11 +534,11 @@
             "value" : 0
           },
           "distributions" : [
-            { "distribution" : 0.999, "transition" : "Neuropathy_Progression" },
-            { "distribution" : 0.001, "transition" : "Set_Mild_Eye_Damage" }
+            { "distribution" : 0.9985, "transition" : "Neuropathy_Progression" },
+            { "distribution" : 0.0015, "transition" : "Set_Mild_Eye_Damage" }
           ],
-          "remarks" : ["these %s chosen such that ~30-40% of patients progress to Mild damage (retinopathy) over the course of ~35 yrs",
-                       ".999 ^ (12 * 35) = .657 "]
+          "remarks" : ["Prevalence of DR = ~40%, we assume an estimated lifespan of ~30 yrs after diagnosis",
+                       ".15%/month  over 30 yrs, 1- (.9985 ^ (12*30)) = .417 "]
         },
         {
           "condition" : {
