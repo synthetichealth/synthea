@@ -69,7 +69,11 @@
                    "http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html",
                    "prediabetes prevalence is ~38 % overall and similar among most races but slightly lower among Native americans",
                    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3830901/",
-                   "http://www.diabetes.org/living-with-diabetes/treatment-and-care/high-risk-populations/treatment-american-indians.html"],
+                   "http://www.diabetes.org/living-with-diabetes/treatment-and-care/high-risk-populations/treatment-american-indians.html",
+                   "It is estimated that 27.8% of people with diabetes are undiagnosed",
+                   "https://www.cdc.gov/diabetes/pdfs/data/2014-report-estimates-of-diabetes-and-its-burden-in-the-united-states.pdf",
+                   "therefore the diabetes %s are all scaled up by a factor of 1.278, ",
+                   "so that the total % of people that eventually get diabetes is higher, but the current population with diabetes should be around 8.8%"],
       "complex_transition" : [
         {
           "condition" : {
@@ -77,9 +81,9 @@
             "race" : "White"
           },
           "distributions" : [
-            { "distribution" : 0.065, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.083, "transition" : "Eventual_Diabetes", "remarks" : "0.065 * 1.278" },
             { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.555, "transition" : "No_Diabetes" }
+            { "distribution" : 0.537, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -88,9 +92,9 @@
             "race" : "Hispanic"
           },
           "distributions" : [
-            { "distribution" : 0.142, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.1815, "transition" : "Eventual_Diabetes", "remarks" : "0.142 * 1.278" },
             { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.478, "transition" : "No_Diabetes" }
+            { "distribution" : 0.4385, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -99,9 +103,9 @@
             "race" : "Black"
           },
           "distributions" : [
-            { "distribution" : 0.128, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.1636, "transition" : "Eventual_Diabetes", "remarks" : "0.128 * 1.278" },
             { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.492, "transition" : "No_Diabetes" }
+            { "distribution" : 0.4564, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -110,9 +114,9 @@
             "race" : "Asian"
           },
           "distributions" : [
-            { "distribution" : 0.16, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.2045, "transition" : "Eventual_Diabetes", "remarks" : "0.16 * 1.278" },
             { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.46, "transition" : "No_Diabetes" }
+            { "distribution" : 0.4155, "transition" : "No_Diabetes" }
           ]
         },
         {
@@ -121,17 +125,17 @@
             "race" : "Native"
           },
           "distributions" : [
-            { "distribution" : 0.143, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.1828, "transition" : "Eventual_Diabetes", "remarks" : "0.143 * 1.278" },
             { "distribution" : 0.30, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.557, "transition" : "No_Diabetes" }
+            { "distribution" : 0.5172, "transition" : "No_Diabetes" }
           ]
         },
         {
           "remarks" : ["for Other races, just fall back to overall state %s"],
           "distributions" : [
-            { "distribution" : 0.08, "transition" : "Eventual_Diabetes" },
+            { "distribution" : 0.1022, "transition" : "Eventual_Diabetes", "remarks" : "0.08 * 1.278" },
             { "distribution" : 0.38, "transition" : "Eventual_Prediabetes" },
-            { "distribution" : 0.54, "transition" : "No_Diabetes" }
+            { "distribution" : 0.5178, "transition" : "No_Diabetes" }
           ]
         }
 
