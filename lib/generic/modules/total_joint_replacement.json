@@ -135,6 +135,12 @@
           "display": "Stretching exercises"
         }
       ],
+      "direct_transition": "Post_Op_Prescribe_Pain_Reliever"
+    },
+
+    "Post_Op_Prescribe_Pain_Reliever": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
       "direct_transition": "In_Hospital_Post_Surgery_Recovery"
     },
 
@@ -186,7 +192,7 @@
         }
       ]
     },
-    
+
     "Terminal": {
       "type": "Terminal"
     }

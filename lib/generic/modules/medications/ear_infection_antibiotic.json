@@ -7,7 +7,7 @@
 
     "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
     "All antibiotics prescribed in this module are assigned to the attribute ",
-    "'ear_infection_antibiotic'.",
+    "'antibiotic_prescription'.",
 
     "Source for common antibiotics used to treat otitis media: ",
     "http://www.nps.org.au/conditions/ear-nose-mouth-and-throat-disorders/ear-nose-and-throat-infections/ear-infection-middle/for-individuals/medicines-and-treatments",
@@ -34,7 +34,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "ear_infection_antibiotic",
+            "attribute": "antibiotic_prescription",
             "operator": "is nil"
           },
           "transition": "Prescribe_Ear_Infection_Antibiotic"
@@ -171,7 +171,7 @@
 
     "Prescribe_Penicillin": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "remarks": [
         "Historically this was injected, not ingested. There are still modern ",
         "variant of penicillin that come as oral or injectable solutions. There ",
@@ -208,7 +208,7 @@
 
     "Prescribe_Ampicillin": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "remarks": [
         "Historically this was injected, not ingested. There are still modern ",
         "variant of ampicillin that come as oral or injectable solutions. There ",
@@ -267,7 +267,7 @@
 
     "Pediatric_Doxycycline": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -304,7 +304,7 @@
 
     "Adult_Doxycycline": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -359,7 +359,7 @@
 
     "Pediatric_Amoxicillin": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -391,7 +391,7 @@
 
     "Adult_Amoxicillin": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -441,7 +441,7 @@
 
     "Pediatric_Cefaclor": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -473,7 +473,7 @@
 
     "Adult_Cefaclor": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "codes": [
         {
           "system": "RxNorm",
@@ -505,7 +505,7 @@
 
     "Prescribe_Cefuroxime": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "ear_infection_antibiotic",
+      "assign_to_attribute": "antibiotic_prescription",
       "remarks": [
         "The pediatric and adult doses of Cefuroxime are the same."
       ],

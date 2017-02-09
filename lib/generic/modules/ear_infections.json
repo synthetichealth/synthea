@@ -191,13 +191,13 @@
 
     "Ear_Infection_Antibiotic_End": {
       "type": "MedicationEnd",
-      "referenced_by_attribute" : "ear_infection_antibiotic",
+      "referenced_by_attribute" : "antibiotic_prescription",
       "direct_transition": "Unset_Antibiotic_Attribute"
     },
 
     "Unset_Antibiotic_Attribute": {
       "type": "SetAttribute",
-      "attribute": "ear_infection_antibiotic",
+      "attribute": "antibiotic_prescription",
       "direct_transition": "Ear_Infection_OTC_Painkiller_End"
     },
 
