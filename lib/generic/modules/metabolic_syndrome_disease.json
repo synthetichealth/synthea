@@ -210,10 +210,12 @@
         },
         {
           "distributions" : [
-            { "distribution" : 0.594, "transition" : "Onset_Hypertension_with_Diabetes" },
-            { "distribution" : 0.406, "transition" : "No_Hypertension_With_Diabetes" }
+            { "distribution" : 0.423, "transition" : "Onset_Hypertension_with_Diabetes" },
+            { "distribution" : 0.577, "transition" : "No_Hypertension_With_Diabetes" }
           ],
-          "remarks" : "probability_given_diabetes: 0.594 #  (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
+          "remarks" : ["59.4% of adults with diabetes have hypertension http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab",
+                       "but we already gave 29.6% of adults hypertension above, so we only give 42.3% hypertension here, not 59%",
+                       ".296 + .704(x) = .594,  x = .423"]
         }
       ]
     },
