@@ -13,6 +13,8 @@ module Synthea
         @stats[:age] = Hash.new(0)
         @stats[:gender] = Hash.new(0)
         @stats[:race] = Hash.new(0)
+        @stats[:living_adults_by_race] = Hash.new(0)
+        @stats[:diabetes_by_race] = Hash.new(0)
         @stats[:ethnicity] = Hash.new(0)
         @stats[:blood_type] = Hash.new(0)
         @stats[:dead_occurrences] = {
@@ -108,7 +110,19 @@ module Synthea
         metabolic_conditions = [
           'Hypertension',
           'Prediabetes',
-          'Diabetes',
+          'Diabetes'
+        ]
+        metabolic_conditions.each do |condition|
+          all_prevalences(condition, :people_afflicted, condition.downcase.tr(' ', '_').to_sym)
+        end
+        # Diabetes by Race
+        @stats[:living_adults_by_race].each do |race, count|
+          diabetics = @stats[:diabetes_by_race][race]
+          prevalence("Diabetes among #{race} adults,LIVING", diabetics, count)
+        end
+        diabetic_population = @stats[:living_occurrences][:people_afflicted][:diabetes]
+        prevalence("Hypertension GIVEN DIABETES,LIVING", @stats[:living_hypertension_and_diabetes], diabetic_population)
+        metabolic_conditions = [
           'Diabetic renal disease (disorder)',
           'Microalbuminuria due to type 2 diabetes mellitus (disorder)',
           'Proteinuria due to type 2 diabetes mellitus (disorder)',
@@ -125,7 +139,7 @@ module Synthea
           'History of disarticulation at wrist (situation)'
         ]
         metabolic_conditions.each do |condition|
-          all_prevalences(condition, :people_afflicted, condition.downcase.tr(' ', '_').to_sym)
+          all_prevalences("#{condition} GIVEN DIABETES", :people_afflicted, condition.downcase.tr(' ', '_').to_sym, diabetic_population)
         end
 
         metabolic_medications = [
@@ -136,15 +150,15 @@ module Synthea
           'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]'
         ]
         metabolic_medications.each do |medication|
-          all_prevalences(medication, :people_prescribed, medication.downcase.tr(' ', '_').to_sym)
+          all_prevalences("#{medication} GIVEN DIABETES", :people_prescribed, medication.downcase.tr(' ', '_').to_sym, diabetic_population)
         end
         @prevalence_file.close
       end
 
-      def all_prevalences(description, category, type)
-        prevalence("#{description.tr(',', '')},TOTAL", @stats[:occurrences][category][type], @stats[:population_count])
-        prevalence("#{description.tr(',', '')},LIVING", @stats[:living_occurrences][category][type], @stats[:living])
-        prevalence("#{description.tr(',', '')},DEAD", @stats[:dead_occurrences][category][type], @stats[:dead])
+      def all_prevalences(description, category, type, population = @stats[:living_adults])
+        # prevalence("#{description.tr(',', '')},TOTAL", @stats[:occurrences][category][type], @stats[:population_count])
+        prevalence("#{description.tr(',', '')},LIVING", @stats[:living_occurrences][category][type], population)
+        # prevalence("#{description.tr(',', '')},DEAD", @stats[:dead_occurrences][category][type], @stats[:dead])
       end
 
       def prevalence(description, numerator, denominator)
@@ -343,9 +357,14 @@ module Synthea
           @stats[:dead] += 1
         else
           @stats[:living] += 1
+          if (patient[:age] >= 18)
+            @stats[:living_adults] += 1
+            @stats[:living_adults_by_race][patient[:race]] += 1
+          end
         end
         @stats[:age_sum] += patient[:age] # useful for tracking the total # of person-years simulated vs real-world clock time
         @stats[:age][(patient[:age] / 10) * 10] += 1
+        @stats[:adults] += 1 if (patient[:age] >= 18)
         @stats[:gender][patient[:gender]] += 1
         @stats[:race][patient[:race]] += 1
         @stats[:ethnicity][patient[:ethnicity]] += 1
@@ -353,10 +372,14 @@ module Synthea
 
         occurrences = track_occurrences(patient)
         add_occurrences(@stats[:occurrences], occurrences)
+        @stats[:diabetes_by_race][patient[:race]] += 1 if(occurrences[:active_conditions].keys.include?(:diabetes))
         if patient.had_event?(:death)
           add_occurrences(@stats[:dead_occurrences], occurrences)
         else
           add_occurrences(@stats[:living_occurrences], occurrences)
+          if(occurrences[:active_conditions].keys.include?(:diabetes) && occurrences[:active_conditions].keys.include?(:hypertension))
+            @stats[:living_hypertension_and_diabetes] += 1
+          end
         end
         occurrences
       end
