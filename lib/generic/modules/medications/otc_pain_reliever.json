@@ -7,11 +7,13 @@
     "were invented, and older medications (e.g. aspirin) are prescribed less ",
     "frequently as alternatives (e.g. acetaminophen) become available.",
 
-    "Dosage and availability information was primarilly obtained from FDA reports ",
-    "available at https://www.drugs.com. Although there are now liquid forms of ",
-    "some medications (especially for children), it's unclear when those became ",
-    "available and the dosing is too complicated. For simplicity, all OTC pain ",
-    "relievers prescribed in this module are of the oral tablet type.",
+    "Availability dates for different drugs came from the FDA: ",
+    "http://www.accessdata.fda.gov/scripts/cder/daf/",
+
+    "Although there are now liquid forms of some medications (especially for ",
+    "children), it's unclear when those became available and the dosing is too ",
+    "complicated to model easily. For simplicity, all OTC pain relievers prescribed ",
+    "in this module are of the oral tablet type.",
 
     "The following medications may be prescribed by this module:  ",
     "1. Aspirin                              available after 1899 ",
@@ -23,6 +25,23 @@
 
     "Initial": {
       "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "otc_pain_reliever",
+            "operator": "is nil"
+          },
+          "transition": "Prescribe_OTC_Pain_Reliever"
+        },
+        {
+          "transition": "OTC_Pain_Reliever_Terminal"
+        }
+      ]
+    },
+
+    "Prescribe_OTC_Pain_Reliever": {
+      "type": "Simple",
       "complex_transition": [
         {
           "condition": {
@@ -113,6 +132,7 @@
 
     "Prescribe_Aspirin": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_pain_reliever",
       "remarks": [
         "There is no children's dose of aspirin. Anyone prescribed aspirin ",
         "gets the same 81mg dose."
@@ -150,6 +170,7 @@
 
     "Pediatric_Acetaminophen": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_pain_reliever",
       "codes": [
         {
           "system": "RxNorm",
@@ -165,6 +186,7 @@
 
     "Adult_Acetaminophen": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_pain_reliever",
       "codes": [
         {
           "system": "RxNorm",
@@ -198,6 +220,7 @@
 
     "Pediatric_Ibuprofen": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_pain_reliever",
       "codes": [
         {
           "system": "RxNorm",
@@ -213,6 +236,7 @@
 
     "Adult_Ibuprofen": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_pain_reliever",
       "codes": [
         {
           "system": "RxNorm",
@@ -264,6 +288,7 @@
 
     "Naproxen_Sodium": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_pain_reliever",
       "codes": [
         {
           "system": "RxNorm",
