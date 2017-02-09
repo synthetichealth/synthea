@@ -15,12 +15,32 @@ module Synthea
         @stats[:race] = Hash.new(0)
         @stats[:ethnicity] = Hash.new(0)
         @stats[:blood_type] = Hash.new(0)
-        @stats[:dead_conditions] = Hash.new(0)
-        @stats[:living_conditions] = Hash.new(0)
-        @stats[:conditions] = Hash.new(0)
+        @stats[:dead_occurrences] = {
+          :active_conditions => Hash.new(0),
+          :total_conditions => Hash.new(0),
+          :people_afflicted => Hash.new(0),
+          :active_medications => Hash.new(0),
+          :total_medications => Hash.new(0),
+          :people_prescribed => Hash.new(0)
+        }
+        @stats[:living_occurrences] = {
+          :active_conditions => Hash.new(0),
+          :total_conditions => Hash.new(0),
+          :people_afflicted => Hash.new(0),
+          :active_medications => Hash.new(0),
+          :total_medications => Hash.new(0),
+          :people_prescribed => Hash.new(0)
+        }
+        @stats[:occurrences] = {
+          :active_conditions => Hash.new(0),
+          :total_conditions => Hash.new(0),
+          :people_afflicted => Hash.new(0),
+          :active_medications => Hash.new(0),
+          :total_medications => Hash.new(0),
+          :people_prescribed => Hash.new(0)
+        }
 
         @population_count = Synthea::Config.sequential.population
-
         @generate_count = Concurrent::AtomicFixnum.new(0)
         @export_count = Concurrent::AtomicFixnum.new(0)
         @generate_log_interval = Synthea::Config.sequential.debug_log_interval.generate
@@ -77,23 +97,77 @@ module Synthea
         puts 'Generated Demographics:'
         puts JSON.pretty_unparse(@stats)
 
-        puts 'State Statistics:'
-        puts JSON.pretty_unparse(Synthea::Generic::Context.counter)
+        if Synthea::Config.generic.log_state_statistics
+          puts 'State Statistics:'
+          puts JSON.pretty_unparse(Synthea::Generic::Context.counter)
+        end
+
+        puts 'Outputting Metabolic Syndrome Results to output/prevalences.csv'
+        @prevalence_file = File.open('output/prevalences.csv', 'w:UTF-8')
+        @prevalence_file.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
+        metabolic_conditions = [
+          'Hypertension',
+          'Prediabetes',
+          'Diabetes',
+          'Diabetic renal disease (disorder)',
+          'Microalbuminuria due to type 2 diabetes mellitus (disorder)',
+          'Proteinuria due to type 2 diabetes mellitus (disorder)',
+          'End stage renal disease (disorder)',
+          'Diabetic retinopathy associated with type II diabetes mellitus (disorder)',
+          'Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)',
+          'Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)',
+          'Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)',
+          'Blindness due to type 2 diabetes mellitus (disorder)',
+          'Neuropathy due to type 2 diabetes mellitus (disorder)',
+          'History of lower limb amputation (situation)',
+          'History of amputation of foot (situation)',
+          'History of upper limb amputation (situation)',
+          'History of disarticulation at wrist (situation)'
+        ]
+        metabolic_conditions.each do |condition|
+          all_prevalences(condition, :people_afflicted, condition.downcase.tr(' ', '_').to_sym)
+        end
+
+        metabolic_medications = [
+          '24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet',
+          '3 ML liraglutide 6 MG/ML Pen Injector',
+          'canagliflozin 100 MG Oral Tablet',
+          'insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]',
+          'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]'
+        ]
+        metabolic_medications.each do |medication|
+          all_prevalences(medication, :people_prescribed, medication.downcase.tr(' ', '_').to_sym)
+        end
+        @prevalence_file.close
+      end
+
+      def all_prevalences(description, category, type)
+        prevalence("#{description.tr(',', '')},TOTAL", @stats[:occurrences][category][type], @stats[:population_count])
+        prevalence("#{description.tr(',', '')},LIVING", @stats[:living_occurrences][category][type], @stats[:living])
+        prevalence("#{description.tr(',', '')},DEAD", @stats[:dead_occurrences][category][type], @stats[:dead])
+      end
+
+      def prevalence(description, numerator, denominator)
+        numerator = 0 if numerator.nil?
+        result = numerator.to_f / denominator.to_f
+        @prevalence_file.write("#{description},#{numerator},#{denominator},#{result},#{(100 * result).round(2)}\n")
       end
 
       def run_random
         i = 0
         while @stats[:living] < @population_count
           person = build_person
-
           run_task(@export_workers) do
             @export_count.increment
             log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?
             Synthea::Output::Exporter.export(person)
           end
 
-          record_stats(person)
-          log_patient(person, number: i += 1, is_dead: person.had_event?(:death))
+          occurrences = record_stats(person)
+          i += 1
+          occurrences[:number] = i
+          occurrences[:is_dead] = person.had_event?(:death)
+          log_patient(person, occurrences)
         end
       end
 
@@ -131,9 +205,12 @@ module Synthea
             Synthea::Output::Exporter.export(person)
           end
 
-          record_stats(person)
-          dead = person.had_event?(:death)
-          log_patient(person, number: i + 1, is_dead: dead, city_name: city_name, city_pop: population)
+          occurrences = record_stats(person)
+          occurrences[:number] = i + 1
+          occurrences[:is_dead] = person.had_event?(:death)
+          occurrences[:city_name] = city_name
+          occurrences[:city_pop] = population
+          log_patient(person, occurrences)
 
           break unless dead
           break if try_number >= Synthea::Config.sequential.max_tries
@@ -188,20 +265,31 @@ module Synthea
         person
       end
 
-      def track_conditions(patient)
-        conditions = []
-        addict = begin
-                   patient[:generic]['Opioid Addiction'].history.find { |x| x.name == 'Active_Addiction' }
-                 rescue
-                   nil
-                 end
-        conditions << 'Opioid Addict' if addict
-        conditions << 'Diabetic' if patient[:diabetes]
-        conditions << 'Heart Disease' if patient[:coronary_heart_disease]
-        conditions << 'Lung Cancer' if patient['Lung Cancer Type']
-        conditions << 'Colorectal Cancer' if patient['colorectal_cancer']
-        conditions << "Alzheimer's" if patient["Type of Alzheimer's"]
-        conditions
+      def track_occurrences(patient)
+        # Track Diagnosed Conditions
+        active_occurrences = Hash.new(0)
+        patient.record_synthea.conditions.select { |c| c['end_time'].nil? }.each { |c| active_occurrences[c['type']] += 1 }
+        total_occurrences = Hash.new(0)
+        patient.record_synthea.conditions.each { |c| total_occurrences[c['type']] += 1 }
+        unique_conditions = Hash.new(0)
+        patient.record_synthea.conditions.map { |c| c['type'] }.uniq.each { |c| unique_conditions[c] = 1 }
+
+        # Track Medications
+        active_medications = Hash.new(0)
+        patient.record_synthea.medications.select { |c| c['stop'].nil? }.each { |c| active_medications[c['type']] += 1 }
+        total_medications = Hash.new(0)
+        patient.record_synthea.medications.each { |c| total_medications[c['type']] += 1 }
+        unique_medications = Hash.new(0)
+        patient.record_synthea.medications.map { |c| c['type'] }.uniq.each { |c| unique_medications[c] = 1 }
+
+        {
+          :active_conditions => active_occurrences,
+          :total_conditions => total_occurrences,
+          :people_afflicted => unique_conditions,
+          :active_medications => active_medications,
+          :total_medications => total_medications,
+          :people_prescribed => unique_medications
+        }
       end
 
       def log_patient(person, options = {})
@@ -214,9 +302,8 @@ module Synthea
         str << ': '
         str << "#{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]}"
 
-        conditions = track_conditions(person)
         weight = (person.get_vital_sign_value(:weight) * 2.20462).to_i
-        str << " #{weight} lbs. -- #{conditions.join(', ')}"
+        str << " #{weight} lbs. -- #{options[:active_conditions].keys.map(&:to_s).join(', ')}"
 
         puts str
       end
@@ -264,13 +351,20 @@ module Synthea
         @stats[:ethnicity][patient[:ethnicity]] += 1
         @stats[:blood_type][patient[:blood_type]] += 1
 
-        conditions = track_conditions(patient)
-        conditions.each do |condition|
-          @stats[:conditions][condition] += 1
-          if patient.had_event?(:death)
-            @stats[:dead_conditions][condition] += 1
-          else
-            @stats[:living_conditions][condition] += 1
+        occurrences = track_occurrences(patient)
+        add_occurrences(@stats[:occurrences], occurrences)
+        if patient.had_event?(:death)
+          add_occurrences(@stats[:dead_occurrences], occurrences)
+        else
+          add_occurrences(@stats[:living_occurrences], occurrences)
+        end
+        occurrences
+      end
+
+      def add_occurrences(total, occurrences)
+        occurrences.each do |category, hash|
+          hash.each do |key, value|
+            total[category][key] += value
           end
         end
       end
