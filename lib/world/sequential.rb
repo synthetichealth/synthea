@@ -107,11 +107,7 @@ module Synthea
         puts 'Outputting Metabolic Syndrome Results to output/prevalences.csv'
         @prevalence_file = File.open('output/prevalences.csv', 'w:UTF-8')
         @prevalence_file.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
-        metabolic_conditions = [
-          'Hypertension',
-          'Prediabetes',
-          'Diabetes'
-        ]
+        metabolic_conditions = %w(Hypertension Prediabetes Diabetes)
         metabolic_conditions.each do |condition|
           all_prevalences(condition, :people_afflicted, condition.downcase.tr(' ', '_').to_sym)
         end
@@ -121,7 +117,7 @@ module Synthea
           prevalence("Diabetes among #{race} adults,LIVING", diabetics, count)
         end
         diabetic_population = @stats[:living_occurrences][:people_afflicted][:diabetes]
-        prevalence("Hypertension GIVEN DIABETES,LIVING", @stats[:living_hypertension_and_diabetes], diabetic_population)
+        prevalence('Hypertension GIVEN DIABETES,LIVING', @stats[:living_hypertension_and_diabetes], diabetic_population)
         metabolic_conditions = [
           'Diabetic renal disease (disorder)',
           'Microalbuminuria due to type 2 diabetes mellitus (disorder)',
@@ -357,14 +353,14 @@ module Synthea
           @stats[:dead] += 1
         else
           @stats[:living] += 1
-          if (patient[:age] >= 18)
+          if patient[:age] >= 18
             @stats[:living_adults] += 1
             @stats[:living_adults_by_race][patient[:race]] += 1
           end
         end
         @stats[:age_sum] += patient[:age] # useful for tracking the total # of person-years simulated vs real-world clock time
         @stats[:age][(patient[:age] / 10) * 10] += 1
-        @stats[:adults] += 1 if (patient[:age] >= 18)
+        @stats[:adults] += 1 if patient[:age] >= 18
         @stats[:gender][patient[:gender]] += 1
         @stats[:race][patient[:race]] += 1
         @stats[:ethnicity][patient[:ethnicity]] += 1
@@ -372,12 +368,12 @@ module Synthea
 
         occurrences = track_occurrences(patient)
         add_occurrences(@stats[:occurrences], occurrences)
-        @stats[:diabetes_by_race][patient[:race]] += 1 if(occurrences[:active_conditions].keys.include?(:diabetes))
+        @stats[:diabetes_by_race][patient[:race]] += 1 if occurrences[:active_conditions].keys.include?(:diabetes)
         if patient.had_event?(:death)
           add_occurrences(@stats[:dead_occurrences], occurrences)
         else
           add_occurrences(@stats[:living_occurrences], occurrences)
-          if(occurrences[:active_conditions].keys.include?(:diabetes) && occurrences[:active_conditions].keys.include?(:hypertension))
+          if occurrences[:active_conditions].keys.include?(:diabetes) && occurrences[:active_conditions].keys.include?(:hypertension)
             @stats[:living_hypertension_and_diabetes] += 1
           end
         end
