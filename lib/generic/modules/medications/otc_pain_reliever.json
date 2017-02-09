@@ -7,8 +7,15 @@
     "were invented, and older medications (e.g. aspirin) are prescribed less ",
     "frequently as alternatives (e.g. acetaminophen) become available.",
 
+    "IT IS THE RESPONSIBILITY OF THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+    "All medications prescribed in this module are assigned to the attribute ",
+    "'otc_pain_reliever'.",
+
     "Availability dates for different drugs came from the FDA: ",
     "http://www.accessdata.fda.gov/scripts/cder/daf/",
+
+    "Dosage information came from FDA reference sheets available at: ",
+    "https://www.drugs.com/dosage/",
 
     "Although there are now liquid forms of some medications (especially for ",
     "children), it's unclear when those became available and the dosing is too ",

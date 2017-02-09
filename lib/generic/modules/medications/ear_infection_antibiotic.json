@@ -9,19 +9,22 @@
     "All antibiotics prescribed in this module are assigned to the attribute ",
     "'ear_infection_antibiotic'.",
 
+    "Source for common antibiotics used to treat otitis media: ",
+    "http://www.nps.org.au/conditions/ear-nose-mouth-and-throat-disorders/ear-nose-and-throat-infections/ear-infection-middle/for-individuals/medicines-and-treatments",
+
+    "Availability dates for different drugs came from the FDA: ",
+    "http://www.accessdata.fda.gov/scripts/cder/daf/",
+
+    "Dosage information came from FDA reference sheets available at: ",
+    "https://www.drugs.com/dosage/",
+
     "Medications prescribed in this module:     ",
     "1. Penicillin        available after 1945  ",
     "2. Ampicillin        available after 1961  ",
     "3. Doxycycline       available after 1967  ",
     "4. Amoxicillin       available after 1979  ",
     "5. Cefaclor          available 1979 - 2004 ",
-    "6. Cefuroxime        available after 1983  ",
-
-    "Source for common antibiotics used to treat otitis media: ",
-    "http://www.nps.org.au/conditions/ear-nose-mouth-and-throat-disorders/ear-nose-and-throat-infections/ear-infection-middle/for-individuals/medicines-and-treatments",
-
-    "Availability dates for different drugs came from the FDA: ",
-    "http://www.accessdata.fda.gov/scripts/cder/daf/"
+    "6. Cefuroxime        available after 1983  "
   ],
   "states": {
 
