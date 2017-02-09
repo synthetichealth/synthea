@@ -548,10 +548,20 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 16,
-            "unit": "years"
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 16,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 1983
+              }
+            ]
           },
           "transition": "Prescribe_Immunosuppressant"
         },
@@ -564,6 +574,11 @@
     "Prescribe_Immunosuppressant": {
       "type": "MedicationOrder",
       "reason": "dermatitis",
+      "remarks": [
+        "Immunosuppressants like cyclosporine were invented in the late 1970's ",
+        "and came to market in the early 1980s. Cyclosporine was available starting ",
+        "in 1983."
+      ],
       "codes": [
         {
           "system": "SNOMED-CT",
