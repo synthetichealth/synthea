@@ -138,18 +138,9 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "429195002",
-          "display": "Allergic rhinitis caused by animal dander"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "449729000",
-          "display": "Allergic rhinitis caused by house dust mite"
+          "code": "446096008",
+          "display": "Perennial allergic rhinitis"
         }
-      ],
-      "remarks": [
-        "These people do not have seasonal hay fever like the other cases.",
-        "These allergies are mainly to pet dander and dust."
       ],
       "direct_transition": "Allergic_Rhinitis_Diagnosis"
     },
@@ -179,86 +170,16 @@
           "display": "Encounter for symptom"
         }
       ],
+      "direct_transition": "Prescribe_OTC_Antihistamine"
+    },
+
+    "Prescribe_OTC_Antihistamine": {
+      "type": "CallSubmodule",
       "remarks": [
-        "I select one of several over-the-counter (OTC) medications to be prescribed",
-        "to the patient. These are uniformly distributed since they are all equally",
-        "common and equally likely to be prescribed for the treatment of seasonal",
-        "nasal allergies."
+        "This submodule will only prescribe an antihistamine if one is ",
+        "not already prescribed."
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "referenced_by_attribute": "otc_antihistamine"
-          },
-          "distributions": [
-            {
-              "distribution": 1,
-              "transition": "Advise_To_Visit_Allergist"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.33,
-              "transition": "Prescribe_OTC_Medication_Option_1"
-            },
-            {
-              "distribution": 0.34,
-              "transition": "Prescribe_OTC_Medication_Option_2"
-            },
-            {
-              "distribution": 0.33,
-              "transition": "Prescribe_OTC_Medication_Option_3"
-            }
-          ]
-        }
-      ]
-    },
-
-    "Prescribe_OTC_Medication_Option_1": {
-      "type": "MedicationOrder",
-      "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "assign_to_attribute": "otc_antihistamine",
-      "reason": "allergic_rhinitis",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "567613",
-          "display": "Loratadine 10 MG [Claritin]"
-        }
-      ],
-      "direct_transition": "Advise_To_Visit_Allergist"
-    },
-
-    "Prescribe_OTC_Medication_Option_2": {
-      "type": "MedicationOrder",
-      "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "assign_to_attribute": "otc_antihistamine",
-      "reason": "allergic_rhinitis",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1011483",
-          "display": "Cetirizine hydrochloride 10 MG [ZyrTEC]"
-        }
-      ],
-      "direct_transition": "Advise_To_Visit_Allergist"
-    },
-
-    "Prescribe_OTC_Medication_Option_3": {
-      "type": "MedicationOrder",
-      "target_encounter": "Allergic_Rhinitis_Diagnosis",
-      "assign_to_attribute": "otc_antihistamine",
-      "reason": "allergic_rhinitis",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "896322",
-          "display": "Fluticasone propionate 0.05 MG [Flonase]"
-        }
-      ],
+      "submodule": "medications/otc_antihistamine",
       "direct_transition": "Advise_To_Visit_Allergist"
     },
 

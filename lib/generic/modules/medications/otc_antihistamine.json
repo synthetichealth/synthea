@@ -7,11 +7,13 @@
     "were invented, and older medications (e.g. benadryl) are prescribed less ",
     "frequently as alternatives (e.g. claritin) become available.",
 
-    "Dosage and availability information was primarilly obtained from FDA reports ",
-    "available at https://www.drugs.com. Although there are now liquid forms of ",
-    "some medications (especially for children), it's unclear when those became ",
-    "available and the dosing is too complicated. For simplicity, all OTC ",
-    "antihistamines prescribed in this module are of the oral tablet type.",
+    "Availability dates for different drugs came from the FDA: ",
+    "http://www.accessdata.fda.gov/scripts/cder/daf/",
+
+    "Although there are now liquid forms of some medications (especially for ",
+    "children), it's unclear when those became available and the dosing is too ",
+    "complicated to model easily. For simplicity, all OTC antihistamines prescribed ",
+    "in this module are of the oral tablet type.",
 
     "Historically there has been 3 'generations' of antihistamines: ",
 
@@ -33,6 +35,23 @@
 
     "Initial": {
       "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "otc_antihistamine",
+            "operator": "is nil"
+          },
+          "transition": "Prescribe_OTC_Antihistamine"
+        },
+        {
+          "transition": "OTC_Anthistamine_Terminal"
+        }
+      ]
+    },
+
+    "Prescribe_OTC_Antihistamine": {
+      "type": "Simple",
       "complex_transition": [
         {
           "condition": {
@@ -182,6 +201,7 @@
 
     "Prescribe_Diphenhydramine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "remarks": [
         "There is no distinction between pediatric and adult forms of this ",
         "medication. Adults just take more doses of the standard 25mg pill."
@@ -219,6 +239,7 @@
 
     "Pediatric_Chlorphenamine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -234,6 +255,7 @@
 
     "Adult_Chlorphenamine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -249,6 +271,7 @@
 
     "Prescribe_Astemizole": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "remarks": [
         "There is only one RxNorm code available for this medication.",
         "Since it was withdrawn from the market in the 1990's there is ",
@@ -269,6 +292,7 @@
 
     "Prescribe_Terfenadine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "remarks": [
         "There are few RxNorm codes available for this medication.",
         "Since it was withdrawn from the market in the 1990's there is ",
@@ -307,6 +331,7 @@
 
     "Pediatric_Loratadine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -322,6 +347,7 @@
 
     "Adult_Loratadine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -355,6 +381,7 @@
 
     "Pediatric_Fexofenadine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -370,6 +397,7 @@
 
     "Adult_Fexofenadine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -403,6 +431,7 @@
 
     "Pediatric_Cetirizine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
@@ -418,6 +447,7 @@
 
     "Adult_Cetirizine": {
       "type": "MedicationOrder",
+      "assign_to_attribute": "otc_antihistamine",
       "codes": [
         {
           "system": "RxNorm",
