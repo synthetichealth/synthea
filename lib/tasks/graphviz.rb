@@ -291,7 +291,7 @@ module Synthea
           if unit
             unit = 'in ' + unit.gsub('{','(').gsub('}',')') # replace curly braces with parens, braces can cause issues
           end
-          
+
           if state.has_key? 'vital_sign'
             details = "Record value from Vital Sign '#{state['vital_sign']}' #{unit}\\l"
           elsif state.has_key? 'attribute'
@@ -430,7 +430,7 @@ module Synthea
         when 'True', 'False'
           logic['condition_type']
         else
-          raise "Unsupported Conditon: #{logic['condition_type']}"
+          raise "Unsupported Condition: #{logic['condition_type']}"
         end
       end
 
