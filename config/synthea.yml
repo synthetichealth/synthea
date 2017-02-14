@@ -142,6 +142,7 @@ synthea:
         bs_degree: [0.5, 1.0]
   generic:
     log: false
+    log_state_statistics: false
   version_identifier: <%= `git rev-parse HEAD` %> # get the current git commit hash
   graphviz:
     output: './output/graphviz/'
