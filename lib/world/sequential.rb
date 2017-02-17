@@ -222,7 +222,7 @@ module Synthea
           occurrences[:city_pop] = population
           log_patient(person, occurrences)
 
-          break unless dead
+          break unless person.had_event?(:death)
           break if try_number >= Synthea::Config.sequential.max_tries
 
           try_number += 1
