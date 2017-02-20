@@ -179,7 +179,7 @@ module Synthea
 
           # Medication embeds FulfillmentHistory
           fulfillment_history = FulfillmentHistory.new(
-            'quantity_dispensed' => rx_info['total_doses'],
+            'quantity_dispensed' => { 'value' => rx_info['total_doses'] },
             'dispense_date' => time.to_i
           )
 
@@ -188,15 +188,14 @@ module Synthea
           order_information = OrderInformation.new(
             'order_number' => '1',
             'fills' => fills,
-            'quantity_ordered' => rx_info['total_doses'],
+            'quantity_ordered' => { 'value' => rx_info['total_doses'] },
             'order_date_time' => time.to_i
           )
-
           medication.allowed_administrations = rx_info['total_doses'] * fills
-          medication.cumulative_medication_duration = rx_info['duration']
+          medication.cumulative_medication_duration = { 'scalar' => rx_info['duration'].quantity, 'unit' => rx_info['duration'].unit }
           medication.patient_instructions = rx_info['patient_instructions'] # The instruction SNOMED codes are not captured here.
-          medication.fulfillment_history = fulfillment_history
-          medication.order_information = order_information
+          medication.fulfillment_history = [fulfillment_history]
+          medication.order_information = [order_information]
         end
 
         if prescription['stop']
