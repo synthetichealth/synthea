@@ -43,6 +43,10 @@ module Synthea
           out_file = File.join(out_dir, "#{filename(patient)}.txt")
           File.open(out_file, 'w') { |file| file.write(text_record) }
         end
+
+        if Synthea::Config.exporter.csv.export
+          Synthea::Output::CsvRecord.convert_to_csv(patient, end_time)
+        end
       end
 
       def self.filename(patient)
