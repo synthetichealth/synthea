@@ -10,6 +10,9 @@ synthea:
       export: false
     text:
       export: false
+    csv:
+      export: false
+      export_headers: true
     years_of_history: 5
     location: './output/'  # should either start with . for relative path or / for absolute
     folder_per_city: false

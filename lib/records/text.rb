@@ -7,7 +7,10 @@ module Synthea
         text_record << basic_info(entity, '', end_time)
 
         # Allergies
-        text_record << 'ALLERGIES: N/A'
+        text_record << 'ALLERGIES:'
+        synthea_record.conditions.reverse.each do |item|
+          condition(item, text_record, nil, nil) if item['fhir'] == :allergy
+        end
         breakline(text_record)
 
         # Medications
@@ -20,7 +23,7 @@ module Synthea
         # Conditions
         text_record << 'CONDITIONS:'
         synthea_record.conditions.reverse.each do |item|
-          condition(item, text_record, nil, nil)
+          condition(item, text_record, nil, nil) if item['fhir'] == :condition
         end
         breakline(text_record)
 
@@ -111,12 +114,6 @@ module Synthea
         else
           text_record << "#{encounter['time'].strftime('%Y-%m-%d')} : #{encounter_data[:description]}"
         end
-        text_record
-      end
-
-      def self.allergy(allergy, text_record, _patient, _encounter)
-        # snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
-        text_record << "#{allergy['time'].strftime('%Y-%m-%d')} : #{allergy['type'].to_s.split('food_allergy_')[1]}"
         text_record
       end
 

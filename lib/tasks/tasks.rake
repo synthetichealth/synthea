@@ -21,9 +21,12 @@ namespace :synthea do
 
   desc 'generate'
   task :generate, [] do |_t, _args|
+    clear_output
+    Synthea::Output::CsvRecord.open_csv_files if Synthea::Config.exporter.csv.export
     start = Time.now
     world = Synthea::World::Population.new
     world.run
+    Synthea::Output::CsvRecord.close_csv_files if Synthea::Config.exporter.csv.export
     finish = Time.now
     minutes = ((finish - start) / 60)
     seconds = (minutes - minutes.floor) * 60
@@ -48,18 +51,12 @@ namespace :synthea do
     else
       Mongoid.load!("config/mongoid.yml", :ccda)
     end
-
-    if Synthea::Config.sequential.clean_output_each_run
-      %w(html fhir CCDA text).each do |type|
-        out_dir = Synthea::Output::Exporter.get_output_folder(type)
-        FileUtils.rm_r out_dir if File.exist? out_dir
-        FileUtils.mkdir_p out_dir
-      end
-    end
-
+    clear_output
+    Synthea::Output::CsvRecord.open_csv_files if Synthea::Config.exporter.csv.export
     start = Time.now
     world = Synthea::World::Sequential.new(datafile)
     world.run
+    Synthea::Output::CsvRecord.close_csv_files if Synthea::Config.exporter.csv.export
     finish = Time.now
     minutes = ((finish - start) / 60)
     seconds = (minutes - minutes.floor) * 60
@@ -120,6 +117,17 @@ namespace :synthea do
       minutes = ((finish - start) / 60)
       seconds = (minutes - minutes.floor) * 60
       puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
+    end
+  end
+
+  def clear_output
+    if Synthea::Config.sequential.clean_output_each_run
+      puts 'Clearing output folders...'
+      %w(html fhir CCDA text csv).each do |type|
+        out_dir = Synthea::Output::Exporter.get_output_folder(type)
+        FileUtils.rm_r out_dir if File.exist? out_dir
+        FileUtils.mkdir_p out_dir
+      end
     end
   end
 
