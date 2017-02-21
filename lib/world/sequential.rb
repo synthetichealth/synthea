@@ -215,14 +215,16 @@ module Synthea
             Synthea::Output::Exporter.export(person)
           end
 
+          is_dead = person.had_event?(:death)
+
           occurrences = record_stats(person)
           occurrences[:number] = i + 1
-          occurrences[:is_dead] = person.had_event?(:death)
+          occurrences[:is_dead] = is_dead
           occurrences[:city_name] = city_name
           occurrences[:city_pop] = population
           log_patient(person, occurrences)
 
-          break unless dead
+          break unless is_dead
           break if try_number >= Synthea::Config.sequential.max_tries
 
           try_number += 1
