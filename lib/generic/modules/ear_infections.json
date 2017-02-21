@@ -151,77 +151,15 @@
       ]
     },
 
-    "Ear_Infection_Prescribed_Antibiotic" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "Date",
-            "operator" : ">=",
-            "year" : 1972
-          },
-          "transition" : "Ear_Infection_Prescribed_Amoxicillin"
-        },
-        {
-          "condition" : {
-            "condition_type" : "Date",
-            "operator" : ">=",
-            "year" : 1956
-          },
-          "transition" : "Ear_Infection_Prescribed_Penicillin"
-        },
-        {
-          "transition" : "Ear_Infection_Prescribed_OTC_Painkiller",
-          "remarks" : ["Antibiotics not available yet, just go to the painkillers"]
-        }
-      ]
-    },
-
-    "Ear_Infection_Prescribed_Amoxicillin": {
-      "type": "MedicationOrder",
-      "target_encounter": "Ear_Infection_Encounter",
-      "assign_to_attribute" : "ear_infection_prescription",
-      "reason": "Gets_Ear_Infection",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "317616",
-          "display": "Amoxicillin 500MG"
-        }
-      ],
-      "direct_transition": "End_Encounter"
-    },
-
-    "Ear_Infection_Prescribed_Penicillin": {
-      "type": "MedicationOrder",
-      "target_encounter": "Ear_Infection_Encounter",
-      "assign_to_attribute" : "ear_infection_prescription",
-      "reason": "Gets_Ear_Infection",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "834060",
-          "display": "Penicillin V Potassium 250 MG"
-        }
-      ],
-      "direct_transition": "End_Encounter"
+    "Ear_Infection_Prescribed_Antibiotic": {
+      "type": "CallSubmodule",
+      "submodule": "medications/ear_infection_antibiotic",
+      "direct_transition": "Ear_Infection_Prescribed_OTC_Painkiller"
     },
 
     "Ear_Infection_Prescribed_OTC_Painkiller": {
-      "type": "MedicationOrder",
-      "target_encounter": "Ear_Infection_Encounter",
-      "assign_to_attribute" : "ear_infection_prescription",
-      "reason": "Gets_Ear_Infection",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "315263",
-          "display": "Acetaminophen 325MG [Tylenol]",
-          "remarks": [
-            "Dosage based on a single, standard Acetaminophen tablet of 325MG"
-          ]
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "End_Encounter"
     },
 
@@ -232,19 +170,48 @@
 
     "Ear_Infection_Prescription_Taken": {
       "type": "Delay",
-      "range": {
-        "low": 7,
-        "high": 14,
+      "exact": {
+        "quantity": 14,
         "unit": "days"
       },
-      "direct_transition": "Ear_Infection_Prescription_End"
-    },
-    "Ear_Infection_Prescription_End": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute" : "ear_infection_prescription",
-      "direct_transition": "Next_Wellness_Encounter"
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ear_infection_antibiotic",
+            "operator": "is not nil"
+          },
+          "transition": "Ear_Infection_Antibiotic_End"
+        },
+        {
+          "transition": "Ear_Infection_OTC_Painkiller_End"
+        }
+      ]
     },
 
+    "Ear_Infection_Antibiotic_End": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute" : "antibiotic_prescription",
+      "direct_transition": "Unset_Antibiotic_Attribute"
+    },
+
+    "Unset_Antibiotic_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "antibiotic_prescription",
+      "direct_transition": "Ear_Infection_OTC_Painkiller_End"
+    },
+
+    "Ear_Infection_OTC_Painkiller_End": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "otc_pain_reliever",
+      "direct_transition": "Unset_Pain_Reliever_Attribute"
+    },
+
+    "Unset_Pain_Reliever_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "otc_pain_reliever",
+      "direct_transition": "Next_Wellness_Encounter"
+    },
 
     "Next_Wellness_Encounter": {
       "type": "Encounter",
@@ -257,7 +224,7 @@
       "condition_onset": "Gets_Ear_Infection",
       "direct_transition": "Loopback_No_Infection"
     },
-    
+
     "Loopback_No_Infection": {
       "type": "Simple",
       "direct_transition": "No_Infection",

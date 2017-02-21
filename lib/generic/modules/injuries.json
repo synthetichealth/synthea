@@ -29,9 +29,9 @@
     "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
     "of the injury.",
 
-    "Inury pathways may also prescribe a medication and assign it to one of these attributes: ",
+    "Injury pathways may also prescribe a medication and assign it to one of these attributes: ",
     "1. 'opioid_prescription' ",
-    "2. 'nonopioid_prescription' ",
+    "2. 'otc_pain_reliever' ",
     "3. 'antibiotic_prescription' ",
 
     "Any medication order with one of these attributes will be automatically ended at the ",
@@ -337,7 +337,6 @@
 
     "Spinal_Injury_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Spinal_Injury",
       "assign_to_attribute": "injury_careplan",
       "reason": "spinal_injury",
       "codes": [
@@ -427,7 +426,6 @@
 
     "Spinal_Surgery": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Spinal_Injury",
       "reason": "spinal_injury",
       "codes": [
         {
@@ -464,22 +462,8 @@
     },
 
     "Spinal_Injury_Prescribe_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "Spinal_Injury_Treatment_Encounter",
-      "assign_to_attribute": "opioid_prescription",
-      "reason": "spinal_injury",
-      "remarks": [
-        "Since spinal injuries are so close to the central nervous system they ",
-        "are typically very, very painful. Regardless of the age, year, etc. we ",
-        "prescribe an opioid."
-      ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1049624",
-          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
       "direct_transition": "End_Spinal_Injury_Encounter"
     },
 
@@ -598,8 +582,12 @@
 
     "Gunshot_Wound_Surgery": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Gunshot_Injury",
       "reason": "Gunshot_Wound",
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -607,95 +595,38 @@
           "display": "Admission to trauma surgery department"
         }
       ],
-      "direct_transition": "Gunshot_Wound_Prescribe_Antibiotic"
-    },
-
-    "Gunshot_Wound_Prescribe_Antibiotic": {
-      "remarks": [
-        "If the wound was bad enough to require surgery antibiotics will ",
-        "most likely be prescribed to prevent any sort of infection."
-      ],
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Gunshot_Injury",
-      "assign_to_attribute": "antibiotic_prescription",
-      "reason": "Gunshot_Wound",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1359008",
-          "display": "Amoxicillin 200 MG [Amoxi-tabs]"
-        }
-      ],
       "direct_transition": "Gunshot_Wound_Prescribe_Pain_Medication"
     },
 
     "Gunshot_Wound_Prescribe_Pain_Medication": {
       "type": "Simple",
-      "conditional_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 14,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Date",
-                "operator": "<",
-                "year": 1990
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "opioid_prescription",
-                "operator": "is not nil"
-              }
-            ]
-          },
-          "transition": "Gunshot_Wound_Prescribe_Non_Opioid"
+          "distribution": 0.7,
+          "transition": "Gunshot_Wound_Prescribe_Opioid"
         },
         {
-          "transition": "Gunshot_Wound_Prescribe_Opioid"
+          "distribution": 0.3,
+          "transition": "Gunshot_Wound_Prescribe_Non_Opioid"
         }
       ]
     },
 
-    "Gunshot_Wound_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Gunshot_Injury",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "Gunshot_Wound",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "646457",
-          "display": "Acetaminophen 650 MG [Tylenol]"
-        }
-      ],
-      "direct_transition": "Gunshot_Wound_CarePlan"
+    "Gunshot_Wound_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Gunshot_Wound_Prescribe_Non_Opioid"
     },
 
-    "Gunshot_Wound_Prescribe_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Gunshot_Injury",
-      "assign_to_attribute": "opioid_prescription",
-      "reason": "Gunshot_Wound",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1310197",
-          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-        }
-      ],
+    "Gunshot_Wound_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "Gunshot_Wound_CarePlan"
     },
 
     "Gunshot_Wound_CarePlan": {
       "type": "CarePlanStart",
       "assign_to_attribute": "injury_careplan",
-      "target_encounter": "ED_Visit_For_Gunshot_Injury",
       "reason": "Gunshot_Wound",
       "codes": [
         {
@@ -876,7 +807,6 @@
 
     "Concussion_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Concussion",
       "assign_to_attribute": "injury_careplan",
       "reason": "concussion_injury",
       "codes": [
@@ -985,23 +915,13 @@
     },
 
     "Whiplash_Injury_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Whiplash",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "Whiplash",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "849727",
-          "display": "Naproxen sodium 220 MG [Aleve]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "Whiplash_CarePlan"
     },
 
     "Whiplash_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter" : "ED_Visit_For_Whiplash",
       "assign_to_attribute": "injury_careplan",
       "reason": "Whiplash",
       "codes": [
@@ -1196,8 +1116,12 @@
 
     "Broken_Bone_Immobilization": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Broken_Bone",
       "reason": "broken_bone",
+      "duration": {
+        "low": 20,
+        "high": 45,
+        "unit": "minutes"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1210,8 +1134,12 @@
 
     "Broken_Bone_Surgery": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Broken_Bone",
       "reason": "broken_bone",
+      "duration": {
+        "low": 1,
+        "high": 2,
+        "unit": "hours"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1224,70 +1152,52 @@
 
     "Broken_Bone_Injury_Prescribe_Pain_Medication": {
       "type": "Simple",
-      "conditional_transition": [
+      "complex_transition": [
         {
           "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 14,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Date",
-                "operator": "<",
-                "year": 1990
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "opioid_prescription",
-                "operator": "is not nil"
-              }
-            ]
+            "condition_type": "PriorState",
+            "name": "Broken_Bone_Surgery"
           },
-          "transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "Broken_Bone_Injury_Prescribe_Opioid"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
+            }
+          ]
         },
         {
-          "transition": "Broken_Bone_Injury_Prescribe_Opioid"
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Broken_Bone_Injury_Prescribe_Opioid"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
+            }
+          ]
         }
       ]
     },
 
-    "Broken_Bone_Injury_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Broken_Bone",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "broken_bone",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "646457",
-          "display": "Acetaminophen 650 MG [Tylenol]"
-        }
-      ],
-      "direct_transition": "Broken_Bone_CarePlan"
+    "Broken_Bone_Injury_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
     },
 
-    "Broken_Bone_Injury_Prescribe_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Broken_Bone",
-      "assign_to_attribute": "opioid_prescription",
-      "reason": "broken_bone",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1049503",
-          "display": "oxyCODONE Hydrochloride 10 MG [OxyCONTIN]"
-        }
-      ],
+    "Broken_Bone_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "Broken_Bone_CarePlan"
     },
 
     "Broken_Bone_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Broken_Bone",
       "assign_to_attribute": "injury_careplan",
       "reason": "broken_bone",
       "codes": [
@@ -1460,7 +1370,6 @@
 
     "Burn_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Burn",
       "assign_to_attribute": "injury_careplan",
       "reason": "burn_injury",
       "codes": [
@@ -1532,7 +1441,6 @@
 
     "Severe_Burn_Care": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Burn",
       "reason": "burn_injury",
       "codes": [
         {
@@ -1546,8 +1454,12 @@
 
     "Severe_Burn_Hospitalization": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Burn",
       "reason": "burn_injury",
+      "duration": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1559,80 +1471,24 @@
     },
 
     "Burn_Injury_Prescribe_Antibiotic": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Burn",
-      "assign_to_attribute": "antibiotic_prescription",
-      "reason": "burn_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "563983",
-          "display": "Minocycline 100 MG [Minocin]"
-        }
+      "type": "CallSubmodule",
+      "remarks": [
+        "Antibiotics that can be used to treat ear infections are equally ",
+        "suitable for treating bacterial tissue infections."
       ],
-      "direct_transition": "Burn_Injury_Prescribe_Pain_Medication"
-    },
-
-    "Burn_Injury_Prescribe_Pain_Medication": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 14,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Date",
-                "operator": "<",
-                "year": 1990
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "opioid_prescription",
-                "operator": "is not nil"
-              }
-            ]
-          },
-          "transition": "Burn_Injury_Prescribe_Non_Opioid"
-        },
-        {
-          "transition": "Burn_Injury_Prescribe_Opioid"
-        }
-      ]
-    },
-
-    "Burn_Injury_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Burn",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "burn_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "646457",
-          "display": "Acetaminophen 650 MG [Tylenol]"
-        }
-      ],
-      "direct_transition": "End_Burn_Encounter"
+      "submodule": "medications/ear_infection_antibiotic",
+      "direct_transition": "Burn_Injury_Prescribe_Opioid"
     },
 
     "Burn_Injury_Prescribe_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Burn",
-      "assign_to_attribute": "opioid_prescription",
-      "reason": "burn_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1049624",
-          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 10 MG [Percocet]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Burn_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Burn_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "End_Burn_Encounter"
     },
 
@@ -1801,7 +1657,6 @@
 
     "Laceration_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Laceration",
       "assign_to_attribute": "injury_careplan",
       "reason": "laceration_injury",
       "codes": [
@@ -1828,8 +1683,12 @@
 
     "Suture_Laceration": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Laceration",
       "reason": "laceration_injury",
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1857,8 +1716,12 @@
 
     "Laceration_Tetanus_Shot": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Laceration",
       "reason": "laceration_injury",
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1870,17 +1733,8 @@
     },
 
     "Laceration_Injury_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Laceration",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "laceration_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "569998",
-          "display": "Acetaminophen 325 MG [Tylenol]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "End_Laceration_Encounter"
     },
 
@@ -1968,7 +1822,6 @@
 
     "Sprain_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Sprain",
       "assign_to_attribute": "injury_careplan",
       "reason": "sprain_injury",
       "codes": [
@@ -1994,17 +1847,8 @@
     },
 
     "Sprain_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "ED_Visit_For_Sprain",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "sprain_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "569998",
-          "display": "Acetaminophen 325 MG [Tylenol]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "End_Sprain_Encounter"
     },
 
@@ -2064,7 +1908,6 @@
 
     "Knee_Injury_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ED_Visit_For_Knee_Injury",
       "assign_to_attribute": "injury_careplan",
       "reason": "knee_injury",
       "codes": [
@@ -2148,7 +1991,7 @@
           "display": "Tear of meniscus of knee"
         }
       ],
-      "direct_transition": "End_Knee_Injury_Encounter_II"
+      "direct_transition": "Knee_Injury_Prescribe_Non_Opioid"
     },
 
     "Torn_Patellar_Tendon": {
@@ -2195,8 +2038,12 @@
 
     "Knee_Surgery_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Knee_Surgery_Encounter",
       "reason": "knee_injury",
+      "duration": {
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2204,73 +2051,22 @@
           "display": "Surgical manipulation of joint of knee"
         }
       ],
-      "direct_transition": "Knee_Injury_Prescribe_Pain_Medication"
-    },
-
-    "Knee_Injury_Prescribe_Pain_Medication": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 14,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Date",
-                "operator": "<",
-                "year": 1990
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "opioid_prescription",
-                "operator": "is not nil"
-              }
-            ]
-          },
-          "transition": "Knee_Injury_Prescribe_Non_Opioid"
-        },
-        {
-          "transition": "Knee_Injury_Prescribe_Opioid"
-        }
-      ]
-    },
-
-    "Knee_Injury_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "Knee_Surgery_Encounter",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "knee_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "646457",
-          "display": "Acetaminophen 650 MG [Tylenol]"
-        }
-      ],
-      "direct_transition": "End_Knee_Injury_Encounter_II"
+      "direct_transition": "Knee_Injury_Prescribe_Opioid"
     },
 
     "Knee_Injury_Prescribe_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "Knee_Surgery_Encounter",
-      "assign_to_attribute": "opioid_prescription",
-      "reason": "knee_injury",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1310197",
-          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Knee_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Knee_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "End_Knee_Injury_Encounter_II"
     },
 
-    "End_Knee_Injury_Encounter_II" : 
+    "End_Knee_Injury_Encounter_II" :
     {
       "type" : "EncounterEnd",
       "direct_transition": "Knee_Injury_Recovery_Period"
@@ -2336,7 +2132,6 @@
 
     "Shoulder_Injury_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Encounter_For_Shoulder_Injury",
       "assign_to_attribute": "injury_careplan",
       "reason": "Torn_Rotator_Cuff",
       "codes": [
@@ -2400,8 +2195,12 @@
 
     "Shoulder_Surgery_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Shoulder_Surgery_Encounter",
       "reason": "Torn_Rotator_Cuff",
+      "duration": {
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
+      },
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2409,69 +2208,18 @@
           "display": "Surgical manipulation of shoulder joint"
         }
       ],
-      "direct_transition": "Shoulder_Surgery_Prescribe_Pain_Medication"
-    },
-
-    "Shoulder_Surgery_Prescribe_Pain_Medication": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 14,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Date",
-                "operator": "<",
-                "year": 1990
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "opioid_prescription",
-                "operator": "is not nil"
-              }
-            ]
-          },
-          "transition": "Shoulder_Surgery_Prescribe_Non_Opioid"
-        },
-        {
-          "transition": "Shoulder_Surgery_Prescribe_Opioid"
-        }
-      ]
-    },
-
-    "Shoulder_Surgery_Prescribe_Non_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "Shoulder_Surgery_Encounter",
-      "assign_to_attribute": "nonopioid_prescription",
-      "reason": "Torn_Rotator_Cuff",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "646457",
-          "display": "Acetaminophen 650 MG [Tylenol]"
-        }
-      ],
-      "direct_transition": "End_Shoulder_Surgery_Encounter"
+      "direct_transition": "Shoulder_Surgery_Prescribe_Opioid"
     },
 
     "Shoulder_Surgery_Prescribe_Opioid": {
-      "type": "MedicationOrder",
-      "target_encounter": "Shoulder_Surgery_Encounter",
-      "assign_to_attribute": "opioid_prescription",
-      "reason": "Torn_Rotator_Cuff",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1310197",
-          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
-        }
-      ],
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Shoulder_Surgery_Prescribe_Non_Opioid"
+    },
+
+    "Shoulder_Surgery_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
       "direct_transition": "End_Shoulder_Surgery_Encounter"
     },
 
@@ -2543,7 +2291,7 @@
         "more prescriptions are remaining.",
 
         "The attributes that this state looks for are: ",
-        "1. nonopioid_prescription ",
+        "1. otc_pain_reliever ",
         "2. antibiotic_prescription ",
 
         "Any other medications prescribed in this module and not assigned to one of those ",
@@ -2562,7 +2310,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "nonopioid_prescription",
+            "attribute": "otc_pain_reliever",
             "operator": "is not nil"
           },
           "transition": "End_Non_Opioid_Prescription"
@@ -2590,13 +2338,13 @@
 
     "End_Non_Opioid_Prescription": {
       "type": "MedicationEnd",
-      "referenced_by_attribute": "nonopioid_prescription",
+      "referenced_by_attribute": "otc_pain_reliever",
       "direct_transition": "Unset_Non_Opioid_Prescription_Attribute"
     },
 
     "Unset_Non_Opioid_Prescription_Attribute": {
       "type": "SetAttribute",
-      "attribute": "nonopioid_prescription",
+      "attribute": "otc_pain_reliever",
       "direct_transition": "End_Injury_Medications"
     },
 

@@ -131,6 +131,16 @@
     "Allergy_Panel": {
       "type": "CallSubmodule",
       "submodule": "allergies/allergy_panel",
+      "direct_transition": "Prescribe_OTC_Antihistamine"
+    },
+
+    "Prescribe_OTC_Antihistamine": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule will only prescribe an antihistamine if one is ",
+        "not already prescribed."
+      ],
+      "submodule": "medications/otc_antihistamine",
       "direct_transition": "General_Allergy_CarePlan"
     },
 

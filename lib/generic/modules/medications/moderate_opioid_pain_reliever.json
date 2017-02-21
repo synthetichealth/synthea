@@ -1,0 +1,183 @@
+{
+  "name": "Moderate Opioid Pain Reliever",
+  "remarks": [
+    "This submodule prescribes a moderate opioid pain reliever for acute pain. ",
+    "For example, after a major surgery or injury. Medications prescribed ",
+    "in this module are accurate for the current year of the simulation. ",
+    "If a patient is not eligible for an opioid pain reliever (for example, ",
+    "if they are already taking one, or if they are a young child), none is prescribed.",
+
+    "All medications prescribed in this module are assigned to the attribute ",
+    "'opioid_prescription'. It is the responsibility of the Opioid Addiction module ",
+    "to end this medication.",
+
+    "Availability dates for different drugs came from the FDA: ",
+    "http://www.accessdata.fda.gov/scripts/cder/daf/",
+
+    "Dosage information came from FDA reference sheets available at: ",
+    "https://www.drugs.com/dosage/",
+
+    "The following medications are prescribed in this module. Most opioids were invented ",
+    "during or prior to WWII, but did not become widely available until after the war:",
+    "1. Meperidine (Demerol)                      available after 1945      ",
+    "2. Hydrocodone/Acetaminophen (Vicondin)      available after 1943      ",
+    "3. Oxycodone/Acetaminophen (Percocet)        available after 1920 (est)"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "opioid_prescription",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 12,
+                "unit": "years"
+              }
+            ]
+          },
+          "transition": "Prescribe_Moderate_Opioid"
+        },
+        {
+          "transition": "Moderate_Opioid_Terminal"
+        }
+      ]
+    },
+
+    "Prescribe_Moderate_Opioid": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1920
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Moderate_Opioid_Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1945
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Oxycodone_Acetaminophen"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Meperidine"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Oxycodone_Acetaminophen"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Hydrocodone_Acetaminophen"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prescribe_Meperidine": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "opioid_prescription",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "861467",
+          "display": "Meperidine Hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 4,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 2,
+          "unit": "weeks"
+        }
+      },
+      "direct_transition": "Moderate_Opioid_Terminal"
+    },
+
+    "Prescribe_Oxycodone_Acetaminophen": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "opioid_prescription",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1049221",
+          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 6,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 2,
+          "unit": "weeks"
+        }
+      },
+      "direct_transition": "Moderate_Opioid_Terminal"
+    },
+
+    "Prescribe_Hydrocodone_Acetaminophen": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "opioid_prescription",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "857005",
+          "display": "Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet"
+        }
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 6,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 2,
+          "unit": "weeks"
+        }
+      },
+      "direct_transition": "Moderate_Opioid_Terminal"
+    },
+
+    "Moderate_Opioid_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
