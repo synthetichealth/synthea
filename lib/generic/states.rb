@@ -35,7 +35,7 @@ module Synthea
           @start_time ||= time
           begin
             exit = process(time, entity)
-          rescue => e
+          rescue
             puts "FATAL ERROR State: #{@name}"
             raise
           end

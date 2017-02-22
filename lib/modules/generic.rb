@@ -53,7 +53,7 @@ module Synthea
           entity[:generic][module_name] ||= Synthea::Generic::Context.new(module_name)
           begin
             entity[:generic][module_name].run(time, entity)
-          rescue => e
+          rescue
             puts "FATAL ERROR in Module: #{module_name}"
             raise
           end

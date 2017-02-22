@@ -174,43 +174,72 @@
         "quantity": 14,
         "unit": "days"
       },
+      "direct_transition": "End_Ear_Infection_Medications"
+    },
+
+    "End_Ear_Infection_Medications": {
+      "type": "Simple",
+      "remarks": [
+        "For any of the possible medications that could be prescribed in this module ",
+        "this state cycles through the attributes and ends the medications until no ",
+        "more prescriptions are remaining.",
+
+        "The attributes that this state looks for are: ",
+        "1. otc_pain_reliever ",
+        "2. antibiotic_prescription ",
+
+        "Any other medications prescribed in this module and not assigned to one of those ",
+        "three attributes must be ended manually elsewhere in the module, the special ",
+        "exception being 'opioid_prescription' (handled by the Opioid Addiction module)."
+      ],
       "conditional_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "ear_infection_antibiotic",
+            "attribute": "antibiotic_prescription",
             "operator": "is not nil"
           },
-          "transition": "Ear_Infection_Antibiotic_End"
+          "transition": "End_Antibiotic_Prescription"
         },
         {
-          "transition": "Ear_Infection_OTC_Painkiller_End"
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "otc_pain_reliever",
+            "operator": "is not nil"
+          },
+          "transition": "End_Non_Opioid_Prescription"
+        },
+        {
+          "remarks": [
+            "Fallback transition after all medications are ended"
+          ],
+          "transition": "Next_Wellness_Encounter"
         }
       ]
     },
 
-    "Ear_Infection_Antibiotic_End": {
+    "End_Antibiotic_Prescription": {
       "type": "MedicationEnd",
-      "referenced_by_attribute" : "antibiotic_prescription",
-      "direct_transition": "Unset_Antibiotic_Attribute"
+      "referenced_by_attribute": "antibiotic_prescription",
+      "direct_transition": "Unset_Antibiotic_Prescription_Attribute"
     },
 
-    "Unset_Antibiotic_Attribute": {
+    "Unset_Antibiotic_Prescription_Attribute": {
       "type": "SetAttribute",
       "attribute": "antibiotic_prescription",
-      "direct_transition": "Ear_Infection_OTC_Painkiller_End"
+      "direct_transition": "End_Ear_Infection_Medications"
     },
 
-    "Ear_Infection_OTC_Painkiller_End": {
+    "End_Non_Opioid_Prescription": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "otc_pain_reliever",
-      "direct_transition": "Unset_Pain_Reliever_Attribute"
+      "direct_transition": "Unset_Non_Opioid_Prescription_Attribute"
     },
 
-    "Unset_Pain_Reliever_Attribute": {
+    "Unset_Non_Opioid_Prescription_Attribute": {
       "type": "SetAttribute",
       "attribute": "otc_pain_reliever",
-      "direct_transition": "Next_Wellness_Encounter"
+      "direct_transition": "End_Ear_Infection_Medications"
     },
 
     "Next_Wellness_Encounter": {
