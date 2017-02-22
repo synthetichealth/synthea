@@ -76,7 +76,7 @@ class FhirTest < Minitest::Test
     person = entry[0].resource
     name = person.name[0]
     assert_equal(name.given[0], "foo123")
-    assert_equal(name.family[0], "bar456")
+    assert_equal(name.family, "bar456")
     assert_equal("official",name.use)
     assert_equal('female',person.gender)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time),person.birthDate)

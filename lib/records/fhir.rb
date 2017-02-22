@@ -42,7 +42,7 @@ module Synthea
                                                'value' => entity.record_synthea.patient_info[:uuid]
                                              }],
                                              'name' => [{ 'given' => [entity[:name_first]],
-                                                          'family' => [entity[:name_last]],
+                                                          'family' => entity[:name_last],
                                                           'use' => 'official' }],
                                              'telecom' => [{ 'system' => 'phone', 'use' => 'home', 'value' => entity[:telephone],
                                                              'extension' => [{ 'url' => "#{SHR_EXT}okayToLeaveMessage", 'valueBoolean' => true }] }],
