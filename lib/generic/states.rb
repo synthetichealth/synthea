@@ -33,7 +33,12 @@ module Synthea
         def run(time, entity)
           @entered ||= time
           @start_time ||= time
-          exit = process(time, entity)
+          begin
+            exit = process(time, entity)
+          rescue => e
+            puts "FATAL ERROR State: #{@name}"
+            raise
+          end
           if exit
             if is_a?(Delay) || (is_a?(Procedure) && @duration)
               # Special handling for Delay, which may expire between run cycles

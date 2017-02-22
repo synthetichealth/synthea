@@ -51,7 +51,12 @@ module Synthea
           # The entity is then run through each context until the entity dies or the
           # simulation's end time is reached.
           entity[:generic][module_name] ||= Synthea::Generic::Context.new(module_name)
-          entity[:generic][module_name].run(time, entity)
+          begin
+            entity[:generic][module_name].run(time, entity)
+          rescue => e
+            puts "FATAL ERROR in Module: #{module_name}"
+            raise
+          end
         end
       end
 
