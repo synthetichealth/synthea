@@ -105,7 +105,9 @@ module Synthea
         end
 
         puts 'Outputting Metabolic Syndrome Results to output/prevalences.csv'
-        @prevalence_file = File.open('output/prevalences.csv', 'w:UTF-8')
+        folder = Synthea::Config.exporter.location
+        FileUtils.mkdir_p folder unless File.exist? folder
+        @prevalence_file = File.open(File.join(folder, 'prevalences.csv'), 'w:UTF-8')
         @prevalence_file.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
         metabolic_conditions = %w(Hypertension Prediabetes Diabetes)
         metabolic_conditions.each do |condition|
