@@ -4,6 +4,7 @@ AllCops:
     - 'test/**/*'
     - 'lib/world/MA_geo.rb'
     - 'lib/records/lookup.rb'
+    - 'lib/records/shr_mapping.rb' # ignored because generated code
     - 'lib/tasks/*'
     - 'vendor/**/*'
 
@@ -16,4 +17,6 @@ Metrics:
 Style/GuardClause:
   Enabled: false
 Style/HashSyntax:
+  Enabled: false
+EndOfLine:
   Enabled: false
