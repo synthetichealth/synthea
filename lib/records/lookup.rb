@@ -5,6 +5,15 @@ module Synthea
 
   #Store all code lookups here:
 
+  CODE_SYSTEM_LOOKUP = {
+    'LOINC' => { url: 'http://loinc.org' },
+    'SNOMED-CT' => { url: 'http://snomed.info/sct' },
+    'RxNorm' => { url: 'http://www.nlm.nih.gov/research/umls/rxnorm' },
+    'CVX' => { url: 'http://hl7.org/fhir/sid/cvx' },
+    'NUBC' => { url: 'http://www.nubc.org/patient-discharge' },
+    'UMLS' => { url: 'http://uts.nlm.nih.gov/metathesaurus' }
+  }
+
   OBS_LOOKUP = {
     height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
     weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},

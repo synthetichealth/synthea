@@ -249,6 +249,11 @@ module Synthea
                                                'encounter' => { 'reference' => encounter.fullUrl.to_s },
                                                'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'))
 
+        if Synthea::Config.exporter.fhir.use_shr_extensions && SHR_MAPPING['http://loinc.org'][obs_data[:code]]
+          # use the SHR profile
+          entry.resource.meta = FHIR::Meta.new('profile' => [SHR_MAPPING['http://loinc.org'][obs_data[:code]][:url]])
+        end
+
         if obs_data[:value_type] == 'condition'
           condition_data = COND_LOOKUP[observation['value']]
           entry.resource.valueCodeableConcept = FHIR::CodeableConcept.new('coding' => [{
