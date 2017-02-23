@@ -98,7 +98,7 @@ module Synthea
         patient_resource.name.first.suffix << entity[:name_suffix] if entity[:name_suffix]
         if entity[:name_maiden]
           patient_resource.name << FHIR::HumanName.new('given' => [entity[:name_first]],
-                                                       'family' => [entity[:name_maiden]], 'use' => 'maiden')
+                                                       'family' => entity[:name_maiden], 'use' => 'maiden')
         end
         # add geospatial information to address
         patient_resource.address.first.extension = [FHIR::Extension.new('url' => 'http://hl7.org/fhir/StructureDefinition/geolocation',
