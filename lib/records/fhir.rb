@@ -243,7 +243,8 @@ module Synthea
         entry.resource = FHIR::Observation.new('id' => resource_id,
                                                'status' => 'final',
                                                'code' => {
-                                                 'coding' => [{ 'system' => 'http://loinc.org', 'code' => obs_data[:code], 'display' => obs_data[:description] }]
+                                                 'coding' => [{ 'system' => 'http://loinc.org', 'code' => obs_data[:code], 'display' => obs_data[:description] }],
+                                                 'text' => obs_data[:description]
                                                },
                                                'subject' => { 'reference' => patient.fullUrl.to_s },
                                                'encounter' => { 'reference' => encounter.fullUrl.to_s },
