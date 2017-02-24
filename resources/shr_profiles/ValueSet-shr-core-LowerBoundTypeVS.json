@@ -1,0 +1,52 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-LowerBoundTypeVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR LowerBoundTypeVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-LowerBoundTypeVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.LowerBoundTypeVS"
+    }
+  ],
+  "name": "SHR LowerBoundTypeVS ValueSet",
+  "title": "SHR LowerBoundTypeVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.106Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/ValueSet/quantity-comparator",
+        "concept": [
+          {
+            "code": ">",
+            "display": "The actual value is greater than the given value."
+          },
+          {
+            "code": ">=",
+            "display": "The actual value is greater than or equal to the given value."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-medication-ReasonMedicationNotUsedVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ReasonMedicationNotUsedVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-medication-ReasonMedicationNotUsedVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.medication.ReasonMedicationNotUsedVS"
+    }
+  ],
+  "name": "SHR ReasonMedicationNotUsedVS ValueSet",
+  "title": "SHR ReasonMedicationNotUsedVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.108Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-medication-ReasonMedicationNotUsedVS",
+        "concept": [
+          {
+            "code": "not_indicated",
+            "display": "Not indicated"
+          },
+          {
+            "code": "ineffective",
+            "display": "Medication or similiar class of medications have been ineffective on the patient"
+          },
+          {
+            "code": "nonadherence",
+            "display": "Patient not expected to adhere to the medication"
+          },
+          {
+            "code": "side_effect",
+            "display": "Patient has experienced side effects to this or similar medication"
+          },
+          {
+            "code": "allergy_intolerance",
+            "display": "Patient has an allergy or intolerance to this or similar medications"
+          },
+          {
+            "code": "apprehension",
+            "display": "Subject is worried about taking medication due to potential side effects, drug interactions, etc."
+          },
+          {
+            "code": "affordability",
+            "display": "Medication is unaffordable for the patient"
+          },
+          {
+            "code": "objection",
+            "display": "Patient or patient representative objects to medication"
+          },
+          {
+            "code": "asleep",
+            "display": "Patient was asleep when the dose was supposed to have been given"
+          },
+          {
+            "code": "unsuccessful",
+            "display": "Administration attempt unsuccessful (patient vomited dose, could not find vein, etc.)"
+          }
+        ]
+      }
+    ]
+  }
+}

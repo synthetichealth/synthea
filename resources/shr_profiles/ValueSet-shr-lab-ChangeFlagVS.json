@@ -1,0 +1,64 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-lab-ChangeFlagVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ChangeFlagVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-ChangeFlagVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.lab.ChangeFlagVS"
+    }
+  ],
+  "name": "SHR ChangeFlagVS ValueSet",
+  "title": "SHR ChangeFlagVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.108Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "concept": [
+          {
+            "code": "C2346711",
+            "display": "About the same"
+          },
+          {
+            "code": "C0332272",
+            "display": "Better"
+          },
+          {
+            "code": "C1457868",
+            "display": "Worse"
+          },
+          {
+            "code": "C3854148",
+            "display": "Significant change up"
+          },
+          {
+            "code": "C3854147",
+            "display": "Significant change down"
+          }
+        ]
+      }
+    ]
+  }
+}

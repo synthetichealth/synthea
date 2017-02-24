@@ -1,0 +1,65 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-vital-HeartRateQualifierVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR HeartRateQualifierVS ValueSet</b></p>\n<p>Details of a heart rate measurement.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-HeartRateQualifierVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.vital.HeartRateQualifierVS"
+    }
+  ],
+  "name": "SHR HeartRateQualifierVS ValueSet",
+  "title": "SHR HeartRateQualifierVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.109Z",
+  "description": "Details of a heart rate measurement.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-vital-HeartRateQualifierVS",
+        "concept": [
+          {
+            "code": "rest",
+            "display": "resting or pre-exercise"
+          },
+          {
+            "code": "post_exercise",
+            "display": "post exercise"
+          },
+          {
+            "code": "apgar_1",
+            "display": "1 minute Apgar heart rate"
+          },
+          {
+            "code": "apgar_5",
+            "display": "5 minute Apgar heart rate"
+          },
+          {
+            "code": "apgar_10",
+            "display": "10 minute Apgar heart rate"
+          }
+        ]
+      }
+    ]
+  }
+}

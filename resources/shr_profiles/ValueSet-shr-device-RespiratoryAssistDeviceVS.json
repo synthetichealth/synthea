@@ -1,0 +1,64 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-device-RespiratoryAssistDeviceVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR RespiratoryAssistDeviceVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-device-RespiratoryAssistDeviceVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.device.RespiratoryAssistDeviceVS"
+    }
+  ],
+  "name": "SHR RespiratoryAssistDeviceVS ValueSet",
+  "title": "SHR RespiratoryAssistDeviceVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.107Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-device-RespiratoryAssistDeviceVS",
+        "concept": [
+          {
+            "code": "apnea",
+            "display": "Apnea monitor"
+          },
+          {
+            "code": "vent",
+            "display": "Ventilator"
+          },
+          {
+            "code": "mand_vent",
+            "display": "Intermittent mandatory ventilator"
+          },
+          {
+            "code": "neonat_vent",
+            "display": "Neonatal ventilator"
+          },
+          {
+            "code": "vent_synch",
+            "display": "Synchronized intermittent mandatory ventilator"
+          }
+        ]
+      }
+    ]
+  }
+}

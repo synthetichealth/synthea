@@ -1,0 +1,74 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-observation-ExposureReasonVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ExposureReasonVS CodeSystem</b></p>\n<p>The reason that an exposure occurred.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-observation-ExposureReasonVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.observation.ExposureReasonVS"
+  },
+  "name": "SHR ExposureReasonVS CodeSystem",
+  "title": "SHR ExposureReasonVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.101Z",
+  "description": "The reason that an exposure occurred.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 7,
+  "concept": [
+    {
+      "code": "voluntary",
+      "display": "The subject voluntarily subjects him or herself to the exposure, for example, smoking or using a drug recreationally.",
+      "definition": "The subject voluntarily subjects him or herself to the exposure, for example, smoking or using a drug recreationally."
+    },
+    {
+      "code": "addiction",
+      "display": "The subject is addicted to the substance.",
+      "definition": "The subject is addicted to the substance."
+    },
+    {
+      "code": "self_prescribed",
+      "display": "The subject takes a non-prescription substance to address health issues or for prevention, e.g. herbal remedy for depression.",
+      "definition": "The subject takes a non-prescription substance to address health issues or for prevention, e.g. herbal remedy for depression."
+    },
+    {
+      "code": "occupational",
+      "display": "Exposure in a workplace setting.",
+      "definition": "Exposure in a workplace setting."
+    },
+    {
+      "code": "home",
+      "display": "Exposure in home setting.",
+      "definition": "Exposure in home setting."
+    },
+    {
+      "code": "passive",
+      "display": "The exposure occurred or occurs involuntarily, e.g., exposure to second-hand smoke.",
+      "definition": "The exposure occurred or occurs involuntarily, e.g., exposure to second-hand smoke."
+    },
+    {
+      "code": "accidental",
+      "display": "The exposure as a result of an accident.",
+      "definition": "The exposure as a result of an accident."
+    }
+  ]
+}

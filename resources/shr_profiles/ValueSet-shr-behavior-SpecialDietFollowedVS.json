@@ -1,0 +1,68 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-behavior-SpecialDietFollowedVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR SpecialDietFollowedVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SpecialDietFollowedVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.behavior.SpecialDietFollowedVS"
+    }
+  ],
+  "name": "SHR SpecialDietFollowedVS ValueSet",
+  "title": "SHR SpecialDietFollowedVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.105Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-behavior-SpecialDietFollowedVS",
+        "concept": [
+          {
+            "code": "vegetarian",
+            "display": "Vegetarian diet"
+          },
+          {
+            "code": "paleo",
+            "display": "Paleo diet"
+          },
+          {
+            "code": "kosher",
+            "display": "Kosher diet"
+          },
+          {
+            "code": "halal",
+            "display": "Halal diet"
+          },
+          {
+            "code": "gluten_free",
+            "display": "Gluten free diet"
+          },
+          {
+            "code": "low_salt",
+            "display": "Low salt diet"
+          }
+        ]
+      }
+    ]
+  }
+}

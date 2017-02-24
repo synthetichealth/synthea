@@ -1,0 +1,79 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-lifehistory-MilitaryServiceEraVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR MilitaryServiceEraVS CodeSystem</b></p>\n<p>Values were taken from Final HMIS Data Standards March 2010 (Homeless Management Information System), field 4.15E Veteran’s Information. See: https://www.onecpd.info/resources/documents/FinalHMISDataStandards_March2010.pdf.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-lifehistory-MilitaryServiceEraVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.lifehistory.MilitaryServiceEraVS"
+  },
+  "name": "SHR MilitaryServiceEraVS CodeSystem",
+  "title": "SHR MilitaryServiceEraVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.101Z",
+  "description": "Values were taken from Final HMIS Data Standards March 2010 (Homeless Management Information System), field 4.15E Veteran’s Information. See: https://www.onecpd.info/resources/documents/FinalHMISDataStandards_March2010.pdf.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 8,
+  "concept": [
+    {
+      "code": "post_9_11_era",
+      "display": "Post September 11, 2001 to Present",
+      "definition": "Post September 11, 2001 to Present"
+    },
+    {
+      "code": "gulf_era",
+      "display": "Persian Gulf Era (August 1991 - September 10, 2001)",
+      "definition": "Persian Gulf Era (August 1991 - September 10, 2001)"
+    },
+    {
+      "code": "post_vietnam_era",
+      "display": "Post-Vietnam (May 1975 - July 1991)",
+      "definition": "Post-Vietnam (May 1975 - July 1991)"
+    },
+    {
+      "code": "vietnam_era",
+      "display": "Vietnam Era (August 1964 - April 1975)",
+      "definition": "Vietnam Era (August 1964 - April 1975)"
+    },
+    {
+      "code": "post_korean_era",
+      "display": "Between Korean and Vietnam War (February 1955 - July 1964)",
+      "definition": "Between Korean and Vietnam War (February 1955 - July 1964)"
+    },
+    {
+      "code": "korean_era",
+      "display": "Korean War (June 1950 - January 1955)",
+      "definition": "Korean War (June 1950 - January 1955)"
+    },
+    {
+      "code": "post_wwII_era",
+      "display": "Between WWII and Korean War (August 1947 - May 1950)",
+      "definition": "Between WWII and Korean War (August 1947 - May 1950)"
+    },
+    {
+      "code": "wwII_era",
+      "display": "World War II (September 1940 - July 1947)",
+      "definition": "World War II (September 1940 - July 1947)"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-encounter-ReferralSourceTypeVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ReferralSourceTypeVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-encounter-ReferralSourceTypeVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.encounter.ReferralSourceTypeVS"
+  },
+  "name": "SHR ReferralSourceTypeVS CodeSystem",
+  "title": "SHR ReferralSourceTypeVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.100Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 9,
+  "concept": [
+    {
+      "code": "self",
+      "display": "Self, or personal associated, such as family or friend",
+      "definition": "Self, or personal associated, such as family or friend"
+    },
+    {
+      "code": "pcp",
+      "display": "General Practitioner or Primary Care Physician",
+      "definition": "General Practitioner or Primary Care Physician"
+    },
+    {
+      "code": "specialist",
+      "display": "Provider other than Primary Care Physician",
+      "definition": "Provider other than Primary Care Physician"
+    },
+    {
+      "code": "fed",
+      "display": "Federal agency",
+      "definition": "Federal agency"
+    },
+    {
+      "code": "cps",
+      "display": "Child Protective Service",
+      "definition": "Child Protective Service"
+    },
+    {
+      "code": "court",
+      "display": "Criminal justice",
+      "definition": "Criminal justice"
+    },
+    {
+      "code": "comm",
+      "display": "Community agency",
+      "definition": "Community agency"
+    },
+    {
+      "code": "hp",
+      "display": "Health Plan",
+      "definition": "Health Plan"
+    },
+    {
+      "code": "employer",
+      "display": "Employer",
+      "definition": "Employer"
+    }
+  ]
+}

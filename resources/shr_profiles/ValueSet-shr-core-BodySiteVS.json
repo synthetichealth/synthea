@@ -1,0 +1,70 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-BodySiteVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR BodySiteVS ValueSet</b></p>\n<p>Location on or in the body.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.BodySiteVS"
+    }
+  ],
+  "name": "SHR BodySiteVS ValueSet",
+  "title": "SHR BodySiteVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.106Z",
+  "description": "Location on or in the body.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "filter": [
+          {
+            "property": "concept",
+            "op": "is-a",
+            "value": "T023"
+          }
+        ]
+      },
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "filter": [
+          {
+            "property": "concept",
+            "op": "is-a",
+            "value": "T029"
+          }
+        ]
+      },
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "filter": [
+          {
+            "property": "concept",
+            "op": "is-a",
+            "value": "T030"
+          }
+        ]
+      }
+    ]
+  }
+}

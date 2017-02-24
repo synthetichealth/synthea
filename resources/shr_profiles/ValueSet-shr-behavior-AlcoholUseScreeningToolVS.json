@@ -1,0 +1,56 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-behavior-AlcoholUseScreeningToolVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR AlcoholUseScreeningToolVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-AlcoholUseScreeningToolVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.behavior.AlcoholUseScreeningToolVS"
+    }
+  ],
+  "name": "SHR AlcoholUseScreeningToolVS ValueSet",
+  "title": "SHR AlcoholUseScreeningToolVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.104Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-behavior-AlcoholUseScreeningToolVS",
+        "concept": [
+          {
+            "code": "audit",
+            "display": "AUDIT"
+          },
+          {
+            "code": "audit_c",
+            "display": "AUDIT-C"
+          },
+          {
+            "code": "crafft",
+            "display": "CRAFFT"
+          }
+        ]
+      }
+    ]
+  }
+}

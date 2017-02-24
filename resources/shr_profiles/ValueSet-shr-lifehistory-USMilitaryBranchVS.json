@@ -1,0 +1,72 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-lifehistory-USMilitaryBranchVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR USMilitaryBranchVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-USMilitaryBranchVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.lifehistory.USMilitaryBranchVS"
+    }
+  ],
+  "name": "SHR USMilitaryBranchVS ValueSet",
+  "title": "SHR USMilitaryBranchVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.108Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-lifehistory-USMilitaryBranchVS",
+        "concept": [
+          {
+            "code": "usa",
+            "display": "US Army"
+          },
+          {
+            "code": "usn",
+            "display": "US Navy"
+          },
+          {
+            "code": "usaf",
+            "display": "US Air Force"
+          },
+          {
+            "code": "usmc",
+            "display": "US Marine Corps"
+          },
+          {
+            "code": "uscg",
+            "display": "US Coast Guard"
+          },
+          {
+            "code": "usphc",
+            "display": "US Public Health Service"
+          },
+          {
+            "code": "noaa",
+            "display": "National Oceanic and Atmospheric Administration"
+          }
+        ]
+      }
+    ]
+  }
+}

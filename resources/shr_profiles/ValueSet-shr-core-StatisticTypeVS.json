@@ -1,0 +1,69 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-StatisticTypeVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR StatisticTypeVS ValueSet</b></p>\n<p>How to interpret a reported quantity, i.e, whether the quantity is an maximum, minimum, mean, median, etc.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-StatisticTypeVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.StatisticTypeVS"
+    }
+  ],
+  "name": "SHR StatisticTypeVS ValueSet",
+  "title": "SHR StatisticTypeVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.106Z",
+  "description": "How to interpret a reported quantity, i.e, whether the quantity is an maximum, minimum, mean, median, etc.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "concept": [
+          {
+            "code": "C1524031",
+            "display": "Desired or observed minimum"
+          },
+          {
+            "code": "C0806909",
+            "display": "Desired or observed maximum"
+          },
+          {
+            "code": "C0444504",
+            "display": "Mean value"
+          },
+          {
+            "code": "C0876920",
+            "display": "Median value"
+          },
+          {
+            "code": "C0750480",
+            "display": "Count"
+          },
+          {
+            "code": "C1514721",
+            "display": "Range, the difference between lowest and highest numerical values"
+          }
+        ]
+      }
+    ]
+  }
+}

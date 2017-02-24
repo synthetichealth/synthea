@@ -1,0 +1,88 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-sex-ContraceptiveNotUsedReasonVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ContraceptiveNotUsedReasonVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-sex-ContraceptiveNotUsedReasonVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.sex.ContraceptiveNotUsedReasonVS"
+  },
+  "name": "SHR ContraceptiveNotUsedReasonVS CodeSystem",
+  "title": "SHR ContraceptiveNotUsedReasonVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.102Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 10,
+  "concept": [
+    {
+      "code": "abstinent",
+      "display": "Abstains from sexual intercourse.",
+      "definition": "Abstains from sexual intercourse."
+    },
+    {
+      "code": "new",
+      "display": "Newly sexually active, has not yet sought birth control.",
+      "definition": "Newly sexually active, has not yet sought birth control."
+    },
+    {
+      "code": "seeking",
+      "display": "Seeking to become pregnant or accepting of the prospect of pregnancy.",
+      "definition": "Seeking to become pregnant or accepting of the prospect of pregnancy."
+    },
+    {
+      "code": "sterility",
+      "display": "Either partner is sterile (other than being sterilized for contraceptive purposes, which counts as a method of contraception).",
+      "definition": "Either partner is sterile (other than being sterilized for contraceptive purposes, which counts as a method of contraception)."
+    },
+    {
+      "code": "same_sex",
+      "display": "Partner of same sex.",
+      "definition": "Partner of same sex."
+    },
+    {
+      "code": "pregnant",
+      "display": "Partner is pregnant.",
+      "definition": "Partner is pregnant."
+    },
+    {
+      "code": "not_at_risk",
+      "display": "Not at risk of unintended pregnancy, for example, post-menopausal.",
+      "definition": "Not at risk of unintended pregnancy, for example, post-menopausal."
+    },
+    {
+      "code": "decline",
+      "display": "Declines to use any method of birth control.",
+      "definition": "Declines to use any method of birth control."
+    },
+    {
+      "code": "unavailable",
+      "display": "Difficulty obtaining contraceptive, for reasons of cost or access.",
+      "definition": "Difficulty obtaining contraceptive, for reasons of cost or access."
+    },
+    {
+      "code": "inconvenient",
+      "display": "Using contraceptive is inconvenient.",
+      "definition": "Using contraceptive is inconvenient."
+    }
+  ]
+}

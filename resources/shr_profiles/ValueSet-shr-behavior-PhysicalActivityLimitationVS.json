@@ -1,0 +1,92 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-behavior-PhysicalActivityLimitationVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR PhysicalActivityLimitationVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-PhysicalActivityLimitationVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.behavior.PhysicalActivityLimitationVS"
+    }
+  ],
+  "name": "SHR PhysicalActivityLimitationVS ValueSet",
+  "title": "SHR PhysicalActivityLimitationVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.105Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-behavior-PhysicalActivityLimitationVS",
+        "concept": [
+          {
+            "code": "conditions",
+            "display": "Medical Problems or Conditions"
+          },
+          {
+            "code": "disability",
+            "display": "Disability"
+          },
+          {
+            "code": "frail",
+            "display": "Frailty"
+          },
+          {
+            "code": "pain",
+            "display": "Pain or injury"
+          },
+          {
+            "code": "unaffordable",
+            "display": "Too expensive"
+          },
+          {
+            "code": "no_time",
+            "display": "Not enough time"
+          },
+          {
+            "code": "lack_knowledge",
+            "display": "Not sure how"
+          },
+          {
+            "code": "unmotivated",
+            "display": "Low motivation"
+          },
+          {
+            "code": "no_partner",
+            "display": "Does not have partner"
+          },
+          {
+            "code": "no_place",
+            "display": "No place to exercise"
+          },
+          {
+            "code": "worried",
+            "display": "Worried about starting exercise program"
+          },
+          {
+            "code": "embarrassed",
+            "display": "Too self-conscious"
+          }
+        ]
+      }
+    ]
+  }
+}

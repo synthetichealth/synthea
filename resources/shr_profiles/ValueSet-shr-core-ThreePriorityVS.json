@@ -1,0 +1,56 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-ThreePriorityVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ThreePriorityVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ThreePriorityVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.ThreePriorityVS"
+    }
+  ],
+  "name": "SHR ThreePriorityVS ValueSet",
+  "title": "SHR ThreePriorityVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.106Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-core-ThreePriorityVS",
+        "concept": [
+          {
+            "code": "primary",
+            "display": "The first or primary item or alterative in a preference list."
+          },
+          {
+            "code": "secondary",
+            "display": "The second or backup preference."
+          },
+          {
+            "code": "third_or_lower",
+            "display": "An alternative to primary and secondard choices in a preference list."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-environment-CoinhabitantVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR CoinhabitantVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-environment-CoinhabitantVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.environment.CoinhabitantVS"
+  },
+  "name": "SHR CoinhabitantVS CodeSystem",
+  "title": "SHR CoinhabitantVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.101Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 7,
+  "concept": [
+    {
+      "code": "partner",
+      "display": "Spouse or partner",
+      "definition": "Spouse or partner"
+    },
+    {
+      "code": "parents_birth",
+      "display": "Birth parents",
+      "definition": "Birth parents"
+    },
+    {
+      "code": "parents_adoptive",
+      "display": "Adoptive parents",
+      "definition": "Adoptive parents"
+    },
+    {
+      "code": "foster",
+      "display": "Foster family",
+      "definition": "Foster family"
+    },
+    {
+      "code": "child",
+      "display": "Child or children",
+      "definition": "Child or children"
+    },
+    {
+      "code": "relatives",
+      "display": "other relatives",
+      "definition": "other relatives"
+    },
+    {
+      "code": "non_relatives",
+      "display": "non-relatives",
+      "definition": "non-relatives"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-demographics-TelephoneTypeVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR TelephoneTypeVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-demographics-TelephoneTypeVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.demographics.TelephoneTypeVS"
+  },
+  "name": "SHR TelephoneTypeVS CodeSystem",
+  "title": "SHR TelephoneTypeVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.100Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 2,
+  "concept": [
+    {
+      "code": "mobile",
+      "display": "Mobile phone (assumed text capable)",
+      "definition": "Mobile phone (assumed text capable)"
+    },
+    {
+      "code": "land",
+      "display": "Landline telephone",
+      "definition": "Landline telephone"
+    }
+  ]
+}

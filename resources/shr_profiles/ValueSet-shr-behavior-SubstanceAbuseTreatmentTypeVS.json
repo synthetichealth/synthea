@@ -1,0 +1,88 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-behavior-SubstanceAbuseTreatmentTypeVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR SubstanceAbuseTreatmentTypeVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SubstanceAbuseTreatmentTypeVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.behavior.SubstanceAbuseTreatmentTypeVS"
+    }
+  ],
+  "name": "SHR SubstanceAbuseTreatmentTypeVS ValueSet",
+  "title": "SHR SubstanceAbuseTreatmentTypeVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.104Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-behavior-SubstanceAbuseTreatmentTypeVS",
+        "concept": [
+          {
+            "code": "day_treatment",
+            "display": "Day Treatment Services"
+          },
+          {
+            "code": "inpatient",
+            "display": "Inpatient/Hospital"
+          },
+          {
+            "code": "inpatient_detox",
+            "display": "Hospital Inpatient Detoxification Services"
+          },
+          {
+            "code": "ambulatory",
+            "display": "Outpatient services"
+          },
+          {
+            "code": "ambulatory_detox",
+            "display": "Ambulatory Detoxification Services"
+          },
+          {
+            "code": "outreach",
+            "display": "Outreach Services"
+          },
+          {
+            "code": "intensive_outpatient",
+            "display": "Intensive Outpatient Services"
+          },
+          {
+            "code": "methadone_treatment",
+            "display": "Methadone Treatment Services"
+          },
+          {
+            "code": "residental_rehab",
+            "display": "Residential/Rehabilitation Services"
+          },
+          {
+            "code": "after_care",
+            "display": "After Care Services"
+          },
+          {
+            "code": "recovery_support",
+            "display": "Recovery Support Services"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-actor-LanguageQualifierVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR LanguageQualifierVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-actor-LanguageQualifierVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.actor.LanguageQualifierVS"
+  },
+  "name": "SHR LanguageQualifierVS CodeSystem",
+  "title": "SHR LanguageQualifierVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.099Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 8,
+  "concept": [
+    {
+      "code": "preferred_spoken",
+      "display": "Preferred language",
+      "definition": "Preferred language"
+    },
+    {
+      "code": "secondary_spoken",
+      "display": "Secondary language",
+      "definition": "Secondary language"
+    },
+    {
+      "code": "apraxia",
+      "display": "Difficulty speaking due to motor disorder",
+      "definition": "Difficulty speaking due to motor disorder"
+    },
+    {
+      "code": "aphasia",
+      "display": "Difficulty in speaking, listening, reading, and writing",
+      "definition": "Difficulty in speaking, listening, reading, and writing"
+    },
+    {
+      "code": "signs",
+      "display": "Uses sign language",
+      "definition": "Uses sign language"
+    },
+    {
+      "code": "braille",
+      "display": "Reads using braille",
+      "definition": "Reads using braille"
+    },
+    {
+      "code": "lipreads",
+      "display": "Uses lipreading (speechreading)",
+      "definition": "Uses lipreading (speechreading)"
+    },
+    {
+      "code": "aac",
+      "display": "Uses augmentative and alternative communication",
+      "definition": "Uses augmentative and alternative communication"
+    }
+  ]
+}

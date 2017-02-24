@@ -1,0 +1,53 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-behavior-ReligiousPracticeStatusVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ReligiousPracticeStatusVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-behavior-ReligiousPracticeStatusVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.behavior.ReligiousPracticeStatusVS"
+  },
+  "name": "SHR ReligiousPracticeStatusVS CodeSystem",
+  "title": "SHR ReligiousPracticeStatusVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.099Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 3,
+  "concept": [
+    {
+      "code": "practicing",
+      "display": "Active or observant, currently practicing the tenants of the religion",
+      "definition": "Active or observant, currently practicing the tenants of the religion"
+    },
+    {
+      "code": "occasional",
+      "display": "Occasionally practicing, for example, on special holidays or occasions",
+      "definition": "Occasionally practicing, for example, on special holidays or occasions"
+    },
+    {
+      "code": "non_practicing",
+      "display": "Not currently practicing",
+      "definition": "Not currently practicing"
+    }
+  ]
+}

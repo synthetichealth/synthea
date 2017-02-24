@@ -1,0 +1,50 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-LateralityVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR LateralityVS ValueSet</b></p>\n<p>Anatomical location or specimen further detailing the side(s) of interest.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-LateralityVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.LateralityVS"
+    }
+  ],
+  "name": "SHR LateralityVS ValueSet",
+  "title": "SHR LateralityVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.106Z",
+  "description": "Anatomical location or specimen further detailing the side(s) of interest.",
+  "compose": {
+    "include": [
+      {
+        "system": "https://evs.nci.nih.gov/ftp1/CDISC/SDTM/",
+        "filter": [
+          {
+            "property": "concept",
+            "op": "is-a",
+            "value": "C99073"
+          }
+        ]
+      }
+    ]
+  }
+}

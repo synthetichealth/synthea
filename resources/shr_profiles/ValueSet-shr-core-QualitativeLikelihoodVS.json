@@ -1,0 +1,69 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-QualitativeLikelihoodVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR QualitativeLikelihoodVS ValueSet</b></p>\n<p>The likelihood of an event or state, expressed qualitatively. Qualitative likelihoods are associated with judgments and assessments. Values are based on US Intelligence Community&#039;s standard language used to describe judgements of likelihood.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeLikelihoodVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.QualitativeLikelihoodVS"
+    }
+  ],
+  "name": "SHR QualitativeLikelihoodVS ValueSet",
+  "title": "SHR QualitativeLikelihoodVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.106Z",
+  "description": "The likelihood of an event or state, expressed qualitatively. Qualitative likelihoods are associated with judgments and assessments. Values are based on US Intelligence Community's standard language used to describe judgements of likelihood.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-core-QualitativeLikelihoodVS",
+        "concept": [
+          {
+            "code": "definitely",
+            "display": "With certainty or near-complete certainty, an event that definitely has or almost certainly will happen"
+          },
+          {
+            "code": "very_likely",
+            "display": "Very likely, highly probable, e.g., an event with more than 80% but less than 100% likelihood"
+          },
+          {
+            "code": "likely",
+            "display": "Likely or probable, e.g., an event with 60% to 80% likelihood"
+          },
+          {
+            "code": "even_chance",
+            "display": "Roughly equal chance or even odds of happening, between 40% and 60% probability"
+          },
+          {
+            "code": "unlikely",
+            "display": "Not likely or improbable, e.g., an event with 20% to 40% likelihood"
+          },
+          {
+            "code": "very_unlikely",
+            "display": "Very unlikely, highly improbable, e.g., an event with less than 20% but non-zero likelihood"
+          }
+        ]
+      }
+    ]
+  }
+}
