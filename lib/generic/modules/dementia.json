@@ -203,7 +203,7 @@
     },
     "Diagnosis_MMSE_Score": {
       "type": "Observation",
-      "target_encounter": "DiagnosisEncounter",
+      "category" : "survey",
       "range": {
         "low": 18,
         "high": 25
@@ -414,7 +414,7 @@
 
     "ModeratelySevere_MMSE_Score": {
       "type": "Observation",
-      "target_encounter": "ModeratelySevere_Encounter",
+      "category" : "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -572,7 +572,7 @@
 
     "Severe_MMSE_Score": {
       "type": "Observation",
-      "target_encounter": "Severe_Encounter",
+      "category" : "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -627,7 +627,7 @@
 
     "VerySevere_MMSE_Score": {
       "type": "Observation",
-      "target_encounter": "VerySevere_Encounter",
+      "category" : "survey",
       "codes": [
         {
           "system": "LOINC",

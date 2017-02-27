@@ -23,14 +23,14 @@ module Synthea
         @patient_info[:expired] = true
       end
 
-      def observation(type, time, value, fhir_method = :observation, ccda_method = :vital_sign)
+      def observation(type, time, value, options = {})
         @observations << {
           'type' => type,
           'time' => time,
           'value' => value,
-          'fhir' => fhir_method,
-          'ccda' => ccda_method
-        }
+          'fhir' => :observation,
+          'ccda' => :vital_sign
+        }.merge(options)
       end
 
       def condition(type, time, fhir_method = :condition, ccda_method = :condition)

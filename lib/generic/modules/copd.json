@@ -274,6 +274,7 @@
 
     "Initial_FEV_Result": {
       "type": "Observation",
+      "category" : "procedure",
       "codes": [
         {
           "system": "LOINC",
@@ -289,7 +290,6 @@
         "early diagnosis for COPD is the exception not the rule. assume that most people will be stage 2 at diagnosis"
       ],
       "unit": "%",
-      "target_encounter": "DiagnosisEncounter",
       "conditional_transition": [
         {
           "condition": {
@@ -683,7 +683,7 @@
 
     "Stage1_FEV_Result": {
       "type": "Observation",
-      "target_encounter": "COPD_Followup_Encounter",
+      "category" : "procedure",
       "range": {
         "low": 75,
         "high": 90
@@ -704,7 +704,7 @@
 
     "Stage2_FEV_Result": {
       "type": "Observation",
-      "target_encounter": "COPD_Followup_Encounter",
+      "category" : "procedure",
       "range": {
         "low": 48,
         "high": 79
@@ -725,7 +725,7 @@
 
     "Stage3_FEV_Result": {
       "type": "Observation",
-      "target_encounter": "COPD_Followup_Encounter",
+      "category" : "procedure",
       "range": {
         "low": 26,
         "high": 49
@@ -746,7 +746,7 @@
 
     "Stage4_FEV_Result": {
       "type": "Observation",
-      "target_encounter": "COPD_Followup_Encounter",
+      "category" : "procedure",
       "range": {
         "low": 10,
         "high": 29
