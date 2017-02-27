@@ -28,12 +28,12 @@
         "SomeObservation" : {
             "type" : "Observation",
             "vital_sign" : "Systolic Blood Pressure",
+            "category" : "vital-signs",
             "codes" : [{
               "system" : "LOINC",
               "code" : "8480-6",
               "display" : "Systolic Blood Pressure"
             }],
-            "target_encounter" : "SomeEncounter",
             "unit" : "mmHg",
             "direct_transition" : "Terminal"
         },

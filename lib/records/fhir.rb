@@ -245,6 +245,10 @@ module Synthea
                                                'code' => {
                                                  'coding' => [{ 'system' => 'http://loinc.org', 'code' => obs_data[:code], 'display' => obs_data[:description] }]
                                                },
+                                               'category' => {
+                                                 'coding' => [{ 'system' => 'http://hl7.org/fhir/ValueSet/observation-category', 'code' => observation['category'] }],
+                                                 'text' => observation['category']
+                                               },
                                                'subject' => { 'reference' => patient.fullUrl.to_s },
                                                'encounter' => { 'reference' => encounter.fullUrl.to_s },
                                                'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'))

@@ -944,7 +944,7 @@ class GenericStatesTest < Minitest::Test
     ctx.history << encounter
 
     obs = Synthea::Generic::States::Observation.new(ctx, "SomeObservation")
-    @patient.record_synthea.expect(:observation, nil, [:systolic_blood_pressure, @time, "120"])
+    @patient.record_synthea.expect(:observation, nil, [:systolic_blood_pressure, @time, "120", 'category' => 'vital-signs'])
     assert(obs.process(@time, @patient))
 
     # Verify that the procedure was added to the record
@@ -1013,7 +1013,7 @@ class GenericStatesTest < Minitest::Test
     death = Synthea::Generic::States::Death.new(ctx, "Death_by_Code")
     @patient.record_synthea.expect(:death, nil, [@time])
     @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
-    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, :observation, :no_action])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, 'fhir' => :observation, 'ccda' => :no_action])
     @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
     assert(death.process(@time, @patient))
 
@@ -1037,7 +1037,7 @@ class GenericStatesTest < Minitest::Test
     death = Synthea::Generic::States::Death.new(ctx, "Death_by_ConditionOnset")
     @patient.record_synthea.expect(:death, nil, [@time])
     @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
-    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, :observation, :no_action])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, 'fhir' => :observation, 'ccda' => :no_action])
     @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
     assert(death.process(@time, @patient))
 
@@ -1061,7 +1061,7 @@ class GenericStatesTest < Minitest::Test
     death = Synthea::Generic::States::Death.new(ctx, "Death_by_Attribute")
     @patient.record_synthea.expect(:death, nil, [@time])
     @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
-    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, :observation, :no_action])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, 'fhir' => :observation, 'ccda' => :no_action])
     @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
     assert(death.process(@time, @patient))
 

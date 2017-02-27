@@ -52,6 +52,7 @@
 
     "Peanut_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -69,6 +70,7 @@
 
     "Peanut_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -113,6 +115,7 @@
 
     "Nut_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -130,6 +133,7 @@
 
     "Nut_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -174,6 +178,7 @@
 
     "Fish_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -191,6 +196,7 @@
 
     "Fish_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -237,6 +243,7 @@
 
     "Shellfish_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -254,6 +261,7 @@
 
     "Shellfish_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -298,6 +306,7 @@
 
     "Wheat_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -315,6 +324,7 @@
 
     "Wheat_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -359,6 +369,7 @@
 
     "Egg_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -376,6 +387,7 @@
 
     "Egg_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -420,6 +432,7 @@
 
     "Soy_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -437,6 +450,7 @@
 
     "Soy_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -481,6 +495,7 @@
 
     "Milk_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -498,6 +513,7 @@
 
     "Milk_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -542,6 +558,7 @@
 
     "Tree_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -559,6 +576,7 @@
 
     "Tree_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -603,6 +621,7 @@
 
     "Grass_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -620,6 +639,7 @@
 
     "Grass_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -664,6 +684,7 @@
 
     "Dander_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -681,6 +702,7 @@
 
     "Dander_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -725,6 +747,7 @@
 
     "Mite_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -742,6 +765,7 @@
 
     "Mite_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -786,6 +810,7 @@
 
     "Mold_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -803,6 +828,7 @@
 
     "Mold_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -847,6 +873,7 @@
 
     "Bee_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -864,6 +891,7 @@
 
     "Bee_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -908,6 +936,7 @@
 
     "Latex_Test_Positive": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",
@@ -925,6 +954,7 @@
 
     "Latex_Test_Negative": {
       "type": "Observation",
+      "category" : "laboratory",
       "codes": [
         {
           "system": "LOINC",

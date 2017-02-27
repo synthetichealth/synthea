@@ -253,7 +253,7 @@
 
     "Benign_Adenoma": {
       "type": "Observation",
-      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "category" : "procedure",
       "range": {
         "low": 2,
         "high": 7
@@ -271,7 +271,7 @@
 
     "Malignant_Adenoma": {
       "type": "Observation",
-      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "category" : "procedure",
       "range": {
         "low": 10,
         "high": 25
@@ -328,7 +328,7 @@
 
     "Fecal_Test_Positive_Result": {
       "type": "Observation",
-      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "category" : "laboratory",
       "range": {
         "low": 150,
         "high": 500
@@ -346,7 +346,7 @@
 
     "Fecal_Test_Negative_Result": {
       "type": "Observation",
-      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "category" : "laboratory",
       "range": {
         "low": 0,
         "high": 25

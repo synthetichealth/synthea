@@ -84,6 +84,7 @@
     "Record_HA1C" : {
       "type" : "Observation",
       "vital_sign" : "Blood Glucose",
+      "category" : "laboratory",
       "codes" : [{
         "system" : "LOINC",
         "code" : "4548-4",

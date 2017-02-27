@@ -34,7 +34,7 @@ class FhirTest < Minitest::Test
     record.condition(:prediabetes, @time, :condition, nil)
     record.procedure(:amputation_left_hand, @time, reason: :diabetes)
     record.immunization(:rv_mono, @time, :immunization, nil)
-    record.observation(:ha1c, @time, 5, :observation, nil)
+    record.observation(:ha1c, @time, 5)
     record.encounter_end(:age_lt_11, @time + 10.minutes)
     record.end_condition(:prediabetes, @time + 10.minutes)
     time_adv = @time + 15.minutes
@@ -42,7 +42,7 @@ class FhirTest < Minitest::Test
     record.condition(:diabetes, time_adv, :condition, nil)
     record.procedure(:amputation_right_leg, time_adv, reason: :diabetes)
     record.immunization(:dtap, time_adv, :immunization, nil)
-    record.observation(:height, time_adv, 5, :observation, nil)
+    record.observation(:height, time_adv, 5)
     record.encounter_end(:age_lt_11, time_adv + 10.minutes)
 
     #Add an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
@@ -62,10 +62,10 @@ class FhirTest < Minitest::Test
   def test_record_blood_pressure
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)
-    record.observation(:systolic_blood_pressure, @time, 120, :observation, nil)
-    record.observation(:diastolic_blood_pressure, @time, 80, :observation, nil)
-    record.observation(:blood_pressure, @time, 2, :multi_observation, nil)
-    record.observation(:weight, @time, 50, :observation, nil)
+    record.observation(:systolic_blood_pressure, @time, 120)
+    record.observation(:diastolic_blood_pressure, @time, 80)
+    record.observation(:blood_pressure, @time, 2, 'fhir' => :multi_observation)
+    record.observation(:weight, @time, 50)
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
     assert_equal(2,fhir.entry.select {|e| e.resource.is_a?(FHIR::Observation)}.length)
     assert_empty fhir.validate
