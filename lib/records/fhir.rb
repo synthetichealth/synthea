@@ -303,7 +303,8 @@ module Synthea
                                                },
                                                'subject' => { 'reference' => patient.fullUrl.to_s },
                                                'encounter' => { 'reference' => encounter.fullUrl.to_s },
-                                               'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'))
+                                               'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'),
+                                               'issued' => convert_fhir_date_time(observation['time'], 'time'))
 
         if obs_data[:value_type] == 'condition'
           condition_data = COND_LOOKUP[observation['value']]
@@ -353,6 +354,15 @@ module Synthea
         observations.each do |obs|
           fhir_observation.component << FHIR::Observation::Component.new('code' => obs.resource.code.to_hash, 'valueQuantity' => obs.resource.valueQuantity.to_hash)
         end
+
+        if Synthea::Config.exporter.fhir.use_shr_extensions
+          entry.resource.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-observation-Observation"]) # all Observations are Observations
+
+          # add the specific profile based on code
+          code_mapping = SHR_MAPPING['http://loinc.org'][obs_data[:code]]
+          entry.resource.meta.profile << code_mapping[:url] if code_mapping
+        end
+
         entry.resource = fhir_observation
         fhir_record.entry << entry
       end
