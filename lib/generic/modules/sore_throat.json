@@ -214,7 +214,7 @@
 
     "Take_Temperature_High": {
       "type": "Observation",
-      "target_encounter": "Doctor_Visit",
+      "category" : "vital-signs",
       "range": {
         "low": 37.2,
         "high": 39.4
@@ -235,7 +235,7 @@
 
     "Take_Temperature_Low": {
       "type": "Observation",
-      "target_encounter": "Doctor_Visit",
+      "category" : "vital-signs",
       "range": {
         "low": 37,
         "high": 38

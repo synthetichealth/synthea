@@ -19,6 +19,7 @@
     "Record_Height" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "vital-signs",
       "vital_sign" : "Height",
       "codes" : [{
         "system" : "LOINC",
@@ -32,6 +33,7 @@
     "Record_Weight" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "vital-signs",
       "vital_sign" : "Weight",
       "codes" : [{
         "system" : "LOINC",
@@ -59,6 +61,7 @@
     "Record_BMI" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "vital-signs",
       "vital_sign" : "BMI",
       "codes" : [{
         "system" : "LOINC",
@@ -72,6 +75,7 @@
     "Record_Systolic_BP" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "vital-signs",
       "vital_sign" : "Systolic Blood Pressure",
       "codes" : [{
         "system" : "LOINC",
@@ -85,6 +89,7 @@
     "Record_Diastolic_BP" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "vital-signs",
       "vital_sign" : "Diastolic Blood Pressure",
       "codes" : [{
         "system" : "LOINC",
@@ -143,6 +148,7 @@
     "Record_HA1C" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Blood Glucose",
       "codes" : [{
         "system" : "LOINC",
@@ -189,6 +195,7 @@
     "Record_Glucose" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Glucose",
       "codes" : [{
         "system" : "LOINC",
@@ -201,6 +208,7 @@
     "Record_UreaNitrogen" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Urea Nitrogen",
       "codes" : [{
         "system" : "LOINC",
@@ -213,6 +221,7 @@
     "Record_Creatinine" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Creatinine",
       "codes" : [{
         "system" : "LOINC",
@@ -225,6 +234,7 @@
     "Record_Calcium" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Calcium",
       "codes" : [{
         "system" : "LOINC",
@@ -237,6 +247,7 @@
     "Record_Sodium" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Sodium",
       "codes" : [{
         "system" : "LOINC",
@@ -249,6 +260,7 @@
     "Record_Potassium" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Potassium",
       "codes" : [{
         "system" : "LOINC",
@@ -261,6 +273,7 @@
     "Record_Chloride" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Chloride",
       "codes" : [{
         "system" : "LOINC",
@@ -273,6 +286,7 @@
     "Record_CO2" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Carbon Dioxide",
       "codes" : [{
         "system" : "LOINC",
@@ -343,6 +357,7 @@
     "Record_Cholesterol" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Total Cholesterol",
       "codes" : [{
         "system" : "LOINC",
@@ -356,6 +371,7 @@
     "Record_Triglycerides" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "Triglycerides",
       "codes" : [{
         "system" : "LOINC",
@@ -369,6 +385,7 @@
     "Record_LDL" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "LDL",
       "codes" : [{
         "system" : "LOINC",
@@ -382,6 +399,7 @@
     "Record_HDL" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "HDL",
       "codes" : [{
         "system" : "LOINC",
@@ -428,6 +446,7 @@
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
       "vital_sign" : "Microalbumin Creatine Ratio",
+      "category" : "laboratory",
       "codes" : [{
         "system" : "LOINC",
         "code" : "14959-1",
@@ -473,6 +492,7 @@
     "Record_EGFR" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
+      "category" : "laboratory",
       "vital_sign" : "EGFR",
       "codes" : [{
         "system" : "LOINC",

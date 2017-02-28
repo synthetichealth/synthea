@@ -15,6 +15,7 @@
 
     "Eczema_Obs_Head_And_Neck": {
       "type": "Observation",
+      "category" : "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -31,6 +32,7 @@
 
     "Eczema_Obs_Trunk": {
       "type": "Observation",
+      "category" : "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -47,6 +49,7 @@
 
     "Eczema_Obs_Upper_Extremities": {
       "type": "Observation",
+      "category" : "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -64,6 +67,7 @@
 
     "Eczema_Obs_Lower_Extremities": {
       "type": "Observation",
+      "category" : "exam",
       "codes": [
         {
           "system": "LOINC",

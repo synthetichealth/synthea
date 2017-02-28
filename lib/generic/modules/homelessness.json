@@ -164,7 +164,6 @@
 
     "Information_Gathering" : {
       "type" : "Procedure",
-      "target_encounter" : "Visit_Homeless_Shelter",
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "311791003",
@@ -177,7 +176,7 @@
 
     "Question_1" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "76690-7",
@@ -213,8 +212,8 @@
     },
 
     "Question_2_Positive" : {
-      "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "type" : "Observation",      
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "55277-8",
@@ -227,7 +226,7 @@
 
     "Question_2_Negative" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "55277-8",
@@ -252,7 +251,7 @@
       "remarks" : ["here we leverage our existing opioids model, for simplicity.",
                    "in the real world homelessness has a stronger asssociation with drug abuse",
                    "see http://www.nationalhomeless.org/factsheets/addiction.pdf "],
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "28245-9",
@@ -265,7 +264,7 @@
 
     "Question_3_Nonabuser" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "28245-9",
@@ -278,7 +277,7 @@
 
     "Question_4" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "71802-3",
@@ -300,7 +299,7 @@
 
     "Question_5_Yes" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "63513-6",
@@ -313,7 +312,7 @@
 
     "Question_5_No" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "63513-6",
@@ -326,7 +325,7 @@
 
     "Question_6" : {
       "type" : "Observation",
-      "target_encounter" : "Visit_Homeless_Shelter",
+      "category" : "social-history",
       "codes" : [{
         "system" : "LOINC",
         "code" : "46240-8",

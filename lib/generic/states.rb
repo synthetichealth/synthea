@@ -601,9 +601,10 @@ module Synthea
       class Observation < State
         # target_encounter is deprecated and may be removed in a future release. Leaving it in for
         # now to maintain backwards compatibility with existing GMF modules.
-        attr_accessor :codes, :unit, :target_encounter, :attribute, :vital_sign, :range, :exact
+        attr_accessor :codes, :unit, :target_encounter, :attribute, :vital_sign, :range, :exact, :category
 
         required_field :codes
+        required_field :category
         required_field or: [:vital_sign, and: [:unit, or: [:attribute, :range, :exact]]]
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
@@ -643,7 +644,7 @@ module Synthea
           add_lookup_code(Synthea::OBS_LOOKUP)
 
           if concurrent_with_target_encounter(time)
-            entity.record_synthea.observation(symbol, time, @value)
+            entity.record_synthea.observation(symbol, time, @value, 'category' => @category)
           end
           true
         end
@@ -670,7 +671,7 @@ module Synthea
         def process(time, entity)
           add_lookup_code(Synthea::OBS_LOOKUP)
           if concurrent_with_target_encounter(time)
-            entity.record_synthea.observation(symbol, time, @number_of_observations, :multi_observation, :no_action)
+            entity.record_synthea.observation(symbol, time, @number_of_observations, 'fhir' => :multi_observation, 'ccda' => :no_action)
           else
             raise "MultiObservation '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
           end
