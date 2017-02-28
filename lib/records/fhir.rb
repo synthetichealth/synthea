@@ -348,6 +348,10 @@ module Synthea
                                                  'code' => {
                                                    'coding' => [{ 'system' => 'http://loinc.org', 'code' => multi_data[:code], 'display' => multi_data[:description] }]
                                                  },
+                                                 'category' => {
+                                                   'coding' => [{ 'system' => 'http://hl7.org/fhir/ValueSet/observation-category', 'code' => multi_obs['category'] }],
+                                                   'text' => multi_obs['category']
+                                                 },
                                                  'subject' => { 'reference' => patient.fullUrl.to_s },
                                                  'encounter' => { 'reference' => encounter.fullUrl.to_s },
                                                  'effectiveDateTime' => convert_fhir_date_time(multi_obs['time'], 'time'))
@@ -356,11 +360,11 @@ module Synthea
         end
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
-          entry.resource.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-observation-Observation"]) # all Observations are Observations
+          fhir_observation.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-observation-Observation"]) # all Observations are Observations
 
           # add the specific profile based on code
-          code_mapping = SHR_MAPPING['http://loinc.org'][obs_data[:code]]
-          entry.resource.meta.profile << code_mapping[:url] if code_mapping
+          code_mapping = SHR_MAPPING['http://loinc.org'][multi_data[:code]]
+          fhir_observation.meta.profile << code_mapping[:url] if code_mapping
         end
 
         entry.resource = fhir_observation

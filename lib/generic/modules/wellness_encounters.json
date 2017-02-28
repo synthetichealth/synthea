@@ -102,6 +102,7 @@
 
     "Record_BP" : {
       "type" : "MultiObservation",
+      "category" : "vital-signs",
       "number_of_observations" : 2,
       "codes" : [{
         "system" : "LOINC",

@@ -192,7 +192,7 @@ class FhirTest < Minitest::Test
     Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     observation = {'type' => :diastolic_blood_pressure, 'time' => @time, 'value' => 80}
     Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
-    multiobservation = {'type' => :blood_pressure, 'time' =>  @time, 'value' => 2}
+    multiobservation = {'type' => :blood_pressure, 'time' =>  @time, 'value' => 2, 'category' => 'vital-signs' }
     Synthea::Output::FhirRecord.multi_observation(multiobservation, @fhir_record, @patient_entry, @encounter_entry)
     multiobs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
     multiobs = multiobs_entry.resource
