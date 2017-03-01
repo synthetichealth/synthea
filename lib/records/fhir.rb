@@ -127,6 +127,10 @@ module Synthea
         if entity[:marital_status]
           patient_resource.maritalStatus = FHIR::CodeableConcept.new('coding' => [{ 'system' => 'http://hl7.org/fhir/v3/MaritalStatus', 'code' => entity[:marital_status] }],
                                                                      'text' => entity[:marital_status])
+        else
+          # single, never married
+          patient_resource.maritalStatus = FHIR::CodeableConcept.new('coding' => [{ 'system' => 'http://hl7.org/fhir/v3/MaritalStatus', 'code' => 'S' }],
+                                                                     'text' => 'Never Married')
         end
         # add information about twins/triplets if applicable
         if entity[:multiple_birth]
@@ -479,7 +483,6 @@ module Synthea
         if Synthea::Config.exporter.fhir.use_shr_extensions
           immunization.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-immunization-Immunization"])
           # Immunization profile turns vaccineCode into a SHR codeableConcept => requires text
-          # TODO: shr-immunization-ImmunizationAdministered profile requires manufacturer
         end
 
         entry = FHIR::Bundle::Entry.new
