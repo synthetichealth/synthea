@@ -218,11 +218,15 @@ module Synthea
 
         end_time = encounter['end_time'] || encounter['time'] + 15.minutes
 
+        # for now just create a single provider per encounter. eventually we will need a more robust system
+        prov = provider(encounter, fhir_record, patient)
+
         fhir_encounter = FHIR::Encounter.new('id' => resource_id,
                                              'status' => 'finished',
                                              'class' => { 'code' => encounter_data[:class] },
                                              'type' => [{ 'coding' => [{ 'code' => encounter_data[:codes]['SNOMED-CT'][0], 'system' => 'http://snomed.info/sct' }], 'text' => encounter_data[:description] }],
                                              'patient' => { 'reference' => patient.fullUrl.to_s },
+                                             'serviceProvider' => { 'reference' => prov.fullUrl.to_s },
                                              'period' => { 'start' => convert_fhir_date_time(encounter['time'], 'time'), 'end' => convert_fhir_date_time(end_time, 'time') })
 
         if reason_data
@@ -251,6 +255,26 @@ module Synthea
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = fhir_encounter
+        fhir_record.entry << entry
+        entry
+      end
+
+      def self.provider(_encounter, fhir_record, _patient)
+        resource_id = SecureRandom.uuid
+        prov = FHIR::Organization.new('id' => resource_id,
+                                      'name' => 'Synthetic Provider',
+                                      'type' => {
+                                        'coding' => [{
+                                          'code' => 'prov',
+                                          'display' => 'Healthcare Provider',
+                                          'system' => 'http://hl7.org/fhir/ValueSet/organization-type'
+                                        }],
+                                        'text' => 'Healthcare Provider'
+                                      })
+
+        entry = FHIR::Bundle::Entry.new
+        entry.fullUrl = "urn:uuid:#{resource_id}"
+        entry.resource = prov
         fhir_record.entry << entry
         entry
       end
