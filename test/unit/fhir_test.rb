@@ -14,6 +14,7 @@ class FhirTest < Minitest::Test
     }
     @patient[:telephone] = '999-999-9999'
     @patient[:birth_place] = { 'city' => 'Bedford','state' => 'MA', }
+    @patient[:first_language] = :french_creole
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)

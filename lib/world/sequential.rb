@@ -13,6 +13,7 @@ module Synthea
         @stats[:age] = Hash.new(0)
         @stats[:gender] = Hash.new(0)
         @stats[:race] = Hash.new(0)
+        @stats[:language] = Hash.new(0)
         @stats[:living_adults_by_race] = Hash.new(0)
         @stats[:diabetes_by_race] = Hash.new(0)
         @stats[:ethnicity] = Hash.new(0)
@@ -367,6 +368,7 @@ module Synthea
         @stats[:adults] += 1 if patient[:age] >= 18
         @stats[:gender][patient[:gender]] += 1
         @stats[:race][patient[:race]] += 1
+        @stats[:language][patient[:first_language]] += 1
         @stats[:ethnicity][patient[:ethnicity]] += 1
         @stats[:blood_type][patient[:blood_type]] += 1
 

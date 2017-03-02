@@ -95,6 +95,97 @@ module Synthea
                           ab_positive: 3.4,
                           ab_negative: 0.6)
       }.freeze
+
+      # https://apps.mla.org/map_data -> search by State MA
+      # or see https://apps.mla.org/map_data_results&SRVY_YEAR=2010&geo=state&state_id=25&county_id=&mode=geographic&lang_id=&zip=&place_id=&cty_id=&region_id=&division_id=&ll=&ea=y&order=&a=y&pc=1
+      # vietnamese and cambodian removed because our ethnicity/heritage info isn't that granular
+      LANGUAGES = Pickup.new(english: 78.93,
+                             spanish: 7.50,
+                             portuguese: 2.97,
+                             chinese: 1.59,
+                             french: 1.11,
+                             french_creole: 0.89,
+                             italian: 0.72,
+                             russian: 0.62,
+                             # vietnamese: 0.58,
+                             greek: 0.41,
+                             arabic: 0.37,
+                             # cambodian: 0.37,
+                             german: 0.28,
+                             hindi: 0.27)
+
+      # these numbers are intended to produce the above numbers overall but correlated by ethnicity
+      # ex, only people of chinese ethnicity speak chinese
+      # these are "manufactured" #s and not based on real citations
+      LANGUAGES_BY_ETHNICITY = {
+        irish: # 22.8% overall
+          Pickup.new(english: 100),
+        english: # 10.7% overall
+          Pickup.new(english: 100),
+        american: # 4.4% overall
+          Pickup.new(english: 100),
+        scottish: # 2.4% overall
+          Pickup.new(english: 100),
+        italian: # 13.9% of overall population, 0.72% overall speak italian
+          Pickup.new(english: 95,
+                     italian: 5),
+        french: # 7.8% of overall population, 1.11% overall speak french (split w/ french canadian)
+          Pickup.new(english: 99,
+                     french: 1),
+        french_canadian: # 3.8% of overall population, 1.11% overall speak french (split w/ french)
+          Pickup.new(english: 99,
+                     french: 1),
+        german: # 6.4% of overall population, 0.28% overall speak german
+          Pickup.new(english: 96,
+                     french: 4),
+        polish: # 5.0% overall
+          Pickup.new(english: 100),
+        portuguese: # 4.7% of overall population, 2.97% overall speak portuguese (split w/ so americans)
+          Pickup.new(english: 37,
+                     portuguese: 63),
+        russian: # 1.9% of overall population, 0.62% overall speak russian
+          Pickup.new(english: 62,
+                     russian: 38),
+        swedish: # 1.8% overall
+          Pickup.new(english: 100),
+        greek: # 1.2% of overall population, 0.41% overall speak greek
+          Pickup.new(english: 66,
+                     greek: 34),
+        puerto_rican: # 4.1% overall
+          Pickup.new(english: 30,
+                     spanish: 70),
+        mexican: # 1% overall
+          Pickup.new(english: 30,
+                     spanish: 70),
+        central_american: # 1% overall
+          Pickup.new(english: 30,
+                     spanish: 70),
+        south_american: # 1% overall
+          Pickup.new(english: 30,
+                     spanish: 35,
+                     portuguese: 35),
+        african: # 1.8% overall
+          Pickup.new(english: 95,
+                     french: 5),
+        dominican: # 1.8% overall
+          Pickup.new(english: 30,
+                     spanish: 70),
+        west_indian: # 1.8% overall, 0.89% speak french creole
+          Pickup.new(english: 25,
+                     spanish: 35,
+                     french_creole: 50),
+        chinese: # 2.0% of overall population, 1.59% overall speak chinese
+          Pickup.new(english: 25,
+                     chinese: 75),
+        asian_indian: # 1.1% of overall population, 0.27% overall speak hindi
+          Pickup.new(english: 75,
+                     hindi: 25),
+        american_indian: # 1% overall
+          Pickup.new(english: 100),
+        arab: # 1% of overall population, 0.37% overall speak arabic
+          Pickup.new(english: 63,
+                     arabic: 37)
+      }.freeze
     end
   end
 end
