@@ -282,6 +282,45 @@
           "display" : "Exercise therapy"
         }
       ],
+      "goals" : [
+        {
+          "observation" : {
+            "codes" : [{
+              "system" : "LOINC",
+              "code" : "4548-4",
+              "display" : "Hemoglobin A1c total in Blood"
+            }],
+            "operator" : "<",
+            "value" : "7.0"
+          },
+          "addresses" : ["diabetes_stage"]
+        },
+        {
+          "observation" : {
+            "codes" : [{
+              "system" : "LOINC",
+              "code" : "2339-0",
+              "display" : "Glucose [Mass/volume] in Blood"
+            }],
+            "operator" : "<",
+            "value" : "108"
+          },
+          "addresses" : ["diabetes_stage"]
+        },
+        {
+          "text" : "Maintain blood pressure below 140/90 mmHg",
+          "addresses" : ["diabetes_stage"]
+        },
+        {
+          "text" : "Improve and maintenance of optimal foot health: aim at early detection of peripheral vascular problems and neuropathy presumed due to diabetes; and prevention of diabetic foot ulcer, gangrene",
+          "addresses" : ["diabetes_stage"]
+        },
+        {
+          "text" : "Address patient knowledge deficit on diabetic self-care",
+          "addresses" : ["diabetes_stage"]
+        }
+      ],
+      "remarks" : ["based on https://github.com/clinical-cloud/sample-careplans"],
       "reason" : "diabetes_stage",
       "direct_transition" : "Prescribe_Medications"
     },

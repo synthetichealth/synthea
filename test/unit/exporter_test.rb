@@ -58,10 +58,10 @@ class ExporterTest < Minitest::Test
   end
 
   def test_export_filter_should_keep_old_active_careplan
-    @record.careplan_start(:stop_smoking, [:activity1], @time - 10.years, :smoking_is_bad_mkay)
+    @record.careplan_start(:stop_smoking, [:activity1], @time - 10.years, 'reasons' => [:smoking_is_bad_mkay])
     @record.careplan_stop(:stop_smoking, @time - 8.years)
 
-    @record.careplan_start(:healthy_diet, [:eat_food_mostly_plants], @time - 12.years, :reason1)
+    @record.careplan_start(:healthy_diet, [:eat_food_mostly_plants], @time - 12.years, 'reasons' => [:reason1])
 
     filtered = Synthea::Output::Exporter.filter_for_export(@patient)
 
@@ -71,7 +71,7 @@ class ExporterTest < Minitest::Test
   end
 
   def test_export_filter_should_keep_careplan_that_ended_during_target
-    @record.careplan_start(:stop_smoking, [:activity1], @time - 10.years, :smoking_is_bad_mkay)
+    @record.careplan_start(:stop_smoking, [:activity1], @time - 10.years, 'reasons' => [:smoking_is_bad_mkay])
     @record.careplan_stop(:stop_smoking, @time - 1.years)
 
     filtered = Synthea::Output::Exporter.filter_for_export(@patient)

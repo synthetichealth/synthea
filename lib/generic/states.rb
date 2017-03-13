@@ -476,12 +476,13 @@ module Synthea
       class CarePlanStart < State
         # target_encounter is deprecated and may be removed in a future release. Leaving it in for
         # now to maintain backwards compatibility with existing GMF modules.
-        attr_accessor :codes, :activities, :reason, :target_encounter
+        attr_accessor :codes, :activities, :reason, :target_encounter, :goals
 
         required_field :codes
 
         metadata 'codes', type: 'Components::Code', min: 1, max: Float::INFINITY
         metadata 'activities', type: 'Components::Code', min: 0, max: Float::INFINITY
+        metadata 'goals', type: 'Components::CareGoal', min: 0, max: Float::INFINITY
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def process(time, entity)
@@ -499,11 +500,22 @@ module Synthea
             rsn = entity[@reason].to_sym if rsn.nil? && entity[@reason]
           end
 
-          if rsn
-            entity.record_synthea.careplan_start(symbol, activities, time, [rsn])
-          else
-            entity.record_synthea.careplan_start(symbol, activities, time, [])
+          # pre-process the goals to get the reasons ("addresses")
+          fhir_goals = []
+          (@goals || []).each do |g|
+            # :observation, :text, :addresses, :codes
+            goal_reasons = []
+            (g.addresses || []).each do |goal_reason|
+              cond = @context.most_recent_by_name(goal_reason)
+              cond = cond.symbol if cond
+              cond = entity[goal_reason].to_sym if cond.nil? && entity[goal_reason]
+              goal_reasons << cond if cond
+            end
+            fhir_goals << { observation: g.observation, text: g.text, addresses: goal_reasons, codes: g.codes }.compact
           end
+          options = { 'reasons' => [rsn].compact, 'goals' => fhir_goals.compact }
+
+          entity.record_synthea.careplan_start(symbol, activities, time, options)
         end
       end
 

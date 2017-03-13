@@ -57,6 +57,14 @@ module Synthea
         end
       end
 
+      class CareGoal < Component
+        attr_accessor :observation, :text, :addresses, :codes
+        required_field or: [:observation, :text, :codes]
+
+        metadata 'observation', type: 'Logic::Observation', min: 0, max: 1
+        metadata 'codes', type: 'Components::Code', min: 0, max: Float::INFINITY
+      end
+
       class Dosage < Component
         attr_accessor :amount, :frequency, :period, :unit
         required_field and: [:amount, :frequency, :period, :unit]

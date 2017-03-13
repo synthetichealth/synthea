@@ -373,7 +373,9 @@ class FhirTest < Minitest::Test
     condition2 = {'type' => :cardiac_arrest, 'time' => @time}
     Synthea::Output::FhirRecord.condition(condition2, @fhir_record, @patient_entry, @encounter_entry)
     condition2fhir = @fhir_record.entry[-1]
-    plan_hash = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'start_time'=>@time, 'time' => @time, 'reasons' => [:coronary_heart_disease, :cardiac_arrest], 'stop' => @time + 15.minutes}
+    plan_hash = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'start_time'=>@time, 'time' => @time, 
+                 'reasons' => [:coronary_heart_disease, :cardiac_arrest], 'stop' => @time + 15.minutes,
+                 'goals' => [{ text: 'Reduce weight to 180 lbs', addresses: [:coronary_heart_disease, :cardiac_arrest]}]}
     Synthea::Output::FhirRecord.careplans(plan_hash, @fhir_record, @patient_entry, @encounter_entry)
     plan = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::CarePlan)}.resource
     assert_equal("#{@patientID}", plan.subject.reference)
@@ -397,6 +399,53 @@ class FhirTest < Minitest::Test
     assert_equal('226234005', activity2.code)
     assert_equal('Healthy diet', activity2.display)
     assert_equal('http://snomed.info/sct', activity2.system)
+    #goal
+    goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Goal)}.resource
+    assert_equal('achieved', goal.status)
+    assert_equal('Reduce weight to 180 lbs', goal.description.text)
+    assert_equal("#{condition1fhir.fullUrl}", goal.addresses[0].reference)
+    assert_equal("#{condition2fhir.fullUrl}", goal.addresses[1].reference)
+    assert_empty @fhir_record.validate
+  end
+
+  def test_caregoals1
+    care_plan1 = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'reasons' => [],
+                  'start_time'=>@time, 'time' => @time, 'stop' => @time + 15.minutes,
+                  'goals' => [{ text: 'Reduce weight to 180 lbs' }]}
+    Synthea::Output::FhirRecord.careplans(care_plan1, @fhir_record, @patient_entry, @encounter_entry)
+
+    goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Goal)}.resource
+    assert_equal('achieved', goal.status)
+    assert_equal('Reduce weight to 180 lbs', goal.description.text)
+    assert_empty @fhir_record.validate
+  end
+
+  def test_caregoals2
+    code = Synthea::Generic::Components::Code.new('system' => 'SNOMED-CT', 'code' => '123456', 'display' => 'Some CarePlan Code Here')
+    care_plan2 = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'reasons' => [],
+                  'start_time'=>@time, 'time' => @time, 'stop' => @time + 15.minutes,
+                  'goals' => [{ codes: [code] }]}
+    Synthea::Output::FhirRecord.careplans(care_plan2, @fhir_record, @patient_entry, @encounter_entry)
+
+    goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Goal)}.resource
+    assert_equal('achieved', goal.status)
+    assert_equal('123456', goal.description.coding[0].code)
+    assert_equal('Some CarePlan Code Here', goal.description.coding[0].display)
+    assert_equal('Some CarePlan Code Here', goal.description.text)
+    assert_empty @fhir_record.validate
+  end
+
+  def test_caregoals3
+    observation = Synthea::Generic::Logic::Observation.new('codes' => [{'system' => 'SNOMED-CT', 'code' => '1', 'display' => 'Wellness'}], 
+                                                           'operator' => '>', 'value' => 100 )
+    care_plan3 = {'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'reasons' => [],
+                  'start_time'=>@time, 'time' => @time, 'stop' => @time + 15.minutes,
+                  'goals' => [{ observation: observation }]}
+    Synthea::Output::FhirRecord.careplans(care_plan3, @fhir_record, @patient_entry, @encounter_entry)
+
+    goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Goal)}.resource
+    assert_equal('achieved', goal.status)
+    assert_equal('Wellness > 100', goal.description.text)
     assert_empty @fhir_record.validate
   end
 end
