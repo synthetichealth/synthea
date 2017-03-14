@@ -1007,13 +1007,11 @@ class GenericStatesTest < Minitest::Test
     assert(condition.run(@time, @patient))
     ctx.history << condition
 
-    condition_id = :diabetes_mellitus
-
     # Now process the end of the condition
     death = Synthea::Generic::States::Death.new(ctx, "Death_by_Code")
     @patient.record_synthea.expect(:death, nil, [@time])
     @patient.record_synthea.expect(:encounter, nil, [:death_certification, @time])
-    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :diabetes_mellitus, 'fhir' => :observation, 'ccda' => :no_action])
+    @patient.record_synthea.expect(:observation, nil, [:cause_of_death, @time, :some_undiscovered_condition, 'fhir' => :observation, 'ccda' => :no_action])
     @patient.record_synthea.expect(:diagnostic_report, nil, [:death_certificate, @time, 1])
     assert(death.process(@time, @patient))
 

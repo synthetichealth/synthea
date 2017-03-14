@@ -747,6 +747,7 @@ module Synthea
           elsif @condition_onset
             @reason = @context.most_recent_by_name(@condition_onset).symbol
           elsif @codes
+            add_lookup_code(Synthea::COND_LOOKUP)
             @reason = symbol
           end
 
