@@ -325,6 +325,7 @@ module Synthea
         metadata 'target_encounter', reference_to_state_type: 'Encounter', min: 0, max: 1
 
         def process(time, entity)
+          add_lookup_code(Synthea::COND_LOOKUP)
           diagnose(time, entity) if concurrent_with_target_encounter(time)
           true
         end
@@ -332,7 +333,6 @@ module Synthea
 
       class ConditionOnset < OnsetState
         def diagnose(time, entity)
-          add_lookup_code(Synthea::COND_LOOKUP)
           entity.record_synthea.condition(symbol, time)
           @diagnosed = true
         end
@@ -364,7 +364,6 @@ module Synthea
 
       class AllergyOnset < OnsetState
         def diagnose(time, entity)
-          add_lookup_code(Synthea::COND_LOOKUP)
           entity.record_synthea.condition(symbol, time, :allergy, :condition)
           @diagnosed = true
         end
@@ -747,6 +746,7 @@ module Synthea
           elsif @condition_onset
             @reason = @context.most_recent_by_name(@condition_onset).symbol
           elsif @codes
+            add_lookup_code(Synthea::COND_LOOKUP)
             @reason = symbol
           end
 
