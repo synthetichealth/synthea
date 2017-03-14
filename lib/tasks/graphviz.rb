@@ -360,6 +360,21 @@ module Synthea
             details = details + activity['system'] + "[" + activity['code'] + "]: " + activity['display'] + "\\l"
           end
         end
+        if state.has_key? 'goals'
+          details = details + "\\lGoals:\\l"
+          state['goals'].each do |goal|
+            if goal['text']
+              details = details + goal['text'] + "\\l"
+            elsif goal['codes']
+              code = goal['codes'][0]
+              details = details + code['system'] + "[" + code['code'] + "]: " + code['display'] + "\\l"
+            elsif goal['observation']
+              logic = goal['observation']
+              obs = find_referenced_type(logic)
+              details = details + "Observation #{obs} \\#{logic['operator']} #{logic['value']}\\l"
+            end
+          end
+        end
         if state.has_key? 'duration'
           d = state['duration']
           details = details + "\\lDuration: #{d['low']} - #{d['high']} #{d['unit']}\\l"
