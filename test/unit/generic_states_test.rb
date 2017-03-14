@@ -718,7 +718,7 @@ class GenericStatesTest < Minitest::Test
 
     # Now process the careplan
     plan = Synthea::Generic::States::CarePlanStart.new(ctx, "Diabetes_Self_Management")
-    @patient.record_synthea.expect(:careplan_start, nil, ['diabetes_self_management_plan'.to_sym, [:diabetic_diet], @time, [condition_id]])
+    @patient.record_synthea.expect(:careplan_start, nil, ['diabetes_self_management_plan'.to_sym, [:diabetic_diet], @time, 'reasons' => [condition_id], 'goals' => []])
     assert(plan.process(@time, @patient))
     ctx.history << plan
 
@@ -765,7 +765,7 @@ class GenericStatesTest < Minitest::Test
     # Now process the careplan
     plan_id = 'diabetes_self_management_plan'.to_sym
     plan = Synthea::Generic::States::CarePlanStart.new(ctx, "CarePlan1_Start")
-    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:diabetic_diet], @time, []])  # no reasons provided
+    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:diabetic_diet], @time, 'reasons' => [], 'goals' => []])  # no reasons provided
     assert(plan.run(@time, @patient)) # have to use run not process here because the entity attribute stuff happens in run
     ctx.history << plan
 
@@ -806,7 +806,7 @@ class GenericStatesTest < Minitest::Test
     # Now process the careplan
     plan_id = 'angina_self_management_plan'.to_sym
     plan = Synthea::Generic::States::CarePlanStart.new(ctx, "CarePlan2_Start")
-    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:exercise_therapy, :healthy_diet], @time, []])  # no reasons provided
+    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:exercise_therapy, :healthy_diet], @time, 'reasons' => [], 'goals' => []])  # no reasons provided
     assert(plan.process(@time, @patient))
     ctx.history << plan
 
@@ -845,7 +845,7 @@ class GenericStatesTest < Minitest::Test
     # Now process the careplan
     plan_id = 'immunological_care_management'.to_sym
     plan = Synthea::Generic::States::CarePlanStart.new(ctx, "CarePlan3_Start")
-    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:allergen_immunotherapy_drugs_band_1], @time, []])  # no reasons provided
+    @patient.record_synthea.expect(:careplan_start, nil, [plan_id, [:allergen_immunotherapy_drugs_band_1], @time, 'reasons' => [], 'goals' => []])  # no reasons provided
     assert(plan.process(@time, @patient))
     ctx.history << plan
 

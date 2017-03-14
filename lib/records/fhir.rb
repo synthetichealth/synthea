@@ -376,6 +376,7 @@ module Synthea
                                         }]
                                       }],
                                       'activity' => [],
+                                      'goal' => [],
                                       'addresses' => [])
         reasons.each do |r|
           careplan.addresses << FHIR::Reference.new('reference' => r.fullUrl.to_s) unless reasons.nil? || reasons.empty?
@@ -384,9 +385,11 @@ module Synthea
           careplan.period.end = convert_fhir_date_time(plan['stop'])
           careplan.status = 'completed'
           activity_status = 'completed'
+          goal_status = 'achieved'
         else
           careplan.status = 'active'
           activity_status = 'in-progress'
+          goal_status = 'in-progress'
         end
         plan['activities'].each do |activity|
           activity_data = CAREPLAN_LOOKUP[activity]
@@ -401,9 +404,57 @@ module Synthea
                                                               }
                                                             })
         end
+
+        plan['goals'].each do |goal|
+          fhir_goal = care_goal(goal, goal_status, fhir_record)
+
+          careplan.goal << FHIR::Reference.new('reference' => fhir_goal.fullUrl.to_s)
+        end
+
         entry = FHIR::Bundle::Entry.new
         entry.resource = careplan
         fhir_record.entry << entry
+      end
+
+      def self.care_goal(goal, goal_status, fhir_record)
+        # TODO: search the patient for existing & acive matching goals
+        # instead of always creating new ones?
+        fhir_goal = FHIR::Goal.new('status' => goal_status)
+
+        # goal has :observation, :text, :addresses, :codes
+
+        fhir_goal.description =
+          if goal[:text]
+            FHIR::CodeableConcept.new('text' => goal[:text])
+          elsif goal[:codes]
+            code = goal[:codes][0]
+            FHIR::CodeableConcept.new('coding' => [{ 'system' => 'http://loinc.org', 'code' => code.code, 'display' => code.display }],
+                                      'text' => code.display)
+          elsif goal[:observation]
+            # build up our own text from the observation condition, similar to the graphviz logic
+            logic = goal[:observation]
+            text = "#{logic.codes[0].display} #{logic.operator} #{logic.value}"
+
+            # don't use the code here because the code by itself doesn't specify the goal,
+            # it specifies the attribute on which a goal has been set
+            FHIR::CodeableConcept.new('text' => text)
+          end
+
+        reasons = []
+        (goal[:addresses] || []).each do |reason|
+          reason_code = COND_LOOKUP[reason][:codes]['SNOMED-CT'][0]
+          r = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && reason_code == e.resource.code.coding[0].code }
+          reasons << r unless r.nil?
+        end
+
+        reasons.each do |r|
+          fhir_goal.addresses << FHIR::Reference.new('reference' => r.fullUrl.to_s) unless reasons.nil? || reasons.empty?
+        end
+
+        entry = FHIR::Bundle::Entry.new
+        entry.resource = fhir_goal
+        fhir_record.entry << entry
+        entry
       end
 
       def self.medications(prescription, fhir_record, patient, encounter)

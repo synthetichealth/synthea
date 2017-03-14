@@ -124,14 +124,15 @@ module Synthea
         end
       end
 
-      def careplan_start(type, activities, time, reason)
+      def careplan_start(type, activities, time, options = {})
         @careplans << {
           'type' => type,
           'activities' => activities,
           'time' => time,
           'start_time' => time,
-          'reasons' => reason
-        }
+          'reasons' => [],
+          'goals' => []
+        }.merge(options)
       end
 
       def careplan_active?(type)

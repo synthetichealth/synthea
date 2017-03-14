@@ -293,7 +293,7 @@ class GenericLogicTest < Minitest::Test
     refute(do_test('diabetesCarePlanTest'))
     refute(do_test('anginaCarePlanTest'))
 
-    @patient.record_synthea.careplan_start(:diabetes_self_management_plan, [:diabetic_diet], @time, []) # no reasons given
+    @patient.record_synthea.careplan_start(:diabetes_self_management_plan, [:diabetic_diet], @time) # no reasons given
     assert(do_test('diabetesCarePlanTest'))
     refute(do_test('anginaCarePlanTest'))
 
@@ -302,7 +302,7 @@ class GenericLogicTest < Minitest::Test
     @patient.record_synthea.careplan_stop(:diabetes_self_management_plan, @time)
     refute(do_test('diabetesCarePlanTest'))
 
-    @patient.record_synthea.careplan_start(:angina_careplan, [:healthy_diet], @time, []) # no reasons given
+    @patient.record_synthea.careplan_start(:angina_careplan, [:healthy_diet], @time) # no reasons given
     @patient['Angina_CarePlan'] = :angina_careplan
     assert(do_test('anginaCarePlanTest'))
   end

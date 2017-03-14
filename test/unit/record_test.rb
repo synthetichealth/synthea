@@ -6,8 +6,8 @@ class RecordTest < Minitest::Test
     @record = Synthea::Output::Record.new
     @record.medication_start(:warfarin, @time, [:prediabetes, :coronary_heart_disease])
     @record.medication_start(:sglt2i, @time, [:diabetes, :coronary_heart_disease])
-    @record.careplan_start(:diabetes, [:exercise, :diabetic_diet], @time, [:diabetes])
-    @record.careplan_start(:cardiovascular_disease, [:stress_management, :stop_smoking], @time, [:coronary_heart_disease])
+    @record.careplan_start(:diabetes, [:exercise, :diabetic_diet], @time, 'reasons' => [:diabetes])
+    @record.careplan_start(:cardiovascular_disease, [:stress_management, :stop_smoking], @time, 'reasons' => [:coronary_heart_disease])
   end
 
   def test_medication_stop
@@ -43,7 +43,7 @@ class RecordTest < Minitest::Test
     @record.careplan_stop(:diabetes, @time + 5.minutes)
     assert_equal(@time+5.minutes, @record.careplans[0]['stop'])
     assert_equal(nil, @record.careplans[1]['stop'])
-    @record.careplan_start(:diabetes, [:exercise, :diabetic_diet], @time+10.minutes, :diabetes)
+    @record.careplan_start(:diabetes, [:exercise, :diabetic_diet], @time+10.minutes, 'reasons' => [:diabetes])
     @record.careplan_stop(:diabetes, @time + 15.minutes)
     assert_equal(@time+5.minutes, @record.careplans[0]['stop'])
   end
