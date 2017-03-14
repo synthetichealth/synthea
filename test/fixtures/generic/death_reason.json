@@ -29,8 +29,8 @@
             "type": "Death",
             "codes": [{
                 "system": "SNOMED-CT",
-                "code": "73211009",
-                "display": "Diabetes mellitus"
+                "code": "987654321",
+                "display": "Some undiscovered condition"
             }],
             "direct_transition": "Terminal"
         },
