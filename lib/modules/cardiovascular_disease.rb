@@ -442,7 +442,7 @@ module Synthea
 
         if entity[:careplan] && entity[:careplan][:cardiovascular_disease]
           if !entity.record_synthea.careplan_active?(:cardiovascular_disease)
-            entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['activities'], time, 'reasons' => [entity[:careplan][:cardiovascular_disease]['reasons']])
+            entity.record_synthea.careplan_start(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['activities'], time, 'reasons' => entity[:careplan][:cardiovascular_disease]['reasons'])
           else
             entity.record_synthea.update_careplan_reasons(:cardiovascular_disease, entity[:careplan][:cardiovascular_disease]['reasons'], time)
           end
