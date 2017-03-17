@@ -219,7 +219,6 @@ module Synthea
 
         end_time = encounter['end_time'] || encounter['time'] + 15.minutes
 
-        # for now just create a single provider per encounter. eventually we will need a more robust system
         prov = provider(encounter, fhir_record, patient)
 
         fhir_encounter = FHIR::Encounter.new('id' => resource_id,
@@ -261,6 +260,14 @@ module Synthea
       end
 
       def self.provider(_encounter, fhir_record, _patient)
+        prov = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.name == 'Synthetic Provider' }
+        return prov if prov
+        # add the dummy provider since it wasnt't there already; this also means it's not added unless it's needed
+        build_dummy_provider(fhir_record)
+      end
+
+      def self.build_dummy_provider(fhir_record)
+        # for now just create a single provider per patient. eventually we will need a more robust system
         resource_id = SecureRandom.uuid
         prov = FHIR::Organization.new('id' => resource_id,
                                       'name' => 'Synthetic Provider',
