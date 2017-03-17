@@ -18,5 +18,3 @@ Style/GuardClause:
   Enabled: false
 Style/HashSyntax:
   Enabled: false
-EndOfLine:
-  Enabled: false
