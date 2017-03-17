@@ -137,7 +137,7 @@ module Synthea
                      french: 1),
         german: # 6.4% of overall population, 0.28% overall speak german
           Pickup.new(english: 96,
-                     french: 4),
+                     german: 4),
         polish: # 5.0% overall
           Pickup.new(english: 100),
         portuguese: # 4.7% of overall population, 2.97% overall speak portuguese (split w/ so americans)
