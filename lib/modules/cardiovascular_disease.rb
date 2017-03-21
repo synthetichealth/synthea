@@ -152,16 +152,26 @@ module Synthea
       end
 
       rule :calculate_cardio_risk, [:cholesterol, :HDL, :age, :gender, :blood_pressure, :smoker], [:coronary_heart_disease?] do |_time, entity|
-        return if entity[:age].nil? || entity.vital_sign(:systolic_blood_pressure).nil? || entity[:gender].nil? || entity[:cholesterol].nil?
+        return if entity[:age].nil? || entity.vital_sign(:systolic_blood_pressure).nil? ||
+                  entity[:gender].nil? || entity.vital_sign(:total_cholesterol).nil?
         age = entity[:age]
         gender = entity[:gender]
+        bp = entity.get_vital_sign_value(:systolic_blood_pressure)
         bp_treated = entity[:bp_treated?] || false
+        cholesterol = entity.get_vital_sign_value(:total_cholesterol)
+        hdl = entity.get_vital_sign_value(:hdl)
         # calculate which index in a lookup array a number corresponds to based on ranges in scoring
         short_age_range = [[(age - 20) / 5, 0].max, 11].min
         long_age_range = [[(age - 20) / 10, 0].max, 5].min
-        chol_range = [[(age - 160) / 40 + 1, 0].max, 4].min
-        hdl_range = [[(age - 40) / 10 + 1, 0].max, 3].min
-        bp_range = [[(age - 120) / 10 + 1, 0].max, 5].min
+
+        # 0: <160, 1: 160-199, 2: 200-239, 3: 240-279, 4: >280
+        chol_range = [[(cholesterol - 160) / 40 + 1, 0].max, 4].min
+
+        # 0: <40, 1: 40-49, 2: 50-59, 3: >60
+        hdl_range = [[(hdl - 40) / 10 + 1, 0].max, 3].min
+
+        # 0: <120, 1: 120-129, 2: 130-139, 3: 140-149, 4: 150-159, 5: >=160
+        bp_range = [[(bp - 120) / 10 + 1, 0].max, 5].min
         framingham_points = 0
         framingham_points += age_chd[gender][short_age_range]
         framingham_points += age_chol_chd[gender][long_age_range][chol_range]
