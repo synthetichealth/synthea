@@ -1225,8 +1225,119 @@
           ]
         }
       ],
-      "direct_transition": "End_Broken_Bone_Encounter"
+      "direct_transition": "Consider_Osteoporosis"
     },
+
+    "Consider_Osteoporosis" : {
+      "type" : "Simple",
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "64859006",
+              "display" : "Osteoporosis (disorder)"
+            }]
+          },
+          "transition" : "Diagnose_Fracture_Due_to_Osteoporosis"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition" : "Osteoporosis_Workup"
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.02, "transition" : "Osteoporosis_Workup"},
+            { "distribution" : 0.98, "transition" : "End_Broken_Bone_Encounter"}
+          ],
+          "remarks" : ["Give all people a small chance to check for osteoporosis",
+                       "Frequent checks are not valuable -- ",
+                       "https://www.nih.gov/news-events/nih-research-matters/how-often-should-women-have-bone-tests"]
+        }
+      ]
+    },
+
+    "Osteoporosis_Workup" : {
+      "type" : "Procedure",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "312681000",
+        "display" : "Bone density scan (procedure)"
+      }],
+      "reason" : "broken_bone",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "osteoporosis",
+            "operator" : "==",
+            "value" : true
+          },
+          "transition" : "Low_Bone_Density"
+        },
+        {
+          "transition" : "High_Bone_Density"
+        }
+      ]
+    },
+
+    "High_Bone_Density" : {
+      "type" : "Observation",
+      "category" : "procedure",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "38265-5",
+        "display" : "DXA [T-score] Bone density"
+      }],
+      "remarks" : ["TODO - This code is specifically for radius/ulna.",
+                   "Future impl may want to use a different code depending on what bone was broken"],
+      "range" : { "low" :  -0.5, "high" : 0.5 },
+      "unit" : "{T-score}",
+      "direct_transition" : "End_Broken_Bone_Encounter"
+    },
+
+    "Low_Bone_Density" : {
+      "type" : "Observation",
+      "category" : "procedure",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "38265-5",
+        "display" : "DXA [T-score] Bone density"
+      }],
+      "range" : { "low" :  -3.8, "high" : -2.5 },
+      "unit" : "{T-score}",
+      "remarks" : ["WHO definition of osteoporosis is a T-score < 2.5",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1963365/"],
+      "direct_transition" : "Diagnose_Osteoporosis"
+    },
+
+
+    "Diagnose_Osteoporosis" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "64859006",
+        "display" : "Osteoporosis (disorder)"
+      }],
+      "direct_transition" : "Diagnose_Fracture_Due_to_Osteoporosis"
+    },
+
+    "Diagnose_Fracture_Due_to_Osteoporosis" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "443165006",
+        "display" : "Pathological fracture due to osteoporosis (disorder)"
+      }],
+      "direct_transition" : "End_Broken_Bone_Encounter"
+    },
+
 
     "End_Broken_Bone_Encounter" : {
       "type" : "EncounterEnd",
@@ -1260,6 +1371,27 @@
     "End_Broken_Bone_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "broken_bone",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "443165006",
+              "display" : "Pathological fracture due to osteoporosis (disorder)"
+            }]
+          },
+          "transition" : "End_Osteoporosis_Fracture"
+        },
+        {
+          "transition" : "End_Broken_Bone_Followup"
+        }
+      ]
+    },
+
+    "End_Osteoporosis_Fracture" : {
+      "type" : "ConditionEnd",
+      "condition_onset" : "Diagnose_Fracture_Due_to_Osteoporosis",
       "direct_transition": "End_Broken_Bone_Followup"
     },
 
