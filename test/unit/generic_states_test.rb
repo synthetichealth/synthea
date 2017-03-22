@@ -875,7 +875,7 @@ class GenericStatesTest < Minitest::Test
     set2 = Synthea::Generic::States::SetAttribute.new(ctx, "Set_Attribute_2")
     assert(set2.process(@time, @patient))
 
-    assert_equal(nil, @patient['Current Opioid Prescription'])
+    assert_nil @patient['Current Opioid Prescription']
   end
 
   def test_procedure_assigns_entity_attribute

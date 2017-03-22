@@ -42,7 +42,7 @@ class RecordTest < Minitest::Test
   def test_careplan_stop
     @record.careplan_stop(:diabetes, @time + 5.minutes)
     assert_equal(@time+5.minutes, @record.careplans[0]['stop'])
-    assert_equal(nil, @record.careplans[1]['stop'])
+    assert_nil @record.careplans[1]['stop']
     @record.careplan_start(:diabetes, [:exercise, :diabetic_diet], @time+10.minutes, 'reasons' => [:diabetes])
     @record.careplan_stop(:diabetes, @time + 15.minutes)
     assert_equal(@time+5.minutes, @record.careplans[0]['stop'])

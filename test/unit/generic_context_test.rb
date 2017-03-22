@@ -19,7 +19,7 @@ class GenericContextTest < Minitest::Test
     assert_equal("Examplitis", ctx.name)
     assert_equal("example_module", ctx.current_module)
     assert_equal("Initial", ctx.current_state.name)
-    assert_equal(nil, ctx.current_encounter)
+    assert_nil ctx.current_encounter
     assert_equal([], ctx.history)
     assert(ctx.active?)
     refute(ctx.active_submodule?)
@@ -176,7 +176,7 @@ class GenericContextTest < Minitest::Test
 
     assert_equal("Terminal", ctx.current_state.name)
     assert_equal(@time.advance(days: 5), ctx.current_state.entered)
-    assert_equal(nil, ctx.current_state.exited)
+    assert_nil ctx.current_state.exited
   end
 
   def test_call_submodule
@@ -219,7 +219,7 @@ class GenericContextTest < Minitest::Test
     # Should block in the encounter submodule, before the encounter
     ctx.run(@time, @patient)
     assert(ctx.active_submodule?)
-    assert_equal(nil, ctx.current_encounter)
+    assert_nil ctx.current_encounter
     assert_equal("Delay", ctx.current_state.name)
     assert_equal("Initial", ctx.history.last.name) # the submodule's initial state
 
