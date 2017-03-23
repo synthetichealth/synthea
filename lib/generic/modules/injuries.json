@@ -251,59 +251,131 @@
       "remarks": [
         "The incidence rates for elderly (65+)."
       ],
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "distribution": 0.000153,
-          "transition": "Spinal_Injury"
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "osteoporosis",
+            "operator" : "==",
+            "value" : true
+          },
+          "distributions" : [
+            {
+              "distribution": 0.000153,
+              "transition": "Spinal_Injury"
+            },
+            {
+              "distribution": 0.000318,
+              "transition": "Gunshot_Injury"
+            },
+            {
+              "distribution": 0.0051,
+              "transition": "Concussion_Injury"
+            },
+            {
+              "distribution": 0.00478,
+              "transition": "Whiplash_Injury"
+            },
+            {
+              "distribution": 0.06,
+              "remarks": [
+                "Highest probability for elderly with osteoporosis.",
+                "see also http://www.shef.ac.uk/FRAX/charts.aspx",
+                "10-yr probability of major fracture varies significantly based on age & bone density",
+                "assume a medium risk of 40% chance over 10 years ~~> 6% chance per yr"
+              ],
+              "transition": "Broken_Bone_Injury"
+            },
+            {
+              "distribution": 0.00398,
+              "transition": "Burn_Injury"
+            },
+            {
+              "distribution": 0.015,
+              "transition": "Laceration_Injury"
+            },
+            {
+              "distribution": 0.0125,
+              "transition": "Sprain_Injury"
+            },
+            {
+              "distribution": 0.00229,
+              "transition": "Knee_Injury"
+            },
+            {
+              "distribution": 0.00147,
+              "transition": "Shoulder_Injury"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Wait_For_Injury",
+              "remarks": [
+                "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
+                "out of 1.0 if none of the other transitions are taken, see: ",
+                "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+              ]
+            }
+          ]
         },
         {
-          "distribution": 0.000318,
-          "transition": "Gunshot_Injury"
-        },
-        {
-          "distribution": 0.0051,
-          "transition": "Concussion_Injury"
-        },
-        {
-          "distribution": 0.00478,
-          "transition": "Whiplash_Injury"
-        },
-        {
-          "distribution": 0.0583,
-          "remarks": [
-            "Retain highest probability for elderly."
-          ],
-          "transition": "Broken_Bone_Injury"
-        },
-        {
-          "distribution": 0.00398,
-          "transition": "Burn_Injury"
-        },
-        {
-          "distribution": 0.015,
-          "transition": "Laceration_Injury"
-        },
-        {
-          "distribution": 0.0125,
-          "transition": "Sprain_Injury"
-        },
-        {
-          "distribution": 0.00229,
-          "transition": "Knee_Injury"
-        },
-        {
-          "distribution": 0.00147,
-          "transition": "Shoulder_Injury"
-        },
-        {
-          "distribution": 0.5,
-          "transition": "Wait_For_Injury",
-          "remarks": [
-            "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
-            "out of 1.0 if none of the other transitions are taken, see: ",
-            "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+          "remarks" : ["elderly patients who do not have osteoporosis"],
+          "distributions" : [
+            {
+              "distribution": 0.000153,
+              "transition": "Spinal_Injury"
+            },
+            {
+              "distribution": 0.000318,
+              "transition": "Gunshot_Injury"
+            },
+            {
+              "distribution": 0.0051,
+              "transition": "Concussion_Injury"
+            },
+            {
+              "distribution": 0.00478,
+              "transition": "Whiplash_Injury"
+            },
+            {
+              "distribution": 0.035,
+              "remarks": [
+                "Retain high probability for elderly - reduced somewhat here since these are the patients without osteoporosis"
+              ],
+              "transition": "Broken_Bone_Injury"
+            },
+            {
+              "distribution": 0.00398,
+              "transition": "Burn_Injury"
+            },
+            {
+              "distribution": 0.015,
+              "transition": "Laceration_Injury"
+            },
+            {
+              "distribution": 0.0125,
+              "transition": "Sprain_Injury"
+            },
+            {
+              "distribution": 0.00229,
+              "transition": "Knee_Injury"
+            },
+            {
+              "distribution": 0.00147,
+              "transition": "Shoulder_Injury"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Wait_For_Injury",
+              "remarks": [
+                "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
+                "out of 1.0 if none of the other transitions are taken, see: ",
+                "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+              ]
+            }
           ]
         }
+
+
       ]
     },
 
@@ -1002,30 +1074,76 @@
         "4. Hip (but this occurs mostly in older women with osteoporosis) ",
         "5. Ankle "
       ],
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "distribution": 0.2,
-          "transition": "Broken_Clavicle"
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "osteoporosis",
+            "operator" : "==",
+            "value" : true
+          },
+          "remarks" : ["For the year 2000, there were an estimated 9 million new osteoporotic fractures, ",
+                       "of which 1.6 million were at the hip, 1.7 million were at the forearm ",
+                       "and 1.4 million were clinical vertebral fractures. ",
+                       "-- https://www.iofbonehealth.org/facts-statistics",
+                       "1.6 / 9 == 18%, 1.7/9 == 19%. ",
+                       "4.7 million not included in that stat, so we assume the distribution of the rest"],
+          "distributions" : [
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Clavicle"
+            },
+            {
+              "distribution": 0.415,
+              "transition": "Broken_Arm",
+              "remarks" : [".225 normally + .19 new"]
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Wrist"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Ankle"
+            },
+            {
+              "distribution": 0.05,
+              "transition": "Broken_Rib"
+            },
+            {
+              "distribution": 0.23,
+              "transition": "Broken_Hip",
+              "remarks" : [".05 below + .18 new"]
+            }
+          ]
         },
         {
-          "distribution": 0.2,
-          "transition": "Broken_Arm"
-        },
-        {
-          "distribution": 0.2,
-          "transition": "Broken_Wrist"
-        },
-        {
-          "distribution": 0.2,
-          "transition": "Broken_Ankle"
-        },
-        {
-          "distribution": 0.1,
-          "transition": "Broken_Rib"
-        },
-        {
-          "distribution": 0.1,
-          "transition": "Broken_Hip"
+          "distributions" : [
+            {
+              "distribution": 0.225,
+              "transition": "Broken_Clavicle"
+            },
+            {
+              "distribution": 0.225,
+              "transition": "Broken_Arm"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Broken_Wrist"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Broken_Ankle"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Rib"
+            },
+            {
+              "distribution": 0.05,
+              "transition": "Broken_Hip"
+            }
+          ]
         }
       ]
     },
