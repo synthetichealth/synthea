@@ -51,16 +51,6 @@ synthea:
     # The human twin birth rate in the United States rose 76% from 1980 through 2009, from 18.9 to 33.3 per 1,000 births.
     # - http://www.cdc.gov/nchs/data/databriefs/db80.pdf
     prevalence_of_twins:        0.02  # 20 per 1000
-    # these growth numbers are based on internet data to produce average height/weight men and women
-    # they are not "good numbers"
-    growth_rate_male_average:   6.3   # centimeters per year
-    growth_rate_male_stddev:    2     # centimeters per year
-    growth_rate_female_average: 5.6   # centimeters per year
-    growth_rate_female_stddev:  1.5   # centimeters per year
-    weight_gain_male_average:   3.325 # kilograms per year
-    weight_gain_male_stddev:    2     # kilograms per year
-    weight_gain_female_average: 2.725 # kilograms per year
-    weight_gain_female_stddev:  1     # kilograms per year
     # http://www.nhlbi.nih.gov/news/press-releases/2010/trials-use-technology-to-help-young-adults-achieve-healthy-weights
     # "Previous NHLBI research has shown that people aged 18-49 gain an average of 1-2 pounds each year"
     adult_weight_gain:          [1.0,2.0] # kilograms per year (this is more than 1-2 pounds, but we want obese people since we don't account for other factors effecting weight-gain)

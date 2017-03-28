@@ -1,15 +1,11 @@
 module Synthea
   module Modules
     class Lifecycle < Synthea::Rules
-      attr_accessor :male_growth, :male_weight, :female_growth, :female_weight
       attr_accessor :races, :ethnicity, :blood_types
 
       def initialize
         super
-        @male_growth = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.growth_rate_male_average, Synthea::Config.lifecycle.growth_rate_male_stddev)
-        @male_weight = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.weight_gain_male_average, Synthea::Config.lifecycle.weight_gain_male_stddev)
-        @female_growth = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.growth_rate_female_average, Synthea::Config.lifecycle.growth_rate_female_stddev)
-        @female_weight = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.weight_gain_female_average, Synthea::Config.lifecycle.weight_gain_female_stddev)
+        @growth_chart = JSON.parse(File.read('./resources/cdc_growth_charts.json'))
       end
 
       # People are born
@@ -28,9 +24,25 @@ module Synthea
           entity[:blood_type] = Synthea::World::Demographics::BLOOD_TYPES[entity[:race]].pick
           entity[:sexual_orientation] = Synthea::World::Demographics::SEXUAL_ORIENTATION.pick.to_s
           entity[:fingerprint] = Synthea::Fingerprint.generate if Synthea::Config.population.generate_fingerprints
-          # new babies are average weight and length for American newborns
-          entity.set_vital_sign(:height, 51.0, 'cm')
-          entity.set_vital_sign(:weight, 3.5, 'kg')
+
+          # growth chart data goes covers the 3rd-97th percentile
+          #  and we don't have data to extrapolate that last few %
+
+          # https://www2.census.gov/library/publications/2010/compendia/statab/130ed/tables/11s0205.pdf
+          # height distribution is basically a normal distribution
+          # mean for males is 5'9, SD is 2.9 inches; for females it's 5'4 and 2.8 inches
+          # that SD corresponds to the difference between the 50th percentile and the 90th percentile
+          distro = Synthea::Utils::Distribution.normal(50, 30)
+          hgt_pct = distro.call
+          entity[:height_percentile] = [[3, hgt_pct].max, 97].min # bound the percentile within 3-97
+          # weight distribution is less normal but still close enough that this should work for now
+          wgt_pct = distro.call
+          entity[:weight_percentile] = [[3, wgt_pct].max, 97].min
+
+          height = growth_chart('height', entity[:gender], entity[:age], entity[:height_percentile])
+          weight = growth_chart('weight', entity[:gender], entity[:age], entity[:weight_percentile])
+          entity.set_vital_sign(:height, height, 'cm')
+          entity.set_vital_sign(:weight, weight, 'kg')
           entity[:multiple_birth] = rand(3) + 1 if rand < Synthea::Config.lifecycle.prevalence_of_twins
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
@@ -143,13 +155,8 @@ module Synthea
             height = entity.get_vital_sign_value(:height)
             weight = entity.get_vital_sign_value(:weight)
             if age <= 20
-              if gender == 'M'
-                height += @male_growth.call # centimeters
-                weight += @male_weight.call # kilograms
-              elsif gender == 'F'
-                height += @female_growth.call # centimeters
-                weight += @female_weight.call # kilograms
-              end
+              height = growth_chart('height', gender, entity[:age], entity[:height_percentile])
+              weight = growth_chart('weight', gender, entity[:age], entity[:weight_percentile])
             elsif age <= Synthea::Config.lifecycle.adult_max_weight_age
               # getting older and fatter
               range = Synthea::Config.lifecycle.adult_weight_gain
@@ -351,6 +358,25 @@ module Synthea
       # weight in kilograms
       def calculate_bmi(height, weight)
         (weight / ((height / 100) * (height / 100)))
+      end
+
+      def growth_chart(type, gender, age, percentile)
+        age_months_str = (age * 12).to_i.to_s
+
+        hsh = @growth_chart[type][gender][age_months_str]
+
+        # use the LMS values to calculate the intermediate values
+        # ref: https://www.cdc.gov/growthcharts/percentile_data_files.htm
+        l = hsh['l'].to_f
+        m = hsh['m'].to_f
+        s = hsh['s'].to_f
+        z = Statistics2.pnormaldist(percentile.to_f / 100.0) # z-score
+
+        if l == 0.0 # no cases of this exist in the current data, this is included for completeness
+          m * Math.E**(s * z)
+        else
+          m * (1 + (l * s * z))**(1.0 / l)
+        end
       end
 
       def likelihood_of_death(age)
