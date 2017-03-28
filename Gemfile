@@ -12,6 +12,7 @@ gem 'georuby'
 gem 'net-sftp'
 gem 'concurrent-ruby', require: 'concurrent'
 gem 'rack', '~> 1.6' # locked at 1.6 to maintain compatibility with ruby 2.0.0
+gem 'statistics2', '~> 0.54'
 
 group :test do
   gem 'rubocop', '~> 0.43.0', require: false
