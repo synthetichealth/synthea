@@ -19,8 +19,8 @@ namespace :synthea do
     Synthea::Tasks::Concepts.inventory
   end
 
-  desc 'generate'
-  task :generate, [] do |_t, _args|
+  desc 'generate the whole population at once'
+  task :population, [] do |_t, _args|
     clear_output
     Synthea::Output::CsvRecord.open_csv_files if Synthea::Config.exporter.csv.export
     start = Time.now
@@ -36,11 +36,18 @@ namespace :synthea do
     puts 'Finished.'
   end
 
-  desc 'sequential generation'
+  desc 'sequential generation, one patient at a time'
+  task :generate, [:datafile] do |_t, args|
+    args.with_defaults(datafile: nil)
+    run_synthea_sequential(args.datafile)
+  end
+
   task :sequential, [:datafile] do |_t, args|
     args.with_defaults(datafile: nil)
+    run_synthea_sequential(args.datafile)
+  end
 
-    datafile = args.datafile
+  def run_synthea_sequential(datafile)
     if datafile
       raise "File not found: #{datafile}" unless File.file?(datafile)
       datafile = File.read(datafile)

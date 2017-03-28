@@ -33,21 +33,16 @@ bundle install
 ```
 
 ### Generate Synthetic Patients
-Generating an entire population at once...
+Generating the population one at a time...
 
 ```
 bundle exec rake synthea:generate
-```
-Or generating the population one at a time...
-
-```
-bundle exec rake synthea:sequential
 ```
 
 Or generating the population for a county and time based on census statistics...
 
 ```
-bundle exec rake synthea:sequential['./config/Suffolk_County.json']
+bundle exec rake synthea:generate['./config/Suffolk_County.json']
 ```
 
 Some settings can be changed in `./config/synthea.yml`.
