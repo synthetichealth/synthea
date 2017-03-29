@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'json'
   s.add_runtime_dependency 'chunky_png'
   s.add_runtime_dependency 'ruby-graphviz'
-  s.add_runtime_dependency 'statistics2', '~> 0.54'
+  s.add_runtime_dependency 'distribution', '~> 0.7.3'
 end

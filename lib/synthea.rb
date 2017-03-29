@@ -19,7 +19,7 @@ require 'json'
 require 'concurrent'
 require 'chunky_png'
 require 'graphviz'
-require 'statistics2/no_ext' # requiring the pure ruby version to ensure jruby compatibility
+require 'distribution'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 

@@ -33,7 +33,7 @@ module Synthea
           # height distribution is basically a normal distribution
           # mean for males is 5'9, SD is 2.9 inches; for females it's 5'4 and 2.8 inches
           # that SD corresponds to the difference between the 50th percentile and the 90th percentile
-          distro = Synthea::Utils::Distribution.normal(50, 30)
+          distro = Distribution::Normal.rng(50, 30)
           hgt_pct = distro.call
           entity[:height_percentile] = [[3, hgt_pct].max, 97].min # bound the percentile within 3-97
           # weight distribution is less normal but still close enough that this should work for now
@@ -374,7 +374,7 @@ module Synthea
         l = hsh['l'].to_f
         m = hsh['m'].to_f
         s = hsh['s'].to_f
-        z = Statistics2.pnormaldist(percentile.to_f / 100.0) # z-score
+        z = Distribution::Normal.p_value(percentile.to_f / 100.0) # z-score
 
         if l == 0.0 # no cases of this exist in the current data, this is included for completeness
           m * Math.E**(s * z)

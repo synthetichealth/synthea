@@ -25,6 +25,7 @@ PATH
       area
       chunky_png
       concurrent-ruby
+      distribution (~> 0.7.3)
       faker (~> 1.6, >= 1.6.0)
       fhir_client (~> 1.8)
       fhir_models
@@ -35,7 +36,6 @@ PATH
       pickup (~> 0.0.11, >= 0.0.11)
       recursive-open-struct (~> 1.0, >= 1.0.0)
       ruby-graphviz
-      statistics2 (~> 0.54)
 
 GEM
   remote: https://rubygems.org/
@@ -69,6 +69,7 @@ GEM
     concurrent-ruby (1.0.4-java)
     connection_pool (2.2.1)
     date_time_precision (0.8.1)
+    distribution (0.7.3)
     docile (1.1.5)
     domain_name (0.5.20161129)
       unf (>= 0.0.5, < 1.0.0)
@@ -185,7 +186,6 @@ GEM
     slop (3.6.0)
     spoon (0.0.6)
       ffi
-    statistics2 (0.54)
     systemu (2.6.5)
     thread_safe (0.3.5)
     thread_safe (0.3.5-java)
@@ -208,6 +208,7 @@ DEPENDENCIES
   awesome_print
   cane (~> 2.3.0)
   concurrent-ruby
+  distribution (~> 0.7.3)
   faker
   georuby
   health-data-standards!
@@ -221,7 +222,6 @@ DEPENDENCIES
   recursive-open-struct
   rubocop (~> 0.43.0)
   simplecov
-  statistics2 (~> 0.54)
   synthea!
   tilt
 
