@@ -1,0 +1,72 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-skin-SupportSurfaceCategoryVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR SupportSurfaceCategoryVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-SupportSurfaceCategoryVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.skin.SupportSurfaceCategoryVS"
+    }
+  ],
+  "name": "SHR SupportSurfaceCategoryVS ValueSet",
+  "title": "SHR SupportSurfaceCategoryVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.109Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-skin-SupportSurfaceCategoryVS",
+        "concept": [
+          {
+            "code": "active_support",
+            "display": "Active support surface"
+          },
+          {
+            "code": "reactive_support",
+            "display": "Reactive support surface"
+          },
+          {
+            "code": "mattress",
+            "display": "Mattress"
+          },
+          {
+            "code": "bed_system",
+            "display": "Integrated bed system"
+          },
+          {
+            "code": "overlay",
+            "display": "Overlay"
+          },
+          {
+            "code": "nonpowered",
+            "display": "Non-powered"
+          },
+          {
+            "code": "powered",
+            "display": "Powered"
+          }
+        ]
+      }
+    ]
+  }
+}

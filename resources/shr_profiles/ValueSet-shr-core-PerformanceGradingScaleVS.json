@@ -1,0 +1,65 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-core-PerformanceGradingScaleVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR PerformanceGradingScaleVS ValueSet</b></p>\n<p>A simple performance grading scale. Also useful for grading quality.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-PerformanceGradingScaleVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.PerformanceGradingScaleVS"
+    }
+  ],
+  "name": "SHR PerformanceGradingScaleVS ValueSet",
+  "title": "SHR PerformanceGradingScaleVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.107Z",
+  "description": "A simple performance grading scale. Also useful for grading quality.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-core-PerformanceGradingScaleVS",
+        "concept": [
+          {
+            "code": "excellent",
+            "display": "Excellent"
+          },
+          {
+            "code": "very_good",
+            "display": "Very good"
+          },
+          {
+            "code": "good",
+            "display": "Good"
+          },
+          {
+            "code": "fair",
+            "display": "Fair"
+          },
+          {
+            "code": "poor",
+            "display": "Poor"
+          }
+        ]
+      }
+    ]
+  }
+}

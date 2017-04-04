@@ -1,0 +1,116 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-behavior-DietNutritionConcernVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR DietNutritionConcernVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-DietNutritionConcernVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.behavior.DietNutritionConcernVS"
+    }
+  ],
+  "name": "SHR DietNutritionConcernVS ValueSet",
+  "title": "SHR DietNutritionConcernVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.105Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-behavior-DietNutritionConcernVS",
+        "concept": [
+          {
+            "code": "sugar",
+            "display": "Too much sugar"
+          },
+          {
+            "code": "snacks",
+            "display": "Frequent snacking"
+          },
+          {
+            "code": "caffeine",
+            "display": "Too much caffeine"
+          },
+          {
+            "code": "cholesterol",
+            "display": "Too much cholesterol"
+          },
+          {
+            "code": "overeating",
+            "display": "Eating too much"
+          },
+          {
+            "code": "undereating",
+            "display": "Eating too little"
+          },
+          {
+            "code": "unhealthy_diet",
+            "display": "Eating an unhealthy diet"
+          },
+          {
+            "code": "chewing",
+            "display": "Problem chewing"
+          },
+          {
+            "code": "swallowing",
+            "display": "Problem swallowing"
+          },
+          {
+            "code": "high_appetite",
+            "display": "Increased appetite"
+          },
+          {
+            "code": "low_appetite",
+            "display": "Decreased appetite"
+          },
+          {
+            "code": "taste",
+            "display": "Problem with food taste"
+          },
+          {
+            "code": "constipation",
+            "display": "Constipation"
+          },
+          {
+            "code": "diarrhea",
+            "display": "Diarrhea"
+          },
+          {
+            "code": "abdominal_pain",
+            "display": "Abdominal pain"
+          },
+          {
+            "code": "gas",
+            "display": "Flatulence"
+          },
+          {
+            "code": "binging",
+            "display": "Binge eating"
+          },
+          {
+            "code": "purging",
+            "display": "Purging"
+          }
+        ]
+      }
+    ]
+  }
+}

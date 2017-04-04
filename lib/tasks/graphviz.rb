@@ -287,17 +287,15 @@ module Synthea
             details = "#{s}: #{e['quantity']}"
           end
         when 'Observation'
-          details = "Category: #{state['category']}\\l"
-
           unit = state['unit']
           if unit
             unit = 'in ' + unit.gsub('{','(').gsub('}',')') # replace curly braces with parens, braces can cause issues
           end
 
           if state.has_key? 'vital_sign'
-            details = details + "Record value from Vital Sign '#{state['vital_sign']}' #{unit}\\l"
+            details = "Record value from Vital Sign '#{state['vital_sign']}' #{unit}\\l"
           elsif state.has_key? 'attribute'
-            details = details + "Record value from Attribute '#{state['attribute']}' #{unit}\\l"
+            details = "Record value from Attribute '#{state['attribute']}' #{unit}\\l"
           end
         when 'Counter'
           details = "#{state['action']} value of attribute '#{state['attribute']}' by 1"
@@ -378,6 +376,9 @@ module Synthea
         if state.has_key? 'duration'
           d = state['duration']
           details = details + "\\lDuration: #{d['low']} - #{d['high']} #{d['unit']}\\l"
+        end
+        if state.has_key? 'category'
+          details = details + "Category: #{state['category']}\\l"
         end
 
         details

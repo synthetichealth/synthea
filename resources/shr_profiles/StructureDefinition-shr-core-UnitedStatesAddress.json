@@ -1,0 +1,582 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "shr-core-UnitedStatesAddress",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR UnitedStatesAddress Profile</b></p>\n  <p>An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR).</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.core.UnitedStatesAddress maps to Address:\n  AddressLine maps to line\n  City maps to city\n  County maps to district\n  State maps to state\n  PostalCode maps to postalCode\n  Country maps to country\n  use is 0..0\n  type is 0..0\n</pre></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-UnitedStatesAddress",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.core.UnitedStatesAddress"
+    }
+  ],
+  "name": "SHR UnitedStatesAddress Profile",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.636Z",
+  "description": "An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR).",
+  "purpose": "Need to be able to record postal addresses, along with notes about their use.",
+  "fhirVersion": "1.8.0",
+  "mapping": [
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "servd",
+      "uri": "http://www.omg.org/spec/ServD/1.0/",
+      "name": "ServD"
+    },
+    {
+      "identity": "vcard",
+      "uri": "http://w3.org/vcard",
+      "name": "vCard Mapping"
+    }
+  ],
+  "kind": "complex-type",
+  "abstract": false,
+  "type": "Address",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Address",
+  "derivation": "constraint",
+  "snapshot": {
+    "element": [
+      {
+        "id": "Address:shr-core-UnitedStatesAddress",
+        "path": "Address",
+        "short": "SHR UnitedStatesAddress Profile",
+        "definition": "An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR).",
+        "comments": "Note: address is for postal addresses, not physical locations.",
+        "min": 0,
+        "max": "*",
+        "condition": [
+          "ele-1"
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "children().count() > id.count()",
+            "xpath": "@value|f:*|h:div",
+            "source": "Element"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          },
+          {
+            "identity": "v2",
+            "map": "XAD"
+          },
+          {
+            "identity": "rim",
+            "map": "AD"
+          },
+          {
+            "identity": "servd",
+            "map": "Address"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.id",
+        "path": "Address.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.extension",
+        "path": "Address.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.use",
+        "path": "Address.use",
+        "short": "home | work | temp | old - purpose of this address",
+        "definition": "The purpose of this address.",
+        "comments": "This is labeled as \"Is Modifier\" because applications should not mistake a temporary or old address etc.for a current/permanent one. Applications can assume that an address is current unless it explicitly says that it is temporary or old.",
+        "requirements": "Allows an appropriate address to be chosen from a list of many.",
+        "min": 0,
+        "max": "0",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueCode": "home"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "The use of an address",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/address-use"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.7"
+          },
+          {
+            "identity": "rim",
+            "map": "unique(./use)"
+          },
+          {
+            "identity": "servd",
+            "map": "./AddressPurpose"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.type",
+        "path": "Address.type",
+        "short": "postal | physical | both",
+        "definition": "Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.",
+        "min": 0,
+        "max": "0",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueCode": "both"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "The type of an address (physical / postal)",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/address-type"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.18"
+          },
+          {
+            "identity": "rim",
+            "map": "unique(./use)"
+          },
+          {
+            "identity": "vcard",
+            "map": "address type parameter"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.text",
+        "path": "Address.text",
+        "short": "Text representation of the address",
+        "definition": "A full text representation of the address.",
+        "comments": "Can provide both a text representation and parts.",
+        "requirements": "A renderable, unencoded form.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueString": "137 Nowhere Street, Erewhon 9132"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.1 + XAD.2 + XAD.3 + XAD.4 + XAD.5 + XAD.6"
+          },
+          {
+            "identity": "rim",
+            "map": "./formatted"
+          },
+          {
+            "identity": "vcard",
+            "map": "address label parameter"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.line",
+        "path": "Address.line",
+        "short": "Street name, number, direction & P.O. Box etc.",
+        "definition": "This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.",
+        "requirements": "home | work | temp | old - purpose of this address.",
+        "min": 0,
+        "max": "2",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueString": "137 Nowhere Street"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.1 + XAD.2 (note: XAD.1 and XAD.2 have different meanings for a company address than for a person address)"
+          },
+          {
+            "identity": "rim",
+            "map": "AD.part[parttype = AL]"
+          },
+          {
+            "identity": "vcard",
+            "map": "street"
+          },
+          {
+            "identity": "servd",
+            "map": "./StreetAddress (newline delimitted)"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.city",
+        "path": "Address.city",
+        "short": "Name of city, town etc.",
+        "definition": "The name of the city, town, village or other community or delivery center.",
+        "alias": [
+          "Municpality"
+        ],
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueString": "Erewhon"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.3"
+          },
+          {
+            "identity": "rim",
+            "map": "AD.part[parttype = CTY]"
+          },
+          {
+            "identity": "vcard",
+            "map": "locality"
+          },
+          {
+            "identity": "servd",
+            "map": "./Jurisdiction"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.district",
+        "path": "Address.district",
+        "short": "District name (aka county)",
+        "definition": "The name of the administrative area (county).",
+        "comments": "District is sometimes known as county, but in some regions 'county' is used in place of city (municipality), so county name should be conveyed in city instead.",
+        "alias": [
+          "County"
+        ],
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueString": "Madison"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.9"
+          },
+          {
+            "identity": "rim",
+            "map": "AD.part[parttype = CNT | CPA]"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.state",
+        "path": "Address.state",
+        "short": "Sub-unit of country (abbreviations ok)",
+        "definition": "Sub-unit of a country with limited sovereignty in a federally organized country. A code may be used if codes are in common use (i.e. US 2 letter state codes).",
+        "alias": [
+          "Province",
+          "Territory"
+        ],
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.4"
+          },
+          {
+            "identity": "rim",
+            "map": "AD.part[parttype = STA]"
+          },
+          {
+            "identity": "vcard",
+            "map": "region"
+          },
+          {
+            "identity": "servd",
+            "map": "./Region"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.postalCode",
+        "path": "Address.postalCode",
+        "short": "Postal code for area",
+        "definition": "A postal code designating a region defined by the postal service.",
+        "alias": [
+          "Zip"
+        ],
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valueString": "9132"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.5"
+          },
+          {
+            "identity": "rim",
+            "map": "AD.part[parttype = ZIP]"
+          },
+          {
+            "identity": "vcard",
+            "map": "code"
+          },
+          {
+            "identity": "servd",
+            "map": "./PostalIdentificationCode"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.country",
+        "path": "Address.country",
+        "short": "Country (e.g. can be ISO 3166 2 or 3 letter code)",
+        "definition": "Country - a nation as commonly understood or generally accepted.",
+        "comments": "ISO 3166 3 letter codes can be used in place of a full country name.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.6"
+          },
+          {
+            "identity": "rim",
+            "map": "AD.part[parttype = CNT]"
+          },
+          {
+            "identity": "vcard",
+            "map": "country"
+          },
+          {
+            "identity": "servd",
+            "map": "./Country"
+          }
+        ]
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.period",
+        "path": "Address.period",
+        "short": "Time period when address was/is in use",
+        "definition": "Time period when address was/is in use.",
+        "requirements": "Allows addresses to be placed in historical context.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Period"
+          }
+        ],
+        "example": [
+          {
+            "label": "General",
+            "valuePeriod": {
+              "start": "2010-03-23",
+              "end": "2010-07-01"
+            }
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XAD.12 / XAD.13 + XAD.14"
+          },
+          {
+            "identity": "rim",
+            "map": "./usablePeriod[type=\"IVL<TS>\"]"
+          },
+          {
+            "identity": "servd",
+            "map": "./StartDate and ./EndDate"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "Address:shr-core-UnitedStatesAddress",
+        "path": "Address",
+        "short": "SHR UnitedStatesAddress Profile",
+        "definition": "An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR)."
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.use",
+        "path": "Address.use",
+        "min": 0,
+        "max": "0"
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.type",
+        "path": "Address.type",
+        "min": 0,
+        "max": "0"
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.line",
+        "path": "Address.line",
+        "min": 0,
+        "max": "2"
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.state",
+        "path": "Address.state",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "Address:shr-core-UnitedStatesAddress.country",
+        "path": "Address.country",
+        "min": 1,
+        "max": "1"
+      }
+    ]
+  }
+}

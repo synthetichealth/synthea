@@ -1,0 +1,72 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-lab-TestInterpretationVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR TestInterpretationVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.lab.TestInterpretationVS"
+    }
+  ],
+  "name": "SHR TestInterpretationVS ValueSet",
+  "title": "SHR TestInterpretationVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.108Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "concept": [
+          {
+            "code": "C0205307",
+            "display": "Normal"
+          },
+          {
+            "code": "C0205161",
+            "display": "Abnormal"
+          },
+          {
+            "code": "C1548135",
+            "display": "Very abnormal"
+          },
+          {
+            "code": "C0442811",
+            "display": "Very low"
+          },
+          {
+            "code": "C1611820",
+            "display": "Low"
+          },
+          {
+            "code": "C0205250",
+            "display": "High"
+          },
+          {
+            "code": "C0442804",
+            "display": "Very high"
+          }
+        ]
+      }
+    ]
+  }
+}

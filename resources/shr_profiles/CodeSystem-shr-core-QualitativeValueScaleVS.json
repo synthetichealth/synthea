@@ -1,0 +1,63 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-core-QualitativeValueScaleVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR QualitativeValueScaleVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-core-QualitativeValueScaleVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.core.QualitativeValueScaleVS"
+  },
+  "name": "SHR QualitativeValueScaleVS CodeSystem",
+  "title": "SHR QualitativeValueScaleVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.100Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 5,
+  "concept": [
+    {
+      "code": "very_high",
+      "display": "Very high",
+      "definition": "Very high"
+    },
+    {
+      "code": "high",
+      "display": "High",
+      "definition": "High"
+    },
+    {
+      "code": "moderate",
+      "display": "Moderate",
+      "definition": "Moderate"
+    },
+    {
+      "code": "low",
+      "display": "Low",
+      "definition": "Low"
+    },
+    {
+      "code": "very_low",
+      "display": "Very low",
+      "definition": "Very low"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ class FhirTest < Minitest::Test
     }
     @patient[:telephone] = '999-999-9999'
     @patient[:birth_place] = { 'city' => 'Bedford','state' => 'MA', }
+    @patient[:first_language] = :french_creole
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
@@ -25,7 +26,8 @@ class FhirTest < Minitest::Test
     @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour }
     @encounter_entry = Synthea::Output::FhirRecord.encounter(@encounter, @fhir_record, @patient_entry)
     @patientID = @fhir_record.entry[0].fullUrl
-    @encounterID = @fhir_record.entry[1].fullUrl
+    # @fhir_record.entry[1] is the provider
+    @encounterID = @fhir_record.entry[2].fullUrl
   end
 
   def test_convert_to_fhir
@@ -45,14 +47,14 @@ class FhirTest < Minitest::Test
     record.observation(:height, time_adv, 5)
     record.encounter_end(:age_lt_11, time_adv + 10.minutes)
 
-    #Add an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
+    #Add 1 provider and an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
-    assert_equal(11,fhir.entry.length)
+    assert_equal(12,fhir.entry.length)
     #test_abatement
     disease = fhir.entry.find {|e| e.resource.is_a?(FHIR::Condition)}.resource
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time + 10.minutes, 'time'), disease.abatementDateTime)
     order = [FHIR::Encounter, FHIR::Condition, FHIR::Observation, FHIR::Procedure, FHIR::Immunization]
-    order = order.concat(order).unshift(FHIR::Patient)
+    order = [FHIR::Patient, FHIR::Organization] + order + order
     order.zip(fhir.entry) do |klass, entry|
       assert_equal(klass, entry.resource.class)
     end
@@ -100,10 +102,10 @@ class FhirTest < Minitest::Test
     @patient[:race] = :hispanic
     @patient[:ethnicity] = :mexican
     Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
-    race = @fhir_record.entry[2].resource.extension[0].valueCodeableConcept.coding[0]
+    race = @fhir_record.entry[3].resource.extension[0].valueCodeableConcept.coding[0]
     assert_equal('Other',race.display)
     assert_equal('2131-1',race.code)
-    ethnicity = @fhir_record.entry[2].resource.extension[1].valueCodeableConcept.coding[0]
+    ethnicity = @fhir_record.entry[3].resource.extension[1].valueCodeableConcept.coding[0]
     assert_equal('Mexican',ethnicity.display)
     assert_equal('2148-5',ethnicity.code)
     refute_empty person.text.div
@@ -126,7 +128,7 @@ class FhirTest < Minitest::Test
   end
 
   def test_encounter
-    encounter = @fhir_record.entry[1].resource
+    encounter = @fhir_record.entry[2].resource
     assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,@encounterID)
     assert_equal('finished', encounter.status)
     assert_equal('outpatient', encounter.local_class.code)
@@ -192,11 +194,11 @@ class FhirTest < Minitest::Test
     Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     observation = {'type' => :diastolic_blood_pressure, 'time' => @time, 'value' => 80}
     Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
-    multiobservation = {'type' => :blood_pressure, 'time' =>  @time, 'value' => 2}
+    multiobservation = {'type' => :blood_pressure, 'time' =>  @time, 'value' => 2, 'category' => 'vital-signs' }
     Synthea::Output::FhirRecord.multi_observation(multiobservation, @fhir_record, @patient_entry, @encounter_entry)
     multiobs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
     multiobs = multiobs_entry.resource
-    assert_equal(3, @fhir_record.entry.length)
+    assert_equal(4, @fhir_record.entry.length)
     assert_equal('final',multiobs.status)
     assert_equal('http://loinc.org', multiobs.code.coding[0].system)
     assert_equal('55284-4', multiobs.code.coding[0].code)

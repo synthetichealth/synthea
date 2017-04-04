@@ -1,0 +1,68 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-medication-MedicationChangeReasonVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR MedicationChangeReasonVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-medication-MedicationChangeReasonVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.medication.MedicationChangeReasonVS"
+    }
+  ],
+  "name": "SHR MedicationChangeReasonVS ValueSet",
+  "title": "SHR MedicationChangeReasonVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.108Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-medication-MedicationChangeReasonVS",
+        "concept": [
+          {
+            "code": "not_needed",
+            "display": "Do not need it any more, condition abated"
+          },
+          {
+            "code": "finished",
+            "display": "Course of treatment complete"
+          },
+          {
+            "code": "ineffective",
+            "display": "MTH #C3661846 Medication not effective."
+          },
+          {
+            "code": "burdensome",
+            "display": "Can't take it when supposed to, too busy, or inconvenient to store or administer"
+          },
+          {
+            "code": "difficult",
+            "display": "Has trouble or finds it difficult to take or administer"
+          },
+          {
+            "code": "side_effect",
+            "display": "MTH#C0879626 \tExperienced side effects"
+          }
+        ]
+      }
+    ]
+  }
+}

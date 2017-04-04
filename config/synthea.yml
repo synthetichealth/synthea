@@ -6,6 +6,7 @@ synthea:
     fhir:
       export: true
       upload: null # url of the server, ex 'http://fhirserver.example.com:8080'
+      use_shr_extensions: true
     html:
       export: false
     text:

@@ -1,0 +1,108 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-skin-PressureUlcerBodySiteVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR PressureUlcerBodySiteVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.skin.PressureUlcerBodySiteVS"
+    }
+  ],
+  "name": "SHR PressureUlcerBodySiteVS ValueSet",
+  "title": "SHR PressureUlcerBodySiteVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.109Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://snomed.info/sct",
+        "concept": [
+          {
+            "code": "43631005",
+            "display": "Back of head"
+          },
+          {
+            "code": "23747009",
+            "display": "Chin"
+          },
+          {
+            "code": "87141009",
+            "display": "Sacrum/coccyx"
+          },
+          {
+            "code": "122495006",
+            "display": "Thoratic spine"
+          },
+          {
+            "code": "122496007",
+            "display": "Lumbar spine"
+          },
+          {
+            "code": "TBD",
+            "display": "Shoulder"
+          },
+          {
+            "code": "TBD",
+            "display": "Scapula"
+          },
+          {
+            "code": "TBD",
+            "display": "Elbow"
+          },
+          {
+            "code": "TBD",
+            "display": "Hip"
+          },
+          {
+            "code": "TBD",
+            "display": "Knee"
+          },
+          {
+            "code": "TBD",
+            "display": "Heel"
+          },
+          {
+            "code": "TBD",
+            "display": "Medial ankle"
+          },
+          {
+            "code": "TBD",
+            "display": "Lateral ankle"
+          },
+          {
+            "code": "TBD",
+            "display": "Ankle"
+          },
+          {
+            "code": "TBD",
+            "display": "Posterior iliac crest"
+          },
+          {
+            "code": "TBD",
+            "display": "Buttock"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-vital-BodyTemperatureBodySiteVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR BodyTemperatureBodySiteVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-BodyTemperatureBodySiteVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.vital.BodyTemperatureBodySiteVS"
+    }
+  ],
+  "name": "SHR BodyTemperatureBodySiteVS ValueSet",
+  "title": "SHR BodyTemperatureBodySiteVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.109Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://ncimeta.nci.nih.gov",
+        "concept": [
+          {
+            "code": "C0004454",
+            "display": "Axilla (underarm)"
+          },
+          {
+            "code": "C0226896",
+            "display": "Oral cavity"
+          },
+          {
+            "code": "C0521421",
+            "display": "Ear"
+          },
+          {
+            "code": "C0041445",
+            "display": "Tympanic membrane"
+          },
+          {
+            "code": "C0039482",
+            "display": "Temporal artery (forehead)"
+          },
+          {
+            "code": "C0034896",
+            "display": "Rectal"
+          },
+          {
+            "code": "C0005682",
+            "display": "Urinary bladder"
+          },
+          {
+            "code": "C0027423",
+            "display": "Nasal"
+          },
+          {
+            "code": "C0027442",
+            "display": "Nasopharynx"
+          },
+          {
+            "code": "C0016129",
+            "display": "Finger"
+          },
+          {
+            "code": "C0040357",
+            "display": "Toe"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,1129 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "shr-lab-HIVScreeningTestRequest",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HIVScreeningTestRequest Profile</b></p>\n  <p>A request for a rapid HIV screening test.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.lab.HIVScreeningTestRequest maps to ProcedureRequest:\n  Entry.Author maps to orderer\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Reason maps to reason[x].CodeableConcept\n  OccurrenceTime maps to orderedOn\n  ActionCode maps to code\n  RequestStatus maps to status\n  RequestedPerformanceTime maps to scheduled[x]\n  PriorityOfRequest maps to priority\n  RequestedPerformer maps to performer\n  BodySite maps to bodySite\n  TBD &quot;Specimen&quot; maps to specimen\n</pre></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-lab-HIVScreeningTestRequest",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.lab.HIVScreeningTestRequest"
+    }
+  ],
+  "name": "SHR HIVScreeningTestRequest Profile",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.722Z",
+  "description": "A request for a rapid HIV screening test.",
+  "fhirVersion": "1.8.0",
+  "mapping": [
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/w5",
+      "name": "W5 Mapping"
+    },
+    {
+      "identity": "quick",
+      "uri": "http://wiki.siframework.org/CQF",
+      "name": "Quality Improvement and Clinical Knowledge (QUICK)"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "ProcedureRequest",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/ProcedureRequest",
+  "derivation": "constraint",
+  "snapshot": {
+    "element": [
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest",
+        "path": "ProcedureRequest",
+        "short": "SHR HIVScreeningTestRequest Profile",
+        "definition": "A request for a rapid HIV screening test.",
+        "min": 0,
+        "max": "*",
+        "constraint": [
+          {
+            "key": "dom-2",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain nested Resources",
+            "expression": "contained.contained.empty()",
+            "xpath": "not(parent::f:contained and f:contained)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-1",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain any narrative",
+            "expression": "contained.text.empty()",
+            "xpath": "not(parent::f:contained and f:text)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-4",
+            "severity": "error",
+            "human": "If a resource is contained in another resource, it SHALL NOT have a meta.versionId or a meta.lastUpdated",
+            "expression": "contained.meta.versionId.empty() and contained.meta.lastUpdated.empty()",
+            "xpath": "not(exists(f:contained/*/f:meta/f:versionId)) and not(exists(f:contained/*/f:meta/f:lastUpdated))",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-3",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL be referred to from elsewhere in the resource",
+            "expression": "contained.where(('#'+id in %resource.descendants().reference).not()).empty()",
+            "xpath": "not(exists(for $id in f:contained/*/@id return $id[not(ancestor::f:contained/parent::*/descendant::f:reference/@value=concat('#', $id))]))",
+            "source": "DomainResource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Entity. Role, or Act"
+          },
+          {
+            "identity": "w5",
+            "map": "clinical.general"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.id",
+        "path": "ProcedureRequest.id",
+        "short": "Logical id of this artifact",
+        "definition": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+        "comments": "The only time that a resource does not have an id is when it is being submitted to the server using a create operation.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "id"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.meta",
+        "path": "ProcedureRequest.meta",
+        "short": "Metadata about the resource",
+        "definition": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content may not always be associated with version changes to the resource.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.meta",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Meta"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.implicitRules",
+        "path": "ProcedureRequest.implicitRules",
+        "short": "A set of rules under which this content was created",
+        "definition": "A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content.",
+        "comments": "Asserting this rule set restricts the content to be only understood by a limited set of trading partners. This inherently limits the usefulness of the data in the long term. However, the existing health eco-system is highly fractured, and not yet ready to define, collect, and exchange data in a generally computable sense. Wherever possible, implementers and/or specification writers should avoid using this element as much as possible.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.implicitRules",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "uri"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.language",
+        "path": "ProcedureRequest.language",
+        "short": "Language of the resource content",
+        "definition": "The base language in which the resource is written.",
+        "comments": "Language is provided to support indexing and accessibility (typically, services such as text to speech use the language tag). The html language tag in the narrative applies  to the narrative. The language tag on the resource may be used to specify the language of other presentations generated from the data in the resource  Not all the content has to be in the base language. The Resource.language should not be assumed to apply to the narrative automatically. If a language is specified, it should it also be specified on the div element in the html (see rules in HTML5 for information about the relationship between xml:lang and the html lang attribute).",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.language",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "binding": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet",
+              "valueReference": {
+                "reference": "http://hl7.org/fhir/ValueSet/all-languages"
+              }
+            }
+          ],
+          "strength": "extensible",
+          "description": "A human language.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/languages"
+          }
+        }
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.text",
+        "path": "ProcedureRequest.text",
+        "short": "Text summary of the resource, for human interpretation",
+        "definition": "A human-readable narrative that contains a summary of the resource, and may be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
+        "comments": "Contained resources do not have narrative. Resources that are not contained SHOULD have a narrative. In some cases, a resource may only have text with little or no additional discrete data (as long as all minOccurs=1 elements are satisfied).  This may be necessary for data from legacy systems where information is captured as a \"text blob\" or where text is additionally entered raw or narrated and encoded in formation is added later.",
+        "alias": [
+          "narrative",
+          "html",
+          "xhtml",
+          "display"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.text",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Narrative"
+          }
+        ],
+        "condition": [
+          "dom-1"
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Act.text?"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.contained",
+        "path": "ProcedureRequest.contained",
+        "short": "Contained, inline Resources",
+        "definition": "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction scope.",
+        "comments": "This should never be done when the content can be identified properly, as once identification is lost, it is extremely difficult (and context dependent) to restore it again.",
+        "alias": [
+          "inline resources",
+          "anonymous resources",
+          "contained resources"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.contained",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Resource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension",
+        "path": "ProcedureRequest.extension",
+        "slicing": {
+          "id": "174",
+          "discriminator": [
+            "url"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension:participant",
+        "path": "ProcedureRequest.extension",
+        "sliceName": "participant",
+        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Participant-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension:performerinstructions",
+        "path": "ProcedureRequest.extension",
+        "sliceName": "performerinstructions",
+        "definition": "Information for the performer of the test, if needed.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-PerformerInstructions-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension:patientinstructions",
+        "path": "ProcedureRequest.extension",
+        "sliceName": "patientinstructions",
+        "definition": "Information for the patient, such as, where to get the test, how to prepare for the test, etc.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-PatientInstructions-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.modifierExtension",
+        "path": "ProcedureRequest.modifierExtension",
+        "slicing": {
+          "id": "175",
+          "discriminator": [
+            "url"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.modifierExtension:nonoccurrencemodifier",
+        "path": "ProcedureRequest.modifierExtension",
+        "sliceName": "nonoccurrencemodifier",
+        "definition": "When true, indicates either that the event or action documented in the entry did not occur, or the the thing documented is absent or does not exist.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-NonOccurrenceModifier-extension"
+          }
+        ],
+        "mustSupport": true,
+        "isModifier": true,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.modifierExtension:requestnottoperformactionmodifier",
+        "path": "ProcedureRequest.modifierExtension",
+        "sliceName": "requestnottoperformactionmodifier",
+        "definition": "If true, the thing requested should not take place. For example, a request to NOT elevate the head of a bed using the code for elevating the bed, and setting RequestNotToPerformActionModifier to true. Other examples include do not ambulate, do not flush NG tube, do not take blood pressure on a certain arm, etc. If the Request.code and RequestAgainstModifier both contain negation, that will reinforce the prohibition, and should not be interpreted as a double negative that equals a positive.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-RequestNotToPerformActionModifier-extension"
+          }
+        ],
+        "mustSupport": true,
+        "isModifier": true,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.identifier",
+        "path": "ProcedureRequest.identifier",
+        "short": "Unique identifier for the request",
+        "definition": "Identifiers assigned to this order by the order or by the receiver.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Identifier"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "ClinicalStatement.identifier"
+          },
+          {
+            "identity": "w5",
+            "map": "id"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.subject",
+        "path": "ProcedureRequest.subject",
+        "short": "Who the procedure should be done to",
+        "definition": "The person, animal or group that should receive the procedure.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Group"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "ClinicalStatement.subject"
+          },
+          {
+            "identity": "w5",
+            "map": "who.focus"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.code",
+        "path": "ProcedureRequest.code",
+        "short": "What procedure to perform",
+        "definition": "The specific procedure that is ordered. Use text if the exact nature of the procedure cannot be coded.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVScreeningTestCodeVS"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Procedure.procedureCode"
+          },
+          {
+            "identity": "w5",
+            "map": "class"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.bodySite",
+        "path": "ProcedureRequest.bodySite",
+        "short": "What part of body to perform on",
+        "definition": "Indicates the sites on the subject's body where the procedure should be performed (I.e. the target sites).",
+        "comments": "Only used if not implicit in the code found in ProcedureRequest.type.",
+        "requirements": "Knowing where the procedure is made is important for tracking if multiple sites are possible.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "targetSiteCode"
+          },
+          {
+            "identity": "quick",
+            "map": "Procedure.targetBodySite"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.reason[x]",
+        "path": "ProcedureRequest.reason[x]",
+        "short": "Why procedure should occur",
+        "definition": "The reason why the procedure is being proposed or ordered. This procedure request may be motivated by a Condition for instance.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A code that explains the reason why a procedure is  required.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/procedure-reason"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Action.indication.reason"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.scheduled[x]",
+        "path": "ProcedureRequest.scheduled[x]",
+        "short": "When procedure should occur",
+        "definition": "The timing schedule for the proposed or ordered procedure. The Schedule data type allows many different expressions.  E.g. \"Every 8 hours\"; \"Three times a day\"; \"1/2 an hour before breakfast for 10 days from 23-Dec 2011:\"; \"15 Oct 2013, 17 Oct 2013 and 1 Nov 2013\".",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "dateTime"
+          },
+          {
+            "code": "Period"
+          },
+          {
+            "code": "Timing"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Procedure.procedureSchedule"
+          },
+          {
+            "identity": "w5",
+            "map": "when.planned"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.encounter",
+        "path": "ProcedureRequest.encounter",
+        "short": "Encounter request created during",
+        "definition": "The encounter within which the procedure proposal or request was created.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-encounter-Encounter"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "ClinicalStatement.encounter"
+          },
+          {
+            "identity": "w5",
+            "map": "context"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.performer",
+        "path": "ProcedureRequest.performer",
+        "short": "Who should perform the procedure",
+        "definition": "For example, the surgeon, anaethetist, endoscopist, etc.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "w5",
+            "map": "who.actor"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.status",
+        "path": "ProcedureRequest.status",
+        "short": "proposed | draft | requested | received | accepted | in-progress | completed | suspended | rejected | aborted",
+        "definition": "The status of the order.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "The status of the request.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/procedure-request-status"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Action.currentStatus"
+          },
+          {
+            "identity": "w5",
+            "map": "status"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.supportingInfo",
+        "path": "ProcedureRequest.supportingInfo",
+        "short": "Extra information to use in performing request",
+        "definition": "Information that may be needed by/relevant to the performer in their execution of this request.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Resource"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.notes",
+        "path": "ProcedureRequest.notes",
+        "short": "Additional information about desired procedure",
+        "definition": "Any other notes associated with this proposal or order - e.g. provider instructions.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Annotation"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "ClinicalStatement.additionalText"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.asNeeded[x]",
+        "path": "ProcedureRequest.asNeeded[x]",
+        "short": "Preconditions for procedure",
+        "definition": "If a CodeableConcept is present, it indicates the pre-condition for performing the procedure.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "boolean"
+          },
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept identifying the pre-condition that should hold prior to performing a procedure.  For example \"pain\", \"on flare-up\", etc."
+        },
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Proposal.prnReason.reason"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.orderedOn",
+        "path": "ProcedureRequest.orderedOn",
+        "short": "When request was created",
+        "definition": "The time when the request was made.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Proposal.proposedAtTime"
+          },
+          {
+            "identity": "w5",
+            "map": "when.recorded"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.orderer",
+        "path": "ProcedureRequest.orderer",
+        "short": "Who made request",
+        "definition": "The healthcare professional responsible for proposing or ordering the procedure.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Device"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "ClinicalStatement.statementAuthor"
+          },
+          {
+            "identity": "w5",
+            "map": "who.author"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.priority",
+        "path": "ProcedureRequest.priority",
+        "short": "routine | urgent | stat | asap",
+        "definition": "The clinical priority associated with this order.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "The priority of the request.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/procedure-request-priority"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "quick",
+            "map": "Proposal.urgency"
+          },
+          {
+            "identity": "w5",
+            "map": "grade"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest",
+        "path": "ProcedureRequest",
+        "short": "SHR HIVScreeningTestRequest Profile",
+        "definition": "A request for a rapid HIV screening test."
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension:participant",
+        "path": "ProcedureRequest.extension",
+        "sliceName": "participant",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Participant-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension:performerinstructions",
+        "path": "ProcedureRequest.extension",
+        "sliceName": "performerinstructions",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-PerformerInstructions-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.extension:patientinstructions",
+        "path": "ProcedureRequest.extension",
+        "sliceName": "patientinstructions",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-PatientInstructions-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.modifierExtension:nonoccurrencemodifier",
+        "path": "ProcedureRequest.modifierExtension",
+        "sliceName": "nonoccurrencemodifier",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-NonOccurrenceModifier-extension"
+          }
+        ],
+        "mustSupport": true,
+        "isModifier": true,
+        "isSummary": false
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.modifierExtension:requestnottoperformactionmodifier",
+        "path": "ProcedureRequest.modifierExtension",
+        "sliceName": "requestnottoperformactionmodifier",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-RequestNotToPerformActionModifier-extension"
+          }
+        ],
+        "mustSupport": true,
+        "isModifier": true,
+        "isSummary": false
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.subject",
+        "path": "ProcedureRequest.subject",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Group"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.code",
+        "path": "ProcedureRequest.code",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVScreeningTestCodeVS"
+          }
+        }
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.bodySite",
+        "path": "ProcedureRequest.bodySite",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+          }
+        }
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.reason[x]",
+        "path": "ProcedureRequest.reason[x]",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.encounter",
+        "path": "ProcedureRequest.encounter",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-encounter-Encounter"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.performer",
+        "path": "ProcedureRequest.performer",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          }
+        ]
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.status",
+        "path": "ProcedureRequest.status",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "ProcedureRequest:shr-lab-HIVScreeningTestRequest.orderer",
+        "path": "ProcedureRequest.orderer",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Device"
+          }
+        ]
+      }
+    ]
+  }
+}

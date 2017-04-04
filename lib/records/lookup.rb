@@ -5,6 +5,15 @@ module Synthea
 
   #Store all code lookups here:
 
+  CODE_SYSTEM_LOOKUP = {
+    'LOINC' => { url: 'http://loinc.org' },
+    'SNOMED-CT' => { url: 'http://snomed.info/sct' },
+    'RxNorm' => { url: 'http://www.nlm.nih.gov/research/umls/rxnorm' },
+    'CVX' => { url: 'http://hl7.org/fhir/sid/cvx' },
+    'NUBC' => { url: 'http://www.nubc.org/patient-discharge' },
+    'UMLS' => { url: 'http://uts.nlm.nih.gov/metathesaurus' }
+  }
+
   OBS_LOOKUP = {
     height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
     weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},
@@ -167,6 +176,24 @@ module Synthea
     :american_indian => '1004-1',
     :arab => '2129-5',
     :nonhispanic => '2186-5'
+  }
+
+  LANGUAGE_LOOKUP = {
+    english: { 'code' => 'en-US', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'English (United States)' },
+    spanish: { 'code' => 'es', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Spanish' },
+    portuguese: { 'code' => 'pt', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Portuguese' },
+    chinese: { 'code' => 'zh', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Chinese' },
+    french: { 'code' => 'fr-FR', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'French (France)' },
+    french_creole: { 'code' => 'fr', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'French' },
+    italian: { 'code' => 'it', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Italian' },
+    russian: { 'code' => 'ru-RU', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Russian (Russia)' },
+    vietnamese: { 'code' => 'vi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Vietnamese' }, 
+    greek: { 'code' => 'el', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Greek' },
+    arabic: { 'code' => 'ar', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Arabic' },
+    cambodian: { 'code' => 'km', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Khmer (aka Cambodian)' },
+    german: { 'code' => 'de-DE', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'German (Germany)' },
+    hindi: { 'code' => 'hi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Hindi' },
+    undetermined: { 'code' => 'und', 'system' => 'http://id.loc.gov/vocabulary/iso639-2', 'display' => 'Undetermined'} 
   }
 
   PROCEDURE_LOOKUP = {

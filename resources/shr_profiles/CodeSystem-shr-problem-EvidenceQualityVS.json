@@ -1,0 +1,53 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-problem-EvidenceQualityVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR EvidenceQualityVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-problem-EvidenceQualityVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.problem.EvidenceQualityVS"
+  },
+  "name": "SHR EvidenceQualityVS CodeSystem",
+  "title": "SHR EvidenceQualityVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.101Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 3,
+  "concept": [
+    {
+      "code": "compelling_evidence",
+      "display": "Compelling evidence; indicates that assessments are based on high-quality information from multiple sources. High quality evidence does not imply that the assessment is a fact or certainty.",
+      "definition": "Compelling evidence; indicates that assessments are based on high-quality information from multiple sources. High quality evidence does not imply that the assessment is a fact or certainty."
+    },
+    {
+      "code": "suggestive_evidence",
+      "display": "Suggestive evidence; indicates that assessments are based on credible and plausible information, but not of sufficient quality or corroborated sufficiently to warrant a higher level of confidence.",
+      "definition": "Suggestive evidence; indicates that assessments are based on credible and plausible information, but not of sufficient quality or corroborated sufficiently to warrant a higher level of confidence."
+    },
+    {
+      "code": "weak_evidence",
+      "display": "Weak evidence, its credibility and/or plausibility is uncertain, fragmented or poorly corroborated to make solid judgments.",
+      "definition": "Weak evidence, its credibility and/or plausibility is uncertain, fragmented or poorly corroborated to make solid judgments."
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-demographics-TelecomQualifierVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR TelecomQualifierVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-demographics-TelecomQualifierVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.demographics.TelecomQualifierVS"
+  },
+  "name": "SHR TelecomQualifierVS CodeSystem",
+  "title": "SHR TelecomQualifierVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.100Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 12,
+  "concept": [
+    {
+      "code": "primary",
+      "display": "Primary (preferred) method of contact",
+      "definition": "Primary (preferred) method of contact"
+    },
+    {
+      "code": "secondary",
+      "display": "Secondary method of contact",
+      "definition": "Secondary method of contact"
+    },
+    {
+      "code": "prefer_call",
+      "display": "Prefer voice calls",
+      "definition": "Prefer voice calls"
+    },
+    {
+      "code": "prefer_text",
+      "display": "Prefer texting",
+      "definition": "Prefer texting"
+    },
+    {
+      "code": "personal",
+      "display": "Personal (home) use",
+      "definition": "Personal (home) use"
+    },
+    {
+      "code": "work",
+      "display": "Work use",
+      "definition": "Work use"
+    },
+    {
+      "code": "no_message",
+      "display": "Do not leave messages at this phone number",
+      "definition": "Do not leave messages at this phone number"
+    },
+    {
+      "code": "alert",
+      "display": "Use this contact method for reminders, alerts, and notifications",
+      "definition": "Use this contact method for reminders, alerts, and notifications"
+    },
+    {
+      "code": "telecare",
+      "display": "Use for telecare encounters",
+      "definition": "Use for telecare encounters"
+    },
+    {
+      "code": "shared",
+      "display": "A shared telecom address, e.g., facility telephone or family email",
+      "definition": "A shared telecom address, e.g., facility telephone or family email"
+    },
+    {
+      "code": "direct",
+      "display": "An encrypted DIRECT email address",
+      "definition": "An encrypted DIRECT email address"
+    },
+    {
+      "code": "portal",
+      "display": "Portal-based secure messaging address",
+      "definition": "Portal-based secure messaging address"
+    }
+  ]
+}

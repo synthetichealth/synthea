@@ -1,0 +1,73 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-demographics-InsuranceProviderTypeVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR InsuranceProviderTypeVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-demographics-InsuranceProviderTypeVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.demographics.InsuranceProviderTypeVS"
+  },
+  "name": "SHR InsuranceProviderTypeVS CodeSystem",
+  "title": "SHR InsuranceProviderTypeVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.100Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 7,
+  "concept": [
+    {
+      "code": "chip",
+      "display": "CHIP or SCHIP - State or Federal Children's Health Insurance Program",
+      "definition": "CHIP or SCHIP - State or Federal Children's Health Insurance Program"
+    },
+    {
+      "code": "medicaid",
+      "display": "Medicaid",
+      "definition": "Medicaid"
+    },
+    {
+      "code": "medicare",
+      "display": "Medicare",
+      "definition": "Medicare"
+    },
+    {
+      "code": "military",
+      "display": "Military coverage (Tricare)",
+      "definition": "Military coverage (Tricare)"
+    },
+    {
+      "code": "veteran",
+      "display": "VA coverage",
+      "definition": "VA coverage"
+    },
+    {
+      "code": "private",
+      "display": "Private or self-insured group",
+      "definition": "Private or self-insured group"
+    },
+    {
+      "code": "no_insurance",
+      "display": "No health insurance",
+      "definition": "No health insurance"
+    }
+  ]
+}

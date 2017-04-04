@@ -1,0 +1,1451 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "shr-actor-Practitioner",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Practitioner Profile</b></p>\n  <p>A person who practices a healing art.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.Practitioner maps to Practitioner:\n  HumanName maps to name\n  DateOfBirth maps to birthDate\n  AdministrativeGender maps to gender\n  AddressUsed maps to address\n  Telecom maps to telecom\n  LanguageUsed maps to communication\n  Affiliation maps to role.organization\n  NationalProviderIdentifier maps to identifier\n  MedicalSpecialty maps to role.specialty\n</pre></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Practitioner",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.actor.Practitioner"
+    }
+  ],
+  "name": "SHR Practitioner Profile",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.127Z",
+  "description": "A person who practices a healing art.",
+  "purpose": "Need to track doctors, staff, locums etc. for both healthcare practitioners, funders, etc.",
+  "fhirVersion": "1.8.0",
+  "mapping": [
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "servd",
+      "uri": "http://www.omg.org/spec/ServD/1.0/",
+      "name": "ServD"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/w5",
+      "name": "W5 Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "Practitioner",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Practitioner",
+  "derivation": "constraint",
+  "snapshot": {
+    "element": [
+      {
+        "id": "Practitioner:shr-actor-Practitioner",
+        "path": "Practitioner",
+        "short": "SHR Practitioner Profile",
+        "definition": "A person who practices a healing art.",
+        "comments": "Note that a cab driver no longer fits the bill. You probably would be interested in the organization rather than the individual?",
+        "min": 0,
+        "max": "*",
+        "constraint": [
+          {
+            "key": "dom-2",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain nested Resources",
+            "expression": "contained.contained.empty()",
+            "xpath": "not(parent::f:contained and f:contained)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-1",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain any narrative",
+            "expression": "contained.text.empty()",
+            "xpath": "not(parent::f:contained and f:text)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-4",
+            "severity": "error",
+            "human": "If a resource is contained in another resource, it SHALL NOT have a meta.versionId or a meta.lastUpdated",
+            "expression": "contained.meta.versionId.empty() and contained.meta.lastUpdated.empty()",
+            "xpath": "not(exists(f:contained/*/f:meta/f:versionId)) and not(exists(f:contained/*/f:meta/f:lastUpdated))",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-3",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL be referred to from elsewhere in the resource",
+            "expression": "contained.where(('#'+id in %resource.descendants().reference).not()).empty()",
+            "xpath": "not(exists(for $id in f:contained/*/@id return $id[not(ancestor::f:contained/parent::*/descendant::f:reference/@value=concat('#', $id))]))",
+            "source": "DomainResource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Entity. Role, or Act"
+          },
+          {
+            "identity": "v2",
+            "map": "PRD (as one example)"
+          },
+          {
+            "identity": "rim",
+            "map": "Role"
+          },
+          {
+            "identity": "servd",
+            "map": "Provider"
+          },
+          {
+            "identity": "w5",
+            "map": "administrative.individual"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.id",
+        "path": "Practitioner.id",
+        "short": "Logical id of this artifact",
+        "definition": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+        "comments": "The only time that a resource does not have an id is when it is being submitted to the server using a create operation.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "id"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.meta",
+        "path": "Practitioner.meta",
+        "short": "Metadata about the resource",
+        "definition": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content may not always be associated with version changes to the resource.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.meta",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Meta"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.implicitRules",
+        "path": "Practitioner.implicitRules",
+        "short": "A set of rules under which this content was created",
+        "definition": "A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content.",
+        "comments": "Asserting this rule set restricts the content to be only understood by a limited set of trading partners. This inherently limits the usefulness of the data in the long term. However, the existing health eco-system is highly fractured, and not yet ready to define, collect, and exchange data in a generally computable sense. Wherever possible, implementers and/or specification writers should avoid using this element as much as possible.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.implicitRules",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "uri"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.language",
+        "path": "Practitioner.language",
+        "short": "Language of the resource content",
+        "definition": "The base language in which the resource is written.",
+        "comments": "Language is provided to support indexing and accessibility (typically, services such as text to speech use the language tag). The html language tag in the narrative applies  to the narrative. The language tag on the resource may be used to specify the language of other presentations generated from the data in the resource  Not all the content has to be in the base language. The Resource.language should not be assumed to apply to the narrative automatically. If a language is specified, it should it also be specified on the div element in the html (see rules in HTML5 for information about the relationship between xml:lang and the html lang attribute).",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.language",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "binding": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet",
+              "valueReference": {
+                "reference": "http://hl7.org/fhir/ValueSet/all-languages"
+              }
+            }
+          ],
+          "strength": "extensible",
+          "description": "A human language.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/languages"
+          }
+        }
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.text",
+        "path": "Practitioner.text",
+        "short": "Text summary of the resource, for human interpretation",
+        "definition": "A human-readable narrative that contains a summary of the resource, and may be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
+        "comments": "Contained resources do not have narrative. Resources that are not contained SHOULD have a narrative. In some cases, a resource may only have text with little or no additional discrete data (as long as all minOccurs=1 elements are satisfied).  This may be necessary for data from legacy systems where information is captured as a \"text blob\" or where text is additionally entered raw or narrated and encoded in formation is added later.",
+        "alias": [
+          "narrative",
+          "html",
+          "xhtml",
+          "display"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.text",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Narrative"
+          }
+        ],
+        "condition": [
+          "dom-1"
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Act.text?"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.contained",
+        "path": "Practitioner.contained",
+        "short": "Contained, inline Resources",
+        "definition": "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction scope.",
+        "comments": "This should never be done when the content can be identified properly, as once identification is lost, it is extremely difficult (and context dependent) to restore it again.",
+        "alias": [
+          "inline resources",
+          "anonymous resources",
+          "contained resources"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.contained",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Resource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension",
+        "path": "Practitioner.extension",
+        "slicing": {
+          "id": "2",
+          "discriminator": [
+            "url"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension:anonymized",
+        "path": "Practitioner.extension",
+        "sliceName": "anonymized",
+        "definition": "Flag indicating if personally identifiable information has been withheld.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Anonymized-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension:fictionalperson",
+        "path": "Practitioner.extension",
+        "sliceName": "fictionalperson",
+        "definition": "Flag indicating if this record represents a fictional (synthetic, not real) person.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-FictionalPerson-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension:deceased",
+        "path": "Practitioner.extension",
+        "sliceName": "deceased",
+        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Deceased-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.modifierExtension",
+        "path": "Practitioner.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.identifier",
+        "path": "Practitioner.identifier",
+        "short": "A identifier for the person as this agent",
+        "definition": "An identifier that applies to this person in this role.",
+        "requirements": "Often, specific identities are assigned for the agent.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Identifier"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PRD-7 (or XCN.1)"
+          },
+          {
+            "identity": "rim",
+            "map": "./id"
+          },
+          {
+            "identity": "servd",
+            "map": "./Identifiers"
+          },
+          {
+            "identity": "w5",
+            "map": "id"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.active",
+        "path": "Practitioner.active",
+        "short": "Whether this practitioner's record is in active use",
+        "definition": "Whether this practitioner's record is in active use.",
+        "comments": "Default is true. \r\rIf the practitioner is not in use by one organization, then it should mark the period on the PractitonerRole with an end date (even if they are active) as they may be active in another role.",
+        "requirements": "Need to be able to mark a practitioner record as not to be used because it was created in error.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ],
+        "defaultValueBoolean": true,
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "./statusCode"
+          },
+          {
+            "identity": "w5",
+            "map": "status"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.name",
+        "path": "Practitioner.name",
+        "short": "The name(s) associated with the practitioner",
+        "definition": "The name(s) associated with the practitioner.",
+        "comments": "The selection of the use property should ensure that there is a single usual name specified, and others use the nickname (alias), old, or other values as appropriate.\r\rIn general select the value to be used in the ResourceReference.display based on this:\r\r1. There is more than 1 name\r2. Use = usual\r3. Period is current to the date of the usage\r4. Use = official\r5. Other order as decided by internal business rules.",
+        "requirements": "The name(s) that a Practitioner is known by. Where there are multiple, the name that the practitioner is usually known as should be used in the display.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "HumanName",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-HumanName"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XCN Components"
+          },
+          {
+            "identity": "rim",
+            "map": "./name"
+          },
+          {
+            "identity": "servd",
+            "map": "./PreferredName (GivenNames, FamilyName, TitleCode)"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.telecom",
+        "path": "Practitioner.telecom",
+        "short": "A contact detail for the practitioner (that apply to all roles)",
+        "definition": "A contact detail for the practitioner, e.g. a telephone number or an email address.",
+        "comments": "Person may have multiple ways to be contacted with different uses or applicable periods.  May need to have options for contacting the person urgently, and also to help with identification\r\rThese typically will have home numbers, or mobile numbers that are not role specific.",
+        "requirements": "Need to know how to reach a practitioner independent to any roles the practitioner may have.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "ContactPoint",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PRT-15, STF-10, ROL-12"
+          },
+          {
+            "identity": "rim",
+            "map": "./telecom"
+          },
+          {
+            "identity": "servd",
+            "map": "./ContactPoints"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.address",
+        "path": "Practitioner.address",
+        "short": "Address(es) of the practitioner that are not role specific (typically home address)",
+        "definition": "Address(es) of the practitioner that are not role specific (typically home address). \rWork addresses are not typically entered in this property as they are usually role dependent.",
+        "comments": "The PractitionerRole does not have an address value on it, as it is expected that the location property be used for this purpose (which has an address).",
+        "requirements": "The home/mailing address of the practitioner is often required for employee administration purposes, and also for some rostering services where the start point (practitioners home) can be used in calculations.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Address",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Address"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "ORC-24, STF-11, ROL-11, PRT-14"
+          },
+          {
+            "identity": "rim",
+            "map": "./addr"
+          },
+          {
+            "identity": "servd",
+            "map": "./Addresses"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.gender",
+        "path": "Practitioner.gender",
+        "short": "male | female | other | unknown",
+        "definition": "Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.",
+        "requirements": "Needed to address the person correctly.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "The gender of a person used for administrative purposes.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/administrative-gender"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "STF-5"
+          },
+          {
+            "identity": "rim",
+            "map": "./administrativeGender"
+          },
+          {
+            "identity": "servd",
+            "map": "./GenderCode"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.birthDate",
+        "path": "Practitioner.birthDate",
+        "short": "The date  on which the practitioner was born",
+        "definition": "The date of birth for the practitioner.",
+        "requirements": "Needed for identification.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "date"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "STF-6"
+          },
+          {
+            "identity": "rim",
+            "map": "./birthTime"
+          },
+          {
+            "identity": "servd",
+            "map": "(not represented in ServD)"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.photo",
+        "path": "Practitioner.photo",
+        "short": "Image of the person",
+        "definition": "Image of the person.",
+        "requirements": "Many EHR systems have the capability to capture an image of patients and personnel. Fits with newer social media usage too.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Attachment"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "./subjectOf/ObservationEvent[code=\"photo\"]/value"
+          },
+          {
+            "identity": "servd",
+            "map": "./ImageURI (only supports the URI reference)"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role",
+        "path": "Practitioner.role",
+        "short": "Roles/organizations the practitioner is associated with",
+        "definition": "The list of roles/organizations that the practitioner is associated with.",
+        "comments": "The address to be used for this PractitionerRole is in the referenced location (removing duplication across all the services provided at the location).",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "BackboneElement"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "children().count() > id.count()",
+            "xpath": "@value|f:*|h:div",
+            "source": "Element"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.id",
+        "path": "Practitioner.role.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.extension",
+        "path": "Practitioner.role.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.modifierExtension",
+        "path": "Practitioner.role.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content",
+          "modifiers"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "BackboneElement.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.organization",
+        "path": "Practitioner.role.organization",
+        "short": "Organization where the roles are performed",
+        "definition": "The organization where the Practitioner performs the roles associated.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole.scopingOrganization"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.code",
+        "path": "Practitioner.role.code",
+        "short": "Roles which this practitioner may perform",
+        "definition": "Roles which this practitioner is authorized to perform for the organization.",
+        "comments": "A person may have more than one role. At least one role is required.",
+        "requirements": "Need to know what authority the practitioner has - what can they do?",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "The role a person plays representing an organization",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/practitioner-role"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PRD-1 / STF-18  / PRA-3  / PRT-4  / ROL-3 / ORC-12 / OBR-16 / PV1-7 / PV1-8 / PV1-9 / PV1-17"
+          },
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole.code"
+          },
+          {
+            "identity": "servd",
+            "map": "(ServD maps Practitioners and Organizations via another entity, so this concept is not available)"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.specialty",
+        "path": "Practitioner.role.specialty",
+        "short": "Specific specialty of the practitioner",
+        "definition": "Specific specialty of the practitioner.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/c80-practice-codes"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PRA-5"
+          },
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole[classCode=QUAL].code"
+          },
+          {
+            "identity": "servd",
+            "map": "./Specialty"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.identifier",
+        "path": "Practitioner.role.identifier",
+        "short": "Business Identifiers that are specific to a role/location",
+        "definition": "Business Identifiers that are specific to a role/location.",
+        "requirements": "Some business identifiers are specific to a location and should be able to be associated.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Identifier"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole.id"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.telecom",
+        "path": "Practitioner.role.telecom",
+        "short": "Contact details that are specific to the role/location/service",
+        "definition": "Contact details that are specific to the role/location/service.",
+        "requirements": "Often practitioners have a dedicated line for each location (or service) that they work at, and need to be able to define separate contact details for each of these.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "ContactPoint"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole.telecom"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.period",
+        "path": "Practitioner.role.period",
+        "short": "The period during which the practitioner is authorized to perform in these role(s)",
+        "definition": "The period during which the person is authorized to act as a practitioner in these role(s) for the organization.",
+        "requirements": "Even after the agencies is revoked, the fact that it existed must still be recorded.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Period"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PRD-8/9 / PRA-5.4"
+          },
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole.effectiveTime"
+          },
+          {
+            "identity": "servd",
+            "map": "(ServD maps Practitioners and Organizations via another entity, so this concept is not available)"
+          },
+          {
+            "identity": "w5",
+            "map": "when.done"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.location",
+        "path": "Practitioner.role.location",
+        "short": "The location(s) at which this practitioner provides care",
+        "definition": "The location(s) at which this practitioner provides care.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Location"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole.location.source[classCode=SDLOC]"
+          },
+          {
+            "identity": "servd",
+            "map": "(ServD maps Practitioners and Organizations via another entity, so this concept is not available)<br/> However these are accessed via the Site.ServiceSite.ServiceSiteProvider record. (The Site has the location)"
+          },
+          {
+            "identity": "w5",
+            "map": "where"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.healthcareService",
+        "path": "Practitioner.role.healthcareService",
+        "short": "The list of healthcare services that this worker provides for this role's Organization/Location(s)",
+        "definition": "The list of healthcare services that this worker provides for this role's Organization/Location(s).",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/HealthcareService"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.endpoint",
+        "path": "Practitioner.role.endpoint",
+        "short": "Technical endpoints providing access to services operated for the PractitonerRole",
+        "definition": "Technical endpoints providing access to services operated for the PractitonerRole.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Endpoint"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification",
+        "path": "Practitioner.qualification",
+        "short": "Qualifications obtained by training and certification",
+        "definition": "Qualifications obtained by training and certification.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "BackboneElement"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "children().count() > id.count()",
+            "xpath": "@value|f:*|h:div",
+            "source": "Element"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "CER?"
+          },
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole[classCode=QUAL].code"
+          },
+          {
+            "identity": "servd",
+            "map": "./Qualifications"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.id",
+        "path": "Practitioner.qualification.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.extension",
+        "path": "Practitioner.qualification.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.modifierExtension",
+        "path": "Practitioner.qualification.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content",
+          "modifiers"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "BackboneElement.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.identifier",
+        "path": "Practitioner.qualification.identifier",
+        "short": "An identifier for this qualification for the practitioner",
+        "definition": "An identifier that applies to this person's qualification in this role.",
+        "requirements": "Often, specific identities are assigned for the qualification.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Identifier"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole[classCode=QUAL].id"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.code",
+        "path": "Practitioner.qualification.code",
+        "short": "Coded representation of the qualification",
+        "definition": "Coded representation of the qualification.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "example",
+          "description": "Specific qualification the practitioner has to provide a service",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/anzsco-occupations"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole[classCode=QUAL].code"
+          },
+          {
+            "identity": "servd",
+            "map": "./Qualifications.Value"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.period",
+        "path": "Practitioner.qualification.period",
+        "short": "Period during which the qualification is valid",
+        "definition": "Period during which the qualification is valid.",
+        "requirements": "Qualifications are often for a limited period of time, and can be revoked.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Period"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole[classCode=QUAL].effectiveTime"
+          },
+          {
+            "identity": "servd",
+            "map": "./Qualifications.StartDate and ./Qualifications.EndDate"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.qualification.issuer",
+        "path": "Practitioner.qualification.issuer",
+        "short": "Organization that regulates and issues the qualification",
+        "definition": "Organization that regulates and issues the qualification.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".playingEntity.playingRole[classCode=QUAL].scoper"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.communication",
+        "path": "Practitioner.communication",
+        "short": "A language the practitioner is able to use in patient communication",
+        "definition": "A language the practitioner is able to use in patient communication.",
+        "comments": "The structure aa-BB with this exact casing is one the most widely used notations for locale. However not all systems actually code this but instead have it as free text. Hence CodeableConcept instead of code as the data type.",
+        "requirements": "Knowing which language a practitioner speaks can help in facilitating communication with patients.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet",
+              "valueReference": {
+                "reference": "http://hl7.org/fhir/ValueSet/all-languages"
+              }
+            }
+          ],
+          "strength": "extensible",
+          "description": "A human language.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/languages"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PID-15, NK1-20, LAN-2"
+          },
+          {
+            "identity": "rim",
+            "map": "./languageCommunication"
+          },
+          {
+            "identity": "servd",
+            "map": "./Languages.LanguageSpokenCode"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "Practitioner:shr-actor-Practitioner",
+        "path": "Practitioner",
+        "short": "SHR Practitioner Profile",
+        "definition": "A person who practices a healing art."
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension:anonymized",
+        "path": "Practitioner.extension",
+        "sliceName": "anonymized",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Anonymized-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension:fictionalperson",
+        "path": "Practitioner.extension",
+        "sliceName": "fictionalperson",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-FictionalPerson-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.extension:deceased",
+        "path": "Practitioner.extension",
+        "sliceName": "deceased",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Deceased-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.identifier",
+        "path": "Practitioner.identifier",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Identifier"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.name",
+        "path": "Practitioner.name",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "HumanName",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-HumanName"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.telecom",
+        "path": "Practitioner.telecom",
+        "type": [
+          {
+            "code": "ContactPoint",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.address",
+        "path": "Practitioner.address",
+        "type": [
+          {
+            "code": "Address",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Address"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role",
+        "path": "Practitioner.role"
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.organization",
+        "path": "Practitioner.role.organization",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+          }
+        ]
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.role.specialty",
+        "path": "Practitioner.role.specialty",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/c80-practice-codes"
+          }
+        }
+      },
+      {
+        "id": "Practitioner:shr-actor-Practitioner.communication",
+        "path": "Practitioner.communication",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      }
+    ]
+  }
+}

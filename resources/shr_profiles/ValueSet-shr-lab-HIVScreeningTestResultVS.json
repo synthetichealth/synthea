@@ -1,0 +1,60 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-lab-HIVScreeningTestResultVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR HIVScreeningTestResultVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVScreeningTestResultVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.lab.HIVScreeningTestResultVS"
+    }
+  ],
+  "name": "SHR HIVScreeningTestResultVS ValueSet",
+  "title": "SHR HIVScreeningTestResultVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.108Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://loinc.org",
+        "concept": [
+          {
+            "code": "LA6576-8",
+            "display": "Positive (HIV positive, undifferentiated)"
+          },
+          {
+            "code": "LA6577-6",
+            "display": "Negative (HIV negative)"
+          },
+          {
+            "code": "LA11884-6",
+            "display": "Indeterminant"
+          },
+          {
+            "code": "LA15841-2",
+            "display": "Invalid"
+          }
+        ]
+      }
+    ]
+  }
+}

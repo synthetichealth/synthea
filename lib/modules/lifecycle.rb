@@ -28,6 +28,8 @@ module Synthea
           entity[:blood_type] = Synthea::World::Demographics::BLOOD_TYPES[entity[:race]].pick
           entity[:sexual_orientation] = Synthea::World::Demographics::SEXUAL_ORIENTATION.pick.to_s
           entity[:fingerprint] = Synthea::Fingerprint.generate if Synthea::Config.population.generate_fingerprints
+          entity[:first_language] ||= Synthea::World::Demographics::LANGUAGES_BY_ETHNICITY[entity[:ethnicity]].pick
+
           # new babies are average weight and length for American newborns
           entity.set_vital_sign(:height, 51.0, 'cm')
           entity.set_vital_sign(:weight, 3.5, 'kg')
@@ -44,7 +46,8 @@ module Synthea
             'line' => [Faker::Address.street_address],
             'city' => location_data['city'],
             'state' => 'MA',
-            'postalCode' => zip_code
+            'postalCode' => zip_code,
+            'country' => 'US'
           }
           entity[:address]['line'] << Faker::Address.secondary_address if rand < 0.5
           entity[:city] = location_data['city']
@@ -55,7 +58,8 @@ module Synthea
           # birthplace
           entity[:birth_place] = {
             'city' => Synthea::Location.select_point['city'],
-            'state' => 'MA'
+            'state' => 'MA',
+            'country' => 'US'
           }
 
           # parents

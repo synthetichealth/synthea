@@ -1,0 +1,849 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "shr-medication-MedicationUse",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR MedicationUse Profile</b></p>\n  <p>Report of a medication used (or not used). Medication use is either reported, directly observed, or inferred from clinical events associated with orders, prescriptions written, pharmacy dispensings, procedural administrations, and other patient-reported information.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.medication.MedicationUse maps to MedicationStatement:\n  Medication maps to medication[x].Reference\n  PeriodOfUse maps to effective[x].Period\n  Reason maps to reasonForUseCodeableConcept\n  MedicationNotUsedModifier maps to notTaken\n  MedicationNotUsedModifier.Reason maps to reasonNotTaken\n  Dosage.AmountPerDose.Quantity maps to dosage.dose[x].SimpleQuantity\n  Dosage.AmountPerDose.TBD &quot;Range&quot; maps to dosage.dose[x].Range\n  Dosage.TimingOfDoses maps to dosage.timing\n  Dosage.DoseAsNeededIndicator maps to dosage.asNeeded[x].boolean\n  Dosage.DoseInstructionsText maps to dosage.text\n  Dosage.AdditionalDoseInstruction maps to dosage.additionalInstructions\n  Dosage.RouteIntoBody maps to dosage.route\n  Dosage.AdministrationMethod maps to dosage.method\n  Dosage.AdministrationBodySite maps to dosage.site\n  Dosage.MaximumDosePerTimePeriod maps to dosage.maxDosePerPeriod\n</pre></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-MedicationUse",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.medication.MedicationUse"
+    }
+  ],
+  "name": "SHR MedicationUse Profile",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.548Z",
+  "description": "Report of a medication used (or not used). Medication use is either reported, directly observed, or inferred from clinical events associated with orders, prescriptions written, pharmacy dispensings, procedural administrations, and other patient-reported information.",
+  "fhirVersion": "1.8.0",
+  "mapping": [
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/w5",
+      "name": "W5 Mapping"
+    },
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "MedicationStatement",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/MedicationStatement",
+  "derivation": "constraint",
+  "snapshot": {
+    "element": [
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse",
+        "path": "MedicationStatement",
+        "short": "SHR MedicationUse Profile",
+        "definition": "Report of a medication used (or not used). Medication use is either reported, directly observed, or inferred from clinical events associated with orders, prescriptions written, pharmacy dispensings, procedural administrations, and other patient-reported information.",
+        "comments": "When interpreting a medicationStatement, the value of the status and NotTaken needed to be considered:\rMedicationStatement.status + MedicationStatement.wasNotTaken\rStatus=Active + NotTaken=T = Not currently taking\rStatus=Completed + NotTaken=T = Not taken in the past\rStatus=Intended + NotTaken=T = No intention of taking\rStatus=Active + NotTaken=F = Taking, but not as prescribed\rStatus=Active + NotTaken=F = Taking\rStatus=Intended +NotTaken= F = Will be taking (not started)\rStatus=Completed + NotTaken=F = Taken in past\rStatus=In Error + NotTaken=N/A = In Error.",
+        "min": 0,
+        "max": "*",
+        "constraint": [
+          {
+            "key": "dom-2",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain nested Resources",
+            "expression": "contained.contained.empty()",
+            "xpath": "not(parent::f:contained and f:contained)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-1",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain any narrative",
+            "expression": "contained.text.empty()",
+            "xpath": "not(parent::f:contained and f:text)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-4",
+            "severity": "error",
+            "human": "If a resource is contained in another resource, it SHALL NOT have a meta.versionId or a meta.lastUpdated",
+            "expression": "contained.meta.versionId.empty() and contained.meta.lastUpdated.empty()",
+            "xpath": "not(exists(f:contained/*/f:meta/f:versionId)) and not(exists(f:contained/*/f:meta/f:lastUpdated))",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-3",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL be referred to from elsewhere in the resource",
+            "expression": "contained.where(('#'+id in %resource.descendants().reference).not()).empty()",
+            "xpath": "not(exists(for $id in f:contained/*/@id return $id[not(ancestor::f:contained/parent::*/descendant::f:reference/@value=concat('#', $id))]))",
+            "source": "DomainResource"
+          },
+          {
+            "key": "mst-1",
+            "severity": "error",
+            "human": "Reason not taken is only permitted if notTaken is Yes",
+            "expression": "reasonNotTaken.empty() or notTaken='y'",
+            "xpath": "not(exists(f:reasonNotTaken) and (f:notTaken/@value='n' or f:notTaken/@value='unk'))"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Entity. Role, or Act"
+          },
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration"
+          },
+          {
+            "identity": "w5",
+            "map": "clinical.medication"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.id",
+        "path": "MedicationStatement.id",
+        "short": "Logical id of this artifact",
+        "definition": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+        "comments": "The only time that a resource does not have an id is when it is being submitted to the server using a create operation.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "id"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.meta",
+        "path": "MedicationStatement.meta",
+        "short": "Metadata about the resource",
+        "definition": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content may not always be associated with version changes to the resource.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.meta",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Meta"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.implicitRules",
+        "path": "MedicationStatement.implicitRules",
+        "short": "A set of rules under which this content was created",
+        "definition": "A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content.",
+        "comments": "Asserting this rule set restricts the content to be only understood by a limited set of trading partners. This inherently limits the usefulness of the data in the long term. However, the existing health eco-system is highly fractured, and not yet ready to define, collect, and exchange data in a generally computable sense. Wherever possible, implementers and/or specification writers should avoid using this element as much as possible.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.implicitRules",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "uri"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.language",
+        "path": "MedicationStatement.language",
+        "short": "Language of the resource content",
+        "definition": "The base language in which the resource is written.",
+        "comments": "Language is provided to support indexing and accessibility (typically, services such as text to speech use the language tag). The html language tag in the narrative applies  to the narrative. The language tag on the resource may be used to specify the language of other presentations generated from the data in the resource  Not all the content has to be in the base language. The Resource.language should not be assumed to apply to the narrative automatically. If a language is specified, it should it also be specified on the div element in the html (see rules in HTML5 for information about the relationship between xml:lang and the html lang attribute).",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.language",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "binding": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet",
+              "valueReference": {
+                "reference": "http://hl7.org/fhir/ValueSet/all-languages"
+              }
+            }
+          ],
+          "strength": "extensible",
+          "description": "A human language.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/languages"
+          }
+        }
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.text",
+        "path": "MedicationStatement.text",
+        "short": "Text summary of the resource, for human interpretation",
+        "definition": "A human-readable narrative that contains a summary of the resource, and may be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
+        "comments": "Contained resources do not have narrative. Resources that are not contained SHOULD have a narrative. In some cases, a resource may only have text with little or no additional discrete data (as long as all minOccurs=1 elements are satisfied).  This may be necessary for data from legacy systems where information is captured as a \"text blob\" or where text is additionally entered raw or narrated and encoded in formation is added later.",
+        "alias": [
+          "narrative",
+          "html",
+          "xhtml",
+          "display"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.text",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Narrative"
+          }
+        ],
+        "condition": [
+          "dom-1"
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Act.text?"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.contained",
+        "path": "MedicationStatement.contained",
+        "short": "Contained, inline Resources",
+        "definition": "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction scope.",
+        "comments": "This should never be done when the content can be identified properly, as once identification is lost, it is extremely difficult (and context dependent) to restore it again.",
+        "alias": [
+          "inline resources",
+          "anonymous resources",
+          "contained resources"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.contained",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Resource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.extension",
+        "path": "MedicationStatement.extension",
+        "slicing": {
+          "id": "147",
+          "discriminator": [
+            "url"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.extension:adherence",
+        "path": "MedicationStatement.extension",
+        "sliceName": "adherence",
+        "definition": "A statement of the ability and cooperation of the patient in taking medicine or supplement as recommended or prescribed. This includes correct timing, dosage, and frequency.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-Adherence-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.modifierExtension",
+        "path": "MedicationStatement.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.identifier",
+        "path": "MedicationStatement.identifier",
+        "short": "External identifier",
+        "definition": "External identifier - FHIR will generate its own internal identifiers (probably URLs) which do not need to be explicitly managed by the resource.  The identifier here is one that would be used by another non-FHIR system - for example an automated medication pump would provide a record each time it operated; an administration while the patient was off the ward might be made with a different system and entered after the event.  Particularly important if these records have to be updated.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Identifier"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration.id"
+          },
+          {
+            "identity": "w5",
+            "map": "id"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.status",
+        "path": "MedicationStatement.status",
+        "short": "active | completed | entered-in-error | intended | stopped | on-hold",
+        "definition": "A code representing the patient or other source's judgment about the state of the medication used that this statement is about.  Generally this will be active or completed.",
+        "comments": "MedicationStatement is a statement at a point in time.  The status is only representative at the point when it was asserted.  The value set for MedicationStatement.status contains codes that assert the status of the use of the medication by the patient (for example, stopped or on hold) as well as codes that assert the status of the medication statement itself (for example, entered in error).",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "A coded concept indicating the current status of a MedicationStatement.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/medication-statement-status"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".statusCode"
+          },
+          {
+            "identity": "w5",
+            "map": "status"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.medication[x]",
+        "path": "MedicationStatement.medication[x]",
+        "short": "What medication was taken",
+        "definition": "Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication from a known list of medications.",
+        "comments": "If only a code is specified, then it needs to be a code for a specific product.  If more information is required, then the use of the medication resource is recommended.  Note: do not use Medication.name to describe the medication this statement concerns. When the only available information is a text description of the medication, Medication.code.text should be used.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-Medication"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept identifying the substance or product being taken.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/medication-codes"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration>Component>SubstanceAdministrationRequest.consumable"
+          },
+          {
+            "identity": "w5",
+            "map": "what"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.subject",
+        "path": "MedicationStatement.subject",
+        "short": "Who is/was taking  the medication",
+        "definition": "The person, animal or group who is/was taking the medication.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Patient"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Group"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PID-3-Patient ID List"
+          },
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration->subject->Patient"
+          },
+          {
+            "identity": "w5",
+            "map": "who.focus"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.effective[x]",
+        "path": "MedicationStatement.effective[x]",
+        "short": "Over what period was medication consumed?",
+        "definition": "The interval of time during which it is being asserted that the patient was taking the medication (or was not taking, when the wasNotGiven element is true).",
+        "comments": "If the medication is still being taken at the time the statement is recorded, the \"end\" date will be omitted.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Period",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-PeriodOfUse"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration.effectiveTime"
+          },
+          {
+            "identity": "w5",
+            "map": "when.done"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.informationSource",
+        "path": "MedicationStatement.informationSource",
+        "short": "Person or organization that provided the information about the taking of this medication",
+        "definition": "The person or organization that provided the information about the taking of this medication. Note: Use derivedFrom when a MedicationStatement is derived from other resources, e.g Claim or MedicationRequest.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Patient"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".participation[typeCode=INF].role[classCode=PAT, or  codes for Practioner or Related Person (if PAT is the informer, then syntax for self-reported =true)"
+          },
+          {
+            "identity": "w5",
+            "map": "who.source"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.derivedFrom",
+        "path": "MedicationStatement.derivedFrom",
+        "short": "Additional supporting information",
+        "definition": "Allows linking the MedicationStatement to the underlying MedicationRequest, or to other information that supports or is used to derive the MedicationStatement.",
+        "comments": "Likely references would be to MedicationRequest, MedicationDispense, Claim, Observation or QuestionnaireAnswers.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Resource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".outboundRelationship[typeCode=SPRT]/target[classCode=ACT,moodCode=EVN]"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.dateAsserted",
+        "path": "MedicationStatement.dateAsserted",
+        "short": "When the statement was asserted?",
+        "definition": "The date when the medication statement was asserted by the information source.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".participation[typeCode=AUT].time"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.notTaken",
+        "path": "MedicationStatement.notTaken",
+        "short": "y | n | unk",
+        "definition": "Indicator of the certainty of whether the medication was taken by the patient.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "description": "A coded concept identifying level of certainty if patient has taken or has not taken the medication",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/medication-statement-nottaken"
+          }
+        }
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.reasonNotTaken",
+        "path": "MedicationStatement.reasonNotTaken",
+        "short": "True if asserting medication was not given",
+        "definition": "A code indicating why the medication was not taken.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "condition": [
+          "mst-1"
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-medication-ReasonMedicationNotUsedVS"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration->Reason->Observation->Value"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.reasonForUseCodeableConcept",
+        "path": "MedicationStatement.reasonForUseCodeableConcept",
+        "short": "Reason for why the medication is being/was taken",
+        "definition": "A reason for why the medication is being/was taken.",
+        "comments": "This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonForUseReference.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept identifying why the medication is being taken.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/condition-code"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".reasonCode"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.reasonForUseReference",
+        "path": "MedicationStatement.reasonForUseReference",
+        "short": "Condition or observation that supports why the medication is being/was taken",
+        "definition": "Condition or observation that supports why the medication is being/was taken.",
+        "comments": "This is a reference to a condition that is the reason why the medication is being/was taken.  If only a code exists, use reasonForUseCode.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Condition"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Observation"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "not mapped"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.note",
+        "path": "MedicationStatement.note",
+        "short": "Further information about the statement",
+        "definition": "Provides extra information about the medication statement that is not conveyed by the other attributes.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Annotation"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".inboundRelationship[typeCode=SUBJ]/source[classCode=OBS,moodCode=EVN,code=\"annotation\"].value"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.category",
+        "path": "MedicationStatement.category",
+        "short": "Type of medication usage",
+        "definition": "Indicates where type of medication statement and where the medication is expected to be consumed or administered.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept identifying where the medication included in the medicationstatement is expected to be consumed or administered",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/medication-statement-category"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "not mapped"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.dosage",
+        "path": "MedicationStatement.dosage",
+        "short": "Details of how medication was taken",
+        "definition": "Indicates how the medication is/was used by the patient.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "DosageInstruction"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "SubstanceAdministration>Component>SubstanceAdministrationRequest"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse",
+        "path": "MedicationStatement",
+        "short": "SHR MedicationUse Profile",
+        "definition": "Report of a medication used (or not used). Medication use is either reported, directly observed, or inferred from clinical events associated with orders, prescriptions written, pharmacy dispensings, procedural administrations, and other patient-reported information."
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.extension:adherence",
+        "path": "MedicationStatement.extension",
+        "sliceName": "adherence",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-Adherence-extension"
+          }
+        ],
+        "mustSupport": false,
+        "isModifier": false,
+        "isSummary": false
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.medication[x]",
+        "path": "MedicationStatement.medication[x]",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-Medication"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.effective[x]",
+        "path": "MedicationStatement.effective[x]",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Period",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-PeriodOfUse"
+          }
+        ]
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.reasonNotTaken",
+        "path": "MedicationStatement.reasonNotTaken",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-medication-ReasonMedicationNotUsedVS"
+          }
+        }
+      },
+      {
+        "id": "MedicationStatement:shr-medication-MedicationUse.reasonForUseCodeableConcept",
+        "path": "MedicationStatement.reasonForUseCodeableConcept",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      }
+    ]
+  }
+}

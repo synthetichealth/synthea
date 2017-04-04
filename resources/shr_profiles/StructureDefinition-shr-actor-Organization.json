@@ -1,0 +1,930 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "shr-actor-Organization",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Organization Profile</b></p>\n  <p>A social or legal structure formed by human beings.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.Organization maps to Organization:\n  OrganizationName maps to name\n  OrganizationAlias maps to alias\n  OrganizationType maps to type\n  OrganizationIdentifyingCode maps to identifier\n  AddressUsed maps to address\n  Telecom maps to telecom\n  ActiveFlag maps to active\n</pre></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.actor.Organization"
+    }
+  ],
+  "name": "SHR Organization Profile",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.132Z",
+  "description": "A social or legal structure formed by human beings.",
+  "fhirVersion": "1.8.0",
+  "mapping": [
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "servd",
+      "uri": "http://www.omg.org/spec/ServD/1.0/",
+      "name": "ServD"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/w5",
+      "name": "W5 Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "Organization",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Organization",
+  "derivation": "constraint",
+  "snapshot": {
+    "element": [
+      {
+        "id": "Organization:shr-actor-Organization",
+        "path": "Organization",
+        "short": "SHR Organization Profile",
+        "definition": "A social or legal structure formed by human beings.",
+        "min": 0,
+        "max": "*",
+        "constraint": [
+          {
+            "key": "dom-2",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain nested Resources",
+            "expression": "contained.contained.empty()",
+            "xpath": "not(parent::f:contained and f:contained)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-1",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL NOT contain any narrative",
+            "expression": "contained.text.empty()",
+            "xpath": "not(parent::f:contained and f:text)",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-4",
+            "severity": "error",
+            "human": "If a resource is contained in another resource, it SHALL NOT have a meta.versionId or a meta.lastUpdated",
+            "expression": "contained.meta.versionId.empty() and contained.meta.lastUpdated.empty()",
+            "xpath": "not(exists(f:contained/*/f:meta/f:versionId)) and not(exists(f:contained/*/f:meta/f:lastUpdated))",
+            "source": "DomainResource"
+          },
+          {
+            "key": "dom-3",
+            "severity": "error",
+            "human": "If the resource is contained in another resource, it SHALL be referred to from elsewhere in the resource",
+            "expression": "contained.where(('#'+id in %resource.descendants().reference).not()).empty()",
+            "xpath": "not(exists(for $id in f:contained/*/@id return $id[not(ancestor::f:contained/parent::*/descendant::f:reference/@value=concat('#', $id))]))",
+            "source": "DomainResource"
+          },
+          {
+            "key": "org-1",
+            "severity": "error",
+            "human": "The organization SHALL at least have a name or an id, and possibly more than one",
+            "expression": "(identifier.count() + name.count()) > 0",
+            "xpath": "count(f:identifier | f:name) > 0"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Entity. Role, or Act"
+          },
+          {
+            "identity": "v2",
+            "map": "(also see master files messages)"
+          },
+          {
+            "identity": "rim",
+            "map": "Organization(classCode=ORG, determinerCode=INST)"
+          },
+          {
+            "identity": "servd",
+            "map": "Organization"
+          },
+          {
+            "identity": "w5",
+            "map": "administrative.group"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.id",
+        "path": "Organization.id",
+        "short": "Logical id of this artifact",
+        "definition": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+        "comments": "The only time that a resource does not have an id is when it is being submitted to the server using a create operation.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "id"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "Organization:shr-actor-Organization.meta",
+        "path": "Organization.meta",
+        "short": "Metadata about the resource",
+        "definition": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content may not always be associated with version changes to the resource.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.meta",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Meta"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "Organization:shr-actor-Organization.implicitRules",
+        "path": "Organization.implicitRules",
+        "short": "A set of rules under which this content was created",
+        "definition": "A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content.",
+        "comments": "Asserting this rule set restricts the content to be only understood by a limited set of trading partners. This inherently limits the usefulness of the data in the long term. However, the existing health eco-system is highly fractured, and not yet ready to define, collect, and exchange data in a generally computable sense. Wherever possible, implementers and/or specification writers should avoid using this element as much as possible.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.implicitRules",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "uri"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true
+      },
+      {
+        "id": "Organization:shr-actor-Organization.language",
+        "path": "Organization.language",
+        "short": "Language of the resource content",
+        "definition": "The base language in which the resource is written.",
+        "comments": "Language is provided to support indexing and accessibility (typically, services such as text to speech use the language tag). The html language tag in the narrative applies  to the narrative. The language tag on the resource may be used to specify the language of other presentations generated from the data in the resource  Not all the content has to be in the base language. The Resource.language should not be assumed to apply to the narrative automatically. If a language is specified, it should it also be specified on the div element in the html (see rules in HTML5 for information about the relationship between xml:lang and the html lang attribute).",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Resource.language",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "binding": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet",
+              "valueReference": {
+                "reference": "http://hl7.org/fhir/ValueSet/all-languages"
+              }
+            }
+          ],
+          "strength": "extensible",
+          "description": "A human language.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/languages"
+          }
+        }
+      },
+      {
+        "id": "Organization:shr-actor-Organization.text",
+        "path": "Organization.text",
+        "short": "Text summary of the resource, for human interpretation",
+        "definition": "A human-readable narrative that contains a summary of the resource, and may be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.",
+        "comments": "Contained resources do not have narrative. Resources that are not contained SHOULD have a narrative. In some cases, a resource may only have text with little or no additional discrete data (as long as all minOccurs=1 elements are satisfied).  This may be necessary for data from legacy systems where information is captured as a \"text blob\" or where text is additionally entered raw or narrated and encoded in formation is added later.",
+        "alias": [
+          "narrative",
+          "html",
+          "xhtml",
+          "display"
+        ],
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "DomainResource.text",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Narrative"
+          }
+        ],
+        "condition": [
+          "dom-1"
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "Act.text?"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contained",
+        "path": "Organization.contained",
+        "short": "Contained, inline Resources",
+        "definition": "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction scope.",
+        "comments": "This should never be done when the content can be identified properly, as once identification is lost, it is extremely difficult (and context dependent) to restore it again.",
+        "alias": [
+          "inline resources",
+          "anonymous resources",
+          "contained resources"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.contained",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Resource"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.extension",
+        "path": "Organization.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.modifierExtension",
+        "path": "Organization.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the resource, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "DomainResource.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.identifier",
+        "path": "Organization.identifier",
+        "short": "Identifies this organization  across multiple systems",
+        "definition": "Identifier for the organization that is used to identify the organization across multiple disparate systems.",
+        "requirements": "Organizations are known by a variety of ids. Some institutions maintain several, and most collect identifiers for exchange with other organizations concerning the organization.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Identifier"
+          }
+        ],
+        "condition": [
+          "org-1"
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XON.10 / XON.3"
+          },
+          {
+            "identity": "rim",
+            "map": ".scopes[Role](classCode=IDENT)"
+          },
+          {
+            "identity": "servd",
+            "map": "./Identifiers"
+          },
+          {
+            "identity": "w5",
+            "map": "id"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.active",
+        "path": "Organization.active",
+        "short": "Whether the organization's record is still in active use",
+        "definition": "Whether the organization's record is still in active use.",
+        "comments": "Default is true.\n\nThis active flag is not intended to be used to mark an organizations as temporarily closed or under construction. Instead the Location(s) within the Organization should have the suspended status. If further details of the reason for the suspension are required, then an extension on this element should be used.",
+        "requirements": "Need a flag to indicate a record is no longer to be used and should generally be hidden for the user in the UI.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ],
+        "defaultValueBoolean": true,
+        "isModifier": true,
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "No equivalent in HL7 v2"
+          },
+          {
+            "identity": "rim",
+            "map": ".status"
+          },
+          {
+            "identity": "servd",
+            "map": "./Status (however this concept in ServD more covers why the organization is active or not, could be delisted, deregistered, not operational yet) this could alternatively be derived from ./StartDate and ./EndDate and given a context date."
+          },
+          {
+            "identity": "w5",
+            "map": "status"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.type",
+        "path": "Organization.type",
+        "short": "Kind of organization",
+        "definition": "The kind of organization that this is.",
+        "comments": "Organizations can be corporations, wards, sections, clinical teams, government departments, etc. Note that code is generally a classifier of the type of organization; in many applications, codes are used to identity a particular organization (say, ward) as opposed to another of the same type - these are identifiers, not codes.",
+        "requirements": "Need to be able to track the kind of organization that this is - different organization types have different uses.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "Used to categorize the organization",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/organization-type"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "No equivalent in v2"
+          },
+          {
+            "identity": "rim",
+            "map": ".code"
+          },
+          {
+            "identity": "servd",
+            "map": "n/a"
+          },
+          {
+            "identity": "w5",
+            "map": "class"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.name",
+        "path": "Organization.name",
+        "short": "Name used for the organization",
+        "definition": "A name associated with the organization.",
+        "comments": "If the name of an organization changes, consider putting the old name in the alias column so that it can still be located through searches.",
+        "requirements": "Need to use the name as the label of the organization.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "condition": [
+          "org-1"
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "XON.1"
+          },
+          {
+            "identity": "rim",
+            "map": ".name"
+          },
+          {
+            "identity": "servd",
+            "map": ".PreferredName/Name"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.alias",
+        "path": "Organization.alias",
+        "short": "A list of alternate names that the organization is known as, or was known as in the past",
+        "definition": "A list of alternate names that the organization is known as, or was known as in the past.",
+        "comments": "There are no dates associated with the alias/historic names, as this is not intended to track when names were used, but to assist in searching so that older names can still result in identifying the organization.",
+        "requirements": "Over time locations and organizations go through many changes and can be known by different names.\n\nFor searching knowing previous names that the location was known by can be very useful.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".name"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.telecom",
+        "path": "Organization.telecom",
+        "short": "A contact detail for the organization",
+        "definition": "A contact detail for the organization.",
+        "comments": "The use code home is not to be used. Note that these contacts are not the contact details of people who are employed by or represent the organization, but official contacts for the organization itself.",
+        "requirements": "Human contact for the organization.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "ContactPoint",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom"
+          }
+        ],
+        "condition": [
+          "org-3"
+        ],
+        "constraint": [
+          {
+            "key": "org-3",
+            "severity": "error",
+            "human": "The telecom of an organization can never be of use 'home'",
+            "expression": "where(use = 'home').empty()",
+            "xpath": "count(f:use[@value='home']) = 0"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "ORC-22?"
+          },
+          {
+            "identity": "rim",
+            "map": ".telecom"
+          },
+          {
+            "identity": "servd",
+            "map": "./ContactPoints"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.address",
+        "path": "Organization.address",
+        "short": "An address for the organization",
+        "definition": "An address for the organization.",
+        "comments": "Organization may have multiple addresses with different uses or applicable periods. The use code home is not to be used.",
+        "requirements": "May need to keep track of the organization's addresses for contacting, billing or reporting requirements.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Address",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Address"
+          }
+        ],
+        "condition": [
+          "org-2"
+        ],
+        "constraint": [
+          {
+            "key": "org-2",
+            "severity": "error",
+            "human": "An address of an organization can never be of use 'home'",
+            "expression": "where(use = 'home').empty()",
+            "xpath": "count(f:use[@value='home']) = 0"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "ORC-23?"
+          },
+          {
+            "identity": "rim",
+            "map": ".address"
+          },
+          {
+            "identity": "servd",
+            "map": "./PrimaryAddress and ./OtherAddresses"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.partOf",
+        "path": "Organization.partOf",
+        "short": "The organization of which this organization forms a part",
+        "definition": "The organization of which this organization forms a part.",
+        "requirements": "Need to be able to track the hierarchy of organizations within an organization.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "No equivalent in HL7 v2"
+          },
+          {
+            "identity": "rim",
+            "map": ".playedBy[classCode=Part].scoper"
+          },
+          {
+            "identity": "servd",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact",
+        "path": "Organization.contact",
+        "short": "Contact for the organization for a certain purpose",
+        "definition": "Contact for the organization for a certain purpose.",
+        "comments": "Where multiple contacts for the same purpose are provided there is a standard extension that can be used to determine which one is the preferred contact to use.",
+        "requirements": "Need to keep track of assigned contact points within bigger organization.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "BackboneElement"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "children().count() > id.count()",
+            "xpath": "@value|f:*|h:div",
+            "source": "Element"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".contactParty"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.id",
+        "path": "Organization.contact.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.extension",
+        "path": "Organization.contact.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.modifierExtension",
+        "path": "Organization.contact.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content",
+          "modifiers"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "BackboneElement.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.purpose",
+        "path": "Organization.contact.purpose",
+        "short": "The type of contact",
+        "definition": "Indicates a purpose for which the contact can be reached.",
+        "requirements": "Need to distinguish between multiple contact persons.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "extensible",
+          "description": "The purpose for which you would contact a contact party",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/contactentity-type"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "./type"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.name",
+        "path": "Organization.contact.name",
+        "short": "A name associated with the contact",
+        "definition": "A name associated with the contact.",
+        "requirements": "Need to be able to track the person by name.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "HumanName"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PID-5, PID-9"
+          },
+          {
+            "identity": "rim",
+            "map": "./name"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.telecom",
+        "path": "Organization.contact.telecom",
+        "short": "Contact details (telephone, email, etc.)  for a contact",
+        "definition": "A contact detail (e.g. a telephone number or an email address) by which the party may be contacted.",
+        "requirements": "People have (primary) ways to contact them in some way such as phone, email.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "ContactPoint"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PID-13, PID-14"
+          },
+          {
+            "identity": "rim",
+            "map": "./telecom"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.contact.address",
+        "path": "Organization.contact.address",
+        "short": "Visiting or postal addresses for the contact",
+        "definition": "Visiting or postal addresses for the contact.",
+        "requirements": "May need to keep track of a contact party's address for contacting, billing or reporting requirements.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Address"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "PID-11"
+          },
+          {
+            "identity": "rim",
+            "map": "./addr"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.endpoint",
+        "path": "Organization.endpoint",
+        "short": "Technical endpoints providing access to services operated for the organization",
+        "definition": "Technical endpoints providing access to services operated for the organization.",
+        "requirements": "Organizations have multiple systems that provide various services and need to be able to define the technical connection details for how to connect to them, and for what purpose.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Endpoint"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "Organization:shr-actor-Organization",
+        "path": "Organization",
+        "short": "SHR Organization Profile",
+        "definition": "A social or legal structure formed by human beings."
+      },
+      {
+        "id": "Organization:shr-actor-Organization.identifier",
+        "path": "Organization.identifier",
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Identifier"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.type",
+        "path": "Organization.type",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.name",
+        "path": "Organization.name",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "Organization:shr-actor-Organization.telecom",
+        "path": "Organization.telecom",
+        "type": [
+          {
+            "code": "ContactPoint",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom"
+          }
+        ]
+      },
+      {
+        "id": "Organization:shr-actor-Organization.address",
+        "path": "Organization.address",
+        "type": [
+          {
+            "code": "Address",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Address"
+          }
+        ]
+      }
+    ]
+  }
+}

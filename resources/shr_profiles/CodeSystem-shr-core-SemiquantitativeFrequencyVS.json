@@ -1,0 +1,103 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-core-SemiquantitativeFrequencyVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR SemiquantitativeFrequencyVS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/fhir/CodeSystem/shr-core-SemiquantitativeFrequencyVS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.core.SemiquantitativeFrequencyVS"
+  },
+  "name": "SHR SemiquantitativeFrequencyVS CodeSystem",
+  "title": "SHR SemiquantitativeFrequencyVS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-02-23T21:26:39.100Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 13,
+  "concept": [
+    {
+      "code": "never",
+      "display": "Never",
+      "definition": "Never"
+    },
+    {
+      "code": "less_than_yearly",
+      "display": "Less than yearly",
+      "definition": "Less than yearly"
+    },
+    {
+      "code": "yearly",
+      "display": "Yearly",
+      "definition": "Yearly"
+    },
+    {
+      "code": "mot_yearly",
+      "display": "More than once yearly",
+      "definition": "More than once yearly"
+    },
+    {
+      "code": "monthly",
+      "display": "Monthly",
+      "definition": "Monthly"
+    },
+    {
+      "code": "weekly",
+      "display": "Weekly",
+      "definition": "Weekly"
+    },
+    {
+      "code": "mto_weekly",
+      "display": "More than once weekly",
+      "definition": "More than once weekly"
+    },
+    {
+      "code": "daily",
+      "display": "Daily",
+      "definition": "Daily"
+    },
+    {
+      "code": "mto_daily",
+      "display": "More than once daily",
+      "definition": "More than once daily"
+    },
+    {
+      "code": "hourly",
+      "display": "Hourly",
+      "definition": "Hourly"
+    },
+    {
+      "code": "mto_hourly",
+      "display": "More than once hourly",
+      "definition": "More than once hourly"
+    },
+    {
+      "code": "minutely",
+      "display": "Every minute",
+      "definition": "Every minute"
+    },
+    {
+      "code": "continuously",
+      "display": "Continuously",
+      "definition": "Continuously"
+    }
+  ]
+}
