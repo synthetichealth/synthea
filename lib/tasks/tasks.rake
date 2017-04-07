@@ -172,6 +172,7 @@ namespace :synthea do
     end
   end
 
+
   task :build_shr_mapping, [] do |_t, _args|
     # read fhir profiles
     # write to a ruby file, like lookup
@@ -221,6 +222,41 @@ namespace :synthea do
 
   end
 
+
+  # This task condenses height & weight data from CDC growth charts
+  # into structured JSON - [sex][age-months][percentile] = value
+  desc 'transform cdc growth charts'
+  task :growth_charts, [] do |_t, _args|
+    growth_chart = Hash.new { |h, k| h[k] = Hash.new(&h.default_proc) } # magic hash of infinite depth
+
+    height_files = ['./resources/lenageinf.csv', './resources/statage.csv']
+    height_files.each { |f| process_cdc_chart_file(f, growth_chart[:height]) }
+
+    weight_files = ['./resources/wtageinf.csv', './resources/wtage.csv']
+    weight_files.each { |f| process_cdc_chart_file(f, growth_chart[:weight]) }
+
+    output = File.open('./resources/cdc_growth_charts.json', 'w:UTF-8')
+    output.write(JSON.pretty_unparse(growth_chart))
+    output.close
+    puts 'Wrote JSON to ./resources/cdc_growth_charts.json'
+  end
+
+  def process_cdc_chart_file(filename, data_table)
+    file = File.open(filename, 'r:UTF-8')
+    CSV.foreach(file, headers: true, return_headers: false, header_converters: :symbol) do |row|
+      next if row[:agemos] == 'Agemos' # some files have a duplicate header halfway though
+      sex = row[:sex] == '1' ? 'M' : 'F'
+      age = row[:agemos].to_i
+      [:p3, :p5, :p10, :p25, :p50, :p75, :p90, :p95, :p97].each do |percentile|
+        code = percentile.to_s[1..-1] # delete the leading 'p'
+        data_table[sex][age][code] = row[percentile]
+      end
+      [:l, :m, :s].each do |lms_param|
+        data_table[sex][age][lms_param] = row[lms_param]
+      end
+    end
+    file.close
+  end
 
   # This task requires CSV data downloaded from the US Census Bureau
   # and placed into a folder called `resources`.

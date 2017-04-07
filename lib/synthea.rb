@@ -19,6 +19,7 @@ require 'json'
 require 'concurrent'
 require 'chunky_png'
 require 'graphviz'
+require 'distribution'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 

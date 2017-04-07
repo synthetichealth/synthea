@@ -1,21 +1,18 @@
 module Synthea
   module Modules
     class Lifecycle < Synthea::Rules
-      attr_accessor :male_growth, :male_weight, :female_growth, :female_weight
       attr_accessor :races, :ethnicity, :blood_types
 
       def initialize
         super
-        @male_growth = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.growth_rate_male_average, Synthea::Config.lifecycle.growth_rate_male_stddev)
-        @male_weight = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.weight_gain_male_average, Synthea::Config.lifecycle.weight_gain_male_stddev)
-        @female_growth = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.growth_rate_female_average, Synthea::Config.lifecycle.growth_rate_female_stddev)
-        @female_weight = Synthea::Utils::Distribution.normal(Synthea::Config.lifecycle.weight_gain_female_average, Synthea::Config.lifecycle.weight_gain_female_stddev)
+        @growth_chart = JSON.parse(File.read('./resources/cdc_growth_charts.json'))
       end
 
       # People are born
       rule :birth, [], [:age] do |time, entity|
         unless entity.had_event?(:birth)
           entity[:age] = 0
+          entity[:age_mos] = 0
           entity[:name_first] = Faker::Name.first_name
           entity[:name_last] = Faker::Name.last_name
           if Synthea::Config.population.append_hash_to_person_names == true
@@ -30,9 +27,25 @@ module Synthea
           entity[:fingerprint] = Synthea::Fingerprint.generate if Synthea::Config.population.generate_fingerprints
           entity[:first_language] ||= Synthea::World::Demographics::LANGUAGES_BY_ETHNICITY[entity[:ethnicity]].pick
 
-          # new babies are average weight and length for American newborns
-          entity.set_vital_sign(:height, 51.0, 'cm')
-          entity.set_vital_sign(:weight, 3.5, 'kg')
+          # growth chart data goes covers the 3rd-97th percentile
+          #  and we don't have data to extrapolate that last few %
+
+          # https://www2.census.gov/library/publications/2010/compendia/statab/130ed/tables/11s0205.pdf
+          # height distribution is basically a normal distribution
+          # mean for males is 5'9, SD is 2.9 inches; for females it's 5'4 and 2.8 inches
+          # that SD corresponds to the difference between the 50th percentile and the 90th percentile
+          distro = Distribution::Normal.rng(50, 30)
+          hgt_pct = distro.call
+          entity[:height_percentile] = [[3, hgt_pct].max, 97].min # bound the percentile within 3-97
+          # weight distribution is less normal but still close enough that this should work for now
+          wgt_pct = distro.call
+          entity[:weight_percentile] = [[3, wgt_pct].max, 97].min
+
+          height = growth_chart('height', entity[:gender], entity[:age_mos], entity[:height_percentile])
+          weight = growth_chart('weight', entity[:gender], entity[:age_mos], entity[:weight_percentile])
+          entity.set_vital_sign(:height, height, 'cm')
+          entity.set_vital_sign(:weight, weight, 'kg')
+
           entity[:multiple_birth] = rand(3) + 1 if rand < Synthea::Config.lifecycle.prevalence_of_twins
           entity.events.create(time, :birth, :birth, true)
           entity.events.create(time, :encounter, :birth)
@@ -86,18 +99,21 @@ module Synthea
       rule :age, [:birth, :age], [:age] do |time, entity|
         if entity.alive?(time)
           birthdate = entity.event(:birth).time
-          age = entity[:age]
-          entity[:age] = ((time.to_i - birthdate.to_i) / 1.year).floor
-          if entity[:age] > age
-            dt = nil
-            begin
-              dt = DateTime.new(time.year, birthdate.month, birthdate.mday, birthdate.hour, birthdate.min, birthdate.sec, birthdate.formatted_offset)
-            rescue StandardError
-              # this person was born on a leap-day
-              dt = time
-            end
-            entity.events.create(dt.to_time, :grow, :age)
-          end
+          prev_age = entity[:age]
+          prev_age_mos = entity[:age_mos]
+          new_age = ((time.to_i - birthdate.to_i) / 1.year)
+          entity[:age] = new_age.floor
+          entity[:age_mos] = (new_age * 12.0).floor
+
+          should_grow = if entity[:age] >= 20
+                          # adults 20 and over grow once per year
+                          entity[:age] > prev_age
+                        else
+                          # people under 20 grow once per month
+                          entity[:age_mos] > prev_age_mos
+                        end
+          entity.events.create(time.to_time, :grow, :age) if should_grow
+
           # stuff happens when you're an adult
           if entity[:age] == 16
             # you get a driver's license
@@ -136,7 +152,7 @@ module Synthea
 
       # People grow
       rule :grow, [:age, :gender], [:height, :weight, :bmi] do |time, entity|
-        # Assume a linear growth rate until average size is achieved at age 20
+        # People grow once per month until age 20 and then once per year after that.
         # TODO consider genetics, social determinants of health, etc
         if entity.alive?(time)
           unprocessed_events = entity.events.unprocessed.select { |e| e.type == :grow }
@@ -146,14 +162,9 @@ module Synthea
             gender = entity[:gender]
             height = entity.get_vital_sign_value(:height)
             weight = entity.get_vital_sign_value(:weight)
-            if age <= 20
-              if gender == 'M'
-                height += @male_growth.call # centimeters
-                weight += @male_weight.call # kilograms
-              elsif gender == 'F'
-                height += @female_growth.call # centimeters
-                weight += @female_weight.call # kilograms
-              end
+            if age < 20
+              height = growth_chart('height', gender, entity[:age_mos], entity[:height_percentile])
+              weight = growth_chart('weight', gender, entity[:age_mos], entity[:weight_percentile])
             elsif age <= Synthea::Config.lifecycle.adult_max_weight_age
               # getting older and fatter
               range = Synthea::Config.lifecycle.adult_weight_gain
@@ -355,6 +366,23 @@ module Synthea
       # weight in kilograms
       def calculate_bmi(height, weight)
         (weight / ((height / 100) * (height / 100)))
+      end
+
+      def growth_chart(type, gender, age_months, percentile)
+        hsh = @growth_chart[type][gender][age_months.to_i.to_s]
+
+        # use the LMS values to calculate the intermediate values
+        # ref: https://www.cdc.gov/growthcharts/percentile_data_files.htm
+        l = hsh['l'].to_f
+        m = hsh['m'].to_f
+        s = hsh['s'].to_f
+        z = Distribution::Normal.p_value(percentile.to_f / 100.0) # z-score
+
+        if l == 0.0 # no cases of this exist in the current data, this is included for completeness
+          m * Math.E**(s * z)
+        else
+          m * (1 + (l * s * z))**(1.0 / l)
+        end
       end
 
       def likelihood_of_death(age)

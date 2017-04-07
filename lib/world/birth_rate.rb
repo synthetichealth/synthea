@@ -7,7 +7,7 @@ module Synthea
         @rate_per_sq_mile = (Synthea::Config.population.daily_births_per_square_mile * Synthea::Config.time_step)
 
         mean = @rate_per_sq_mile * @area
-        @distribution = Synthea::Utils::Distribution.normal(mean, mean * @population_variance)
+        @distribution = Distribution::Normal.rng(mean, mean * @population_variance)
       end
 
       def births
