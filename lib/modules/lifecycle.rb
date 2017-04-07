@@ -12,6 +12,7 @@ module Synthea
       rule :birth, [], [:age] do |time, entity|
         unless entity.had_event?(:birth)
           entity[:age] = 0
+          entity[:age_mos] = 0
           entity[:name_first] = Faker::Name.first_name
           entity[:name_last] = Faker::Name.last_name
           if Synthea::Config.population.append_hash_to_person_names == true
@@ -40,8 +41,8 @@ module Synthea
           wgt_pct = distro.call
           entity[:weight_percentile] = [[3, wgt_pct].max, 97].min
 
-          height = growth_chart('height', entity[:gender], entity[:age], entity[:height_percentile])
-          weight = growth_chart('weight', entity[:gender], entity[:age], entity[:weight_percentile])
+          height = growth_chart('height', entity[:gender], entity[:age_mos], entity[:height_percentile])
+          weight = growth_chart('weight', entity[:gender], entity[:age_mos], entity[:weight_percentile])
           entity.set_vital_sign(:height, height, 'cm')
           entity.set_vital_sign(:weight, weight, 'kg')
 
@@ -98,18 +99,21 @@ module Synthea
       rule :age, [:birth, :age], [:age] do |time, entity|
         if entity.alive?(time)
           birthdate = entity.event(:birth).time
-          age = entity[:age]
-          entity[:age] = ((time.to_i - birthdate.to_i) / 1.year).floor
-          if entity[:age] > age
-            dt = nil
-            begin
-              dt = DateTime.new(time.year, birthdate.month, birthdate.mday, birthdate.hour, birthdate.min, birthdate.sec, birthdate.formatted_offset)
-            rescue StandardError
-              # this person was born on a leap-day
-              dt = time
-            end
-            entity.events.create(dt.to_time, :grow, :age)
-          end
+          prev_age = entity[:age]
+          prev_age_mos = entity[:age_mos]
+          new_age = ((time.to_i - birthdate.to_i) / 1.year)
+          entity[:age] = new_age.floor
+          entity[:age_mos] = (new_age * 12.0).floor
+
+          should_grow = if entity[:age] > 20
+                          # adults over age 20 grow once per year
+                          entity[:age] > prev_age
+                        else
+                          # people 20 and under grow once per month
+                          entity[:age_mos] > prev_age_mos
+                        end
+          entity.events.create(time.to_time, :grow, :age) if should_grow
+
           # stuff happens when you're an adult
           if entity[:age] == 16
             # you get a driver's license
@@ -148,7 +152,7 @@ module Synthea
 
       # People grow
       rule :grow, [:age, :gender], [:height, :weight, :bmi] do |time, entity|
-        # Assume a linear growth rate until average size is achieved at age 20
+        # People grow once per month until age 20 and then once per year after that.
         # TODO consider genetics, social determinants of health, etc
         if entity.alive?(time)
           unprocessed_events = entity.events.unprocessed.select { |e| e.type == :grow }
@@ -158,9 +162,9 @@ module Synthea
             gender = entity[:gender]
             height = entity.get_vital_sign_value(:height)
             weight = entity.get_vital_sign_value(:weight)
-            if age <= 20
-              height = growth_chart('height', gender, entity[:age], entity[:height_percentile])
-              weight = growth_chart('weight', gender, entity[:age], entity[:weight_percentile])
+            if age < 20
+              height = growth_chart('height', gender, entity[:age_mos], entity[:height_percentile])
+              weight = growth_chart('weight', gender, entity[:age_mos], entity[:weight_percentile])
             elsif age <= Synthea::Config.lifecycle.adult_max_weight_age
               # getting older and fatter
               range = Synthea::Config.lifecycle.adult_weight_gain
@@ -364,10 +368,8 @@ module Synthea
         (weight / ((height / 100) * (height / 100)))
       end
 
-      def growth_chart(type, gender, age, percentile)
-        age_months_str = (age * 12).to_i.to_s
-
-        hsh = @growth_chart[type][gender][age_months_str]
+      def growth_chart(type, gender, age_months, percentile)
+        hsh = @growth_chart[type][gender][age_months.to_i.to_s]
 
         # use the LMS values to calculate the intermediate values
         # ref: https://www.cdc.gov/growthcharts/percentile_data_files.htm
