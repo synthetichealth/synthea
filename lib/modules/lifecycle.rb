@@ -105,11 +105,11 @@ module Synthea
           entity[:age] = new_age.floor
           entity[:age_mos] = (new_age * 12.0).floor
 
-          should_grow = if entity[:age] > 20
-                          # adults over age 20 grow once per year
+          should_grow = if entity[:age] >= 20
+                          # adults 20 and over grow once per year
                           entity[:age] > prev_age
                         else
-                          # people 20 and under grow once per month
+                          # people under 20 grow once per month
                           entity[:age_mos] > prev_age_mos
                         end
           entity.events.create(time.to_time, :grow, :age) if should_grow
