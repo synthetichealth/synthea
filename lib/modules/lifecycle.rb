@@ -280,7 +280,7 @@ module Synthea
         range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
         entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
         if creatinine_clearance > 60
-          entity.set_vital_sign(:egfr, '>60', 'mL/min/{1.73_m2}')
+          entity.set_vital_sign(:egfr, 60, 'mL/min/{1.73_m2}')
         else
           entity.set_vital_sign(:egfr, creatinine_clearance, 'mL/min/{1.73_m2}')
         end
