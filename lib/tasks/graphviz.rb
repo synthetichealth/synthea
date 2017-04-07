@@ -10,7 +10,9 @@ module Synthea
 
       def self.generate_graphs
         folder = Synthea::Config.graphviz.output
+        submodule_folder = File.join(folder, 'submodules')
         FileUtils.mkdir_p folder unless File.exists? folder
+        FileUtils.mkdir_p submodule_folder unless File.exists? submodule_folder
 
         puts "Rendering graphs to `#{folder}` folder..."
         @@count = 0
@@ -134,12 +136,12 @@ module Synthea
 
         # all modules and submodules
         Dir.glob(File.join(module_dir, '**', '*.json')) do |wf_file|
-          filenames << generate_workflow_based_graph(graphviz_dir, wf_file)
+          filenames << generate_workflow_based_graph(graphviz_dir, module_dir, wf_file)
         end
         filenames
       end
 
-      def self.generate_workflow_based_graph(dir, wf_file)
+      def self.generate_workflow_based_graph(dir, module_dir, wf_file)
         # Create a new graph
         g = GraphViz.new( :G, :type => :digraph )
         wf = JSON.parse(File.read(wf_file))
@@ -148,7 +150,15 @@ module Synthea
 
         # Generate output image
         filename = "#{wf['name']}.png"
-        g.output( :png => File.join(dir, filename) )
+        relative_path = wf_file.split(module_dir + File::SEPARATOR)[1]
+        export_path = if relative_path && relative_path.include?(File::SEPARATOR)
+                        # Export submodules to a separate directory
+                        File.join(dir, "submodules", filename)
+                      else
+                        File.join(dir, filename)
+                      end
+
+        g.output( :png => export_path )
         filename
       end
 
