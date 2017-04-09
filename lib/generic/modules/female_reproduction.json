@@ -1,0 +1,509 @@
+{
+  "name": "Female Reproduction",
+  "remarks": [
+    "This module models female reproduction from birth to death. Once females ",
+    "reach reproductive age, this module operates on a monthly cycle. Each month ",
+    "a sexually active female has a non-zero chance of becoming pregnant. This ",
+    "chance is greatly reduced by taking a contraceptive.",
+
+    "If a female becomes pregnant, the monthly cycles are suspended until the ",
+    "pregnancy terminates. The pregnancy module is responsible for ending any ",
+    "active contraceptive method once the pregnancy is diagnosed.",
+
+    "The monthly reproductive cycles end once a female reaches menopause, ",
+    "typically around the age of 50.",
+
+    "This module of course operates on several assumptions: ",
+    "2. All females have regular, monthly reproductive cycles (some don't) ",
+    "4. All females reach menopause at age 50 "
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "transition": "Delay_For_Reproductive_Age"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_For_Reproductive_Age": {
+      "type": "Delay",
+      "range": {
+        "low": 11,
+        "high": 14,
+        "unit": "years"
+      },
+      "direct_transition": "Female_Reproductive_Cycle"
+    },
+
+    "Female_Reproductive_Cycle": {
+      "type": "Delay",
+      "remarks": [
+        "Adults have a cycle of 21 - 35 days (avg. 28). Source: ",
+        "https://www.womenshealth.gov/a-z-topics/menstruation-and-menstrual-cycle"
+      ],
+      "range": {
+        "low": 21,
+        "high": 35,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Menopause_Reached"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Pregnancy_Guard"
+        },
+        {
+          "transition": "Reproductive_Cycle_Outcome"
+        }
+      ]
+    },
+
+    "Menopause_Reached": {
+      "type": "Simple",
+      "remarks": [
+        "This state just exists to make the graph look nicer. Once menopause is ",
+        "reached, head to Terminal."
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Pregnancy_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "pregnant",
+        "operator": "==",
+        "value": false
+      },
+      "direct_transition": "Female_Reproductive_Cycle"
+    },
+
+    "Reproductive_Cycle_Outcome": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " REPRODUCTIVE CYCLE OUTCOMES                                          ",
+        "======================================================================",
+        "This is where the magic happens. If females are sexually active, there is ",
+        "a non-zero chance of becoming pregnant. The 'sexually_active' attribute is ",
+        "set by the 'sexual_activity' module."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sexually_active",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Sexually_Active"
+        },
+        {
+          "transition": "Not_Sexually_Active"
+        }
+      ]
+    },
+
+    "Sexually_Active": {
+      "type": "Simple",
+      "remarks": [
+        "2 attributes determine the current state of a female's contraceptive use: ",
+        "1. contraceptive - if not nil, references a contraceptive medication ",
+        "2. contraceptive_type - if not nil, describes the type of contraceptive in-use ",
+
+        "contraceptive_type may be non-nil even if contraceptive is nil, e.g. for condoms ",
+        "or primitive contraceptive methods like awareness or withdrawal."
+      ],
+      "conditional_transition": [
+        {
+          "remarks": [
+            "Not taking a contraceptive of any type."
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive_type",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Unprotected_Incidence"
+        },
+        {
+          "remarks": [
+            "Using a contraceptive type that is not prescribed, e.g. condom."
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive_type",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Contraceptive_Incidence"
+        },
+        {
+          "remarks": [
+            "Using a contraceptive type that is prescribed, e.g. pill."
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive_type",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Active_Contraceptive?"
+        },
+        {
+          "remarks": [
+            "This is an error state where contraceptive is not nil, but no ",
+            "contraceptive type is specified. In this instance, default to the ",
+            "unprotected incidence."
+          ],
+          "transition": "Unprotected_Incidence"
+        }
+      ]
+    },
+
+    "Active_Contraceptive?": {
+      "type": "Simple",
+      "remarks": [
+        "If the contraceptive medication prescribed is inactive, assume the ",
+        "patient is not taking it and is therefore having unprotected sex."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "referenced_by_attribute": "contraceptive"
+          },
+          "transition": "Contraceptive_Incidence"
+        },
+        {
+          "transition": "Unprotected_Incidence"
+        }
+      ]
+    },
+
+    "Contraceptive_Incidence": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " CONTACEPTIVE INCIDENCE                                               ",
+        "======================================================================",
+        "Effectiveness of different prescription contraceptives. The following percentages ",
+        "indicate the number out of 100 women who experience unplanned pregnancy within ",
+        "the first year of use. These percentages are scaled for a monthly time step: ",
+
+        "| Method         | Annual Chance of Pregnancy | Monthly Chance of Pregnancy | ",
+        "|----------------|----------------------------|-----------------------------| ",
+        "| awareness **   |             24%            |            2.26%            | ",
+        "| withdrawal     |             22%            |            2.05%            | ",
+        "| condom         |             18%            |            1.640%           | ",
+        "| pill           |              9%            |            0.692%           | ",
+        "| patch          |              9%            |            0.692%           | ",
+        "| ring           |              9%            |            0.692%           | ",
+        "| injectable     |              6%            |            0.514%           | ",
+        "| IUD            |          0.2 - 0.8%        |       0.0167 - 0.0669%      | ",
+        "| sterilization  |         0.15 - 0.5%        |       0.0125 - 0.0418%      | ",
+        "| implant        |            0.05%           |           0.00417%          | ",
+        "'---------------------------------------------------------------------------' ",
+
+        "** fertility awareness is planning around a woman's ovulation cycle, ",
+        "obstaining from sex or using a condom during peak fertility.",
+
+        "Source: https://www.cdc.gov/reproductivehealth/unintendedpregnancy/pdf/contraceptive_methods_508.pdf"
+
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "awareness"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0226,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.9774,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "withdrawal"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0205,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.9795,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "condom"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0164,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.9836,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "pill"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00692,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.99318,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "patch"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00692,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.99318,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "ring"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00692,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.99318,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "injectable"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00514,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.99486,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "iud"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00342,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.99658,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "sterilization"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00271,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.99729,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
+            "operator": "==",
+            "value": "implant"
+          },
+          "distributions": [
+            {
+              "distribution": 0.000417,
+              "transition": "Potentially_Pregnant"
+            },
+            {
+              "distribution": 0.999583,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Unprotected_Incidence": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.193,
+          "transition": "Potentially_Pregnant"
+        },
+        {
+          "distribution": 0.817,
+          "transition": "Next_Reproductive_Cycle"
+        }
+      ]
+    },
+
+    "Not_Sexually_Active": {
+      "type": "Simple",
+      "direct_transition": "Next_Reproductive_Cycle"
+    },
+
+    "Potentially_Pregnant": {
+      "type": "Simple",
+      "remarks": [
+        "Unless the female is infertile, she will become pregnant."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "infertile",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Next_Reproductive_Cycle"
+        },
+        {
+          "transition": "Become_Pregnant"
+        }
+      ]
+    },
+
+    "Become_Pregnant": {
+      "type": "SetAttribute",
+      "remarks": [
+        "When true, the 'pregnant' attribute triggers the start of a cycle in ",
+        "the Pregnancy module."
+      ],
+      "attribute": "pregnant",
+      "value": true,
+      "direct_transition": "Pregnancy_Guard"
+    },
+
+    "Next_Reproductive_Cycle": {
+      "type": "Simple",
+      "direct_transition": "Female_Reproductive_Cycle"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

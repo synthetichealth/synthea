@@ -1,0 +1,267 @@
+{
+  "name": "Sexual Activity",
+  "remarks": [
+    "This module models the sexual activity of males and females, from puberty ",
+    "to old age. Most of the incidence in this module is based on a recent study ",
+    "from Indiana University: http://www.nationalsexstudy.indiana.edu/graph.html",
+
+    "Omitting the male sexual incidence since male sexual activity does not, ",
+    "at present, influence any other module."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "transition": "Initially_Inactive"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Initially_Inactive": {
+      "type": "SetAttribute",
+      "remarks": [
+        "Initially, everyone is not sexually active. I hope."
+      ],
+      "attribute": "sexually_active",
+      "value": false,
+      "direct_transition": "Delay_For_Sexual_Activity"
+    },
+
+    "Delay_For_Sexual_Activity": {
+      "type": "Delay",
+      "remarks": [
+        "There is no data on female sexual activity before the age of 14."
+      ],
+      "exact": {
+        "quantity": 14,
+        "unit": "years"
+      },
+      "direct_transition": "Female_Sexual_Activity"
+    },
+
+    "Female_Sexual_Activity": {
+      "type": "Delay",
+      "remarks": [
+        "Female sexual activity is now modelled on a yearly basis, to match ",
+        "the Indiana University study. In the future, this may be scaled to a ",
+        "monthly incidence to match the female reproductive cycle.",
+
+        "The incidence used here matches the percentage of 'Vaginal Intercourse' ",
+        "for women in the chart."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 16,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.11,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.89,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.30,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.70,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 20,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.62,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.38,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 25,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.80,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.20,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 30,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.87,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.13,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 40,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.74,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.26,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.70,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.30,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 60,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.51,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.49,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 70,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.42,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.58,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 70,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.22,
+              "transition": "Female_Sexually_Active"
+            },
+            {
+              "distribution": 0.78,
+              "transition": "Female_Not_Sexually_Active"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Female_Sexually_Active": {
+      "type": "SetAttribute",
+      "attribute": "sexually_active",
+      "value": true,
+      "direct_transition": "Female_Sexual_Activity"
+    },
+
+    "Female_Not_Sexually_Active": {
+      "type": "SetAttribute",
+      "attribute": "sexually_active",
+      "value": false,
+      "direct_transition": "Female_Sexual_Activity"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
