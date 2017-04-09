@@ -10,9 +10,7 @@ module Synthea
 
       def self.generate_graphs
         folder = Synthea::Config.graphviz.output
-        submodule_folder = File.join(folder, 'submodules')
         FileUtils.mkdir_p folder unless File.exists? folder
-        FileUtils.mkdir_p submodule_folder unless File.exists? submodule_folder
 
         puts "Rendering graphs to `#{folder}` folder..."
         @@count = 0
@@ -136,7 +134,8 @@ module Synthea
 
         # all modules and submodules
         Dir.glob(File.join(module_dir, '**', '*.json')) do |wf_file|
-          filenames << generate_workflow_based_graph(graphviz_dir, module_dir, wf_file)
+          filename = generate_workflow_based_graph(graphviz_dir, module_dir, wf_file)
+          filenames << filename unless filename.nil?
         end
         filenames
       end
@@ -150,16 +149,37 @@ module Synthea
 
         # Generate output image
         filename = "#{wf['name']}.png"
-        relative_path = wf_file.split(module_dir + File::SEPARATOR)[1]
-        export_path = if relative_path && relative_path.include?(File::SEPARATOR)
-                        # Export submodules to a separate directory
-                        File.join(dir, "submodules", filename)
-                      else
-                        File.join(dir, filename)
-                      end
+        export_path = File.join(dir, filename)
+
+        is_submodule = submodule?(module_dir, wf_file)
+
+        if is_submodule
+          # For submodules, replicate the same directory structure as the modules directory.
+          folder = submodule_folder(module_dir, wf_file)
+          folder_path = File.join(dir, folder)
+          # Create the submodule folder if it doesn't already exist
+          FileUtils.mkdir_p folder_path unless File.exists? folder_path
+          # Export the submodule into that folder
+          export_path = File.join(folder_path, filename)
+        end
 
         g.output( :png => export_path )
-        filename
+        # Only return the filenames of main modules
+        filename unless is_submodule
+      end
+
+      def self.submodule?(module_dir, module_path)
+        # Returns true if the module at module_path is a submodule.
+        relative_path = module_path.split(module_dir + File::SEPARATOR)[1]
+        relative_path && relative_path.include?(File::SEPARATOR)
+      end
+
+      def self.submodule_folder(module_dir, submodule_path)
+        # Returns the relative path to a submodule folder.
+        # e.g. "path/to/a/submodule.json" -> "path/to/a"
+        relative_path = submodule_path.split(module_dir + File::SEPARATOR)[1]
+        parts = relative_path.split(File::SEPARATOR)
+        parts[0..(parts.length-2)].join(File::SEPARATOR)
       end
 
       def self.populate_graph(g, wf)
