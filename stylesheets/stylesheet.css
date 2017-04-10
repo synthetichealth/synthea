@@ -545,6 +545,21 @@ aside a.button {
   background: transparent url(../images/download-button.png) 0 0 no-repeat;
 }
 
+aside a.button.small {
+  display: block;
+  width: 150px;
+  padding-left: 50px;
+  padding-top: 10px;
+  margin: 0;
+  font-size: 15px;
+  background: transparent url(../images/download-button-2.png) 0 0 no-repeat;
+  background-size: 202px 50px;
+}
+aside a.button.small small{
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
 code, pre {
   margin-bottom: 30px;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
