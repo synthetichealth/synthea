@@ -1,13 +1,11 @@
 {
   "name": "Pregnancy",
   "remarks": [
-    "Most of the statistics in this module come from the CDC. It's difficult to find very",
-    "recent statistics for pregnancy - they simply haven't been compiled yet. The latest",
-    "comprehensive stats I could find for the United States were from 2010, compiled by the",
-    "CDC in 2013, see: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm.",
-    "Although the birth rate in the United States is still declining these statistics are still",
-    "consistent (< 1 percentage point difference) with some 2014 statistics collected by",
-    "the Guttmacher Institute, see: https://www.guttmacher.org/fact-sheet/induced-abortion-united-states.",
+    "Whenever a female becomes pregnant, the 'pregnant' attribute is set to true ",
+    "by the Female Reproduction module. The likelihood of becoming pregnant is ",
+    "determined by a wide variety of factors including age, sexual activity, ",
+    "and contraceptive use.",
+
     "Some notable complications NOT modeled in this module:",
     "1. Maternal death (very low incidence in developed countries)",
     "2. Gestational diabetes (because of the complex interplay with the diabetes module)",
@@ -23,7 +21,7 @@
             "condition_type": "Gender",
             "gender": "F"
           },
-          "transition": "Wait_For_Maturity"
+          "transition": "Initially_Not_Pregnant"
         },
         {
           "transition": "Terminal"
@@ -31,123 +29,27 @@
       ]
     },
 
-    "Wait_For_Maturity": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 15,
-        "unit": "years"
-      },
-      "direct_transition": "Wellness_Visit"
-    },
-
-    "Wellness_Visit": {
-      "type": "Encounter",
-      "wellness": true,
-      "remarks": [
-        "======================================================================",
-        " INCIDENCE                                                            ",
-        "======================================================================",
-        "From the U.S. Census: https://www.census.gov/content/dam/Census/library/publications/2014/demo/p20-575.pdf ",
-        "Of women age 15 - 50 about 59% are mothers. 17.2% had one child, 23.1% had two, and 18.5% had 3 or more. ",
-        "About 11% of women are infertile."
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.11,
-          "transition": "Is_Infertile",
-          "remarks": [
-            "Source: https://www.asrm.org/detail.aspx?id=2322 (CDC)"
-          ]
-        },
-        {
-          "distribution": 0.588,
-          "transition": "Distribute_Number_Of_Children"
-        },
-        {
-          "distribution": 0.312,
-          "transition": "Terminal"
-        }
-      ]
-    },
-
-    "Is_Infertile": {
-      "type": "ConditionOnset",
-      "target_encounter": "Wellness_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "6738008",
-          "display": "Female infertility"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-
-    "Distribute_Number_Of_Children": {
-      "type": "Simple",
-      "remarks": [
-        "To match the CDC statistics for the number of children mothers typically have, we start the ",
-        "'pregnancy_iterator' at different values."
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.293,
-          "transition": "Will_Have_One_Child"
-        },
-        {
-          "distribution": 0.393,
-          "transition": "Will_Have_Two_Children"
-        },
-        {
-          "distribution": 0.314,
-          "transition": "Will_Have_Three_Or_More_Children"
-        }
-      ]
-    },
-
-    "Will_Have_One_Child": {
+    "Initially_Not_Pregnant": {
       "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": 4,
-      "remarks": [
-        "This leaves the mother with 3 remaining passes through the pregnancy module (out of 7 total). ",
-        "Additional passes account for potential miscarriages or abortions."
-      ],
-      "direct_transition": "Wait_For_First_Conception"
+      "attribute": "pregnant",
+      "value": false,
+      "direct_transition": "Initially_No_Children"
     },
 
-    "Will_Have_Two_Children": {
+    "Initially_No_Children": {
       "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": 2,
-      "remarks": [
-        "This leaves the mother with 5 remaining passes through the pregnancy module (out of 7 total). ",
-        "Additional passes account for potential miscarriages or abortions."
-      ],
-      "direct_transition": "Wait_For_First_Conception"
-    },
-
-    "Will_Have_Three_Or_More_Children": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
+      "attribute": "number_of_children",
       "value": 0,
-      "remarks": [
-        "This leaves the mother with 7 remaining passes through the pregnancy module (out of 7 total). ",
-        "Additional passes account for potential miscarriages or abortions."
-      ],
-      "direct_transition": "Wait_For_First_Conception"
+      "direct_transition": "Become_Pregnant_Guard"
     },
 
-    "Wait_For_First_Conception": {
-      "type": "Delay",
-      "remarks": [
-        "After establishing fertility we wait for 1-20 years (between age 16 and 35) ",
-        "for the first pregnancy to occur."
-      ],
-      "range": {
-        "low": 1,
-        "high": 20,
-        "unit": "years"
+    "Become_Pregnant_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "pregnant",
+        "operator": "==",
+        "value": true
       },
       "direct_transition": "Become_Pregnant"
     },
@@ -1279,11 +1181,16 @@
     },
 
     "Normal_Pregnancy_Completion": {
-      "type": "Simple",
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "number_of_children",
       "remarks": [
         "======================================================================",
         " PREGNANCY COMPLETION                                                 ",
-        "======================================================================"
+        "======================================================================",
+
+        "A pregnancy resulting in live birth increments the 'number_of_children' ",
+        "counter. This allows us to track how many children are born to each mother."
       ],
       "conditional_transition": [
         {
@@ -1326,60 +1233,14 @@
     "Pregnancy_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Become_Pregnant",
-      "direct_transition": "Potential_For_Another_Pregnancy"
+      "direct_transition": "Unset_Pregnant_Attribute"
     },
 
-    "Potential_For_Another_Pregnancy": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "pregnancy_iterator",
-                "operator": "<",
-                "value": 7,
-                "remarks": [
-                  "We use 7 as a hard limit. Given the probabilities of miscarriage and abortion ",
-                  "if a woman goes through the module all 7 times we expect 3-4 pregnancies."
-                ]
-              },
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 50,
-                "unit": "years"
-              }
-            ]
-          },
-          "transition": "Wait_For_Next_Conception"
-        },
-        {
-          "transition": "Terminal",
-          "remarks": [
-            "That's all folks..."
-          ]
-        }
-      ]
-    },
-
-    "Wait_For_Next_Conception": {
-      "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 5,
-        "unit": "years"
-      },
-      "direct_transition": "Increment_Pregnancy_Count"
-    },
-
-    "Increment_Pregnancy_Count": {
-      "type": "Counter",
-      "action": "increment",
-      "attribute": "pregnancy_iterator",
-      "direct_transition": "Become_Pregnant"
+    "Unset_Pregnant_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "pregnant",
+      "value": false,
+      "direct_transition": "Become_Pregnant_Guard"
     },
 
     "Terminal": {

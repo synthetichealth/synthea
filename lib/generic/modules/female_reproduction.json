@@ -2,20 +2,17 @@
   "name": "Female Reproduction",
   "remarks": [
     "This module models female reproduction from birth to death. Once females ",
-    "reach reproductive age, this module operates on a monthly cycle. Each month ",
+    "reach reproductive age, this module operates on a monthly cycle. Each month, ",
     "a sexually active female has a non-zero chance of becoming pregnant. This ",
     "chance is greatly reduced by taking a contraceptive.",
 
     "If a female becomes pregnant, the monthly cycles are suspended until the ",
-    "pregnancy terminates. The pregnancy module is responsible for ending any ",
-    "active contraceptive method once the pregnancy is diagnosed.",
-
-    "The monthly reproductive cycles end once a female reaches menopause, ",
-    "typically around the age of 50.",
+    "pregnancy terminates. The monthly reproductive cycles permanently end once ",
+    "a female reaches menopause at age 50.",
 
     "This module of course operates on several assumptions: ",
-    "2. All females have regular, monthly reproductive cycles (some don't) ",
-    "4. All females reach menopause at age 50 "
+    "1. All females have regular, monthly reproductive cycles (some don't) ",
+    "2. All females reach menopause at age 50 "
   ],
   "states": {
 
@@ -37,9 +34,8 @@
 
     "Delay_For_Reproductive_Age": {
       "type": "Delay",
-      "range": {
-        "low": 11,
-        "high": 14,
+      "exact": {
+        "quantity": 14,
         "unit": "years"
       },
       "direct_transition": "Female_Reproductive_Cycle"
@@ -129,107 +125,7 @@
 
     "Sexually_Active": {
       "type": "Simple",
-      "remarks": [
-        "2 attributes determine the current state of a female's contraceptive use: ",
-        "1. contraceptive - if not nil, references a contraceptive medication ",
-        "2. contraceptive_type - if not nil, describes the type of contraceptive in-use ",
-
-        "contraceptive_type may be non-nil even if contraceptive is nil, e.g. for condoms ",
-        "or primitive contraceptive methods like awareness or withdrawal."
-      ],
-      "conditional_transition": [
-        {
-          "remarks": [
-            "Not taking a contraceptive of any type."
-          ],
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "contraceptive",
-                "operator": "is nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "contraceptive_type",
-                "operator": "is nil"
-              }
-            ]
-          },
-          "transition": "Unprotected_Incidence"
-        },
-        {
-          "remarks": [
-            "Using a contraceptive type that is not prescribed, e.g. condom."
-          ],
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "contraceptive",
-                "operator": "is nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "contraceptive_type",
-                "operator": "is not nil"
-              }
-            ]
-          },
-          "transition": "Contraceptive_Incidence"
-        },
-        {
-          "remarks": [
-            "Using a contraceptive type that is prescribed, e.g. pill."
-          ],
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "contraceptive",
-                "operator": "is not nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "contraceptive_type",
-                "operator": "is not nil"
-              }
-            ]
-          },
-          "transition": "Active_Contraceptive?"
-        },
-        {
-          "remarks": [
-            "This is an error state where contraceptive is not nil, but no ",
-            "contraceptive type is specified. In this instance, default to the ",
-            "unprotected incidence."
-          ],
-          "transition": "Unprotected_Incidence"
-        }
-      ]
-    },
-
-    "Active_Contraceptive?": {
-      "type": "Simple",
-      "remarks": [
-        "If the contraceptive medication prescribed is inactive, assume the ",
-        "patient is not taking it and is therefore having unprotected sex."
-      ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "referenced_by_attribute": "contraceptive"
-          },
-          "transition": "Contraceptive_Incidence"
-        },
-        {
-          "transition": "Unprotected_Incidence"
-        }
-      ]
+      "direct_transition": "Contraceptive_Incidence"
     },
 
     "Contraceptive_Incidence": {
@@ -238,13 +134,14 @@
         "======================================================================",
         " CONTACEPTIVE INCIDENCE                                               ",
         "======================================================================",
-        "Effectiveness of different prescription contraceptives. The following percentages ",
-        "indicate the number out of 100 women who experience unplanned pregnancy within ",
-        "the first year of use. These percentages are scaled for a monthly time step: ",
+        "Effectiveness of different contraceptive types. The following percentages ",
+        "indicate the number out of 100 women who experience planned or unplanned ",
+        "pregnancy within the first year of use. These percentages are scaled for ",
+        "a monthly time step: ",
 
         "| Method         | Annual Chance of Pregnancy | Monthly Chance of Pregnancy | ",
         "|----------------|----------------------------|-----------------------------| ",
-        "| awareness **   |             24%            |            2.26%            | ",
+        "| none           |             85%            |            19.3%            | ",
         "| withdrawal     |             22%            |            2.05%            | ",
         "| condom         |             18%            |            1.640%           | ",
         "| pill           |              9%            |            0.692%           | ",
@@ -256,9 +153,6 @@
         "| implant        |            0.05%           |           0.00417%          | ",
         "'---------------------------------------------------------------------------' ",
 
-        "** fertility awareness is planning around a woman's ovulation cycle, ",
-        "obstaining from sex or using a condom during peak fertility.",
-
         "Source: https://www.cdc.gov/reproductivehealth/unintendedpregnancy/pdf/contraceptive_methods_508.pdf"
 
       ],
@@ -267,16 +161,35 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "contraceptive_type",
+            "operator": "is nil"
+          },
+          "remarks": [
+            "contraceptive_type == nil is treated as an error state and ",
+            "deferred to the next reproductive cycle. This may occur when ",
+            "the reproductive cycle completes on the same time step as ",
+            "the contraceptive_type is recomputed."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Next_Reproductive_Cycle"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive_type",
             "operator": "==",
-            "value": "awareness"
+            "value": "none"
           },
           "distributions": [
             {
-              "distribution": 0.0226,
+              "distribution": 0.193,
               "transition": "Potentially_Pregnant"
             },
             {
-              "distribution": 0.9774,
+              "distribution": 0.807,
               "transition": "Next_Reproductive_Cycle"
             }
           ]
@@ -442,20 +355,6 @@
               "transition": "Next_Reproductive_Cycle"
             }
           ]
-        }
-      ]
-    },
-
-    "Unprotected_Incidence": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": 0.193,
-          "transition": "Potentially_Pregnant"
-        },
-        {
-          "distribution": 0.817,
-          "transition": "Next_Reproductive_Cycle"
         }
       ]
     },

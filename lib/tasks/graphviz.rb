@@ -455,7 +455,12 @@ module Synthea
         when 'Symptom'
           "Symptom: '#{logic['symptom']}' \\#{logic['operator']} #{logic['value']}\\l"
         when 'PriorState'
-          "state '#{logic['name']}' has been processed\\l"
+          within = logic['within']
+          if within
+            "state '#{logic['name']}' has been processed within #{within['quantity']} #{within['unit']}\\l"
+          else
+            "state '#{logic['name']}' has been processed\\l"
+          end
         when 'Attribute'
           "Attribute: '#{logic['attribute']}' \\#{logic['operator']} #{logic['value']}\\l"
         when 'Observation'
