@@ -44,7 +44,7 @@ class FhirTest < Minitest::Test
     record.condition(:diabetes, time_adv, :condition, nil)
     record.procedure(:amputation_right_leg, time_adv, reason: :diabetes)
     record.immunization(:dtap, time_adv, :immunization, nil)
-    record.observation(:height, time_adv, 5)
+    record.observation(:body_height, time_adv, 5)
     record.encounter_end(:age_lt_11, time_adv + 10.minutes)
 
     #Add 1 provider and an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
@@ -67,7 +67,7 @@ class FhirTest < Minitest::Test
     record.observation(:systolic_blood_pressure, @time, 120)
     record.observation(:diastolic_blood_pressure, @time, 80)
     record.observation(:blood_pressure, @time, 2, 'fhir' => :multi_observation)
-    record.observation(:weight, @time, 50)
+    record.observation(:body_weight, @time, 50)
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
     assert_equal(2,fhir.entry.select {|e| e.resource.is_a?(FHIR::Observation)}.length)
     assert_empty fhir.validate
@@ -172,7 +172,7 @@ class FhirTest < Minitest::Test
   end
 
   def test_observation
-    observation = {'type' => :height, 'time' => @time, 'value' => "60"}
+    observation = {'type' => :body_height, 'time' => @time, 'value' => "60"}
     Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
     obs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
     obs = obs_entry.resource
@@ -310,16 +310,19 @@ class FhirTest < Minitest::Test
      'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved, 'rx_info' => {}}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
     med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}.resource
-    med_coding = med.medicationCodeableConcept.coding[0]
-    assert_equal('834357', med_coding.code)
-    assert_equal('3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe', med_coding.display)
-    assert_equal('http://www.nlm.nih.gov/research/umls/rxnorm',med_coding.system)
     assert_equal("#{@patientID}", med.patient.reference)
     assert_equal("#{@encounterID}", med.context.reference)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time), med.dateWritten)
     assert_equal('stopped', med.status)
     assert_equal("#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
+
+    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Medication)}.resource
+    med_coding = med.code.coding[0]
+    assert_equal('834357', med_coding.code)
+    assert_equal('3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe', med_coding.display)
+    assert_equal('http://www.nlm.nih.gov/research/umls/rxnorm',med_coding.system)
+
     assert_empty @fhir_record.validate
   end
 

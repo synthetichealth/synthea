@@ -59,7 +59,7 @@ module Synthea
                                              'extension' => [
                                                # race
                                                {
-                                                 'url' => 'http://hl7.org/fhir/StructureDefinition/us-core-race',
+                                                 'url' => 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race',
                                                  'valueCodeableConcept' => {
                                                    'text' => 'race',
                                                    'coding' => [{
@@ -71,7 +71,7 @@ module Synthea
                                                },
                                                # ethnicity
                                                {
-                                                 'url' => 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity',
+                                                 'url' => 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity',
                                                  'valueCodeableConcept' => {
                                                    'text' => 'ethnicity',
                                                    'coding' => [{
@@ -189,7 +189,8 @@ module Synthea
                                                  'code' => condition_data[:codes]['SNOMED-CT'][0],
                                                  'display' => condition_data[:description],
                                                  'system' => 'http://snomed.info/sct'
-                                               }]
+                                               }],
+                                               'text' => condition_data[:description]
                                              },
                                              'verificationStatus' => 'confirmed',
                                              'clinicalStatus' => 'active',
@@ -280,6 +281,11 @@ module Synthea
                                         'text' => 'Healthcare Provider'
                                       })
 
+        if Synthea::Config.exporter.fhir.use_shr_extensions
+          prov.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-actor-Organization"])
+          # required fields for this profile are name and type
+        end
+
         entry = FHIR::Bundle::Entry.new
         entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = prov
@@ -303,6 +309,12 @@ module Synthea
                                                }] })
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
+          allergy.modifierExtension = [FHIR::Extension.new('url' => "#{SHR_EXT}shr-base-NonOccurrenceModifier-extension",
+                                                           'extension' => [{
+                                                             'url' => "#{SHR_EXT}primitive-boolean-extension",
+                                                             'valueBoolean' => 'false' # the allergy did occur, so nonoccurrence = false
+                                                           }])]
+
           profiles = ["#{SHR_EXT}shr-allergy-AllergyIntolerance"]
           # required fields for AllergyIntolerance profile are assertedDate
           profiles << "#{SHR_EXT}shr-allergy-FoodAllergy" if allergy.category == 'food'
@@ -330,8 +342,7 @@ module Synthea
                                                  'text' => obs_data[:description]
                                                },
                                                'category' => {
-                                                 'coding' => [{ 'system' => 'http://hl7.org/fhir/ValueSet/observation-category', 'code' => observation['category'] }],
-                                                 'text' => observation['category']
+                                                 'coding' => [{ 'system' => 'http://hl7.org/fhir/observation-category', 'code' => observation['category'] }]
                                                },
                                                'subject' => { 'reference' => patient.fullUrl.to_s },
                                                'encounter' => { 'reference' => encounter.fullUrl.to_s },
@@ -359,11 +370,21 @@ module Synthea
             entry.resource.meta.profile << "#{SHR_EXT}shr-vital-VitalSign"
           when 'social-history'
             entry.resource.meta.profile << "#{SHR_EXT}shr-observation-SocialHistory"
+            entry.resource.category << FHIR::CodeableConcept.new('coding' => [{ 'system' => 'http://ncimeta.nci.nih.gov', 'code' => 'C2004062' }])
           end
 
           # add the specific profile based on code
           code_mapping = SHR_MAPPING['http://loinc.org'][obs_data[:code]]
-          entry.resource.meta.profile << code_mapping[:url] if code_mapping
+          if code_mapping
+            entry.resource.meta.profile << code_mapping[:url]
+
+            # blood pressure is special, and requires a "quantity" extension
+            if code_mapping[:url] == "#{SHR_EXT}shr-vital-DiastolicPressure" || code_mapping[:url] == "#{SHR_EXT}shr-vital-SystolicPressure"
+              entry.resource.extension ||= []
+              entry.resource.extension << FHIR::Extension.new('url' => "#{SHR_EXT}shr-core-Quantity-extension",
+                                                              'valueQuantity' => entry.resource.valueQuantity.to_hash)
+            end
+          end
         end
 
         fhir_record.entry << entry
@@ -381,12 +402,12 @@ module Synthea
                                                    'coding' => [{ 'system' => 'http://loinc.org', 'code' => multi_data[:code], 'display' => multi_data[:description] }]
                                                  },
                                                  'category' => {
-                                                   'coding' => [{ 'system' => 'http://hl7.org/fhir/ValueSet/observation-category', 'code' => multi_obs['category'] }],
-                                                   'text' => multi_obs['category']
+                                                   'coding' => [{ 'system' => 'http://hl7.org/fhir/observation-category', 'code' => multi_obs['category'] }]
                                                  },
                                                  'subject' => { 'reference' => patient.fullUrl.to_s },
                                                  'encounter' => { 'reference' => encounter.fullUrl.to_s },
-                                                 'effectiveDateTime' => convert_fhir_date_time(multi_obs['time'], 'time'))
+                                                 'effectiveDateTime' => convert_fhir_date_time(multi_obs['time'], 'time'),
+                                                 'issued' => convert_fhir_date_time(multi_obs['time'], 'time'))
         observations.each do |obs|
           fhir_observation.component << FHIR::Observation::Component.new('code' => obs.resource.code.to_hash, 'valueQuantity' => obs.resource.valueQuantity.to_hash)
         end
@@ -452,7 +473,7 @@ module Synthea
         if Synthea::Config.exporter.fhir.use_shr_extensions
           fhir_procedure.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-procedure-Procedure"])
           fhir_procedure.extension ||= []
-          fhir_procedure.extension << FHIR::Extension.new('url' => "#{SHR_EXT}shr-core-CodeableConcept",
+          fhir_procedure.extension << FHIR::Extension.new('url' => "#{SHR_EXT}shr-core-CodeableConcept-extension",
                                                           'valueCodeableConcept' => {
                                                             'text' => proc_data[:description],
                                                             'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'display' => proc_data[:description], 'system' => 'http://snomed.info/sct' }]
@@ -659,13 +680,23 @@ module Synthea
           end
         end
 
-        med_order = FHIR::MedicationRequest.new('medicationCodeableConcept' => {
-                                                  'coding' => [{
-                                                    'code' => med_data[:codes]['RxNorm'][0],
-                                                    'display' => med_data[:description],
-                                                    'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
-                                                  }]
-                                                },
+        med_entry = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Medication) && med_data[:codes]['RxNorm'][0] == e.resource.code.coding[0].code }
+
+        if med_entry.nil?
+          medication = FHIR::Medication.new('code' => {
+                                              'coding' => [{
+                                                'code' => med_data[:codes]['RxNorm'][0],
+                                                'display' => med_data[:description],
+                                                'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
+                                              }],
+                                              'text' => med_data[:description]
+                                            })
+          med_entry = FHIR::Bundle::Entry.new
+          med_entry.resource = medication
+          fhir_record.entry << med_entry
+        end
+
+        med_order = FHIR::MedicationRequest.new('medicationReference' => { 'reference' => med_entry.fullUrl.to_s },
                                                 'stage' => {
                                                   'coding' => {
                                                     'code' => 'original-order',
@@ -689,6 +720,18 @@ module Synthea
                            end
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
+          med_entry.resource.meta ||= FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-medication-Medication"])
+
+          med_order.extension = [FHIR::Extension.new('url' => "#{SHR_EXT}shr-base-ActionCode-extension",
+                                                     'valueCodeableConcept' => {
+                                                       'text' => 'Prescription of drug (procedure)',
+                                                       'coding' => [{
+                                                         'display' => 'Prescription of drug (procedure)',
+                                                         'code' => '33633005',
+                                                         'system' => 'http://snomed.info/sct'
+                                                       }]
+                                                     })]
+
           med_order.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-medication-MedicationPrescription"])
           # required fields for this profile are status and shr-base-ActionCode-extension
         end

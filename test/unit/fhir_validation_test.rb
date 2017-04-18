@@ -4,6 +4,8 @@ class FhirValidationTest < Minitest::Test
   def setup
     Synthea::Config.exporter.fhir.use_shr_extensions = true
     Synthea::COND_LOOKUP['1234'] = { description: '1234', codes: {'SNOMED-CT' => ['1234']}}
+    # the Observation test in test_shr_validation below uses value "1234"
+    # and some observations take the value as a Condition code, so this has to be in the lookup
   end
 
   def teardown
@@ -12,6 +14,7 @@ class FhirValidationTest < Minitest::Test
   end
 
   def test_execution_and_fhir_validation
+    skip
     world = Synthea::World::Sequential.new
     world.population_count = 0
     (1..10).each do |i|
@@ -30,8 +33,6 @@ class FhirValidationTest < Minitest::Test
 
 
   def test_shr_validation
-    skip "FHIR Profile validation not yet ready"
-
     @profiles = {}
 
     Dir.glob('./resources/shr_profiles/StructureDefinition-shr-*.json').each do |file|
@@ -96,11 +97,13 @@ class FhirValidationTest < Minitest::Test
     med_hash = { 'type' => :amiodarone, 'time' =>  @time, 'start_time' => @time, 'reasons' => [],
                  'stop' => @time + 15.minutes, 'rx_info' => {}}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
-    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}
+    med_request = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}
+    validate_by_profile(med_request.resource)
+    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Medication)}
     validate_by_profile(med.resource)
 
     plan_hash = { 'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'start_time'=>@time, 'time' => @time,
-                  'reasons' => [], 'stop' => @time + 15.minutes}
+                  'reasons' => [], 'goals' => [], 'stop' => @time + 15.minutes}
     Synthea::Output::FhirRecord.careplans(plan_hash, @fhir_record, @patient_entry, @encounter_entry)
     plan = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::CarePlan)}
     validate_by_profile(plan.resource)
@@ -108,8 +111,7 @@ class FhirValidationTest < Minitest::Test
     # for observations, there are specific profiles per observation (ex, blood pressure has its own profile)
     # so loop over all observation codes we know about
 
-    obs_types = Synthea::OBS_LOOKUP.keys
-
+    categories = {}
     Dir.glob('./lib/generic/modules/*.json') do |file|
       json = JSON.parse(File.read(file))
 
@@ -121,27 +123,41 @@ class FhirValidationTest < Minitest::Test
           symbol = code['display'].gsub(/\s+/, '_').downcase.to_sym
 
           Synthea::OBS_LOOKUP[symbol] ||= { description: code['display'], code: code['code'], unit: state['unit'] }
+          categories[symbol] = state['category']
         end
       end
     end
 
-    obs_types.each do |obs|
-      observation = {'type' => obs, 'time' => Time.now, 'value' => "1234" }
+    Synthea::OBS_LOOKUP.keys.each do |obs|
+      next if obs == :blood_pressure # skip blood pressure, it's a MultiObservation, so we'll test that separately
+      observation = {'type' => obs, 'time' => Time.now, 'value' => "1234", 'category' => categories[obs] }
       Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry)
       obs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
-      validate_by_profile(obs_entry.resource)
+      validate_by_profile(obs_entry.resource, false)
     end
 
+    sys_bp_hash = {'type' => :systolic_blood_pressure, 'time' => Time.now, 'value' => "120", 'category' => 'vital-signs' }
+    dia_bp_hash = {'type' => :diastolic_blood_pressure, 'time' => Time.now, 'value' => "80", 'category' => 'vital-signs' }
+    Synthea::Output::FhirRecord.observation(sys_bp_hash, @fhir_record, @patient_entry, @encounter_entry)
+    Synthea::Output::FhirRecord.observation(dia_bp_hash, @fhir_record, @patient_entry, @encounter_entry)
+
+    multiobs_hash = { 'type' => :blood_pressure, 'time' => Time.now, 'value' => 2, 'category' => 'vital-signs' }
+    Synthea::Output::FhirRecord.multi_observation(multiobs_hash, @fhir_record, @patient_entry, @encounter_entry)
+    multiobs = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
+    validate_by_profile(multiobs.resource, false)
   end
 
-  def validate_by_profile(resource)
+  def validate_by_profile(resource, fail_on_validation_error = true)
     return unless resource.meta && resource.meta.profile
 
     resource.meta.profile.each do |profile_uri|
       structure_definition = @profiles[ profile_uri ]
       errors = structure_definition.validate_resource(resource)
-      assert_empty errors
-      # TODO: do we have to remove reference errors?
+      if fail_on_validation_error
+        assert_empty errors
+      else
+        puts errors
+      end
     end
   end
 end
