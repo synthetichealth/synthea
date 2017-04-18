@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.804Z",
+  "date": "2017-04-18T17:07:43.017Z",
   "description": "The time period of US military service.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-MilitaryServiceEraVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/MilitaryServiceEraVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-MilitaryServiceEraVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/MilitaryServiceEraVS"
           }
         }
       }

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.278Z",
+  "date": "2017-04-18T17:07:41.416Z",
   "description": "A statement about observable responses, actions, or activities of the subject. Can be used to assert or deny behaviors.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-behavior-BehavioralObservation.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "49",
+          "id": "70",
           "discriminator": [
             "url"
           ],
@@ -461,7 +461,7 @@
         "id": "Observation:shr-behavior-BehavioralObservation.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "50",
+          "id": "71",
           "discriminator": [
             "url"
           ],
@@ -601,6 +601,14 @@
       {
         "id": "Observation:shr-behavior-BehavioralObservation.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "69",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -630,6 +638,27 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-behavior-BehavioralObservation.category:54511-1",
+        "path": "Observation.category",
+        "sliceName": "54511-1",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "54511-1"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-behavior-BehavioralObservation.code",
@@ -1927,6 +1956,14 @@
       {
         "id": "Observation:shr-behavior-BehavioralObservation.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "69",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -1935,6 +1972,27 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-behavior-BehavioralObservation.category:54511-1",
+        "path": "Observation.category",
+        "sliceName": "54511-1",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "54511-1"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-behavior-BehavioralObservation.code",

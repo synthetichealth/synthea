@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.854Z",
+  "date": "2017-04-18T17:07:43.269Z",
   "description": "A paricular instance of the use of a support surface in patient care.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -270,7 +270,7 @@
         "id": "DeviceUseStatement:shr-skin-SupportSurfaceEmployed.extension",
         "path": "DeviceUseStatement.extension",
         "slicing": {
-          "id": "202",
+          "id": "255",
           "discriminator": [
             "url"
           ],
@@ -503,7 +503,7 @@
         "id": "DeviceUseStatement:shr-skin-SupportSurfaceEmployed.modifierExtension",
         "path": "DeviceUseStatement.modifierExtension",
         "slicing": {
-          "id": "203",
+          "id": "256",
           "discriminator": [
             "url"
           ],

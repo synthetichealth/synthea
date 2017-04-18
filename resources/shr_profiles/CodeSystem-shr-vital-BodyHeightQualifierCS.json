@@ -1,0 +1,43 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-vital-BodyHeightQualifierCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR BodyHeightQualifierCS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/vital/cs/BodyHeightQualifierCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.vital.BodyHeightQualifierCS"
+  },
+  "name": "SHR BodyHeightQualifierCS CodeSystem",
+  "title": "SHR BodyHeightQualifierCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.893Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 1,
+  "concept": [
+    {
+      "code": "shoes_on",
+      "display": "Body height wearing shoes",
+      "definition": "Body height wearing shoes"
+    }
+  ]
+}

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.620Z",
+  "date": "2017-04-18T17:07:42.591Z",
   "description": "Coding of a concept, drawn from a controlled vocabulary. Includes the vocabulary and version, if applicable. May include a display text, and a descriptor expressing the intended interpretation of the code.",
   "purpose": "References to codes are very common in healthcare models.",
   "fhirVersion": "1.8.0",
@@ -124,7 +124,7 @@
         "id": "Coding:shr-core-Coding.extension",
         "path": "Coding.extension",
         "slicing": {
-          "id": "153",
+          "id": "190",
           "discriminator": [
             "url"
           ],

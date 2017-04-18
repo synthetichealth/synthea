@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.765Z",
+  "date": "2017-04-18T17:07:42.930Z",
   "description": "Educational attainment or level of education of individuals.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-lifehistory-EducationalAttainment.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "182",
+          "id": "231",
           "discriminator": [
             "url"
           ],
@@ -357,7 +357,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-EducationalAttainmentVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/EducationalAttainmentVS"
           }
         },
         "mapping": [
@@ -435,7 +435,7 @@
         "id": "Observation:shr-lifehistory-EducationalAttainment.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "183",
+          "id": "232",
           "discriminator": [
             "url"
           ],
@@ -1870,7 +1870,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-EducationalAttainmentVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/EducationalAttainmentVS"
           }
         }
       },

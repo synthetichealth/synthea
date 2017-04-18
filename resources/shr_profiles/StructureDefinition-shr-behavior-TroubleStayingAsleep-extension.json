@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.345Z",
+  "date": "2017-04-18T17:07:41.661Z",
   "description": "How often the subject has trouble staying asleep.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeFrequencyVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeFrequencyVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeFrequencyVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeFrequencyVS"
           }
         }
       }

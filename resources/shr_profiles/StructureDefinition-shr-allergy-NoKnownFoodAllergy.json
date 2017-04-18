@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.229Z",
+  "date": "2017-04-18T17:07:41.177Z",
   "description": "The subject has no known allergies to any foods.",
   "purpose": "To record a clinical assessment of a propensity, or potential risk to an individual, of an adverse reaction upon future exposure to the specified substance, or class of substance.",
   "fhirVersion": "1.8.0",
@@ -291,7 +291,7 @@
         "id": "AllergyIntolerance:shr-allergy-NoKnownFoodAllergy.extension",
         "path": "AllergyIntolerance.extension",
         "slicing": {
-          "id": "34",
+          "id": "51",
           "discriminator": [
             "url"
           ],
@@ -360,7 +360,7 @@
         "id": "AllergyIntolerance:shr-allergy-NoKnownFoodAllergy.modifierExtension",
         "path": "AllergyIntolerance.modifierExtension",
         "slicing": {
-          "id": "35",
+          "id": "52",
           "discriminator": [
             "url"
           ],
@@ -457,7 +457,7 @@
         "id": "AllergyIntolerance:shr-allergy-NoKnownFoodAllergy.modifierExtension:nonoccurrencemodifier.extension",
         "path": "AllergyIntolerance.modifierExtension.extension",
         "slicing": {
-          "id": "9",
+          "id": "10",
           "discriminator": [
             "url"
           ],
@@ -869,9 +869,8 @@
         "isSummary": true,
         "binding": {
           "strength": "required",
-          "description": "Assertion about certainty associated with a propensity, or potential risk, of a reaction to the identified substance.",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/allergy-verification-status"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
           }
         },
         "mapping": [
@@ -1028,7 +1027,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergenIrritantVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergenIrritantVS"
           }
         },
         "mapping": [
@@ -1629,7 +1628,13 @@
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownFoodAllergy.verificationStatus",
         "path": "AllergyIntolerance.verificationStatus",
-        "fixedCode": "unconfirmed"
+        "fixedCode": "unconfirmed",
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
+          }
+        }
       },
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownFoodAllergy.type",
@@ -1663,7 +1668,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergenIrritantVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergenIrritantVS"
           }
         }
       },

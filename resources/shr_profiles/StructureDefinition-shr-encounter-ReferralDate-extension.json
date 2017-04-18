@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.673Z",
+  "date": "2017-04-18T17:07:42.696Z",
   "description": "The date when the provider received a referral for service. A referral includes an oral, written, faxed or electronic request for services made by the client or on the client�s behalf.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

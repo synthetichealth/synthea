@@ -3,7 +3,7 @@
   "id": "shr-sex-PregnancyHistory",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR PregnancyHistory Profile</b></p>\n  <p>Information about current and past pregnancies.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.sex.PregnancyHistory maps to DiagnosticReport:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  CodeableConcept maps to codedDiagnosis\n  Observation maps to result\n  TBD &quot;Specimen&quot; maps to specimen\n  Interpretation maps to conclusion\n  ObservationCategory maps to category\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR PregnancyHistory Profile</b></p>\n  <p>Information about current and past pregnancies.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.sex.PregnancyHistory maps to DiagnosticReport:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  CodeableConcept maps to codedDiagnosis\n  Observation maps to result\n  &lt;TBD &quot;Specimen&quot;&gt; maps to specimen\n  Interpretation maps to conclusion\n  ObservationCategory maps to category\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-sex-PregnancyHistory",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.847Z",
+  "date": "2017-04-18T17:07:43.251Z",
   "description": "Information about current and past pregnancies.",
   "purpose": "To support reporting for any diagnostic report into a clinical data repository.",
   "fhirVersion": "1.8.0",
@@ -284,7 +284,7 @@
         "id": "DiagnosticReport:shr-sex-PregnancyHistory.extension",
         "path": "DiagnosticReport.extension",
         "slicing": {
-          "id": "200",
+          "id": "253",
           "discriminator": [
             "url"
           ],
@@ -1133,8 +1133,8 @@
         "path": "DiagnosticReport.codedDiagnosis",
         "short": "Codes for the conclusion",
         "definition": "Codes for the conclusion.",
-        "min": 1,
-        "max": "1",
+        "min": 0,
+        "max": "*",
         "type": [
           {
             "code": "CodeableConcept",
@@ -1327,8 +1327,6 @@
       {
         "id": "DiagnosticReport:shr-sex-PregnancyHistory.codedDiagnosis",
         "path": "DiagnosticReport.codedDiagnosis",
-        "min": 1,
-        "max": "1",
         "type": [
           {
             "code": "CodeableConcept",

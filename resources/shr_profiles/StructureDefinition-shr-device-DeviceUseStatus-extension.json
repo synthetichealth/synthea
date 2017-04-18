@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.664Z",
+  "date": "2017-04-18T17:07:42.674Z",
   "description": "A code representing the patient or other source's judgment about the state of the device used that this statement is about. Generally this will be active or completed.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

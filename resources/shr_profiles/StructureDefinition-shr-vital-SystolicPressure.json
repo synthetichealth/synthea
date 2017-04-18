@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.954Z",
+  "date": "2017-04-18T17:07:43.685Z",
   "description": "The blood pressure during the contraction of the left ventricle of the heart, when blood pressure is at its highest.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-vital-SystolicPressure.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "243",
+          "id": "318",
           "discriminator": [
             "url"
           ],
@@ -433,7 +433,7 @@
         "id": "Observation:shr-vital-SystolicPressure.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "244",
+          "id": "319",
           "discriminator": [
             "url"
           ],

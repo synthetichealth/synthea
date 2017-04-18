@@ -1,0 +1,69 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-vital-RespiratoryRateMethodCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR RespiratoryRateMethodCS CodeSystem</b></p>\n<p>Methods of measuring respiratory rate.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/vital/cs/RespiratoryRateMethodCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.vital.RespiratoryRateMethodCS"
+  },
+  "name": "SHR RespiratoryRateMethodCS CodeSystem",
+  "title": "SHR RespiratoryRateMethodCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.893Z",
+  "description": "Methods of measuring respiratory rate.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 6,
+  "concept": [
+    {
+      "code": "acoustic",
+      "display": "Acoustic measurement",
+      "definition": "Acoustic measurement"
+    },
+    {
+      "code": "airway_flow",
+      "display": "Airway flow measurement",
+      "definition": "Airway flow measurement"
+    },
+    {
+      "code": "co2",
+      "display": "Carbon dioxide measurement",
+      "definition": "Carbon dioxide measurement"
+    },
+    {
+      "code": "imped",
+      "display": "Transthoracic impedance",
+      "definition": "Transthoracic impedance"
+    },
+    {
+      "code": "spiro",
+      "display": "Spirometry",
+      "definition": "Spirometry"
+    },
+    {
+      "code": "capillary",
+      "display": "Capillary blood",
+      "definition": "Capillary blood"
+    }
+  ]
+}

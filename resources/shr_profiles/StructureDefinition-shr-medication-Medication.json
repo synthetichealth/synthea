@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.545Z",
+  "date": "2017-04-18T17:07:42.503Z",
   "description": "A type of prescription drug or over-the-counter drug that is used to prevent, treat, or relieve symptoms of a disease or abnormal condition, but excluding vaccines.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -279,7 +279,7 @@
         "id": "Medication:shr-medication-Medication.extension",
         "path": "Medication.extension",
         "slicing": {
-          "id": "146",
+          "id": "180",
           "discriminator": [
             "url"
           ],
@@ -390,10 +390,9 @@
         ],
         "isSummary": true,
         "binding": {
-          "strength": "example",
-          "description": "A coded concept that defines the type of a medication",
+          "strength": "required",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/medication-codes"
+            "reference": "http://standardhealthrecord.org/shr/medication/vs/MedicationVS"
           }
         },
         "mapping": [
@@ -755,7 +754,7 @@
         "id": "Medication:shr-medication-Medication.product.ingredient.item[x]",
         "path": "Medication.product.ingredient.item[x]",
         "slicing": {
-          "id": "145",
+          "id": "179",
           "discriminator": [
             "@type"
           ],
@@ -800,7 +799,13 @@
             "code": "CodeableConcept",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
-        ]
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/medication/vs/MedicationVS"
+          }
+        }
       },
       {
         "id": "Medication:shr-medication-Medication.product.ingredient.amount",
@@ -826,6 +831,104 @@
           {
             "identity": "rim",
             "map": ".quantity"
+          }
+        ]
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount.id",
+        "path": "Medication.product.ingredient.amount.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount.extension",
+        "path": "Medication.product.ingredient.amount.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount.numerator",
+        "path": "Medication.product.ingredient.amount.numerator",
+        "short": "Numerator value",
+        "definition": "The value of the numerator.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Quantity"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".numerator"
+          }
+        ]
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount.denominator",
+        "path": "Medication.product.ingredient.amount.denominator",
+        "short": "Denominator value",
+        "definition": "The value of the denominator.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Quantity"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": ".denominator"
           }
         ]
       },
@@ -1363,7 +1466,13 @@
             "code": "CodeableConcept",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
-        ]
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/medication/vs/MedicationVS"
+          }
+        }
       },
       {
         "id": "Medication:shr-medication-Medication.product",
@@ -1387,7 +1496,7 @@
         "id": "Medication:shr-medication-Medication.product.ingredient.item[x]",
         "path": "Medication.product.ingredient.item[x]",
         "slicing": {
-          "id": "145",
+          "id": "179",
           "discriminator": [
             "@type"
           ],
@@ -1408,6 +1517,36 @@
           {
             "code": "CodeableConcept",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/medication/vs/MedicationVS"
+          }
+        }
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount",
+        "path": "Medication.product.ingredient.amount"
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount.numerator",
+        "path": "Medication.product.ingredient.amount.numerator",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Quantity"
+          }
+        ]
+      },
+      {
+        "id": "Medication:shr-medication-Medication.product.ingredient.amount.denominator",
+        "path": "Medication.product.ingredient.amount.denominator",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Quantity"
           }
         ]
       }

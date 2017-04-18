@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.323Z",
+  "date": "2017-04-18T17:07:41.572Z",
   "description": "A term from a controlled vocabulary that defines the data element (the question, not the answer) as specifically as possible. The specific code should always align with the concept of the element, but may be more specific. For example, the concept associated with medications is code for 'medication used', but the ObservationCode is the code for the particular medication used. For tests, ObservationCode identifies the specific test being performed, and for observations, the specific question being asked.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

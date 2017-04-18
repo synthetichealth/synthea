@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.203Z",
+  "date": "2017-04-18T17:07:41.116Z",
   "description": "A statement pertaining to an individual's allergies and intolerances to substances or classes of substances. Can be used to record that a substance does not pose an elevated risk to the subject (NonOccurrenceModifier = true).",
   "purpose": "To record a clinical assessment of a propensity, or potential risk to an individual, of an adverse reaction upon future exposure to the specified substance, or class of substance.",
   "fhirVersion": "1.8.0",
@@ -291,7 +291,7 @@
         "id": "AllergyIntolerance:shr-allergy-AllergyIntolerance.extension",
         "path": "AllergyIntolerance.extension",
         "slicing": {
-          "id": "26",
+          "id": "42",
           "discriminator": [
             "url"
           ],
@@ -392,7 +392,7 @@
         "id": "AllergyIntolerance:shr-allergy-AllergyIntolerance.extension:adversereaction",
         "path": "AllergyIntolerance.extension",
         "sliceName": "adversereaction",
-        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
         "alias": [
           "extensions",
           "user content"
@@ -424,7 +424,7 @@
         "id": "AllergyIntolerance:shr-allergy-AllergyIntolerance.modifierExtension",
         "path": "AllergyIntolerance.modifierExtension",
         "slicing": {
-          "id": "27",
+          "id": "43",
           "discriminator": [
             "url"
           ],
@@ -563,9 +563,8 @@
         "isSummary": true,
         "binding": {
           "strength": "required",
-          "description": "Assertion about certainty associated with a propensity, or potential risk, of a reaction to the identified substance.",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/allergy-verification-status"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
           }
         },
         "mapping": [
@@ -720,7 +719,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergenIrritantVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergenIrritantVS"
           }
         },
         "mapping": [
@@ -1350,6 +1349,16 @@
         "isSummary": false
       },
       {
+        "id": "AllergyIntolerance:shr-allergy-AllergyIntolerance.verificationStatus",
+        "path": "AllergyIntolerance.verificationStatus",
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
+          }
+        }
+      },
+      {
         "id": "AllergyIntolerance:shr-allergy-AllergyIntolerance.code",
         "path": "AllergyIntolerance.code",
         "type": [
@@ -1361,7 +1370,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergenIrritantVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergenIrritantVS"
           }
         }
       },

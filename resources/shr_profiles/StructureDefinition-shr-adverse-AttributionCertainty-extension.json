@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.199Z",
+  "date": "2017-04-18T17:07:41.108Z",
   "description": "A specific identifiable level (defined qualitatively or quantitatively) of probability of adverse event being caused or associated with the product or procedure administration to a patient.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

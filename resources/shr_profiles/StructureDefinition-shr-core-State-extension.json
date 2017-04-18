@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.651Z",
+  "date": "2017-04-18T17:07:42.652Z",
   "description": "Sub-unit of a country with limited sovereignty in a federally organized country. A code may be used if codes are in common use (i.e. US 2 letter state codes). (Source: HL7 FHIR).",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

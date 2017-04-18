@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR DrugIngredientVS ValueSet</b></p>\n<p>Drug allergies involve ingredients or mixtures, not specific dose forms. The value set focuses on drug ingredients.</p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-DrugIngredientVS",
+  "url": "http://standardhealthrecord.org/shr/allergy/vs/DrugIngredientVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,6 +31,6 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.104Z",
+  "date": "2017-04-18T17:07:40.895Z",
   "description": "Drug allergies involve ingredients or mixtures, not specific dose forms. The value set focuses on drug ingredients."
 }

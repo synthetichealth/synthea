@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.651Z",
+  "date": "2017-04-18T17:07:42.652Z",
   "description": "The relationship of the subject to another person in the same (extended) family. May or may not be a blood relative (determined by value). Can be used to indicate there is no relation of the given type (e.g., no siblings), using the NonOccurrenceModifier.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -71,6 +71,12 @@
             "expression": "extension.exists() != value.exists()",
             "xpath": "exists(f:extension)!=exists(f:*[starts-with(local-name(.), 'value')])",
             "source": "Extension"
+          },
+          {
+            "key": "choice-1",
+            "severity": "error",
+            "human": "shr-demographics-FamilialRelationship-extension SHALL have either extension('relatedperson') or extension('practitioner')",
+            "expression": "( extension('relatedperson').url | extension('practitioner').url ).distinct().count() <= 1"
           }
         ]
       },
@@ -105,7 +111,7 @@
         "id": "Extension:familialrelationship.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "28",
+          "id": "198",
           "discriminator": [
             "url"
           ],
@@ -160,10 +166,10 @@
         ]
       },
       {
-        "id": "Extension:familialrelationship.extension:person",
+        "id": "Extension:familialrelationship.extension:relatedperson",
         "path": "Extension.extension",
-        "sliceName": "person",
-        "definition": "A person. In practical terms, people relevant to the health or social situation of the subject (including the person of record).",
+        "sliceName": "relatedperson",
+        "definition": "A person, other than a practitioner or the patient (the person of record) who is relevant to the health or social situation of the subject.",
         "min": 0,
         "max": "1",
         "base": {
@@ -174,7 +180,33 @@
         "type": [
           {
             "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Person-extension"
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson-extension"
+          }
+        ],
+        "isModifier": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Extension:familialrelationship.extension:practitioner",
+        "path": "Extension.extension",
+        "sliceName": "practitioner",
+        "definition": "A person who practices a healing art.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Extension.extension",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Practitioner-extension"
           }
         ],
         "isModifier": false,
@@ -385,7 +417,15 @@
         "short": "SHR FamilialRelationship Extension",
         "definition": "The relationship of the subject to another person in the same (extended) family. May or may not be a blood relative (determined by value). Can be used to indicate there is no relation of the given type (e.g., no siblings), using the NonOccurrenceModifier.",
         "min": 0,
-        "max": "*"
+        "max": "*",
+        "constraint": [
+          {
+            "key": "choice-1",
+            "severity": "error",
+            "human": "shr-demographics-FamilialRelationship-extension SHALL have either extension('relatedperson') or extension('practitioner')",
+            "expression": "( extension('relatedperson').url | extension('practitioner').url ).distinct().count() <= 1"
+          }
+        ]
       },
       {
         "id": "Extension:familialrelationship.extension:codeableconcept",
@@ -408,16 +448,30 @@
         }
       },
       {
-        "id": "Extension:familialrelationship.extension:person",
+        "id": "Extension:familialrelationship.extension:relatedperson",
         "path": "Extension.extension",
-        "sliceName": "person",
-        "definition": "A person. In practical terms, people relevant to the health or social situation of the subject (including the person of record).",
+        "sliceName": "relatedperson",
+        "definition": "A person, other than a practitioner or the patient (the person of record) who is relevant to the health or social situation of the subject.",
         "min": 0,
         "max": "1",
         "type": [
           {
             "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Person-extension"
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson-extension"
+          }
+        ]
+      },
+      {
+        "id": "Extension:familialrelationship.extension:practitioner",
+        "path": "Extension.extension",
+        "sliceName": "practitioner",
+        "definition": "A person who practices a healing art.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Practitioner-extension"
           }
         ]
       },

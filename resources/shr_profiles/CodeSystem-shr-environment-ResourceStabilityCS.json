@@ -1,0 +1,58 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-environment-ResourceStabilityCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR ResourceStabilityCS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/environment/cs/ResourceStabilityCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.environment.ResourceStabilityCS"
+  },
+  "name": "SHR ResourceStabilityCS CodeSystem",
+  "title": "SHR ResourceStabilityCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.892Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 4,
+  "concept": [
+    {
+      "code": "stable",
+      "display": "Not at risk or minimal risk of losing the resource (or a significant portion of the resource)",
+      "definition": "Not at risk or minimal risk of losing the resource (or a significant portion of the resource)"
+    },
+    {
+      "code": "at_risk",
+      "display": "Some risk of losing the resource (or a significant portion of the resource)",
+      "definition": "Some risk of losing the resource (or a significant portion of the resource)"
+    },
+    {
+      "code": "imminent_risk",
+      "display": "Imminent risk of loss of the resource (or a significant portion of the resource)",
+      "definition": "Imminent risk of loss of the resource (or a significant portion of the resource)"
+    },
+    {
+      "code": "recent_loss",
+      "display": "Recent loss of the resource (or a significant portion of the resource)",
+      "definition": "Recent loss of the resource (or a significant portion of the resource)"
+    }
+  ]
+}

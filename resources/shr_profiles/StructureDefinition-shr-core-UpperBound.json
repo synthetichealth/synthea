@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.623Z",
+  "date": "2017-04-18T17:07:42.594Z",
   "description": "A measured or measurable amount with units that is known to be bounded from above by the quantity represented.",
   "purpose": "Need to able to capture all sorts of measured values, even if the measured value are not precisely quantified. Values include exact measures such as 3.51g, customary units such as 3 tablets, and currencies such as $100.32USD.",
   "fhirVersion": "1.8.0",
@@ -192,9 +192,8 @@
         "isSummary": true,
         "binding": {
           "strength": "required",
-          "description": "How the Quantity should be understood and represented.",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/quantity-comparator"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/UpperBoundTypeVS"
           }
         },
         "mapping": [
@@ -307,7 +306,13 @@
         "id": "Quantity:shr-core-UpperBound.comparator",
         "path": "Quantity.comparator",
         "min": 1,
-        "max": "1"
+        "max": "1",
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/UpperBoundTypeVS"
+          }
+        }
       }
     ]
   }

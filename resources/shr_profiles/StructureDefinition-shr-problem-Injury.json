@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.182Z",
+  "date": "2017-04-18T17:07:41.047Z",
   "description": "Damage inflicted on the body by an external force.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -302,7 +302,7 @@
         "id": "Condition:shr-problem-Injury.extension",
         "path": "Condition.extension",
         "slicing": {
-          "id": "18",
+          "id": "31",
           "discriminator": [
             "url"
           ],
@@ -595,7 +595,7 @@
         "id": "Condition:shr-problem-Injury.modifierExtension",
         "path": "Condition.modifierExtension",
         "slicing": {
-          "id": "19",
+          "id": "32",
           "discriminator": [
             "url"
           ],
@@ -785,7 +785,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         },
         "mapping": [
@@ -913,7 +913,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1286,7 +1286,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         },
         "mapping": [
@@ -1479,7 +1479,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1711,7 +1711,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         }
       },
@@ -1747,7 +1747,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },
@@ -1791,7 +1791,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         }
       },
@@ -1811,7 +1811,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       }

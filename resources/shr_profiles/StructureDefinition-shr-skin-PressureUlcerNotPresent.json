@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.863Z",
+  "date": "2017-04-18T17:07:43.299Z",
   "description": "A statement that there is no pressure ulcer at a given body site. If body site is omitted, or if the body site is a coding representing the entire body, then the inference is that no pressure ulcers is present anywhere on the body.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -302,7 +302,7 @@
         "id": "Condition:shr-skin-PressureUlcerNotPresent.extension",
         "path": "Condition.extension",
         "slicing": {
-          "id": "207",
+          "id": "261",
           "discriminator": [
             "url"
           ],
@@ -435,7 +435,7 @@
         "id": "Condition:shr-skin-PressureUlcerNotPresent.modifierExtension",
         "path": "Condition.modifierExtension",
         "slicing": {
-          "id": "208",
+          "id": "262",
           "discriminator": [
             "url"
           ],
@@ -532,7 +532,7 @@
         "id": "Condition:shr-skin-PressureUlcerNotPresent.modifierExtension:nonoccurrencemodifier.extension",
         "path": "Condition.modifierExtension.extension",
         "slicing": {
-          "id": "9",
+          "id": "10",
           "discriminator": [
             "url"
           ],
@@ -994,7 +994,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         },
         "mapping": [
@@ -1122,7 +1122,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/PressureUlcerBodySiteVS"
           }
         },
         "mapping": [
@@ -1495,7 +1495,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         },
         "mapping": [
@@ -1688,7 +1688,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1841,7 +1841,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         }
       },
@@ -1879,7 +1879,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/PressureUlcerBodySiteVS"
           }
         }
       },
@@ -1937,7 +1937,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         }
       },
@@ -1959,7 +1959,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       }

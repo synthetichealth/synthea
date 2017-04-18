@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.656Z",
+  "date": "2017-04-18T17:07:42.657Z",
   "description": "A telephone number associated with a person's residence.",
   "purpose": "Need to track phone, fax, mobile, sms numbers, email addresses, twitter tags, etc.",
   "fhirVersion": "1.8.0",
@@ -130,7 +130,7 @@
         "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.extension",
         "path": "ContactPoint.extension",
         "slicing": {
-          "id": "159",
+          "id": "203",
           "discriminator": [
             "url"
           ],
@@ -266,6 +266,14 @@
       {
         "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.use",
         "path": "ContactPoint.use",
+        "slicing": {
+          "id": "202",
+          "discriminator": [
+            "value"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "home | work | temp | old | mobile - purpose of this contact point",
         "definition": "Identifies the purpose for the contact point.",
         "comments": "This is labeled as \"Is Modifier\" because applications should not mistake a temporary or old contact etc.for a current/permanent one. Applications can assume that a contact is current unless it explicitly says that it is temporary or old.",
@@ -300,6 +308,19 @@
             "map": "./ContactPointPurpose"
           }
         ]
+      },
+      {
+        "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.use:personal",
+        "path": "ContactPoint.use",
+        "sliceName": "personal",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "personal"
       },
       {
         "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.rank",
@@ -392,6 +413,31 @@
         "path": "ContactPoint.value",
         "min": 1,
         "max": "1"
+      },
+      {
+        "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.use",
+        "path": "ContactPoint.use",
+        "slicing": {
+          "id": "202",
+          "discriminator": [
+            "value"
+          ],
+          "ordered": false,
+          "rules": "open"
+        }
+      },
+      {
+        "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.use:personal",
+        "path": "ContactPoint.use",
+        "sliceName": "personal",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "personal"
       },
       {
         "id": "ContactPoint:shr-demographics-HomeTelephoneNumber.period",

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.366Z",
+  "date": "2017-04-18T17:07:41.722Z",
   "description": "A statement about exposure to a substance, type of substance, or disease vector potentially affecting health, including pollutants, blood products, pets, recreational drugs, sexual transmitted diseases, foods, toxins, pathogens, or prenatal exposures to teratogens. Can be used to assert or deny such exposures.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-ExposureToSubstance.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "78",
+          "id": "111",
           "discriminator": [
             "url"
           ],
@@ -717,7 +717,7 @@
         "id": "Observation:shr-environment-ExposureToSubstance.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "79",
+          "id": "112",
           "discriminator": [
             "url"
           ],
@@ -857,6 +857,14 @@
       {
         "id": "Observation:shr-environment-ExposureToSubstance.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "110",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -886,6 +894,48 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-environment-ExposureToSubstance.category:C0332157",
+        "path": "Observation.category",
+        "sliceName": "C0332157",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C0332157"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-environment-ExposureToSubstance.category:C2004062",
+        "path": "Observation.category",
+        "sliceName": "C2004062",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C2004062"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-environment-ExposureToSubstance.code",
@@ -2337,6 +2387,14 @@
       {
         "id": "Observation:shr-environment-ExposureToSubstance.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "110",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -2345,6 +2403,48 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-environment-ExposureToSubstance.category:C0332157",
+        "path": "Observation.category",
+        "sliceName": "C0332157",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C0332157"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-environment-ExposureToSubstance.category:C2004062",
+        "path": "Observation.category",
+        "sliceName": "C2004062",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C2004062"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-environment-ExposureToSubstance.code",

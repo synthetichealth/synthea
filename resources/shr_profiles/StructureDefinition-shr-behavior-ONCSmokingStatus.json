@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.304Z",
+  "date": "2017-04-18T17:07:41.504Z",
   "description": "Records the subject's use of tobacco.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-behavior-ONCSmokingStatus.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "57",
+          "id": "80",
           "discriminator": [
             "url"
           ],
@@ -397,7 +397,7 @@
         "id": "Observation:shr-behavior-ONCSmokingStatus.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "58",
+          "id": "81",
           "discriminator": [
             "url"
           ],
@@ -793,7 +793,7 @@
         "id": "Observation:shr-behavior-ONCSmokingStatus.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "56",
+          "id": "79",
           "discriminator": [
             "@type"
           ],
@@ -1973,7 +1973,7 @@
         "id": "Observation:shr-behavior-ONCSmokingStatus.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "56",
+          "id": "79",
           "discriminator": [
             "@type"
           ],

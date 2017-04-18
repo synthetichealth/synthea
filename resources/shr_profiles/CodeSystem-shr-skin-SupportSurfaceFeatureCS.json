@@ -1,0 +1,73 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-skin-SupportSurfaceFeatureCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR SupportSurfaceFeatureCS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/skin/cs/SupportSurfaceFeatureCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.skin.SupportSurfaceFeatureCS"
+  },
+  "name": "SHR SupportSurfaceFeatureCS CodeSystem",
+  "title": "SHR SupportSurfaceFeatureCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.892Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 7,
+  "concept": [
+    {
+      "code": "fluidized",
+      "display": "Air fluidized",
+      "definition": "Air fluidized"
+    },
+    {
+      "code": "alternating",
+      "display": "Alternating pressure",
+      "definition": "Alternating pressure"
+    },
+    {
+      "code": "rotation",
+      "display": "Lateral rotation",
+      "definition": "Lateral rotation"
+    },
+    {
+      "code": "low_air_loss",
+      "display": "Low air loss",
+      "definition": "Low air loss"
+    },
+    {
+      "code": "envelopment",
+      "display": "Envelopment",
+      "definition": "Envelopment"
+    },
+    {
+      "code": "multi_zone",
+      "display": "Multi-zone surface",
+      "definition": "Multi-zone surface"
+    },
+    {
+      "code": "redist",
+      "display": "Pressure redistribution",
+      "definition": "Pressure redistribution"
+    }
+  ]
+}

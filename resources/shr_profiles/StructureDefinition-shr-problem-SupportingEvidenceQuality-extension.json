@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.164Z",
+  "date": "2017-04-18T17:07:40.992Z",
   "description": "An assessment of the quality and/or quantity of the source information that supports judgment.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-EvidenceQualityVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/EvidenceQualityVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-EvidenceQualityVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/EvidenceQualityVS"
           }
         }
       }

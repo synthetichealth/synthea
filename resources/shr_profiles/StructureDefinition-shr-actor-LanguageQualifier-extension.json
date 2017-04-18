@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.121Z",
+  "date": "2017-04-18T17:07:40.918Z",
   "description": "Additional information about a person's use of language.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-actor-LanguageQualifierVS"
+            "reference": "http://standardhealthrecord.org/shr/actor/vs/LanguageQualifierVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-actor-LanguageQualifierVS"
+            "reference": "http://standardhealthrecord.org/shr/actor/vs/LanguageQualifierVS"
           }
         }
       }

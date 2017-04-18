@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.360Z",
+  "date": "2017-04-18T17:07:41.716Z",
   "description": "Risk or danger posed by the focal subject to others and/or his or herself due to violent behavior.",
   "purpose": "Need some way to safely (without breaking interoperability) allow implementers to exchange content not supported by the initial set of declared resources.",
   "fhirVersion": "1.8.0",
@@ -271,7 +271,7 @@
         "id": "Basic:shr-behavior-ViolentBehaviorRisk.extension",
         "path": "Basic.extension",
         "slicing": {
-          "id": "77",
+          "id": "109",
           "discriminator": [
             "url"
           ],

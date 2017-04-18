@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.360Z",
+  "date": "2017-04-18T17:07:41.717Z",
   "description": "Risk or danger posed by the focal subject to his or herself.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:violentrisktoself.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "20",
+          "id": "108",
           "discriminator": [
             "url"
           ],
@@ -149,7 +149,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeValueScaleVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeValueScaleVS"
           }
         },
         "mapping": [
@@ -377,7 +377,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeValueScaleVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeValueScaleVS"
           }
         }
       },

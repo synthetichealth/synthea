@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR HeartRateQualifierVS ValueSet</b></p>\n<p>Details of a heart rate measurement.</p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-HeartRateQualifierVS",
+  "url": "http://standardhealthrecord.org/shr/vital/vs/HeartRateQualifierVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,12 +31,12 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.109Z",
+  "date": "2017-04-18T17:07:40.900Z",
   "description": "Details of a heart rate measurement.",
   "compose": {
     "include": [
       {
-        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-vital-HeartRateQualifierVS",
+        "system": "http://standardhealthrecord.org/shr/vital/cs/HeartRateQualifierCS",
         "concept": [
           {
             "code": "rest",

@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.871Z",
+  "date": "2017-04-18T17:07:43.330Z",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
   "abstract": false,
@@ -104,7 +104,7 @@
         "id": "Extension:woundbedandedge.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "39",
+          "id": "267",
           "discriminator": [
             "url"
           ],

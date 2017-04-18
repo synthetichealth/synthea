@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.173Z",
+  "date": "2017-04-18T17:07:41.017Z",
   "description": "True if the observation did not occcur, e.g., if a test was not performed or the assessment was not done, when it might otherwise be expected.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:observationnonoccurrencemodifier.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "14",
+          "id": "26",
           "discriminator": [
             "url"
           ],
@@ -278,7 +278,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-observation-ObservationNotMadeReasonVS"
+            "reference": "http://standardhealthrecord.org/shr/observation/vs/ObservationNotMadeReasonVS"
           }
         },
         "mapping": [
@@ -494,7 +494,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-observation-ObservationNotMadeReasonVS"
+            "reference": "http://standardhealthrecord.org/shr/observation/vs/ObservationNotMadeReasonVS"
           }
         }
       },

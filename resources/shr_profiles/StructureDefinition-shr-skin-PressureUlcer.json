@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.857Z",
+  "date": "2017-04-18T17:07:43.280Z",
   "description": "A single pressure ulcer, tracked over a period of time. Multiple PressureUlcerAssessments (at different times) may be associated with a single PressureUlcer.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -302,7 +302,7 @@
         "id": "Condition:shr-skin-PressureUlcer.extension",
         "path": "Condition.extension",
         "slicing": {
-          "id": "205",
+          "id": "258",
           "discriminator": [
             "url"
           ],
@@ -563,7 +563,7 @@
         "id": "Condition:shr-skin-PressureUlcer.modifierExtension",
         "path": "Condition.modifierExtension",
         "slicing": {
-          "id": "206",
+          "id": "259",
           "discriminator": [
             "url"
           ],
@@ -753,7 +753,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         },
         "mapping": [
@@ -881,7 +881,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/PressureUlcerBodySiteVS"
           }
         },
         "mapping": [
@@ -1254,7 +1254,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         },
         "mapping": [
@@ -1447,7 +1447,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1663,7 +1663,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         }
       },
@@ -1699,7 +1699,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/PressureUlcerBodySiteVS"
           }
         }
       },
@@ -1743,7 +1743,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         }
       },
@@ -1763,7 +1763,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       }

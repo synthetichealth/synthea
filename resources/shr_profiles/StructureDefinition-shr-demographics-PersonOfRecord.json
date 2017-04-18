@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.649Z",
+  "date": "2017-04-18T17:07:42.646Z",
   "description": "Extended demographic information about the subject of this SHR.",
   "purpose": "Tracking patient is the center of the healthcare process.",
   "fhirVersion": "1.8.0",
@@ -288,7 +288,7 @@
         "id": "Patient:shr-demographics-PersonOfRecord.extension",
         "path": "Patient.extension",
         "slicing": {
-          "id": "156",
+          "id": "199",
           "discriminator": [
             "url"
           ],
@@ -362,7 +362,7 @@
           "extensions",
           "user content"
         ],
-        "min": 1,
+        "min": 0,
         "max": "1",
         "base": {
           "path": "DomainResource.extension",
@@ -618,7 +618,7 @@
           "extensions",
           "user content"
         ],
-        "min": 1,
+        "min": 0,
         "max": "1",
         "base": {
           "path": "DomainResource.extension",
@@ -650,7 +650,7 @@
           "extensions",
           "user content"
         ],
-        "min": 1,
+        "min": 0,
         "max": "*",
         "base": {
           "path": "DomainResource.extension",
@@ -2191,7 +2191,7 @@
         "id": "Patient:shr-demographics-PersonOfRecord.extension:medicalinterpreterneeded",
         "path": "Patient.extension",
         "sliceName": "medicalinterpreterneeded",
-        "min": 1,
+        "min": 0,
         "max": "1",
         "type": [
           {
@@ -2319,7 +2319,7 @@
         "id": "Patient:shr-demographics-PersonOfRecord.extension:socialsecuritynumber",
         "path": "Patient.extension",
         "sliceName": "socialsecuritynumber",
-        "min": 1,
+        "min": 0,
         "max": "1",
         "type": [
           {
@@ -2335,7 +2335,7 @@
         "id": "Patient:shr-demographics-PersonOfRecord.extension:driverslicensenumber",
         "path": "Patient.extension",
         "sliceName": "driverslicensenumber",
-        "min": 1,
+        "min": 0,
         "max": "*",
         "type": [
           {

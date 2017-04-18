@@ -3,7 +3,7 @@
   "id": "shr-actor-Participant-extension",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Participant Extension</b></p>\n  <p>A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.</p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Participant Extension</b></p>\n  <p>A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the participant is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.</p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Participant-extension",
   "identifier": [
@@ -26,8 +26,8 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.599Z",
-  "description": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
+  "date": "2017-04-18T17:07:42.561Z",
+  "description": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the participant is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
   "abstract": false,
@@ -44,7 +44,7 @@
         "id": "Extension:participant",
         "path": "Extension",
         "short": "SHR Participant Extension",
-        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
+        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the participant is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
         "min": 0,
         "max": "*",
         "base": {
@@ -111,7 +111,7 @@
         "id": "Extension:participant.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "22",
+          "id": "183",
           "discriminator": [
             "url"
           ],
@@ -487,7 +487,7 @@
         "id": "Extension:participant",
         "path": "Extension",
         "short": "SHR Participant Extension",
-        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
+        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the participant is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
         "min": 0,
         "max": "*",
         "constraint": [

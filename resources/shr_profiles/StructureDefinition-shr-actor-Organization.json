@@ -3,7 +3,7 @@
   "id": "shr-actor-Organization",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Organization Profile</b></p>\n  <p>A social or legal structure formed by human beings.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.Organization maps to Organization:\n  OrganizationName maps to name\n  OrganizationAlias maps to alias\n  OrganizationType maps to type\n  OrganizationIdentifyingCode maps to identifier\n  AddressUsed maps to address\n  Telecom maps to telecom\n  ActiveFlag maps to active\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Organization Profile</b></p>\n  <p>A social or legal structure formed by human beings.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.Organization maps to Organization:\n  OrganizationName maps to name\n  OrganizationAlias maps to alias  // I wish FHIR allowed multiple names, but it doesn&#039;t\n  OrganizationType maps to type\n  OrganizationIdentifyingCode maps to identifier\n  AddressUsed maps to address\n  Telecom maps to telecom\n  ActiveFlag maps to active\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.132Z",
+  "date": "2017-04-18T17:07:40.933Z",
   "description": "A social or legal structure formed by human beings.",
   "fhirVersion": "1.8.0",
   "mapping": [

@@ -1,0 +1,69 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-demographics-AddressUseCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR AddressUseCS CodeSystem</b></p>\n<p>How an address is used by the subject, for example, as a dwelling or as a mailing address.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/demographics/cs/AddressUseCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.demographics.AddressUseCS"
+  },
+  "name": "SHR AddressUseCS CodeSystem",
+  "title": "SHR AddressUseCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.890Z",
+  "description": "How an address is used by the subject, for example, as a dwelling or as a mailing address.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 6,
+  "concept": [
+    {
+      "code": "primary_residence",
+      "display": "The address at which a person dwells most frequently or maintains as his or her official premises.",
+      "definition": "The address at which a person dwells most frequently or maintains as his or her official premises."
+    },
+    {
+      "code": "secondary_residence",
+      "display": "An address at which a person dwells on a secondary basis, for example, during vacation periods, when residing with other parent or relative, at boarding school, etc.",
+      "definition": "An address at which a person dwells on a secondary basis, for example, during vacation periods, when residing with other parent or relative, at boarding school, etc."
+    },
+    {
+      "code": "temporary_dwelling",
+      "display": "An address temporarily used as a dwelling",
+      "definition": "An address temporarily used as a dwelling"
+    },
+    {
+      "code": "former_address",
+      "display": "Address (residence, postal, or work address) that is no longer in use",
+      "definition": "Address (residence, postal, or work address) that is no longer in use"
+    },
+    {
+      "code": "mailing_address",
+      "display": "Address is a postal address, such as a PO box",
+      "definition": "Address is a postal address, such as a PO box"
+    },
+    {
+      "code": "work_address",
+      "display": "Address of place of business where the subject is employed",
+      "definition": "Address of place of business where the subject is employed"
+    }
+  ]
+}

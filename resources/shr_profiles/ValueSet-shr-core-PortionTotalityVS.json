@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR PortionTotalityVS ValueSet</b></p>\n<p>ObservationQualifier for anatomical location or specimen further detailing the portion or totality, which means arrangement of, or apportioning of an entity.</p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-PortionTotalityVS",
+  "url": "http://standardhealthrecord.org/shr/core/vs/PortionTotalityVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.106Z",
+  "date": "2017-04-18T17:07:40.897Z",
   "description": "ObservationQualifier for anatomical location or specimen further detailing the portion or totality, which means arrangement of, or apportioning of an entity.",
   "compose": {
     "include": [

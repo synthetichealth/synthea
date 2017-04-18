@@ -3,7 +3,7 @@
   "id": "shr-core-UnitedStatesAddress",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR UnitedStatesAddress Profile</b></p>\n  <p>An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR).</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.core.UnitedStatesAddress maps to Address:\n  AddressLine maps to line\n  City maps to city\n  County maps to district\n  State maps to state\n  PostalCode maps to postalCode\n  Country maps to country\n  use is 0..0\n  type is 0..0\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR UnitedStatesAddress Profile</b></p>\n  <p>An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR).</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.core.UnitedStatesAddress maps to Address:\n  AddressLine maps to line\n  City maps to city\n  County maps to district\n  State maps to state\n  PostalCode maps to postalCode\n  Country maps to country\n  constrain use to 0..0\n  constrain type to 0..0\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-UnitedStatesAddress",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.636Z",
+  "date": "2017-04-18T17:07:42.613Z",
   "description": "An address for a place in the USA, conforming to US mail postal conventions. (Source: HL7 FHIR).",
   "purpose": "Need to be able to record postal addresses, along with notes about their use.",
   "fhirVersion": "1.8.0",

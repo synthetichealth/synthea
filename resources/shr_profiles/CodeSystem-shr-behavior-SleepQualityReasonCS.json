@@ -1,0 +1,93 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-behavior-SleepQualityReasonCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR SleepQualityReasonCS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/behavior/cs/SleepQualityReasonCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.behavior.SleepQualityReasonCS"
+  },
+  "name": "SHR SleepQualityReasonCS CodeSystem",
+  "title": "SHR SleepQualityReasonCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.890Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 11,
+  "concept": [
+    {
+      "code": "sleep_location",
+      "display": "Where you sleep (e.g. noisy or uncomfortable environment)",
+      "definition": "Where you sleep (e.g. noisy or uncomfortable environment)"
+    },
+    {
+      "code": "shift",
+      "display": "Shift work",
+      "definition": "Shift work"
+    },
+    {
+      "code": "partner_snoring",
+      "display": "Partner snoring",
+      "definition": "Partner snoring"
+    },
+    {
+      "code": "partner",
+      "display": "Disturbed by partner snoring or moving",
+      "definition": "Disturbed by partner snoring or moving"
+    },
+    {
+      "code": "no_time",
+      "display": "Not enough time to sleep enough",
+      "definition": "Not enough time to sleep enough"
+    },
+    {
+      "code": "breathing",
+      "display": "Trouble breathing, snoring, waking up gasping for breath",
+      "definition": "Trouble breathing, snoring, waking up gasping for breath"
+    },
+    {
+      "code": "worries",
+      "display": "Thoughts and worries, anxiety",
+      "definition": "Thoughts and worries, anxiety"
+    },
+    {
+      "code": "nightmares",
+      "display": "Disturbing dreams",
+      "definition": "Disturbing dreams"
+    },
+    {
+      "code": "restless_legs",
+      "display": "Restless legs",
+      "definition": "Restless legs"
+    },
+    {
+      "code": "pain",
+      "display": "Pain",
+      "definition": "Pain"
+    },
+    {
+      "code": "not_sleepy",
+      "display": "Not sleepy at the appropriate time",
+      "definition": "Not sleepy at the appropriate time"
+    }
+  ]
+}

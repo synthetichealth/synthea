@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.346Z",
+  "date": "2017-04-18T17:07:41.661Z",
   "description": "Reason for poor sleep quality.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SleepQualityReasonVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/SleepQualityReasonVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SleepQualityReasonVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/SleepQualityReasonVS"
           }
         }
       }

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.413Z",
+  "date": "2017-04-18T17:07:41.923Z",
   "description": "How often can the subject afford clothing?",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-CanAffordClothing.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "96",
+          "id": "129",
           "discriminator": [
             "url"
           ],
@@ -397,7 +397,7 @@
         "id": "Observation:shr-environment-CanAffordClothing.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "97",
+          "id": "130",
           "discriminator": [
             "url"
           ],
@@ -785,7 +785,7 @@
         "id": "Observation:shr-environment-CanAffordClothing.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "95",
+          "id": "128",
           "discriminator": [
             "@type"
           ],
@@ -837,7 +837,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeFrequencyVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeFrequencyVS"
           }
         }
       },
@@ -1957,7 +1957,7 @@
         "id": "Observation:shr-environment-CanAffordClothing.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "95",
+          "id": "128",
           "discriminator": [
             "@type"
           ],
@@ -1985,7 +1985,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeFrequencyVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeFrequencyVS"
           }
         }
       },

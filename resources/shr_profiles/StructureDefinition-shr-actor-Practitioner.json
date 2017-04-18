@@ -3,7 +3,7 @@
   "id": "shr-actor-Practitioner",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Practitioner Profile</b></p>\n  <p>A person who practices a healing art.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.Practitioner maps to Practitioner:\n  HumanName maps to name\n  DateOfBirth maps to birthDate\n  AdministrativeGender maps to gender\n  AddressUsed maps to address\n  Telecom maps to telecom\n  LanguageUsed maps to communication\n  Affiliation maps to role.organization\n  NationalProviderIdentifier maps to identifier\n  MedicalSpecialty maps to role.specialty\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Practitioner Profile</b></p>\n  <p>A person who practices a healing art.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.Practitioner maps to Practitioner:\n  HumanName maps to name\n  DateOfBirth maps to birthDate\n  AdministrativeGender maps to gender\n  AddressUsed maps to address\n  Telecom maps to telecom\n  LanguageUsed maps to communication\n  Affiliation maps to role.organization  // not exactly\n  NationalProviderIdentifier maps to identifier\n  MedicalSpecialty maps to role.specialty\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Practitioner",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.127Z",
+  "date": "2017-04-18T17:07:40.924Z",
   "description": "A person who practices a healing art.",
   "purpose": "Need to track doctors, staff, locums etc. for both healthcare practitioners, funders, etc.",
   "fhirVersion": "1.8.0",
@@ -285,7 +285,7 @@
         "id": "Practitioner:shr-actor-Practitioner.extension",
         "path": "Practitioner.extension",
         "slicing": {
-          "id": "2",
+          "id": "9",
           "discriminator": [
             "url"
           ],
@@ -386,7 +386,7 @@
         "id": "Practitioner:shr-actor-Practitioner.extension:deceased",
         "path": "Practitioner.extension",
         "sliceName": "deceased",
-        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "definition": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
         "alias": [
           "extensions",
           "user content"

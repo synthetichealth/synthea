@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.640Z",
+  "date": "2017-04-18T17:07:42.624Z",
   "description": "A numeric or alphanumeric string that is associated with a single object or entity within a given system. Typically, identifiers are used to connect content in resources to external content available in other frameworks or protocols. Identifiers are associated with objects, and may be changed or retired due to human or system process and errors.",
   "purpose": "Need to be able to identify things with confidence and be sure that the identification is not subject to misinterpretation.",
   "fhirVersion": "1.8.0",

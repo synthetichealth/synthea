@@ -3,7 +3,7 @@
   "id": "shr-environment-AnnualIncome",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR AnnualIncome Profile</b></p>\n  <p>The amount of earnings made by a family unit in one year, estimated or self-reported.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.environment.AnnualIncome maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  DollarAmount maps to value[x].quantity\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR AnnualIncome Profile</b></p>\n  <p>The amount of earnings made by a family unit in one year, estimated or self-reported.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.environment.AnnualIncome maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  DollarAmount maps to value[x].Quantity\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-environment-AnnualIncome",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.377Z",
+  "date": "2017-04-18T17:07:41.763Z",
   "description": "The amount of earnings made by a family unit in one year, estimated or self-reported.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-AnnualIncome.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "81",
+          "id": "114",
           "discriminator": [
             "url"
           ],
@@ -397,7 +397,7 @@
         "id": "Observation:shr-environment-AnnualIncome.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "82",
+          "id": "115",
           "discriminator": [
             "url"
           ],
@@ -796,38 +796,12 @@
         "definition": "The information determined as a result of making the observation, if the information has a simple value.",
         "comments": "Normally, an observation will have either a value or a set of related observations. A few observations (e.g. Apgar score) may have both a value and related observations (for an Apgar score, the observations from which the measure is derived). If a value is present, the datatype for this element should be determined by Observation.code. This element has a variable name depending on the type as follows: valueQuantity, valueCodeableConcept, valueString, valueRange, valueRatio, valueSampledData, valueAttachment, valueTime, valueDateTime, or valuePeriod. (The name format is \"'value' + the type name\" with a capital on the first letter of the type).\r\r\rIf the data element is usually coded or if the type associated with the Observation.value defines a coded value, use CodeableConcept instead of string datatype even if the value is uncoded text.  A value set is bound to the ValueCodeableConcept element.  For boolean values use valueCodeableConcept and select codes from [HL7 Version 2 Table 0136](v2/0136/index.html). These \"yes/no\" concepts can be mapped to the display name \"true/false\" or other mutually exclusive terms that may be needed.   For further discussion and examples see the  [notes section](observation.html#4.20.4) below.",
         "requirements": "An observation exists to have a value, though it may not if it is in error, or it represents a group of observations.",
-        "min": 0,
+        "min": 1,
         "max": "1",
         "type": [
           {
-            "code": "Quantity"
-          },
-          {
-            "code": "CodeableConcept"
-          },
-          {
-            "code": "string"
-          },
-          {
-            "code": "Range"
-          },
-          {
-            "code": "Ratio"
-          },
-          {
-            "code": "SampledData"
-          },
-          {
-            "code": "Attachment"
-          },
-          {
-            "code": "time"
-          },
-          {
-            "code": "dateTime"
-          },
-          {
-            "code": "Period"
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-DollarAmount"
           }
         ],
         "condition": [
@@ -1962,6 +1936,18 @@
           {
             "code": "Reference",
             "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-environment-AnnualIncome.value[x]",
+        "path": "Observation.value[x]",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-DollarAmount"
           }
         ]
       },

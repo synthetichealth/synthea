@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.120Z",
+  "date": "2017-04-18T17:07:41.055Z",
   "description": "Description of the place or type of surroundings where something is positioned or where an event takes place.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-SettingVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/SettingVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-SettingVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/SettingVS"
           }
         }
       }

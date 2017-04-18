@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.466Z",
+  "date": "2017-04-18T17:07:42.226Z",
   "description": "The number of people living together with mutual financial dependency. Besides the subject, the household size may include spouse or partner, dependent children including adopted and foster children, dependent parents, dependent siblings and other relatives, but not roommates, ex-spouses, non-dependent children, and unborn children. If the subject lives alone, the household size is 1.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-HouseholdSize.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "117",
+          "id": "150",
           "discriminator": [
             "url"
           ],
@@ -429,7 +429,7 @@
         "id": "Observation:shr-environment-HouseholdSize.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "118",
+          "id": "151",
           "discriminator": [
             "url"
           ],

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.222Z",
+  "date": "2017-04-18T17:07:41.161Z",
   "description": "The subject has no known allergies to drugs, foods, biologics, or environmental factors.",
   "purpose": "To record a clinical assessment of a propensity, or potential risk to an individual, of an adverse reaction upon future exposure to the specified substance, or class of substance.",
   "fhirVersion": "1.8.0",
@@ -291,7 +291,7 @@
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.extension",
         "path": "AllergyIntolerance.extension",
         "slicing": {
-          "id": "32",
+          "id": "49",
           "discriminator": [
             "url"
           ],
@@ -360,7 +360,7 @@
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.modifierExtension",
         "path": "AllergyIntolerance.modifierExtension",
         "slicing": {
-          "id": "33",
+          "id": "50",
           "discriminator": [
             "url"
           ],
@@ -457,7 +457,7 @@
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.modifierExtension:nonoccurrencemodifier.extension",
         "path": "AllergyIntolerance.modifierExtension.extension",
         "slicing": {
-          "id": "9",
+          "id": "10",
           "discriminator": [
             "url"
           ],
@@ -869,9 +869,8 @@
         "isSummary": true,
         "binding": {
           "strength": "required",
-          "description": "Assertion about certainty associated with a propensity, or potential risk, of a reaction to the identified substance.",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/allergy-verification-status"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
           }
         },
         "mapping": [
@@ -925,6 +924,14 @@
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category",
         "path": "AllergyIntolerance.category",
+        "slicing": {
+          "id": "48",
+          "discriminator": [
+            "value"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "food | medication | biologic | environment",
         "definition": "Category of the identified substance.",
         "comments": "This data element has been included because it is currently being captured in some clinical systems. This data can be derived from the substance where coding systems are used, and is effectively redundant in that situation.  When searching on category, consider the implications of AllergyIntolerance resources without a category.  For example, when searching on category = medication, medication allergies that don't have a category valued will not be returned.  Refer to [search](search.html) for more information on how to search category with a :missing modifier to get allergies that don't have a category.",
@@ -963,6 +970,58 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:environment",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "environment",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "environment"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:biologic",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "biologic",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "biologic"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:medication",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "medication",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "medication"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:food",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "food",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "food"
       },
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.criticality",
@@ -1027,7 +1086,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergenIrritantVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergenIrritantVS"
           }
         },
         "mapping": [
@@ -1628,12 +1687,82 @@
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.verificationStatus",
         "path": "AllergyIntolerance.verificationStatus",
-        "fixedCode": "unconfirmed"
+        "fixedCode": "unconfirmed",
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
+          }
+        }
       },
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.type",
         "path": "AllergyIntolerance.type",
         "fixedCode": "allergy"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category",
+        "path": "AllergyIntolerance.category",
+        "slicing": {
+          "id": "48",
+          "discriminator": [
+            "value"
+          ],
+          "ordered": false,
+          "rules": "open"
+        }
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:environment",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "environment",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "environment"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:biologic",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "biologic",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "biologic"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:medication",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "medication",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "medication"
+      },
+      {
+        "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.category:food",
+        "path": "AllergyIntolerance.category",
+        "sliceName": "food",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "code"
+          }
+        ],
+        "fixedCode": "food"
       },
       {
         "id": "AllergyIntolerance:shr-allergy-NoKnownAllergy.criticality",
@@ -1655,7 +1784,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergenIrritantVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergenIrritantVS"
           }
         }
       },

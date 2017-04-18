@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.122Z",
+  "date": "2017-04-18T17:07:40.918Z",
   "description": "A point in time, specified qualitatively or quantitatively.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -111,7 +111,7 @@
         "id": "Extension:generalizeddatetime.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "5",
+          "id": "4",
           "discriminator": [
             "url"
           ],

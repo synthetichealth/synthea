@@ -3,7 +3,7 @@
   "id": "shr-skin-PressureUlcerBodySite",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR PressureUlcerBodySite Profile</b></p>\n  <p>The site of a pressure ulcer.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.skin.PressureUlcerBodySite maps to BodySite:\n  CodeableConcept maps to code\n  Laterality maps to modifier\n  Directionality maps to modifier\n  PortionTotality maps to modifier\n  Description maps to description\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR PressureUlcerBodySite Profile</b></p>\n  <p>The site of a pressure ulcer.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.skin.PressureUlcerBodySite maps to BodySite:\n  CodeableConcept maps to code\n  Laterality maps to modifier (slice on = coding.code)\n  Directionality maps to modifier\n  PortionTotality maps to modifier\n  Description maps to description\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-skin-PressureUlcerBodySite",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T16:20:02.448Z",
+  "date": "2017-04-18T17:07:43.292Z",
   "description": "The site of a pressure ulcer.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -385,7 +385,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/PressureUlcerBodySiteVS"
           }
         },
         "mapping": [
@@ -402,6 +402,45 @@
       {
         "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier",
         "path": "BodySite.modifier",
+        "slicing": {
+          "id": "260",
+          "discriminator": [
+            "coding.code"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
+        "short": "Modification to location code",
+        "definition": "Modifier to refine the anatomical location.  These include modifiers for laterality, relative location, directionality, number, and plane.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "example",
+          "description": "Concepts modifying the anatomic location",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/bodysite-relative-location"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "No distinct element defined in V2.x. The IHE Radiology Technical Framework directs the use of OBR-15-specimen source to contain laterality for imaging studies."
+          },
+          {
+            "identity": "openehr",
+            "map": "Combines Side, Numerical identifier, Anatomical plane,and Aspect"
+          }
+        ]
+      },
+      {
+        "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier:shr-core-Laterality",
+        "path": "BodySite.modifier",
+        "sliceName": "shr-core-Laterality",
         "short": "Modification to location code",
         "definition": "Modifier to refine the anatomical location.  These include modifiers for laterality, relative location, directionality, number, and plane.",
         "min": 0,
@@ -415,7 +454,69 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-LateralityVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/LateralityVS"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "No distinct element defined in V2.x. The IHE Radiology Technical Framework directs the use of OBR-15-specimen source to contain laterality for imaging studies."
+          },
+          {
+            "identity": "openehr",
+            "map": "Combines Side, Numerical identifier, Anatomical plane,and Aspect"
+          }
+        ]
+      },
+      {
+        "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier:shr-core-Directionality",
+        "path": "BodySite.modifier",
+        "sliceName": "shr-core-Directionality",
+        "short": "Modification to location code",
+        "definition": "Modifier to refine the anatomical location.  These include modifiers for laterality, relative location, directionality, number, and plane.",
+        "min": 0,
+        "max": "0",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/DirectionalityVS"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "No distinct element defined in V2.x. The IHE Radiology Technical Framework directs the use of OBR-15-specimen source to contain laterality for imaging studies."
+          },
+          {
+            "identity": "openehr",
+            "map": "Combines Side, Numerical identifier, Anatomical plane,and Aspect"
+          }
+        ]
+      },
+      {
+        "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier:shr-core-PortionTotality",
+        "path": "BodySite.modifier",
+        "sliceName": "shr-core-PortionTotality",
+        "short": "Modification to location code",
+        "definition": "Modifier to refine the anatomical location.  These include modifiers for laterality, relative location, directionality, number, and plane.",
+        "min": 0,
+        "max": "0",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/PortionTotalityVS"
           }
         },
         "mapping": [
@@ -493,13 +594,26 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-PressureUlcerBodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/PressureUlcerBodySiteVS"
           }
         }
       },
       {
         "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier",
         "path": "BodySite.modifier",
+        "slicing": {
+          "id": "260",
+          "discriminator": [
+            "coding.code"
+          ],
+          "ordered": false,
+          "rules": "open"
+        }
+      },
+      {
+        "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier:shr-core-Laterality",
+        "path": "BodySite.modifier",
+        "sliceName": "shr-core-Laterality",
         "min": 0,
         "max": "1",
         "type": [
@@ -511,7 +625,45 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-LateralityVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/LateralityVS"
+          }
+        }
+      },
+      {
+        "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier:shr-core-Directionality",
+        "path": "BodySite.modifier",
+        "sliceName": "shr-core-Directionality",
+        "min": 0,
+        "max": "0",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/DirectionalityVS"
+          }
+        }
+      },
+      {
+        "id": "BodySite:shr-skin-PressureUlcerBodySite.modifier:shr-core-PortionTotality",
+        "path": "BodySite.modifier",
+        "sliceName": "shr-core-PortionTotality",
+        "min": 0,
+        "max": "0",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/PortionTotalityVS"
           }
         }
       }

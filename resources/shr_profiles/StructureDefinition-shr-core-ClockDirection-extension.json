@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.870Z",
+  "date": "2017-04-18T17:07:43.329Z",
   "description": "A direction indicated by an angle relative to 12 o'clock.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ClockDirectionVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ClockDirectionVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ClockDirectionVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ClockDirectionVS"
           }
         }
       }

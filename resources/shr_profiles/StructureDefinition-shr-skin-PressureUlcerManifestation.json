@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.869Z",
+  "date": "2017-04-18T17:07:43.317Z",
   "description": "Observation regarding the properties and severity of a single pressure ulcer.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-skin-PressureUlcerManifestation.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "209",
+          "id": "269",
           "discriminator": [
             "url"
           ],
@@ -685,7 +685,7 @@
         "id": "Observation:shr-skin-PressureUlcerManifestation.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "210",
+          "id": "270",
           "discriminator": [
             "url"
           ],
@@ -881,7 +881,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -2323,7 +2323,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       },

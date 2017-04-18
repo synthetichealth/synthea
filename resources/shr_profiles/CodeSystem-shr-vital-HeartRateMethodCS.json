@@ -1,0 +1,74 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-vital-HeartRateMethodCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR HeartRateMethodCS CodeSystem</b></p>\n<p>Method of measuring heart rate.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/vital/cs/HeartRateMethodCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.vital.HeartRateMethodCS"
+  },
+  "name": "SHR HeartRateMethodCS CodeSystem",
+  "title": "SHR HeartRateMethodCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.893Z",
+  "description": "Method of measuring heart rate.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 7,
+  "concept": [
+    {
+      "code": "pulseox",
+      "display": "Pulse oximetry",
+      "definition": "Pulse oximetry"
+    },
+    {
+      "code": "pedometer",
+      "display": "Pedometer",
+      "definition": "Pedometer"
+    },
+    {
+      "code": "auscul",
+      "display": "Auscultation",
+      "definition": "Auscultation"
+    },
+    {
+      "code": "palp",
+      "display": "Palpation",
+      "definition": "Palpation"
+    },
+    {
+      "code": "invasive",
+      "display": "Invasive (e.g. intra arterial)",
+      "definition": "Invasive (e.g. intra arterial)"
+    },
+    {
+      "code": "us_doppler",
+      "display": "US Doppler",
+      "definition": "US Doppler"
+    },
+    {
+      "code": "ecg",
+      "display": "Electrocardiogram",
+      "definition": "Electrocardiogram"
+    }
+  ]
+}

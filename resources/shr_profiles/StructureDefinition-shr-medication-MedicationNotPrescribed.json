@@ -3,7 +3,7 @@
   "id": "shr-medication-MedicationNotPrescribed",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR MedicationNotPrescribed Profile</b></p>\n  <p>A record of a medication NOT prescribed. Recorded only when deviating from the normal expectation, care plan, or standard of care.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.medication.MedicationNotPrescribed maps to MedicationRequest:\n  Medication maps to medication[x].Reference\n  Reason maps to reasonCode\n  RequestStatus maps to status\n  RequestedPerformanceTime maps to dispenseRequest.validityPeriod\n  RequestedPerformer.Organization maps to dispenseRequest.performer\n  PerformerInstructions maps to note.text\n  NumberOfRepeatsAllowed maps to dispenseRequest.numberOfRepeatsAllowed\n  QuantityPerDispense maps to dispenseRequest.quantity\n  SupplyDuration maps to dispenseRequest.expectedSupplyDuration\n  Dosage.AmountPerDose.Quantity maps to dosageInstruction.dose[x].SimpleQuantity\n  Dosage.AmountPerDose.TBD &quot;Range&quot; maps to dosageInstruction.dose[x].Range\n  Dosage.TimingOfDoses maps to dosageInstruction.timing\n  Dosage.DoseAsNeededIndicator maps to dosageInstruction.asNeeded[x].boolean\n  Dosage.DoseInstructionsText maps to dosageInstruction.text\n  Dosage.AdditionalDoseInstruction maps to dosageInstruction.additionalInstructions\n  Dosage.RouteIntoBody maps to dosageInstruction.route\n  Dosage.AdministrationMethod maps to dosageInstruction.method\n  Dosage.AdministrationBodySite maps to dosageInstruction.site\n  Dosage.MaximumDosePerTimePeriod maps to dosageInstruction.maxDosePerPeriod\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR MedicationNotPrescribed Profile</b></p>\n  <p>A record of a medication NOT prescribed. Recorded only when deviating from the normal expectation, care plan, or standard of care.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.medication.MedicationNotPrescribed maps to MedicationRequest:\n  Medication maps to medication[x].Reference\n  Reason maps to reasonCode\n  RequestStatus maps to status\n  RequestedPerformanceTime maps to dispenseRequest.validityPeriod\n  RequestedPerformer.Organization maps to dispenseRequest.performer\n  constrain note to 0..1\n  PerformerInstructions maps to note.text\n  NumberOfRepeatsAllowed maps to dispenseRequest.numberOfRepeatsAllowed\n  QuantityPerDispense maps to dispenseRequest.quantity\n  SupplyDuration maps to dispenseRequest.expectedSupplyDuration\n  constrain dosageInstruction to 0..1\n  Dosage.AmountPerDose.Quantity maps to dosageInstruction.dose[x].SimpleQuantity\n  Dosage.AmountPerDose.&lt;TBD &quot;Range&quot;&gt; maps to dosageInstruction.dose[x].Range\n  Dosage.TimingOfDoses maps to dosageInstruction.timing\n  Dosage.DoseAsNeededIndicator maps to dosageInstruction.asNeeded[x].boolean\n  Dosage.DoseInstructionsText maps to dosageInstruction.text\n  Dosage.AdditionalDoseInstruction maps to dosageInstruction.additionalInstructions\n  Dosage.RouteIntoBody maps to dosageInstruction.route\n  Dosage.AdministrationMethod maps to dosageInstruction.method\n  Dosage.AdministrationBodySite maps to dosageInstruction.site\n  Dosage.MaximumDosePerTimePeriod maps to dosageInstruction.maxDosePerPeriod\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-MedicationNotPrescribed",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.603Z",
+  "date": "2017-04-18T17:07:42.569Z",
   "description": "A record of a medication NOT prescribed. Recorded only when deviating from the normal expectation, care plan, or standard of care.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -283,7 +283,7 @@
         "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.extension",
         "path": "MedicationRequest.extension",
         "slicing": {
-          "id": "150",
+          "id": "187",
           "discriminator": [
             "url"
           ],
@@ -384,7 +384,7 @@
         "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.extension:participant",
         "path": "MedicationRequest.extension",
         "sliceName": "participant",
-        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
+        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the participant is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
         "alias": [
           "extensions",
           "user content"
@@ -480,7 +480,7 @@
         "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.modifierExtension",
         "path": "MedicationRequest.modifierExtension",
         "slicing": {
-          "id": "151",
+          "id": "188",
           "discriminator": [
             "url"
           ],
@@ -609,7 +609,7 @@
         "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.modifierExtension:medicationnotprescribedmodifier.extension",
         "path": "MedicationRequest.modifierExtension.extension",
         "slicing": {
-          "id": "23",
+          "id": "184",
           "discriminator": [
             "url"
           ],
@@ -882,7 +882,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-medication-ReasonMedicationNotUsedVS"
+            "reference": "http://standardhealthrecord.org/shr/medication/vs/ReasonMedicationNotUsedVS"
           }
         },
         "mapping": [
@@ -1509,7 +1509,7 @@
         "short": "Information about the prescription",
         "definition": "Extra information about the prescription that could not be conveyed by the other attributes.",
         "min": 0,
-        "max": "*",
+        "max": "1",
         "type": [
           {
             "code": "Annotation"
@@ -1523,6 +1523,145 @@
           {
             "identity": "rim",
             "map": ".inboundRelationship[typeCode=SUBJ]/source[classCode=OBS,moodCode=EVN,code=\"annotation\"].value"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.note.id",
+        "path": "MedicationRequest.note.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.note.extension",
+        "path": "MedicationRequest.note.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.note.author[x]",
+        "path": "MedicationRequest.note.author[x]",
+        "short": "Individual responsible for the annotation",
+        "definition": "The individual responsible for making the annotation.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Patient"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+          },
+          {
+            "code": "string"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "N/A"
+          },
+          {
+            "identity": "rim",
+            "map": "Act.participant[typeCode=AUT].role"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.note.time",
+        "path": "MedicationRequest.note.time",
+        "short": "When the annotation was made",
+        "definition": "Indicates when this particular annotation was made.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "N/A"
+          },
+          {
+            "identity": "rim",
+            "map": "Act.effectiveTime"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.note.text",
+        "path": "MedicationRequest.note.text",
+        "short": "The annotation  - text content",
+        "definition": "The text of the annotation.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "N/A"
+          },
+          {
+            "identity": "rim",
+            "map": "Act.text"
           }
         ]
       },
@@ -1562,10 +1701,383 @@
         "short": "How the medication should be taken",
         "definition": "Indicates how the medication is to be used by the patient.",
         "min": 0,
-        "max": "*",
+        "max": "1",
         "type": [
           {
             "code": "DosageInstruction"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.id",
+        "path": "MedicationRequest.dosageInstruction.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.extension",
+        "path": "MedicationRequest.dosageInstruction.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.sequence",
+        "path": "MedicationRequest.dosageInstruction.sequence",
+        "short": "The order of the dosage instructions",
+        "definition": "Indicates the order in which the dosage instructions should be applied or interpreted.",
+        "requirements": "If the sequence number of multiple dosageInstructions is the same, then it is implied that the instructions are to be treated as concurrent.  If the sequence number is different, then the dosageInstructions are intended to be sequential.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "integer"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.text",
+        "path": "MedicationRequest.dosageInstruction.text",
+        "short": "Free text dosage instructions e.g. SIG",
+        "definition": "Free text dosage instructions e.g. SIG.",
+        "requirements": "Free text dosage instructions can be used for cases where the instructions are too complex to code.  The content of this attribute does not include the name or description of the medication. When coded instructions are present, the free text instructions may still be present for display to humans taking or administering the medication. It is expected that the text instructions will always be populated.  If the dosage.timing attribute is also populated, then the dosage.text should reflect the same information as the timing.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "text"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.additionalInstructions",
+        "path": "MedicationRequest.dosageInstruction.additionalInstructions",
+        "short": "Supplemental instructions - e.g. \"with meals\"",
+        "definition": "Supplemental instructions - e.g. \"with meals\".",
+        "requirements": "Additional instructions such as \"Swallow with plenty of water\" which may or may not be coded.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept identifying additional instructions such as \"take with water\" or \"avoid operating heavy machinery\".",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/additional-instructions-codes"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "component.substanceAdministrationRequest.text"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.timing",
+        "path": "MedicationRequest.dosageInstruction.timing",
+        "short": "When medication should be administered",
+        "definition": "When medication should be administered.",
+        "requirements": "The timing schedule for giving the medication to the patient. The Schedule data type allows many different expressions. For example: \"Every 8 hours\"; \"Three times a day\"; \"1/2 an hour before breakfast for 10 days from 23-Dec 2011:\"; \"15 Oct 2013, 17 Oct 2013 and 1 Nov 2013\".  Sometimes, a rate can imply duration when expressed as total volume / duration (e.g.  500mL/2 hours implies a duration of 2 hours).  However, when rate doesn't imply duration (e.g. 250mL/hour), then the timing.repeat.duration is needed to convey the infuse over time period.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Timing"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "effectiveTime"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.asNeeded[x]",
+        "path": "MedicationRequest.dosageInstruction.asNeeded[x]",
+        "short": "Take \"as needed\" (for x)",
+        "definition": "Take \"as needed\" (for x).",
+        "requirements": "Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept identifying the precondition that should be met or evaluated prior to consuming or administering a medication dose.  For example \"pain\", \"30 minutes prior to sexual intercourse\", \"on flare-up\" etc.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/medication-as-needed-reason"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "boolean: precondition.negationInd (inversed - so negationInd = true means asNeeded=false  CodeableConcept: precondition.observationEventCriterion[code=\"Assertion\"].value"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.site",
+        "path": "MedicationRequest.dosageInstruction.site",
+        "short": "Body site to administer to",
+        "definition": "Body site to administer to.",
+        "comments": "If the use case requires attributes from the BodySite resource (e.g. to identify and track separately) then use the standard extension [body-site-instance](extension-body-site-instance.html).  May be a summary code, or a reference to a very precise definition of the location, or both.",
+        "requirements": "A coded specification of the anatomic site where the medication first enters the body.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "approachSiteCode"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.route",
+        "path": "MedicationRequest.dosageInstruction.route",
+        "short": "How drug should enter body",
+        "definition": "How drug should enter body.",
+        "requirements": "A code specifying the route or physiological path of administration of a therapeutic agent into or onto a patient's body.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept describing the route or physiological path of administration of a therapeutic agent into or onto the body of a subject.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/route-codes"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "routeCode"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.method",
+        "path": "MedicationRequest.dosageInstruction.method",
+        "short": "Technique for administering medication",
+        "definition": "Technique for administering medication.",
+        "requirements": "A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  For examples, Slow Push; Deep IV.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "A coded concept describing the technique by which the medicine is administered.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/administration-method-codes"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "methodCode"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.dose[x]",
+        "path": "MedicationRequest.dosageInstruction.dose[x]",
+        "short": "Amount of medication per dose",
+        "definition": "Amount of medication per dose.",
+        "requirements": "The amount of therapeutic or other substance given at one administration event.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Quantity"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "doseQuantity"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.maxDosePerPeriod",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerPeriod",
+        "short": "Upper limit on medication per unit of time",
+        "definition": "Upper limit on medication per unit of time.",
+        "requirements": "The maximum total quantity of a therapeutic substance that may be administered to a subject over the period of time.  For example, 1000mg in 24 hours.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Ratio",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-MaximumDosePerTimePeriod"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "maxDoseQuantity"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.maxDosePerAdministration",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerAdministration",
+        "short": "Upper limit on medication per administration",
+        "definition": "Upper limit on medication per administration.",
+        "requirements": "The maximum total quantity of a therapeutic substance that may be administered to a subject per administration.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://hl7.org/fhir/StructureDefinition/SimpleQuantity"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "no mapping"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.maxDosePerLifetime",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerLifetime",
+        "short": "Upper limit on medication per lifetime of the patient",
+        "definition": "Upper limit on medication per lifetime of the patient.",
+        "requirements": "The maximum total quantity of a therapeutic substance that may be administered per lifetime of the subject.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://hl7.org/fhir/StructureDefinition/SimpleQuantity"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "no mapping"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.rate[x]",
+        "path": "MedicationRequest.dosageInstruction.rate[x]",
+        "short": "Amount of medication per unit of time",
+        "definition": "Amount of medication per unit of time.",
+        "requirements": "Identifies the speed with which the medication was or will be introduced into the patient. Typically the rate for an infusion e.g. 100 ml per 1 hour or 100 ml/hr.  May also be expressed as a rate per unit of time e.g. 500 ml per 2 hours.   Other examples: 200 mcg/min or 200 mcg/1 minute; 1 liter/8 hours.  Sometimes, a rate can imply duration when expressed as total volume / duration (e.g.  500mL/2 hours implies a duration of 2 hours).  However, when rate doesn't imply duration (e.g. 250mL/hour), then the timing.repeat.duration is needed to convey the infuse over time period.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Ratio"
+          },
+          {
+            "code": "Range"
+          },
+          {
+            "code": "Quantity",
+            "profile": "http://hl7.org/fhir/StructureDefinition/SimpleQuantity"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "rateQuantity"
           }
         ]
       },
@@ -2187,6 +2699,93 @@
           {
             "code": "CodeableConcept",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.note",
+        "path": "MedicationRequest.note",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction",
+        "path": "MedicationRequest.dosageInstruction",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.additionalInstructions",
+        "path": "MedicationRequest.dosageInstruction.additionalInstructions",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.asNeeded[x]",
+        "path": "MedicationRequest.dosageInstruction.asNeeded[x]",
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.site",
+        "path": "MedicationRequest.dosageInstruction.site",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
+          }
+        }
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.route",
+        "path": "MedicationRequest.dosageInstruction.route",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.method",
+        "path": "MedicationRequest.dosageInstruction.method",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.dose[x]",
+        "path": "MedicationRequest.dosageInstruction.dose[x]",
+        "type": [
+          {
+            "code": "Quantity",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Quantity"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest:shr-medication-MedicationNotPrescribed.dosageInstruction.maxDosePerPeriod",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerPeriod",
+        "type": [
+          {
+            "code": "Ratio",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-medication-MaximumDosePerTimePeriod"
           }
         ]
       },

@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.288Z",
+  "date": "2017-04-18T17:07:41.458Z",
   "description": "How the exposure occurred, e.g. cutaneous contact, injection, ingestion, sexual contact, inhalation.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

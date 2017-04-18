@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.838Z",
+  "date": "2017-04-18T17:07:43.222Z",
   "description": "Problem with sexual intercourse.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-DifficultyWithIntercourseVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/DifficultyWithIntercourseVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-DifficultyWithIntercourseVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/DifficultyWithIntercourseVS"
           }
         }
       }

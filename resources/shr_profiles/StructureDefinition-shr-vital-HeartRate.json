@@ -3,7 +3,7 @@
   "id": "shr-vital-HeartRate",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HeartRate Profile</b></p>\n  <p>The number of times the heart ventricles contract per unit of time, usually per minute.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.vital.HeartRate maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  BodySite maps to bodySite\n  BodyPosition maps to http://hl7.org/fhir/StructureDefinition/observation-bodyPosition\n  Device maps to device\n  TBD &quot;Specimen&quot; maps to specimen\n  Interpretation maps to interpretation\n  ReferenceRange maps to referenceRange\n  ChangeFlag maps to http://hl7.org/fhir/StructureDefinition/observation-delta\n  Quantity maps to value[x].Quantity\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HeartRate Profile</b></p>\n  <p>The number of times the heart ventricles contract per unit of time, usually per minute.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.vital.HeartRate maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  BodySite maps to bodySite\n  BodyPosition maps to http://hl7.org/fhir/StructureDefinition/observation-bodyPosition\n  Device maps to device\n  &lt;TBD &quot;Specimen&quot;&gt; maps to specimen\n  Interpretation maps to interpretation\n  ReferenceRange maps to referenceRange\n  ChangeFlag maps to http://hl7.org/fhir/StructureDefinition/observation-delta\n  Quantity maps to value[x].Quantity\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-vital-HeartRate",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.891Z",
+  "date": "2017-04-18T17:07:43.406Z",
   "description": "The number of times the heart ventricles contract per unit of time, usually per minute.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-vital-HeartRate.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "217",
+          "id": "280",
           "discriminator": [
             "url"
           ],
@@ -553,7 +553,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-HeartRateQualifierVS"
+            "reference": "http://standardhealthrecord.org/shr/vital/vs/HeartRateQualifierVS"
           }
         },
         "mapping": [
@@ -599,7 +599,7 @@
         "id": "Observation:shr-vital-HeartRate.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "218",
+          "id": "281",
           "discriminator": [
             "url"
           ],
@@ -739,6 +739,14 @@
       {
         "id": "Observation:shr-vital-HeartRate.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "278",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -768,6 +776,27 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-vital-HeartRate.category:vital-signs",
+        "path": "Observation.category",
+        "sliceName": "vital-signs",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "vital-signs"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-vital-HeartRate.code",
@@ -995,7 +1024,7 @@
         "id": "Observation:shr-vital-HeartRate.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "216",
+          "id": "279",
           "discriminator": [
             "@type"
           ],
@@ -1104,7 +1133,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         },
         "mapping": [
@@ -1160,7 +1189,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1192,7 +1221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-HeartRateMethodVS"
+            "reference": "http://standardhealthrecord.org/shr/vital/vs/HeartRateMethodVS"
           }
         },
         "mapping": [
@@ -2083,7 +2112,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-HeartRateQualifierVS"
+            "reference": "http://standardhealthrecord.org/shr/vital/vs/HeartRateQualifierVS"
           }
         }
       },
@@ -2122,6 +2151,14 @@
       {
         "id": "Observation:shr-vital-HeartRate.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "278",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -2130,6 +2167,27 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-vital-HeartRate.category:vital-signs",
+        "path": "Observation.category",
+        "sliceName": "vital-signs",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "vital-signs"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-vital-HeartRate.code",
@@ -2228,7 +2286,7 @@
         "id": "Observation:shr-vital-HeartRate.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "216",
+          "id": "279",
           "discriminator": [
             "@type"
           ],
@@ -2270,7 +2328,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         }
       },
@@ -2286,7 +2344,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },
@@ -2302,7 +2360,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-HeartRateMethodVS"
+            "reference": "http://standardhealthrecord.org/shr/vital/vs/HeartRateMethodVS"
           }
         }
       },

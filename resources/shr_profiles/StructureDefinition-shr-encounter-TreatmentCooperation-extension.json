@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.674Z",
+  "date": "2017-04-18T17:07:42.697Z",
   "description": "Whether the patient is undergoing treatment voluntarily, or under a legal order.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-encounter-TreatmentCooperationVS"
+            "reference": "http://standardhealthrecord.org/shr/encounter/vs/TreatmentCooperationVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-encounter-TreatmentCooperationVS"
+            "reference": "http://standardhealthrecord.org/shr/encounter/vs/TreatmentCooperationVS"
           }
         }
       }

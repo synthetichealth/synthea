@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.844Z",
+  "date": "2017-04-18T17:07:43.247Z",
   "description": "The contraceptive method(s) recommended or prescribed by a provider, after counseling and assessment. More than one method can be selected, if applicable. .",
   "purpose": "Need some way to safely (without breaking interoperability) allow implementers to exchange content not supported by the initial set of declared resources.",
   "fhirVersion": "1.8.0",
@@ -271,7 +271,7 @@
         "id": "Basic:shr-sex-ContraceptiveMethodRecommendation.extension",
         "path": "Basic.extension",
         "slicing": {
-          "id": "199",
+          "id": "252",
           "discriminator": [
             "url"
           ],
@@ -332,7 +332,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-ContraceptiveMethodVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/ContraceptiveMethodVS"
           }
         },
         "mapping": [
@@ -616,7 +616,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-ContraceptiveMethodVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/ContraceptiveMethodVS"
           }
         }
       },

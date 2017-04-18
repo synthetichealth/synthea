@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.177Z",
+  "date": "2017-04-18T17:07:41.031Z",
   "description": "A problem with learning or behavior in a learning environment.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -302,7 +302,7 @@
         "id": "Condition:shr-problem-AcademicProblem.extension",
         "path": "Condition.extension",
         "slicing": {
-          "id": "16",
+          "id": "29",
           "discriminator": [
             "url"
           ],
@@ -531,7 +531,7 @@
         "id": "Condition:shr-problem-AcademicProblem.modifierExtension",
         "path": "Condition.modifierExtension",
         "slicing": {
-          "id": "17",
+          "id": "30",
           "discriminator": [
             "url"
           ],
@@ -721,7 +721,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         },
         "mapping": [
@@ -849,7 +849,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1222,7 +1222,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         },
         "mapping": [
@@ -1415,7 +1415,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1615,7 +1615,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         }
       },
@@ -1653,7 +1653,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },
@@ -1697,7 +1697,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         }
       },
@@ -1717,7 +1717,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       }

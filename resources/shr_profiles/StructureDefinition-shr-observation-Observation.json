@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.246Z",
+  "date": "2017-04-18T17:07:41.225Z",
   "description": "An act that is intended to result in new information about a subject. The focus of an observation can include the subject's behavior, physiological state, functional status, environment, exposures to substances, etc. The method of observing can be via direct questions, formal assessment vehicle, laboratory test, or imaging procedure.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-observation-Observation.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "40",
+          "id": "57",
           "discriminator": [
             "url"
           ],
@@ -397,7 +397,7 @@
         "id": "Observation:shr-observation-Observation.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "41",
+          "id": "58",
           "discriminator": [
             "url"
           ],

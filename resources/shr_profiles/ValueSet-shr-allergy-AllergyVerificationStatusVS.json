@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR AllergyVerificationStatusVS ValueSet</b></p>\n<p>Whether the allergy has been verified or not. Intentionally a subset of the codes in FHIR, since refuted would be reflected by correcting the &#039;elevated risk&#039; element, and records entered in error are not included in SHR.</p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-AllergyVerificationStatusVS",
+  "url": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.104Z",
+  "date": "2017-04-18T17:07:40.895Z",
   "description": "Whether the allergy has been verified or not. Intentionally a subset of the codes in FHIR, since refuted would be reflected by correcting the 'elevated risk' element, and records entered in error are not included in SHR.",
   "compose": {
     "include": [

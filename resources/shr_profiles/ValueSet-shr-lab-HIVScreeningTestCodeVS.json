@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR HIVScreeningTestCodeVS ValueSet</b></p>\n<p></p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVScreeningTestCodeVS",
+  "url": "http://standardhealthrecord.org/shr/lab/vs/HIVScreeningTestCodeVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,5 +31,5 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.108Z"
+  "date": "2017-04-18T17:07:40.898Z"
 }

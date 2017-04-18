@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.817Z",
+  "date": "2017-04-18T17:07:43.023Z",
   "description": "The current connection to the US military.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-lifehistory-MilitaryStatus.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "189",
+          "id": "239",
           "discriminator": [
             "url"
           ],
@@ -357,7 +357,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-MilitaryStatusVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/MilitaryStatusVS"
           }
         },
         "mapping": [
@@ -435,7 +435,7 @@
         "id": "Observation:shr-lifehistory-MilitaryStatus.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "190",
+          "id": "240",
           "discriminator": [
             "url"
           ],
@@ -1862,7 +1862,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-MilitaryStatusVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/MilitaryStatusVS"
           }
         }
       },

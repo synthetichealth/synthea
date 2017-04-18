@@ -3,7 +3,7 @@
   "id": "shr-encounter-Encounter",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Encounter Profile</b></p>\n  <p>A statement about a planned or actual interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.encounter.Encounter maps to Encounter:\n  Entry.FocalSubject maps to patient\n  OccurrenceTime maps to period\n  EncounterType maps to class\n  Participant maps to participant\n  Participant.Practitioner maps to participant.individual\n  Participant.RelatedPerson maps to participant.individual\n  Participant.OccurrenceTime maps to participant.period\n  Participant.ParticipationType maps to participant.type\n  ProviderOrganization maps to serviceProvider\n  TBD &quot;HealthConcern&quot; maps to indication\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Encounter Profile</b></p>\n  <p>A statement about a planned or actual interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.encounter.Encounter maps to Encounter:\n  Entry.FocalSubject maps to patient\n  OccurrenceTime maps to period\n  EncounterType maps to class\n  Participant maps to participant\n  Participant.Practitioner maps to participant.individual\n  Participant.RelatedPerson maps to participant.individual\n  Participant.OccurrenceTime maps to participant.period\n  Participant.ParticipationType maps to participant.type\n  ProviderOrganization maps to serviceProvider\n  &lt;TBD &quot;HealthConcern&quot;&gt; maps to indication\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-encounter-Encounter",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.672Z",
+  "date": "2017-04-18T17:07:42.686Z",
   "description": "A statement about a planned or actual interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -273,7 +273,7 @@
         "id": "Encounter:shr-encounter-Encounter.extension",
         "path": "Encounter.extension",
         "slicing": {
-          "id": "164",
+          "id": "211",
           "discriminator": [
             "url"
           ],
@@ -470,7 +470,7 @@
         "id": "Encounter:shr-encounter-Encounter.modifierExtension",
         "path": "Encounter.modifierExtension",
         "slicing": {
-          "id": "165",
+          "id": "212",
           "discriminator": [
             "url"
           ],
@@ -780,7 +780,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-encounter-EncounterTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/encounter/vs/EncounterTypeVS"
           }
         },
         "mapping": [
@@ -2099,7 +2099,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-encounter-EncounterTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/encounter/vs/EncounterTypeVS"
           }
         }
       },

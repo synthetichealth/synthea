@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.354Z",
+  "date": "2017-04-18T17:07:41.690Z",
   "description": "Anything that limits physical activity, including health factors, logistical, monetary, or social restrictions.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-PhysicalActivityLimitationVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/PhysicalActivityLimitationVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-PhysicalActivityLimitationVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/PhysicalActivityLimitationVS"
           }
         }
       }

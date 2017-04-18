@@ -1,0 +1,69 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-vital-BloodPressureQualifierCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR BloodPressureQualifierCS CodeSystem</b></p>\n<p>Code further describing the blood pressure measurement.</p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/vital/cs/BloodPressureQualifierCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.vital.BloodPressureQualifierCS"
+  },
+  "name": "SHR BloodPressureQualifierCS CodeSystem",
+  "title": "SHR BloodPressureQualifierCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.893Z",
+  "description": "Code further describing the blood pressure measurement.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 6,
+  "concept": [
+    {
+      "code": "pre_transfusion",
+      "display": "pre transfusion",
+      "definition": "pre transfusion"
+    },
+    {
+      "code": "post_transfusion",
+      "display": "post transfusion",
+      "definition": "post transfusion"
+    },
+    {
+      "code": "pre_phlebotomy",
+      "display": "pre phlebotomy",
+      "definition": "pre phlebotomy"
+    },
+    {
+      "code": "post_phlebotomy",
+      "display": "post phlebotomy",
+      "definition": "post phlebotomy"
+    },
+    {
+      "code": "expiration",
+      "display": "during expiration",
+      "definition": "during expiration"
+    },
+    {
+      "code": "inspiration",
+      "display": "during inspiration",
+      "definition": "during inspiration"
+    }
+  ]
+}

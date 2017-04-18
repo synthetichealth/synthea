@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.262Z",
+  "date": "2017-04-18T17:07:41.294Z",
   "description": "How many occurrences of an event per unit of time.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:frequency.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "17",
+          "id": "62",
           "discriminator": [
             "url"
           ],

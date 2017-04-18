@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.288Z",
+  "date": "2017-04-18T17:07:41.457Z",
   "description": "Where the substance originated. Vectors include animals (e.g., tick, mosquito, cats, livestock) capable of transmitting an infectious agent among vertebrates. Sources could include food, contaminated drinking water, air, radon gas in the home, etc.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.271Z",
+  "date": "2017-04-18T17:07:41.348Z",
   "description": "The external elements and conditions which surround, influence, and affect the life and development of the subject. Includes social conditions such as poverty, violence, bullying.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-observation-SocialHistory.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "47",
+          "id": "67",
           "discriminator": [
             "url"
           ],
@@ -493,7 +493,7 @@
         "id": "Observation:shr-observation-SocialHistory.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "48",
+          "id": "68",
           "discriminator": [
             "url"
           ],
@@ -633,6 +633,14 @@
       {
         "id": "Observation:shr-observation-SocialHistory.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "66",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -662,6 +670,48 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-observation-SocialHistory.category:social-history",
+        "path": "Observation.category",
+        "sliceName": "social-history",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "social-history"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-observation-SocialHistory.category:C2004062",
+        "path": "Observation.category",
+        "sliceName": "C2004062",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C2004062"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-observation-SocialHistory.code",
@@ -2001,6 +2051,14 @@
       {
         "id": "Observation:shr-observation-SocialHistory.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "66",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -2009,6 +2067,48 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-observation-SocialHistory.category:social-history",
+        "path": "Observation.category",
+        "sliceName": "social-history",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "social-history"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-observation-SocialHistory.category:C2004062",
+        "path": "Observation.category",
+        "sliceName": "C2004062",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C2004062"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-observation-SocialHistory.code",

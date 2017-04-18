@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.843Z",
+  "date": "2017-04-18T17:07:43.228Z",
   "description": "The method or methods of contraception used.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-sex-ContraceptiveMethodsUsed.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "197",
+          "id": "250",
           "discriminator": [
             "url"
           ],
@@ -357,7 +357,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-ContraceptiveMethodVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/ContraceptiveMethodVS"
           }
         },
         "mapping": [
@@ -435,7 +435,7 @@
         "id": "Observation:shr-sex-ContraceptiveMethodsUsed.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "198",
+          "id": "251",
           "discriminator": [
             "url"
           ],
@@ -1870,7 +1870,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-ContraceptiveMethodVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/ContraceptiveMethodVS"
           }
         }
       },

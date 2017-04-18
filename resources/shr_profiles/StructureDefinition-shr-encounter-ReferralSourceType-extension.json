@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.673Z",
+  "date": "2017-04-18T17:07:42.696Z",
   "description": "The type of person or entity that instigated the encounter.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-encounter-ReferralSourceTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/encounter/vs/ReferralSourceTypeVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-encounter-ReferralSourceTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/encounter/vs/ReferralSourceTypeVS"
           }
         }
       }

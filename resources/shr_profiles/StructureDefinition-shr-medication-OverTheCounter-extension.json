@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.546Z",
+  "date": "2017-04-18T17:07:42.507Z",
   "description": "True if the medication is available to consumers without a prescription.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.755Z",
+  "date": "2017-04-18T17:07:42.904Z",
   "description": "Any abnormality, genetic, anatomical, biochemical, evident at birth or during the neonatal period. Includes malformations, deformations, and chromosomal abnormalities.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-lifehistory-CongenitalAbnormalities.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "180",
+          "id": "229",
           "discriminator": [
             "url"
           ],
@@ -357,7 +357,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-CongenitalAbnormalitiesVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/CongenitalAbnormalitiesVS"
           }
         },
         "mapping": [
@@ -435,7 +435,7 @@
         "id": "Observation:shr-lifehistory-CongenitalAbnormalities.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "181",
+          "id": "230",
           "discriminator": [
             "url"
           ],
@@ -1870,7 +1870,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lifehistory-CongenitalAbnormalitiesVS"
+            "reference": "http://standardhealthrecord.org/shr/lifehistory/vs/CongenitalAbnormalitiesVS"
           }
         }
       },

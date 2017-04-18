@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.624Z",
+  "date": "2017-04-18T17:07:42.597Z",
   "description": "A quantity that represents a statistic, e.g. maximum, minimum, mean, median, etc.",
   "purpose": "Need to able to capture all sorts of measured values, even if the measured value are not precisely quantified. Values include exact measures such as 3.51g, customary units such as 3 tablets, and currencies such as $100.32USD.",
   "fhirVersion": "1.8.0",
@@ -122,7 +122,7 @@
         "id": "Quantity:shr-core-Statistic.extension",
         "path": "Quantity.extension",
         "slicing": {
-          "id": "154",
+          "id": "191",
           "discriminator": [
             "url"
           ],

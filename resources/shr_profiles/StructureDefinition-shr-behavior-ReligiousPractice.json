@@ -3,7 +3,7 @@
   "id": "shr-behavior-ReligiousPractice",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR ReligiousPractice Profile</b></p>\n  <p>The religion practiced by the focal subject.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.behavior.ReligiousPractice maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  CodeableConcept maps to http://hl7.org/fhir/StructureDefinition/patient-religion\n  ReligiousCongregation maps to http://hl7.org/fhir/StructureDefinition/patient-congregation\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR ReligiousPractice Profile</b></p>\n  <p>The religion practiced by the focal subject.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.behavior.ReligiousPractice maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  CodeableConcept maps to http://hl7.org/fhir/StructureDefinition/patient-religion  //????\n  ReligiousCongregation maps to http://hl7.org/fhir/StructureDefinition/patient-congregation\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-behavior-ReligiousPractice",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.329Z",
+  "date": "2017-04-18T17:07:41.588Z",
   "description": "The religion practiced by the focal subject.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-behavior-ReligiousPractice.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "65",
+          "id": "92",
           "discriminator": [
             "url"
           ],
@@ -380,7 +380,7 @@
         "type": [
           {
             "code": "Extension",
-            "profile": "http://hl7.org/fhir/StructureDefinition/patient-religion"
+            "profile": "http://hl7.org/fhir/StructureDefinition/patient-religion // ????"
           }
         ],
         "mustSupport": false,
@@ -595,7 +595,7 @@
         "id": "Observation:shr-behavior-ReligiousPractice.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "66",
+          "id": "93",
           "discriminator": [
             "url"
           ],
@@ -735,6 +735,14 @@
       {
         "id": "Observation:shr-behavior-ReligiousPractice.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "91",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -764,6 +772,27 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-behavior-ReligiousPractice.category:54511-1",
+        "path": "Observation.category",
+        "sliceName": "54511-1",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "54511-1"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-behavior-ReligiousPractice.code",
@@ -2037,7 +2066,7 @@
         "type": [
           {
             "code": "Extension",
-            "profile": "http://hl7.org/fhir/StructureDefinition/patient-religion"
+            "profile": "http://hl7.org/fhir/StructureDefinition/patient-religion // ????"
           }
         ],
         "mustSupport": false,
@@ -2165,6 +2194,14 @@
       {
         "id": "Observation:shr-behavior-ReligiousPractice.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "91",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -2173,6 +2210,27 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-behavior-ReligiousPractice.category:54511-1",
+        "path": "Observation.category",
+        "sliceName": "54511-1",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "54511-1"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-behavior-ReligiousPractice.code",

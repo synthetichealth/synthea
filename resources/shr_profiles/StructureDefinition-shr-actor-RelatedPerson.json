@@ -3,7 +3,7 @@
   "id": "shr-actor-RelatedPerson",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR RelatedPerson Profile</b></p>\n  <p>A person, other than a practitioner or the patient (the person of record) who is relevant to the health or social situation of the subject.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.RelatedPerson maps to RelatedPerson:\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR RelatedPerson Profile</b></p>\n  <p>A person, other than a practitioner or the patient (the person of record) who is relevant to the health or social situation of the subject.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.RelatedPerson maps to RelatedPerson:\n  HumanName maps to name\n  DateOfBirth maps to birthDate\n  AdministrativeGender maps to gender\n  AddressUsed maps to address\n  Telecom maps to telecom\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.116Z",
+  "date": "2017-04-18T17:07:40.909Z",
   "description": "A person, other than a practitioner or the patient (the person of record) who is relevant to the health or social situation of the subject.",
   "purpose": "Need to track persons related to the patient or the healthcare process.",
   "fhirVersion": "1.8.0",
@@ -271,7 +271,7 @@
         "id": "RelatedPerson:shr-actor-RelatedPerson.extension",
         "path": "RelatedPerson.extension",
         "slicing": {
-          "id": "1",
+          "id": "8",
           "discriminator": [
             "url"
           ],
@@ -297,38 +297,6 @@
             "code": "Extension"
           }
         ],
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
-          }
-        ]
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:humanname",
-        "path": "RelatedPerson.extension",
-        "sliceName": "humanname",
-        "definition": "A name used by a human being, written as it would be typically expressed. May include a breakdown of the various elements of the name (family name, given name, etc.).",
-        "alias": [
-          "extensions",
-          "user content"
-        ],
-        "min": 0,
-        "max": "*",
-        "base": {
-          "path": "DomainResource.extension",
-          "min": 0,
-          "max": "*"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-HumanName-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false,
         "mapping": [
           {
             "identity": "rim",
@@ -401,134 +369,6 @@
         ]
       },
       {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:dateofbirth",
-        "path": "RelatedPerson.extension",
-        "sliceName": "dateofbirth",
-        "definition": "A date of birth or approximate year or period (year or date range), if estimated.",
-        "alias": [
-          "extensions",
-          "user content"
-        ],
-        "min": 0,
-        "max": "1",
-        "base": {
-          "path": "DomainResource.extension",
-          "min": 0,
-          "max": "*"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-DateOfBirth-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false,
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
-          }
-        ]
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:administrativegender",
-        "path": "RelatedPerson.extension",
-        "sliceName": "administrativegender",
-        "definition": "Gender is used to refer to administrative sex rather than biological sex and therefore should easily be classified into female and male.  This attribute does not include terms related to clinical gender.",
-        "alias": [
-          "extensions",
-          "user content"
-        ],
-        "min": 0,
-        "max": "1",
-        "base": {
-          "path": "DomainResource.extension",
-          "min": 0,
-          "max": "*"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-AdministrativeGender-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false,
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
-          }
-        ]
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:addressused",
-        "path": "RelatedPerson.extension",
-        "sliceName": "addressused",
-        "definition": "An address used by for dwelling, work, or other purposes. May be a physical location or an address used only for deliveries, such as a PO box.",
-        "alias": [
-          "extensions",
-          "user content"
-        ],
-        "min": 0,
-        "max": "*",
-        "base": {
-          "path": "DomainResource.extension",
-          "min": 0,
-          "max": "*"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-AddressUsed-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false,
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
-          }
-        ]
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:telecom",
-        "path": "RelatedPerson.extension",
-        "sliceName": "telecom",
-        "definition": "An electronic means of contacting an organization or individual.",
-        "alias": [
-          "extensions",
-          "user content"
-        ],
-        "min": 0,
-        "max": "*",
-        "base": {
-          "path": "DomainResource.extension",
-          "min": 0,
-          "max": "*"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false,
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
-          }
-        ]
-      },
-      {
         "id": "RelatedPerson:shr-actor-RelatedPerson.extension:languageused",
         "path": "RelatedPerson.extension",
         "sliceName": "languageused",
@@ -564,7 +404,7 @@
         "id": "RelatedPerson:shr-actor-RelatedPerson.extension:deceased",
         "path": "RelatedPerson.extension",
         "sliceName": "deceased",
-        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "definition": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
         "alias": [
           "extensions",
           "user content"
@@ -750,7 +590,8 @@
         "max": "*",
         "type": [
           {
-            "code": "HumanName"
+            "code": "HumanName",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-HumanName"
           }
         ],
         "isSummary": true,
@@ -776,7 +617,8 @@
         "max": "*",
         "type": [
           {
-            "code": "ContactPoint"
+            "code": "ContactPoint",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom"
           }
         ],
         "isSummary": true,
@@ -853,7 +695,8 @@
         "max": "*",
         "type": [
           {
-            "code": "Address"
+            "code": "Address",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Address"
           }
         ],
         "isSummary": true,
@@ -926,22 +769,6 @@
         "definition": "A person, other than a practitioner or the patient (the person of record) who is relevant to the health or social situation of the subject."
       },
       {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:humanname",
-        "path": "RelatedPerson.extension",
-        "sliceName": "humanname",
-        "min": 0,
-        "max": "*",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-HumanName-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false
-      },
-      {
         "id": "RelatedPerson:shr-actor-RelatedPerson.extension:anonymized",
         "path": "RelatedPerson.extension",
         "sliceName": "anonymized",
@@ -967,70 +794,6 @@
           {
             "code": "Extension",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-FictionalPerson-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:dateofbirth",
-        "path": "RelatedPerson.extension",
-        "sliceName": "dateofbirth",
-        "min": 0,
-        "max": "1",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-DateOfBirth-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:administrativegender",
-        "path": "RelatedPerson.extension",
-        "sliceName": "administrativegender",
-        "min": 0,
-        "max": "1",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-AdministrativeGender-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:addressused",
-        "path": "RelatedPerson.extension",
-        "sliceName": "addressused",
-        "min": 0,
-        "max": "*",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-AddressUsed-extension"
-          }
-        ],
-        "mustSupport": false,
-        "isModifier": false,
-        "isSummary": false
-      },
-      {
-        "id": "RelatedPerson:shr-actor-RelatedPerson.extension:telecom",
-        "path": "RelatedPerson.extension",
-        "sliceName": "telecom",
-        "min": 0,
-        "max": "*",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom-extension"
           }
         ],
         "mustSupport": false,
@@ -1068,6 +831,36 @@
         "mustSupport": false,
         "isModifier": false,
         "isSummary": false
+      },
+      {
+        "id": "RelatedPerson:shr-actor-RelatedPerson.name",
+        "path": "RelatedPerson.name",
+        "type": [
+          {
+            "code": "HumanName",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-HumanName"
+          }
+        ]
+      },
+      {
+        "id": "RelatedPerson:shr-actor-RelatedPerson.telecom",
+        "path": "RelatedPerson.telecom",
+        "type": [
+          {
+            "code": "ContactPoint",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-Telecom"
+          }
+        ]
+      },
+      {
+        "id": "RelatedPerson:shr-actor-RelatedPerson.address",
+        "path": "RelatedPerson.address",
+        "type": [
+          {
+            "code": "Address",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Address"
+          }
+        ]
       }
     ]
   }

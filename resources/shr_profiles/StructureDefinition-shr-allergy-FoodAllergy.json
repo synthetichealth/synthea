@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.218Z",
+  "date": "2017-04-18T17:07:41.147Z",
   "description": "An immune or biochemical adverse reaction to a food substance.",
   "purpose": "To record a clinical assessment of a propensity, or potential risk to an individual, of an adverse reaction upon future exposure to the specified substance, or class of substance.",
   "fhirVersion": "1.8.0",
@@ -291,7 +291,7 @@
         "id": "AllergyIntolerance:shr-allergy-FoodAllergy.extension",
         "path": "AllergyIntolerance.extension",
         "slicing": {
-          "id": "30",
+          "id": "46",
           "discriminator": [
             "url"
           ],
@@ -392,7 +392,7 @@
         "id": "AllergyIntolerance:shr-allergy-FoodAllergy.extension:adversereaction",
         "path": "AllergyIntolerance.extension",
         "sliceName": "adversereaction",
-        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
         "alias": [
           "extensions",
           "user content"
@@ -424,7 +424,7 @@
         "id": "AllergyIntolerance:shr-allergy-FoodAllergy.modifierExtension",
         "path": "AllergyIntolerance.modifierExtension",
         "slicing": {
-          "id": "31",
+          "id": "47",
           "discriminator": [
             "url"
           ],
@@ -563,9 +563,8 @@
         "isSummary": true,
         "binding": {
           "strength": "required",
-          "description": "Assertion about certainty associated with a propensity, or potential risk, of a reaction to the identified substance.",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/allergy-verification-status"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
           }
         },
         "mapping": [
@@ -722,7 +721,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-FoodSubstanceVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/FoodSubstanceVS"
           }
         },
         "mapping": [
@@ -1352,6 +1351,16 @@
         "isSummary": false
       },
       {
+        "id": "AllergyIntolerance:shr-allergy-FoodAllergy.verificationStatus",
+        "path": "AllergyIntolerance.verificationStatus",
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/AllergyVerificationStatusVS"
+          }
+        }
+      },
+      {
         "id": "AllergyIntolerance:shr-allergy-FoodAllergy.type",
         "path": "AllergyIntolerance.type",
         "fixedCode": "allergy"
@@ -1377,7 +1386,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-allergy-FoodSubstanceVS"
+            "reference": "http://standardhealthrecord.org/shr/allergy/vs/FoodSubstanceVS"
           }
         }
       },

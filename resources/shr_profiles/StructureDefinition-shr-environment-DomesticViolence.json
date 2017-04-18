@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.532Z",
+  "date": "2017-04-18T17:07:42.452Z",
   "description": "Whether the subject experiences domestic violence.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-DomesticViolence.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "140",
+          "id": "174",
           "discriminator": [
             "url"
           ],
@@ -461,7 +461,7 @@
         "id": "Observation:shr-environment-DomesticViolence.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "141",
+          "id": "175",
           "discriminator": [
             "url"
           ],
@@ -857,7 +857,7 @@
         "id": "Observation:shr-environment-DomesticViolence.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "139",
+          "id": "173",
           "discriminator": [
             "@type"
           ],
@@ -909,7 +909,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeFrequencyVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeFrequencyVS"
           }
         }
       },
@@ -2069,7 +2069,7 @@
         "id": "Observation:shr-environment-DomesticViolence.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "139",
+          "id": "173",
           "discriminator": [
             "@type"
           ],
@@ -2097,7 +2097,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-QualitativeFrequencyVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/QualitativeFrequencyVS"
           }
         }
       },

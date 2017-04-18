@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.289Z",
+  "date": "2017-04-18T17:07:41.459Z",
   "description": "A laboratory, radiologic, or other clinical test or measurement used to determine the presence, absence, or degree of a condition, or assess the function or health of an individual. This includes patient-generated data, such as pedometer readings.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

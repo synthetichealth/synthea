@@ -3,7 +3,7 @@
   "id": "shr-lab-HIVSupplementalTestRequest",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HIVSupplementalTestRequest Profile</b></p>\n  <p>A request for a confirmatory or additional test for HIV infection.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.lab.HIVSupplementalTestRequest maps to ProcedureRequest:\n  Entry.Author maps to orderer\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Reason maps to reason[x].CodeableConcept\n  OccurrenceTime maps to orderedOn\n  ActionCode maps to code\n  RequestStatus maps to status\n  RequestedPerformanceTime maps to scheduled[x]\n  PriorityOfRequest maps to priority\n  RequestedPerformer maps to performer\n  BodySite maps to bodySite\n  TBD &quot;Specimen&quot; maps to specimen\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HIVSupplementalTestRequest Profile</b></p>\n  <p>A request for a confirmatory or additional test for HIV infection.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.lab.HIVSupplementalTestRequest maps to ProcedureRequest:\n  Entry.Author maps to orderer\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Reason maps to reason[x].CodeableConcept\n  OccurrenceTime maps to orderedOn   // could potentially map Entry.DateEntered to authoredOn\n  ActionCode maps to code\n  RequestStatus maps to status\n  RequestedPerformanceTime maps to scheduled[x]\n  PriorityOfRequest maps to priority\n  RequestedPerformer maps to performer\n  BodySite maps to bodySite\n  &lt;TBD &quot;Specimen&quot;&gt; maps to specimen\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-lab-HIVSupplementalTestRequest",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.727Z",
+  "date": "2017-04-18T17:07:42.857Z",
   "description": "A request for a confirmatory or additional test for HIV infection.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -266,7 +266,7 @@
         "id": "ProcedureRequest:shr-lab-HIVSupplementalTestRequest.extension",
         "path": "ProcedureRequest.extension",
         "slicing": {
-          "id": "176",
+          "id": "224",
           "discriminator": [
             "url"
           ],
@@ -303,7 +303,7 @@
         "id": "ProcedureRequest:shr-lab-HIVSupplementalTestRequest.extension:participant",
         "path": "ProcedureRequest.extension",
         "sliceName": "participant",
-        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the performer is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
+        "definition": "A statement about an actor who did (or did not) participate in a certain task or activity. Unlike a HealthcareInvolvement which continues over period of time, the participant is associated with doing or not doing a specific task, such admitting a patient, performing a procedure, or taking a measurement.",
         "alias": [
           "extensions",
           "user content"
@@ -399,7 +399,7 @@
         "id": "ProcedureRequest:shr-lab-HIVSupplementalTestRequest.modifierExtension",
         "path": "ProcedureRequest.modifierExtension",
         "slicing": {
-          "id": "177",
+          "id": "225",
           "discriminator": [
             "url"
           ],
@@ -567,7 +567,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVSupplementalTestCodeVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/HIVSupplementalTestCodeVS"
           }
         },
         "mapping": [
@@ -600,7 +600,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1032,7 +1032,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVSupplementalTestCodeVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/HIVSupplementalTestCodeVS"
           }
         }
       },
@@ -1050,7 +1050,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },

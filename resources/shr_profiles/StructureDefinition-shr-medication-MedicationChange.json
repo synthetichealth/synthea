@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.619Z",
+  "date": "2017-04-18T17:07:42.590Z",
   "description": "Description of a modification or change of a medication or dosage.",
   "purpose": "Need some way to safely (without breaking interoperability) allow implementers to exchange content not supported by the initial set of declared resources.",
   "fhirVersion": "1.8.0",
@@ -271,7 +271,7 @@
         "id": "Basic:shr-medication-MedicationChange.extension",
         "path": "Basic.extension",
         "slicing": {
-          "id": "152",
+          "id": "189",
           "discriminator": [
             "url"
           ],

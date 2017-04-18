@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.852Z",
+  "date": "2017-04-18T17:07:43.266Z",
   "description": "What body positions the surface can be used for, specifically, sitting or lying.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-SupportSurfaceBodyPositionVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/SupportSurfaceBodyPositionVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-skin-SupportSurfaceBodyPositionVS"
+            "reference": "http://standardhealthrecord.org/shr/skin/vs/SupportSurfaceBodyPositionVS"
           }
         }
       }

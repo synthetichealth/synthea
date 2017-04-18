@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.172Z",
+  "date": "2017-04-18T17:07:41.003Z",
   "description": "A complaint or observed (subjective) indication that a person has a condition or disease. Some examples of symptoms are headache, fever, fatigue, nausea, vomiting, and pain.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-problem-Manifestation.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "14",
+          "id": "27",
           "discriminator": [
             "url"
           ],
@@ -461,7 +461,7 @@
         "id": "Observation:shr-problem-Manifestation.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "15",
+          "id": "28",
           "discriminator": [
             "url"
           ],
@@ -649,7 +649,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1971,7 +1971,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       },

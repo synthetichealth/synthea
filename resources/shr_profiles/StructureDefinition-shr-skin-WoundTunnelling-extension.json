@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.870Z",
+  "date": "2017-04-18T17:07:43.329Z",
   "description": "A discharging blind-ended track that extends from the surface of an organ to an underlying area or abscess cavity. The track is invariably lined with granulation tissue. In chronic cases this may be augmented with epithelial tissue.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:woundtunnelling.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "37",
+          "id": "265",
           "discriminator": [
             "url"
           ],

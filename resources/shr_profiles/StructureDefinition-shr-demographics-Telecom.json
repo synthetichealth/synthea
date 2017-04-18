@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.652Z",
+  "date": "2017-04-18T17:07:42.653Z",
   "description": "An electronic means of contacting an organization or individual.",
   "purpose": "Need to track phone, fax, mobile, sms numbers, email addresses, twitter tags, etc.",
   "fhirVersion": "1.8.0",
@@ -130,7 +130,7 @@
         "id": "ContactPoint:shr-demographics-Telecom.extension",
         "path": "ContactPoint.extension",
         "slicing": {
-          "id": "157",
+          "id": "200",
           "discriminator": [
             "url"
           ],

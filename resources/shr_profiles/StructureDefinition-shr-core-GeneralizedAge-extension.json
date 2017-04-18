@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.122Z",
+  "date": "2017-04-18T17:07:40.919Z",
   "description": "Qualitative or quantitative, exact or inexact description of age.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -111,7 +111,7 @@
         "id": "Extension:generalizedage.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "7",
+          "id": "6",
           "discriminator": [
             "url"
           ],

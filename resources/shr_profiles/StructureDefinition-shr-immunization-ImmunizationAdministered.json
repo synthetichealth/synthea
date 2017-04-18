@@ -3,7 +3,7 @@
   "id": "shr-immunization-ImmunizationAdministered",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR ImmunizationAdministered Profile</b></p>\n  <p>Represents an immunization that was administered to the subject.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.immunization.ImmunizationAdministered maps to Immunization:\n  Vaccine.CodeableConcept maps to vaccineCode\n  Vaccine.VaccineManufacturer maps to manufacturer\n  ImmunizationNotGivenModifier maps to wasNotGiven\n  explanation is 0..1\n  ImmunizationNotGivenModifier.Reason maps to explanation.reasonNotGiven\n  BodySite maps to site\n  RouteIntoBody maps to route\n  AmountOfMedication maps to doseQuantity\n  TBD &quot;DoseSequenceNumber&quot; maps to vaccinationProtocol.doseSequence\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR ImmunizationAdministered Profile</b></p>\n  <p>Represents an immunization that was administered to the subject.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.immunization.ImmunizationAdministered maps to Immunization:\n  Vaccine.CodeableConcept maps to vaccineCode\n  Vaccine.VaccineManufacturer maps to manufacturer\n  ImmunizationNotGivenModifier maps to wasNotGiven\n  constrain explanation to 0..1\n  ImmunizationNotGivenModifier.Reason maps to explanation.reasonNotGiven\n  BodySite maps to site\n  RouteIntoBody maps to route\n  AmountOfMedication maps to doseQuantity\n  &lt;TBD &quot;DoseSequenceNumber&quot;&gt; maps to vaccinationProtocol.doseSequence\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-immunization-ImmunizationAdministered",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.682Z",
+  "date": "2017-04-18T17:07:42.711Z",
   "description": "Represents an immunization that was administered to the subject.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -806,7 +806,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1608,7 +1608,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },

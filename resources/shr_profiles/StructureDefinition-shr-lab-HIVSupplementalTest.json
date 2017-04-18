@@ -3,7 +3,7 @@
   "id": "shr-lab-HIVSupplementalTest",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HIVSupplementalTest Profile</b></p>\n  <p>The result of a supplement HIV test, following up an initial screening.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.lab.HIVSupplementalTest maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  BodySite maps to bodySite\n  BodyPosition maps to http://hl7.org/fhir/StructureDefinition/observation-bodyPosition\n  Device maps to device\n  TBD &quot;Specimen&quot; maps to specimen\n  Interpretation maps to interpretation\n  ReferenceRange maps to referenceRange\n  ChangeFlag maps to http://hl7.org/fhir/StructureDefinition/observation-delta\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR HIVSupplementalTest Profile</b></p>\n  <p>The result of a supplement HIV test, following up an initial screening.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.lab.HIVSupplementalTest maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  BodySite maps to bodySite\n  BodyPosition maps to http://hl7.org/fhir/StructureDefinition/observation-bodyPosition\n  Device maps to device\n  &lt;TBD &quot;Specimen&quot;&gt; maps to specimen\n  Interpretation maps to interpretation\n  ReferenceRange maps to referenceRange\n  ChangeFlag maps to http://hl7.org/fhir/StructureDefinition/observation-delta\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-lab-HIVSupplementalTest",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.716Z",
+  "date": "2017-04-18T17:07:42.811Z",
   "description": "The result of a supplement HIV test, following up an initial screening.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-lab-HIVSupplementalTest.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "172",
+          "id": "220",
           "discriminator": [
             "url"
           ],
@@ -421,7 +421,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVSupplementalTestResultVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/HIVSupplementalTestResultVS"
           }
         },
         "mapping": [
@@ -531,7 +531,7 @@
         "id": "Observation:shr-lab-HIVSupplementalTest.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "173",
+          "id": "221",
           "discriminator": [
             "url"
           ],
@@ -719,7 +719,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVSupplementalTestCodeVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/HIVSupplementalTestCodeVS"
           }
         },
         "mapping": [
@@ -1025,7 +1025,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         },
         "mapping": [
@@ -1081,7 +1081,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1989,7 +1989,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVSupplementalTestResultVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/HIVSupplementalTestResultVS"
           }
         }
       },
@@ -2079,7 +2079,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-HIVSupplementalTestCodeVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/HIVSupplementalTestCodeVS"
           }
         }
       },
@@ -2170,7 +2170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         }
       },
@@ -2186,7 +2186,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },

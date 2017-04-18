@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.834Z",
+  "date": "2017-04-18T17:07:43.183Z",
   "description": "Subjective personal perception of one's own gender, which can be male, female, a blend of both, or neither.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -150,8 +150,8 @@
         ]
       },
       {
-        "id": "Extension:genderidentity.valueCodeableConcept",
-        "path": "Extension.valueCodeableConcept",
+        "id": "Extension:genderidentity.valueReference",
+        "path": "Extension.valueReference",
         "short": "Value of extension",
         "definition": "Value of extension - may be a resource or one of a constrained set of the data types (see Extensibility in the spec for list).",
         "min": 1,
@@ -163,16 +163,10 @@
         },
         "type": [
           {
-            "code": "CodeableConcept",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-sex-GenderIdentity"
           }
         ],
-        "binding": {
-          "strength": "required",
-          "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-GenderIdentityVS"
-          }
-        },
         "mapping": [
           {
             "identity": "rim",
@@ -209,21 +203,15 @@
         "fixedUri": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-sex-GenderIdentity-extension"
       },
       {
-        "id": "Extension:genderidentity.valueCodeableConcept",
-        "path": "Extension.valueCodeableConcept",
+        "id": "Extension:genderidentity.valueReference",
+        "path": "Extension.valueReference",
         "min": 1,
         "type": [
           {
-            "code": "CodeableConcept",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-sex-GenderIdentity"
           }
-        ],
-        "binding": {
-          "strength": "required",
-          "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-GenderIdentityVS"
-          }
-        }
+        ]
       }
     ]
   }

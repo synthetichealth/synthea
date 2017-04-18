@@ -1351,6 +1351,19 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+              "valueUri": "StructureDefinition-shr-medication-MaximumDosePerTimePeriod.html"
+            }
+          ],
+          "example": false,
+          "sourceReference": {
+            "reference": "StructureDefinition/shr-medication-MaximumDosePerTimePeriod",
+            "display": "SHR MaximumDosePerTimePeriod Profile"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "StructureDefinition-shr-medication-Medication.html"
             }
           ],
@@ -1605,6 +1618,19 @@
           "sourceReference": {
             "reference": "StructureDefinition/shr-sex-ContraceptiveMethodsUsed",
             "display": "SHR ContraceptiveMethodsUsed Profile"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+              "valueUri": "StructureDefinition-shr-sex-GenderIdentity.html"
+            }
+          ],
+          "example": false,
+          "sourceReference": {
+            "reference": "StructureDefinition/shr-sex-GenderIdentity",
+            "display": "SHR GenderIdentity Profile"
           }
         },
         {
@@ -1910,19 +1936,6 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-actor-AdministrativeGender-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-actor-AdministrativeGender-extension",
-            "display": "SHR AdministrativeGender Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "StructureDefinition-shr-actor-AgeAtDeath-extension.html"
             }
           ],
@@ -1943,19 +1956,6 @@
           "sourceReference": {
             "reference": "StructureDefinition/shr-actor-Anonymized-extension",
             "display": "SHR Anonymized Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-actor-DateOfBirth-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-actor-DateOfBirth-extension",
-            "display": "SHR DateOfBirth Extension"
           }
         },
         {
@@ -2027,19 +2027,6 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-actor-Organization-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-actor-Organization-extension",
-            "display": "SHR Organization Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "StructureDefinition-shr-actor-Participant-extension.html"
             }
           ],
@@ -2060,19 +2047,6 @@
           "sourceReference": {
             "reference": "StructureDefinition/shr-actor-ParticipationType-extension",
             "display": "SHR ParticipationType Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-actor-Person-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-actor-Person-extension",
-            "display": "SHR Person Extension"
           }
         },
         {
@@ -2118,13 +2092,13 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-actor-WrittenProficiency-extension.html"
+              "valueUri": "StructureDefinition-shr-actor-WrittenLanguageProficiency-extension.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "StructureDefinition/shr-actor-WrittenProficiency-extension",
-            "display": "SHR WrittenProficiency Extension"
+            "reference": "StructureDefinition/shr-actor-WrittenLanguageProficiency-extension",
+            "display": "SHR WrittenLanguageProficiency Extension"
           }
         },
         {
@@ -2586,19 +2560,6 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-core-Address-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-core-Address-extension",
-            "display": "SHR Address Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "StructureDefinition-shr-core-Age-extension.html"
             }
           ],
@@ -2924,19 +2885,6 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-core-HumanName-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-core-HumanName-extension",
-            "display": "SHR HumanName Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "StructureDefinition-shr-core-Length-extension.html"
             }
           ],
@@ -3184,32 +3132,6 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-demographics-AddressUse-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-demographics-AddressUse-extension",
-            "display": "SHR AddressUse Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-demographics-AddressUsed-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-demographics-AddressUsed-extension",
-            "display": "SHR AddressUsed Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "StructureDefinition-shr-demographics-CountryOfIssue-extension.html"
             }
           ],
@@ -3308,19 +3230,6 @@
           "sourceReference": {
             "reference": "StructureDefinition/shr-demographics-StateOfIssue-extension",
             "display": "SHR StateOfIssue Extension"
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "StructureDefinition-shr-demographics-Telecom-extension.html"
-            }
-          ],
-          "example": false,
-          "sourceReference": {
-            "reference": "StructureDefinition/shr-demographics-Telecom-extension",
-            "display": "SHR Telecom Extension"
           }
         },
         {
@@ -4744,6 +4653,19 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+              "valueUri": "ValueSet-shr-adverse-MedDRAVS.html"
+            }
+          ],
+          "example": false,
+          "sourceReference": {
+            "reference": "ValueSet/shr-adverse-MedDRAVS",
+            "display": "SHR MedDRAVS ValueSet"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "ValueSet-shr-allergy-AllergenIrritantVS.html"
             }
           ],
@@ -5732,6 +5654,19 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+              "valueUri": "ValueSet-shr-medication-MedicationVS.html"
+            }
+          ],
+          "example": false,
+          "sourceReference": {
+            "reference": "ValueSet/shr-medication-MedicationVS",
+            "display": "SHR MedicationVS ValueSet"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
               "valueUri": "ValueSet-shr-medication-ReasonMedicationNotUsedVS.html"
             }
           ],
@@ -5778,6 +5713,19 @@
           "sourceReference": {
             "reference": "ValueSet/shr-observation-ObservationNotMadeReasonVS",
             "display": "SHR ObservationNotMadeReasonVS ValueSet"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+              "valueUri": "ValueSet-shr-problem-DSMVS.html"
+            }
+          ],
+          "example": false,
+          "sourceReference": {
+            "reference": "ValueSet/shr-problem-DSMVS",
+            "display": "SHR DSMVS ValueSet"
           }
         },
         {
@@ -6200,949 +6148,949 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-actor-LanguageQualifierVS.html"
+              "valueUri": "CodeSystem-shr-actor-LanguageQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-actor-LanguageQualifierVS",
-            "display": "SHR LanguageQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-actor-LanguageQualifierCS",
+            "display": "SHR LanguageQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-base-GenericAnswersVS.html"
+              "valueUri": "CodeSystem-shr-base-GenericAnswersCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-base-GenericAnswersVS",
-            "display": "SHR GenericAnswersVS CodeSystem"
+            "reference": "CodeSystem/shr-base-GenericAnswersCS",
+            "display": "SHR GenericAnswersCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-base-MissingValueReasonVS.html"
+              "valueUri": "CodeSystem-shr-base-MissingValueReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-base-MissingValueReasonVS",
-            "display": "SHR MissingValueReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-base-MissingValueReasonCS",
+            "display": "SHR MissingValueReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-AlcoholUseScreeningToolVS.html"
+              "valueUri": "CodeSystem-shr-behavior-AlcoholUseScreeningToolCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-AlcoholUseScreeningToolVS",
-            "display": "SHR AlcoholUseScreeningToolVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-AlcoholUseScreeningToolCS",
+            "display": "SHR AlcoholUseScreeningToolCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-DietNutritionConcernVS.html"
+              "valueUri": "CodeSystem-shr-behavior-DietNutritionConcernCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-DietNutritionConcernVS",
-            "display": "SHR DietNutritionConcernVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-DietNutritionConcernCS",
+            "display": "SHR DietNutritionConcernCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-PhysicalActivityLimitationVS.html"
+              "valueUri": "CodeSystem-shr-behavior-PhysicalActivityLimitationCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-PhysicalActivityLimitationVS",
-            "display": "SHR PhysicalActivityLimitationVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-PhysicalActivityLimitationCS",
+            "display": "SHR PhysicalActivityLimitationCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-ReligiousPracticeStatusVS.html"
+              "valueUri": "CodeSystem-shr-behavior-ReligiousPracticeStatusCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-ReligiousPracticeStatusVS",
-            "display": "SHR ReligiousPracticeStatusVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-ReligiousPracticeStatusCS",
+            "display": "SHR ReligiousPracticeStatusCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-ReligiousRestrictionVS.html"
+              "valueUri": "CodeSystem-shr-behavior-ReligiousRestrictionCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-ReligiousRestrictionVS",
-            "display": "SHR ReligiousRestrictionVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-ReligiousRestrictionCS",
+            "display": "SHR ReligiousRestrictionCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-SleepQualityReasonVS.html"
+              "valueUri": "CodeSystem-shr-behavior-SleepQualityReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-SleepQualityReasonVS",
-            "display": "SHR SleepQualityReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-SleepQualityReasonCS",
+            "display": "SHR SleepQualityReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-SpecialDietFollowedVS.html"
+              "valueUri": "CodeSystem-shr-behavior-SpecialDietFollowedCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-SpecialDietFollowedVS",
-            "display": "SHR SpecialDietFollowedVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-SpecialDietFollowedCS",
+            "display": "SHR SpecialDietFollowedCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-behavior-SubstanceAbuseTreatmentTypeVS.html"
+              "valueUri": "CodeSystem-shr-behavior-SubstanceAbuseTreatmentTypeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-behavior-SubstanceAbuseTreatmentTypeVS",
-            "display": "SHR SubstanceAbuseTreatmentTypeVS CodeSystem"
+            "reference": "CodeSystem/shr-behavior-SubstanceAbuseTreatmentTypeCS",
+            "display": "SHR SubstanceAbuseTreatmentTypeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-CodingQualifierVS.html"
+              "valueUri": "CodeSystem-shr-core-CodingQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-CodingQualifierVS",
-            "display": "SHR CodingQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-core-CodingQualifierCS",
+            "display": "SHR CodingQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-PerformanceGradingScaleVS.html"
+              "valueUri": "CodeSystem-shr-core-PerformanceGradingScaleCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-PerformanceGradingScaleVS",
-            "display": "SHR PerformanceGradingScaleVS CodeSystem"
+            "reference": "CodeSystem/shr-core-PerformanceGradingScaleCS",
+            "display": "SHR PerformanceGradingScaleCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-QualitativeDateTimeVS.html"
+              "valueUri": "CodeSystem-shr-core-QualitativeDateTimeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-QualitativeDateTimeVS",
-            "display": "SHR QualitativeDateTimeVS CodeSystem"
+            "reference": "CodeSystem/shr-core-QualitativeDateTimeCS",
+            "display": "SHR QualitativeDateTimeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-QualitativeFrequencyVS.html"
+              "valueUri": "CodeSystem-shr-core-QualitativeFrequencyCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-QualitativeFrequencyVS",
-            "display": "SHR QualitativeFrequencyVS CodeSystem"
+            "reference": "CodeSystem/shr-core-QualitativeFrequencyCS",
+            "display": "SHR QualitativeFrequencyCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-QualitativeLikelihoodVS.html"
+              "valueUri": "CodeSystem-shr-core-QualitativeLikelihoodCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-QualitativeLikelihoodVS",
-            "display": "SHR QualitativeLikelihoodVS CodeSystem"
+            "reference": "CodeSystem/shr-core-QualitativeLikelihoodCS",
+            "display": "SHR QualitativeLikelihoodCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-QualitativeValueScaleVS.html"
+              "valueUri": "CodeSystem-shr-core-QualitativeValueScaleCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-QualitativeValueScaleVS",
-            "display": "SHR QualitativeValueScaleVS CodeSystem"
+            "reference": "CodeSystem/shr-core-QualitativeValueScaleCS",
+            "display": "SHR QualitativeValueScaleCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-SemiquantitativeDurationVS.html"
+              "valueUri": "CodeSystem-shr-core-SemiquantitativeDurationCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-SemiquantitativeDurationVS",
-            "display": "SHR SemiquantitativeDurationVS CodeSystem"
+            "reference": "CodeSystem/shr-core-SemiquantitativeDurationCS",
+            "display": "SHR SemiquantitativeDurationCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-SemiquantitativeFrequencyVS.html"
+              "valueUri": "CodeSystem-shr-core-SemiquantitativeFrequencyCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-SemiquantitativeFrequencyVS",
-            "display": "SHR SemiquantitativeFrequencyVS CodeSystem"
+            "reference": "CodeSystem/shr-core-SemiquantitativeFrequencyCS",
+            "display": "SHR SemiquantitativeFrequencyCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-SettingVS.html"
+              "valueUri": "CodeSystem-shr-core-SettingCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-SettingVS",
-            "display": "SHR SettingVS CodeSystem"
+            "reference": "CodeSystem/shr-core-SettingCS",
+            "display": "SHR SettingCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-ThreePriorityVS.html"
+              "valueUri": "CodeSystem-shr-core-ThreePriorityCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-ThreePriorityVS",
-            "display": "SHR ThreePriorityVS CodeSystem"
+            "reference": "CodeSystem/shr-core-ThreePriorityCS",
+            "display": "SHR ThreePriorityCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-core-ThreeValueLogicVS.html"
+              "valueUri": "CodeSystem-shr-core-ThreeValueLogicCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-core-ThreeValueLogicVS",
-            "display": "SHR ThreeValueLogicVS CodeSystem"
+            "reference": "CodeSystem/shr-core-ThreeValueLogicCS",
+            "display": "SHR ThreeValueLogicCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-demographics-AddressUseVS.html"
+              "valueUri": "CodeSystem-shr-demographics-AddressUseCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-demographics-AddressUseVS",
-            "display": "SHR AddressUseVS CodeSystem"
+            "reference": "CodeSystem/shr-demographics-AddressUseCS",
+            "display": "SHR AddressUseCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-demographics-InsuranceProviderTypeVS.html"
+              "valueUri": "CodeSystem-shr-demographics-InsuranceProviderTypeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-demographics-InsuranceProviderTypeVS",
-            "display": "SHR InsuranceProviderTypeVS CodeSystem"
+            "reference": "CodeSystem/shr-demographics-InsuranceProviderTypeCS",
+            "display": "SHR InsuranceProviderTypeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-demographics-TelecomQualifierVS.html"
+              "valueUri": "CodeSystem-shr-demographics-TelecomQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-demographics-TelecomQualifierVS",
-            "display": "SHR TelecomQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-demographics-TelecomQualifierCS",
+            "display": "SHR TelecomQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-demographics-TelephoneTypeVS.html"
+              "valueUri": "CodeSystem-shr-demographics-TelephoneTypeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-demographics-TelephoneTypeVS",
-            "display": "SHR TelephoneTypeVS CodeSystem"
+            "reference": "CodeSystem/shr-demographics-TelephoneTypeCS",
+            "display": "SHR TelephoneTypeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-device-RespiratoryAssistDeviceVS.html"
+              "valueUri": "CodeSystem-shr-device-RespiratoryAssistDeviceCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-device-RespiratoryAssistDeviceVS",
-            "display": "SHR RespiratoryAssistDeviceVS CodeSystem"
+            "reference": "CodeSystem/shr-device-RespiratoryAssistDeviceCS",
+            "display": "SHR RespiratoryAssistDeviceCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-device-RespiratoryRateSettingVS.html"
+              "valueUri": "CodeSystem-shr-device-RespiratoryRateSettingCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-device-RespiratoryRateSettingVS",
-            "display": "SHR RespiratoryRateSettingVS CodeSystem"
+            "reference": "CodeSystem/shr-device-RespiratoryRateSettingCS",
+            "display": "SHR RespiratoryRateSettingCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-encounter-EncounterTypeVS.html"
+              "valueUri": "CodeSystem-shr-encounter-EncounterTypeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-encounter-EncounterTypeVS",
-            "display": "SHR EncounterTypeVS CodeSystem"
+            "reference": "CodeSystem/shr-encounter-EncounterTypeCS",
+            "display": "SHR EncounterTypeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-encounter-EpisodeOfCareCompletionVS.html"
+              "valueUri": "CodeSystem-shr-encounter-EpisodeOfCareCompletionCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-encounter-EpisodeOfCareCompletionVS",
-            "display": "SHR EpisodeOfCareCompletionVS CodeSystem"
+            "reference": "CodeSystem/shr-encounter-EpisodeOfCareCompletionCS",
+            "display": "SHR EpisodeOfCareCompletionCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-encounter-ReasonEncounterDidNotHappenVS.html"
+              "valueUri": "CodeSystem-shr-encounter-ReasonEncounterDidNotHappenCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-encounter-ReasonEncounterDidNotHappenVS",
-            "display": "SHR ReasonEncounterDidNotHappenVS CodeSystem"
+            "reference": "CodeSystem/shr-encounter-ReasonEncounterDidNotHappenCS",
+            "display": "SHR ReasonEncounterDidNotHappenCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-encounter-ReferralSourceTypeVS.html"
+              "valueUri": "CodeSystem-shr-encounter-ReferralSourceTypeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-encounter-ReferralSourceTypeVS",
-            "display": "SHR ReferralSourceTypeVS CodeSystem"
+            "reference": "CodeSystem/shr-encounter-ReferralSourceTypeCS",
+            "display": "SHR ReferralSourceTypeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-encounter-TreatmentCooperationVS.html"
+              "valueUri": "CodeSystem-shr-encounter-TreatmentCooperationCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-encounter-TreatmentCooperationVS",
-            "display": "SHR TreatmentCooperationVS CodeSystem"
+            "reference": "CodeSystem/shr-encounter-TreatmentCooperationCS",
+            "display": "SHR TreatmentCooperationCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-environment-AnimalExposureVS.html"
+              "valueUri": "CodeSystem-shr-environment-AnimalExposureCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-environment-AnimalExposureVS",
-            "display": "SHR AnimalExposureVS CodeSystem"
+            "reference": "CodeSystem/shr-environment-AnimalExposureCS",
+            "display": "SHR AnimalExposureCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-environment-CoinhabitantVS.html"
+              "valueUri": "CodeSystem-shr-environment-CoinhabitantCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-environment-CoinhabitantVS",
-            "display": "SHR CoinhabitantVS CodeSystem"
+            "reference": "CodeSystem/shr-environment-CoinhabitantCS",
+            "display": "SHR CoinhabitantCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-environment-HomeEnvironmentRiskVS.html"
+              "valueUri": "CodeSystem-shr-environment-HomeEnvironmentRiskCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-environment-HomeEnvironmentRiskVS",
-            "display": "SHR HomeEnvironmentRiskVS CodeSystem"
+            "reference": "CodeSystem/shr-environment-HomeEnvironmentRiskCS",
+            "display": "SHR HomeEnvironmentRiskCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-environment-IncomeSourceVS.html"
+              "valueUri": "CodeSystem-shr-environment-IncomeSourceCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-environment-IncomeSourceVS",
-            "display": "SHR IncomeSourceVS CodeSystem"
+            "reference": "CodeSystem/shr-environment-IncomeSourceCS",
+            "display": "SHR IncomeSourceCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-environment-NonCashBenefitVS.html"
+              "valueUri": "CodeSystem-shr-environment-NonCashBenefitCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-environment-NonCashBenefitVS",
-            "display": "SHR NonCashBenefitVS CodeSystem"
+            "reference": "CodeSystem/shr-environment-NonCashBenefitCS",
+            "display": "SHR NonCashBenefitCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-environment-ResourceStabilityVS.html"
+              "valueUri": "CodeSystem-shr-environment-ResourceStabilityCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-environment-ResourceStabilityVS",
-            "display": "SHR ResourceStabilityVS CodeSystem"
+            "reference": "CodeSystem/shr-environment-ResourceStabilityCS",
+            "display": "SHR ResourceStabilityCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lab-RequestStatusVS.html"
+              "valueUri": "CodeSystem-shr-lab-RequestStatusCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lab-RequestStatusVS",
-            "display": "SHR RequestStatusVS CodeSystem"
+            "reference": "CodeSystem/shr-lab-RequestStatusCS",
+            "display": "SHR RequestStatusCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-EducationalAttainmentVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-EducationalAttainmentCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-EducationalAttainmentVS",
-            "display": "SHR EducationalAttainmentVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-EducationalAttainmentCS",
+            "display": "SHR EducationalAttainmentCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-EmploymentStatusVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-EmploymentStatusCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-EmploymentStatusVS",
-            "display": "SHR EmploymentStatusVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-EmploymentStatusCS",
+            "display": "SHR EmploymentStatusCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-MilitaryServiceDischargeStatusVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-MilitaryServiceDischargeStatusCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-MilitaryServiceDischargeStatusVS",
-            "display": "SHR MilitaryServiceDischargeStatusVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-MilitaryServiceDischargeStatusCS",
+            "display": "SHR MilitaryServiceDischargeStatusCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-MilitaryServiceEraVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-MilitaryServiceEraCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-MilitaryServiceEraVS",
-            "display": "SHR MilitaryServiceEraVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-MilitaryServiceEraCS",
+            "display": "SHR MilitaryServiceEraCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-MilitaryStatusVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-MilitaryStatusCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-MilitaryStatusVS",
-            "display": "SHR MilitaryStatusVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-MilitaryStatusCS",
+            "display": "SHR MilitaryStatusCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-TeratogenVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-TeratogenCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-TeratogenVS",
-            "display": "SHR TeratogenVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-TeratogenCS",
+            "display": "SHR TeratogenCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-lifehistory-USMilitaryBranchVS.html"
+              "valueUri": "CodeSystem-shr-lifehistory-USMilitaryBranchCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-lifehistory-USMilitaryBranchVS",
-            "display": "SHR USMilitaryBranchVS CodeSystem"
+            "reference": "CodeSystem/shr-lifehistory-USMilitaryBranchCS",
+            "display": "SHR USMilitaryBranchCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-medication-MedicationChangeReasonVS.html"
+              "valueUri": "CodeSystem-shr-medication-MedicationChangeReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-medication-MedicationChangeReasonVS",
-            "display": "SHR MedicationChangeReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-medication-MedicationChangeReasonCS",
+            "display": "SHR MedicationChangeReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-medication-MedicationChangeTypeVS.html"
+              "valueUri": "CodeSystem-shr-medication-MedicationChangeTypeCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-medication-MedicationChangeTypeVS",
-            "display": "SHR MedicationChangeTypeVS CodeSystem"
+            "reference": "CodeSystem/shr-medication-MedicationChangeTypeCS",
+            "display": "SHR MedicationChangeTypeCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-medication-ReasonMedicationNotUsedVS.html"
+              "valueUri": "CodeSystem-shr-medication-ReasonMedicationNotUsedCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-medication-ReasonMedicationNotUsedVS",
-            "display": "SHR ReasonMedicationNotUsedVS CodeSystem"
+            "reference": "CodeSystem/shr-medication-ReasonMedicationNotUsedCS",
+            "display": "SHR ReasonMedicationNotUsedCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-observation-ExposureReasonVS.html"
+              "valueUri": "CodeSystem-shr-observation-ExposureReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-observation-ExposureReasonVS",
-            "display": "SHR ExposureReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-observation-ExposureReasonCS",
+            "display": "SHR ExposureReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-observation-ObservationNotMadeReasonVS.html"
+              "valueUri": "CodeSystem-shr-observation-ObservationNotMadeReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-observation-ObservationNotMadeReasonVS",
-            "display": "SHR ObservationNotMadeReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-observation-ObservationNotMadeReasonCS",
+            "display": "SHR ObservationNotMadeReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-problem-EvidenceQualityVS.html"
+              "valueUri": "CodeSystem-shr-problem-EvidenceQualityCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-problem-EvidenceQualityVS",
-            "display": "SHR EvidenceQualityVS CodeSystem"
+            "reference": "CodeSystem/shr-problem-EvidenceQualityCS",
+            "display": "SHR EvidenceQualityCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-problem-GradeOrStageVS.html"
+              "valueUri": "CodeSystem-shr-problem-GradeOrStageCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-problem-GradeOrStageVS",
-            "display": "SHR GradeOrStageVS CodeSystem"
+            "reference": "CodeSystem/shr-problem-GradeOrStageCS",
+            "display": "SHR GradeOrStageCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-problem-ProblemCategoryVS.html"
+              "valueUri": "CodeSystem-shr-problem-ProblemCategoryCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-problem-ProblemCategoryVS",
-            "display": "SHR ProblemCategoryVS CodeSystem"
+            "reference": "CodeSystem/shr-problem-ProblemCategoryCS",
+            "display": "SHR ProblemCategoryCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-sex-ContraceptiveMethodReasonVS.html"
+              "valueUri": "CodeSystem-shr-sex-ContraceptiveMethodCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-sex-ContraceptiveMethodReasonVS",
-            "display": "SHR ContraceptiveMethodReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-sex-ContraceptiveMethodCS",
+            "display": "SHR ContraceptiveMethodCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-sex-ContraceptiveMethodVS.html"
+              "valueUri": "CodeSystem-shr-sex-ContraceptiveMethodReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-sex-ContraceptiveMethodVS",
-            "display": "SHR ContraceptiveMethodVS CodeSystem"
+            "reference": "CodeSystem/shr-sex-ContraceptiveMethodReasonCS",
+            "display": "SHR ContraceptiveMethodReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-sex-ContraceptiveNotUsedReasonVS.html"
+              "valueUri": "CodeSystem-shr-sex-ContraceptiveNotUsedReasonCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-sex-ContraceptiveNotUsedReasonVS",
-            "display": "SHR ContraceptiveNotUsedReasonVS CodeSystem"
+            "reference": "CodeSystem/shr-sex-ContraceptiveNotUsedReasonCS",
+            "display": "SHR ContraceptiveNotUsedReasonCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-sex-GenderIdentityVS.html"
+              "valueUri": "CodeSystem-shr-sex-GenderIdentityCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-sex-GenderIdentityVS",
-            "display": "SHR GenderIdentityVS CodeSystem"
+            "reference": "CodeSystem/shr-sex-GenderIdentityCS",
+            "display": "SHR GenderIdentityCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-skin-PressureUlcerAssociationVS.html"
+              "valueUri": "CodeSystem-shr-skin-PressureUlcerAssociationCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-skin-PressureUlcerAssociationVS",
-            "display": "SHR PressureUlcerAssociationVS CodeSystem"
+            "reference": "CodeSystem/shr-skin-PressureUlcerAssociationCS",
+            "display": "SHR PressureUlcerAssociationCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-skin-SupportSurfaceBodyPositionVS.html"
+              "valueUri": "CodeSystem-shr-skin-SupportSurfaceBodyPositionCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-skin-SupportSurfaceBodyPositionVS",
-            "display": "SHR SupportSurfaceBodyPositionVS CodeSystem"
+            "reference": "CodeSystem/shr-skin-SupportSurfaceBodyPositionCS",
+            "display": "SHR SupportSurfaceBodyPositionCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-skin-SupportSurfaceCategoryVS.html"
+              "valueUri": "CodeSystem-shr-skin-SupportSurfaceCategoryCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-skin-SupportSurfaceCategoryVS",
-            "display": "SHR SupportSurfaceCategoryVS CodeSystem"
+            "reference": "CodeSystem/shr-skin-SupportSurfaceCategoryCS",
+            "display": "SHR SupportSurfaceCategoryCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-skin-SupportSurfaceComponentVS.html"
+              "valueUri": "CodeSystem-shr-skin-SupportSurfaceComponentCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-skin-SupportSurfaceComponentVS",
-            "display": "SHR SupportSurfaceComponentVS CodeSystem"
+            "reference": "CodeSystem/shr-skin-SupportSurfaceComponentCS",
+            "display": "SHR SupportSurfaceComponentCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-skin-SupportSurfaceFeatureVS.html"
+              "valueUri": "CodeSystem-shr-skin-SupportSurfaceFeatureCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-skin-SupportSurfaceFeatureVS",
-            "display": "SHR SupportSurfaceFeatureVS CodeSystem"
+            "reference": "CodeSystem/shr-skin-SupportSurfaceFeatureCS",
+            "display": "SHR SupportSurfaceFeatureCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-BloodPressureMethodVS.html"
+              "valueUri": "CodeSystem-shr-vital-BloodPressureMethodCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-BloodPressureMethodVS",
-            "display": "SHR BloodPressureMethodVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-BloodPressureMethodCS",
+            "display": "SHR BloodPressureMethodCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-BloodPressureQualifierVS.html"
+              "valueUri": "CodeSystem-shr-vital-BloodPressureQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-BloodPressureQualifierVS",
-            "display": "SHR BloodPressureQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-BloodPressureQualifierCS",
+            "display": "SHR BloodPressureQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-BodyHeightQualifierVS.html"
+              "valueUri": "CodeSystem-shr-vital-BodyHeightQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-BodyHeightQualifierVS",
-            "display": "SHR BodyHeightQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-BodyHeightQualifierCS",
+            "display": "SHR BodyHeightQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-BodyTemperatureQualifierVS.html"
+              "valueUri": "CodeSystem-shr-vital-BodyTemperatureQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-BodyTemperatureQualifierVS",
-            "display": "SHR BodyTemperatureQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-BodyTemperatureQualifierCS",
+            "display": "SHR BodyTemperatureQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-BodyWeightQualifierVS.html"
+              "valueUri": "CodeSystem-shr-vital-BodyWeightQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-BodyWeightQualifierVS",
-            "display": "SHR BodyWeightQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-BodyWeightQualifierCS",
+            "display": "SHR BodyWeightQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-HeartRateMethodVS.html"
+              "valueUri": "CodeSystem-shr-vital-HeartRateMethodCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-HeartRateMethodVS",
-            "display": "SHR HeartRateMethodVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-HeartRateMethodCS",
+            "display": "SHR HeartRateMethodCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-HeartRateQualifierVS.html"
+              "valueUri": "CodeSystem-shr-vital-HeartRateQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-HeartRateQualifierVS",
-            "display": "SHR HeartRateQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-HeartRateQualifierCS",
+            "display": "SHR HeartRateQualifierCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-RespiratoryRateMethodVS.html"
+              "valueUri": "CodeSystem-shr-vital-RespiratoryRateMethodCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-RespiratoryRateMethodVS",
-            "display": "SHR RespiratoryRateMethodVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-RespiratoryRateMethodCS",
+            "display": "SHR RespiratoryRateMethodCS CodeSystem"
           }
         },
         {
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
-              "valueUri": "CodeSystem-shr-vital-RespiratoryRateQualifierVS.html"
+              "valueUri": "CodeSystem-shr-vital-RespiratoryRateQualifierCS.html"
             }
           ],
           "example": false,
           "sourceReference": {
-            "reference": "CodeSystem/shr-vital-RespiratoryRateQualifierVS",
-            "display": "SHR RespiratoryRateQualifierVS CodeSystem"
+            "reference": "CodeSystem/shr-vital-RespiratoryRateQualifierCS",
+            "display": "SHR RespiratoryRateQualifierCS CodeSystem"
           }
         }
       ]

@@ -1,0 +1,42 @@
+{
+  "resourceType": "ValueSet",
+  "id": "shr-adverse-MedDRAVS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR MedDRAVS ValueSet</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/adverse/vs/MedDRAVS",
+  "identifier": [
+    {
+      "system": "http://standardhealthrecord.org",
+      "value": "shr.adverse.MedDRAVS"
+    }
+  ],
+  "name": "SHR MedDRAVS ValueSet",
+  "title": "SHR MedDRAVS ValueSet",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.895Z",
+  "compose": {
+    "include": [
+      {
+        "system": "http://www.meddra.org"
+      }
+    ]
+  }
+}

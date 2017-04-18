@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.845Z",
+  "date": "2017-04-18T17:07:43.248Z",
   "description": "Whether an item, such as a medication or device, was given to a subject.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",

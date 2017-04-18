@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.651Z",
+  "date": "2017-04-18T17:07:42.652Z",
   "description": "A country acting as an assuing authority for a document.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:countryofissue.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "27",
+          "id": "197",
           "discriminator": [
             "url"
           ],

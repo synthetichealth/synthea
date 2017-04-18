@@ -1,0 +1,53 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-behavior-AlcoholUseScreeningToolCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR AlcoholUseScreeningToolCS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/behavior/cs/AlcoholUseScreeningToolCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.behavior.AlcoholUseScreeningToolCS"
+  },
+  "name": "SHR AlcoholUseScreeningToolCS CodeSystem",
+  "title": "SHR AlcoholUseScreeningToolCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.890Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 3,
+  "concept": [
+    {
+      "code": "audit",
+      "display": "AUDIT",
+      "definition": "AUDIT"
+    },
+    {
+      "code": "audit_c",
+      "display": "AUDIT-C",
+      "definition": "AUDIT-C"
+    },
+    {
+      "code": "crafft",
+      "display": "CRAFFT",
+      "definition": "CRAFFT"
+    }
+  ]
+}

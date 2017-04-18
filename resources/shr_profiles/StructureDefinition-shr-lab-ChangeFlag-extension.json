@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.871Z",
+  "date": "2017-04-18T17:07:43.330Z",
   "description": "Indicator of significant change (delta) from the last or previous measurement.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-ChangeFlagVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/ChangeFlagVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-ChangeFlagVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/ChangeFlagVS"
           }
         }
       }

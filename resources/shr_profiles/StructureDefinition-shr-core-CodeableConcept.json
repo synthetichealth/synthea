@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.296Z",
+  "date": "2017-04-18T17:07:41.487Z",
   "description": "A set of codes drawn from different coding systems, representing the same concept.",
   "purpose": "This is a common pattern in healthcare - a concept that may be defined by one or more codes from formal definitions including LOINC and SNOMED CT, and/or defined by the provision of text that captures a human sense of the concept.",
   "fhirVersion": "1.8.0",
@@ -187,7 +187,7 @@
         "definition": "A human language representation of the concept as seen/selected/uttered by the user who entered the data and/or which represents the intended meaning of the user.",
         "comments": "Very often the text is the same as a displayName of one of the codings.",
         "requirements": "The codes from the terminologies do not always capture the correct meaning with all the nuances of the human using them, or sometimes there is no appropriate code at all. In these cases, the text is used to capture the full meaning of the source.",
-        "min": 1,
+        "min": 0,
         "max": "1",
         "type": [
           {
@@ -229,12 +229,6 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Coding"
           }
         ]
-      },
-      {
-        "id": "CodeableConcept:shr-core-CodeableConcept.text",
-        "path": "CodeableConcept.text",
-        "min": 1,
-        "max": "1"
       }
     ]
   }

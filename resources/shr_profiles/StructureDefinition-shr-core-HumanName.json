@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.637Z",
+  "date": "2017-04-18T17:07:42.614Z",
   "description": "A name used by a human being, written as it would be typically expressed. May include a breakdown of the various elements of the name (family name, given name, etc.).",
   "purpose": "Need to be able to record names, along with notes about their use.",
   "fhirVersion": "1.8.0",

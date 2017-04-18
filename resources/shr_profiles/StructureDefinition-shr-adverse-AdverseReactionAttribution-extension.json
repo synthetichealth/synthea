@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.199Z",
+  "date": "2017-04-18T17:07:41.108Z",
   "description": "The cause of the adverse reaction (either known or theorized).",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:adversereactionattribution.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "15",
+          "id": "38",
           "discriminator": [
             "url"
           ],

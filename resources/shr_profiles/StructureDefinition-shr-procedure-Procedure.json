@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.644Z",
+  "date": "2017-04-18T17:07:42.630Z",
   "description": "An action that is or was performed on a patient. This can be a physical intervention like an operation, or less invasive like counseling or hypnotherapy.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -277,7 +277,7 @@
         "id": "Procedure:shr-procedure-Procedure.extension",
         "path": "Procedure.extension",
         "slicing": {
-          "id": "155",
+          "id": "193",
           "discriminator": [
             "url"
           ],

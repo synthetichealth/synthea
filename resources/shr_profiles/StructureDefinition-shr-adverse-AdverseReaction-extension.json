@@ -3,7 +3,7 @@
   "id": "shr-adverse-AdverseReaction-extension",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR AdverseReaction Extension</b></p>\n  <p>Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.</p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR AdverseReaction Extension</b></p>\n  <p>Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.</p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-adverse-AdverseReaction-extension",
   "identifier": [
@@ -26,8 +26,8 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.209Z",
-  "description": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+  "date": "2017-04-18T17:07:41.125Z",
+  "description": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
   "abstract": false,
@@ -44,7 +44,7 @@
         "id": "Extension:adversereaction",
         "path": "Extension",
         "short": "SHR AdverseReaction Extension",
-        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
         "min": 0,
         "max": "*",
         "base": {
@@ -182,7 +182,7 @@
         "id": "Extension:adversereaction",
         "path": "Extension",
         "short": "SHR AdverseReaction Extension",
-        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
         "min": 0,
         "max": "*"
       },

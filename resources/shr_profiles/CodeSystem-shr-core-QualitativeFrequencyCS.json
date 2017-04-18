@@ -1,0 +1,63 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "shr-core-QualitativeFrequencyCS",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/codesystem-shareable-definition"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR QualitativeFrequencyCS CodeSystem</b></p>\n<p></p>\n</div>"
+  },
+  "url": "http://standardhealthrecord.org/shr/core/cs/QualitativeFrequencyCS",
+  "identifier": {
+    "system": "http://standardhealthrecord.org",
+    "value": "shr.core.QualitativeFrequencyCS"
+  },
+  "name": "SHR QualitativeFrequencyCS CodeSystem",
+  "title": "SHR QualitativeFrequencyCS CodeSystem",
+  "status": "draft",
+  "publisher": "The MITRE Corporation: Standard Health Record Collaborative",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.standardhealthrecord.org"
+        }
+      ]
+    }
+  ],
+  "date": "2017-04-18T17:07:40.890Z",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 5,
+  "concept": [
+    {
+      "code": "always",
+      "display": "Virtually always or every time",
+      "definition": "Virtually always or every time"
+    },
+    {
+      "code": "usually",
+      "display": "Frequently or often",
+      "definition": "Frequently or often"
+    },
+    {
+      "code": "sometimes",
+      "display": "Occasionally or sometimes",
+      "definition": "Occasionally or sometimes"
+    },
+    {
+      "code": "rarely",
+      "display": "Rarely",
+      "definition": "Rarely"
+    },
+    {
+      "code": "never",
+      "display": "Never",
+      "definition": "Never"
+    }
+  ]
+}

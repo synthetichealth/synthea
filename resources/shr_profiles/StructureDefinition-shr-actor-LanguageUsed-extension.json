@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.121Z",
+  "date": "2017-04-18T17:07:40.917Z",
   "description": "Language used for communication by a human, either the subject of record, parent, or other involved person.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:languageused.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "2",
+          "id": "1",
           "discriminator": [
             "url"
           ],
@@ -180,9 +180,9 @@
         ]
       },
       {
-        "id": "Extension:languageused.extension:writtenproficiency",
+        "id": "Extension:languageused.extension:writtenlanguageproficiency",
         "path": "Extension.extension",
-        "sliceName": "writtenproficiency",
+        "sliceName": "writtenlanguageproficiency",
         "definition": "Accuracy and fluency of reading and writing in a language.",
         "min": 0,
         "max": "1",
@@ -194,7 +194,7 @@
         "type": [
           {
             "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-WrittenProficiency-extension"
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-WrittenLanguageProficiency-extension"
           }
         ],
         "isModifier": false,
@@ -436,16 +436,16 @@
         ]
       },
       {
-        "id": "Extension:languageused.extension:writtenproficiency",
+        "id": "Extension:languageused.extension:writtenlanguageproficiency",
         "path": "Extension.extension",
-        "sliceName": "writtenproficiency",
+        "sliceName": "writtenlanguageproficiency",
         "definition": "Accuracy and fluency of reading and writing in a language.",
         "min": 0,
         "max": "1",
         "type": [
           {
             "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-WrittenProficiency-extension"
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-WrittenLanguageProficiency-extension"
           }
         ]
       },

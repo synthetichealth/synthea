@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.673Z",
+  "date": "2017-04-18T17:07:42.696Z",
   "description": "True if the encounter did not occur.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:encounternonoccurrencemodifier.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "30",
+          "id": "209",
           "discriminator": [
             "url"
           ],

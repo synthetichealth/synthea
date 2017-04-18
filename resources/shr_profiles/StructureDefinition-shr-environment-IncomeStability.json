@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.391Z",
+  "date": "2017-04-18T17:07:41.823Z",
   "description": "Whether the subject regards his or her source of income as dependable.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-IncomeStability.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "87",
+          "id": "120",
           "discriminator": [
             "url"
           ],
@@ -397,7 +397,7 @@
         "id": "Observation:shr-environment-IncomeStability.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "88",
+          "id": "121",
           "discriminator": [
             "url"
           ],
@@ -793,7 +793,7 @@
         "id": "Observation:shr-environment-IncomeStability.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "86",
+          "id": "119",
           "discriminator": [
             "@type"
           ],
@@ -845,7 +845,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-environment-ResourceStabilityVS"
+            "reference": "http://standardhealthrecord.org/shr/environment/vs/ResourceStabilityVS"
           }
         }
       },
@@ -1973,7 +1973,7 @@
         "id": "Observation:shr-environment-IncomeStability.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "86",
+          "id": "119",
           "discriminator": [
             "@type"
           ],
@@ -2001,7 +2001,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-environment-ResourceStabilityVS"
+            "reference": "http://standardhealthrecord.org/shr/environment/vs/ResourceStabilityVS"
           }
         }
       },

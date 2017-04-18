@@ -3,7 +3,7 @@
   "id": "shr-actor-Deceased-extension",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Deceased Extension</b></p>\n  <p>Date or time of death, or boolean indicates the person is deceased.</p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Deceased Extension</b></p>\n  <p>An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.</p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Deceased-extension",
   "identifier": [
@@ -26,8 +26,8 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.122Z",
-  "description": "Date or time of death, or boolean indicates the person is deceased.",
+  "date": "2017-04-18T17:07:40.918Z",
+  "description": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
   "abstract": false,
@@ -44,7 +44,7 @@
         "id": "Extension:deceased",
         "path": "Extension",
         "short": "SHR Deceased Extension",
-        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "definition": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
         "min": 0,
         "max": "*",
         "base": {
@@ -105,7 +105,7 @@
         "id": "Extension:deceased.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "3",
+          "id": "2",
           "discriminator": [
             "url"
           ],
@@ -131,7 +131,7 @@
         "id": "Extension:deceased.extension:boolean",
         "path": "Extension.extension",
         "sliceName": "boolean",
-        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "definition": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
         "min": 1,
         "max": "1",
         "base": {
@@ -377,7 +377,7 @@
         "id": "Extension:deceased",
         "path": "Extension",
         "short": "SHR Deceased Extension",
-        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "definition": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
         "min": 0,
         "max": "*"
       },
@@ -385,7 +385,7 @@
         "id": "Extension:deceased.extension:boolean",
         "path": "Extension.extension",
         "sliceName": "boolean",
-        "definition": "Date or time of death, or boolean indicates the person is deceased.",
+        "definition": "An indication that the person is no longer living, given by a date, time of death, or a boolean value which, when true, indicates the person is deceased.",
         "min": 1,
         "max": "1",
         "type": [

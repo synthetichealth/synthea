@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.795Z",
+  "date": "2017-04-18T17:07:42.982Z",
   "description": "Engagement in an activity or service for profit, wages, salary, or as a service to others.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-lifehistory-Employment.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "186",
+          "id": "235",
           "discriminator": [
             "url"
           ],
@@ -493,7 +493,7 @@
         "id": "Observation:shr-lifehistory-Employment.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "187",
+          "id": "236",
           "discriminator": [
             "url"
           ],

@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.209Z",
+  "date": "2017-04-18T17:07:41.125Z",
   "description": "The end, remission or resolution.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:abatement.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "16",
+          "id": "41",
           "discriminator": [
             "url"
           ],

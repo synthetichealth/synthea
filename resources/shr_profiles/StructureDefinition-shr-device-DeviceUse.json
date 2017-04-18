@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.664Z",
+  "date": "2017-04-18T17:07:42.669Z",
   "description": "A statement pertaining to the use of a device by a subject. May document the use of a device, or that the subject does not use a particular type of device.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -270,7 +270,7 @@
         "id": "DeviceUseStatement:shr-device-DeviceUse.extension",
         "path": "DeviceUseStatement.extension",
         "slicing": {
-          "id": "161",
+          "id": "206",
           "discriminator": [
             "url"
           ],
@@ -371,7 +371,7 @@
         "id": "DeviceUseStatement:shr-device-DeviceUse.modifierExtension",
         "path": "DeviceUseStatement.modifierExtension",
         "slicing": {
-          "id": "162",
+          "id": "207",
           "discriminator": [
             "url"
           ],

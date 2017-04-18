@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.253Z",
+  "date": "2017-04-18T17:07:41.252Z",
   "description": "An observation whose value is a codeable concept",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-observation-CodeableConceptObservation.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "42",
+          "id": "59",
           "discriminator": [
             "url"
           ],
@@ -397,7 +397,7 @@
         "id": "Observation:shr-observation-CodeableConceptObservation.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "43",
+          "id": "60",
           "discriminator": [
             "url"
           ],

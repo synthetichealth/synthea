@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.796Z",
+  "date": "2017-04-18T17:07:42.993Z",
   "description": "A person or entity which hires the services of another.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -71,12 +71,6 @@
             "expression": "extension.exists() != value.exists()",
             "xpath": "exists(f:extension)!=exists(f:*[starts-with(local-name(.), 'value')])",
             "source": "Extension"
-          },
-          {
-            "key": "choice-1",
-            "severity": "error",
-            "human": "shr-lifehistory-Employer-extension SHALL have either extension('person') or extension('organization')",
-            "expression": "( extension('person').url | extension('organization').url ).distinct().count() == 1"
           }
         ]
       },
@@ -108,20 +102,13 @@
         ]
       },
       {
-        "id": "Extension:employer.extension",
+        "id": "Extension:employer.extension:extension",
         "path": "Extension.extension",
-        "slicing": {
-          "id": "33",
-          "discriminator": [
-            "url"
-          ],
-          "ordered": false,
-          "rules": "open"
-        },
+        "sliceName": "extension",
         "short": "Extension",
         "definition": "An Extension",
         "min": 0,
-        "max": "*",
+        "max": "0",
         "base": {
           "path": "Element.extension",
           "min": 0,
@@ -130,58 +117,6 @@
         "type": [
           {
             "code": "Extension"
-          }
-        ]
-      },
-      {
-        "id": "Extension:employer.extension:person",
-        "path": "Extension.extension",
-        "sliceName": "person",
-        "definition": "A person. In practical terms, people relevant to the health or social situation of the subject (including the person of record).",
-        "min": 0,
-        "max": "1",
-        "base": {
-          "path": "Extension.extension",
-          "min": 0,
-          "max": "1"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Person-extension"
-          }
-        ],
-        "isModifier": false,
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
-          }
-        ]
-      },
-      {
-        "id": "Extension:employer.extension:organization",
-        "path": "Extension.extension",
-        "sliceName": "organization",
-        "definition": "A social or legal structure formed by human beings.",
-        "min": 0,
-        "max": "1",
-        "base": {
-          "path": "Extension.extension",
-          "min": 0,
-          "max": "1"
-        },
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization-extension"
-          }
-        ],
-        "isModifier": false,
-        "mapping": [
-          {
-            "identity": "rim",
-            "map": "N/A"
           }
         ]
       },
@@ -219,8 +154,8 @@
         "path": "Extension.value[x]",
         "short": "Value of extension",
         "definition": "Value of extension - may be a resource or one of a constrained set of the data types (see Extensibility in the spec for list).",
-        "min": 0,
-        "max": "0",
+        "min": 1,
+        "max": "1",
         "base": {
           "path": "Extension.value[x]",
           "min": 0,
@@ -228,118 +163,20 @@
         },
         "type": [
           {
-            "code": "base64Binary"
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson"
           },
           {
-            "code": "boolean"
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Practitioner"
           },
           {
-            "code": "code"
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
           },
           {
-            "code": "date"
-          },
-          {
-            "code": "dateTime"
-          },
-          {
-            "code": "decimal"
-          },
-          {
-            "code": "id"
-          },
-          {
-            "code": "instant"
-          },
-          {
-            "code": "integer"
-          },
-          {
-            "code": "markdown"
-          },
-          {
-            "code": "oid"
-          },
-          {
-            "code": "positiveInt"
-          },
-          {
-            "code": "string"
-          },
-          {
-            "code": "time"
-          },
-          {
-            "code": "unsignedInt"
-          },
-          {
-            "code": "uri"
-          },
-          {
-            "code": "Address"
-          },
-          {
-            "code": "Age"
-          },
-          {
-            "code": "Annotation"
-          },
-          {
-            "code": "Attachment"
-          },
-          {
-            "code": "CodeableConcept"
-          },
-          {
-            "code": "Coding"
-          },
-          {
-            "code": "ContactPoint"
-          },
-          {
-            "code": "Count"
-          },
-          {
-            "code": "Distance"
-          },
-          {
-            "code": "Duration"
-          },
-          {
-            "code": "HumanName"
-          },
-          {
-            "code": "Identifier"
-          },
-          {
-            "code": "Money"
-          },
-          {
-            "code": "Period"
-          },
-          {
-            "code": "Quantity"
-          },
-          {
-            "code": "Range"
-          },
-          {
-            "code": "Ratio"
-          },
-          {
-            "code": "Reference"
-          },
-          {
-            "code": "SampledData"
-          },
-          {
-            "code": "Signature"
-          },
-          {
-            "code": "Timing"
-          },
-          {
-            "code": "Meta"
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
           }
         ],
         "mapping": [
@@ -359,43 +196,13 @@
         "short": "SHR Employer Extension",
         "definition": "A person or entity which hires the services of another.",
         "min": 0,
-        "max": "*",
-        "constraint": [
-          {
-            "key": "choice-1",
-            "severity": "error",
-            "human": "shr-lifehistory-Employer-extension SHALL have either extension('person') or extension('organization')",
-            "expression": "( extension('person').url | extension('organization').url ).distinct().count() == 1"
-          }
-        ]
+        "max": "*"
       },
       {
-        "id": "Extension:employer.extension:person",
+        "id": "Extension:employer.extension:extension",
         "path": "Extension.extension",
-        "sliceName": "person",
-        "definition": "A person. In practical terms, people relevant to the health or social situation of the subject (including the person of record).",
-        "min": 0,
-        "max": "1",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Person-extension"
-          }
-        ]
-      },
-      {
-        "id": "Extension:employer.extension:organization",
-        "path": "Extension.extension",
-        "sliceName": "organization",
-        "definition": "A social or legal structure formed by human beings.",
-        "min": 0,
-        "max": "1",
-        "type": [
-          {
-            "code": "Extension",
-            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization-extension"
-          }
-        ]
+        "sliceName": "extension",
+        "max": "0"
       },
       {
         "id": "Extension:employer.url",
@@ -410,8 +217,25 @@
       {
         "id": "Extension:employer.value[x]",
         "path": "Extension.value[x]",
-        "min": 0,
-        "max": "0"
+        "min": 1,
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Practitioner"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+          },
+          {
+            "code": "Reference",
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+          }
+        ]
       }
     ]
   }

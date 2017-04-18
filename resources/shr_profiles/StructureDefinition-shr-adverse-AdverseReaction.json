@@ -3,7 +3,7 @@
   "id": "shr-adverse-AdverseReaction",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR AdverseReaction Profile</b></p>\n  <p>Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.adverse.AdverseReaction maps to Condition:\n  Entry.Informant maps to asserter\n  Entry.OriginalCreationDate maps to assertedDate\n  CodeableConcept maps to code\n  ProblemCategory maps to category\n  ClinicalStatus maps to clinicalStatus\n  Onset maps to onset[x]\n  Abatement maps to abatement[x]\n  BodySite maps to bodySite\n  Severity maps to severity\n  GradeOrStage maps to stage\n  GradeOrStage.CodeableConcept maps to stage.summary\n  Manifestation maps to evidence\n  Manifestation.ObservationCode maps to evidence.code\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR AdverseReaction Profile</b></p>\n  <p>Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.adverse.AdverseReaction maps to Condition:\n  Entry.Informant maps to asserter\n  Entry.OriginalCreationDate maps to assertedDate\n  CodeableConcept maps to code\n  ProblemCategory maps to category\n  ClinicalStatus maps to clinicalStatus\n  Onset maps to onset[x]\n  Abatement maps to abatement[x]\n  BodySite maps to bodySite\n  Severity maps to severity\n  GradeOrStage maps to stage\n  GradeOrStage.CodeableConcept maps to stage.summary\n  Manifestation maps to evidence\n  Manifestation.ObservationCode maps to evidence.code\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-adverse-AdverseReaction",
   "identifier": [
@@ -25,8 +25,8 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.198Z",
-  "description": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+  "date": "2017-04-18T17:07:41.099Z",
+  "description": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
   "fhirVersion": "1.8.0",
   "mapping": [
     {
@@ -66,7 +66,7 @@
         "id": "Condition:shr-adverse-AdverseReaction",
         "path": "Condition",
         "short": "SHR AdverseReaction Profile",
-        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
+        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction.",
         "min": 0,
         "max": "*",
         "constraint": [
@@ -302,7 +302,7 @@
         "id": "Condition:shr-adverse-AdverseReaction.extension",
         "path": "Condition.extension",
         "slicing": {
-          "id": "24",
+          "id": "39",
           "discriminator": [
             "url"
           ],
@@ -563,7 +563,7 @@
         "id": "Condition:shr-adverse-AdverseReaction.modifierExtension",
         "path": "Condition.modifierExtension",
         "slicing": {
-          "id": "25",
+          "id": "40",
           "discriminator": [
             "url"
           ],
@@ -739,6 +739,14 @@
       {
         "id": "Condition:shr-adverse-AdverseReaction.category",
         "path": "Condition.category",
+        "slicing": {
+          "id": "37",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "problem-list-item | encounter-diagnosis",
         "definition": "A category assigned to the condition.",
         "comments": "The categorization is often highly contextual and may appear poorly differentiated or not very useful in other contexts.",
@@ -753,7 +761,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         },
         "mapping": [
@@ -774,6 +782,27 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Condition:shr-adverse-AdverseReaction.category:adverse_reaction",
+        "path": "Condition.category",
+        "sliceName": "adverse_reaction",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://standardhealthrecord.org/shr/problem/cs/ProblemCategoryCS",
+              "code": "adverse_reaction"
+            }
+          ]
+        }
       },
       {
         "id": "Condition:shr-adverse-AdverseReaction.severity",
@@ -834,10 +863,9 @@
         ],
         "isSummary": true,
         "binding": {
-          "strength": "example",
-          "description": "Identification of the condition or diagnosis.",
+          "strength": "required",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/condition-code"
+            "reference": "http://standardhealthrecord.org/shr/adverse/vs/MedDRAVS"
           }
         },
         "mapping": [
@@ -881,7 +909,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1254,7 +1282,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         },
         "mapping": [
@@ -1447,7 +1475,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1515,7 +1543,7 @@
         "id": "Condition:shr-adverse-AdverseReaction",
         "path": "Condition",
         "short": "SHR AdverseReaction Profile",
-        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This Entry could be used to record the occurrence or non-occurrence of an adverse reaction."
+        "definition": "Any noxious and unintended response to a medical product, procedure, or other intervention, for which a causal relationship to an intervention is at least a reasonable possibility i.e., the relationship cannot be ruled out. It is not necessarily associated with a previously-recorded SubstanceRisk. This entry could be used to record the occurrence or non-occurrence of an adverse reaction."
       },
       {
         "id": "Condition:shr-adverse-AdverseReaction.extension:generalizedlikelihood",
@@ -1654,6 +1682,14 @@
       {
         "id": "Condition:shr-adverse-AdverseReaction.category",
         "path": "Condition.category",
+        "slicing": {
+          "id": "37",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -1665,8 +1701,29 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
+        }
+      },
+      {
+        "id": "Condition:shr-adverse-AdverseReaction.category:adverse_reaction",
+        "path": "Condition.category",
+        "sliceName": "adverse_reaction",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://standardhealthrecord.org/shr/problem/cs/ProblemCategoryCS",
+              "code": "adverse_reaction"
+            }
+          ]
         }
       },
       {
@@ -1687,7 +1744,13 @@
             "code": "CodeableConcept",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
-        ]
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/adverse/vs/MedDRAVS"
+          }
+        }
       },
       {
         "id": "Condition:shr-adverse-AdverseReaction.bodySite",
@@ -1701,7 +1764,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },
@@ -1745,7 +1808,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         }
       },
@@ -1769,7 +1832,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       }

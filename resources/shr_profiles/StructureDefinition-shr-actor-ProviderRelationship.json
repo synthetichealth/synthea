@@ -3,7 +3,7 @@
   "id": "shr-actor-ProviderRelationship",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR ProviderRelationship Profile</b></p>\n  <p>A person or organization responsible for providing a service to the person of record. Such a relationship can exist without a specific encounter or services being rendered; for example, an emergency contact relationship can exist without ever calling upon that person. The entry can also be used to state that a provider relationship does not exist, e.g., patient does not have a primary care provider.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.ProviderRelationship maps to CareTeam:\n  participant is 1..1\n  Provider maps to participant.member\n  HealthcareRole maps to participant.role\n  GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to participant.period\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR ProviderRelationship Profile</b></p>\n  <p>A person or organization responsible for providing a service to the person of record. Such a relationship can exist without a specific encounter or services being rendered; for example, an emergency contact relationship can exist without ever calling upon that person. The entry can also be used to state that a provider relationship does not exist, e.g., patient does not have a primary care provider.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.ProviderRelationship maps to CareTeam:\n  constrain participant to 1..1\n  Provider maps to participant.member\n  HealthcareRole maps to participant.role\n  GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to participant.period\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-ProviderRelationship",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.134Z",
+  "date": "2017-04-18T17:07:40.947Z",
   "description": "A person or organization responsible for providing a service to the person of record. Such a relationship can exist without a specific encounter or services being rendered; for example, an emergency contact relationship can exist without ever calling upon that person. The entry can also be used to state that a provider relationship does not exist, e.g., patient does not have a primary care provider.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -266,7 +266,7 @@
         "id": "CareTeam:shr-actor-ProviderRelationship.extension",
         "path": "CareTeam.extension",
         "slicing": {
-          "id": "3",
+          "id": "11",
           "discriminator": [
             "url"
           ],
@@ -335,7 +335,7 @@
         "id": "CareTeam:shr-actor-ProviderRelationship.modifierExtension",
         "path": "CareTeam.modifierExtension",
         "slicing": {
-          "id": "4",
+          "id": "12",
           "discriminator": [
             "url"
           ],
@@ -665,7 +665,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-actor-HealthcareRoleVS"
+            "reference": "http://standardhealthrecord.org/shr/actor/vs/HealthcareRoleVS"
           }
         },
         "mapping": [
@@ -694,7 +694,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson"
           },
           {
             "code": "Reference",
@@ -702,7 +702,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
           }
         ],
         "isSummary": true,
@@ -813,7 +813,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-actor-HealthcareRoleVS"
+            "reference": "http://standardhealthrecord.org/shr/actor/vs/HealthcareRoleVS"
           }
         }
       },
@@ -827,7 +827,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson"
           },
           {
             "code": "Reference",
@@ -835,7 +835,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
           }
         ]
       },

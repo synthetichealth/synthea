@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.358Z",
+  "date": "2017-04-18T17:07:41.704Z",
   "description": "The treatment program used to address a substance abuse problem.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -277,7 +277,7 @@
         "id": "Procedure:shr-behavior-SubstanceAbuseTreatment.extension",
         "path": "Procedure.extension",
         "slicing": {
-          "id": "76",
+          "id": "106",
           "discriminator": [
             "url"
           ],
@@ -338,7 +338,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SubstanceAbuseTreatmentTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/SubstanceAbuseTreatmentTypeVS"
           }
         },
         "mapping": [
@@ -1338,7 +1338,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SubstanceAbuseTreatmentTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/SubstanceAbuseTreatmentTypeVS"
           }
         }
       },

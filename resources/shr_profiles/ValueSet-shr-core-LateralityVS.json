@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR LateralityVS ValueSet</b></p>\n<p>Anatomical location or specimen further detailing the side(s) of interest.</p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-LateralityVS",
+  "url": "http://standardhealthrecord.org/shr/core/vs/LateralityVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.106Z",
+  "date": "2017-04-18T17:07:40.897Z",
   "description": "Anatomical location or specimen further detailing the side(s) of interest.",
   "compose": {
     "include": [

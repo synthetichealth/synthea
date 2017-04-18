@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.330Z",
+  "date": "2017-04-18T17:07:41.603Z",
   "description": "Any restriction on that derives from religion and may impact medical treatment, other than dietary (handled elsewhere).",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-ReligiousRestrictionVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/ReligiousRestrictionVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-ReligiousRestrictionVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/ReligiousRestrictionVS"
           }
         }
       }

@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.620Z",
+  "date": "2017-04-18T17:07:42.592Z",
   "description": "A description of the purpose or origin of the code that assists in the interpretation of the code.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -169,7 +169,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-CodingQualifierVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/CodingQualifierVS"
           }
         },
         "mapping": [
@@ -219,7 +219,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-CodingQualifierVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/CodingQualifierVS"
           }
         }
       }

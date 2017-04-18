@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.778Z",
+  "date": "2017-04-18T17:07:42.956Z",
   "description": "The principal activity that a person does to earn money, specifying the job performed by the subject, for example, accountant, programmer analyst, patient care associate, staff nurse, etc.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-lifehistory-Occupation.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "184",
+          "id": "233",
           "discriminator": [
             "url"
           ],
@@ -435,7 +435,7 @@
         "id": "Observation:shr-lifehistory-Occupation.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "185",
+          "id": "234",
           "discriminator": [
             "url"
           ],

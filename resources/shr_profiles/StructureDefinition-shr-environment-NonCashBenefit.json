@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.456Z",
+  "date": "2017-04-18T17:07:42.127Z",
   "description": "Government benefits received by the focal subject, other than cash benefits.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-environment-NonCashBenefit.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "114",
+          "id": "147",
           "discriminator": [
             "url"
           ],
@@ -429,7 +429,7 @@
         "id": "Observation:shr-environment-NonCashBenefit.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "115",
+          "id": "148",
           "discriminator": [
             "url"
           ],
@@ -817,7 +817,7 @@
         "id": "Observation:shr-environment-NonCashBenefit.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "113",
+          "id": "146",
           "discriminator": [
             "@type"
           ],
@@ -869,7 +869,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-environment-NonCashBenefitVS"
+            "reference": "http://standardhealthrecord.org/shr/environment/vs/NonCashBenefitVS"
           }
         }
       },
@@ -2005,7 +2005,7 @@
         "id": "Observation:shr-environment-NonCashBenefit.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "113",
+          "id": "146",
           "discriminator": [
             "@type"
           ],
@@ -2033,7 +2033,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-environment-NonCashBenefitVS"
+            "reference": "http://standardhealthrecord.org/shr/environment/vs/NonCashBenefitVS"
           }
         }
       },

@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.165Z",
+  "date": "2017-04-18T17:07:40.992Z",
   "description": "A named gestational time period, or a gestational age.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -111,7 +111,7 @@
         "id": "Extension:gestationaltemporalcontext.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "13",
+          "id": "23",
           "discriminator": [
             "url"
           ],

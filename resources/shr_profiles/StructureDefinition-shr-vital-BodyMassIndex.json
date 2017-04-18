@@ -3,7 +3,7 @@
   "id": "shr-vital-BodyMassIndex",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR BodyMassIndex Profile</b></p>\n  <p>A general indicator of the body fat an individual is carrying based upon the ratio of weight to height.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.vital.BodyMassIndex maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  BodySite maps to bodySite\n  BodyPosition maps to http://hl7.org/fhir/StructureDefinition/observation-bodyPosition\n  Device maps to device\n  TBD &quot;Specimen&quot; maps to specimen\n  Interpretation maps to interpretation\n  ReferenceRange maps to referenceRange\n  ChangeFlag maps to http://hl7.org/fhir/StructureDefinition/observation-delta\n  Quantity maps to value[x].Quantity\n  BodyWeight maps to component\n  BodyWeight.Quantity maps to component.value[x].Quantity\n  BodyWeight.ObservationCode maps to component.code\n  BodyWeight.Interpretation maps to component.interpretation\n  BodyWeight.ReferenceRange maps to component.referenceRange\n  BodyHeight maps to component\n  BodyHeight.Quantity maps to component.value[x].Quantity\n  BodyHeight.ObservationCode maps to component.code\n  BodyHeight.Interpretation maps to component.interpretation\n  BodyHeight.ReferenceRange maps to component.referenceRange\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR BodyMassIndex Profile</b></p>\n  <p>A general indicator of the body fat an individual is carrying based upon the ratio of weight to height.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.vital.BodyMassIndex maps to Observation:\n  Entry.FocalSubject maps to subject\n  Entry.AssociatedEncounter maps to encounter\n  Entry.OriginalCreationDate maps to issued\n  ObservationCode maps to code\n  ObservationCategory maps to category\n  ObservationStatus maps to status\n  ObservationMethod maps to method\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to effective[x].Period\n  ClinicallyRelevantTime.GeneralizedTemporalContext.GeneralizedDateTime.dateTime maps to effective[x].dateTime\n  Participant maps to performer\n  BodySite maps to bodySite\n  BodyPosition maps to http://hl7.org/fhir/StructureDefinition/observation-bodyPosition\n  Device maps to device\n  &lt;TBD &quot;Specimen&quot;&gt; maps to specimen\n  Interpretation maps to interpretation\n  ReferenceRange maps to referenceRange\n  ChangeFlag maps to http://hl7.org/fhir/StructureDefinition/observation-delta\n  Quantity maps to value[x].Quantity\n  BodyWeight maps to component (slice on = code)\n  BodyWeight.Quantity maps to component.value[x].Quantity\n  BodyWeight.ObservationCode maps to component.code\n  BodyWeight.Interpretation maps to component.interpretation\n  BodyWeight.ReferenceRange maps to component.referenceRange\n  BodyHeight maps to component\n  BodyHeight.Quantity maps to component.value[x].Quantity\n  BodyHeight.ObservationCode maps to component.code\n  BodyHeight.Interpretation maps to component.interpretation\n  BodyHeight.ReferenceRange maps to component.referenceRange\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-vital-BodyMassIndex",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T16:20:02.529Z",
+  "date": "2017-04-18T17:07:43.612Z",
   "description": "A general indicator of the body fat an individual is carrying based upon the ratio of weight to height.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "218",
+          "id": "310",
           "discriminator": [
             "url"
           ],
@@ -493,7 +493,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "219",
+          "id": "311",
           "discriminator": [
             "url"
           ],
@@ -633,6 +633,14 @@
       {
         "id": "Observation:shr-vital-BodyMassIndex.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "306",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -662,6 +670,27 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.category:vital-signs",
+        "path": "Observation.category",
+        "sliceName": "vital-signs",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "vital-signs"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-vital-BodyMassIndex.code",
@@ -970,7 +999,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         },
         "mapping": [
@@ -1026,7 +1055,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1574,7 +1603,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.component",
         "path": "Observation.component",
         "slicing": {
-          "id": "1001",
+          "id": "307",
           "discriminator": [
             "code"
           ],
@@ -1615,7 +1644,275 @@
         ]
       },
       {
-        "id": "Observation:shr-vital-BodyMassIndex:shr-vital-BodyWeight.component",
+        "id": "Observation:shr-vital-BodyMassIndex.component.id",
+        "path": "Observation.component.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.extension",
+        "path": "Observation.component.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.modifierExtension",
+        "path": "Observation.component.modifierExtension",
+        "short": "Extensions that cannot be ignored",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element, and that modifies the understanding of the element that contains it. Usually modifier elements provide negation or qualification. In order to make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content",
+          "modifiers"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "BackboneElement.modifierExtension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "isModifier": true,
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.code",
+        "path": "Observation.component.code",
+        "short": "Type of component observation (code / type)",
+        "definition": "Describes what was observed. Sometimes this is called the observation \"code\".",
+        "requirements": "Knowing what kind of observation is being made is essential to understanding the observation.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "Codes identifying names of simple observations.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/observation-codes"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "OBX-3"
+          },
+          {
+            "identity": "rim",
+            "map": "code"
+          },
+          {
+            "identity": "w5",
+            "map": "what"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.value[x]",
+        "path": "Observation.component.value[x]",
+        "short": "Actual component result",
+        "definition": "The information determined as a result of making the observation, if the information has a simple value.",
+        "comments": "Normally, an observation will have either a value or a set of related observations. A few observations (e.g. Apgar score) may have both a value and related observations (for an Apgar score, the observations from which the measure is derived). If a value is present, the datatype for this element should be determined by Observation.code. A CodeableConcept with just a text would be used instead of a string if the field was usually coded, or if the type associated with the Observation.code defines a coded value.   For boolean values use valueCodeableConcept and select codes from <http://hl7.org/fhir/ValueSet/v2-0136> (These \"yes/no\" concepts can be mapped to the display name \"true/false\" or other mutually exclusive terms that may be needed\").  The element, Observation.value[x], has a variable name depending on the type as follows: valueQuantity, valueCodeableConcept, valueRatio, valueChoice, valuePeriod, valueSampleData, or valueString (The name format is \"'value' + the type name\" with a capital on the first letter of the type).",
+        "requirements": "An observation exists to have a value, though it may not if it is in error, or it represents a group of observations.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "Quantity"
+          },
+          {
+            "code": "CodeableConcept"
+          },
+          {
+            "code": "string"
+          },
+          {
+            "code": "Range"
+          },
+          {
+            "code": "Ratio"
+          },
+          {
+            "code": "SampledData"
+          },
+          {
+            "code": "Attachment"
+          },
+          {
+            "code": "time"
+          },
+          {
+            "code": "dateTime"
+          },
+          {
+            "code": "Period"
+          }
+        ],
+        "isSummary": true,
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "OBX.2, OBX.5, OBX.6"
+          },
+          {
+            "identity": "rim",
+            "map": "value"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.dataAbsentReason",
+        "path": "Observation.component.dataAbsentReason",
+        "short": "Why the component result is missing",
+        "definition": "Provides a reason why the expected value in the element Observation.value[x] is missing.",
+        "comments": "\"Null\" or exceptional values can be represented two ways in FHIR Observations.  One way is to simply include them in the value set and represent the exceptions in the value.  For example, measurement values for a serology test could be  \"detected\", \"not detected\", \"inconclusive\", or  \"test not done\".   The alternate way is to use the value element for actual observations and use the explicit dataAbsentReason element to record exceptional values.  For example, the dataAbsentReason code \"error\" could be used when the measurement was not completed.  Because of these options, use-case agreements are required to interpret general observations for exceptional values.",
+        "requirements": "For many results it is necessary to handle exceptional values in measurements.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "condition": [
+          "obs-6"
+        ],
+        "binding": {
+          "strength": "extensible",
+          "description": "Codes specifying why the result (Observation.value[x]) is missing.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/observation-valueabsentreason"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "N/A"
+          },
+          {
+            "identity": "rim",
+            "map": "value.nullFlavor"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.interpretation",
+        "path": "Observation.component.interpretation",
+        "short": "High, low, normal, etc.",
+        "definition": "The assessment made based on the result of the observation.  Intended as a simple compact code often placed adjacent to the result value in reports and flow sheets to signal the meaning/normalcy status of the result. Otherwise known as abnormal flag.",
+        "comments": "The component interpretation is applies only to the indivual component value.  For an overall interpretation all components together use Observation.interpretation element.",
+        "requirements": "For some results, particularly numeric results, an interpretation is necessary to fully understand the significance of a result.",
+        "alias": [
+          "Abnormal Flag"
+        ],
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept"
+          }
+        ],
+        "binding": {
+          "strength": "extensible",
+          "description": "Codes identifying interpretations of observations.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/observation-interpretation"
+          }
+        },
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "OBX-8"
+          },
+          {
+            "identity": "rim",
+            "map": "interpretationCode"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component.referenceRange",
+        "path": "Observation.component.referenceRange",
+        "short": "Provides guide for interpretation of component result",
+        "definition": "Guidance on how to interpret the value by comparison to a normal or recommended range.",
+        "comments": "Most observations only have one generic reference range. Systems MAY choose to restrict to only supplying the relevant reference range based on knowledge about the patient (e.g. specific to the patient's age, gender, weight and other factors), but this may not be possible or appropriate. Whenever more than one reference range is supplied, the differences between them SHOULD be provided in the reference range and/or age properties.",
+        "requirements": "Knowing what values are considered \"normal\" can help evaluate the significance of a particular result. Need to be able to provide multiple reference ranges for different contexts.",
+        "min": 0,
+        "max": "*",
+        "contentReference": "#Observation.referenceRange",
+        "mapping": [
+          {
+            "identity": "v2",
+            "map": "OBX.7"
+          },
+          {
+            "identity": "rim",
+            "map": "outboundRelationship[typeCode=REFV]/target[classCode=OBS, moodCode=EVN]"
+          }
+        ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyWeight",
         "path": "Observation.component",
         "sliceName": "shr-vital-BodyWeight",
         "short": "Component results",
@@ -1788,7 +2085,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyWeight.value[x]",
         "path": "Observation.component.value[x]",
         "slicing": {
-          "id": "217",
+          "id": "308",
           "discriminator": [
             "@type"
           ],
@@ -1895,7 +2192,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         },
         "mapping": [
@@ -2152,7 +2449,7 @@
         ]
       },
       {
-        "id": "Observation:shr-vital-BodyMassIndex:shr-vital-BodyHeight.component",
+        "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyHeight",
         "path": "Observation.component",
         "sliceName": "shr-vital-BodyHeight",
         "short": "Component results",
@@ -2325,7 +2622,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyHeight.value[x]",
         "path": "Observation.component.value[x]",
         "slicing": {
-          "id": "217",
+          "id": "309",
           "discriminator": [
             "@type"
           ],
@@ -2432,7 +2729,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         },
         "mapping": [
@@ -2472,7 +2769,7 @@
         ]
       },
       {
-        "id": "Observation:shr-vital-BodyMassIndex.component.referenceRange.id",
+        "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyHeight.referenceRange.id",
         "path": "Observation.component.referenceRange.id",
         "representation": [
           "xmlAttr"
@@ -2797,6 +3094,14 @@
       {
         "id": "Observation:shr-vital-BodyMassIndex.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "306",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -2805,6 +3110,27 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-vital-BodyMassIndex.category:vital-signs",
+        "path": "Observation.category",
+        "sliceName": "vital-signs",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "vital-signs"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-vital-BodyMassIndex.code",
@@ -2921,7 +3247,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         }
       },
@@ -2937,7 +3263,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },
@@ -2975,20 +3301,18 @@
         "id": "Observation:shr-vital-BodyMassIndex.component",
         "path": "Observation.component",
         "slicing": {
-          "id": "1001",
+          "id": "307",
           "discriminator": [
             "code"
           ],
           "ordered": false,
           "rules": "open"
-        },
-        "min": 0,
-        "max": "1"
+        }
       },
       {
         "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyWeight",
         "path": "Observation.component",
-        "sliceName": "BodyWeight",
+        "sliceName": "shr-vital-BodyWeight",
         "min": 0,
         "max": "1"
       },
@@ -3005,7 +3329,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "8302-2"
+              "code": "29463-7"
             }
           ]
         }
@@ -3014,7 +3338,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyWeight.value[x]",
         "path": "Observation.component.value[x]",
         "slicing": {
-          "id": "217",
+          "id": "308",
           "discriminator": [
             "@type"
           ],
@@ -3029,7 +3353,7 @@
         ]
       },
       {
-        "id": "Observation:shr-vital-BodyMassIndex.component.valueQuantity:shr-vital-BodyWeight:shr-core-Quantity",
+        "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyWeight.valueQuantity:shr-core-Quantity",
         "path": "Observation.component.valueQuantity",
         "type": [
           {
@@ -3039,7 +3363,7 @@
         ],
         "patternQuantity": {
           "system": "http://unitsofmeasure.org",
-          "code": "C28252"
+          "code": "kg"
         }
       },
       {
@@ -3054,7 +3378,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         }
       },
@@ -3067,7 +3391,7 @@
       {
         "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyHeight",
         "path": "Observation.component",
-        "sliceName": "BodyWeight",
+        "sliceName": "shr-vital-BodyHeight",
         "min": 0,
         "max": "1"
       },
@@ -3093,7 +3417,7 @@
         "id": "Observation:shr-vital-BodyMassIndex.component:shr-vital-BodyHeight.value[x]",
         "path": "Observation.component.value[x]",
         "slicing": {
-          "id": "217",
+          "id": "309",
           "discriminator": [
             "@type"
           ],
@@ -3118,7 +3442,7 @@
         ],
         "patternQuantity": {
           "system": "http://unitsofmeasure.org",
-          "code": "C28252"
+          "code": "cm"
         }
       },
       {
@@ -3133,7 +3457,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-lab-TestInterpretationVS"
+            "reference": "http://standardhealthrecord.org/shr/lab/vs/TestInterpretationVS"
           }
         }
       },

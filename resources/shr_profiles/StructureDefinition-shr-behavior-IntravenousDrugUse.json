@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.295Z",
+  "date": "2017-04-18T17:07:41.473Z",
   "description": "Records whether the subject injects recreational drugs.",
   "purpose": "Observations are a key aspect of healthcare.  This resource is used to capture those that do not require more sophisticated mechanisms.",
   "fhirVersion": "1.8.0",
@@ -296,7 +296,7 @@
         "id": "Observation:shr-behavior-IntravenousDrugUse.extension",
         "path": "Observation.extension",
         "slicing": {
-          "id": "54",
+          "id": "77",
           "discriminator": [
             "url"
           ],
@@ -617,7 +617,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SubstanceOfAbuseVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/SubstanceOfAbuseVS"
           }
         },
         "mapping": [
@@ -1045,7 +1045,7 @@
         "id": "Observation:shr-behavior-IntravenousDrugUse.modifierExtension",
         "path": "Observation.modifierExtension",
         "slicing": {
-          "id": "55",
+          "id": "78",
           "discriminator": [
             "url"
           ],
@@ -1185,6 +1185,14 @@
       {
         "id": "Observation:shr-behavior-IntravenousDrugUse.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "75",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "short": "Classification of  type of observation",
         "definition": "A code that classifies the general type of observation being made.",
         "comments": "There may be multiple axis of categoriization depending on the context or use case for retrieving or displaying the resource.  The level of granularity is defined by the category concepts in the value set.",
@@ -1214,6 +1222,69 @@
             "map": "class"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-behavior-IntravenousDrugUse.category:C024251",
+        "path": "Observation.category",
+        "sliceName": "C024251",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C024251"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-behavior-IntravenousDrugUse.category:C0332157",
+        "path": "Observation.category",
+        "sliceName": "C0332157",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C0332157"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-behavior-IntravenousDrugUse.category:C2004062",
+        "path": "Observation.category",
+        "sliceName": "C2004062",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C2004062"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-behavior-IntravenousDrugUse.code",
@@ -1441,7 +1512,7 @@
         "id": "Observation:shr-behavior-IntravenousDrugUse.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "53",
+          "id": "76",
           "discriminator": [
             "@type"
           ],
@@ -1493,7 +1564,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ThreeValueLogicVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ThreeValueLogicVS"
           }
         }
       },
@@ -2564,7 +2635,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-behavior-SubstanceOfAbuseVS"
+            "reference": "http://standardhealthrecord.org/shr/behavior/vs/SubstanceOfAbuseVS"
           }
         }
       },
@@ -2699,6 +2770,14 @@
       {
         "id": "Observation:shr-behavior-IntravenousDrugUse.category",
         "path": "Observation.category",
+        "slicing": {
+          "id": "75",
+          "discriminator": [
+            "coding"
+          ],
+          "ordered": false,
+          "rules": "open"
+        },
         "min": 1,
         "max": "*",
         "type": [
@@ -2707,6 +2786,69 @@
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
         ]
+      },
+      {
+        "id": "Observation:shr-behavior-IntravenousDrugUse.category:C024251",
+        "path": "Observation.category",
+        "sliceName": "C024251",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C024251"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-behavior-IntravenousDrugUse.category:C0332157",
+        "path": "Observation.category",
+        "sliceName": "C0332157",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C0332157"
+            }
+          ]
+        }
+      },
+      {
+        "id": "Observation:shr-behavior-IntravenousDrugUse.category:C2004062",
+        "path": "Observation.category",
+        "sliceName": "C2004062",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "CodeableConcept",
+            "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
+          }
+        ],
+        "fixedCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://ncimeta.nci.nih.gov",
+              "code": "C2004062"
+            }
+          ]
+        }
       },
       {
         "id": "Observation:shr-behavior-IntravenousDrugUse.code",
@@ -2805,7 +2947,7 @@
         "id": "Observation:shr-behavior-IntravenousDrugUse.value[x]",
         "path": "Observation.value[x]",
         "slicing": {
-          "id": "53",
+          "id": "76",
           "discriminator": [
             "@type"
           ],
@@ -2833,7 +2975,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ThreeValueLogicVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ThreeValueLogicVS"
           }
         }
       },

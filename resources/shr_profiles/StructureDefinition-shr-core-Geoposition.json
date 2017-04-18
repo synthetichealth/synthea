@@ -3,7 +3,7 @@
   "id": "shr-core-Geoposition",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Geoposition Profile</b></p>\n  <p>The location on the surface of the Earth, described by a latitude and longitude (and optional altitude).</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.core.Geoposition maps to Location:\n  position is 1..1\n  Latitude maps to position.latitude\n  Longitude maps to position.longitude\n  Altitude maps to position.altitude\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Geoposition Profile</b></p>\n  <p>The location on the surface of the Earth, described by a latitude and longitude (and optional altitude).</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.core.Geoposition maps to Location:\n  constrain position to 1..1\n  Latitude maps to position.latitude\n  Longitude maps to position.longitude\n  Altitude maps to position.altitude\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-Geoposition",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.631Z",
+  "date": "2017-04-18T17:07:42.606Z",
   "description": "The location on the surface of the Earth, described by a latitude and longitude (and optional altitude).",
   "fhirVersion": "1.8.0",
   "mapping": [

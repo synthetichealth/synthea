@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.187Z",
+  "date": "2017-04-18T17:07:41.064Z",
   "description": "A problem relating to a person’s psychological and emotional well-being.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -302,7 +302,7 @@
         "id": "Condition:shr-problem-MentalHealthProblem.extension",
         "path": "Condition.extension",
         "slicing": {
-          "id": "20",
+          "id": "33",
           "discriminator": [
             "url"
           ],
@@ -531,7 +531,7 @@
         "id": "Condition:shr-problem-MentalHealthProblem.modifierExtension",
         "path": "Condition.modifierExtension",
         "slicing": {
-          "id": "21",
+          "id": "34",
           "discriminator": [
             "url"
           ],
@@ -721,7 +721,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         },
         "mapping": [
@@ -802,10 +802,9 @@
         ],
         "isSummary": true,
         "binding": {
-          "strength": "example",
-          "description": "Identification of the condition or diagnosis.",
+          "strength": "required",
           "valueSetReference": {
-            "reference": "http://hl7.org/fhir/ValueSet/condition-code"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/DSMVS"
           }
         },
         "mapping": [
@@ -849,7 +848,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         },
         "mapping": [
@@ -1222,7 +1221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         },
         "mapping": [
@@ -1415,7 +1414,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         },
         "mapping": [
@@ -1615,7 +1614,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-ProblemCategoryVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/ProblemCategoryVS"
           }
         }
       },
@@ -1637,7 +1636,13 @@
             "code": "CodeableConcept",
             "profile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-core-CodeableConcept"
           }
-        ]
+        ],
+        "binding": {
+          "strength": "required",
+          "valueSetReference": {
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/DSMVS"
+          }
+        }
       },
       {
         "id": "Condition:shr-problem-MentalHealthProblem.bodySite",
@@ -1651,7 +1656,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-BodySiteVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/BodySiteVS"
           }
         }
       },
@@ -1695,7 +1700,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-problem-GradeOrStageVS"
+            "reference": "http://standardhealthrecord.org/shr/problem/vs/GradeOrStageVS"
           }
         }
       },
@@ -1715,7 +1720,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-core-ManifestationVS"
+            "reference": "http://standardhealthrecord.org/shr/core/vs/ManifestationVS"
           }
         }
       }

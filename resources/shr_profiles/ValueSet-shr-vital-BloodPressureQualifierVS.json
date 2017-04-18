@@ -10,7 +10,7 @@
     "status": "generated",
     "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n<p><b>SHR BloodPressureQualifierVS ValueSet</b></p>\n<p>Code further describing the blood pressure measurement.</p>\n</div>"
   },
-  "url": "http://standardhealthrecord.org/fhir/ValueSet/shr-vital-BloodPressureQualifierVS",
+  "url": "http://standardhealthrecord.org/shr/vital/vs/BloodPressureQualifierVS",
   "identifier": [
     {
       "system": "http://standardhealthrecord.org",
@@ -31,12 +31,12 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.109Z",
+  "date": "2017-04-18T17:07:40.900Z",
   "description": "Code further describing the blood pressure measurement.",
   "compose": {
     "include": [
       {
-        "system": "http://standardhealthrecord.org/fhir/CodeSystem/shr-vital-BloodPressureQualifierVS",
+        "system": "http://standardhealthrecord.org/shr/vital/cs/BloodPressureQualifierCS",
         "concept": [
           {
             "code": "pre_transfusion",

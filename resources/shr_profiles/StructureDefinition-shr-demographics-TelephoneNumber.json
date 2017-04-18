@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.655Z",
+  "date": "2017-04-18T17:07:42.655Z",
   "description": "A sequence of decimal digits (0-9) that is used for identifying a destination telephone line or other device in a telephone network.",
   "purpose": "Need to track phone, fax, mobile, sms numbers, email addresses, twitter tags, etc.",
   "fhirVersion": "1.8.0",
@@ -130,7 +130,7 @@
         "id": "ContactPoint:shr-demographics-TelephoneNumber.extension",
         "path": "ContactPoint.extension",
         "slicing": {
-          "id": "158",
+          "id": "201",
           "discriminator": [
             "url"
           ],

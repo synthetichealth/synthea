@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.667Z",
+  "date": "2017-04-18T17:07:42.676Z",
   "description": "Services and space and equipment provided for a particular purpose; a building or place that provides a particular service or is used for a particular industry. Could be a clinical site, community site, or a mobile facility.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -265,7 +265,7 @@
         "id": "Location:shr-encounter-Facility.extension",
         "path": "Location.extension",
         "slicing": {
-          "id": "163",
+          "id": "208",
           "discriminator": [
             "url"
           ],

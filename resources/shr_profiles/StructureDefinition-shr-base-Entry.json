@@ -3,7 +3,7 @@
   "id": "shr-base-Entry",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Entry Profile</b></p>\n  <p>An item inserted in an electronic record.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.base.Entry maps to DomainResource:\n  Narrative maps to text\n  EntryId maps to id\n  Version maps to meta.versionId\n  EntryType maps to meta.profile\n  LastUpdateDate maps to meta.lastUpdated\n  Language maps to language\n  TBD &quot;SecurityLabel&quot; maps to meta.security\n  TBD &quot;Tag&quot; maps to meta.tag\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR Entry Profile</b></p>\n  <p>An item inserted in an electronic record.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.base.Entry maps to DomainResource:\n  Narrative maps to text\n  EntryId maps to id\n  constrain meta to 1..1\n  Version maps to meta.versionId\n  EntryType maps to meta.profile\n  LastUpdateDate maps to meta.lastUpdated\n  Language maps to language\n  &lt;TBD &quot;SecurityLabel&quot;&gt; maps to meta.security\n  &lt;TBD &quot;Tag&quot;&gt; maps to meta.tag\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-Entry",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.145Z",
+  "date": "2017-04-18T17:07:40.967Z",
   "description": "An item inserted in an electronic record.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -111,7 +111,7 @@
         "path": "DomainResource.meta",
         "short": "Metadata about the resource",
         "definition": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content may not always be associated with version changes to the resource.",
-        "min": 0,
+        "min": 1,
         "max": "1",
         "base": {
           "path": "Resource.meta",
@@ -124,6 +124,151 @@
           }
         ],
         "isSummary": true
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.id",
+        "path": "DomainResource.meta.id",
+        "representation": [
+          "xmlAttr"
+        ],
+        "short": "xml:id (or equivalent in JSON)",
+        "definition": "unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "Element.id",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.extension",
+        "path": "DomainResource.meta.extension",
+        "short": "Additional Content defined by implementations",
+        "definition": "May be used to represent additional information that is not part of the basic definition of the element. In order to make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.",
+        "comments": "There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.",
+        "alias": [
+          "extensions",
+          "user content"
+        ],
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "Element.extension",
+          "min": 0,
+          "max": "*"
+        },
+        "type": [
+          {
+            "code": "Extension"
+          }
+        ],
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.versionId",
+        "path": "DomainResource.meta.versionId",
+        "short": "Version specific identifier",
+        "definition": "The version specific identifier, as it appears in the version portion of the URL. This values changes when the resource is created, updated, or deleted.",
+        "comments": "The server assigns this value, and ignores what the client specifies, except in the case that the server is imposing version integrity on updates/deletes.",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "id"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.lastUpdated",
+        "path": "DomainResource.meta.lastUpdated",
+        "short": "When the resource version last changed",
+        "definition": "When the resource last changed - e.g. when the version changed.",
+        "comments": "This value is always populated except when the resource is first being created. The server / resource manager sets this value; what a client provides is irrelevant.",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "instant"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.profile",
+        "path": "DomainResource.meta.profile",
+        "short": "Profiles this resource claims to conform to",
+        "definition": "A list of profiles (references to [StructureDefinition](structuredefinition.html#) resources) that this resource claims to conform to. The URL is a reference to [StructureDefinition.url]().",
+        "comments": "It is up to the server and/or other infrastructure of policy to determine whether/how these claims are verified and/or updated over time.  The list of profile URLs is a set.",
+        "min": 1,
+        "max": "*",
+        "type": [
+          {
+            "code": "uri"
+          }
+        ],
+        "isSummary": true
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.security",
+        "path": "DomainResource.meta.security",
+        "short": "Security Labels applied to this resource",
+        "definition": "Security labels applied to this resource. These tags connect specific resources to the overall security policy and infrastructure.",
+        "comments": "The security labels can be updated without changing the stated version of the resource  The list of security labels is a set. Uniqueness is based the system/code, and version and display are ignored.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Coding"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "extensible",
+          "description": "Security Labels from the Healthcare Privacy and Security Classification System.",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/security-labels"
+          }
+        }
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.tag",
+        "path": "DomainResource.meta.tag",
+        "short": "Tags applied to this resource",
+        "definition": "Tags applied to this resource. Tags are intended to be used to identify and relate resources to process and workflow, and applications are not required to consider the tags when interpreting the meaning of a resource.",
+        "comments": "The tags can be updated without changing the stated version of the resource.  The list of tags is a set. Uniqueness is based the system/code, and version and display are ignored.",
+        "min": 0,
+        "max": "*",
+        "type": [
+          {
+            "code": "Coding"
+          }
+        ],
+        "isSummary": true,
+        "binding": {
+          "strength": "example",
+          "description": "Codes that represent various types of tags, commonly workflow-related; e.g. \"Needs review by Dr. Jones\"",
+          "valueSetReference": {
+            "reference": "http://hl7.org/fhir/ValueSet/common-tags"
+          }
+        }
       },
       {
         "id": "DomainResource:shr-base-Entry.implicitRules",
@@ -239,7 +384,7 @@
         "id": "DomainResource:shr-base-Entry.extension",
         "path": "DomainResource.extension",
         "slicing": {
-          "id": "10",
+          "id": "18",
           "discriminator": [
             "url"
           ],
@@ -433,7 +578,7 @@
         "id": "DomainResource:shr-base-Entry.modifierExtension",
         "path": "DomainResource.modifierExtension",
         "slicing": {
-          "id": "11",
+          "id": "19",
           "discriminator": [
             "url"
           ],
@@ -504,6 +649,24 @@
         "path": "DomainResource.id",
         "min": 1,
         "max": "1"
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta",
+        "path": "DomainResource.meta",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.lastUpdated",
+        "path": "DomainResource.meta.lastUpdated",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "DomainResource:shr-base-Entry.meta.profile",
+        "path": "DomainResource.meta.profile",
+        "min": 1,
+        "max": "*"
       },
       {
         "id": "DomainResource:shr-base-Entry.text",

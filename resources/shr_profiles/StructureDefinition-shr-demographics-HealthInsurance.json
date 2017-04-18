@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.660Z",
+  "date": "2017-04-18T17:07:42.663Z",
   "description": "Health insurance coverage available (even if not used for payment for a given encounter).",
   "purpose": "Health care programs and insurers are significant payors of health service costs.",
   "fhirVersion": "1.8.0",
@@ -415,7 +415,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-demographics-InsuranceProviderTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/demographics/vs/InsuranceProviderTypeVS"
           }
         },
         "mapping": [
@@ -1205,7 +1205,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-demographics-InsuranceProviderTypeVS"
+            "reference": "http://standardhealthrecord.org/shr/demographics/vs/InsuranceProviderTypeVS"
           }
         }
       },

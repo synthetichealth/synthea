@@ -3,7 +3,7 @@
   "id": "shr-actor-NoPrimaryCareProvider",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR NoPrimaryCareProvider Profile</b></p>\n  <p>The medical professional responsible for first-line care of an individual.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.NoPrimaryCareProvider maps to CareTeam:\n  participant is 1..1\n  Provider maps to participant.member\n  HealthcareRole maps to participant.role\n  GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to participant.period\n</pre></p>\n</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n  <p><b>SHR NoPrimaryCareProvider Profile</b></p>\n  <p>The medical professional responsible for first-line care of an individual.</p>\n  <p><b>SHR Mapping Summary</b></p>\n  <p><pre>shr.actor.NoPrimaryCareProvider maps to CareTeam:\n  constrain participant to 1..1\n  Provider maps to participant.member\n  HealthcareRole maps to participant.role\n  GeneralizedTemporalContext.GeneralizedDateTime.TimePeriod maps to participant.period\n</pre></p>\n</div>"
   },
   "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-NoPrimaryCareProvider",
   "identifier": [
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.142Z",
+  "date": "2017-04-18T17:07:40.962Z",
   "description": "The medical professional responsible for first-line care of an individual.",
   "fhirVersion": "1.8.0",
   "mapping": [
@@ -266,7 +266,7 @@
         "id": "CareTeam:shr-actor-NoPrimaryCareProvider.extension",
         "path": "CareTeam.extension",
         "slicing": {
-          "id": "8",
+          "id": "16",
           "discriminator": [
             "url"
           ],
@@ -335,7 +335,7 @@
         "id": "CareTeam:shr-actor-NoPrimaryCareProvider.modifierExtension",
         "path": "CareTeam.modifierExtension",
         "slicing": {
-          "id": "9",
+          "id": "17",
           "discriminator": [
             "url"
           ],
@@ -432,7 +432,7 @@
         "id": "CareTeam:shr-actor-NoPrimaryCareProvider.modifierExtension:nonoccurrencemodifier.extension",
         "path": "CareTeam.modifierExtension.extension",
         "slicing": {
-          "id": "9",
+          "id": "10",
           "discriminator": [
             "url"
           ],
@@ -1042,7 +1042,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-actor-HealthcareRoleVS"
+            "reference": "http://standardhealthrecord.org/shr/actor/vs/HealthcareRoleVS"
           }
         },
         "mapping": [
@@ -1071,7 +1071,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson"
           },
           {
             "code": "Reference",
@@ -1079,7 +1079,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
           }
         ],
         "isSummary": true,
@@ -1199,7 +1199,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-actor-HealthcareRoleVS"
+            "reference": "http://standardhealthrecord.org/shr/actor/vs/HealthcareRoleVS"
           }
         }
       },
@@ -1215,7 +1215,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-RelatedPerson"
           },
           {
             "code": "Reference",
@@ -1223,7 +1223,7 @@
           },
           {
             "code": "Reference",
-            "targetProfile": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+            "targetProfile": "http://hl7.org/fhir/StructureDefinition/Organization"
           }
         ]
       },

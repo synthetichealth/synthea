@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.674Z",
+  "date": "2017-04-18T17:07:42.697Z",
   "description": "The source of payment for the current encounter.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -105,7 +105,7 @@
         "id": "Extension:paymentsource.extension",
         "path": "Extension.extension",
         "slicing": {
-          "id": "31",
+          "id": "210",
           "discriminator": [
             "url"
           ],

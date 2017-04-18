@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "date": "2017-02-23T21:26:39.845Z",
+  "date": "2017-04-18T17:07:43.248Z",
   "description": "If not using a method of contraception, why.",
   "fhirVersion": "1.8.0",
   "kind": "complex-type",
@@ -170,7 +170,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-ContraceptiveNotUsedReasonVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/ContraceptiveNotUsedReasonVS"
           }
         },
         "mapping": [
@@ -221,7 +221,7 @@
         "binding": {
           "strength": "required",
           "valueSetReference": {
-            "reference": "http://standardhealthrecord.org/fhir/ValueSet/shr-sex-ContraceptiveNotUsedReasonVS"
+            "reference": "http://standardhealthrecord.org/shr/sex/vs/ContraceptiveNotUsedReasonVS"
           }
         }
       }
