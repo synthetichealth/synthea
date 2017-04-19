@@ -118,7 +118,7 @@ module Synthea
         end
 
         puts 'Generated Demographics:'
-        puts JSON.pretty_unparse(@stats.except(:occurrences)) # occurrences is way too unwieldy to print out
+        puts JSON.pretty_unparse(@stats.except(:occurrences, :all_occurrences, :living_occurrences, :dead_occurrences)) # occurrences is way too unwieldy to print out
 
         if Synthea::Config.generic.log_state_statistics
           puts 'State Statistics:'
