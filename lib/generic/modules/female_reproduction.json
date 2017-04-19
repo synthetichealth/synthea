@@ -111,6 +111,15 @@
         {
           "condition": {
             "condition_type": "Attribute",
+            "attribute": "infertile",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Terminal"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
             "attribute": "sexually_active",
             "operator": "==",
             "value": true
@@ -366,23 +375,7 @@
 
     "Potentially_Pregnant": {
       "type": "Simple",
-      "remarks": [
-        "Unless the female is infertile, she will become pregnant."
-      ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "infertile",
-            "operator": "==",
-            "value": true
-          },
-          "transition": "Next_Reproductive_Cycle"
-        },
-        {
-          "transition": "Become_Pregnant"
-        }
-      ]
+      "direct_transition": "Become_Pregnant"
     },
 
     "Become_Pregnant": {
