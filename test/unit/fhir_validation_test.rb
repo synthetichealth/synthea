@@ -14,7 +14,6 @@ class FhirValidationTest < Minitest::Test
   end
 
   def test_execution_and_fhir_validation
-    skip
     world = Synthea::World::Sequential.new
     world.population_count = 0
     (1..10).each do |i|
