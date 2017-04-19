@@ -14,10 +14,19 @@ module Synthea
         @stats[:gender] = Hash.new(0)
         @stats[:race] = Hash.new(0)
         @stats[:language] = Hash.new(0)
-        @stats[:living_adults_by_race] = Hash.new(0)
-        @stats[:diabetes_by_race] = Hash.new(0)
         @stats[:ethnicity] = Hash.new(0)
         @stats[:blood_type] = Hash.new(0)
+        @stats[:living_adults_by_race] = Hash.new(0)
+        @stats[:occurrences] = nested_hash(7) { Concurrent::AtomicFixnum.new(0) }
+
+        @stats[:all_occurrences] = {
+          :active_conditions => Hash.new(0),
+          :total_conditions => Hash.new(0),
+          :people_afflicted => Hash.new(0),
+          :active_medications => Hash.new(0),
+          :total_medications => Hash.new(0),
+          :people_prescribed => Hash.new(0)
+        }
         @stats[:dead_occurrences] = {
           :active_conditions => Hash.new(0),
           :total_conditions => Hash.new(0),
@@ -34,14 +43,6 @@ module Synthea
           :total_medications => Hash.new(0),
           :people_prescribed => Hash.new(0)
         }
-        @stats[:occurrences] = {
-          :active_conditions => Hash.new(0),
-          :total_conditions => Hash.new(0),
-          :people_afflicted => Hash.new(0),
-          :active_medications => Hash.new(0),
-          :total_medications => Hash.new(0),
-          :people_prescribed => Hash.new(0)
-        }
 
         @population_count = Synthea::Config.sequential.population
         @generate_count = Concurrent::AtomicFixnum.new(0)
@@ -50,6 +51,20 @@ module Synthea
         @export_log_interval = Synthea::Config.sequential.debug_log_interval.export
         @enable_debug_logging = Synthea::Config.sequential.enable_debug_logging
 
+        # "top-level" conditions just means that we care about prevalence of some condition GIVEN the top-level condition
+        # for example, we want to track % of patients that have hypertension given diabetes,
+        # so diabetes is the top-level condition
+        @top_level_conditions = []
+        if Synthea::Config.sequential.track_detailed_prevalence
+          template_file = File.join('.', 'resources', 'prevalence_template.csv')
+          if File.exist?(template_file)
+            template = CSV.table(template_file)
+            # pull out the conditions we care about
+            conds = template.collect { |r| r[:given_condition] }.uniq.compact - ['*']
+            @top_level_conditions += conds.map { |c| c.downcase.tr(' ', '_').to_sym }
+          end
+        end
+
         @scaling_factor = @population_count.to_f / Synthea::Config.sequential.real_world_population.to_f
         # if you want to generate a population smaller than 7M but still with accurate ratios,
         #  you can scale the populations of individual cities down by this amount.
@@ -57,6 +72,11 @@ module Synthea
         @city_populations = JSON.parse(datafile) if datafile
 
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start
+      end
+
+      def nested_hash(depth, &default_value)
+        return yield if depth < 1
+        Hash.new { |h, k| h[k] = nested_hash(depth - 1, &default_value) }
       end
 
       def run
@@ -98,72 +118,82 @@ module Synthea
         end
 
         puts 'Generated Demographics:'
-        puts JSON.pretty_unparse(@stats)
+        puts JSON.pretty_unparse(@stats.except(:occurrences, :all_occurrences, :living_occurrences, :dead_occurrences)) # occurrences is way too unwieldy to print out
 
         if Synthea::Config.generic.log_state_statistics
           puts 'State Statistics:'
           puts JSON.pretty_unparse(Synthea::Generic::Context.counter)
         end
 
-        puts 'Outputting Metabolic Syndrome Results to output/prevalences.csv'
-        folder = Synthea::Config.exporter.location
-        FileUtils.mkdir_p folder unless File.exist? folder
-        @prevalence_file = File.open(File.join(folder, 'prevalences.csv'), 'w:UTF-8')
-        @prevalence_file.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
-        metabolic_conditions = %w(Hypertension Prediabetes Diabetes)
-        metabolic_conditions.each do |condition|
-          all_prevalences(condition, :people_afflicted, condition.downcase.tr(' ', '_').to_sym)
-        end
-        # Diabetes by Race
-        @stats[:living_adults_by_race].each do |race, count|
-          diabetics = @stats[:diabetes_by_race][race]
-          prevalence("Diabetes among #{race} adults,LIVING", diabetics, count)
-        end
-        diabetic_population = @stats[:living_occurrences][:people_afflicted][:diabetes]
-        prevalence('Hypertension GIVEN DIABETES,LIVING', @stats[:living_hypertension_and_diabetes], diabetic_population)
-        metabolic_conditions = [
-          'Diabetic renal disease (disorder)',
-          'Microalbuminuria due to type 2 diabetes mellitus (disorder)',
-          'Proteinuria due to type 2 diabetes mellitus (disorder)',
-          'End stage renal disease (disorder)',
-          'Diabetic retinopathy associated with type II diabetes mellitus (disorder)',
-          'Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)',
-          'Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)',
-          'Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)',
-          'Blindness due to type 2 diabetes mellitus (disorder)',
-          'Neuropathy due to type 2 diabetes mellitus (disorder)',
-          'History of lower limb amputation (situation)',
-          'History of amputation of foot (situation)',
-          'History of upper limb amputation (situation)',
-          'History of disarticulation at wrist (situation)'
-        ]
-        metabolic_conditions.each do |condition|
-          all_prevalences("#{condition} GIVEN DIABETES", :people_afflicted, condition.downcase.tr(' ', '_').to_sym, diabetic_population)
-        end
+        if Synthea::Config.sequential.track_detailed_prevalence
+          folder = Synthea::Config.exporter.location
+          FileUtils.mkdir_p folder unless File.exist? folder
+          puts "Outputting All Prevalence Data to #{folder}/all_prevalences.csv"
 
-        metabolic_medications = [
-          '24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet',
-          '3 ML liraglutide 6 MG/ML Pen Injector',
-          'canagliflozin 100 MG Oral Tablet',
-          'insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]',
-          'Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]'
-        ]
-        metabolic_medications.each do |medication|
-          all_prevalences("#{medication} GIVEN DIABETES", :people_prescribed, medication.downcase.tr(' ', '_').to_sym, diabetic_population)
+          all_prevalence = File.open(File.join(folder, 'all_prevalences.csv'), 'w:UTF-8')
+          all_prevalence.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
+          conditions = @stats[:occurrences][:unique_conditions]['*']['*']['*']['*']['*'].keys
+          conditions.each do |condition|
+            write_prevalences(all_prevalence, condition.to_s.titleize, :unique_conditions, condition)
+          end
+
+          medications = @stats[:occurrences][:unique_medications]['*']['*']['*']['*']['*'].keys
+          medications.each do |medication|
+            write_prevalences(all_prevalence, medication.to_s.titleize, :unique_medications, medication)
+          end
+
+          all_prevalence.close
+
+          template_file = File.join('.', 'resources', 'prevalence_template.csv')
+          if File.exist?(template_file)
+            puts "Outputting Targeted Prevalence Data to #{folder}/targeted_prevalences.csv"
+
+            # open new csv for writing
+            CSV.open(File.join(folder, 'targeted_prevalences.csv'), 'wb') do |prevalence_file|
+              # iterating existing csv rows - fill in the template and add to output file
+              CSV.foreach(template_file, :headers => true, :return_headers => true, :header_converters => :symbol) do |row|
+                if row[:status] && row[:status] != 'STATUS' # no processing for blank or header rows, just copy them over
+                  category = row[:category].downcase.tr(' ', '_').to_sym
+                  code = row[:item].downcase.tr(' ', '_').to_sym
+                  precondition = row[:given_condition]
+                  precondition = precondition.downcase.tr(' ', '_').to_sym unless precondition == '*'
+                  count, population = *retrieve_prevalence(status: row[:status], age: row[:age_group], gender: row[:gender],
+                                                           race: row[:race], given_condition: precondition,
+                                                           category: category, code: code)
+
+                  row[:synthea_occurrences] = count
+                  row[:synthea_population] = population
+
+                  if population.zero?
+                    row[:synthea_prevalence_rate] = 0
+                    row[:synthea_prevalence_percent] = 0
+                  else
+                    result = count.to_f / population.to_f
+                    row[:synthea_prevalence_rate] = result.round(2)
+                    row[:synthea_prevalence_percent] = (100 * result).round(2)
+                  end
+
+                  difference = (row[:synthea_prevalence_percent] - row[:actual_prevalence_percent].to_f).round(2) unless row[:actual_prevalence_percent].nil?
+                  row[:difference] = difference if difference
+                end
+
+                prevalence_file << row
+              end
+            end
+          end
         end
-        @prevalence_file.close
       end
 
-      def all_prevalences(description, category, type, population = @stats[:living_adults])
+      def write_prevalences(file, description, category, type)
         # prevalence("#{description.tr(',', '')},TOTAL", @stats[:occurrences][category][type], @stats[:population_count])
-        prevalence("#{description.tr(',', '')},LIVING", @stats[:living_occurrences][category][type], population)
+        write_prevalence(file, "#{description.tr(',', '')},LIVING", *retrieve_prevalence(status: 'living', category: category, code: type))
         # prevalence("#{description.tr(',', '')},DEAD", @stats[:dead_occurrences][category][type], @stats[:dead])
       end
 
-      def prevalence(description, numerator, denominator)
+      def write_prevalence(file, description, numerator, denominator)
         numerator = 0 if numerator.nil?
         result = numerator.to_f / denominator.to_f
-        @prevalence_file.write("#{description},#{numerator},#{denominator},#{result},#{(100 * result).round(2)}\n")
+        file.write("#{description},#{numerator},#{denominator},#{result},#{(100 * result).round(2)}\n")
       end
 
       def run_random
@@ -280,22 +310,38 @@ module Synthea
         person
       end
 
-      def track_occurrences(patient)
+      def track_occurrences(patient, top_level_conditions)
+        conditions = patient.record_synthea.conditions
+        medications = patient.record_synthea.medications
+
         # Track Diagnosed Conditions
-        active_occurrences = Hash.new(0)
-        patient.record_synthea.conditions.select { |c| c['end_time'].nil? }.each { |c| active_occurrences[c['type']] += 1 }
-        total_occurrences = Hash.new(0)
-        patient.record_synthea.conditions.each { |c| total_occurrences[c['type']] += 1 }
-        unique_conditions = Hash.new(0)
-        patient.record_synthea.conditions.map { |c| c['type'] }.uniq.each { |c| unique_conditions[c] = 1 }
+        active_occurrences = conditions.select { |c| c['end_time'].nil? }.map { |c| c['type'] }
+        total_occurrences = conditions.map { |c| c['type'] }
+        unique_conditions = total_occurrences.uniq
 
         # Track Medications
-        active_medications = Hash.new(0)
-        patient.record_synthea.medications.select { |c| c['stop'].nil? }.each { |c| active_medications[c['type']] += 1 }
-        total_medications = Hash.new(0)
-        patient.record_synthea.medications.each { |c| total_medications[c['type']] += 1 }
-        unique_medications = Hash.new(0)
-        patient.record_synthea.medications.map { |c| c['type'] }.uniq.each { |c| unique_medications[c] = 1 }
+        active_medications = medications.select { |c| c['stop'].nil? }.map { |c| c['type'] }
+        total_medications = medications.map { |c| c['type'] }
+        unique_medications = total_medications.uniq
+
+        if Synthea::Config.sequential.track_detailed_prevalence
+          age = patient[:age] >= 18 ? 'adult' : 'child'
+          gender = patient[:gender]
+          status = patient.had_event?(:death) ? 'dead' : 'living'
+          race = patient[:race].to_s
+
+          tlcs = top_level_conditions & unique_conditions # intersection of conditions we care about, and the ones they have
+
+          increment_counts(:population, :population, status, age, gender, race, tlcs)
+
+          active_occurrences.each { |c| increment_counts(:active_conditions, c, status, age, gender, race, tlcs) }
+          total_occurrences.each { |c| increment_counts(:total_conditions, c, status, age, gender, race, tlcs) }
+          unique_conditions.each { |c| increment_counts(:unique_conditions, c, status, age, gender, race, tlcs) }
+
+          active_medications.each { |c| increment_counts(:active_medications, c, status, age, gender, race, tlcs) }
+          total_medications.each { |c| increment_counts(:total_medications, c, status, age, gender, race, tlcs) }
+          unique_medications.each { |c| increment_counts(:unique_medications, c, status, age, gender, race, tlcs) }
+        end
 
         {
           :active_conditions => active_occurrences,
@@ -305,6 +351,50 @@ module Synthea
           :total_medications => total_medications,
           :people_prescribed => unique_medications
         }
+      end
+
+      def increment_counts(category, code, living, age, gender, race, top_level_conditions)
+        # we have a n-dimensional map of (variables) -> count.
+        # for each variable, keep track of the overall total with *
+        # examples:
+        #   all living people with diabetes ==> @stats[][living][*][*][*][*][diabetes]
+        #   all white adults with esrd given diabetes ==> @stats[][*][adult][*][white][diabetes][esrd]
+        # we can make these more granular if we want to. ex include age by specific year or age range instead of just adult/child
+
+        statuses = [living, '*']
+        ages = [age, '*']
+        genders = [gender, '*']
+        races = [race, '*']
+        conditions = top_level_conditions + ['*']
+
+        # this looks like a massive loop, but each list will only have a couple items in it
+        statuses.each do |s|
+          ages.each do |a|
+            genders.each do |g|
+              races.each do |r|
+                conditions.each do |c|
+                  @stats[:occurrences][category][s][a][g][r][c][code].increment
+                end
+              end
+            end
+          end
+        end
+      end
+
+      def retrieve_prevalence(options)
+        status = options[:status] || '*'
+        age = options[:age] || '*'
+        gender = options[:gender] || '*'
+        race = options[:race] || '*'
+        condition = options[:given_condition] || '*'
+        category = options[:category]
+        code = options[:code]
+
+        count = @stats[:occurrences][category][status][age][gender][race][condition][code]
+
+        population = @stats[:occurrences][:population][status][age][gender][race][condition][:population]
+
+        [count.value, population.value]
       end
 
       def log_patient(person, options = {})
@@ -318,7 +408,7 @@ module Synthea
         str << "#{person[:name_last]}, #{person[:name_first]}. #{person[:race].to_s.capitalize} #{person[:ethnicity].to_s.tr('_', ' ').capitalize}. #{person[:age]} y/o #{person[:gender]}"
 
         weight = (person.get_vital_sign_value(:weight) * 2.20462).to_i
-        str << " #{weight} lbs. -- #{options[:active_conditions].keys.map(&:to_s).join(', ')}"
+        str << " #{weight} lbs. -- #{options[:active_conditions].map(&:to_s).join(', ')}"
 
         puts str
       end
@@ -372,24 +462,20 @@ module Synthea
         @stats[:ethnicity][patient[:ethnicity]] += 1
         @stats[:blood_type][patient[:blood_type]] += 1
 
-        occurrences = track_occurrences(patient)
-        add_occurrences(@stats[:occurrences], occurrences)
-        @stats[:diabetes_by_race][patient[:race]] += 1 if occurrences[:active_conditions].keys.include?(:diabetes)
+        occurrences = track_occurrences(patient, @top_level_conditions)
+        add_occurrences(@stats[:all_occurrences], occurrences)
         if patient.had_event?(:death)
           add_occurrences(@stats[:dead_occurrences], occurrences)
         else
           add_occurrences(@stats[:living_occurrences], occurrences)
-          if occurrences[:active_conditions].keys.include?(:diabetes) && occurrences[:active_conditions].keys.include?(:hypertension)
-            @stats[:living_hypertension_and_diabetes] += 1
-          end
         end
         occurrences
       end
 
       def add_occurrences(total, occurrences)
-        occurrences.each do |category, hash|
-          hash.each do |key, value|
-            total[category][key] += value
+        occurrences.each do |category, list|
+          list.each do |key|
+            total[category][key] += 1
           end
         end
       end
