@@ -1,6 +1,0 @@
-{
-  "name": "Synthea",
-  "tagline": "Synthetic Patient Population Simulator",
-  "body": "### Mission Statement\r\n\r\nSynthea is a synthetic patient generator that models the medical history of synthetic patients. Our mission is to output high-quality synthetic, realistic but not real, patient data and associated health records covering every aspect of healthcare. The resulting data is free from cost, privacy, and security restrictions. It can be used without restriction for a variety of secondary uses in academia, research, industry, and government (although a citation would be appreciated).\r\n\r\n### Supported Models\r\n\r\n### Support or Contact\r\nSubmit [issues](https://github.com/synthetichealth/synthea/issues), check out our [readme](https://github.com/synthetichealth/synthea/blob/master/README.md) and [documentation](https://github.com/synthetichealth/synthea/wiki) or [contact us](mailto:jwalonoski@mitre.org).",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}

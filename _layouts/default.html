@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+  {% include head.html %}
+  <body>
+    <div id="loading"> 
+      <svg class="spinner centered" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+         <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+      </svg>
+      <span class="sr-only">Page is loading...</span>
+    </div>
+    <div id="page">
+      <div class="wrapper">
+        {% include header.html %}
+        {{ content }}
+        <div class="wrapper-padding">
+        </div>
+      </div>
+    {% include footer.html %}
+  </div>
+  <!-- Scripts for rendering -->
+  <script src="{{site.baseurl}}/assets/js/material.min.js"></script>
+  <script src="{{site.baseurl}}/assets/js/snackbar.min.js"></script>
+  <script> $.material.init(); </script>
+  <script type="text/javascript" src="{{site.baseurl}}/assets/js/main.js"></script>  
+    {% if jekyll.environment == 'production' %}
+      {% include _analytics.html %}
+    {% endif %}
+  </body>
+</html>
