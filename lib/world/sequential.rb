@@ -464,10 +464,10 @@ module Synthea
 
         if patient[:gender] == 'F'
           current_rate = if @stats[:birth_rate].nil?
-                          patient[:number_of_children]
-                        else
-                          @stats[:birth_rate]
-                        end
+                           patient[:number_of_children]
+                         else
+                           @stats[:birth_rate]
+                         end
           @stats[:birth_rate] = ((current_rate + patient[:number_of_children]) / 2.0)
         end
 
