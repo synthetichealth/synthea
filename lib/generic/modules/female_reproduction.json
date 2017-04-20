@@ -195,7 +195,7 @@
           "distributions": [
             {
               "distribution": 0.193,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.807,
@@ -213,7 +213,7 @@
           "distributions": [
             {
               "distribution": 0.0205,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.9795,
@@ -231,7 +231,7 @@
           "distributions": [
             {
               "distribution": 0.0164,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.9836,
@@ -249,7 +249,7 @@
           "distributions": [
             {
               "distribution": 0.00692,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.99318,
@@ -267,7 +267,7 @@
           "distributions": [
             {
               "distribution": 0.00692,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.99318,
@@ -285,7 +285,7 @@
           "distributions": [
             {
               "distribution": 0.00692,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.99318,
@@ -303,7 +303,7 @@
           "distributions": [
             {
               "distribution": 0.00514,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.99486,
@@ -321,7 +321,7 @@
           "distributions": [
             {
               "distribution": 0.00342,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.99658,
@@ -339,7 +339,7 @@
           "distributions": [
             {
               "distribution": 0.00271,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.99729,
@@ -357,7 +357,7 @@
           "distributions": [
             {
               "distribution": 0.000417,
-              "transition": "Potentially_Pregnant"
+              "transition": "Become_Pregnant"
             },
             {
               "distribution": 0.999583,
@@ -371,11 +371,6 @@
     "Not_Sexually_Active": {
       "type": "Simple",
       "direct_transition": "Next_Reproductive_Cycle"
-    },
-
-    "Potentially_Pregnant": {
-      "type": "Simple",
-      "direct_transition": "Become_Pregnant"
     },
 
     "Become_Pregnant": {

@@ -92,32 +92,7 @@
           "display": "Prenatal initial visit"
         }
       ],
-      "remarks": [
-        "Following an initial prenatal visit there are 3 broad outcomes for a pregnancy:",
-        "1. Fetal Loss: 1.053M miscarriages --> 17.1% of all pregnancies",
-        "2. Induced Abortion: 1.103M induced abortions --> 17.9% of all pregnancies",
-        "3. Birth: 3.988M live births --> 65% of all pregnancies",
-        "Total pregnancies:  6.155M",
-        "Source: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm"
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.179,
-          "transition": "End_Initial_Visit_Towards_Abortion",
-          "remarks": [
-            "See bottom of this module for abortion and miscarriage handling"
-          ]
-        },
-        {
-          "distribution": 0.821,
-          "transition": "Pregnancy_Test"
-        }
-      ]
-    },
-
-    "End_Initial_Visit_Towards_Abortion" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Wait_For_Induced_Abortion"
+      "direct_transition": "Pregnancy_Test"
     },
 
     "Pregnancy_Test": {
@@ -131,19 +106,179 @@
           "display": "Standard pregnancy test"
         }
       ],
-      "distributed_transition": [
+      "remarks": [
+        "Following an initial prenatal visit there are 3 broad outcomes for a pregnancy:",
+        "1. Fetal Loss: 1.053M miscarriages --> 17.1% of all pregnancies",
+        "2. Induced Abortion: 1.103M induced abortions --> 17.9% of all pregnancies",
+        "3. Birth: 3.988M live births --> 65% of all pregnancies",
+        "Total pregnancies:  6.155M",
+        "Source: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm",
+
+        "In terms of trends, the likelihood of abortion peaks age 20-30, then decreases with age. ",
+        "Meanwhile, the likelihood of miscarriage significantly increases with age. 85% will ",
+        "miscarriage in the first trimester, the remaining 15% in the second.",
+
+        "|     Age     |  Abortion %  | Miscarriage % | ",
+        "|-------------|--------------|---------------| ",
+        "|     <20     |    11.4%     |       8%      | ",
+        "|    20-24    |    32.7%     |       8%      | ",
+        "|    25-29    |    25.9%     |       8%      | ",
+        "|    30-34    |    16.8%     |      12%      | ",
+        "|    35-39    |     9.2%     |      19%      | ",
+        "|    40-44    |     3.6%     |      39%      | ",
+        "|     45+     |     3.6%     |      60%      | ",
+        "'--------------------------------------------' ",
+        "Abortions source: https://www.cdc.gov/mmwr/volumes/65/ss/ss6512a1.htm",
+        "Miscarriage source: http://www.advancedfertility.com/age-miscarriage.htm"
+      ],
+      "complex_transition": [
         {
-          "distribution": 0.177,
-          "transition": "Miscarriage_In_First_Trimester",
-          "remarks": [
-            "For a total percentage of 17.1% fetal loss, of the 82.1% that do not have an ",
-            "abortion 20.8% must have a miscarriage. 85% of those will miscarriage in the first ",
-            "trimester so 17.7% of all patients that reach this state will miscarriage now."
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 45,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.036,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.51,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.454,
+              "transition": "Pregnancy_CarePlan"
+            }
           ]
         },
         {
-          "distribution": 0.823,
-          "transition": "Pregnancy_CarePlan"
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 40,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.036,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.332,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.632,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 35,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.092,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.162,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.746,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 30,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.168,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.102,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.73,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 25,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.259,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.068,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.673,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 20,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.327,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.068,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.605,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.114,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.068,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.818,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
         }
       ]
     },
@@ -183,6 +318,11 @@
       ],
       "assign_to_attribute": "pregnancy_careplan",
       "direct_transition": "End_Prenatal_Initial_Visit"
+    },
+
+    "End_Initial_Visit_Towards_Abortion": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_For_Induced_Abortion"
     },
 
     "End_Prenatal_Initial_Visit" : {

@@ -14,28 +14,16 @@
 
     "Clear_Contraceptive_Med": {
       "type": "Simple",
+      "remarks": [
+        "If the 'contraceptive' attribute is currently set, the medication it ",
+        "references will be active."
+      ],
       "conditional_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
             "attribute": "contraceptive",
             "operator": "is not nil"
-          },
-          "transition": "Active_Medication_Check"
-        },
-        {
-          "transition": "Clear_Contraceptive_Type"
-        }
-      ]
-    },
-
-    "Active_Medication_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "referenced_by_attribute": "contraceptive"
           },
           "transition": "End_Contraceptive_Med"
         },
@@ -48,6 +36,12 @@
     "End_Contraceptive_Med": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "contraceptive",
+      "direct_transition": "Clear_Contraceptive"
+    },
+
+    "Clear_Contraceptive": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive",
       "direct_transition": "Clear_Contraceptive_Type"
     },
 

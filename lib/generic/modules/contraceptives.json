@@ -154,6 +154,9 @@
             "unit": "years"
           },
           "transition": "Mature_Contraceptive_Use"
+        },
+        {
+          "transition": "Terminal"
         }
       ]
     },
@@ -334,27 +337,27 @@
       ],
       "attribute": "contraceptive_type",
       "value": "none",
-      "direct_transition": "Not_Guarded"
+      "direct_transition": "Route_To_Guard"
     },
 
     "Using_Withdrawal": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "withdrawal",
-      "direct_transition": "Not_Guarded"
-    },
-
-    "Using_Oral_Contraceptive": {
-      "type": "CallSubmodule",
-      "submodule": "contraceptives/oral_contraceptive",
-      "direct_transition": "Not_Guarded"
+      "direct_transition": "Route_To_Guard"
     },
 
     "Using_Condom_Only": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "condom",
-      "direct_transition": "Not_Guarded"
+      "direct_transition": "Route_To_Guard"
+    },
+
+    "Using_Oral_Contraceptive": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/oral_contraceptive",
+      "direct_transition": "Contraceptive_Prescribed?"
     },
 
     "Using_Sterilization": {
@@ -385,7 +388,7 @@
       ],
       "attribute": "contraceptive_type",
       "value": "sterilization",
-      "direct_transition": "Not_Guarded"
+      "direct_transition": "Route_To_Guard"
     },
 
     "Using_Female_Sterilization": {
@@ -397,13 +400,13 @@
     "Using_Ring": {
       "type": "CallSubmodule",
       "submodule": "contraceptives/ring_contraceptive",
-      "direct_transition": "Not_Guarded"
+      "direct_transition": "Contraceptive_Prescribed?"
     },
 
     "Using_Patch": {
       "type": "CallSubmodule",
       "submodule": "contraceptives/patch_contraceptive",
-      "direct_transition": "Not_Guarded"
+      "direct_transition": "Contraceptive_Prescribed?"
     },
 
     "Using_IUD": {
@@ -422,29 +425,75 @@
         "(since they do so internally)."
       ],
       "submodule": "contraceptives/intrauterine_device",
-      "direct_transition": "Self_Guarded"
+      "direct_transition": "Contraceptive_Prescribed?"
     },
 
     "Using_Implant": {
       "type": "CallSubmodule",
       "submodule": "contraceptives/implant_contraceptive",
-      "direct_transition": "Self_Guarded"
+      "direct_transition": "Contraceptive_Prescribed?"
     },
 
     "Using_Injectable": {
       "type": "CallSubmodule",
       "submodule": "contraceptives/injectable_contraceptive",
-      "direct_transition": "Self_Guarded"
+      "direct_transition": "Contraceptive_Prescribed?"
     },
 
-    "Self_Guarded": {
+    "Contraceptive_Prescribed?": {
       "type": "Simple",
-      "direct_transition": "Reset_Contraceptive_Use"
+      "remarks": [
+        "If a contraceptive wasn't prescribed by the submodule (for example, because ",
+        "none was available for the current year of the simulation) both contraceptive ",
+        "attributes will be nill. ",
+
+        "Since no contraceptive was prescribed, default to the historically avaialable ",
+        "set of contraceptives."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive_type",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Historical_Contraceptive_Use"
+        },
+        {
+          "transition": "Route_To_Guard"
+        }
+      ]
     },
 
-    "Not_Guarded": {
+    "Historical_Contraceptive_Use": {
       "type": "Simple",
-      "direct_transition": "Route_To_Guard"
+      "remarks": [
+        "These were available methods prior to the 1960's."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Using_No_Contraceptive"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Using_Withdrawal"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Using_Condom_Only"
+        }
+      ]
     },
 
     "Route_To_Guard": {
@@ -484,10 +533,21 @@
     "Young_To_Mid_Guard": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Age",
-        "operator": ">=",
-        "quantity": 25,
-        "unit": "years"
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 25,
+            "unit": "years"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          }
+        ]
       },
       "direct_transition": "Reset_Contraceptive_Use"
     },
@@ -495,10 +555,21 @@
     "Mid_To_Mature_Guard": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Age",
-        "operator": ">=",
-        "quantity": 35,
-        "unit": "years"
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 35,
+            "unit": "years"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          }
+        ]
       },
       "direct_transition": "Reset_Contraceptive_Use"
     },
@@ -506,10 +577,21 @@
     "Menopause_Guard": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Age",
-        "operator": ">=",
-        "quantity": 50,
-        "unit": "years"
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          }
+        ]
       },
       "direct_transition": "Reset_Contraceptive_Use"
     },
@@ -524,6 +606,15 @@
       "conditional_transition": [
         {
           "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Pregnant_Guard"
+        },
+        {
+          "condition": {
             "condition_type": "Age",
             "operator": ">=",
             "quantity": 50,
@@ -535,6 +626,20 @@
           "transition": "Female_Contraceptive_Use"
         }
       ]
+    },
+
+    "Pregnant_Guard": {
+      "type": "Guard",
+      "remarks": [
+        "Once a female is no longer pregnant, she will re-select a contraceptive type."
+      ],
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "pregnant",
+        "operator": "==",
+        "value": false
+      },
+      "direct_transition": "Female_Contraceptive_Use"
     },
 
     "Menopause_Reached": {
