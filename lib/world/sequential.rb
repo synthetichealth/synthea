@@ -462,6 +462,15 @@ module Synthea
         @stats[:ethnicity][patient[:ethnicity]] += 1
         @stats[:blood_type][patient[:blood_type]] += 1
 
+        if patient[:gender] == 'F'
+          current_rate = if @stats[:birth_rate].nil?
+                           patient[:number_of_children]
+                         else
+                           @stats[:birth_rate]
+                         end
+          @stats[:birth_rate] = ((current_rate + patient[:number_of_children]) / 2.0)
+        end
+
         occurrences = track_occurrences(patient, @top_level_conditions)
         add_occurrences(@stats[:all_occurrences], occurrences)
         if patient.had_event?(:death)
