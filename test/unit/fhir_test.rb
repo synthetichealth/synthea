@@ -134,7 +134,7 @@ class FhirTest < Minitest::Test
     assert_equal('outpatient', encounter.local_class.code)
     assert_equal('170258001', encounter.type[0].coding[0].code)
     assert_equal('http://snomed.info/sct', encounter.type[0].coding[0].system)
-    assert_equal("#{@patientID}",encounter.patient.reference)
+    assert_equal("#{@patientID}",encounter.subject.reference)
     startTime = Synthea::Output::FhirRecord.convert_fhir_date_time(@time,'time')
     endTime = Synthea::Output::FhirRecord.convert_fhir_date_time(@time+1.hour, 'time')
     period = FHIR::Period.new({'start'=>startTime, 'end' => endTime})
@@ -182,7 +182,7 @@ class FhirTest < Minitest::Test
     assert_equal('8302-2', obs.code.coding[0].code)
     assert_equal('Body Height', obs.code.coding[0].display)
     assert_equal("#{@patientID}", obs.subject.reference)
-    assert_equal("#{@encounterID}", obs.encounter.reference)
+    assert_equal("#{@encounterID}", obs.context.reference)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), obs.effectiveDateTime)
     assert_equal(60, obs.valueQuantity.value)
     assert_equal("cm", obs.valueQuantity.unit)
@@ -204,7 +204,7 @@ class FhirTest < Minitest::Test
     assert_equal('55284-4', multiobs.code.coding[0].code)
     assert_equal('Blood Pressure', multiobs.code.coding[0].display)
     assert_equal("#{@patientID}", multiobs.subject.reference)
-    assert_equal("#{@encounterID}", multiobs.encounter.reference)
+    assert_equal("#{@encounterID}", multiobs.context.reference)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), multiobs.effectiveDateTime)
     systolic = multiobs.component[0]
     assert_equal('8480-6', systolic.code.coding[0].code)
@@ -237,9 +237,8 @@ class FhirTest < Minitest::Test
     assert_equal('57698-3', report.code.coding[0].code)
     assert_equal('Lipid Panel', report.code.coding[0].display)
     assert_equal("#{@patientID}", report.subject.reference)
-    assert_equal("#{@encounterID}", report.encounter.reference)
+    assert_equal("#{@encounterID}", report.context.reference)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), report.effectiveDateTime)
-    assert_equal('Hospital Lab', report.performer[0].display)
     ob_refs.zip(report.result) do |ob, result|
       assert_equal("#{ob[0]}", result.reference)
       assert_equal(ob[1], result.display)
@@ -260,7 +259,7 @@ class FhirTest < Minitest::Test
     assert_equal('13995008', procedure.code.coding[0].code)
     assert_equal('Amputation of left arm', procedure.code.coding[0].display)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), procedure.performedDateTime)
-    assert_equal("#{@encounterID}", procedure.encounter.reference)
+    assert_equal("#{@encounterID}", procedure.context.reference)
     assert_empty @fhir_record.validate
   end
 
@@ -278,7 +277,7 @@ class FhirTest < Minitest::Test
     assert_equal('Amputation of left arm', procedure.code.coding[0].display)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time, 'time'), procedure.performedPeriod.start)
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time + 7.hours, 'time'), procedure.performedPeriod.end)
-    assert_equal("#{@encounterID}", procedure.encounter.reference)
+    assert_equal("#{@encounterID}", procedure.context.reference)
     assert_empty @fhir_record.validate
   end
 
@@ -292,7 +291,7 @@ class FhirTest < Minitest::Test
     assert_equal('http://hl7.org/fhir/sid/cvx', imm.vaccineCode.coding[0].system)
     assert_equal('Hep B, adolescent or pediatric', imm.vaccineCode.coding[0].display)
     assert_equal("#{@patientID}", imm.patient.reference)
-    assert_equal(false, imm.wasNotGiven)
+    assert_equal(false, imm.notGiven)
     assert_equal(true, imm.primarySource)
     assert_equal("#{@encounterID}", imm.encounter.reference)
     assert_empty @fhir_record.validate
@@ -310,9 +309,9 @@ class FhirTest < Minitest::Test
      'stop' => @time + 15.minutes, 'stop_reason' => :cardiovascular_improved, 'rx_info' => {}}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry)
     med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}.resource
-    assert_equal("#{@patientID}", med.patient.reference)
+    assert_equal("#{@patientID}", med.subject.reference)
     assert_equal("#{@encounterID}", med.context.reference)
-    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time), med.dateWritten)
+    assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time), med.authoredOn)
     assert_equal('stopped', med.status)
     assert_equal("#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
