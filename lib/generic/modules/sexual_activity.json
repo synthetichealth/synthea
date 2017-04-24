@@ -6,7 +6,10 @@
     "from Indiana University: http://www.nationalsexstudy.indiana.edu/graph.html",
 
     "This module operates on the assumption that these incidences for human sexual ",
-    "activity have remained similar throughout modern history."
+    "activity have remained similar throughout modern history.",
+
+    "No consideration is given to the age, race, socioeconomic status, or marriage ",
+    "status of the patient. This complexity could be added."
   ],
   "states": {
 

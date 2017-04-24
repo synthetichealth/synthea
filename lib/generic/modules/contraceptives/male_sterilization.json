@@ -1,8 +1,7 @@
 {
   "name": "Male Sterilization",
   "remarks": [
-    "This submodule performs a male sterilization procedure. This procedure ",
-    "is irreversible, and sets 'contraceptive_type' = 'sterilization'. "
+    "This submodule performs a male sterilization (vasectomy) procedure."
   ],
   "states": {
 

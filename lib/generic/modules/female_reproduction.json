@@ -170,25 +170,6 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "contraceptive_type",
-            "operator": "is nil"
-          },
-          "remarks": [
-            "contraceptive_type == nil is treated as an error state and ",
-            "deferred to the next reproductive cycle. This may occur when ",
-            "the reproductive cycle completes on the same time step as ",
-            "the contraceptive_type is recomputed."
-          ],
-          "distributions": [
-            {
-              "distribution": 1,
-              "transition": "Next_Reproductive_Cycle"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "contraceptive_type",
             "operator": "==",
             "value": "none"
           },

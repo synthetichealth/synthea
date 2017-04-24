@@ -6,8 +6,8 @@
     "contraceptive was available in 1992, marketed as Depo-Provera. Depo remains ",
     "the only available injectable option in the U.S.",
 
-    "Since injectables must be readministered once every 3 months, this submodule ",
-    "regularly administers additional doses until the current age bracket is exhausted.",
+    "Injectables must be readministered once every 3 months. The Contraceptive ",
+    "Maintenance module handles that.",
 
     "Sources for historical availability: ",
     "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
