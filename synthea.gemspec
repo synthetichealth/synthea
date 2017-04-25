@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'faker', '~> 1.6', '>= 1.6.0'
   s.add_runtime_dependency 'pickup', '~>0.0.11', '>= 0.0.11'
   s.add_runtime_dependency 'recursive-open-struct', '~> 1.0', '>= 1.0.0'
-  s.add_runtime_dependency 'fhir_models'
+  # s.add_runtime_dependency 'fhir_models'
   s.add_runtime_dependency 'fhir_client', '~> 1.8'
   s.add_runtime_dependency 'area'
   s.add_runtime_dependency 'georuby'
