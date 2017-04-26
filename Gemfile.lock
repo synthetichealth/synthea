@@ -1,4 +1,18 @@
 GIT
+  remote: https://github.com/fhir-crucible/fhir_client.git
+  revision: 428d9268da584cef62d5750633c2aa5451a52c49
+  branch: 3.0.0-release
+  specs:
+    fhir_client (3.0.0)
+      activesupport (>= 3)
+      addressable (>= 2.3)
+      nokogiri
+      oauth2 (~> 1.1)
+      rack (>= 1.5)
+      rest-client (~> 1.8)
+      tilt (>= 1.1)
+
+GIT
   remote: https://github.com/fhir-crucible/fhir_models.git
   revision: 767ea007a16a20a9522586072999b4e4e04a3e9c
   branch: 3.0.0-release
@@ -38,7 +52,6 @@ PATH
       concurrent-ruby
       distribution (~> 0.7.3)
       faker (~> 1.6, >= 1.6.0)
-      fhir_client (~> 1.8)
       georuby
       highline
       json
@@ -89,17 +102,9 @@ GEM
     faraday (0.11.0)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
+    ffi (1.9.18)
     ffi (1.9.18-java)
     ffi (1.9.18-x64-mingw32)
-    fhir_client (1.8.0)
-      activesupport (>= 3)
-      addressable (>= 2.3)
-      fhir_models (>= 1.8.0)
-      nokogiri
-      oauth2 (~> 1.1)
-      rack (>= 1.5)
-      rest-client (~> 1.8)
-      tilt (>= 1.1)
     georuby (2.5.2)
     highline (1.7.8)
     http-cookie (1.0.3)
@@ -225,6 +230,7 @@ DEPENDENCIES
   concurrent-ruby
   distribution (~> 0.7.3)
   faker
+  fhir_client!
   fhir_models!
   georuby
   health-data-standards!
@@ -242,4 +248,4 @@ DEPENDENCIES
   tilt
 
 BUNDLED WITH
-   1.14.3
+   1.14.6
