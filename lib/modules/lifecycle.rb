@@ -5,7 +5,10 @@ module Synthea
 
       def initialize
         super
-        @growth_chart = JSON.parse(File.read('./resources/cdc_growth_charts.json'))
+        # this file is at synthea/lib/modules/lifecycle.rb,
+        # we want synthea/resources/cdc_growth_charts.json
+        gc_file = File.join(File.dirname(__FILE__), '..', '..', 'resources', 'cdc_growth_charts.json')
+        @growth_chart = JSON.parse(File.read(gc_file))
       end
 
       # People are born
