@@ -1,6 +1,6 @@
 // Runs updateActive based on current page
 function updateActiveOnPage(page) { 
-    if (page == "/" || page == '/synthea-website/') { 
+    if (page == "/" || page == '/synthea/') { 
         updateActive(".navbar-nav", 100, 50);
     }
 }
