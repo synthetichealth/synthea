@@ -21,7 +21,7 @@ GIT
 PATH
   remote: .
   specs:
-    synthea (1.1.0)
+    synthea (1.2.0)
       area
       chunky_png
       concurrent-ruby
