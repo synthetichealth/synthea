@@ -13,9 +13,9 @@ Currently, Synthea features:
 - Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
 - Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
- - FHIR (STU3 v3.0.1)
- - C-CDA
- - CSV
+  - FHIR (STU3 v3.0.1)
+  - C-CDA
+  - CSV
 - Rendering Rules and Disease Modules with Graphviz
 
 ## Quick Start
