@@ -15,9 +15,9 @@ module Synthea
   }
 
   OBS_LOOKUP = {
-    height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
-    weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},
-    bmi: { description: 'Body Mass Index', code: '39156-5', unit: 'kg/m2' },
+    body_height: { description: 'Body Height', code: '8302-2',  unit: 'cm'},
+    body_weight: { description: 'Body Weight', code: '29463-7', unit: 'kg'},
+    body_mass_index: { description: 'Body Mass Index', code: '39156-5', unit: 'kg/m2' },
     systolic_blood_pressure: { description: 'Systolic Blood Pressure', code: '8480-6', unit: 'mmHg'},
     diastolic_blood_pressure: { description: 'Diastolic Blood Pressure', code: '8462-4', unit: 'mmHg'},
     ha1c: { description: 'Hemoglobin A1c/Hemoglobin.total in Blood', code: '4548-4', unit: '%'},
