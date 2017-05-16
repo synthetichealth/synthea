@@ -140,7 +140,7 @@ module Synthea
                 entity[:name_prefix] = 'Mrs.'
                 entity[:name_maiden] = entity[:name_last]
                 entity[:name_last] = Faker::Name.last_name
-                entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
+                entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}" if Synthea::Config.population.append_hash_to_person_names == true
               end
             else
               entity[:marital_status] = 'S'
