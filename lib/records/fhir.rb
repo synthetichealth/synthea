@@ -148,6 +148,11 @@ module Synthea
           patient_resource.identifier << FHIR::Identifier.new('type' => { 'coding' => [{ 'system' => 'http://hl7.org/fhir/v2/0203', 'code' => 'PPN' }] },
                                                               'system' => "#{SHR_EXT}passportNumber", 'value' => entity[:identifier_passport])
         end
+        # add medical record number
+        if Synthea::Config.exporter.fhir.include_mrn
+          patient_resource.identifier << FHIR::Identifier.new('type' => { 'coding' => [{ 'system' => 'http://hl7.org/fhir/v2/0203', 'code' => 'MR' }] },
+                                                              'system' => 'http://hospital.smarthealthit.org', 'value' => entity.record_synthea.patient_info[:uuid])
+        end
         # add biometric data
         if entity[:fingerprint]
           patient_resource.photo << FHIR::Attachment.new('contentType' => 'image/png', 'title' => 'Biometrics.Fingerprint',
