@@ -582,7 +582,8 @@ module Synthea
       def self.care_goal(goal, goal_status, fhir_record)
         # TODO: search the patient for existing & acive matching goals
         # instead of always creating new ones?
-        fhir_goal = FHIR::Goal.new('status' => goal_status)
+        resource_id = SecureRandom.uuid
+        fhir_goal = FHIR::Goal.new('status' => goal_status, 'id' => resource_id)
 
         # goal has :observation, :text, :addresses, :codes
 
@@ -615,6 +616,7 @@ module Synthea
         end
 
         entry = FHIR::Bundle::Entry.new
+        entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = fhir_goal
         fhir_record.entry << entry
         entry
@@ -687,6 +689,7 @@ module Synthea
         med_entry = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Medication) && med_data[:codes]['RxNorm'][0] == e.resource.code.coding[0].code }
 
         if med_entry.nil?
+          resource_id = SecureRandom.uuid
           medication = FHIR::Medication.new('code' => {
                                               'coding' => [{
                                                 'code' => med_data[:codes]['RxNorm'][0],
@@ -694,9 +697,8 @@ module Synthea
                                                 'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
                                               }],
                                               'text' => med_data[:description]
-                                            })
+                                            }, 'id' => resource_id)
           med_entry = FHIR::Bundle::Entry.new
-          resource_id = SecureRandom.uuid
           med_entry.fullUrl = "urn:uuid:#{resource_id}"
           med_entry.resource = medication
           fhir_record.entry << med_entry
