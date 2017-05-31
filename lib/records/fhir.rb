@@ -656,11 +656,11 @@ module Synthea
               'value' => rx_info['dosage'].amount
             }
             # Additional instructions
-            dosage_instruction['additionalInstructions'] = []
+            dosage_instruction['additionalInstruction'] = []
             unless rx_info['instructions'].nil?
               rx_info['instructions'].each do |sym|
                 instr = INSTRUCTION_LOOKUP[sym]
-                dosage_instruction['additionalInstructions'] << {
+                dosage_instruction['additionalInstruction'] << {
                   'coding' => [{
                     'code' => instr[:codes]['SNOMED-CT'][0],
                     'display' => instr[:description],
@@ -679,7 +679,7 @@ module Synthea
               'expectedSupplyDuration' => {
                 'value' => rx_info['duration'].quantity,
                 'unit' => rx_info['duration'].unit,
-                'system' => 'http://hl7.org/fhir/ValueSet/units-of-time',
+                'system' => 'http://unitsofmeasure.org', #http://hl7.org/fhir/ValueSet/units-of-time',
                 'code' => convert_ucum_code(rx_info['duration'].unit)
               }
             }
