@@ -704,6 +704,7 @@ module Synthea
           fhir_record.entry << med_entry
         end
 
+        med_order_id = SecureRandom.uuid
         med_order = FHIR::MedicationRequest.new('medicationReference' => { 'reference' => med_entry.fullUrl.to_s },
                                                 'stage' => {
                                                   'coding' => {
@@ -716,7 +717,8 @@ module Synthea
                                                 'authoredOn' => convert_fhir_date_time(prescription['start_time']),
                                                 'reasonReference' => [],
                                                 'dosageInstruction' => [],
-                                                'dispenseRequest' => dispense_request)
+                                                'dispenseRequest' => dispense_request,
+                                                'id' => med_order_id)
         unless prescription['rx_info'].empty?
           med_order.dosageInstruction << dosage_instruction
         end
@@ -749,6 +751,7 @@ module Synthea
         end
         entry = FHIR::Bundle::Entry.new
         entry.resource = med_order
+        entry.fullUrl = "urn:uuid:#{med_order_id}"
         fhir_record.entry << entry
       end
 
