@@ -718,6 +718,7 @@ module Synthea
                                                 'reasonReference' => [],
                                                 'dosageInstruction' => [],
                                                 'dispenseRequest' => dispense_request,
+                                                'intent' => 'order',
                                                 'id' => med_order_id)
         unless prescription['rx_info'].empty?
           med_order.dosageInstruction << dosage_instruction
