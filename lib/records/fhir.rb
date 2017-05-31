@@ -362,8 +362,10 @@ module Synthea
                                                                             'system' => 'http://snomed.info/sct'
                                                                           }],
                                                                           'text' => condition_data[:description])
-        else
+        elsif observation['value'].to_s =~ /\A[-+]?\d*\.?\d+\z/
           entry.resource.valueQuantity = FHIR::Quantity.new('value' => observation['value'], 'unit' => obs_data[:unit], 'code' => obs_data[:unit], 'system' => 'http://unitsofmeasure.org/')
+        else
+          entry.resource.valueString = observation['value']
         end
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
