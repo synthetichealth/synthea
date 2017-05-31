@@ -696,6 +696,8 @@ module Synthea
                                               'text' => med_data[:description]
                                             })
           med_entry = FHIR::Bundle::Entry.new
+          resource_id = SecureRandom.uuid
+          med_entry.fullUrl = "urn:uuid:#{resource_id}"
           med_entry.resource = medication
           fhir_record.entry << med_entry
         end
@@ -711,8 +713,12 @@ module Synthea
                                                 'context' => { 'reference' => encounter.fullUrl.to_s },
                                                 'authoredOn' => convert_fhir_date_time(prescription['start_time']),
                                                 'reasonReference' => [],
-                                                'dosageInstruction' => [dosage_instruction],
+                                                'dosageInstruction' => [],
                                                 'dispenseRequest' => dispense_request)
+        unless prescription['rx_info'].empty?
+          med_order.dosageInstruction << dosage_instruction
+        end
+
         reasons.each do |r|
           med_order.reasonReference << FHIR::Reference.new('reference' => r.fullUrl.to_s)
         end
