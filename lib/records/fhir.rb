@@ -716,12 +716,11 @@ module Synthea
                                                 'context' => { 'reference' => encounter.fullUrl.to_s },
                                                 'authoredOn' => convert_fhir_date_time(prescription['start_time']),
                                                 'reasonReference' => [],
-                                                'dosageInstruction' => [],
                                                 'dispenseRequest' => dispense_request,
                                                 'intent' => 'order',
                                                 'id' => med_order_id)
         unless prescription['rx_info'].empty?
-          med_order.dosageInstruction << dosage_instruction
+          med_order.dosageInstruction = [dosage_instruction]
         end
 
         reasons.each do |r|
