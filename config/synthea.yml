@@ -6,7 +6,7 @@ synthea:
     fhir:
       export: true
       upload: null # url of the server, ex 'http://fhirserver.example.com:8080'
-      use_shr_extensions: true
+      use_shr_extensions: false
       include_mrn: true
     html:
       export: false
@@ -16,7 +16,7 @@ synthea:
       export: false
       export_headers: true
     years_of_history: 10
-    location: <%= (ENV['OUTPUT_DIR'] || './output/') %>  # should either start with . for relative path or / for absolute
+    location: '../synthea-out' #<%= (ENV['OUTPUT_DIR'] || './output/') %>  # should either start with . for relative path or / for absolute
     folder_per_city: false
     subfolders_by_id_substring: false # if true, creates subfolders based on the first characters of the patient guid. this reduces the # of files in any single folder
     use_uuid_filenames: false # if true, uses patient uuid, otherwise patient name and age
@@ -27,11 +27,11 @@ synthea:
     area: 0.05 #13.9 # Bedford, MA # Default: 0.05
     birth_variance: 0.01
     daily_births_per_square_mile: <%= (ma_births_per_year = 73000.0)/(ma_square_miles=10554.0)/365.0 %>
-    append_hash_to_person_names: true # If true, person names have a numeric hash appended to them to make them more obviously fake
+    append_hash_to_person_names: false # If true, person names have a numeric hash appended to them to make them more obviously fake
     generate_fingerprints: false
   sequential: # sequential population generation... one at a time...
     # population is scaled to accurately represent MA (using a "true" population of 6,794,422)
-    population: 100
+    population: 10
     real_world_population: 6794422 #sum of the jsons in the config folder
     track_detailed_prevalence: true
     multithreading: false
