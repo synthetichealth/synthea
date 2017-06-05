@@ -679,7 +679,7 @@ module Synthea
               'expectedSupplyDuration' => {
                 'value' => rx_info['duration'].quantity,
                 'unit' => rx_info['duration'].unit,
-                'system' => 'http://unitsofmeasure.org', #http://hl7.org/fhir/ValueSet/units-of-time',
+                'system' => 'http://unitsofmeasure.org', # http://hl7.org/fhir/ValueSet/units-of-time',
                 'code' => convert_ucum_code(rx_info['duration'].unit)
               }
             }
