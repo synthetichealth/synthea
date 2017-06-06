@@ -468,7 +468,12 @@ module Synthea
                          else
                            @stats[:birth_rate]
                          end
-          @stats[:birth_rate] = ((current_rate + patient[:number_of_children]) / 2.0)
+          children = if patient[:number_of_children].nil?
+                       0
+                     else
+                       patient[:number_of_children]
+                     end
+          @stats[:birth_rate] = ((current_rate + children) / 2.0)
         end
 
         occurrences = track_occurrences(patient, @top_level_conditions)
