@@ -1,22 +1,21 @@
 GIT
-  remote: https://github.com/projectcypress/health-data-standards.git
-  revision: 821dbbbf659fcd46695ea2d792b53bd182443dfc
+  remote: https://github.com/preston/health-data-standards.git
+  revision: 1f7c3306eb99ecb187d49c5ae8e9dcfada6b96ad
   branch: master
   specs:
     health-data-standards (3.6.1)
-      activesupport (~> 4.1.1)
-      builder (~> 3.1)
+      builder (~> 3.2.3)
       erubis (~> 2.7.0)
-      highline (~> 1.7.0)
+      highline (~> 1.7.8)
       log4r (~> 1.1.10)
-      memoist (~> 0.9.1)
-      mongoid (~> 4.0.0)
-      mongoid-tree (~> 1.0.4)
-      nokogiri (~> 1.6.8)
-      protected_attributes (~> 1.0.5)
+      memoist (~> 0.9.3)
+      mongoid (~> 5.2.1)
+      mongoid-tree (~> 2.1.0)
+      nokogiri (~> 1.8.0)
+      protected_attributes (~> 1.0.9)
       rest-client (~> 1.8.0)
       rubyzip (= 0.9.9)
-      uuid (~> 2.3.7)
+      uuid (~> 2.3.8)
 
 PATH
   remote: .
@@ -40,14 +39,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.1.16)
-      activesupport (= 4.1.16)
+    activemodel (4.2.8)
+      activesupport (= 4.2.8)
       builder (~> 3.1)
-    activesupport (4.1.16)
-      i18n (~> 0.6, >= 0.6.9)
-      json (~> 1.7, >= 1.7.7)
+    activesupport (4.2.8)
+      i18n (~> 0.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.1)
+      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
@@ -58,16 +56,15 @@ GEM
     awesome_print (1.7.0)
     bcp47 (0.3.3)
       i18n
-    bson (3.2.6)
-    bson (3.2.6-java)
+    bson (4.2.1)
+    bson (4.2.1-java)
     builder (3.2.3)
-    cane (2.3.0)
+    cane (3.0.0)
       parallel
     chunky_png (1.3.8)
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     concurrent-ruby (1.0.5-java)
-    connection_pool (2.2.1)
     date_time_precision (0.8.1)
     distribution (0.7.3)
     docile (1.1.5)
@@ -99,9 +96,9 @@ GEM
     highline (1.7.8)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (0.8.1)
-    json (1.8.6)
-    json (1.8.6-java)
+    i18n (0.8.4)
+    json (2.1.0)
+    json (2.1.0-java)
     jwt (1.5.6)
     log4r (1.1.10)
     macaddr (1.7.1)
@@ -109,24 +106,22 @@ GEM
     memoist (0.9.3)
     method_source (0.8.2)
     mime-types (2.99.3)
-    mini_portile2 (2.1.0)
-    minitest (5.10.1)
+    mini_portile2 (2.2.0)
+    minitest (5.10.2)
     minitest-reporters (1.1.14)
       ansi
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    mongoid (4.0.0)
+    mongo (2.4.2)
+      bson (>= 4.2.1, < 5.0.0)
+    mongoid (5.2.1)
       activemodel (~> 4.0)
-      moped (~> 2.0.0)
-      origin (~> 2.1)
+      mongo (>= 2.4.1, < 3.0.0)
+      origin (~> 2.3)
       tzinfo (>= 0.3.37)
-    mongoid-tree (1.0.4)
-      mongoid (>= 3.0, <= 4.0)
-    moped (2.0.7)
-      bson (~> 3.0)
-      connection_pool (~> 2.0)
-      optionable (~> 0.2.0)
+    mongoid-tree (2.1.0)
+      mongoid (>= 4.0, < 7.0)
     multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -134,20 +129,19 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
     netrc (0.11.0)
-    nokogiri (1.6.8.1)
-      mini_portile2 (~> 2.1.0)
-    nokogiri (1.6.8.1-java)
-    nokogiri (1.6.8.1-x64-mingw32)
-      mini_portile2 (~> 2.1.0)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
+    nokogiri (1.8.0-java)
+    nokogiri (1.8.0-x64-mingw32)
+      mini_portile2 (~> 2.2.0)
     oauth2 (1.3.1)
       faraday (>= 0.8, < 0.12)
       jwt (~> 1.0)
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    optionable (0.2.0)
-    origin (2.3.0)
-    parallel (1.11.1)
+    origin (2.3.1)
+    parallel (1.11.2)
     parser (2.4.0.0)
       ast (~> 2.2)
     pickup (0.0.11)
@@ -164,10 +158,11 @@ GEM
       slop (~> 3.4)
       spoon (~> 0.0)
     public_suffix (2.0.5)
-    rack (1.6.5)
-    rainbow (2.2.1)
+    rack (1.6.8)
+    rainbow (2.2.2)
+      rake
     rake (12.0.0)
-    recursive-open-struct (1.0.3)
+    recursive-open-struct (1.0.4)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -177,8 +172,9 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    rubocop (0.43.0)
-      parser (>= 2.3.1.1, < 3.0)
+    rubocop (0.49.1)
+      parallel (~> 1.10)
+      parser (>= 2.3.3.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
@@ -190,7 +186,7 @@ GEM
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.0)
+    simplecov-html (0.10.1)
     slop (3.6.0)
     spoon (0.0.6)
       ffi
@@ -216,13 +212,13 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
-  cane (~> 2.3.0)
+  cane (>= 3.0.0)
   concurrent-ruby
   distribution (~> 0.7.3)
   faker
   georuby
   health-data-standards!
-  minitest (~> 5.3)
+  minitest (>= 5.10.2)
   minitest-reporters
   net-sftp
   pickup
@@ -230,10 +226,10 @@ DEPENDENCIES
   rack (~> 1.6)
   rake
   recursive-open-struct
-  rubocop (~> 0.43.0)
+  rubocop (>= 0.49.1)
   simplecov
   synthea!
   tilt
 
 BUNDLED WITH
-   1.14.6
+   1.15.1
