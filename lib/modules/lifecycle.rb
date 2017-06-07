@@ -346,12 +346,12 @@ module Synthea
         creatine
       end
 
-      # People die
+      # People die from natural causes
       rule :death, [:age], [] do |time, entity|
         if entity.alive?(time)
           if rand <= likelihood_of_death(entity[:age])
             entity.events.create(time, :death, :death, true)
-            self.class.record_death(entity, time)
+            self.class.record_death(entity, time, :natural_causes)
           end
         end
       end
