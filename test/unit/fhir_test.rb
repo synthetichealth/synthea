@@ -367,7 +367,7 @@ class FhirTest < Minitest::Test
     assert_equal(1, med.dispenseRequest.expectedSupplyDuration.value)
     assert_equal('months', med.dispenseRequest.expectedSupplyDuration.unit)
     assert_equal('mo', med.dispenseRequest.expectedSupplyDuration.code)
-    assert_equal('http://hl7.org/fhir/ValueSet/units-of-time', med.dispenseRequest.expectedSupplyDuration.system)
+    assert_equal('http://unitsofmeasure.org', med.dispenseRequest.expectedSupplyDuration.system)
   end
 
   def test_careplan
