@@ -130,7 +130,7 @@ namespace :synthea do
   def clear_output
     if Synthea::Config.sequential.clean_output_each_run
       puts 'Clearing output folders...'
-      %w(html fhir CCDA text csv).each do |type|
+      %w(html fhir fhir_dstu2 CCDA text csv).each do |type|
         out_dir = Synthea::Output::Exporter.get_output_folder(type)
         FileUtils.rm_r out_dir if File.exist? out_dir
         FileUtils.mkdir_p out_dir
