@@ -45,6 +45,7 @@ module Synthea
         }
 
         @population_count = Synthea::Config.sequential.population
+        @only_dead_patients = Synthea::Config.sequential.only_dead_patients
         @generate_count = Concurrent::AtomicFixnum.new(0)
         @export_count = Concurrent::AtomicFixnum.new(0)
         @generate_log_interval = Synthea::Config.sequential.debug_log_interval.generate
@@ -196,16 +197,23 @@ module Synthea
         file.write("#{description},#{numerator},#{denominator},#{result},#{(100 * result).round(2)}\n")
       end
 
+      # Will only generate dead patients.
       def run_random
         i = 0
-        while @stats[:living] < @population_count
+        # Depending on the only_dead_patients value which is set in the configuration file,
+        # the symbol to use for indexing the @stats hash will either be :dead or :living
+        stats_to_use = @random_all_dead_bool ? :dead : :living
+        # While loop will keep running until all of the requested patients have been generated.
+        while @stats[stats_to_use] < @population_count
           person = build_person
           run_task(@export_workers) do
             @export_count.increment
             log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?
+            next if @only_dead_patients && person.alive?(@end_date)
             Synthea::Output::Exporter.export(person)
           end
-
+          # Check if the person has died before the end date and that the death has a recorded cause of death.
+          next if @only_dead_patients && (person.alive?(@end_date) || !person[:cause_of_death])
           occurrences = record_stats(person)
           i += 1
           occurrences[:number] = i

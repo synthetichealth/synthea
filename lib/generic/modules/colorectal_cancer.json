@@ -915,6 +915,7 @@
 
     "Eventual_Death": {
       "type": "Death",
+      "referenced_by_attribute": "colorectal_cancer",
       "remarks": [
         "These patients will eventually die from their colorectal cancer."
       ],
@@ -1079,7 +1080,7 @@
             }
           ]
         }
-      ]     
+      ]
     },
 
     "Wait_For_Partial_Colectomy": {

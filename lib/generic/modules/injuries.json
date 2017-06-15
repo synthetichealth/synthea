@@ -1,3 +1,4 @@
+
 {
   "name": "Injuries",
   "remarks": [
@@ -460,7 +461,7 @@
             "Nearly half of all patients die from traumatic spinal cord injury. ",
             "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3831332/"
           ],
-          "transition": "Death"
+          "transition": "Death_Spinal_Cord"
         },
         {
           "distribution": 0.51,
@@ -613,6 +614,7 @@
 
     "Gunshot_Wound": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "gunshot_wound",
       "target_encounter": "ED_Visit_For_Gunshot_Injury",
       "codes": [
         {
@@ -624,7 +626,7 @@
       "distributed_transition": [
         {
           "distribution": 0.298,
-          "transition": "Death"
+          "transition": "Death_Gunshot_Wound"
         },
         {
           "distribution": 0.702,
@@ -856,7 +858,7 @@
         },
         {
           "distribution": 0.1,
-          "transition": "Death"
+          "transition": "Death_Severe_Concussion"
         }
       ]
     },
@@ -1571,7 +1573,7 @@
         },
         {
           "distribution": 0.0044,
-          "transition": "Death"
+          "transition": "Deadly_Burn"
         }
       ]
     },
@@ -2598,8 +2600,40 @@
       "direct_transition": "End_Injury_Medications"
     },
 
-    "Death": {
+    "Deadly_Burn": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "48333001",
+          "display": "Burn injury(morphologic abnormality)"
+        }
+      ],
+      "direct_transition": "Death_Severe_Burn"
+    },
+
+    "Death_Spinal_Cord": {
       "type": "Death",
+      "referenced_by_attribute": "spinal_injury",
+      "direct_transition": "Terminal"
+    },
+
+    "Death_Gunshot_Wound": {
+      "type": "Death",
+      "referenced_by_attribute": "gunshot_wound",
+      "direct_transition": "Terminal"
+    },
+
+    "Death_Severe_Concussion": {
+      "type": "Death",
+      "referenced_by_attribute": "concussion_injury",
+      "direct_transition": "Terminal"
+    },
+
+    "Death_Severe_Burn": {
+      "type": "Death",
+      "referenced_by_attribute": "burn_injury",
       "direct_transition": "Terminal"
     },
 

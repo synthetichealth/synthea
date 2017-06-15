@@ -703,7 +703,7 @@
       "type" : "EncounterEnd",
       "direct_transition" : "Detoxification"
     },
-    
+
     "Death": {
       "type": "Death",
       "codes": [

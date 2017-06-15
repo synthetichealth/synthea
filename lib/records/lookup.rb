@@ -76,6 +76,7 @@ module Synthea
     food_allergy_shellfish: { description: 'Food Allergy: Shellfish', codes: {'SNOMED-CT' => ['300913006']}},
 
     stroke: { description: 'Stroke', codes: {'SNOMED-CT' => ['230690007']}},
+    natural_causes: { description: 'Natural death with unknown cause', codes: {'SNOMED-CT' => ['9855000']}},
     coronary_heart_disease: { description: 'Coronary Heart Disease', codes: {'SNOMED-CT' => ['53741008']}},
     myocardial_infarction: { description: 'Myocardial Infarction', codes: {'SNOMED-CT' => ['22298006']}},
     cardiac_arrest: {description: 'Cardiac Arrest', codes: {'SNOMED-CT' => ['410429000']}},
@@ -187,13 +188,13 @@ module Synthea
     french_creole: { 'code' => 'fr', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'French' },
     italian: { 'code' => 'it', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Italian' },
     russian: { 'code' => 'ru-RU', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Russian (Russia)' },
-    vietnamese: { 'code' => 'vi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Vietnamese' }, 
+    vietnamese: { 'code' => 'vi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Vietnamese' },
     greek: { 'code' => 'el', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Greek' },
     arabic: { 'code' => 'ar', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Arabic' },
     cambodian: { 'code' => 'km', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Khmer (aka Cambodian)' },
     german: { 'code' => 'de-DE', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'German (Germany)' },
     hindi: { 'code' => 'hi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Hindi' },
-    undetermined: { 'code' => 'und', 'system' => 'http://id.loc.gov/vocabulary/iso639-2', 'display' => 'Undetermined'} 
+    undetermined: { 'code' => 'und', 'system' => 'http://id.loc.gov/vocabulary/iso639-2', 'display' => 'Undetermined'}
   }
 
   PROCEDURE_LOOKUP = {
