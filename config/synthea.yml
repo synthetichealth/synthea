@@ -3,10 +3,15 @@ synthea:
     ccda:
       export: false
       upload: null # not yet implemented
-    fhir:
+    fhir: # refers to the latest version, ie STU3
       export: true
       upload: null # url of the server, ex 'http://fhirserver.example.com:8080'
       use_shr_extensions: true
+      include_mrn: true
+    fhir_dstu2:
+      export: false
+      # upload: null # not implemented
+      # note that there are no SHR profiles defined for DSTU2
       include_mrn: true
     html:
       export: false

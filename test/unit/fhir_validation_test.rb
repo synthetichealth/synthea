@@ -20,8 +20,14 @@ class FhirValidationTest < Minitest::Test
       # generate a patient with synthea
       record = world.build_person
       print '.'
-      # convert to FHIR
+      # convert to FHIR STU3
       bundle = Synthea::Output::FhirRecord.convert_to_fhir(record)
+      print '.'
+      # validate all the resources
+      assert_empty bundle.validate
+      print '.'
+      # convert to FHIR DSTU2
+      bundle = Synthea::Output::FhirDstu2Record.convert_to_fhir(record)
       print '.'
       # validate all the resources
       assert_empty bundle.validate

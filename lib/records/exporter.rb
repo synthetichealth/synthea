@@ -37,6 +37,14 @@ module Synthea
           end
         end
 
+        if Synthea::Config.exporter.fhir_dstu2.export
+          fhir_record = Synthea::Output::FhirDstu2Record.convert_to_fhir(patient, end_time)
+          out_dir = get_output_folder('fhir_dstu2', patient)
+          data = fhir_record.to_json
+          out_file = File.join(out_dir, "#{filename(patient)}.json")
+          File.open(out_file, 'w') { |file| file.write(data) }
+        end
+
         if Synthea::Config.exporter.text.export
           text_record = Synthea::Output::TextRecord.convert_to_text(patient, end_time)
           out_dir = get_output_folder('text', patient)
