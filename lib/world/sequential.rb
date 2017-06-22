@@ -202,7 +202,7 @@ module Synthea
         i = 0
         # Depending on the only_dead_patients value which is set in the configuration file,
         # the symbol to use for indexing the @stats hash will either be :dead or :living
-        stats_to_use = @random_all_dead_bool ? :dead : :living
+        stats_to_use = @only_dead_patients ? :dead : :living
         # While loop will keep running until all of the requested patients have been generated.
         while @stats[stats_to_use] < @population_count
           person = build_person
