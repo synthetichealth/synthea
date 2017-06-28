@@ -8,6 +8,13 @@ class GenericContextTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
+
+    # assign hospital
+    @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::TEST_SINGLE_HEALTHCARE_FACILITY)
+    @geom.features.each do |h|
+      Synthea::Hospital.new(h.properties, h.geometry.to_coordinates)
+    end
+    @patient.hospital = Synthea::Hospital.hospital_list[0]
   end
 
   def teardown
@@ -146,7 +153,7 @@ class GenericContextTest < Minitest::Test
 
     # Run number two should go all the way to Terminal, but should process Encounter and Death along the way
     # Ensure that the encounter really happens 2 days after the initial run
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {}])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {provider: @patient.hospital}])
     # Ensure that death really happens 2 + 3 days after the initial run
     @patient.record_synthea.expect(:death, nil, [@time.advance(:days => 5)])
     # Run number 2: 7 days after run number 1

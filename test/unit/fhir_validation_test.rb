@@ -64,6 +64,13 @@ class FhirValidationTest < Minitest::Test
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
+    # assign hospital
+    @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::TEST_HEALTHCARE_FACILITIES)
+    @geom.features.each do |h|
+      Synthea::Hospital.new(h.properties, h.geometry.to_coordinates)
+    end
+    @patient.hospital = Synthea::Hospital.hospital_list[0]
+
     @fhir_record = FHIR::Bundle.new
     @fhir_record.type = 'collection'
     @time = Time.now

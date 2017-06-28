@@ -72,6 +72,12 @@ module Synthea
 
         @city_populations = JSON.parse(datafile) if datafile
 
+        # import hospitals
+        @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::TEST_HEALTHCARE_FACILITIES)
+        @geom.features.each do |h|
+          Synthea::Hospital.new(h.properties, h.geometry.to_coordinates)
+        end
+
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start
       end
 
@@ -183,6 +189,8 @@ module Synthea
             end
           end
         end
+        # export hospital information
+        Synthea::Output::HospitalExporter.export
       end
 
       def write_prevalences(file, description, category, type)
@@ -315,6 +323,7 @@ module Synthea
           Synthea::Rules.apply(date, person)
         end
         Synthea::Modules::Generic.log_modules(person)
+
         person
       end
 

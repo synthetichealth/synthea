@@ -285,10 +285,19 @@ module Synthea
           end
 
           if record_encounter
+            # find closest service provider
+            service = @encounter_class
+            provider = Synthea::Provider.find_closest_service(entity, service.to_sym)
+            # hash below is added so that procedures during encounters will have a reference to provider
+            entity[:current_provider] = provider
+
             value = add_lookup_code(Synthea::ENCOUNTER_LOOKUP)
             value[:class] = @encounter_class
-            options = { 'reason' => cond }.compact
+            options = { 'reason' => cond, provider: provider }.compact
             entity.record_synthea.encounter(symbol, time, options)
+
+            # increment number of encounters performed by service providing hospital
+            provider.increment_encounters
           end
 
           # Look through the history for conditions to diagnose
@@ -312,6 +321,10 @@ module Synthea
 
           options = { 'discharge' => @discharge_disposition }.compact
           entity.record_synthea.encounter_end(enc.symbol, time, options)
+
+          # reset current provider hash
+          entity[:current_provider] = nil
+
           true
         end
       end
@@ -439,6 +452,17 @@ module Synthea
           end
           entity.record_synthea.medication_start(symbol, time, reasons, rx_info)
           @prescribed = true
+
+          # increment number of prescriptions prescribed by respective hospital
+          provider =
+            # there is an encounter assiciated with the prescription and provider associated with the encounter
+            if entity[:current_provider]
+              entity[:current_provider]
+            # patient goes to default provider
+            else
+              entity.hospital
+            end
+          provider.increment_prescriptions
         end
       end
 
@@ -583,6 +607,17 @@ module Synthea
 
           entity.record_synthea.procedure(symbol, time, options)
           @performed = true
+
+          provider =
+            # there is a provider associated with the encounter
+            if entity[:current_provider]
+              entity[:current_provider]
+            # patient goes to default provider
+            else
+              entity.hospital
+            end
+          # increment number of procedures performed by respective hospital
+          provider.increment_procedures
         end
       end
 
@@ -700,6 +735,11 @@ module Synthea
           add_lookup_code(Synthea::OBS_LOOKUP)
           if concurrent_with_target_encounter(time)
             entity.record_synthea.diagnostic_report(symbol, time, @number_of_observations)
+
+            # increment number of labs performed by respective hospital
+            entity.hospital.increment_labs
+            entity.hospital.increment_diabetes_labs if symbol == :lipid_panel
+
           else
             raise "DiagnosticReport '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"
           end

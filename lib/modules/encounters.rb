@@ -43,6 +43,11 @@ module Synthea
 
       rule :encounter, [], [:schedule_encounter, :observations, :lab_results, :diagnoses, :immunizations] do |time, entity|
         if entity.alive?(time)
+          # find closest service provider
+          provider = Synthea::Provider.find_closest_service(entity, 'ambulatory')
+          # hash below is added as reference
+          entity[:current_provider] = provider
+
           unprocessed_events = entity.events.unprocessed_before(time, :encounter)
           unprocessed_events.each do |event|
             entity.events.process(event)
@@ -55,6 +60,8 @@ module Synthea
               entity.events.create(event.time, :encounter_ordered, :encounter)
             end
           end
+          # reset current provider hash
+          entity[:current_provider] = nil
         end
       end
 
@@ -98,11 +105,18 @@ module Synthea
           emergency_encounter(entity, time)
         end
 
+        # find closest service provider with emergency service
+        provider = Synthea::Provider.find_closest_service(entity, 'emergency')
+        # hash below is added as reference
+        entity[:current_provider] = provider
+
         unprocessed_events = entity.events.unprocessed.select { |x| [:myocardial_infarction, :cardiac_arrest, :stroke].include?(x.type) && x.time <= time }
         unprocessed_events.each do |event|
           entity.events.process(event)
           Synthea::Modules::CardiovascularDisease.perform_emergency(entity, event)
         end
+        # reset current provider hash
+        entity[:current_provider] = nil
       end
 
       #------------------------------------------------------------------------------------------#
@@ -124,14 +138,31 @@ module Synthea
                else
                  :age_senior
                end
-        entity.record_synthea.encounter(type, time, reason: reason)
+
+        # find closest service provider
+        encounter_data = ENCOUNTER_LOOKUP[type]
+        service = encounter_data[:class]
+        provider = Synthea::Provider.find_closest_service(entity, service.to_sym)
+        # hash below is added as reference
+        entity[:current_provider] = provider
+        provider.increment_encounters
+
+        options = { reason: reason, provider: entity.hospital }
+        entity.record_synthea.encounter(type, time, options)
         # TODO: wellness encounters need their duration defined by the activities performed
         # the trouble is those activities are split among many modules
         entity.record_synthea.encounter_end(type, time + 1.hour)
       end
 
       def self.emergency_encounter(entity, time, reason = nil)
-        entity.record_synthea.encounter(:emergency, time, reason: reason)
+        # find closest service provider with emergency service
+        provider = Synthea::Provider.find_closest_service(entity, 'emergency')
+        # hash below is added as reference
+        entity[:current_provider] = provider
+        provider.increment_encounters
+
+        options = { reason: reason, provider: provider }
+        entity.record_synthea.encounter(:emergency, time, options)
         # TODO: emergency encounters need their duration to be defined by the activities performed
         # based on the emergencies given here (heart attack, stroke)
         # assume people will be in the hospital for observation for a few days

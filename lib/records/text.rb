@@ -91,6 +91,7 @@ module Synthea
         text_record << "Age:            #{age}\n"
         text_record << "Birth Date:     #{entity.event(:birth).time.strftime('%Y-%m-%d')}\n"
         text_record << "Marital Status: #{entity[:marital_status]}\n"
+        text_record << "Hospital:       #{entity.hospital.attributes['name']}\n"
         breakline(text_record)
       end
 
@@ -113,7 +114,14 @@ module Synthea
           text_record << "#{encounter['time'].strftime('%Y-%m-%d')} : Encounter for #{reason_data[:description]}"
         else
           text_record << "#{encounter['time'].strftime('%Y-%m-%d')} : #{encounter_data[:description]}"
+          # encounter information here
         end
+        ########################################################################
+        if encounter[:provider]
+          # text_record << "     provider: #{encounter[:provider].attributes["name"]}"
+          # text_record << "     class: #{encounter_data[:class]}"
+        end
+
         text_record
       end
 
