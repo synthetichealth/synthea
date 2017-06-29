@@ -142,7 +142,7 @@ module Synthea
         # find closest service provider
         encounter_data = ENCOUNTER_LOOKUP[type]
         service = encounter_data[:class]
-        provider = Synthea::Provider.find_closest_service(entity, service.to_sym)
+        provider = Synthea::Provider.find_closest_service(entity, service)
         # hash below is added as reference
         entity[:current_provider] = provider
         provider.increment_encounters

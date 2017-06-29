@@ -73,7 +73,7 @@ module Synthea
         @city_populations = JSON.parse(datafile) if datafile
 
         # import hospitals
-        @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::TEST_HEALTHCARE_FACILITIES)
+        @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::HEALTHCARE_FACILITIES)
         @geom.features.each do |h|
           Synthea::Hospital.new(h.properties, h.geometry.to_coordinates)
         end

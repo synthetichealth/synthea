@@ -44,20 +44,25 @@ module Synthea
     end
 
     def self.find_closest_service(entity, service)
-      service = 'ambulatory' if service == 'outpatient'
+      if service == 'outpatient' || service == :outpatient
+        service = 'ambulatory'
+      end
       # if service is provided by default hospital, go there
       return entity.hospital if entity.hospital.service?(service.to_sym)
 
       person_location = entity.attributes[:coordinates_address].to_coordinates
-      closest_distance = 100
+      person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
+      closest_distance = 100_000_000
       closest_service = entity.hospital
+
       # if service is nil or not supproted by simulation, patient goes to default hospital
       if Provider.services.key?(service.to_sym)
         Provider.services[service.to_sym].each do |h|
           service_location = h.attributes[:coordinates]
-          distance = Math.sqrt((person_location[0] - service_location[0])**2 + (person_location[1] - service_location[1])**2)
-          if distance < closest_distance
-            closest_distance = distance
+          service_point = GeoRuby::SimpleFeatures::Point.from_x_y(service_location[0], service_location[1])
+          spherical_distance = service_point.spherical_distance(person_point)
+          if spherical_distance < closest_distance
+            closest_distance = spherical_distance
             closest_service = h
           end
         end
@@ -70,8 +75,9 @@ module Synthea
     end
 
     def distance(entity)
-      person_location = entity.attributes[:coordinates_address].to_coordinates
-      Math.sqrt((person_location[0] - service_location[0])**2 + (person_location[1] - service_location[1])**2)
+      # TODO: finish implementation
+      # person_location = entity.attributes[:coordinates_address].to_coordinates
+      # person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
     end
 
     def increment_encounters

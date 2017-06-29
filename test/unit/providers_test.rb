@@ -48,7 +48,7 @@ class ProviderTest < Minitest::Test
     closest_service_emergency = Synthea::Hospital.find_closest_service(@patient, "emergency")
     assert_equal(Synthea::Hospital.hospital_list[2], closest_service_emergency)
     closest_service_inpatient = Synthea::Hospital.find_closest_service(@patient, "inpatient")
-    assert_equal(Synthea::Hospital.hospital_list[0], closest_service_inpatient)
+    assert_equal(Synthea::Hospital.hospital_list[1], closest_service_inpatient)
   end
 
   def test_utilization_encounter
@@ -83,7 +83,7 @@ class ProviderTest < Minitest::Test
     ctx = get_context('procedure.json')
     @patient.hospital.reset_utilization
     encounter = Synthea::Generic::States::Encounter.new(ctx, "Inpatient_Encounter")
-    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, {provider: Synthea::Hospital.hospital_list[0]}])
+    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, {provider: Synthea::Hospital.hospital_list[1]}])
     encounter.perform_encounter(@time, @patient)
     ctx.history << encounter
 
@@ -96,8 +96,8 @@ class ProviderTest < Minitest::Test
     ctx.history << appendectomy
 
     # both an encounter and procedure occured
-    assert_equal(1, Synthea::Hospital.hospital_list[0].utilization[:encounters])
-    assert_equal(1, Synthea::Hospital.hospital_list[0].utilization[:procedures])
+    assert_equal(1, Synthea::Hospital.hospital_list[1].utilization[:encounters])
+    assert_equal(1, Synthea::Hospital.hospital_list[1].utilization[:procedures])
     @patient.record_synthea.verify
   end
 

@@ -287,7 +287,7 @@ module Synthea
           if record_encounter
             # find closest service provider
             service = @encounter_class
-            provider = Synthea::Provider.find_closest_service(entity, service.to_sym)
+            provider = Synthea::Provider.find_closest_service(entity, service)
             # hash below is added so that procedures during encounters will have a reference to provider
             entity[:current_provider] = provider
 
