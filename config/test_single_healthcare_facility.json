@@ -1,0 +1,16 @@
+{
+  "﻿EMERGENCY INPATIENT AMBULATORY" : {
+    "coordinates": [ -70.890916, 42.814401 ],
+    "properties": {
+      "DPHid": "2006",
+      "type": "acute_hospital",
+      "name": "﻿EMERGENCY INPATIENT AMBULATORY",
+      "address": "25 HIGHLAND AVENUE",
+      "city": "Newburyport",
+      "city_zip": "01950",
+      "state": "MA",
+      "country": "US",
+      "services_provided" : "emergency inpatient ambulatory"
+    }
+  }
+}

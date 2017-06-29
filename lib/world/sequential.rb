@@ -73,9 +73,10 @@ module Synthea
         @city_populations = JSON.parse(datafile) if datafile
 
         # import hospitals
-        @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::HEALTHCARE_FACILITIES)
-        @geom.features.each do |h|
-          Synthea::Hospital.new(h.properties, h.geometry.to_coordinates)
+        file = File.read './config/healthcare_facilities.json'
+        providers = JSON.parse(file)
+        providers.each do |_provider_name, provider_stats|
+          Synthea::Hospital.new(provider_stats['properties'], provider_stats['coordinates'])
         end
 
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start

@@ -1,0 +1,58 @@
+{
+  "﻿EMERGENCY INPATIENT AMBULATORY" : {
+    "coordinates": [ -70.890916, 42.814401 ],
+    "properties": {
+      "DPHid": "2006",
+      "type": "acute_hospital",
+      "name": "﻿EMERGENCY INPATIENT AMBULATORY",
+      "address": "25 HIGHLAND AVENUE",
+      "city": "Newburyport",
+      "city_zip": "01950",
+      "state": "MA",
+      "country": "US",
+      "services_provided" : "emergency inpatient ambulatory"
+    }
+  },
+  "INPATIENT AMBULATORY" : {
+    "coordinates": [ -71.794835, 42.276329 ],
+    "properties": {
+      "DPHid": "2202",
+      "type": "non_acute_hospital",
+      "name": "INPATIENT AMBULATORY",
+      "address": "107 LINCOLN STREET",
+      "city": "Worcester",
+      "city_zip": "01605",
+      "state": "MA",
+      "country": "US",
+      "services_provided" : "inpatient ambulatory"
+    }
+  },
+  "EMERGENCY" : {
+    "coordinates": [ -71.073773, 42.334423 ],
+    "properties": {
+      "DPHid": "2307",
+      "type": "acute_hospital",
+      "name": "EMERGENCY",
+      "address": "830-840 HARRISON AVENUE",
+      "city": "Boston",
+      "city_zip": "02118",
+      "state": "MA",
+      "country": "US",
+      "services_provided": "emergency "
+    }
+  },
+  "AMBULATORY" : {
+    "coordinates": [ -71.302001, 41.939364 ],
+    "properties": {
+      "DPHid": "24TR",
+      "type": "hospital_satellite",
+      "name": "AMBULATORY",
+      "address": "100 RATHBUN WILLARD DRIVE, 1ST",
+      "city": "Attleboro",
+      "city_zip": "02703",
+      "state": "MA",
+      "country": "US",
+      "services_provided": "ambulatory"
+    }
+  }
+}

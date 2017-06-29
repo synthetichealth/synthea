@@ -3,10 +3,13 @@ require_relative '../test_helper'
 class ProviderTest < Minitest::Test
 
   def setup
-    @geom = GeoRuby::SimpleFeatures::Geometry.from_geojson(Synthea::TEST_HEALTHCARE_FACILITIES)
-    @geom.features.each do |h|
-      Synthea::Hospital.new(h.properties, h.geometry.to_coordinates)
+    # import hospitals
+    file = File.read "./config/test_healthcare_facilities.json"
+    providers = JSON.parse(file)
+    providers.each do |provider_name, provider_stats|
+      Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
     end
+
     @time = Time.now
     @patient = Synthea::Person.new
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(-71.16614917449775,42.32102909461221)

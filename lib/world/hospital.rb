@@ -19,6 +19,7 @@ module Synthea
       closest_distance = 100_000_000
       closest_hospital = nil
 
+      # default hospital provides ambulatory/outpatient service
       @@services[:ambulatory].each do |h|
         hospital_location = h.attributes[:coordinates]
         hospital_point = GeoRuby::SimpleFeatures::Point.from_x_y(hospital_location[0], hospital_location[1])
