@@ -468,17 +468,15 @@ module Synthea
           reason = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find { |c| c.code == reason_code } }
         end
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
-        prov = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.type[0].coding[0].code == 'prov' }
+        # prov = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.type[0].coding[0].code == 'prov' }
         fhir_procedure = FHIR::Procedure.new('subject' => { 'reference' => patient.fullUrl.to_s },
                                              'status' => 'completed',
                                              'code' => {
                                                'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'display' => proc_data[:description], 'system' => 'http://snomed.info/sct' }],
                                                'text' => proc_data[:description]
                                              },
-                                             'performer' => {
-                                               'actor' => { 'reference' => prov.fullUrl.to_s }
-                                             },
-
+                                             # 'reasonReference' => { 'reference' => reason.resource.id },
+                                             # 'performer' => { 'reference' => doctor_no_good },
                                              'context' => { 'reference' => encounter.fullUrl.to_s })
         fhir_procedure.reasonReference = FHIR::Reference.new('reference' => reason.fullUrl.to_s, 'display' => reason.resource.code.text) if reason
 
