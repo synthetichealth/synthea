@@ -34,7 +34,7 @@ class FhirTest < Minitest::Test
     @patient_entry = Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
     @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour }
     @encounter_entry = Synthea::Output::FhirRecord.encounter(@encounter, @fhir_record, @patient_entry)
-    # fhir_record.entry[0] is the provider, [1] is the patient, [2] is the encounter 
+    # fhir_record.entry[0] is the provider, [1] is the patient, [2] is the encounter
     @providerID = @fhir_record.entry[0].fullUrl
     @patientID = @fhir_record.entry[1].fullUrl
     @encounterID = @fhir_record.entry[2].fullUrl

@@ -47,6 +47,10 @@ module Synthea
       if service == 'outpatient' || service == :outpatient
         service = 'ambulatory'
       end
+
+      # if service is nil or not supproted by simulation, patient goes to default hospital
+      return entity.hospital if service.nil?
+
       # if service is provided by default hospital, go there
       return entity.hospital if entity.hospital.service?(service.to_sym)
 
@@ -55,7 +59,6 @@ module Synthea
       closest_distance = 100_000_000
       closest_service = entity.hospital
 
-      # if service is nil or not supproted by simulation, patient goes to default hospital
       if Provider.services.key?(service.to_sym)
         Provider.services[service.to_sym].each do |h|
           service_location = h.attributes[:coordinates]

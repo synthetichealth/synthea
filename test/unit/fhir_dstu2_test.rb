@@ -18,6 +18,15 @@ class FhirDstu2Test < Minitest::Test
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
+
+    # assign hospital
+    file = File.read "./test/fixtures/test_healthcare_facilities.json"
+    providers = JSON.parse(file)
+    providers.each do |provider_name, provider_stats|
+      Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
+    end
+    @patient.hospital = Synthea::Hospital.hospital_list[0]
+
     @fhir_record = FHIR::DSTU2::Bundle.new
     @fhir_record.type = 'collection'
     @time = Time.now
@@ -25,8 +34,9 @@ class FhirDstu2Test < Minitest::Test
     @patient_entry = Synthea::Output::FhirDstu2Record.basic_info(@patient, @fhir_record)
     @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour }
     @encounter_entry = Synthea::Output::FhirDstu2Record.encounter(@encounter, @fhir_record, @patient_entry)
-    @patientID = @fhir_record.entry[0].fullUrl
-    # @fhir_record.entry[1] is the provider
+    # fhir_record.entry[0] is the provider, [1] is the patient, [2] is the encounter
+    @providerID = @fhir_record.entry[0].fullUrl
+    @patientID = @fhir_record.entry[1].fullUrl
     @encounterID = @fhir_record.entry[2].fullUrl
   end
 
@@ -54,7 +64,7 @@ class FhirDstu2Test < Minitest::Test
     disease = fhir.entry.find {|e| e.resource.is_a?(FHIR::DSTU2::Condition)}.resource
     assert_equal(Synthea::Output::FhirDstu2Record.convert_fhir_date_time(@time + 10.minutes, 'time'), disease.abatementDateTime)
     order = [FHIR::DSTU2::Encounter, FHIR::DSTU2::Condition, FHIR::DSTU2::Observation, FHIR::DSTU2::Procedure, FHIR::DSTU2::Immunization]
-    order = [FHIR::DSTU2::Patient, FHIR::DSTU2::Organization] + order + order
+    order = [FHIR::DSTU2::Organization, FHIR::DSTU2::Patient] + order + order
     order.zip(fhir.entry) do |klass, entry|
       assert_equal(klass, entry.resource.class)
     end
@@ -75,14 +85,14 @@ class FhirDstu2Test < Minitest::Test
 
   def test_basic_info
     entry = @fhir_record.entry
-    person = entry[0].resource
+    person = entry[1].resource
     name = person.name[0]
     assert_equal("foo123", name.given[0])
     assert_equal('bar456', name.family[0])
     assert_equal("official",name.use)
     assert_equal('female',person.gender)
     assert_equal(Synthea::Output::FhirDstu2Record.convert_fhir_date_time(@time),person.birthDate)
-    assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,entry[0].fullUrl)
+    assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,entry[1].fullUrl)
     race = person.extension[0].valueCodeableConcept.coding[0]
     assert_equal('White',race.display)
     assert_equal('2106-3',race.code)
@@ -102,10 +112,10 @@ class FhirDstu2Test < Minitest::Test
     @patient[:race] = :hispanic
     @patient[:ethnicity] = :mexican
     Synthea::Output::FhirDstu2Record.basic_info(@patient, @fhir_record)
-    race = @fhir_record.entry[3].resource.extension[0].valueCodeableConcept.coding[0]
+    race = @fhir_record.entry[4].resource.extension[0].valueCodeableConcept.coding[0]
     assert_equal('Other',race.display)
     assert_equal('2131-1',race.code)
-    ethnicity = @fhir_record.entry[3].resource.extension[1].valueCodeableConcept.coding[0]
+    ethnicity = @fhir_record.entry[4].resource.extension[1].valueCodeableConcept.coding[0]
     assert_equal('Mexican',ethnicity.display)
     assert_equal('2148-5',ethnicity.code)
     refute_empty person.text.div
