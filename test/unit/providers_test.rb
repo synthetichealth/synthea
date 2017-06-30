@@ -4,7 +4,7 @@ class ProviderTest < Minitest::Test
 
   def setup
     # import hospitals
-    file = File.read "./config/test_healthcare_facilities.json"
+    file = File.read "./test/fixtures/test_healthcare_facilities.json"
     providers = JSON.parse(file)
     providers.each do |provider_name, provider_stats|
       Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])

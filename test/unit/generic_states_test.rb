@@ -10,7 +10,7 @@ class GenericStatesTest < Minitest::Test
     @patient[:age] = 35
 
     # assign hospital
-    file = File.read "./config/test_single_healthcare_facility.json"
+    file = File.read "./test/fixtures/test_single_healthcare_facility.json"
     providers = JSON.parse(file)
     providers.each do |provider_name, provider_stats|
       Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])

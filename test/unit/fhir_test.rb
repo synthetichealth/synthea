@@ -20,7 +20,7 @@ class FhirTest < Minitest::Test
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
     
     # assign hospital
-    file = File.read "./config/test_healthcare_facilities.json"
+    file = File.read "./test/fixtures/test_healthcare_facilities.json"
     providers = JSON.parse(file)
     providers.each do |provider_name, provider_stats|
       Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
