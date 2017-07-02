@@ -1,0 +1,389 @@
+{
+	"name": "Epilepsy",
+	"remarks": ["Epilepsy is a neurological disorder marked by sudden recurrent episodes of sensory disturbance, ",
+	"loss of consciousness, or convulsions, associated with abnormal electrical activity in the brain. ",
+	"Information on treatment, prevalence, and incidence of specific epilepsy types from the CDC: ",
+	"https://www.cdc.gov/epilepsy/basics/fast-facts.htm"],
+	"states": {
+		"Initial": {
+			"type": "Initial",
+			"distributed_transition": [{
+				"distribution": 0.023,
+				"transition": "Ages_0_1"
+			},
+			{
+				"distribution": 0.0192,
+				"transition": "Ages_1_10"
+			},
+			{
+				"distribution": 0.0194,
+				"transition": "Ages_10_15"
+			},
+			{
+				"distribution": 0.0192,
+				"transition": "Ages_15_55"
+			},
+			{
+				"distribution": 0.0192,
+				"transition": "Ages_55_Plus"
+			},
+			{
+				"distribution": 0.90,
+				"transition": "Terminal"
+			}]
+		},
+		"Ages_0_1": {
+			"type": "Delay",
+			"remarks": ["Age ranges taken from an interview with Dr. Friedman, NYU Langone"],
+			"range": {
+				"low": 0,
+				"high": 1,
+				"unit": "years"
+			},
+			"direct_transition": "Suspected_Epilepsy"
+		},
+		"Ages_1_10": {
+			"type": "Delay",
+			"remarks": ["Age ranges taken from an interview with Dr. Friedman, NYU Langone"],
+			"range": {
+				"low": 1,
+				"high": 10,
+				"unit": "years"
+			},
+			"direct_transition": "Suspected_Epilepsy"
+		},
+		"Ages_10_15": {
+			"type": "Delay",
+			"remarks": ["Age ranges taken from an interview with Dr. Friedman, NYU Langone"],
+			"range": {
+				"low": 10,
+				"high": 15,
+				"unit": "years"
+			},
+			"direct_transition": "Suspected_Epilepsy"
+		},
+		"Ages_15_55": {
+			"type": "Delay",
+			"remarks": ["Age ranges taken from an interview with Dr. Friedman, NYU Langone"],
+			"range": {
+				"low": 15,
+				"high": 55,
+				"unit": "years"
+			},
+			"direct_transition": "Suspected_Epilepsy"
+		},
+		"Ages_55_Plus": {
+			"type": "Delay",
+			"remarks": ["Age ranges taken from an interview with Dr. Friedman, NYU Langone"],
+			"range": {
+				"low": 55,
+				"high": 90,
+				"unit": "years"
+			},
+			"direct_transition": "Suspected_Epilepsy"
+		},
+		"Suspected_Epilepsy": {
+			"type": "Simple",
+			"conditional_transition": [{
+				"condition": {
+					"condition_type": "Gender",
+					"gender": "M"
+				},
+				"transition": "Male"
+			},
+			{
+				"condition": {
+					"condition_type": "Gender",
+					"gender": "F"
+				},
+				"transition": "Female"
+			}]
+		},
+		"Male": {
+			"type": "Simple",
+			"distributed_transition": [{
+				"distribution": 0.55,
+				"transition": "Seizure_Disorder"
+			},
+			{
+				"distribution": 0.45,
+				"transition": "Terminal"
+			}],
+			"remarks": [""]
+		},
+		"Female": {
+			"type": "Simple",
+			"distributed_transition": [{
+				"distribution": 0.45,
+				"transition": "Seizure_Disorder"
+			},
+			{
+				"distribution": 0.55,
+				"transition": "Terminal"
+			}],
+			"remarks": ["Figures derived from interview with Dr. Friedman, NYU Langone Medical Center."]
+		},
+		"Seizure_Disorder": {
+			"type": "ConditionOnset",
+			"target_encounter": "Seizure_Encounter",
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "128613002",
+				"display": "Seizure disorder"
+			}],
+			"direct_transition": "Seizure_Encounter",
+			"remarks": [""]
+		},
+		"Seizure_Encounter": {
+			"type": "Encounter",
+			"wellness": false,
+			"encounter_class": "emergency",
+			"reason": "Seizure",
+			"remarks": ["Patients start being diagnosed with seizure disorder when they have a seizure."],
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "50849002",
+				"display": "Emergency Room Admission"
+			}],
+			"direct_transition": "History_of_Seizure"
+		},
+		"History_of_Seizure": {
+			"type": "ConditionOnset",
+			"target_encounter": "Seizure_Encounter",
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "703151001",
+				"display": "History of single seizure (situation)"
+			}],
+			"direct_transition": "EEG_Test"
+		},
+		"EEG_Test": {
+			"type": "Procedure",
+			"duration": {
+				"low": 60,
+				"high": 180,
+				"unit": "minutes"
+			},
+			"target_encounter": "Seizure_Encounter",
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "54550000",
+				"display": "Seizure Count Cerebral Cortex Electroencephalogram (EEG)"
+			}],
+			"complex_transition": [{
+				"condition": {
+					"condition_type": "PriorState",
+					"name": "Epilepsy"
+				},
+				"transition": "Living_with_Seizures"
+			},
+			{
+				"distributions": [{
+					"distribution": 0.4,
+					"transition": "Epilepsy"
+				},
+				{
+					"distribution": 0.6,
+					"transition": "Living_with_Seizures"
+				}]
+			}],
+			"remarks": ["For patients who have already been diagnosed with Epilepsy, the diagnosis is not re-issued. Those patients go back to living with seizures."]
+		},
+		"Epilepsy": {
+			"type": "ConditionOnset",
+			"target_encounter": "Seizure_Encounter",
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "84757009",
+				"display": "Epilepsy"
+			}],
+			"distributed_transition": [{
+				"distribution": 0.33,
+				"transition": "Carbamazepine"
+			},
+			{
+				"distribution": 0.33,
+				"transition": "Diazepam"
+			},
+			{
+				"distribution": 0.34,
+				"transition": "Clonazepam"
+			}]
+		},
+		"Living_with_Seizures": {
+			"type": "Simple",
+			"distributed_transition": [{
+				"distribution": 0.33,
+				"transition": "Carbamazepine"
+			},
+			{
+				"distribution": 0.33,
+				"transition": "Diazepam"
+			},
+			{
+				"distribution": 0.34,
+				"transition": "Clonazepam"
+			}]
+		},
+		"Carbamazepine": {
+			"type": "MedicationOrder",
+			"codes": [{
+				"system": "RxNorm",
+				"code": "308971",
+				"display": "Carbamazepine[Tegretol]"
+			}],
+			"assign_to_attribute": "seizure_meds",
+			"conditional_transition": [{
+				"condition": {
+					"condition_type": "PriorState",
+					"name": "End_Seizure_Encounter"
+				},
+				"transition": "End_Medicine_Encounter"
+			},
+			{
+				"transition": "End_Seizure_Encounter"
+			}]
+		},
+		"Diazepam": {
+			"type": "MedicationOrder",
+			"codes": [{
+				"system": "RxNorm",
+				"code": "563026",
+				"display": "Diazepam [Valium]"
+			}],
+			"assign_to_attribute": "seizure_meds",
+			"conditional_transition": [{
+				"condition": {
+					"condition_type": "PriorState",
+					"name": "End_Seizure_Encounter"
+				},
+				"transition": "End_Medicine_Encounter"
+			},
+			{
+				"transition": "End_Seizure_Encounter"
+			}]
+		},
+		"Clonazepam": {
+			"type": "MedicationOrder",
+			"codes": [{
+				"system": "RxNorm",
+				"code": "1153378",
+				"display": "Clonazepam [Klonopin]"
+			}],
+			"assign_to_attribute": "seizure_meds",
+			"conditional_transition": [{
+				"condition": {
+					"condition_type": "PriorState",
+					"name": "End_Seizure_Encounter"
+				},
+				"transition": "End_Medicine_Encounter"
+			},
+			{
+				"transition": "End_Seizure_Encounter"
+			}]
+		},
+		"End_Seizure_Encounter": {
+			"type": "EncounterEnd",
+			"discharge_disposition": {
+				"system": "NUBC",
+				"code": "01",
+				"display": "Discharged to home care or self care (routine discharge)"
+			},
+			"direct_transition": "Undergoing_Seizure_Treatment"
+		},
+		"Undergoing_Seizure_Treatment": {
+			"type": "Delay",
+			"remarks": ["Patients manage their epilepsy or seizures with meds on an ongoing basis."],
+			"range": {
+				"low": 4,
+				"high": 26,
+				"unit": "weeks"
+			},
+			"distributed_transition": [{
+				"distribution": 0.2,
+				"transition": "Seizure_Encounter"
+			},
+			{
+				"distribution": 0.1,
+				"transition": "Sudden_Cardiac_Death"
+			},
+			{
+				"distribution": 0.7,
+				"transition": "Medication_Guard"
+			}]
+		},
+		"Medication_Guard": {
+			"type": "Delay",
+			"remarks": ["Wait a few weeks and then keep taking meds (after refill), change, or discontinue them."],
+			"range": {
+				"low": 4,
+				"high": 12,
+				"unit": "weeks"
+			},
+			"direct_transition": "Medication_End"
+		},
+		"Medication_End": {
+			"type": "MedicationEnd",
+			"referenced_by_attribute": "seizure_meds",
+			"distributed_transition": [{
+				"distribution": 0.7,
+				"transition": "Medicine_Encounter"
+			},
+			{
+				"distribution": 0.3,
+				"transition": "Terminal"
+			}],
+			"remarks": ["Patients who are living with seizures either keep taking meds or go into remission. Their diagnoses doesn't disappear in remission."]
+		},
+		"Medicine_Encounter": {
+			"type": "Encounter",
+			"encounter_class": "outpatient",
+			"wellness": true,
+			"reason": "Medication follow-Up",
+			"remarks": ["Patients start with medication prescription or follow-up."],
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "390906007",
+				"display": "Follow-Up Encounter"
+			}],
+			"distributed_transition": [{
+				"distribution": 0.33,
+				"transition": "Carbamazepine"
+			},
+			{
+				"distribution": 0.33,
+				"transition": "Diazepam"
+			},
+			{
+				"distribution": 0.34,
+				"transition": "Clonazepam"
+			}]
+		},
+		"End_Medicine_Encounter": {
+			"type": "EncounterEnd",
+			"discharge_disposition": {
+				"system": "NUBC",
+				"code": "01",
+				"display": "Discharged to home care or self care (routine discharge)"
+			},
+			"direct_transition": "Undergoing_Seizure_Treatment"
+		},
+		"Sudden_Cardiac_Death": {
+			"type": "Death",
+			"range": {
+				"low": 12,
+				"high": 52,
+				"unit": "weeks"
+			},
+			"codes": [{
+				"system": "SNOMED-CT",
+				"code": "95281009",
+				"display": "Sudden Cardiac Death"
+			}],
+			"direct_transition": "Terminal"
+		},
+		"Terminal": {
+			"type": "Terminal"
+		}
+	}
+}
