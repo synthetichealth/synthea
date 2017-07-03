@@ -20,6 +20,7 @@ class GenericStatesTest < Minitest::Test
 
   def teardown
     Synthea::MODULES.clear
+    Synthea::Hospital.clear
   end
 
   def test_initial_always_passes

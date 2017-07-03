@@ -40,6 +40,10 @@ class FhirDstu2Test < Minitest::Test
     @encounterID = @fhir_record.entry[2].fullUrl
   end
 
+  def teardown
+    Synthea::Hospital.clear
+  end
+
   def test_convert_to_fhir
     record = @patient.record_synthea
     record.encounter(:age_lt_11, @time)

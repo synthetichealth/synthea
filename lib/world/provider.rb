@@ -77,12 +77,6 @@ module Synthea
       services_provided.include?(service)
     end
 
-    def distance(entity)
-      # TODO: finish implementation
-      # person_location = entity.attributes[:coordinates_address].to_coordinates
-      # person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
-    end
-
     def increment_encounters
       @utilization[:encounters] += 1
     end

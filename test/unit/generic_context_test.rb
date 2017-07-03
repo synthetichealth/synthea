@@ -20,6 +20,7 @@ class GenericContextTest < Minitest::Test
 
   def teardown
     Synthea::MODULES.clear
+    Synthea::Hospital.clear
   end
 
   def test_new_context

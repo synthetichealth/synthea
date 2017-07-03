@@ -11,6 +11,7 @@ class FhirValidationTest < Minitest::Test
   def teardown
     Synthea::MODULES.clear
     Synthea::COND_LOOKUP.delete('1234')
+    Synthea::Hospital.clear
   end
 
   def test_execution_and_fhir_validation

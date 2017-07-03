@@ -24,6 +24,7 @@ class AppendicitisTest < Minitest::Test
 
   def teardown
     Synthea::MODULES.clear
+    Synthea::Hospital.clear
   end
 
   def test_patient_without_appendicitis

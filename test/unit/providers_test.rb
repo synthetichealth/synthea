@@ -61,13 +61,9 @@ class ProviderTest < Minitest::Test
     assert_equal(0, @patient.hospital.utilization[:encounters])
 
     # Encounter - patient sees default provider for ambulatory services 
-    # from generic_states_test.rb test_wellness_encounter
-    ctx = get_context('encounter.json')
-    encounter = Synthea::Generic::States::Encounter.new(ctx, 'Annual_Physical')
-    encounter.encounter_class = 'outpatient'
-    @time = @time + 6.months
-    @time = @time + 2.weeks
-    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_check_up, @time, {provider: @patient.hospital}])
+    ctx = get_context('example_module.json')
+    encounter = Synthea::Generic::States::Encounter.new(ctx, 'Examplotomy_Encounter')
+    @patient.record_synthea.expect(:encounter, nil, [:examplotomy_encounter, @time, {provider: @patient.hospital}])
     encounter.perform_encounter(@time, @patient)
 
     assert_equal(1, @patient.hospital.utilization[:encounters])

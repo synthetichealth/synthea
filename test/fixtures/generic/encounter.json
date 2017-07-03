@@ -8,11 +8,6 @@
         "Annual_Physical": {
             "type": "Encounter",
             "wellness": true,
-            "codes": [{
-                "system": "SNOMED-CT",
-                "code": "185349003",
-                "display": "Encounter for check up"
-            }],
             "direct_transition": "6_Month_Delay"
         },
         "6_Month_Delay": {
