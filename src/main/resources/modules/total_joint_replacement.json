@@ -1,0 +1,200 @@
+{
+  "name": "Total Joint Replacement",
+  "remarks": [
+    "This is not a standalone module. Currently joint replacements are triggered by ",
+    "the 'joint_replacement' attribute set by the osteoarthritis and rheumatoid ",
+    "arthritis modules. Possible values for the 'joint_replacement' attribute are ",
+    "'hip' and 'knee'."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Joint_Replacement_Guard"
+    },
+
+    "Joint_Replacement_Guard": {
+      "type": "Guard",
+      "remarks": [
+        "As a side note, knee and hip replacements weren't available before the late ",
+        "1960's. However, since we're only applying these surgeries to subjects 50 years ",
+        "or older they should not occur prior to the late 1960's."
+      ],
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 50,
+            "unit": "years"
+          }
+        ]
+      },
+      "direct_transition": "Delay_For_Joint_Replacement"
+    },
+
+    "Delay_For_Joint_Replacement": {
+      "type": "Delay",
+      "remarks": [
+        "Added to stagger the date/time of the joint replacements."
+      ],
+      "range": {
+        "low": 0,
+        "high": 12,
+        "unit": "months"
+      },
+      "direct_transition": "Joint_Replacement_Encounter"
+    },
+
+    "Joint_Replacement_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183495009",
+          "display": "Non-urgent orthopedic admission"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "knee"
+          },
+          "transition": "Knee_Replacement_Procedure"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "hip"
+          },
+          "transition": "Hip_Replacement_Procedure"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Knee_Replacement_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Joint_Replacement_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "609588000",
+          "display": "Total knee replacement"
+        }
+      ],
+      "direct_transition": "Post_Op_CarePlan"
+    },
+
+    "Hip_Replacement_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Joint_Replacement_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "52734007",
+          "display": "Total replacement of hip"
+        }
+      ],
+      "direct_transition": "Post_Op_CarePlan"
+    },
+
+    "Post_Op_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Joint_Replacement_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "781831000000109",
+          "display": "Major surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition": "Post_Op_Prescribe_Pain_Reliever"
+    },
+
+    "Post_Op_Prescribe_Pain_Reliever": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "In_Hospital_Post_Surgery_Recovery"
+    },
+
+    "In_Hospital_Post_Surgery_Recovery" : {
+      "type" : "Delay",
+      "range" : { "low" : 3, "high" : 5, "unit" : "days" },
+      "direct_transition" : "End_Encounter"
+    },
+
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Delay_For_Recovery"
+    },
+
+    "Delay_For_Recovery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "End_Post_Op_CarePlan"
+    },
+
+    "End_Post_Op_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Post_Op_CarePlan",
+      "direct_transition": "Delay_Until_New_Replacement_Needed"
+    },
+
+    "Delay_Until_New_Replacement_Needed": {
+      "type": "Delay",
+      "remarks": [
+        "Source: http://www.aahks.org/care-for-hips-and-knees/do-i-need-a-joint-replacement/total-knee-replacement/",
+        "Annual failure rate of 0.5 - 1%, or about a 3.7% chance every 5 years. Favoring the ",
+        "5-years timestep to reduce the number of iterations in this loop."
+      ],
+      "exact": {
+        "quantity": 5,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.037,
+          "transition": "Joint_Replacement_Encounter"
+        },
+        {
+          "distribution": 0.963,
+          "transition": "Delay_Until_New_Replacement_Needed"
+        }
+      ]
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
