@@ -284,13 +284,14 @@ module Synthea
             cond = entity[@reason].to_sym if cond.nil? && entity[@reason]
           end
 
-          if record_encounter
-            # find closest service provider
-            service = @encounter_class
-            provider = Synthea::Provider.find_closest_service(entity, service)
-            # hash below is added so that procedures during encounters will have a reference to provider
-            entity[:current_provider] = provider
+          # find closest service provider
+          service = @encounter_class
+          provider = Synthea::Provider.find_closest_service(entity, service)
 
+          # hash below is added so that procedures during encounters will have a reference to provider
+          entity.add_current_provider(@context.name, provider)
+
+          if record_encounter
             value = add_lookup_code(Synthea::ENCOUNTER_LOOKUP)
             value[:class] = @encounter_class
             options = { 'reason' => cond, provider: provider }.compact
@@ -323,8 +324,7 @@ module Synthea
           entity.record_synthea.encounter_end(enc.symbol, time, options)
 
           # reset current provider hash
-          entity[:current_provider] = nil
-
+          entity.remove_current_provider(@context.name)
           true
         end
       end
@@ -455,9 +455,9 @@ module Synthea
 
           # increment number of prescriptions prescribed by respective hospital
           provider =
-            # there is an encounter assiciated with the prescription and provider associated with the encounter
-            if entity[:current_provider]
-              entity[:current_provider]
+            # there is an encounter associated with the prescription and provider associated with the encounter
+            if entity.find_current_provider(@context.name)
+              entity.find_current_provider(@context.name)
             # patient goes to default provider
             else
               entity.hospital
@@ -610,8 +610,8 @@ module Synthea
 
           provider =
             # there is a provider associated with the encounter
-            if entity[:current_provider]
-              entity[:current_provider]
+            if entity.find_current_provider(@context.name)
+              entity.find_current_provider(@context.name)
             # patient goes to default provider
             else
               entity.hospital

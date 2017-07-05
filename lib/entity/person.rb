@@ -6,6 +6,7 @@ module Synthea
     def initialize
       super
       @record_synthea = Synthea::Output::Record.new
+      @hospital = {}
     end
 
     def assign_default_hospital

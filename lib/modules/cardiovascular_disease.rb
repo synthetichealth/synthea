@@ -466,12 +466,11 @@ module Synthea
               # Add a prescription to the record if it hasn't been recorded yet
               if !entity.record_synthea.medication_active?(med)
                 entity.record_synthea.medication_start(med, time, entity[:medications][med]['reasons'])
-
                 # increment number of prescriptions prescribed by respective hospital
                 provider =
                   # there is an encounter assiciated with the prescription and provider associated with the encounter
-                  if entity[:current_provider]
-                    entity[:current_provider]
+                  if entity.find_current_provider('ruby_module_encounter_' + time.to_s)
+                    entity.find_current_provider('ruby_module_encounter_' + time.to_s)
                   # patient goes to default provider
                   else
                     entity.hospital
@@ -495,10 +494,10 @@ module Synthea
                 # TODO: assumes a procedure will only be performed once, might need to be revisited
                 entity.record_synthea.procedure(proc, time, reason: reason)
                 # increment number of procedures performed by respective hospital
-                provider = entity[:current_provider]
+                provider = entity.find_current_provider('ruby_module_encounter_' + time.to_s)
                 provider.increment_procedures
                 # reset current provider hash
-                entity[:current_provider] = nil
+                entity.remove_current_provider('ruby_module_encounter_' + time.to_s)
               end
               next
             end
@@ -533,8 +532,8 @@ module Synthea
             # increment number of prescriptions prescribed by respective hospital
             provider =
               # there is an encounter assiciated with the prescription and provider associated with the encounter
-              if entity[:current_provider]
-                entity[:current_provider]
+              if entity.find_current_provider('cardiovascular_emergency')
+                entity.find_current_provider('cardiovascular_emergency')
               # patient goes to default provider
               else
                 entity.hospital
@@ -546,11 +545,11 @@ module Synthea
           emergency_procedures[diagnosis].each do |proc|
             entity.record_synthea.procedure(proc, time, reason: diagnosis)
             # increment number of procedures performed by respective hospital
-            provider = entity[:current_provider]
+            provider = entity.find_current_provider('cardiovascular_emergency')
             provider.increment_procedures
           end
           # reset current provider hash
-          entity[:current_provider] = nil
+          entity.remove_current_provider('cardiovascular_emergency')
 
           history_conditions[diagnosis].each do |cond|
             entity.record_synthea.condition(cond, time)

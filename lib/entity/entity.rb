@@ -4,7 +4,7 @@ module Synthea
     attr_accessor :events
 
     def initialize
-      @attributes = { vital_signs: {} }
+      @attributes = { vital_signs: {}, current_provider: {} }
       @events = Synthea::EventList.new
 
       # We represent symptoms as a hash of hashes; the first level key is the symptom name (ie :fatigue), the
@@ -49,6 +49,18 @@ module Synthea
     def set_vital_sign(vital_sign_name, value, unit)
       vital_sign_name = vital_sign_name.to_s.gsub(/\s+/, '_').downcase.to_sym
       @attributes[:vital_signs][vital_sign_name] = { value: value, unit: unit }
+    end
+
+    def add_current_provider(context, provider)
+      @attributes[:current_provider][context.to_sym] = provider
+    end
+
+    def remove_current_provider(context)
+      @attributes[:current_provider].delete(context.to_sym)
+    end
+
+    def find_current_provider(context)
+      @attributes[:current_provider][context.to_sym]
     end
 
     #-----------------------------------------------------------------------

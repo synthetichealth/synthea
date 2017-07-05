@@ -46,7 +46,7 @@ module Synthea
           # find closest service provider
           provider = Synthea::Provider.find_closest_service(entity, 'ambulatory')
           # hash below is added as reference
-          entity[:current_provider] = provider
+          entity.add_current_provider('ruby_module_encounter_' + time.to_s, provider)
 
           unprocessed_events = entity.events.unprocessed_before(time, :encounter)
           unprocessed_events.each do |event|
@@ -61,7 +61,7 @@ module Synthea
             end
           end
           # reset current provider hash
-          entity[:current_provider] = nil
+          entity.remove_current_provider('ruby_module_encounter_' + time.to_s)
         end
       end
 
@@ -105,18 +105,13 @@ module Synthea
           emergency_encounter(entity, time)
         end
 
-        # find closest service provider with emergency service
-        provider = Synthea::Provider.find_closest_service(entity, 'emergency')
-        # hash below is added as reference
-        entity[:current_provider] = provider
-
         unprocessed_events = entity.events.unprocessed.select { |x| [:myocardial_infarction, :cardiac_arrest, :stroke].include?(x.type) && x.time <= time }
         unprocessed_events.each do |event|
           entity.events.process(event)
           Synthea::Modules::CardiovascularDisease.perform_emergency(entity, event)
         end
         # reset current provider hash
-        entity[:current_provider] = nil
+        entity.remove_current_provider('cardiovascular_emergency')
       end
 
       #------------------------------------------------------------------------------------------#
@@ -144,7 +139,7 @@ module Synthea
         service = encounter_data[:class]
         provider = Synthea::Provider.find_closest_service(entity, service)
         # hash below is added as reference
-        entity[:current_provider] = provider
+        entity.add_current_provider('ruby_module_encounter_' + time.to_s, provider)
         provider.increment_encounters
 
         options = { reason: reason, provider: entity.hospital }
@@ -158,7 +153,7 @@ module Synthea
         # find closest service provider with emergency service
         provider = Synthea::Provider.find_closest_service(entity, 'emergency')
         # hash below is added as reference
-        entity[:current_provider] = provider
+        entity.add_current_provider('cardiovascular_emergency', provider)
         provider.increment_encounters
 
         options = { reason: reason, provider: provider }
