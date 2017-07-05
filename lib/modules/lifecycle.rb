@@ -9,6 +9,8 @@ module Synthea
         # we want synthea/resources/cdc_growth_charts.json
         gc_file = File.join(File.dirname(__FILE__), '..', '..', 'resources', 'cdc_growth_charts.json')
         @growth_chart = JSON.parse(File.read(gc_file))
+        names_file = File.join(File.dirname(__FILE__), '..', '..', 'resources', 'names.yml')
+        @names = YAML.load(File.read(names_file))
       end
 
       # People are born
@@ -16,12 +18,6 @@ module Synthea
         unless entity.had_event?(:birth)
           entity[:age] = 0
           entity[:age_mos] = 0
-          entity[:name_first] = Faker::Name.first_name
-          entity[:name_last] = Faker::Name.last_name
-          if Synthea::Config.population.append_hash_to_person_names == true
-            entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
-            entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
-          end
           entity[:gender] ||= gender
           entity[:race] ||= Synthea::World::Demographics::RACES.pick
           entity[:ethnicity] ||= Synthea::World::Demographics::ETHNICITY[entity[:race]].pick
@@ -29,6 +25,14 @@ module Synthea
           entity[:sexual_orientation] = Synthea::World::Demographics::SEXUAL_ORIENTATION.pick.to_s
           entity[:fingerprint] = Synthea::Fingerprint.generate if Synthea::Config.population.generate_fingerprints
           entity[:first_language] ||= Synthea::World::Demographics::LANGUAGES_BY_ETHNICITY[entity[:ethnicity]].pick
+          name_language = entity[:first_language] == 'spanish' ? 'spanish' : 'english'
+          name_gender = entity[:gender] == 'F' ? 'female' : 'male'
+          entity[:name_first] = @names[name_language][name_gender].sample
+          entity[:name_last] = @names[name_language]['family'].sample
+          if Synthea::Config.population.append_hash_to_person_names == true
+            entity[:name_first] = "#{entity[:name_first]}#{(entity[:name_first].hash % 999)}"
+            entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}"
+          end
 
           # growth chart data goes covers the 3rd-97th percentile
           #  and we don't have data to extrapolate that last few %
@@ -79,14 +83,14 @@ module Synthea
           }
 
           # parents
-          mothers_name = Faker::Name.first_name
+          mothers_name = @names[name_language]['female'].sample
           mothers_name = "#{mothers_name}#{(mothers_name.hash % 999)}" if Synthea::Config.population.append_hash_to_person_names == true
 
-          mothers_surname = Faker::Name.last_name
+          mothers_surname = @names[name_language]['family'].sample
           mothers_surname = "#{mothers_surname}#{(mothers_surname.hash % 999)}" if Synthea::Config.population.append_hash_to_person_names == true
           entity[:name_mother] = "#{mothers_name} #{mothers_surname}"
 
-          fathers_name = Faker::Name.first_name
+          fathers_name = @names[name_language]['male'].sample
           fathers_name = "#{fathers_name}#{(fathers_name.hash % 999)}" if Synthea::Config.population.append_hash_to_person_names == true
           entity[:name_father] = "#{fathers_name} #{entity[:name_last]}"
 
@@ -139,7 +143,9 @@ module Synthea
               if entity[:gender] == 'F'
                 entity[:name_prefix] = 'Mrs.'
                 entity[:name_maiden] = entity[:name_last]
-                entity[:name_last] = Faker::Name.last_name
+                # this doesn't account for marrying a someone with a different first language
+                name_language = entity[:first_language] == 'spanish' ? 'spanish' : 'english'
+                entity[:name_last] = @names[name_language]['family'].sample
                 entity[:name_last] = "#{entity[:name_last]}#{(entity[:name_last].hash % 999)}" if Synthea::Config.population.append_hash_to_person_names == true
               end
             else
