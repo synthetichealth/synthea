@@ -16,7 +16,9 @@ class AppendicitisTest < Minitest::Test
     providers.each do |provider_name, provider_stats|
       Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
     end
-    @patient.hospital = Synthea::Hospital.hospital_list[0]
+    @patient.hospital[:ambulatory] = Synthea::Hospital.hospital_list[0]
+    @patient.hospital[:inpatient] = Synthea::Hospital.hospital_list[0]
+    @patient.hospital[:emergency] = Synthea::Hospital.hospital_list[0]
 
     Synthea::MODULES['appendicitis'] = JSON.parse(File.read(File.join(File.expand_path("../../../../lib/generic/modules", __FILE__), 'appendicitis.json')))
     @context = Synthea::Generic::Context.new('appendicitis')
@@ -49,11 +51,9 @@ class AppendicitisTest < Minitest::Test
     @patient.record_synthea.expect(:procedure, nil, [:appendectomy, @time, { 'reason' => :appendicitis, 'duration' => 3549.0 }])
     @patient.record_synthea.expect(:condition, nil, [:history_of_appendectomy, @time])
 
-    @patient.hospital.reset_utilization
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :appendicitis, provider: @patient.hospital }])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :appendicitis, provider: @patient.hospital[:emergency] }])
     @patient.record_synthea.expect(:encounter_end, nil, [:emergency_room_admission, @time])
-    @patient.hospital.reset_utilization
-    @patient.record_synthea.expect(:encounter, nil, [:encounter_inpatient, @time, { 'reason' => :appendicitis, provider: @patient.hospital }])
+    @patient.record_synthea.expect(:encounter, nil, [:encounter_inpatient, @time, { 'reason' => :appendicitis, provider: @patient.hospital[:inpatient] }])
 
     @context.run(@time, @patient)
 
@@ -73,11 +73,9 @@ class AppendicitisTest < Minitest::Test
     @patient.record_synthea.expect(:procedure, nil, [:appendectomy, @time, { 'reason' => :appendicitis, 'duration' => 3594.0 }])
     @patient.record_synthea.expect(:condition, nil, [:history_of_appendectomy, @time])
 
-    @patient.hospital.reset_utilization
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :appendicitis, provider: @patient.hospital }])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :appendicitis, provider: @patient.hospital[:emergency] }])
     @patient.record_synthea.expect(:encounter_end, nil, [:emergency_room_admission, @time])
-    @patient.hospital.reset_utilization
-    @patient.record_synthea.expect(:encounter, nil, [:encounter_inpatient, @time, { 'reason' => :appendicitis, provider: @patient.hospital }])
+    @patient.record_synthea.expect(:encounter, nil, [:encounter_inpatient, @time, { 'reason' => :appendicitis, provider: @patient.hospital[:inpatient] }])
 
     @context.run(@time, @patient)
 

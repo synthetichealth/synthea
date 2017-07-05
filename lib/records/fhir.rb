@@ -38,7 +38,8 @@ module Synthea
         resource_id = SecureRandom.uuid.to_s.strip
 
         # calls provider to create provider fhir for generalPractitioner in patient_resource
-        prov = provider(fhir_record, entity.hospital)
+
+        prov = provider(fhir_record, entity.hospital[:ambulatory])
 
         patient_resource = FHIR::Patient.new('id' => resource_id,
                                              'identifier' => [{

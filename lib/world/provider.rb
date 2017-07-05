@@ -13,7 +13,7 @@ module Synthea
 
       # labs = lipid_panel, basic_metabolic_panel, electrolytes_panel
       # diabetes_labs = lipid_panel
-      @utilization = { encounters: 0, procedures: 0, labs: 0, diabetes_labs: 0, prescriptions: 0 }
+      @utilization = { encounters: 0, procedures: 0, labs: 0, prescriptions: 0 }
 
       Provider.provider_list.push(self)
 
@@ -49,28 +49,16 @@ module Synthea
       end
 
       # if service is nil or not supproted by simulation, patient goes to default hospital
-      return entity.hospital if service.nil?
+      return entity.hospital[:ambulatory] if service.nil?
 
-      # if service is provided by default hospital, go there
-      return entity.hospital if entity.hospital.service?(service.to_sym)
-
-      person_location = entity.attributes[:coordinates_address].to_coordinates
-      person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
-      closest_distance = 100_000_000
-      closest_service = entity.hospital
-
-      if Provider.services.key?(service.to_sym)
-        Provider.services[service.to_sym].each do |h|
-          service_location = h.attributes[:coordinates]
-          service_point = GeoRuby::SimpleFeatures::Point.from_x_y(service_location[0], service_location[1])
-          spherical_distance = service_point.spherical_distance(person_point)
-          if spherical_distance < closest_distance
-            closest_distance = spherical_distance
-            closest_service = h
-          end
-        end
+      case service.to_sym
+      when :ambulatory
+        return entity.hospital[:ambulatory]
+      when :inpatient
+        return entity.hospital[:inpatient]
+      when :emergency
+        return entity.hospital[:emergency]
       end
-      closest_service
     end
 
     def service?(service)
@@ -89,18 +77,8 @@ module Synthea
       @utilization[:labs] += 1
     end
 
-    def increment_diabetes_labs
-      @utilization[:diabetes_labs] += 1
-    end
-
     def increment_prescriptions
       @utilization[:prescriptions] += 1
-    end
-
-    def reset_utilization
-      @utilization.each_key do |u|
-        @utilization[u] = 0
-      end
     end
 
     def self.clear

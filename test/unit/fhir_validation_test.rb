@@ -71,7 +71,7 @@ class FhirValidationTest < Minitest::Test
     providers.each do |provider_name, provider_stats|
       Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
     end
-    @patient.hospital = Synthea::Hospital.hospital_list[0]
+    @patient.hospital[:ambulatory] = Synthea::Hospital.hospital_list[0]
 
     @fhir_record = FHIR::Bundle.new
     @fhir_record.type = 'collection'

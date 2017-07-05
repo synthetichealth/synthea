@@ -11,7 +11,7 @@ module Synthea
 
     def assign_default_hospital
       location = attributes[:coordinates_address].to_coordinates
-      @hospital = Synthea::Hospital.find_closest(location)
+      Synthea::Hospital.find_closest(self, location)
     end
   end
 end

@@ -62,7 +62,7 @@ module Synthea
         hospital_list.each do |h|
           unless h.utilization[:encounters].zero?
             text_record << h.attributes['name']
-            text_record << "Encounters: #{h.utilization[:encounters]}, Procedures: #{h.utilization[:procedures]}, Labs: #{h.utilization[:labs]}, Diabetes Labs: #{h.utilization[:diabetes_labs]}, Prescriptions: #{h.utilization[:prescriptions]}"
+            text_record << "Encounters: #{h.utilization[:encounters]}, Procedures: #{h.utilization[:procedures]}, Labs: #{h.utilization[:labs]}, Prescriptions: #{h.utilization[:prescriptions]}"
             breakline(text_record)
           end
           next

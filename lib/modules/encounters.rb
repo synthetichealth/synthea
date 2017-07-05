@@ -142,7 +142,7 @@ module Synthea
         entity.add_current_provider('ruby_module_encounter_' + time.to_s, provider)
         provider.increment_encounters
 
-        options = { reason: reason, provider: entity.hospital }
+        options = { reason: reason, provider: entity.hospital[:ambulatory] }
         entity.record_synthea.encounter(type, time, options)
         # TODO: wellness encounters need their duration defined by the activities performed
         # the trouble is those activities are split among many modules

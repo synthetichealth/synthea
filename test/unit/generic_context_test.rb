@@ -15,7 +15,8 @@ class GenericContextTest < Minitest::Test
     providers.each do |provider_name, provider_stats|
       Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
     end
-    @patient.hospital = Synthea::Hospital.hospital_list[0]
+    @patient.hospital[:ambulatory] = Synthea::Hospital.hospital_list[0]
+    @patient.hospital[:emergency] = Synthea::Hospital.hospital_list[0]
   end
 
   def teardown
@@ -155,7 +156,7 @@ class GenericContextTest < Minitest::Test
 
     # Run number two should go all the way to Terminal, but should process Encounter and Death along the way
     # Ensure that the encounter really happens 2 days after the initial run
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {provider: @patient.hospital}])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {provider: @patient.hospital[:emergency] }])
     # Ensure that death really happens 2 + 3 days after the initial run
     @patient.record_synthea.expect(:death, nil, [@time.advance(:days => 5)])
     # Run number 2: 7 days after run number 1
