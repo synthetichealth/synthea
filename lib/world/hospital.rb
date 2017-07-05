@@ -13,11 +13,9 @@ module Synthea
       @@hospital_list ||= []
     end
 
-    # finds closest ambulatory hospital to person based on geographical location
-    def self.find_closest(entity, person_location)
+    # find closest hospital with ambulatory service
+    def self.find_closest_ambulatory(person_location)
       person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
-
-      # find closest hospital with ambulatory service
       closest_distance = 100_000_000
       closest_hospital = nil
       @@services[:ambulatory].each do |h|
@@ -29,9 +27,12 @@ module Synthea
           closest_hospital = h
         end
       end
-      entity.hospital[:ambulatory] = closest_hospital
+      closest_hospital
+    end
 
-      # find closest hospital with inpatient service
+    # find closest hospital with inpatient service
+    def self.find_closest_inpatient(person_location)
+      person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
       closest_distance = 100_000_000
       closest_hospital = nil
       @@services[:inpatient].each do |h|
@@ -43,9 +44,12 @@ module Synthea
           closest_hospital = h
         end
       end
-      entity.hospital[:inpatient] = closest_hospital
+      closest_hospital
+    end
 
-      # find closest hopital with emergency service
+    # find closest hopital with emergency service
+    def self.find_closest_emergency(person_location)
+      person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
       closest_distance = 100_000_000
       closest_hospital = nil
       @@services[:emergency].each do |h|
@@ -57,7 +61,7 @@ module Synthea
           closest_hospital = h
         end
       end
-      entity.hospital[:emergency] = closest_hospital
+      closest_hospital
     end
 
     def self.clear

@@ -9,9 +9,22 @@ module Synthea
       @hospital = {}
     end
 
-    def assign_default_hospital
+    def assign_ambulatory_provider
       location = attributes[:coordinates_address].to_coordinates
-      Synthea::Hospital.find_closest(self, location)
+      provider = Synthea::Hospital.find_closest_ambulatory(location)
+      @hospital[:ambulatory] = provider
+    end
+
+    def assign_inpatient_provider
+      location = attributes[:coordinates_address].to_coordinates
+      provider = Synthea::Hospital.find_closest_inpatient(location)
+      @hospital[:inpatient] = provider
+    end
+
+    def assign_emergency_provider
+      location = attributes[:coordinates_address].to_coordinates
+      provider = Synthea::Hospital.find_closest_emergency(location)
+      @hospital[:emergency] = provider
     end
   end
 end

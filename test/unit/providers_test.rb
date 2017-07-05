@@ -13,7 +13,9 @@ class ProviderTest < Minitest::Test
     @time = Time.now
     @patient = Synthea::Person.new
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(-71.16614917449775,42.32102909461221)
-    @patient.assign_default_hospital
+    @patient.assign_ambulatory_provider
+    @patient.assign_inpatient_provider
+    @patient.assign_emergency_provider
     @patient.events.create(@time - 25.years, :birth, :birth)
     @patient[:age] = 25
     

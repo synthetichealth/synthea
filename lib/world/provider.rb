@@ -53,10 +53,13 @@ module Synthea
 
       case service.to_sym
       when :ambulatory
+        entity.assign_ambulatory_provider if entity.hospital[:ambulatory].nil?
         return entity.hospital[:ambulatory]
       when :inpatient
+        entity.assign_inpatient_provider if entity.hospital[:inpatient].nil?
         return entity.hospital[:inpatient]
       when :emergency
+        entity.assign_emergency_provider if entity.hospital[:emergency].nil?
         return entity.hospital[:emergency]
       end
     end

@@ -68,9 +68,6 @@ module Synthea
           entity[:address]['line'] << Faker::Address.secondary_address if rand < 0.5
           entity[:city] = location_data['city']
 
-          # assign default hospital based on coordinates of address
-          entity.assign_default_hospital
-
           # telephone
           entity[:telephone] = Faker::PhoneNumber.phone_number
 
