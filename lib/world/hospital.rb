@@ -2,15 +2,20 @@ module Synthea
   class Hospital < Synthea::Provider
     cattr_accessor :hospital_list # Array - all hospitals that are imported
 
-    def initialize(properties, coordinates)
-      super(properties, coordinates)
-      Hospital.hospital_list.push(self)
-    end
-
     # rubocop:disable Style/ClassVars
     # from module.rb
     def self.hospital_list
       @@hospital_list ||= []
+    end
+
+    # load all hospitals
+    def self.load(file)
+      providers = JSON.parse(File.read(file))
+      providers.each do |_provider_name, provider_stats|
+        p = Synthea::Hospital.new(provider_stats['properties'], provider_stats['coordinates'])
+        p.attributes[:resource_id] = SecureRandom.uuid
+        Hospital.hospital_list.push(p)
+      end
     end
 
     # find closest hospital with ambulatory service

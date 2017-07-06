@@ -1,6 +1,7 @@
 module Synthea
   module Output
     module HospitalExporter
+      SYNTHEA_EXT = 'http://synthetichealth.github.io/synthea/'.freeze
       def self.export
         hospital_list = Synthea::Hospital.hospital_list
 
@@ -30,9 +31,9 @@ module Synthea
       def self.convert_to_fhir(hospital_list)
         fhir_record = FHIR::Bundle.new
         fhir_record.type = 'collection'
-        resource_id = SecureRandom.uuid
 
         hospital_list.each do |h|
+          resource_id = h.attributes[:resource_id]
           hospital_resource = FHIR::Organization.new(
             'id' => resource_id,
             'name' => h.attributes['name'],
@@ -42,12 +43,21 @@ module Synthea
                 'display' => 'Healthcare Provider',
                 'system' => 'http://hl7.org/fhir/ValueSet/organization-type'
               }],
-              'text' => 'Healthcare Provider'
+              'text' => 'Healthcare Provider',
+              'extension' => []
             }
           )
+          hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}utilization-encounters-extension",
+                                                             'valueInteger' => h.utilization[:encounters])
+          hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}utilization-procedures-extension",
+                                                             'valueInteger' => h.utilization[:procedures])
+          hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}utilization-labs-extension",
+                                                             'valueInteger' => h.utilization[:labs])
+          hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}utilization-prescriptions-extension",
+                                                             'valueInteger' => h.utilization[:prescriptions])
 
           entry = FHIR::Bundle::Entry.new
-          entry.fullUrl = "urn::uuid:#{resource_id}"
+          entry.fullUrl = "urn:uuid:#{resource_id}"
           entry.resource = hospital_resource
           fhir_record.entry << entry
         end

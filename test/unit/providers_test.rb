@@ -4,11 +4,8 @@ class ProviderTest < Minitest::Test
 
   def setup
     # import hospitals
-    file = File.read "./test/fixtures/test_healthcare_facilities.json"
-    providers = JSON.parse(file)
-    providers.each do |provider_name, provider_stats|
-      Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
-    end
+    p_file = File.join(File.dirname(__FILE__), '..', 'fixtures', 'test_healthcare_facilities.json')
+    Synthea::Hospital.load(p_file)    
 
     @time = Time.now
     @patient = Synthea::Person.new

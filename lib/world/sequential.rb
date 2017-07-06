@@ -73,11 +73,8 @@ module Synthea
         @city_populations = JSON.parse(datafile) if datafile
 
         # import hospitals
-        file = File.read './config/healthcare_facilities.json'
-        providers = JSON.parse(file)
-        providers.each do |_provider_name, provider_stats|
-          Synthea::Hospital.new(provider_stats['properties'], provider_stats['coordinates'])
-        end
+        p_file = File.join(File.dirname(__FILE__), '..', '..', 'config', 'healthcare_facilities.json')
+        Synthea::Hospital.load(p_file)
 
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start
       end

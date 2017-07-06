@@ -279,7 +279,7 @@ module Synthea
       end
 
       def self.provider(fhir_record, provider)
-        resource_id = SecureRandom.uuid
+        resource_id = provider.attributes[:resource_id]
         prov = FHIR::Organization.new('id' => resource_id,
                                       'name' => provider.attributes['name'],
                                       'type' => {

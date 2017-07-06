@@ -11,11 +11,8 @@ class AppendicitisTest < Minitest::Test
     @patient.record_synthea = MiniTest::Mock.new
 
     # assign hospital
-    file = File.read "./test/fixtures/test_single_healthcare_facility.json"
-    providers = JSON.parse(file)
-    providers.each do |provider_name, provider_stats|
-      Synthea::Hospital.new(provider_stats["properties"], provider_stats["coordinates"])
-    end
+    p_file = File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'test_single_healthcare_facility.json')
+    Synthea::Hospital.load(p_file)    
     @patient.hospital[:ambulatory] = Synthea::Hospital.hospital_list[0]
     @patient.hospital[:inpatient] = Synthea::Hospital.hospital_list[0]
     @patient.hospital[:emergency] = Synthea::Hospital.hospital_list[0]
