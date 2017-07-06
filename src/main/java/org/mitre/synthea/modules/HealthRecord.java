@@ -80,6 +80,8 @@ public class HealthRecord {
 	
 	public class Observation extends Entry {
 		public Object value;
+		public String category;
+		public String unit;
 		
 		public Observation(long time, String type, Object value) {
 			super(time, type);
@@ -123,6 +125,7 @@ public class HealthRecord {
 		public List<Observation> observations;
 		public List<Report> reports;
 		public List<Entry> conditions;
+		public List<Entry> allergies;
 		public List<Entry> procedures;
 		public List<Entry> immunizations;
 		public List<Medication> medications;
@@ -135,6 +138,7 @@ public class HealthRecord {
 			observations = new ArrayList<Observation>();
 			reports = new ArrayList<Report>();
 			conditions = new ArrayList<Entry>();
+			allergies = new ArrayList<Entry>();
 			procedures = new ArrayList<Entry>();
 			immunizations = new ArrayList<Entry>();
 			medications = new ArrayList<Medication>();
@@ -152,6 +156,38 @@ public class HealthRecord {
 		present = new HashMap<String,Entry>();
 	}
 	
+	public String textSummary() {
+		int observations = 0;
+		int reports = 0;
+		int conditions = 0;
+		int allergies = 0;
+		int procedures = 0;
+		int immunizations = 0;
+		int medications = 0;
+		int careplans = 0;
+		for(Encounter enc : encounters) {
+			observations += enc.observations.size();
+			reports += enc.reports.size();
+			conditions += enc.conditions.size();
+			allergies += enc.allergies.size();
+			procedures += enc.procedures.size();
+			immunizations += enc.immunizations.size();
+			medications += enc.medications.size();
+			careplans += enc.careplans.size();
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("Encounters:    %d\n", encounters.size()));
+		sb.append(String.format("Observations:  %d\n", observations));
+		sb.append(String.format("Reports:       %d\n", reports));
+		sb.append(String.format("Conditions:    %d\n", conditions));
+		sb.append(String.format("Allergies:     %d\n", allergies));
+		sb.append(String.format("Procedures:    %d\n", procedures));
+		sb.append(String.format("Immunizations: %d\n", immunizations));
+		sb.append(String.format("Medications:   %d\n", medications));
+		sb.append(String.format("Care Plans:    %d\n", careplans));
+		return sb.toString();
+	}
+
 	public Encounter currentEncounter(long time) {
 		Encounter encounter = null;
 		if(encounters.size() >= 1) {
@@ -163,9 +199,10 @@ public class HealthRecord {
 		return encounter;
 	}
 	
-	public void observation(long time, String type, Object value) {
+	public Observation observation(long time, String type, Object value) {
 		Observation observation = new Observation(time, type, value);
 		currentEncounter(time).observations.add(observation);
+		return observation;
 	}
 	
 	public Entry conditionStart(long time, String primaryCode) {
@@ -200,6 +237,38 @@ public class HealthRecord {
 		}
 	}
 	
+	public Entry allergyStart(long time, String primaryCode) {
+		if(!present.containsKey(primaryCode)) {
+			Entry allergy = new Entry(time, primaryCode);
+			currentEncounter(time).allergies.add(allergy);
+			present.put(primaryCode, allergy);
+		}
+		return present.get(primaryCode);
+	}
+
+	public void allergyEnd(long time, String primaryCode) {
+		if(present.containsKey(primaryCode)) {
+			present.get(primaryCode).stop = time;
+			present.remove(primaryCode);
+		}
+	}
+
+	public void allergyEndByState(long time, String stateName) {
+		Entry allergy = null;
+		Iterator<Entry> iter = present.values().iterator();
+		while(iter.hasNext()) {
+			Entry e = iter.next();
+			if(e.name == stateName) {
+				allergy = e;
+				break;
+			}
+		}
+		if(allergy != null) {
+			allergy.stop = time;
+			present.remove(allergy.type);
+		}
+	}
+
 	public void procedure(long time, String type) {
 		Entry procedure = new Entry(time, type);
 		currentEncounter(time).procedures.add(procedure);

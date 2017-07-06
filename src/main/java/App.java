@@ -7,15 +7,16 @@ import org.mitre.synthea.modules.Person;
  */
 public class App {
  
-    public static void main(String[] args) {
-    	Generator generator = new Generator(1);
-    	generator.run();
-    	for(Person person : generator.people) {
-    		System.out.println("ATTRIBUTES");
-    		for(String attribute : person.attributes.keySet()) {
-    			System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
-    		}
-    		System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
-    	}
-    }
+	public static void main(String[] args) {
+		Generator generator = new Generator(1);
+		generator.run();
+		for(Person person : generator.people) {
+			System.out.println("ATTRIBUTES");
+			for(String attribute : person.attributes.keySet()) {
+				System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
+			}
+			System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
+			System.out.println(person.record.textSummary());
+		}
+	}
 }

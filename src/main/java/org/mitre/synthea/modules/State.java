@@ -7,6 +7,7 @@ import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.EncounterType;
 import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.Transition.TransitionType;
 
 import com.google.gson.JsonObject;
@@ -238,7 +239,66 @@ public class State {
 			}
 			return true;
 		case ALLERGYONSET:
-			
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			Entry allergy = person.record.allergyStart(time, primary_code);
+			allergy.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					allergy.codes.add(code);
+				});
+			}
+			if(definition.has("assign_to_attribute")) {
+				attribute = definition.get("assign_to_attribute").getAsString();
+				person.attributes.put(attribute, allergy);
+			}
+			return true;
+		case ALLERGYEND:
+			if(definition.has("allergy_onset")) {
+				String state_name = definition.get("allergy_onset").getAsString();
+				person.record.allergyEndByState(time, state_name);
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				allergy = (Entry) person.attributes.get(attribute);
+				allergy.stop = time;
+				person.record.allergyEnd(time, allergy.type);
+			} else if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					person.record.allergyEnd(time, item.getAsJsonObject().get("code").getAsString());
+				});
+			}
+			return true;
+		case OBSERVATION:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			value = null;
+			if(definition.has("exact")) {
+				value = Utilities.primitive( definition.get("exact").getAsJsonObject().get("quantity").getAsJsonPrimitive() );
+			} else if(definition.has("range")) {
+				double low = definition.get("range").getAsJsonObject().get("low").getAsDouble();
+				double high = definition.get("range").getAsJsonObject().get("high").getAsDouble();
+				value = person.rand(low, high);
+			} else if(definition.has("attribute")) {
+				attribute = definition.get("attribute").getAsString();
+				value = person.attributes.get(attribute);
+			} else if(definition.has("vital_sign")) {
+				attribute = definition.get("vital_sign").getAsString();
+				value = person.attributes.get(attribute);
+			}
+			Observation observation = person.record.observation(time, primary_code, value);
+			observation.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					observation.codes.add(code);
+				});
+			}
+			if(definition.has("category")) {
+				observation.category = definition.get("category").getAsString();
+			}
+			if(definition.has("unit")) {
+				observation.unit = definition.get("unit").getAsString();
+			}
+			return true;
 		default:
 			System.err.format("Unhandled State Type: %s\n", type);
 			return false;
