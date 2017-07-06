@@ -39,7 +39,7 @@ module Synthea
 
         # calls provider to create provider fhir for generalPractitioner in patient_resource
 
-        prov = provider(fhir_record, entity.hospital[:ambulatory])
+        prov = provider(fhir_record, entity.ambulatory_provider)
 
         patient_resource = FHIR::Patient.new('id' => resource_id,
                                              'identifier' => [{

@@ -460,7 +460,7 @@ module Synthea
               entity.find_current_provider(@context.name)
             # patient goes to default provider
             else
-              entity.hospital[:ambulatory]
+              entity.ambulatory_provider
             end
           provider.increment_prescriptions
         end
@@ -614,7 +614,7 @@ module Synthea
               entity.find_current_provider(@context.name)
             # patient goes to default provider
             else
-              entity.hospital[:ambulatory]
+              entity.ambulatory_provider
             end
           # increment number of procedures performed by respective hospital
           provider.increment_procedures
@@ -737,7 +737,7 @@ module Synthea
             entity.record_synthea.diagnostic_report(symbol, time, @number_of_observations)
 
             # increment number of labs performed by respective hospital
-            entity.hospital[:ambulatory].increment_labs
+            entity.ambulatory_provider.increment_labs
 
           else
             raise "DiagnosticReport '#{@name}' is not concurrent with its target encounter '#{@target_encounter}'"

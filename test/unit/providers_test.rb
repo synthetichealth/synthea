@@ -42,7 +42,7 @@ class ProviderTest < Minitest::Test
 
   def test_closest_service_provider
     # Closest default provider is hospital_list[3] which only supports ambulatory services
-    assert_equal(Synthea::Hospital.hospital_list[3], @patient.hospital[:ambulatory])
+    assert_equal(Synthea::Hospital.hospital_list[3], @patient.ambulatory_provider)
     closest_service_ambulatory = Synthea::Hospital.find_closest_service(@patient, "ambulatory")
     assert_equal(Synthea::Hospital.hospital_list[3], closest_service_ambulatory)
 
@@ -57,15 +57,15 @@ class ProviderTest < Minitest::Test
     @patient.record_synthea = MiniTest::Mock.new
 
     # hospitals begin with blank state
-    assert_equal(0, @patient.hospital[:ambulatory].utilization[:encounters])
+    assert_equal(0, @patient.ambulatory_provider.utilization[:encounters])
 
     # Encounter - patient sees default provider for ambulatory services 
     ctx = get_context('example_module.json')
     encounter = Synthea::Generic::States::Encounter.new(ctx, 'Examplotomy_Encounter')
-    @patient.record_synthea.expect(:encounter, nil, [:examplotomy_encounter, @time, {provider: @patient.hospital[:ambulatory]}])
+    @patient.record_synthea.expect(:encounter, nil, [:examplotomy_encounter, @time, {provider: @patient.ambulatory_provider }])
     encounter.perform_encounter(@time, @patient)
 
-    assert_equal(1, @patient.hospital[:ambulatory].utilization[:encounters])
+    assert_equal(1, @patient.ambulatory_provider.utilization[:encounters])
     @patient.record_synthea.verify
   end
 
@@ -103,7 +103,7 @@ class ProviderTest < Minitest::Test
     @patient.record_synthea = MiniTest::Mock.new
 
     # hospitals begin with blank state
-    assert_equal(0, @patient.hospital[:ambulatory].utilization[:prescriptions])
+    assert_equal(0, @patient.ambulatory_provider.utilization[:prescriptions])
 
     # Prescriptions - patient sees hospital[3] for prescriptions
     # from generic_states_test.rb test_medication_order_during_wellness_encounter
@@ -130,7 +130,7 @@ class ProviderTest < Minitest::Test
     ])
     med.run(@time, @patient)
 
-    assert_equal(1, @patient.hospital[:ambulatory].utilization[:prescriptions])
+    assert_equal(1, @patient.ambulatory_provider.utilization[:prescriptions])
     @patient.record_synthea.verify
   end
   

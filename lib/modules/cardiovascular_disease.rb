@@ -473,7 +473,7 @@ module Synthea
                     entity.find_current_provider('ruby_module_encounter_' + time.to_s)
                   # patient goes to default provider
                   else
-                    entity.hospital[:ambulatory]
+                    entity.ambulatory_provider
                   end
                 provider.increment_prescriptions
               else
@@ -536,7 +536,7 @@ module Synthea
                 entity.find_current_provider('cardiovascular_emergency')
               # patient goes to default provider
               else
-                entity.hospital[:ambulatory]
+                entity.ambulatory_provider
               end
             provider.increment_prescriptions
             entity.record_synthea.medication_stop(med, time + 15.minutes, :stop_drug)

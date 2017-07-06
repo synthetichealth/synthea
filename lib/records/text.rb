@@ -91,7 +91,7 @@ module Synthea
         text_record << "Age:                 #{age}\n"
         text_record << "Birth Date:          #{entity.event(:birth).time.strftime('%Y-%m-%d')}\n"
         text_record << "Marital Status:      #{entity[:marital_status]}\n"
-        text_record << "Outpatient Provider: #{entity.hospital[:ambulatory].attributes['name']}\n"
+        text_record << "Outpatient Provider: #{entity.ambulatory_provider.attributes['name']}\n"
         breakline(text_record)
       end
 
