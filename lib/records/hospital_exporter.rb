@@ -20,6 +20,14 @@ module Synthea
           end
         end
 
+        if Synthea::Config.exporter.fhir_dstu2.export
+          fhir_record = convert_to_fhir_dstu2(hospital_list)
+          out_dir = get_output_folder('fhir_dstu2')
+          data = fhir_record.to_json
+          out_file = File.join(out_dir, 'hospital_information.json')
+          File.open(out_file, 'w') { |file| file.write(data) }
+        end
+
         if Synthea::Config.exporter.text.export
           text_record = convert_to_text(hospital_list)
           out_dir = get_output_folder('text')
@@ -61,7 +69,42 @@ module Synthea
           entry.resource = hospital_resource
           fhir_record.entry << entry
         end
+        fhir_record
+      end
 
+      def self.convert_to_fhir_dstu2(hospital_list)
+        fhir_record = FHIR::DSTU2::Bundle.new
+        fhir_record.type = 'collection'
+
+        hospital_list.each do |h|
+          resource_id = h.attributes[:resource_id]
+          hospital_resource = FHIR::DSTU2::Organization.new(
+            'id' => resource_id,
+            'name' => h.attributes['name'],
+            'type' => {
+              'coding' => [{
+                'code' => 'prov',
+                'display' => 'Healthcare Provider',
+                'system' => 'http://hl7.org/fhir/ValueSet/organization-type'
+              }],
+              'text' => 'Healthcare Provider',
+              'extension' => []
+            }
+          )
+          hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}utilization-encounters-extension",
+                                                                    'valueInteger' => h.utilization[:encounters])
+          hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}utilization-procedures-extension",
+                                                                    'valueInteger' => h.utilization[:procedures])
+          hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}utilization-labs-extension",
+                                                                    'valueInteger' => h.utilization[:labs])
+          hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}utilization-prescriptions-extension",
+                                                                    'valueInteger' => h.utilization[:prescriptions])
+
+          entry = FHIR::DSTU2::Bundle::Entry.new
+          entry.fullUrl = "urn:uuid:#{resource_id}"
+          entry.resource = hospital_resource
+          fhir_record.entry << entry
+        end
         fhir_record
       end
 

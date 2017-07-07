@@ -35,7 +35,7 @@ module Synthea
         end
         resource_id = SecureRandom.uuid.to_s.strip
 
-        # calls provider to create provider fhir for generalPractitioner in patient_resource
+        # calls provider to create provider fhir dstu2 careProvider in patient_resource
         prov = provider(fhir_record, entity.ambulatory_provider)
 
         patient_resource = FHIR::DSTU2::Patient.new('id' => resource_id,
@@ -212,10 +212,15 @@ module Synthea
         provider = nil
         # encounter has an associated provider
         if encounter[:provider]
-          provider = provider(fhir_record, encounter[:provider])
-        # default provider
+          # respective provider is already a FHIR::Organization
+          if fhir_record.entry.find { |e| e.resource.is_a?(FHIR::DSTU2::Organization) && e.resource.id == encounter[:provider].attributes[:resource_id] }.nil?
+            provider = provider(fhir_record, encounter[:provider])
+          else
+            provider = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::DSTU2::Organization) && e.resource.id == encounter[:provider].attributes[:resource_id] }
+          end
+        # no associated provider, patient goes to ambulatory provider
         else
-          provider = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::DSTU2::Organization) && e.resource.type.coding[0].code == 'prov' }
+          provider = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::DSTU2::Organization) && "urn:uuid:#{e.resource.id}" == patient.resource.careProvider[0].reference }
         end
 
         fhir_encounter = FHIR::DSTU2::Encounter.new('id' => resource_id,

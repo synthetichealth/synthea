@@ -234,10 +234,15 @@ module Synthea
         provider = nil
         # encounter has an associated provider
         if encounter[:provider]
-          provider = provider(fhir_record, encounter[:provider])
-        # default provider
+          # respective provider is already a FHIR::Organization
+          if fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.id == encounter[:provider].attributes[:resource_id] }.nil?
+            provider = provider(fhir_record, encounter[:provider])
+          else
+            provider = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.id == encounter[:provider].attributes[:resource_id] }
+          end
+        # no associated provider, patient goes to ambulatory provider
         else
-          provider = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.type[0].coding[0].code == 'prov' }
+          provider = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && "urn:uuid:#{e.resource.id}" == patient.resource.generalPractitioner[0].reference }
         end
 
         fhir_encounter = FHIR::Encounter.new('id' => resource_id,
