@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -44,7 +45,8 @@ public class Module {
 				.forEach(t -> {
 					try {
 						Module module = loadFile(t, path);
-						retVal.put(relativePath(t, path), module);
+						String relativePath = relativePath(t, path);
+						retVal.put(relativePath, module);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -58,7 +60,8 @@ public class Module {
 	}
 	
 	private static String relativePath(Path filePath, Path modulesFolder) {
-		return filePath.toString().replaceFirst(modulesFolder.toString() + File.separator, "").replaceFirst(".json", "");
+		String folderString = Matcher.quoteReplacement(modulesFolder.toString() + File.separator);
+		return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "").replace("\\", "/");
 	}
 	
 	private static Module loadFile(Path path, Path modulesFolder) throws IOException {

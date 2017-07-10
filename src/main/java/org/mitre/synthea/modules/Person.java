@@ -12,6 +12,7 @@ public class Person {
 	public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";
+	public static final String ID = "id";
 	
 	private Random random;
 	public Map<String,Object> attributes;

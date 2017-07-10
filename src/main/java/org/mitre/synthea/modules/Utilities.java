@@ -37,7 +37,15 @@ public class Utilities {
 		if(p.isBoolean()) {
 			retVal = p.getAsBoolean();
 		} else if(p.isNumber()) {
-			retVal = p.getAsDouble();
+			double doubleVal = p.getAsDouble();
+			
+			if (doubleVal == Math.rint(doubleVal))
+			{
+				retVal = (int) doubleVal;
+			} else
+			{
+				retVal = doubleVal;
+			}
 		} else if(p.isString()) {
 			retVal = p.getAsString();
 		}
@@ -52,8 +60,8 @@ public class Utilities {
 		} else if(lhs == null) {
 			return false;
 		}
-		if(lhs instanceof Double && rhs instanceof Double) {
-			return compare((Double)lhs, (Double)rhs, operator);
+		if(lhs instanceof Number && rhs instanceof Number) {
+			return compare(((Number)lhs).doubleValue(), ((Number)rhs).doubleValue(), operator);
 		} else if(lhs instanceof Boolean && rhs instanceof Boolean) {
 			return compare((Boolean)lhs, (Boolean)rhs, operator);			
 		} else if(lhs instanceof String && rhs instanceof String) {

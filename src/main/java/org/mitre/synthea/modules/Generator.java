@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import org.mitre.synthea.export.Exporter;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -39,41 +44,68 @@ public class Generator {
 	
 	public void run()
 	{
+		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		long stop = System.currentTimeMillis();
 		for(int i=0; i < numberOfPeople; i++)
 		{
-			List<Module> modules = Module.getModules();
-			
-			long start = stop - (long)(ONE_HUNDRED_YEARS * random.nextDouble());
-//			System.out.format("Born : %s\n", Instant.ofEpochMilli(start).toString());
-			Person person = new Person(System.currentTimeMillis());
-			person.attributes.put(Person.BIRTHDATE, start);
-			person.events.create(start, Event.BIRTH, "Generator.run", true);
-			person.attributes.put(Person.NAME, "John Doe");
-			person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
-			person.attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-			person.attributes.put(Person.GENDER, "M");
-			people.add(person);
-			
-			long time = start;
-			while(person.alive(time) && time < stop)
+			final int index = i;
+			threadPool.submit( () -> 
 			{
-				Iterator<Module> iter = modules.iterator();
-				while(iter.hasNext())
+				List<Module> modules = Module.getModules();
+				
+				long start = stop - (long)(ONE_HUNDRED_YEARS * random.nextDouble());
+	//			System.out.format("Born : %s\n", Instant.ofEpochMilli(start).toString());
+				Person person = new Person(System.currentTimeMillis());
+				person.attributes.put(Person.ID,  UUID.randomUUID().toString());
+				person.attributes.put(Person.BIRTHDATE, start);
+				person.events.create(start, Event.BIRTH, "Generator.run", true);
+				person.attributes.put(Person.NAME, "John Doe");
+				person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
+				person.attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
+				person.attributes.put(Person.GENDER, "M");
+//				people.add(person);
+				
+				long time = start;
+				while(person.alive(time) && time < stop)
 				{
-					Module module = iter.next();
-					System.out.format("Processing module %s\n", module.name);
-					if(module.process(person, time))
+					Iterator<Module> iter = modules.iterator();
+					while(iter.hasNext())
 					{
-						System.out.format("Removing module %s\n", module.name);
-						iter.remove(); // this module has completed/terminated.
+						Module module = iter.next();
+	//					System.out.format("Processing module %s\n", module.name);
+						if(module.process(person, time))
+						{
+	//						System.out.format("Removing module %s\n", module.name);
+							iter.remove(); // this module has completed/terminated.
+						}
 					}
+					time += timestep;
 				}
-				time += timestep;
+				
+				try {
+					Exporter.export(person, stop);
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+					throw e;
+				}
+				
+				String deceased = person.alive(time) ? "" : "DECEASED";
+				System.out.format("%d -- %s (%d y/o) %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(stop), deceased);
+				
+			});
+		}
+
+		try 
+		{
+			threadPool.shutdown();
+			while (!threadPool.awaitTermination(30, TimeUnit.SECONDS))
+			{
+				System.out.println("Waiting for threads to finish... " + threadPool);
 			}
-			String deceased = person.alive(time) ? "" : "DECEASED";
-			System.out.format("%d -- %s (%d y/o) %s\n", i, person.attributes.get(Person.NAME), person.ageInYears(stop), deceased);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
 		}
 	}
-	
 }

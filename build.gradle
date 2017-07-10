@@ -26,6 +26,9 @@ dependencies {
     // compile 'com.google.guava:guava:21.0'
     compile 'com.google.code.gson:gson:2.8.0'
 
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
+
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
