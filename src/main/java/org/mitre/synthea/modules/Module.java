@@ -51,6 +51,11 @@ public class Module {
 						e.printStackTrace();
 					}
 				});
+			
+			// TODO - better way to do this?
+			retVal.put("Lifecycle", new LifecycleModule());
+			retVal.put("Cardiovascular Disease", new CardiovascularDiseaseModule());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -109,6 +114,11 @@ public class Module {
 	public boolean submodule;
 	public List<String> remarks;
 	private Map<String,State> states;
+	
+	protected Module()
+	{
+		// no-args constructor only allowed to be used by subclasses
+	}
 	
 	public Module(JsonObject definition, boolean submodule) {
 		name = definition.get("name").getAsString();

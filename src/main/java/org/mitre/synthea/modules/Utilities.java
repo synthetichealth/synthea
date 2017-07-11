@@ -1,6 +1,9 @@
 package org.mitre.synthea.modules;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
+import org.mitre.synthea.helpers.Config;
 
 import com.google.gson.JsonPrimitive;
 
@@ -50,6 +53,13 @@ public class Utilities {
 			retVal = p.getAsString();
 		}
 		return retVal;
+	}
+	
+	public static double convertRiskToTimestep(double risk, double originalPeriodInMS)
+	{
+		double currTimeStepInMS = Double.parseDouble( Config.get("generate.timestep") );
+		
+		return 1 - Math.pow(1 - risk, currTimeStepInMS / originalPeriodInMS);
 	}
 	
 	public static boolean compare(Object lhs, Object rhs, String operator) {
@@ -142,5 +152,14 @@ public class Utilities {
 		  System.err.format("Unsupported operator: %s\n", operator);
 		  return false;
 		}
+    }
+    
+    /**
+     * Java impl of the Ruby "rand" function with no args.
+     * @return a pseudorandom double value between zero (inclusive) and one (exclusive)
+     */
+    public static double rand()
+    {
+    	return ThreadLocalRandom.current().nextDouble();
     }
 }

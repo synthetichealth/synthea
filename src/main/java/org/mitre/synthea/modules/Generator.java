@@ -2,19 +2,18 @@ package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.Exporter;
-import org.mitre.synthea.world.Location;
-
-import com.github.javafaker.Faker;
+import org.mitre.synthea.helpers.Config;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -27,6 +26,7 @@ public class Generator {
 	public long seed;
 	private Random random;
 	public long timestep;
+	public Map<String,AtomicInteger> stats;
 	
 	public Generator(int people)
 	{
@@ -44,15 +44,16 @@ public class Generator {
 		this.numberOfPeople = people;
 		this.seed = seed;
 		this.random = new Random(seed);
-		this.timestep = 1000 * 60 * 60 * 24 * 7;
+		this.timestep = Long.parseLong( Config.get("generate.timestep") );
+		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
+		stats.put("alive", new AtomicInteger(0));
+		stats.put("dead", new AtomicInteger(0));
 	}
 	
 	public void run()
 	{
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		long stop = System.currentTimeMillis();
-
-        final Faker faker = new Faker();
 
 		for(int i=0; i < numberOfPeople; i++)
 		{
@@ -64,21 +65,9 @@ public class Generator {
 				long start = stop - (long)(ONE_HUNDRED_YEARS * random.nextDouble());
 	//			System.out.format("Born : %s\n", Instant.ofEpochMilli(start).toString());
 				Person person = new Person(System.currentTimeMillis());
-				person.attributes.put(Person.ID,  UUID.randomUUID().toString());
-				person.attributes.put(Person.BIRTHDATE, start);
-				person.events.create(start, Event.BIRTH, "Generator.run", true);
-				person.attributes.put(Person.NAME, faker.name().name());
-				person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
-				person.attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-				person.attributes.put(Person.GENDER, ThreadLocalRandom.current().nextBoolean() ? "M" : "F");
 
-				Location.PointWrapper pw = Location.selectPoint(null);
-				person.attributes.put(Person.ADDRESS, faker.address().streetAddress(ThreadLocalRandom.current().nextBoolean()));
-				person.attributes.put(Person.CITY, pw.city);
-				person.attributes.put(Person.STATE, "MA");
-				person.attributes.put(Person.ZIP, Location.getZipCode(pw.city));
-				person.attributes.put(Person.COORDINATE, pw.point);
-
+				LifecycleModule.birth(person, start);
+				
 				people.add(person);
 				
 				long time = start;
@@ -108,6 +97,11 @@ public class Generator {
 				
 				String deceased = person.alive(time) ? "" : "DECEASED";
 				System.out.format("%d -- %s (%d y/o) %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(stop), deceased);
+				
+				String key = person.alive(time) ? "alive" : "dead";
+				
+				AtomicInteger count = stats.get(key);
+				count.incrementAndGet();
 			});
 		}
 
@@ -122,5 +116,7 @@ public class Generator {
 		{
 			e.printStackTrace();
 		}
+		
+		System.out.println(stats);
 	}
 }

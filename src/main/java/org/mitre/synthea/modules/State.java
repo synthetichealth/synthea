@@ -192,7 +192,7 @@ public class State {
 				}
 				if(definition.has("codes")) {
 					definition.get("codes").getAsJsonArray().forEach(item -> {
-						Code code = person.record.new Code((JsonObject) item);
+						Code code = new Code((JsonObject) item);
 						encounter.codes.add(code);
 					});
 				}
@@ -204,7 +204,7 @@ public class State {
 				encounter.stop = time;
 			}
 			if(definition.has("discharge_disposition")) {
-				Code code = person.record.new Code((JsonObject) definition.get("discharge_disposition"));
+				Code code = new Code((JsonObject) definition.get("discharge_disposition"));
 				encounter.discharge = code;
 			}
 			return true;
@@ -214,7 +214,7 @@ public class State {
 			condition.name = this.name;
 			if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					condition.codes.add(code);
 				});
 			}
@@ -244,7 +244,7 @@ public class State {
 			allergy.name = this.name;
 			if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					allergy.codes.add(code);
 				});
 			}
@@ -288,7 +288,7 @@ public class State {
 			observation.name = this.name;
 			if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					observation.codes.add(code);
 				});
 			}

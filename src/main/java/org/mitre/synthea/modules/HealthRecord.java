@@ -20,7 +20,7 @@ public class HealthRecord {
 	/**
 	 * HealthRecord.Code represents a system, code, and display value.
 	 */
-	public class Code {
+	public static class Code {
 		/** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
 		public String system;
 		/** The code itself */
