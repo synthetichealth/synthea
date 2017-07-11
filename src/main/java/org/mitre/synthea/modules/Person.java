@@ -13,6 +13,11 @@ public class Person {
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";
 	public static final String ID = "id";
+	public static final String ADDRESS = "address";
+	public static final String CITY = "city";
+	public static final String STATE = "state";
+	public static final String ZIP = "zip";
+	public static final String COORDINATE = "coordinate";
 	
 	private Random random;
 	public Map<String,Object> attributes;

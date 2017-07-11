@@ -1,15 +1,20 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.world.Location;
+
+import com.github.javafaker.Faker;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -35,7 +40,7 @@ public class Generator {
 	
 	private void init(int people, long seed)
 	{
-		this.people = new ArrayList<Person>();
+		this.people = Collections.synchronizedList(new ArrayList<Person>());
 		this.numberOfPeople = people;
 		this.seed = seed;
 		this.random = new Random(seed);
@@ -46,6 +51,9 @@ public class Generator {
 	{
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		long stop = System.currentTimeMillis();
+
+        final Faker faker = new Faker();
+
 		for(int i=0; i < numberOfPeople; i++)
 		{
 			final int index = i;
@@ -59,11 +67,19 @@ public class Generator {
 				person.attributes.put(Person.ID,  UUID.randomUUID().toString());
 				person.attributes.put(Person.BIRTHDATE, start);
 				person.events.create(start, Event.BIRTH, "Generator.run", true);
-				person.attributes.put(Person.NAME, "John Doe");
+				person.attributes.put(Person.NAME, faker.name().name());
 				person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
 				person.attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-				person.attributes.put(Person.GENDER, "M");
-//				people.add(person);
+				person.attributes.put(Person.GENDER, ThreadLocalRandom.current().nextBoolean() ? "M" : "F");
+
+				Location.PointWrapper pw = Location.selectPoint(null);
+				person.attributes.put(Person.ADDRESS, faker.address().streetAddress(ThreadLocalRandom.current().nextBoolean()));
+				person.attributes.put(Person.CITY, pw.city);
+				person.attributes.put(Person.STATE, "MA");
+				person.attributes.put(Person.ZIP, Location.getZipCode(pw.city));
+				person.attributes.put(Person.COORDINATE, pw.point);
+
+				people.add(person);
 				
 				long time = start;
 				while(person.alive(time) && time < stop)
@@ -92,7 +108,6 @@ public class Generator {
 				
 				String deceased = person.alive(time) ? "" : "DECEASED";
 				System.out.format("%d -- %s (%d y/o) %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(stop), deceased);
-				
 			});
 		}
 
