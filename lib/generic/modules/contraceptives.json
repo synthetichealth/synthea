@@ -367,16 +367,47 @@
         "While only female patients are routed to this state, a portion ",
         "are identified as using sterilization as a contraceptive method ",
         "even though they are not given the sterilization procedure.",
-        "The ratio of female:male sterilization is 3:1."
+        "The ratio of female:male sterilization is 3:1.",
+        "NOTE: Only do this if age is at a transition year to avoid resampling after pregnancy.",
+        "  Otherwise, go back to Female_Contraceptive_Use and sample again."
       ],
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "distribution": 0.75,
-          "transition": "Using_Female_Sterilization"
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": "==",
+                "quantity": 25.0,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "==",
+                "quantity": 35.0,
+                "unit": "years"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Using_Female_Sterilization"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Using_Male_Sterilization"
+            }
+          ]
         },
         {
-          "distribution": 0.25,
-          "transition": "Using_Male_Sterilization"
+          "distributions": [
+            {
+              "distribution": 1.0,
+              "transition": "Female_Contraceptive_Use"
+            }
+          ]
         }
       ]
     },
@@ -497,105 +528,18 @@
     },
 
     "Route_To_Guard": {
-      "type": "Simple",
+      "exact": {
+        "quantity": 12,
+        "unit": "months"
+      },
+      "type": "Delay",
+      "direct_transition": "Reset_Contraceptive_Use",
       "remarks": [
-        "======================================================================",
-        " AGE GUARDS                                                           ",
-        "======================================================================",
-        "This state routes patients to the appropriate age guard that will ",
-        "eventually transition them to the next age bracket."
-      ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": "<",
-            "quantity": 25,
-            "unit": "years"
-          },
-          "transition": "Young_To_Mid_Guard"
-        },
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": "<",
-            "quantity": 35,
-            "unit": "years"
-          },
-          "transition": "Mid_To_Mature_Guard"
-        },
-        {
-          "transition": "Menopause_Guard"
-        }
+        "Using an annual delay causes resampling of contraception more frequently",
+        "and distributes the babies more evenly across the female population"
       ]
     },
-
-    "Young_To_Mid_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Or",
-        "conditions": [
-          {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 25,
-            "unit": "years"
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "pregnant",
-            "operator": "==",
-            "value": true
-          }
-        ]
-      },
-      "direct_transition": "Reset_Contraceptive_Use"
-    },
-
-    "Mid_To_Mature_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Or",
-        "conditions": [
-          {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 35,
-            "unit": "years"
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "pregnant",
-            "operator": "==",
-            "value": true
-          }
-        ]
-      },
-      "direct_transition": "Reset_Contraceptive_Use"
-    },
-
-    "Menopause_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Or",
-        "conditions": [
-          {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 50,
-            "unit": "years"
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "pregnant",
-            "operator": "==",
-            "value": true
-          }
-        ]
-      },
-      "direct_transition": "Reset_Contraceptive_Use"
-    },
-
+    
     "Reset_Contraceptive_Use": {
       "type": "CallSubmodule",
       "remarks": [
