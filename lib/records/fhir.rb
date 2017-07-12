@@ -2,6 +2,7 @@ module Synthea
   module Output
     module FhirRecord
       SHR_EXT = 'http://standardhealthrecord.org/fhir/StructureDefinition/'.freeze
+      SYNTHEA_EXT = 'http://synthetichealth.github.io/synthea/'.freeze
 
       def self.convert_to_fhir(entity, end_time = Time.now)
         synthea_record = entity.record_synthea
@@ -105,6 +106,16 @@ module Synthea
                                                {
                                                  'url' => 'http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired',
                                                  'valueBoolean' => false
+                                               },
+                                               # daly
+                                               {
+                                                 'url' => "#{SYNTHEA_EXT}gbd-daly",
+                                                 'valueDecimal' => entity[:daly]
+                                               },
+                                               # qaly
+                                               {
+                                                 'url' => "#{SYNTHEA_EXT}gbd-qaly",
+                                                 'valueDecimal' => entity[:qaly]
                                                }
                                              ])
         # add optional patient name information
