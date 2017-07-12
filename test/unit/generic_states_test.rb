@@ -8,10 +8,18 @@ class GenericStatesTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
+
+    # assign hospital
+    p_file = File.join(File.dirname(__FILE__), '..', 'fixtures', 'test_single_healthcare_facility.json')
+    Synthea::Hospital.load(p_file)    
+    @patient.assign_ambulatory_provider(Synthea::Hospital.hospital_list[0])
+    @patient.assign_inpatient_provider(Synthea::Hospital.hospital_list[0])
+    @patient.assign_emergency_provider(Synthea::Hospital.hospital_list[0])
   end
 
   def teardown
     Synthea::MODULES.clear
+    Synthea::Hospital.clear
   end
 
   def test_initial_always_passes
@@ -238,7 +246,7 @@ class GenericStatesTest < Minitest::Test
     ctx.history << diabetes
 
     encounter = Synthea::Generic::States::Encounter.new(ctx, "ED_Visit")
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :diabetes_mellitus }])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :diabetes_mellitus, provider: @patient.emergency_provider }])
     assert(encounter.process(@time, @patient))
     # Verify that the Encounter was added to the record
     @patient.record_synthea.verify
@@ -257,7 +265,7 @@ class GenericStatesTest < Minitest::Test
 
     # Non-wellness encounters happen immediately
     encounter = Synthea::Generic::States::Encounter.new(ctx, "ED_Visit_AttributeReason")
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :diabetes_mellitus }])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, { 'reason' => :diabetes_mellitus, provider: @patient.emergency_provider }])
     assert(encounter.process(@time, @patient))
     # Verify that the Encounter was added to the record
     @patient.record_synthea.verify
@@ -290,7 +298,7 @@ class GenericStatesTest < Minitest::Test
     ctx = get_context('condition_onset.json')
     # The encounter comes first (and add it to history)
     encounter = Synthea::Generic::States::Encounter.new(ctx, "ED_Visit")
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, {}])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time, {provider: @patient.emergency_provider }])
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
 
@@ -325,7 +333,7 @@ class GenericStatesTest < Minitest::Test
     ctx.history << allergy
 
     encounter = Synthea::Generic::States::Encounter.new(ctx, "Dr_Visit")
-    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_symptom, @time, {}])
+    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_symptom, @time, {provider: @patient.ambulatory_provider }])
     @patient.record_synthea.expect(:condition, nil, [:allergy_to_eggs, @time, :allergy, :condition])
     assert(encounter.process(@time, @patient))
 
@@ -344,7 +352,7 @@ class GenericStatesTest < Minitest::Test
     ctx.history << allergy
 
     encounter = Synthea::Generic::States::Encounter.new(ctx, "Dr_Visit")
-    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_symptom, @time, {}])
+    @patient.record_synthea.expect(:encounter, nil, [:encounter_for_symptom, @time, {provider: @patient.ambulatory_provider }])
     @patient.record_synthea.expect(:condition, nil, [:allergy_to_eggs, @time, :allergy, :condition])
     assert(encounter.process(@time, @patient))
 
@@ -899,7 +907,7 @@ class GenericStatesTest < Minitest::Test
 
     # The encounter comes first (and add it to history)
     encounter = Synthea::Generic::States::Encounter.new(ctx, "Inpatient_Encounter")
-    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, {}])
+    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, {provider: @patient.inpatient_provider }])
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
 
@@ -939,7 +947,7 @@ class GenericStatesTest < Minitest::Test
     ctx.history << vitalsign
 
     encounter = Synthea::Generic::States::Encounter.new(ctx, "SomeEncounter")
-    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, {}])
+    @patient.record_synthea.expect(:encounter, nil, [:hospital_admission, @time, {provider: @patient.ambulatory_provider }])
     assert(encounter.process(@time, @patient))
     ctx.history << encounter
 

@@ -76,21 +76,22 @@ module Synthea
         text_record << name
         text_record << name.gsub(/[A-Za-z0-9 ]/, '=')
         if entity[:race] == :hispanic
-          text_record << "Race:           Other\n"
-          text_record << "Ethnicity:      #{entity[:ethnicity].to_s.tr('_', ' ').split(' ').map(&:capitalize).join(' ')}\n"
+          text_record << "Race:                Other\n"
+          text_record << "Ethnicity:           #{entity[:ethnicity].to_s.tr('_', ' ').split(' ').map(&:capitalize).join(' ')}\n"
         else
-          text_record << "Race:           #{entity[:race].capitalize}\n"
-          text_record << "Ethnicity:      Non-Hispanic\n"
+          text_record << "Race:                #{entity[:race].capitalize}\n"
+          text_record << "Ethnicity:           Non-Hispanic\n"
         end
-        text_record << "Gender:         #{entity[:gender]}\n"
+        text_record << "Gender:              #{entity[:gender]}\n"
         if entity.alive?(end_time)
           age = Synthea::Modules::Lifecycle.age(end_time, entity.event(:birth).time, nil)
         else
           age = 'DECEASED'
         end
-        text_record << "Age:            #{age}\n"
-        text_record << "Birth Date:     #{entity.event(:birth).time.strftime('%Y-%m-%d')}\n"
-        text_record << "Marital Status: #{entity[:marital_status]}\n"
+        text_record << "Age:                 #{age}\n"
+        text_record << "Birth Date:          #{entity.event(:birth).time.strftime('%Y-%m-%d')}\n"
+        text_record << "Marital Status:      #{entity[:marital_status]}\n"
+        text_record << "Outpatient Provider: #{entity.ambulatory_provider.attributes['name']}\n"
         breakline(text_record)
       end
 
@@ -113,6 +114,7 @@ module Synthea
           text_record << "#{encounter['time'].strftime('%Y-%m-%d')} : Encounter for #{reason_data[:description]}"
         else
           text_record << "#{encounter['time'].strftime('%Y-%m-%d')} : #{encounter_data[:description]}"
+          # encounter information here
         end
         text_record
       end

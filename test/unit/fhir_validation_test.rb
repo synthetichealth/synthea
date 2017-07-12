@@ -11,6 +11,7 @@ class FhirValidationTest < Minitest::Test
   def teardown
     Synthea::MODULES.clear
     Synthea::COND_LOOKUP.delete('1234')
+    Synthea::Hospital.clear
   end
 
   def test_execution_and_fhir_validation
@@ -64,6 +65,11 @@ class FhirValidationTest < Minitest::Test
     @patient[:race] = :white
     @patient[:ethnicity] = :italian
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
+    # assign hospital
+    p_file = File.join(File.dirname(__FILE__), '..', 'fixtures', 'test_healthcare_facilities.json')
+    Synthea::Hospital.load(p_file)    
+    @patient.assign_ambulatory_provider(Synthea::Hospital.hospital_list[0])
+
     @fhir_record = FHIR::Bundle.new
     @fhir_record.type = 'collection'
     @time = Time.now

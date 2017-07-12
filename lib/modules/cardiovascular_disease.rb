@@ -466,6 +466,16 @@ module Synthea
               # Add a prescription to the record if it hasn't been recorded yet
               if !entity.record_synthea.medication_active?(med)
                 entity.record_synthea.medication_start(med, time, entity[:medications][med]['reasons'])
+                # increment number of prescriptions prescribed by respective hospital
+                provider =
+                  # there is an encounter assiciated with the prescription and provider associated with the encounter
+                  if entity.find_current_provider('ruby_module_encounter_' + time.to_s)
+                    entity.find_current_provider('ruby_module_encounter_' + time.to_s)
+                  # patient goes to default provider
+                  else
+                    entity.ambulatory_provider
+                  end
+                provider.increment_prescriptions
               else
                 entity.record_synthea.update_med_reasons(med, entity[:medications][med]['reasons'], time)
               end
@@ -483,7 +493,13 @@ module Synthea
               unless entity.record_synthea.present[proc]
                 # TODO: assumes a procedure will only be performed once, might need to be revisited
                 entity.record_synthea.procedure(proc, time, reason: reason)
+                # increment number of procedures performed by respective hospital
+                provider = entity.find_current_provider('ruby_module_encounter_' + time.to_s)
+                provider.increment_procedures
+                # reset current provider hash
+                entity.remove_current_provider('ruby_module_encounter_' + time.to_s)
               end
+              next
             end
           end
         end
@@ -513,12 +529,27 @@ module Synthea
           meds = filter_meds_by_year(emergency_meds[diagnosis], time)
           meds.each do |med|
             entity.record_synthea.medication_start(med, time, [diagnosis])
+            # increment number of prescriptions prescribed by respective hospital
+            provider =
+              # there is an encounter assiciated with the prescription and provider associated with the encounter
+              if entity.find_current_provider('cardiovascular_emergency')
+                entity.find_current_provider('cardiovascular_emergency')
+              # patient goes to default provider
+              else
+                entity.ambulatory_provider
+              end
+            provider.increment_prescriptions
             entity.record_synthea.medication_stop(med, time + 15.minutes, :stop_drug)
           end
 
           emergency_procedures[diagnosis].each do |proc|
             entity.record_synthea.procedure(proc, time, reason: diagnosis)
+            # increment number of procedures performed by respective hospital
+            provider = entity.find_current_provider('cardiovascular_emergency')
+            provider.increment_procedures
           end
+          # reset current provider hash
+          entity.remove_current_provider('cardiovascular_emergency')
 
           history_conditions[diagnosis].each do |cond|
             entity.record_synthea.condition(cond, time)

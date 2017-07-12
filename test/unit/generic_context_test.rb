@@ -8,10 +8,17 @@ class GenericContextTest < Minitest::Test
     @patient[:gender] = 'F'
     @patient.events.create(@time - 35.years, :birth, :birth)
     @patient[:age] = 35
+
+    # assign hospital
+    p_file = File.join(File.dirname(__FILE__), '..', 'fixtures', 'test_single_healthcare_facility.json')
+    Synthea::Hospital.load(p_file)    
+    @patient.assign_ambulatory_provider(Synthea::Hospital.hospital_list[0])
+    @patient.assign_emergency_provider(Synthea::Hospital.hospital_list[0])
   end
 
   def teardown
     Synthea::MODULES.clear
+    Synthea::Hospital.clear
   end
 
   def test_new_context
@@ -146,7 +153,7 @@ class GenericContextTest < Minitest::Test
 
     # Run number two should go all the way to Terminal, but should process Encounter and Death along the way
     # Ensure that the encounter really happens 2 days after the initial run
-    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {}])
+    @patient.record_synthea.expect(:encounter, nil, [:emergency_room_admission, @time.advance(:days => 2), {provider: @patient.emergency_provider }])
     # Ensure that death really happens 2 + 3 days after the initial run
     @patient.record_synthea.expect(:death, nil, [@time.advance(:days => 5)])
     # Run number 2: 7 days after run number 1

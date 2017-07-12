@@ -4,7 +4,7 @@ module Synthea
     attr_accessor :events
 
     def initialize
-      @attributes = { vital_signs: {} }
+      @attributes = { vital_signs: {}, current_provider: {}, preferred_provider: {} }
       @events = Synthea::EventList.new
 
       # We represent symptoms as a hash of hashes; the first level key is the symptom name (ie :fatigue), the
@@ -49,6 +49,58 @@ module Synthea
     def set_vital_sign(vital_sign_name, value, unit)
       vital_sign_name = vital_sign_name.to_s.gsub(/\s+/, '_').downcase.to_sym
       @attributes[:vital_signs][vital_sign_name] = { value: value, unit: unit }
+    end
+
+    #-----------------------------------------------------------------------
+    # Providers API
+    #-----------------------------------------------------------------------
+
+    def ambulatory_provider
+      @attributes[:preferred_provider][:ambulatory]
+    end
+
+    def assign_ambulatory_provider(provider = nil)
+      if provider.nil?
+        location = attributes[:coordinates_address].to_coordinates
+        provider = Synthea::Hospital.find_closest_ambulatory(location)
+      end
+      @attributes[:preferred_provider][:ambulatory] = provider
+    end
+
+    def inpatient_provider
+      @attributes[:preferred_provider][:inpatient]
+    end
+
+    def assign_inpatient_provider(provider = nil)
+      if provider.nil?
+        location = attributes[:coordinates_address].to_coordinates
+        provider = Synthea::Hospital.find_closest_inpatient(location)
+      end
+      @attributes[:preferred_provider][:inpatient] = provider
+    end
+
+    def emergency_provider
+      @attributes[:preferred_provider][:emergency]
+    end
+
+    def assign_emergency_provider(provider = nil)
+      if provider.nil?
+        location = attributes[:coordinates_address].to_coordinates
+        provider = Synthea::Hospital.find_closest_emergency(location)
+      end
+      @attributes[:preferred_provider][:emergency] = provider
+    end
+
+    def add_current_provider(context, provider)
+      @attributes[:current_provider][context.to_sym] = provider
+    end
+
+    def remove_current_provider(context)
+      @attributes[:current_provider].delete(context.to_sym)
+    end
+
+    def find_current_provider(context)
+      @attributes[:current_provider][context.to_sym]
     end
 
     #-----------------------------------------------------------------------

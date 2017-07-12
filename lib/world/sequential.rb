@@ -72,6 +72,10 @@ module Synthea
 
         @city_populations = JSON.parse(datafile) if datafile
 
+        # import hospitals
+        p_file = File.join(File.dirname(__FILE__), '..', '..', 'config', 'healthcare_facilities.json')
+        Synthea::Hospital.load(p_file)
+
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start
       end
 
@@ -183,6 +187,8 @@ module Synthea
             end
           end
         end
+        # export hospital information
+        Synthea::Output::HospitalExporter.export
       end
 
       def write_prevalences(file, description, category, type)
@@ -315,6 +321,7 @@ module Synthea
           Synthea::Rules.apply(date, person)
         end
         Synthea::Modules::Generic.log_modules(person)
+
         person
       end
 
