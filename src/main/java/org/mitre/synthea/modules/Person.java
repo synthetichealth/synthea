@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,8 @@ public class Person {
 	private Map<String,Map<String,Integer>> symptoms;
 	public EventList events;
 	public HealthRecord record;
+	/** history of the currently active module */
+	public List<State> history;
 	
 	public Person(long seed) {
 		random = new Random(seed);

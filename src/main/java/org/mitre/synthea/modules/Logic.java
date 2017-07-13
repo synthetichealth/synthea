@@ -149,9 +149,61 @@ public class Logic {
 			return true;
 		case FALSE:
 			return false;
+		case PRIOR_STATE:
+			String priorStateName = definition.get("name").getAsString();
+			if(definition.has("since")) {
+				String priorStateSince = definition.get("since").getAsString();
+				return hadPriorStateSince(person, priorStateName, priorStateSince);
+			} else if(definition.has("within")) {
+				units = definition.get("within").getAsJsonObject().get("unit").getAsString();
+				quantity = definition.get("within").getAsJsonObject().get("quantity").getAsLong();
+				long window = Utilities.convertTime(units, quantity);
+				long sinceTime = time - window;
+				return hadPriorStateSince(person, priorStateName, sinceTime);
+			} else {
+				return hadPriorState(person, priorStateName);
+			}
 		default:
 			System.err.format("Unhandled Logic: %s\n", type);
 			return false;
 		}
+	}
+
+	private boolean hadPriorState(Person person, String name) {
+		if(person.history == null) {
+			return false;
+		}
+		for(State state : person.history) {
+			if(state.name == name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean hadPriorStateSince(Person person, String priorState, long time) {
+		if(person.history == null) {
+			return false;
+		}
+		for(State state : person.history) {
+			if(state.name == priorState && state.exited > time) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean hadPriorStateSince(Person person, String priorState, String sinceState) {
+		if(person.history == null) {
+			return false;
+		}
+		for(State state : person.history) {
+			if(state.name == priorState) {
+				return true;
+			} else if(state.name == sinceState) {
+				return false;
+			}
+		}
+		return false;
 	}
 }

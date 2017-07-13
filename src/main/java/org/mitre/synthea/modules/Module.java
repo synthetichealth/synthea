@@ -132,12 +132,17 @@ public class Module {
 	 * @param time : the date within the simulated world
 	 * @return completed : whether or not this Module completed.
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean process(Person person, long time) {
+		person.history = null;
 		// what current state is this person in?
 		if(!person.attributes.containsKey(this.name)) {
-			person.attributes.put(this.name, initialState());
+			person.history = new ArrayList<State>();
+			person.history.add(initialState());
+			person.attributes.put(this.name, person.history);
 		}
-		State current = (State) person.attributes.get(this.name);
+		person.history = (ArrayList<State>) person.attributes.get(this.name);
+		State current = person.history.get(0);
 		// process the current state,
 		// looping until module is finished, 
 		// probably more than one state
@@ -145,7 +150,7 @@ public class Module {
 		while(current.process(person, time)) {
 			nextStateName = current.transition(person, time);
 			current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
-			person.attributes.put(this.name, current);
+			person.history.add(0, current);
 		}
 		return (current.type == State.StateType.TERMINAL);
 	}
