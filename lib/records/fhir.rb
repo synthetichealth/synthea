@@ -25,6 +25,22 @@ module Synthea
             end
           end
         end
+
+        # quality of life scores are not associated with a particular encounter and use SNOMED codes, use quality_of_life_observation method to export
+        daly_recorded = false
+        qaly_recorded = false
+        synthea_record.observations.reverse_each do |observation|
+          if observation['type'] == :DALY
+            quality_of_life_observation(observation, fhir_record, patient)
+            daly_recorded = true
+          end
+          if observation['type'] == :QALY
+            quality_of_life_observation(observation, fhir_record, patient)
+            qaly_recorded = true
+          end
+          break if daly_recorded && qaly_recorded
+        end
+
         fhir_record
       end
 
@@ -106,16 +122,6 @@ module Synthea
                                                {
                                                  'url' => 'http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired',
                                                  'valueBoolean' => false
-                                               },
-                                               # daly
-                                               {
-                                                 'url' => "#{SYNTHEA_EXT}gbd-daly",
-                                                 'valueDecimal' => entity[:daly]
-                                               },
-                                               # qaly
-                                               {
-                                                 'url' => "#{SYNTHEA_EXT}gbd-qaly",
-                                                 'valueDecimal' => entity[:qaly]
                                                }
                                              ])
         # add optional patient name information
@@ -412,6 +418,33 @@ module Synthea
                                                               'valueQuantity' => entry.resource.valueQuantity.to_hash)
             end
           end
+        end
+
+        fhir_record.entry << entry
+      end
+
+      def self.quality_of_life_observation(observation, fhir_record, patient)
+        qol_data = QOL_CODES[observation['type']]
+        entry = FHIR::Bundle::Entry.new
+        resource_id = SecureRandom.uuid
+        entry.fullUrl = "urn:uuid:#{resource_id}"
+
+        entry.resource = FHIR::Observation.new('id' => resource_id,
+                                               'status' => 'final',
+                                               'code' => {
+                                                 'coding' => [{ 'system' => 'http://snomed.info/sct', 'code' => qol_data[:codes]['SNOMED-CT'][0], 'display' => qol_data[:description] }],
+                                                 'text' => qol_data[:description]
+                                               },
+                                               'category' => {
+                                                 'coding' => [{ 'system' => 'http://hl7.org/fhir/observation-category', 'code' => observation['category'] }]
+                                               },
+                                               'subject' => { 'reference' => patient.fullUrl.to_s },
+                                               'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'),
+                                               'issued' => convert_fhir_date_time(observation['time'], 'time'))
+        entry.resource.valueQuantity = FHIR::Quantity.new('value' => observation['value'], 'unit' => qol_data[:unit], 'code' => qol_data[:unit], 'system' => 'http://unitsofmeasure.org/')
+
+        if Synthea::Config.exporter.fhir.use_shr_extensions
+          entry.resource.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-observation-Observation"]) # all Observations are Observations
         end
 
         fhir_record.entry << entry

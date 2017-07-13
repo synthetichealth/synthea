@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class GBDTest < Minitest::Test
+class QOLTest < Minitest::Test
 
   def setup
     @time = Time.now
@@ -14,7 +14,7 @@ class GBDTest < Minitest::Test
     @patient.record_synthea.end_condition(:asthma, @time - 20.years)
     @patient.record_synthea.condition(:diabetes, @time - 15.years)
 
-    @gbd_calculator = Synthea::Output::GBD.new
+    @gbd_calculator = Synthea::Output::QOL.new
   end
 
   def test_calculate_daly
@@ -31,14 +31,14 @@ class GBDTest < Minitest::Test
 
   def test_calculate_qaly
     daly = @gbd_calculator.calculate_daly(@patient, @time)
-    qaly = @gbd_calculator.calculate_qaly(@patient, @time)
+    qaly = @gbd_calculator.calculate_qaly(@patient, daly, @time)
     # qaly = 0.566 at age 35
     assert(qaly.between?(0.566, 0.567))
   end
 
   def test_calculate_qaly_with_end_time
     daly = @gbd_calculator.calculate_daly(@patient, @time - 21.years)
-    qaly = @gbd_calculator.calculate_qaly(@patient, @time - 21.years)
+    qaly = @gbd_calculator.calculate_qaly(@patient, daly, @time - 21.years)
     # daly = 0.045 at age 14
     assert(qaly.between?(0.045, 0.046))
   end

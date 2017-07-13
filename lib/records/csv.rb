@@ -61,6 +61,21 @@ module Synthea
             end
           end
         end
+
+        # quality of life scores are not associated with a particular encounter and use SNOMED codes, use quality_of_life_observation method to export
+        daly_recorded = false
+        qaly_recorded = false
+        synthea_record.observations.reverse_each do |observation|
+          if observation['type'] == :DALY
+            quality_of_life_observation(observation, patient_id)
+            daly_recorded = true
+          end
+          if observation['type'] == :QALY
+            quality_of_life_observation(observation, patient_id)
+            qaly_recorded = true
+          end
+          break if daly_recorded && qaly_recorded
+        end
       end
 
       def self.clean_column(data)
@@ -137,6 +152,15 @@ module Synthea
           obs_unit = obs_data[:unit]
         end
         @@observations.write("#{observation['time'].strftime('%Y-%m-%d')},#{patient_id},#{encounter_id},#{obs_code},#{obs_desc},#{obs_value},#{obs_unit}\n")
+      end
+
+      def self.quality_of_life_observation(observation, patient_id)
+        qol_data = QOL_CODES[observation['type']]
+        qol_code = qol_data[:codes]['SNOMED-CT'][0]
+        qol_desc = clean_column(qol_data[:description])
+        qol_value = observation['value']
+        qol_unit = qol_data[:unit]
+        @@observations.write("#{observation['time'].strftime('%Y-%m-%d')},#{patient_id},,#{qol_code},#{qol_desc},#{qol_value},#{qol_unit}\n")
       end
 
       def self.multi_observation(_multi_obs, _patient_id, _encounter_id)

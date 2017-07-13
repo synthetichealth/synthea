@@ -1,6 +1,6 @@
 module Synthea
   module Output
-    class GBD
+    class QOL
       attr_accessor :disability_weights
 
       def initialize
@@ -12,7 +12,6 @@ module Synthea
         @disability_weights = JSON.parse(File.read(dw_file))
       end
 
-      # TODO: fhir output - daly as observation (survey as category)
       # calculates daly after person has been generated at any time point of their life (end_date)
       def calculate_daly(person, end_date = Synthea::Config.end_date)
         # age depends on time at which daly is calculated, default is Synthea's end time
@@ -56,11 +55,11 @@ module Synthea
           next
         end
         daly = yll + yld
-        person[:daly] = daly
+        person.record_synthea.observation(:DALY, end_date, daly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
         daly
       end
 
-      def calculate_qaly(person, end_date = Synthea::Config.end_date)
+      def calculate_qaly(person, daly, end_date = Synthea::Config.end_date)
         # age depends on time at which daly is calculated, default is Synthea's end time
         a = person[:age_mos] / 12
         unless end_date == Synthea::Config.end_date
@@ -73,9 +72,8 @@ module Synthea
         # ca = C * a * e^(-B * a) where C = 0.1658 and B = 0.04
         # from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3863845/
         ca = 0.1658 * a * Math.exp(-0.04 * a)
-        daly = person[:daly]
         qaly = daly / ca
-        person[:qaly] = qaly
+        person.record_synthea.observation(:QALY, end_date, qaly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
         qaly
       end
 

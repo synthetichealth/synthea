@@ -210,12 +210,12 @@ module Synthea
         # the symbol to use for indexing the @stats hash will either be :dead or :living
         stats_to_use = @only_dead_patients ? :dead : :living
         # initialize GBD calculator
-        gbd_calculator = Synthea::Output::GBD.new
+        qol_calculator = Synthea::Output::QOL.new
         # While loop will keep running until all of the requested patients have been generated.
         while @stats[stats_to_use] < @population_count
           person = build_person
-          gbd_calculator.calculate_daly(person)
-          gbd_calculator.calculate_qaly(person)
+          daly = qol_calculator.calculate_daly(person)
+          qol_calculator.calculate_qaly(person, daly)
           run_task(@export_workers) do
             @export_count.increment
             log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?
@@ -255,14 +255,14 @@ module Synthea
         target_income = demographics[:income][i]
         target_education = demographics[:education][i]
         try_number = 1
-        gbd_calculator = Synthea::Output::GBD.new
+        qol_calculator = Synthea::Output::QOL.new
         loop do
           person = build_person(city: city_name, age: target_age, gender: target_gender,
                                 race: target_race, ethnicity: target_ethnicity,
                                 income: target_income, education: target_education)
 
-          gbd_calculator.calculate_daly(person)
-          gbd_calculator.calculate_qaly(person)
+          daly = qol_calculator.calculate_daly(person)
+          qol_calculator.calculate_qaly(person, daly)
           run_task(@export_workers) do
             @export_count.increment
             log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?

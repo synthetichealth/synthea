@@ -328,4 +328,9 @@ module Synthea
       :first_available => 1983
     },
   }
+
+  QOL_CODES = {
+    :QALY => { :description => 'Quality adjusted life years', :codes => { 'SNOMED-CT' => ['273724008'] }, :unit => 'years' },
+    :DALY => { :description => 'Disability rating scale', :codes => { 'SNOMED-CT' => ['273421001'] }, :unit => 'years' }
+  }
 end
