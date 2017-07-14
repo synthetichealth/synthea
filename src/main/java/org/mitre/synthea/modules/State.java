@@ -84,7 +84,9 @@ public class State {
 	 */
 	public boolean process(Person person, long time) {
 		System.out.format("State: %s\n", this.name);
-		this.entered = time;
+		if(this.entered == 0) {
+			this.entered = time;
+		}
 		switch(type) {
 		case TERMINAL:
 			return false;
@@ -120,6 +122,7 @@ public class State {
 				}
 			}
 			if(time > this.next) {
+				this.exited = time;
 				return true;
 			} else {
 				return false;
@@ -127,11 +130,16 @@ public class State {
 		case GUARD:
 			JsonObject logicDefinition = definition.get("allow").getAsJsonObject();
 			Logic allow = new Logic(logicDefinition);
-			return allow.test(person, time);
+			boolean exit = allow.test(person, time);
+			if(exit) {
+				this.exited = time;
+			}
+			return exit;
 		case SETATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
 			Object value = Utilities.primitive( definition.get("value").getAsJsonPrimitive() );
 			person.attributes.put(attribute, value);
+			this.exited = time;
 			return true;
 		case COUNTER:
 			attribute = definition.get("attribute").getAsString();
@@ -146,6 +154,7 @@ public class State {
 				counter--;
 			}
 			person.attributes.put(attribute, counter);
+			this.exited = time;
 			return true;
 		case SYMPTOM:
 			String symptom = definition.get("symptom").getAsString();
@@ -167,11 +176,13 @@ public class State {
 			} else {
 				person.setSymptom(cause, symptom, 0);					
 			}
+			this.exited = time;
 			return true;
 		case ENCOUNTER:
 			if(definition.has("wellness") && definition.get("wellness").getAsBoolean()) {
 				Encounter encounter = person.record.currentEncounter(time);
 				if(encounter.type==EncounterType.WELLNESS.toString() && encounter.stop!=0l) {
+					this.exited = time;
 					return true;
 				} else {
 					// Block until we're in a wellness encounter... then proceed.
@@ -196,6 +207,7 @@ public class State {
 						encounter.codes.add(code);
 					});
 				}
+				this.exited = time;
 				return true;
 			}
 		case ENCOUNTEREND:
@@ -207,6 +219,7 @@ public class State {
 				Code code = person.record.new Code((JsonObject) definition.get("discharge_disposition"));
 				encounter.discharge = code;
 			}
+			this.exited = time;
 			return true;
 		case CONDITIONONSET:
 			String primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
@@ -222,6 +235,7 @@ public class State {
 				attribute = definition.get("assign_to_attribute").getAsString();
 				person.attributes.put(attribute, condition);
 			}
+			this.exited = time;
 			return true;
 		case CONDITIONEND:
 			if(definition.has("condition_onset")) {
@@ -237,6 +251,7 @@ public class State {
 					person.record.conditionEnd(time, item.getAsJsonObject().get("code").getAsString());
 				});
 			}
+			this.exited = time;
 			return true;
 		case ALLERGYONSET:
 			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
@@ -252,6 +267,7 @@ public class State {
 				attribute = definition.get("assign_to_attribute").getAsString();
 				person.attributes.put(attribute, allergy);
 			}
+			this.exited = time;
 			return true;
 		case ALLERGYEND:
 			if(definition.has("allergy_onset")) {
@@ -267,6 +283,7 @@ public class State {
 					person.record.allergyEnd(time, item.getAsJsonObject().get("code").getAsString());
 				});
 			}
+			this.exited = time;
 			return true;
 		case OBSERVATION:
 			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
@@ -298,6 +315,7 @@ public class State {
 			if(definition.has("unit")) {
 				observation.unit = definition.get("unit").getAsString();
 			}
+			this.exited = time;
 			return true;
 		default:
 			System.err.format("Unhandled State Type: %s\n", type);
