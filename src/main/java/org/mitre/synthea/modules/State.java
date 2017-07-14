@@ -10,6 +10,7 @@ import org.mitre.synthea.modules.HealthRecord.EncounterType;
 import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Observation;
+import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.Transition.TransitionType;
 
 import com.google.gson.JsonObject;
@@ -426,6 +427,41 @@ public class State {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
 					person.record.careplanEnd(time, item.getAsJsonObject().get("code").getAsString(), "finished");
 				});
+			}
+			this.exited = time;
+			return true;
+		case PROCEDURE:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			Procedure procedure = person.record.procedure(time, primary_code);
+			procedure.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					procedure.codes.add(code);
+				});
+			}
+			if(definition.has("reason")) {
+				// "reason" is an attribute or stateName referencing a previous conditionOnset state
+				String reason = definition.get("reason").getAsString();
+				if(person.attributes.containsKey(reason)) {
+					condition = (Entry) person.attributes.get(reason);
+					procedure.reasons.add(condition.type);
+				} else if(person.hadPriorState(reason)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == reason) {
+							procedure.reasons.add(entry.type);
+						}
+					}
+				}
+			}
+			if(definition.has("duration")) {
+				double low = definition.get("duration").getAsJsonObject().get("low").getAsDouble();
+				double high = definition.get("duration").getAsJsonObject().get("high").getAsDouble();
+				double duration = person.rand(low, high);
+				String units = definition.get("duration").getAsJsonObject().get("unit").getAsString();
+				procedure.stop = procedure.start + Utilities.convertTime(units, (long) duration);
 			}
 			this.exited = time;
 			return true;

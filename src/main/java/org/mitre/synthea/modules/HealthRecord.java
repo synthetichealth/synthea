@@ -107,6 +107,14 @@ public class HealthRecord {
 		}
 	}
 	
+	public class Procedure extends Entry {
+		public Set<String> reasons;
+		public Procedure(long time, String type) {
+			super(time, type);
+			this.reasons = new LinkedHashSet<String>();
+		}
+	}
+
 	public class CarePlan extends Entry {
 		public Set<Code> activities;
 		public Set<String> reasons;
@@ -127,7 +135,7 @@ public class HealthRecord {
 		public List<Report> reports;
 		public List<Entry> conditions;
 		public List<Entry> allergies;
-		public List<Entry> procedures;
+		public List<Procedure> procedures;
 		public List<Entry> immunizations;
 		public List<Medication> medications;
 		public List<CarePlan> careplans;
@@ -140,7 +148,7 @@ public class HealthRecord {
 			reports = new ArrayList<Report>();
 			conditions = new ArrayList<Entry>();
 			allergies = new ArrayList<Entry>();
-			procedures = new ArrayList<Entry>();
+			procedures = new ArrayList<Procedure>();
 			immunizations = new ArrayList<Entry>();
 			medications = new ArrayList<Medication>();
 			careplans = new ArrayList<CarePlan>();
@@ -270,12 +278,13 @@ public class HealthRecord {
 		}
 	}
 
-	public void procedure(long time, String type) {
-		Entry procedure = new Entry(time, type);
+	public Procedure procedure(long time, String type) {
+		Procedure procedure = new Procedure(time, type);
 		currentEncounter(time).procedures.add(procedure);
 		present.put(type, procedure);
+		return procedure;
 	}
-	
+
 	public void report(long time, String type, int numberOfObservations) {
 		Encounter encounter = currentEncounter(time);
 		List<Observation> observations = null;
