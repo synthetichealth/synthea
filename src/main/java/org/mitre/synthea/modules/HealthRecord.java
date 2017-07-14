@@ -108,15 +108,15 @@ public class HealthRecord {
 	}
 	
 	public class CarePlan extends Entry {
-		public Set<String> activities;
+		public Set<Code> activities;
 		public Set<String> reasons;
-		public Set<String> goals;
+		public Set<JsonObject> goals;
 		public String stopReason;
-		public CarePlan(long time, String type, Set<String> activities) {
+		public CarePlan(long time, String type) {
 			super(time, type);
-			this.activities = activities;
+			this.activities = new LinkedHashSet<Code>();
 			this.reasons = new LinkedHashSet<String>();
-			this.goals = new LinkedHashSet<String>();
+			this.goals = new LinkedHashSet<JsonObject>();
 		}
 	}
 	
@@ -351,25 +351,16 @@ public class HealthRecord {
 		return present.containsKey(type) && ((Medication)present.get(type)).stop==0l;
 	}
 	
-	public void careplanStart(long time, String type, Set<String> activities) {
+	public CarePlan careplanStart(long time, String type) {
+		CarePlan careplan;
 		if(!present.containsKey(type)) {
-			CarePlan careplan = new CarePlan(time, type, activities);
+			careplan = new CarePlan(time, type);
 			currentEncounter(time).careplans.add(careplan);
 			present.put(type, careplan);			
 		} else {
-			CarePlan careplan = (CarePlan) present.get(type);
-			careplan.activities = activities;
+			careplan = (CarePlan) present.get(type);
 		}
-	}
-	
-	public void careplanUpdate(long time, String type, Set<String> reasons) {
-		// TODO is this the correct behavior?
-		// Perhaps we should end the previous prescription and create a new one
-		if(present.containsKey(type)) {
-			CarePlan careplan = (CarePlan) present.get(type);
-			careplan.start = time;
-			careplan.reasons = reasons;
-		}
+		return careplan;
 	}
 	
 	public void careplanEnd(long time, String type, String reason) {
@@ -378,6 +369,23 @@ public class HealthRecord {
 			careplan.stop = time;
 			careplan.stopReason = reason;
 			present.remove(type);
+		}
+	}
+	
+	public void careplanEndByState(long time, String stateName, String reason) {
+		CarePlan careplan = null;
+		Iterator<Entry> iter = present.values().iterator();
+		while(iter.hasNext()) {
+			Entry e = iter.next();
+			if(e.name == stateName) {
+				careplan = (CarePlan) e;
+				break;
+			}
+		}
+		if(careplan != null) {
+			careplan.stop = time;
+			careplan.stopReason = reason;
+			present.remove(careplan.type);
 		}
 	}
 	

@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.EncounterType;
@@ -365,6 +366,65 @@ public class State {
 			} else if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
 					person.record.medicationEnd(time, item.getAsJsonObject().get("code").getAsString(), "expired");
+				});
+			}
+			this.exited = time;
+			return true;
+		case CAREPLANSTART:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			CarePlan careplan = person.record.careplanStart(time, primary_code);
+			careplan.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					careplan.codes.add(code);
+				});
+			}
+			if(definition.has("activities")) {
+				definition.get("activities").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					careplan.activities.add(code);
+				});
+			}
+			if(definition.has("goals")) {
+				definition.get("goals").getAsJsonArray().forEach(item -> {
+					careplan.goals.add(item.getAsJsonObject());
+				});
+			}
+			if(definition.has("reason")) {
+				// "reason" is an attribute or stateName referencing a previous conditionOnset state
+				String reason = definition.get("reason").getAsString();
+				if(person.attributes.containsKey(reason)) {
+					condition = (Entry) person.attributes.get(reason);
+					careplan.reasons.add(condition.type);
+				} else if(person.hadPriorState(reason)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == reason) {
+							careplan.reasons.add(entry.type);
+						}
+					}
+				}
+			}
+			if(definition.has("assign_to_attribute")) {
+				attribute = definition.get("assign_to_attribute").getAsString();
+				person.attributes.put(attribute, careplan);
+			}
+			this.exited = time;
+			return true;
+		case CAREPLANEND:
+			if(definition.has("careplan")) {
+				String state_name = definition.get("careplan").getAsString();
+				person.record.careplanEndByState(time, state_name, "finished");
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				careplan = (CarePlan) person.attributes.get(attribute);
+				careplan.stop = time;
+				person.record.careplanEnd(time, careplan.type, "finished");
+			} else if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					person.record.careplanEnd(time, item.getAsJsonObject().get("code").getAsString(), "finished");
 				});
 			}
 			this.exited = time;

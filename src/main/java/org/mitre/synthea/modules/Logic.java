@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import java.util.Calendar;
 
 import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
 
 import com.google.gson.JsonArray;
@@ -167,6 +168,24 @@ public class Logic {
 			} else {
 				return person.hadPriorState(priorStateName);
 			}
+		case ACTIVE_CONDITION:
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = person.record.new Code((JsonObject) item);
+					if(person.record.present.containsKey(code.code)) {
+						return true;
+					}
+				}
+				return false;
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					Entry diagnosis = (Entry) person.attributes.get(attribute);
+					return person.record.present.containsKey(diagnosis.type);
+				} else {
+					return false;
+				}
+			}
 		case ACTIVE_MEDICATION:
 			if(definition.has("codes")) {
 				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
@@ -175,6 +194,7 @@ public class Logic {
 						return true;
 					}
 				}
+				return false;
 			} else if(definition.has("referenced_by_attribute")) {
 				attribute = definition.get("referenced_by_attribute").getAsString();
 				if(person.attributes.containsKey(attribute)) {
