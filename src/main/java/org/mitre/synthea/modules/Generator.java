@@ -52,7 +52,8 @@ public class Generator {
 			person.attributes.put(Person.NAME, "John Doe");
 			person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
 			person.attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-			person.attributes.put(Person.GENDER, "M");
+			String gender = (random.nextBoolean()) ? "M" : "F";
+			person.attributes.put(Person.GENDER, gender);
 			people.add(person);
 			
 			long time = start;
