@@ -16,12 +16,6 @@ module Synthea
           # if an encounter doesn't have an end date, either the patient died during the encounter, or they are still in the encounter
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
             entry = synthea_record.send(attribute)[indices[attribute]]
-
-            # edge case when encounter is active at end_date of synthea, don't want DALY/QALY calculation to be associated with encounter
-            if entry && attribute == :observations
-              next if entry['type'] == :DALY || entry['type'] == :QALY
-            end
-
             while entry && entry['time'] <= encounter_end
               method = entry['fhir']
               method = attribute.to_s if method.nil?
@@ -368,6 +362,9 @@ module Synthea
       end
 
       def self.observation(observation, fhir_record, patient, encounter)
+        # use quality_of_life_observation method, and not this method, for DALY and QALY export
+        return if observation['type'] == :DALY || observation['type'] == :QALY
+
         obs_data = OBS_LOOKUP[observation['type']]
         entry = FHIR::Bundle::Entry.new
         resource_id = SecureRandom.uuid

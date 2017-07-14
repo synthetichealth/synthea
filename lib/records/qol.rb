@@ -15,11 +15,11 @@ module Synthea
       # calculates daly after person has been generated at any time point of their life (end_date)
       def calculate_daly(person, end_date = Synthea::Config.end_date)
         # age depends on time at which daly is calculated, default is Synthea's end time
-        age = person[:age_mos] / 12
+        age = person[:age_mos] / 12.0
         unless end_date == Synthea::Config.end_date
           birth_time = person.events.events[:birth][0].time
           age_seconds = end_date - birth_time
-          age = age_seconds / 31_548_096
+          age = age_seconds / 31_548_096.0
         end
 
         # life expectancy equation calculated from GBD life table data
@@ -49,7 +49,7 @@ module Synthea
               end
             end
             duration_seconds = condition_end_time - condition_start_time
-            duration_years = duration_seconds / 31_548_096
+            duration_years = duration_seconds / 31_548_096.0
             yld += dw * duration_years
           end
           next
@@ -61,11 +61,11 @@ module Synthea
 
       def calculate_qaly(person, daly, end_date = Synthea::Config.end_date)
         # age depends on time at which daly is calculated, default is Synthea's end time
-        a = person[:age_mos] / 12
+        a = person[:age_mos] / 12.0
         unless end_date == Synthea::Config.end_date
           birth_time = person.events.events[:birth][0].time
           age_seconds = end_date - birth_time
-          a = age_seconds / 31_548_096
+          a = age_seconds / 31_548_096.0
         end
 
         # DALYs averted = QALYs gained * ca
