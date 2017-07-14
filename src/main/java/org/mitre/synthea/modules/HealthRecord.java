@@ -100,9 +100,10 @@ public class HealthRecord {
 	public class Medication extends Entry {
 		public Set<String> reasons;
 		public String stopReason;
-		public Medication(long time, String type, Set<String> reasons) {
+		public JsonObject prescriptionDetails;
+		public Medication(long time, String type) {
 			super(time, type);
-			this.reasons = reasons;
+			this.reasons = new LinkedHashSet<String>();
 		}
 	}
 	
@@ -308,25 +309,16 @@ public class HealthRecord {
 		currentEncounter(time).immunizations.add(immunization);	
 	}
 	
-	public void medicationStart(long time, String type, Set<String> reasons) {
+	public Medication medicationStart(long time, String type) {
+		Medication medication;
 		if(!present.containsKey(type)) {
-			Medication medication = new Medication(time, type, reasons);
+			medication = new Medication(time, type);
 			currentEncounter(time).medications.add(medication);
 			present.put(type, medication);			
 		} else {
-			Medication medication = (Medication) present.get(type);
-			medication.reasons.addAll(reasons);
+			medication = (Medication) present.get(type);
 		}
-	}
-	
-	public void medicationUpdate(long time, String type, Set<String> reasons) {
-		// TODO is this the correct behavior?
-		// Perhaps we should end the previous prescription and create a new one
-		if(present.containsKey(type)) {
-			Medication medication = (Medication) present.get(type);
-			medication.start = time;
-			medication.reasons = reasons;
-		}
+		return medication;
 	}
 	
 	public void medicationEnd(long time, String type, String reason) {
@@ -335,6 +327,23 @@ public class HealthRecord {
 			medication.stop = time;
 			medication.stopReason = reason;
 			present.remove(type);
+		}
+	}
+	
+	public void medicationEndByState(long time, String stateName, String reason) {
+		Medication medication = null;
+		Iterator<Entry> iter = present.values().iterator();
+		while(iter.hasNext()) {
+			Entry e = iter.next();
+			if(e.name == stateName) {
+				medication = (Medication) e;
+				break;
+			}
+		}
+		if(medication != null) {
+			medication.stop = time;
+			medication.stopReason = reason;
+			present.remove(medication.type);
 		}
 	}
 	

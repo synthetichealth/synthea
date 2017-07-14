@@ -7,6 +7,7 @@ import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.EncounterType;
 import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.Transition.TransitionType;
 
@@ -314,6 +315,57 @@ public class State {
 			}
 			if(definition.has("unit")) {
 				observation.unit = definition.get("unit").getAsString();
+			}
+			this.exited = time;
+			return true;
+		case MEDICATIONORDER:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			Medication medication = person.record.medicationStart(time, primary_code);
+			medication.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					medication.codes.add(code);
+				});
+			}
+			if(definition.has("reason")) {
+				// "reason" is an attribute or stateName referencing a previous conditionOnset state
+				String reason = definition.get("reason").getAsString();
+				if(person.attributes.containsKey(reason)) {
+					condition = (Entry) person.attributes.get(reason);
+					medication.reasons.add(condition.type);
+				} else if(person.hadPriorState(reason)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == reason) {
+							medication.reasons.add(entry.type);
+						}
+					}
+				}
+			}
+			if(definition.has("prescription")) {
+				medication.prescriptionDetails = definition.get("prescription").getAsJsonObject();
+			}
+			if(definition.has("assign_to_attribute")) {
+				attribute = definition.get("assign_to_attribute").getAsString();
+				person.attributes.put(attribute, medication);
+			}
+			this.exited = time;
+			return true;
+		case MEDICATIONEND:
+			if(definition.has("medication_order")) {
+				String state_name = definition.get("medication_order").getAsString();
+				person.record.medicationEndByState(time, state_name, "expired");
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				medication = (Medication) person.attributes.get(attribute);
+				medication.stop = time;
+				person.record.medicationEnd(time, medication.type, "expired");
+			} else if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					person.record.medicationEnd(time, item.getAsJsonObject().get("code").getAsString(), "expired");
+				});
 			}
 			this.exited = time;
 			return true;

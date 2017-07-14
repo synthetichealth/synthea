@@ -85,4 +85,42 @@ public class Person {
 		}
 		return total;
 	}
+
+	public boolean hadPriorState(String name) {
+		if(history == null) {
+			return false;
+		}
+		for(State state : history) {
+			if(state.name == name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hadPriorStateSince(String priorState, long time) {
+		if(history == null) {
+			return false;
+		}
+		for(State state : history) {
+			if(state.name == priorState && state.exited > time) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hadPriorStateSince(String priorState, String sinceState) {
+		if(history == null) {
+			return false;
+		}
+		for(State state : history) {
+			if(state.name == priorState) {
+				return true;
+			} else if(state.name == sinceState) {
+				return false;
+			}
+		}
+		return false;
+	}
 }
