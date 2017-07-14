@@ -465,6 +465,51 @@ public class State {
 			}
 			this.exited = time;
 			return true;
+		case DEATH:
+			Code reason = null;
+			if(definition.has("codes")) {
+				JsonObject item = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject();
+				reason = person.record.new Code(item);
+			} else if(definition.has("condition_onset")) {
+				String state_name = definition.get("condition_onset").getAsString();
+				if(person.hadPriorState(state_name)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == state_name) {
+							reason = entry.codes.get(0);
+						}
+					}
+				}
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				reason = ((Entry) person.attributes.get(attribute)).codes.get(0);
+			}
+			String rule = String.format("%s %s", module, name);
+			if(reason != null) {
+				rule = String.format("%s %s", rule, reason.display);
+			}
+			if(definition.has("range")) {
+				double low = definition.get("range").getAsJsonObject().get("low").getAsDouble();
+				double high = definition.get("range").getAsJsonObject().get("high").getAsDouble();
+				double duration = person.rand(low, high);
+				String units = definition.get("range").getAsJsonObject().get("unit").getAsString();
+				long timeOfDeath = time + Utilities.convertTime(units, (long) duration);
+				// TODO person.recordDeath(time, reason, rule);
+				person.events.create(timeOfDeath, Event.BIRTH, rule, false);
+				return true;
+			} else if(definition.has("exact")) {
+				double quantity = definition.get("exact").getAsJsonObject().get("quantity").getAsDouble();
+				String units = definition.get("exact").getAsJsonObject().get("unit").getAsString();
+				long timeOfDeath = time + Utilities.convertTime(units, (long) quantity);
+				// TODO person.recordDeath(time, reason, rule);
+				person.events.create(timeOfDeath, Event.BIRTH, rule, false);
+				return true;
+			} else {
+				// TODO person.recordDeath(time, reason, rule);
+				person.events.create(time, Event.BIRTH, rule, true);
+				return false;
+			}
 		default:
 			System.err.format("Unhandled State Type: %s\n", type);
 			return false;
