@@ -5,6 +5,7 @@ import java.util.Calendar;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
+import org.mitre.synthea.modules.HealthRecord.Observation;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -94,6 +95,25 @@ public class Logic {
 			operator = definition.get("operator").getAsString();
 			double value = definition.get("value").getAsDouble();
 			return Utilities.compare((double)person.getSymptom(symptom), value, operator);
+		case OBSERVATION:
+			operator = definition.get("operator").getAsString();
+			Observation observation = null;
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = person.record.new Code((JsonObject) item);
+					Observation last = person.record.getLatestObservation(code.code);
+					if(last != null) {
+						observation = last;
+						break;
+					}
+				}
+			}
+			if(definition.has("value")) {
+				value = definition.get("value").getAsDouble();
+				return Utilities.compare(observation, value, operator);
+			} else {
+				return Utilities.compare(observation, null, operator);
+			}
 		case ATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
 			operator = definition.get("operator").getAsString();

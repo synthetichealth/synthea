@@ -213,7 +213,19 @@ public class HealthRecord {
 		currentEncounter(time).observations.add(observation);
 		return observation;
 	}
-	
+
+	public Observation getLatestObservation(String type) {
+		for(int i=encounters.size()-1; i >= 0; i--) {
+			Encounter encounter = encounters.get(i);
+			for(Observation observation : encounter.observations) {
+				if(observation.type == type) {
+					return observation;
+				}
+			}
+		}
+		return null;
+	}
+
 	public Entry conditionStart(long time, String primaryCode) {
 		if(!present.containsKey(primaryCode)) {
 			Entry condition = new Entry(time, primaryCode);
