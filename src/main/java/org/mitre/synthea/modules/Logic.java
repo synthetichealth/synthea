@@ -2,7 +2,11 @@ package org.mitre.synthea.modules;
 
 import java.util.Calendar;
 
+import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Medication;
+
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -162,6 +166,23 @@ public class Logic {
 				return person.hadPriorStateSince(priorStateName, sinceTime);
 			} else {
 				return person.hadPriorState(priorStateName);
+			}
+		case ACTIVE_MEDICATION:
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = person.record.new Code((JsonObject) item);
+					if(person.record.medicationActive(code.code)) {
+						return true;
+					}
+				}
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					Medication medication = (Medication) person.attributes.get(attribute);
+					return person.record.medicationActive(medication.type);
+				} else {
+					return false;
+				}
 			}
 		default:
 			System.err.format("Unhandled Logic: %s\n", type);
