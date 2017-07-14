@@ -108,7 +108,7 @@ public class Module {
 	private Map<String,State> states;
 	
 	public Module(JsonObject definition, boolean submodule) {
-		name = definition.get("name").getAsString();
+		name = String.format("%s Module", definition.get("name").getAsString());
 		this.submodule = submodule;
 		remarks = new ArrayList<String>();
 		if(definition.has("remarks")) {
