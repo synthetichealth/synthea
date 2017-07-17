@@ -2,6 +2,8 @@ package org.mitre.synthea.modules;
 
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.helpers.Config;
+
 import com.google.gson.JsonPrimitive;
 
 public class Utilities {
@@ -37,11 +39,26 @@ public class Utilities {
 		if(p.isBoolean()) {
 			retVal = p.getAsBoolean();
 		} else if(p.isNumber()) {
-			retVal = p.getAsDouble();
+			double doubleVal = p.getAsDouble();
+			
+			if (doubleVal == Math.rint(doubleVal))
+			{
+				retVal = (int) doubleVal;
+			} else
+			{
+				retVal = doubleVal;
+			}
 		} else if(p.isString()) {
 			retVal = p.getAsString();
 		}
 		return retVal;
+	}
+	
+	public static double convertRiskToTimestep(double risk, double originalPeriodInMS)
+	{
+		double currTimeStepInMS = Double.parseDouble( Config.get("generate.timestep") );
+		
+		return 1 - Math.pow(1 - risk, currTimeStepInMS / originalPeriodInMS);
 	}
 	
 	public static boolean compare(Object lhs, Object rhs, String operator) {
@@ -52,8 +69,8 @@ public class Utilities {
 		} else if(lhs == null) {
 			return false;
 		}
-		if(lhs instanceof Double && rhs instanceof Double) {
-			return compare((Double)lhs, (Double)rhs, operator);
+		if(lhs instanceof Number && rhs instanceof Number) {
+			return compare(((Number)lhs).doubleValue(), ((Number)rhs).doubleValue(), operator);
 		} else if(lhs instanceof Boolean && rhs instanceof Boolean) {
 			return compare((Boolean)lhs, (Boolean)rhs, operator);			
 		} else if(lhs instanceof String && rhs instanceof String) {
