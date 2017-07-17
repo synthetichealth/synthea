@@ -214,8 +214,7 @@ module Synthea
         # While loop will keep running until all of the requested patients have been generated.
         while @stats[stats_to_use] < @population_count
           person = build_person
-          daly = qol_calculator.calculate_daly(person)
-          qol_calculator.calculate_qaly(person, daly)
+          qol_calculator.calculate(person)
           run_task(@export_workers) do
             @export_count.increment
             log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?
@@ -261,8 +260,7 @@ module Synthea
                                 race: target_race, ethnicity: target_ethnicity,
                                 income: target_income, education: target_education)
 
-          daly = qol_calculator.calculate_daly(person)
-          qol_calculator.calculate_qaly(person, daly)
+          qol_calculator.calculate(person)
           run_task(@export_workers) do
             @export_count.increment
             log_thread_pool(@export_workers, 'Export Workers') if @enable_debug_logging && (@export_count.value % @export_log_interval).zero?

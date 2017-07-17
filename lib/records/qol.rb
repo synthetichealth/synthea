@@ -12,74 +12,70 @@ module Synthea
         @disability_weights = JSON.parse(File.read(dw_file))
       end
 
-      # calculates daly after person has been generated at any time point of their life (end_date)
-      def calculate_daly(person, end_date = Synthea::Config.end_date)
-        # age depends on time at which daly is calculated, default is Synthea's end time
-        age = person[:age_mos] / 12.0
-        unless end_date == Synthea::Config.end_date
-          birth_time = person.events.events[:birth][0].time
-          age_seconds = end_date - birth_time
-          age = age_seconds / 31_548_096.0
-        end
-
-        # life expectancy equation calculated from GBD life table data
-        # 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
-        # R^2 = 0.99978
-        l = 0.00006 * age * age * age - 0.0054 * age * age - 0.8502 * age + 86.16
-
+      # calculates DALY and QALY after person has been generated
+      def calculate(person)
         # Disability-Adjusted Life Year = DALY = YLL + YLD
         # Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in years)
         # Years Lost due to Disability = YLD = (disability weight) * (average duration of case)
         # from http://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/
         yll = 0
         yld = 0
+        age = person[:age]
         if person.had_event?(:death)
-          yll = l if person.events.events[:death][0].time <= end_date
+          # life expectancy equation derived from IHME GBD 2015 Reference Life Table
+          # 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
+          # R^2 = 0.99978
+          l = (0.00006 * age * age * age) - (0.0054 * age * age) - (0.8502 * age) + 86.16
+          yll = l
         end
 
-        person.record_synthea.conditions.each do |condition|
-          if @disability_weights.key?(condition['type'].to_s)
+        birth_time = person.events.events[:birth][0].time
+        all_conditions = person.record_synthea.conditions
+        (0...age).each do |year|
+          year_start = birth_time + year.years
+          year_end = birth_time + (year + 1).years
+          conditions_in_year = conditions_in_year(all_conditions, year_start, year_end)
+
+          conditions_in_year.each do |condition|
             dw = @disability_weights[condition['type'].to_s]['disability_weight']
+            weight = weight(dw, year + 1)
+            # duration is 1 year
+            yld += weight
+          end
+        end
+
+        daly = yll + yld
+        qaly = age - yld
+
+        end_date = Synthea::Config.end_date
+        person.record_synthea.observation(:DALY, end_date, daly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
+        person.record_synthea.observation(:QALY, end_date, qaly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
+      end
+
+      # returns list of all conditions that occur in a given year
+      def conditions_in_year(conditions, year_start, year_end)
+        conditions_in_year = []
+        conditions.each do |condition|
+          if @disability_weights.key?(condition['type'].to_s)
             condition_start_time = condition['time']
-            next if condition_start_time > end_date
-            condition_end_time = end_date
-            if condition['end_time']
-              if condition['end_time'] <= end_date
-                condition_end_time = condition['end_time']
-              end
-            end
-            duration_seconds = condition_end_time - condition_start_time
-            duration_years = duration_seconds / 31_548_096.0
-            yld += dw * duration_years
+            condition_end_time = condition['end_time']
+            condition_end_time = Synthea::Config.end_date if condition_end_time.nil?
+            conditions_in_year << condition if year_start >= condition_start_time && condition_start_time < year_end && condition_end_time > year_start
           end
           next
         end
-        daly = yll + yld
-        person.record_synthea.observation(:DALY, end_date, daly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
-        daly
+        conditions_in_year
       end
 
-      def calculate_qaly(person, daly, end_date = Synthea::Config.end_date)
-        # age depends on time at which daly is calculated, default is Synthea's end time
-        a = person[:age_mos] / 12.0
-        unless end_date == Synthea::Config.end_date
-          birth_time = person.events.events[:birth][0].time
-          age_seconds = end_date - birth_time
-          a = age_seconds / 31_548_096.0
-        end
-
-        # DALYs averted = QALYs gained * ca
-        # ca = C * a * e^(-B * a) where C = 0.1658 and B = 0.04
-        # from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3863845/
-        ca = 0.1658 * a * Math.exp(-0.04 * a)
-        qaly = daly / ca
-        person.record_synthea.observation(:QALY, end_date, qaly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
-        qaly
+      # accounts for age weight
+      def weight(disability_weight, age)
+        # age_weight = 0.1658 * age * e^(-0.04 * age)
+        # from http://www.who.int/quantifying_ehimpacts/publications/9241546204/en/
+        # weight = age_weight * disability_weight
+        age_weight = 0.1658 * age * Math.exp(-0.04 * age)
+        weight = age_weight * disability_weight
+        weight
       end
-
-      # cost effectiveness ratio
-      # CE Ratio = (cost of intervention - cost of comparator) / (DALY averted with intervention - DALY averted comparator)
-      # http://healtheconomics.tuftsmedicalcenter.org/orchard/the-daly
     end
   end
 end
