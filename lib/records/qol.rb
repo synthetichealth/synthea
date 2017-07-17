@@ -13,7 +13,7 @@ module Synthea
       end
 
       # calculates DALY and QALY after person has been generated
-      def calculate(person)
+      def calculate(person, end_date = Synthea::Config.end_date)
         # Disability-Adjusted Life Year = DALY = YLL + YLD
         # Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in years)
         # Years Lost due to Disability = YLD = (disability weight) * (average duration of case)
@@ -21,6 +21,9 @@ module Synthea
         yll = 0
         yld = 0
         age = person[:age]
+        birth_time = person.events.events[:birth][0].time
+        age = ((end_date - birth_time) / 31_557_600).round if end_date != Synthea::Config.end_date
+
         if person.had_event?(:death)
           # life expectancy equation derived from IHME GBD 2015 Reference Life Table
           # 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
@@ -29,7 +32,6 @@ module Synthea
           yll = l
         end
 
-        birth_time = person.events.events[:birth][0].time
         all_conditions = person.record_synthea.conditions
         (0...age).each do |year|
           year_start = birth_time + year.years
@@ -47,7 +49,6 @@ module Synthea
         daly = yll + yld
         qaly = age - yld
 
-        end_date = Synthea::Config.end_date
         person.record_synthea.observation(:DALY, end_date, daly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
         person.record_synthea.observation(:QALY, end_date, qaly, 'fhir' => :observation, 'ccda' => :no_action, 'category' => 'survey')
       end

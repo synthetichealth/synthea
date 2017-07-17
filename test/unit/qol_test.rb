@@ -44,6 +44,15 @@ class QOLTest < Minitest::Test
     assert(daly_dead.between?(54, 55))
     assert(qaly_dead.between?(33, 34))
   end
+
+  def test_calculate_with_age
+    @qol_calculator.calculate(@patient, @time - 20.years)
+    daly = @patient.record_synthea.observations[0]['value']
+    qaly = @patient.record_synthea.observations[1]['value']
+    # daly (without age weight) = 5*0.045 + 10*0.015 = 0.375
+    assert(daly.between?(0.38, 0.39))
+    assert(qaly.between?(14, 15))
+  end
   
   def test_conditions_in_year
     conditions = @patient.record_synthea.conditions
