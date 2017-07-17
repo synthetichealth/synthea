@@ -19,11 +19,6 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
-
-    // geotools used to read the ma_geo GeoJSON file
-    maven {
-      url "http://download.osgeo.org/webdav/geotools/"
-    }
 }
 
 dependencies {
@@ -34,8 +29,11 @@ dependencies {
     compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
     compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
 
-    compile group: 'org.geotools', name: 'gt-shapefile', version: '17.1'
-    compile group: 'org.geotools', name: 'gt-geojson', version: '17.1'
+
+    // JTS for location processing
+    compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
+    // used to convert the ma_geo GeoJSON file to JTS
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
 
     compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
 

@@ -1,19 +1,22 @@
 package org.mitre.synthea.world;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
 import org.mitre.synthea.modules.Person;
-import org.opengis.feature.Feature;
-import org.opengis.geometry.BoundingBox;
+import org.wololo.geojson.Feature;
+import org.wololo.geojson.FeatureCollection;
+import org.wololo.geojson.GeoJSONFactory;
+import org.wololo.jts2geojson.GeoJSONReader;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 
 public class Location {
 
@@ -26,24 +29,24 @@ public class Location {
 		
 		long runningPopulation = 0;
 		
-		try {
-			FeatureJSON json = new FeatureJSON();
+		try 
+		{
 			InputStream stream = Location.class.getResourceAsStream(filename);
-			cities = json.readFeatureCollection(stream);
-			
-			try (FeatureIterator itr = cities.features())
+			// read all text into a string
+			String json = new BufferedReader(new InputStreamReader(stream)).lines()
+					   .parallel().collect(Collectors.joining("\n"));
+
+		    cities = (FeatureCollection) GeoJSONFactory.create(json);
+
+			for (Feature f : cities.getFeatures())
 			{
-				while (itr.hasNext())
-				{
-					Feature f = itr.next();
-					
-					runningPopulation += ((Double)f.getProperty("pop").getValue()).longValue();
-				}
+				Double pop = (Double) f.getProperties().get("pop");
+				runningPopulation += pop.longValue();
 			}
 			
 			totalPopulation = runningPopulation;
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("ERROR: unable to load geojson: " + filename);
 			e.printStackTrace();
 			throw new ExceptionInInitializerError(e);
@@ -72,49 +75,49 @@ public class Location {
 		{
 			long targetPop = (long) (person.rand() * totalPopulation);
 			
-			try (FeatureIterator itr = cities.features())
+			for (Feature f : cities.getFeatures())
 			{
-				while (itr.hasNext())
+				Double pop = (Double) f.getProperties().get("pop");
+				targetPop -= pop.longValue();
+				
+				if (targetPop < 0)
 				{
-					Feature f = itr.next();
-					
-					targetPop -= ((Double)f.getProperty("pop").getValue()).longValue();
-					
-					if (targetPop < 0)
-					{
-						cityFeature = f;
-						cityName = (String)cityFeature.getProperty("cs_name").getValue();
-						break;
-					}
+					cityFeature = f;
+					cityName = (String)cityFeature.getProperties().get("cs_name");
+					break;
 				}
+				
 			}
 		} else
 		{
-			try (FeatureIterator itr = cities.features())
+			for (Feature f : cities.getFeatures())
 			{
-				while (itr.hasNext())
+				String name = (String)f.getProperties().get("cs_name");
+				
+				if (name.equals(cityName) || name.equals(cityName + " Town"))
 				{
-					Feature f = itr.next();
-					
-					String name = (String) f.getProperty("cs_name").getValue();
-					
-					if (name.equals(cityName) || name.equals(cityName + " Town"))
-					{
-						cityFeature = f;
-						break;
-					}
+					cityFeature = f;
+					break;
 				}
 			}
 		}
 		
-		MultiPolygon geom = (MultiPolygon)cityFeature.getDefaultGeometryProperty().getValue();
-		
-		BoundingBox bounds = cityFeature.getBounds();
-		
-		double minX = bounds.getMinX();
-		double minY = bounds.getMinY();
-		double maxX = bounds.getMaxX();
-		double maxY = bounds.getMaxY();
+		GeoJSONReader reader = new GeoJSONReader();
+		MultiPolygon geom = (MultiPolygon) reader.read(cityFeature.getGeometry());
+
+		Polygon boundingBox = (Polygon) geom.getEnvelope();
+		/*
+		 * If this Geometry is: 
+				empty, returns an empty Point. 
+				a point, returns a Point. 
+				a line parallel to an axis, a two-vertex LineString 
+				otherwise, returns a Polygon whose vertices are (minx miny, maxx miny, maxx maxy, minx maxy, minx miny). 
+		 */
+		Coordinate[] coords = boundingBox.getCoordinates();
+		double minX = coords[0].x;
+		double minY = coords[0].y;
+		double maxX = coords[2].x;
+		double maxY = coords[2].y;	
 		
 		Point selectedPoint = null;
 		
