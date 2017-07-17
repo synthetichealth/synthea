@@ -2,11 +2,11 @@ package org.mitre.synthea.world;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.mitre.synthea.modules.Person;
 import org.opengis.feature.Feature;
 import org.opengis.geometry.BoundingBox;
 
@@ -55,15 +55,22 @@ public class Location {
 		return "00000"; // TODO
 	}
 	
-	public static PointWrapper selectPoint(String cityName)
+	/**
+	 * Assign a geographic location to the given Person. Location includes City, State, Zip, and Coordinate.
+	 * If cityName is given, then Zip and Coordinate are restricted to valid values for that city.
+	 * If cityName is not given, then picks a random city from the list of all cities.
+	 * 
+	 * @param person Person to assign location information
+	 * @param cityName Name of the city, or null to choose one randomly
+	 */
+	public static void assignPoint(Person person, String cityName)
 	{
 		Feature cityFeature = null;
 		
 		// randomly select a city if not provided
 		if (cityName == null)
 		{
-			// TODO - make this population-based
-			long targetPop = ThreadLocalRandom.current().nextLong(totalPopulation);
+			long targetPop = (long) (person.rand() * totalPopulation);
 			
 			try (FeatureIterator itr = cities.features())
 			{
@@ -111,25 +118,15 @@ public class Location {
 		
 		Point selectedPoint = null;
 		
-		ThreadLocalRandom r = ThreadLocalRandom.current();
 		do {
-			double x = r.nextDouble(minX, maxX);
-			double y = r.nextDouble(minY, maxY);
+			double x = person.rand(minX, maxX);
+			double y = person.rand(minY, maxY);
 			selectedPoint = new GeometryFactory().createPoint(new Coordinate(x,y));
 		} while (!geom.contains(selectedPoint));
 		
-		return new PointWrapper(cityName, selectedPoint);
-	}
-	
-	public static class PointWrapper
-	{
-		public String city;
-		public Point point;
-		
-		public PointWrapper(String city, Point point)
-		{
-			this.city = city;
-			this.point = point;
-		}
+		person.attributes.put(Person.CITY, cityName);
+		person.attributes.put(Person.STATE, "MA");
+		person.attributes.put(Person.ZIP, getZipCode(cityName));
+		person.attributes.put(Person.COORDINATE, selectedPoint);
 	}
 }

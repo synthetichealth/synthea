@@ -1,14 +1,10 @@
 package org.mitre.synthea.modules;
 
 import java.util.Calendar;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public final class CardiovascularDiseaseModule extends Module 
 {
-	
-	
-	
 	@Override
 	public boolean process(Person person, long time) 
 	{
@@ -45,7 +41,7 @@ public final class CardiovascularDiseaseModule extends Module
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(time);
 			long year = calendar.get(Calendar.YEAR);
-			Boolean smoker = ThreadLocalRandom.current().nextDouble() < likelihoodOfBeingASmoker(year);
+			Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
 			person.attributes.put("SMOKER", smoker);
 		}
 	}

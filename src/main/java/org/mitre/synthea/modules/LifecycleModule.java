@@ -2,7 +2,6 @@ package org.mitre.synthea.modules;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.modules.HealthRecord.Code;
@@ -33,7 +32,6 @@ public final class LifecycleModule extends Module
 	
 	public static void birth(Person person, long time)
 	{
-		ThreadLocalRandom r = ThreadLocalRandom.current();
 		Map<String, Object> attributes = person.attributes;
 		
 		attributes.put(Person.ID,  UUID.randomUUID().toString());
@@ -42,14 +40,12 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.NAME, faker.name().name());
 		attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
 		attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-		attributes.put(Person.GENDER, r.nextBoolean() ? "M" : "F");
+		attributes.put(Person.GENDER, person.rand() < 0.5 ? "M" : "F");
 
-		Location.PointWrapper pw = Location.selectPoint(null);
-		attributes.put(Person.ADDRESS, faker.address().streetAddress(r.nextBoolean()));
-		attributes.put(Person.CITY, pw.city);
-		attributes.put(Person.STATE, "MA");
-		attributes.put(Person.ZIP, Location.getZipCode(pw.city));
-		attributes.put(Person.COORDINATE, pw.point);
+		Location.assignPoint(person, null);
+		boolean hasStreetAddress2 = person.rand() < 0.5;
+		attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
+
 		
 		attributes.put(Person.HEIGHT, 51.0); // cm
 		attributes.put(Person.WEIGHT, 3.5); // kg
@@ -132,7 +128,7 @@ public final class LifecycleModule extends Module
 	private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000", "Natural death with unknown cause");
 	private static void death(Person person, long time)
 	{
-		double roll = Utilities.rand();
+		double roll = person.rand();
 		double likelihoodOfDeath = likelihoodOfDeath( person.ageInYears(time) );
 		if (roll < likelihoodOfDeath)
 		{
