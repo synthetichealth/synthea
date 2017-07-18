@@ -63,8 +63,10 @@ module Synthea
                                                              'valueInteger' => h.utilization[:labs])
           hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}utilization-prescriptions-extension",
                                                              'valueInteger' => h.utilization[:prescriptions])
-          hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}bed_count-extension",
-                                                             'valueInteger' => h.attributes['bed_count'])
+          if h.attributes['bed_count']
+            hospital_resource.extension << FHIR::Extension.new('url' => "#{SYNTHEA_EXT}bed_count-extension",
+                                                               'valueInteger' => h.attributes['bed_count'])
+          end
 
           entry = FHIR::Bundle::Entry.new
           entry.fullUrl = "urn:uuid:#{resource_id}"
@@ -101,8 +103,10 @@ module Synthea
                                                                     'valueInteger' => h.utilization[:labs])
           hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}utilization-prescriptions-extension",
                                                                     'valueInteger' => h.utilization[:prescriptions])
-          hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}bed_count-extension",
-                                                                    'valueInteger' => h.attributes['bed_count'])
+          if h.attributes['bed_count']
+            hospital_resource.extension << FHIR::DSTU2::Extension.new('url' => "#{SYNTHEA_EXT}bed_count-extension",
+                                                                      'valueInteger' => h.attributes['bed_count'])
+          end
 
           entry = FHIR::DSTU2::Bundle::Entry.new
           entry.fullUrl = "urn:uuid:#{resource_id}"
