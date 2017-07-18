@@ -1,8 +1,6 @@
 module Synthea
   module Output
     module FhirDstu2Record
-      SYNTHEA_EXT = 'http://synthetichealth.github.io/synthea/'.freeze
-
       def self.convert_to_fhir(entity, end_time = Time.now)
         synthea_record = entity.record_synthea
         indices = { observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0 }

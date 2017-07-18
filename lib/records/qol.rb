@@ -28,7 +28,7 @@ module Synthea
           # life expectancy equation derived from IHME GBD 2015 Reference Life Table
           # 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
           # R^2 = 0.99978
-          l = (0.00006 * age * age * age) - (0.0054 * age * age) - (0.8502 * age) + 86.16
+          l = (0.00006 * age**3) - (0.0054 * age**2) - (0.8502 * age) + 86.16
           yll = l
         end
 
@@ -57,13 +57,11 @@ module Synthea
       def conditions_in_year(conditions, year_start, year_end)
         conditions_in_year = []
         conditions.each do |condition|
-          if @disability_weights.key?(condition['type'].to_s)
-            condition_start_time = condition['time']
-            condition_end_time = condition['end_time']
-            condition_end_time = Synthea::Config.end_date if condition_end_time.nil?
-            conditions_in_year << condition if year_start >= condition_start_time && condition_start_time < year_end && condition_end_time > year_start
-          end
-          next
+          next unless @disability_weights.key?(condition['type'].to_s)
+          condition_start_time = condition['time']
+          condition_end_time = condition['end_time']
+          condition_end_time = Synthea::Config.end_date if condition_end_time.nil?
+          conditions_in_year << condition if year_start >= condition_start_time && condition_start_time < year_end && condition_end_time > year_start
         end
         conditions_in_year
       end
