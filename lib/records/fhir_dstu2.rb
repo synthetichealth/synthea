@@ -352,26 +352,7 @@ module Synthea
       end
 
       def self.quality_of_life_observation(observation, fhir_record, patient)
-        qol_data = QOL_CODES[observation['type']]
-        entry = FHIR::DSTU2::Bundle::Entry.new
-        resource_id = SecureRandom.uuid
-        entry.fullUrl = "urn:uuid:#{resource_id}"
-
-        entry.resource = FHIR::DSTU2::Observation.new('id' => resource_id,
-                                                      'status' => 'final',
-                                                      'code' => {
-                                                        'coding' => [{ 'system' => 'http://snomed.info/sct', 'code' => qol_data[:codes]['SNOMED-CT'][0], 'display' => qol_data[:description] }],
-                                                        'text' => qol_data[:description]
-                                                      },
-                                                      'category' => {
-                                                        'coding' => [{ 'system' => 'http://hl7.org/fhir/observation-category', 'code' => observation['category'] }]
-                                                      },
-                                                      'subject' => { 'reference' => patient.fullUrl.to_s },
-                                                      'effectiveDateTime' => convert_fhir_date_time(observation['time'], 'time'),
-                                                      'issued' => convert_fhir_date_time(observation['time'], 'time'))
-        entry.resource.valueQuantity = FHIR::DSTU2::Quantity.new('value' => observation['value'], 'unit' => qol_data[:unit], 'code' => qol_data[:unit], 'system' => 'http://unitsofmeasure.org/')
-
-        fhir_record.entry << entry
+        Synthea::Output::FHIRVersionIndependent.quality_of_life_observation(observation, fhir_record, patient, FHIR::DSTU2)
       end
 
       def self.multi_observation(multi_obs, fhir_record, patient, encounter)
