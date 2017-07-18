@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.modules.HealthRecord.Code;
+
 public class Person {
 	
 	public static final String BIRTHDATE = "birthdate";
@@ -13,6 +15,14 @@ public class Person {
 	public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";
+	public static final String ID = "id";
+	public static final String ADDRESS = "address";
+	public static final String CITY = "city";
+	public static final String STATE = "state";
+	public static final String ZIP = "zip";
+	public static final String COORDINATE = "coordinate";
+	public static final String HEIGHT = "height";
+	public static final String WEIGHT = "weight";
 	
 	private Random random;
 	public Map<String,Object> attributes;
@@ -46,9 +56,16 @@ public class Person {
 		return age;
 	}
 	
+	public int ageInMonths(long time)
+	{
+		// TODO - would prefer something more robust for these
+		long age = ageInMilliseconds(time);
+		return (int) (TimeUnit.MILLISECONDS.toDays(age) / (365.25 / 12));
+	}
+	
 	public int ageInYears(long time) {
 		long age = ageInMilliseconds(time);
-		return (int) (TimeUnit.MILLISECONDS.toDays(age) / 365);
+		return (int) (TimeUnit.MILLISECONDS.toDays(age) / 365.25);
 	}
 	
 	public boolean alive(long time) {
@@ -73,6 +90,11 @@ public class Person {
 			}
 		}
 		return max;
+	}
+	
+	public void recordDeath(long time, Code cause, String ruleName)
+	{
+		events.create(time, Event.DEATH, ruleName, true);
 	}
 	
 	/**
