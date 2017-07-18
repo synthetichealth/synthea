@@ -100,7 +100,7 @@ public class Logic {
 			Observation observation = null;
 			if(definition.has("codes")) {
 				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					Observation last = person.record.getLatestObservation(code.code);
 					if(last != null) {
 						observation = last;
@@ -191,7 +191,7 @@ public class Logic {
 		case ACTIVE_CONDITION:
 			if(definition.has("codes")) {
 				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					if(person.record.present.containsKey(code.code)) {
 						return true;
 					}
@@ -209,7 +209,7 @@ public class Logic {
 		case ACTIVE_MEDICATION:
 			if(definition.has("codes")) {
 				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					if(person.record.medicationActive(code.code)) {
 						return true;
 					}

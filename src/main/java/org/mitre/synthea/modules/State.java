@@ -326,7 +326,7 @@ public class State {
 			medication.name = this.name;
 			if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					medication.codes.add(code);
 				});
 			}
@@ -377,13 +377,13 @@ public class State {
 			careplan.name = this.name;
 			if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					careplan.codes.add(code);
 				});
 			}
 			if(definition.has("activities")) {
 				definition.get("activities").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					careplan.activities.add(code);
 				});
 			}
@@ -436,7 +436,7 @@ public class State {
 			procedure.name = this.name;
 			if(definition.has("codes")) {
 				definition.get("codes").getAsJsonArray().forEach(item -> {
-					Code code = person.record.new Code((JsonObject) item);
+					Code code = new Code((JsonObject) item);
 					procedure.codes.add(code);
 				});
 			}
@@ -469,7 +469,7 @@ public class State {
 			Code reason = null;
 			if(definition.has("codes")) {
 				JsonObject item = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject();
-				reason = person.record.new Code(item);
+				reason = new Code(item);
 			} else if(definition.has("condition_onset")) {
 				String state_name = definition.get("condition_onset").getAsString();
 				if(person.hadPriorState(state_name)) {
