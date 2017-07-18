@@ -297,8 +297,8 @@ module Synthea
                                        rescue
                                          1.0
                                        end
-        range = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio.normal
-        entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
+        range = Synthea::Config.metabolic.basic_panel.microalbumin_creatinine_ratio.normal
+        entity.set_vital_sign(:microalbumin_creatinine_ratio, rand(range.first..range.last), 'mg/g')
         if creatinine_clearance > 60
           entity.set_vital_sign(:egfr, 60, 'mL/min/{1.73_m2}')
         else
@@ -308,19 +308,19 @@ module Synthea
         metabolic_panel.each { |k, v| entity.set_vital_sign(k, v, 'mg/dL') }
         electrolytes_panel.each { |k, v| entity.set_vital_sign(k, v, 'mmol/L') }
 
-        microalbumin_creatine_ratio = Synthea::Config.metabolic.basic_panel.microalbumin_creatine_ratio
+        microalbumin_creatinine_ratio = Synthea::Config.metabolic.basic_panel.microalbumin_creatinine_ratio
 
         range = case entity['diabetic_kidney_damage']
                 when 4
-                  microalbumin_creatine_ratio.proteinuria
+                  microalbumin_creatinine_ratio.proteinuria
                 when 3
-                  microalbumin_creatine_ratio.microalbuminuria_uncontrolled
+                  microalbumin_creatinine_ratio.microalbuminuria_uncontrolled
                 when 2
-                  microalbumin_creatine_ratio.microalbuminuria_controlled
+                  microalbumin_creatinine_ratio.microalbuminuria_controlled
                 else
-                  microalbumin_creatine_ratio.normal
+                  microalbumin_creatinine_ratio.normal
                 end
-        entity.set_vital_sign(:microalbumin_creatine_ratio, rand(range.first..range.last), 'mg/g')
+        entity.set_vital_sign(:microalbumin_creatinine_ratio, rand(range.first..range.last), 'mg/g')
       end
 
       def blood_glucose(bmi, prediabetes, diabetes)
