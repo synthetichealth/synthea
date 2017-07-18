@@ -93,7 +93,7 @@ synthea:
       # http://www.cdc.gov/diabetes/prevention/pdf/point-of-care-prediabetes-identification-algorithm_tag508.pdf
       glucose: [64,100,125,200] # mg/dL [normal minimum,prediabetic,diabetic,max]
       # http://www.mayomedicallaboratories.com/test-catalog/Clinical+and+Interpretive/81260
-      microalbumin_creatine_ratio:
+      microalbumin_creatinine_ratio:
         normal: [0,17] # mg/g
         microalbuminuria_controlled: [17,30] # mg/g
         microalbuminuria_uncontrolled: [30,300] # mg/g
