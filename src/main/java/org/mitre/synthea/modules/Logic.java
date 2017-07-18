@@ -2,7 +2,13 @@ package org.mitre.synthea.modules;
 
 import java.util.Calendar;
 
+import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Medication;
+import org.mitre.synthea.modules.HealthRecord.Observation;
+
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -89,6 +95,25 @@ public class Logic {
 			operator = definition.get("operator").getAsString();
 			double value = definition.get("value").getAsDouble();
 			return Utilities.compare((double)person.getSymptom(symptom), value, operator);
+		case OBSERVATION:
+			operator = definition.get("operator").getAsString();
+			Observation observation = null;
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = person.record.new Code((JsonObject) item);
+					Observation last = person.record.getLatestObservation(code.code);
+					if(last != null) {
+						observation = last;
+						break;
+					}
+				}
+			}
+			if(definition.has("value")) {
+				value = definition.get("value").getAsDouble();
+				return Utilities.compare(observation, value, operator);
+			} else {
+				return Utilities.compare(observation, null, operator);
+			}
 		case ATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
 			operator = definition.get("operator").getAsString();
@@ -149,6 +174,56 @@ public class Logic {
 			return true;
 		case FALSE:
 			return false;
+		case PRIOR_STATE:
+			String priorStateName = definition.get("name").getAsString();
+			if(definition.has("since")) {
+				String priorStateSince = definition.get("since").getAsString();
+				return person.hadPriorStateSince(priorStateName, priorStateSince);
+			} else if(definition.has("within")) {
+				units = definition.get("within").getAsJsonObject().get("unit").getAsString();
+				quantity = definition.get("within").getAsJsonObject().get("quantity").getAsLong();
+				long window = Utilities.convertTime(units, quantity);
+				long sinceTime = time - window;
+				return person.hadPriorStateSince(priorStateName, sinceTime);
+			} else {
+				return person.hadPriorState(priorStateName);
+			}
+		case ACTIVE_CONDITION:
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = person.record.new Code((JsonObject) item);
+					if(person.record.present.containsKey(code.code)) {
+						return true;
+					}
+				}
+				return false;
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					Entry diagnosis = (Entry) person.attributes.get(attribute);
+					return person.record.present.containsKey(diagnosis.type);
+				} else {
+					return false;
+				}
+			}
+		case ACTIVE_MEDICATION:
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = person.record.new Code((JsonObject) item);
+					if(person.record.medicationActive(code.code)) {
+						return true;
+					}
+				}
+				return false;
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					Medication medication = (Medication) person.attributes.get(attribute);
+					return person.record.medicationActive(medication.type);
+				} else {
+					return false;
+				}
+			}
 		default:
 			System.err.format("Unhandled Logic: %s\n", type);
 			return false;

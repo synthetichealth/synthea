@@ -3,11 +3,14 @@ package org.mitre.synthea.modules;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.EncounterType;
 import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Observation;
+import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.Transition.TransitionType;
 
 import com.google.gson.JsonObject;
@@ -84,7 +87,9 @@ public class State {
 	 */
 	public boolean process(Person person, long time) {
 		System.out.format("State: %s\n", this.name);
-		this.entered = time;
+		if(this.entered == 0) {
+			this.entered = time;
+		}
 		switch(type) {
 		case TERMINAL:
 			return false;
@@ -120,6 +125,7 @@ public class State {
 				}
 			}
 			if(time > this.next) {
+				this.exited = time;
 				return true;
 			} else {
 				return false;
@@ -127,11 +133,16 @@ public class State {
 		case GUARD:
 			JsonObject logicDefinition = definition.get("allow").getAsJsonObject();
 			Logic allow = new Logic(logicDefinition);
-			return allow.test(person, time);
+			boolean exit = allow.test(person, time);
+			if(exit) {
+				this.exited = time;
+			}
+			return exit;
 		case SETATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
 			Object value = Utilities.primitive( definition.get("value").getAsJsonPrimitive() );
 			person.attributes.put(attribute, value);
+			this.exited = time;
 			return true;
 		case COUNTER:
 			attribute = definition.get("attribute").getAsString();
@@ -146,6 +157,7 @@ public class State {
 				counter--;
 			}
 			person.attributes.put(attribute, counter);
+			this.exited = time;
 			return true;
 		case SYMPTOM:
 			String symptom = definition.get("symptom").getAsString();
@@ -167,11 +179,13 @@ public class State {
 			} else {
 				person.setSymptom(cause, symptom, 0);					
 			}
+			this.exited = time;
 			return true;
 		case ENCOUNTER:
 			if(definition.has("wellness") && definition.get("wellness").getAsBoolean()) {
 				Encounter encounter = person.record.currentEncounter(time);
 				if(encounter.type==EncounterType.WELLNESS.toString() && encounter.stop!=0l) {
+					this.exited = time;
 					return true;
 				} else {
 					// Block until we're in a wellness encounter... then proceed.
@@ -196,6 +210,7 @@ public class State {
 						encounter.codes.add(code);
 					});
 				}
+				this.exited = time;
 				return true;
 			}
 		case ENCOUNTEREND:
@@ -207,6 +222,7 @@ public class State {
 				Code code = new Code((JsonObject) definition.get("discharge_disposition"));
 				encounter.discharge = code;
 			}
+			this.exited = time;
 			return true;
 		case CONDITIONONSET:
 			String primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
@@ -222,6 +238,7 @@ public class State {
 				attribute = definition.get("assign_to_attribute").getAsString();
 				person.attributes.put(attribute, condition);
 			}
+			this.exited = time;
 			return true;
 		case CONDITIONEND:
 			if(definition.has("condition_onset")) {
@@ -237,6 +254,7 @@ public class State {
 					person.record.conditionEnd(time, item.getAsJsonObject().get("code").getAsString());
 				});
 			}
+			this.exited = time;
 			return true;
 		case ALLERGYONSET:
 			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
@@ -252,6 +270,7 @@ public class State {
 				attribute = definition.get("assign_to_attribute").getAsString();
 				person.attributes.put(attribute, allergy);
 			}
+			this.exited = time;
 			return true;
 		case ALLERGYEND:
 			if(definition.has("allergy_onset")) {
@@ -267,6 +286,7 @@ public class State {
 					person.record.allergyEnd(time, item.getAsJsonObject().get("code").getAsString());
 				});
 			}
+			this.exited = time;
 			return true;
 		case OBSERVATION:
 			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
@@ -298,7 +318,198 @@ public class State {
 			if(definition.has("unit")) {
 				observation.unit = definition.get("unit").getAsString();
 			}
+			this.exited = time;
 			return true;
+		case MEDICATIONORDER:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			Medication medication = person.record.medicationStart(time, primary_code);
+			medication.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					medication.codes.add(code);
+				});
+			}
+			if(definition.has("reason")) {
+				// "reason" is an attribute or stateName referencing a previous conditionOnset state
+				String reason = definition.get("reason").getAsString();
+				if(person.attributes.containsKey(reason)) {
+					condition = (Entry) person.attributes.get(reason);
+					medication.reasons.add(condition.type);
+				} else if(person.hadPriorState(reason)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == reason) {
+							medication.reasons.add(entry.type);
+						}
+					}
+				}
+			}
+			if(definition.has("prescription")) {
+				medication.prescriptionDetails = definition.get("prescription").getAsJsonObject();
+			}
+			if(definition.has("assign_to_attribute")) {
+				attribute = definition.get("assign_to_attribute").getAsString();
+				person.attributes.put(attribute, medication);
+			}
+			this.exited = time;
+			return true;
+		case MEDICATIONEND:
+			if(definition.has("medication_order")) {
+				String state_name = definition.get("medication_order").getAsString();
+				person.record.medicationEndByState(time, state_name, "expired");
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				medication = (Medication) person.attributes.get(attribute);
+				medication.stop = time;
+				person.record.medicationEnd(time, medication.type, "expired");
+			} else if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					person.record.medicationEnd(time, item.getAsJsonObject().get("code").getAsString(), "expired");
+				});
+			}
+			this.exited = time;
+			return true;
+		case CAREPLANSTART:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			CarePlan careplan = person.record.careplanStart(time, primary_code);
+			careplan.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					careplan.codes.add(code);
+				});
+			}
+			if(definition.has("activities")) {
+				definition.get("activities").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					careplan.activities.add(code);
+				});
+			}
+			if(definition.has("goals")) {
+				definition.get("goals").getAsJsonArray().forEach(item -> {
+					careplan.goals.add(item.getAsJsonObject());
+				});
+			}
+			if(definition.has("reason")) {
+				// "reason" is an attribute or stateName referencing a previous conditionOnset state
+				String reason = definition.get("reason").getAsString();
+				if(person.attributes.containsKey(reason)) {
+					condition = (Entry) person.attributes.get(reason);
+					careplan.reasons.add(condition.type);
+				} else if(person.hadPriorState(reason)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == reason) {
+							careplan.reasons.add(entry.type);
+						}
+					}
+				}
+			}
+			if(definition.has("assign_to_attribute")) {
+				attribute = definition.get("assign_to_attribute").getAsString();
+				person.attributes.put(attribute, careplan);
+			}
+			this.exited = time;
+			return true;
+		case CAREPLANEND:
+			if(definition.has("careplan")) {
+				String state_name = definition.get("careplan").getAsString();
+				person.record.careplanEndByState(time, state_name, "finished");
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				careplan = (CarePlan) person.attributes.get(attribute);
+				careplan.stop = time;
+				person.record.careplanEnd(time, careplan.type, "finished");
+			} else if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					person.record.careplanEnd(time, item.getAsJsonObject().get("code").getAsString(), "finished");
+				});
+			}
+			this.exited = time;
+			return true;
+		case PROCEDURE:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			Procedure procedure = person.record.procedure(time, primary_code);
+			procedure.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = person.record.new Code((JsonObject) item);
+					procedure.codes.add(code);
+				});
+			}
+			if(definition.has("reason")) {
+				// "reason" is an attribute or stateName referencing a previous conditionOnset state
+				String reason = definition.get("reason").getAsString();
+				if(person.attributes.containsKey(reason)) {
+					condition = (Entry) person.attributes.get(reason);
+					procedure.reasons.add(condition.type);
+				} else if(person.hadPriorState(reason)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == reason) {
+							procedure.reasons.add(entry.type);
+						}
+					}
+				}
+			}
+			if(definition.has("duration")) {
+				double low = definition.get("duration").getAsJsonObject().get("low").getAsDouble();
+				double high = definition.get("duration").getAsJsonObject().get("high").getAsDouble();
+				double duration = person.rand(low, high);
+				String units = definition.get("duration").getAsJsonObject().get("unit").getAsString();
+				procedure.stop = procedure.start + Utilities.convertTime(units, (long) duration);
+			}
+			this.exited = time;
+			return true;
+		case DEATH:
+			Code reason = null;
+			if(definition.has("codes")) {
+				JsonObject item = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject();
+				reason = person.record.new Code(item);
+			} else if(definition.has("condition_onset")) {
+				String state_name = definition.get("condition_onset").getAsString();
+				if(person.hadPriorState(state_name)) {
+					// loop through the present conditions, the condition "name" will match
+					// the name of the ConditionOnset state (aka "reason")
+					for(Entry entry : person.record.present.values()) {
+						if(entry.name == state_name) {
+							reason = entry.codes.get(0);
+						}
+					}
+				}
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				reason = ((Entry) person.attributes.get(attribute)).codes.get(0);
+			}
+			String rule = String.format("%s %s", module, name);
+			if(reason != null) {
+				rule = String.format("%s %s", rule, reason.display);
+			}
+			if(definition.has("range")) {
+				double low = definition.get("range").getAsJsonObject().get("low").getAsDouble();
+				double high = definition.get("range").getAsJsonObject().get("high").getAsDouble();
+				double duration = person.rand(low, high);
+				String units = definition.get("range").getAsJsonObject().get("unit").getAsString();
+				long timeOfDeath = time + Utilities.convertTime(units, (long) duration);
+				// TODO person.recordDeath(time, reason, rule);
+				person.events.create(timeOfDeath, Event.BIRTH, rule, false);
+				return true;
+			} else if(definition.has("exact")) {
+				double quantity = definition.get("exact").getAsJsonObject().get("quantity").getAsDouble();
+				String units = definition.get("exact").getAsJsonObject().get("unit").getAsString();
+				long timeOfDeath = time + Utilities.convertTime(units, (long) quantity);
+				// TODO person.recordDeath(time, reason, rule);
+				person.events.create(timeOfDeath, Event.BIRTH, rule, false);
+				return true;
+			} else {
+				// TODO person.recordDeath(time, reason, rule);
+				person.events.create(time, Event.BIRTH, rule, true);
+				return false;
+			}
 		default:
 			System.err.format("Unhandled State Type: %s\n", type);
 			return false;

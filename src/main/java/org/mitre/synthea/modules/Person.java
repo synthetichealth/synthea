@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +29,8 @@ public class Person {
 	private Map<String,Map<String,Integer>> symptoms;
 	public EventList events;
 	public HealthRecord record;
+	/** history of the currently active module */
+	public List<State> history;
 	
 	public Person(long seed) {
 		random = new Random(seed);
@@ -103,5 +106,43 @@ public class Person {
 			total += getSymptom(type);			
 		}
 		return total;
+	}
+
+	public boolean hadPriorState(String name) {
+		if(history == null) {
+			return false;
+		}
+		for(State state : history) {
+			if(state.name == name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hadPriorStateSince(String priorState, long time) {
+		if(history == null) {
+			return false;
+		}
+		for(State state : history) {
+			if(state.name == priorState && state.exited > time) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hadPriorStateSince(String priorState, String sinceState) {
+		if(history == null) {
+			return false;
+		}
+		for(State state : history) {
+			if(state.name == priorState) {
+				return true;
+			} else if(state.name == sinceState) {
+				return false;
+			}
+		}
+		return false;
 	}
 }

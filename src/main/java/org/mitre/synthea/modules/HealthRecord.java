@@ -100,22 +100,31 @@ public class HealthRecord {
 	public class Medication extends Entry {
 		public Set<String> reasons;
 		public String stopReason;
-		public Medication(long time, String type, Set<String> reasons) {
+		public JsonObject prescriptionDetails;
+		public Medication(long time, String type) {
 			super(time, type);
-			this.reasons = reasons;
+			this.reasons = new LinkedHashSet<String>();
 		}
 	}
 	
-	public class CarePlan extends Entry {
-		public Set<String> activities;
+	public class Procedure extends Entry {
 		public Set<String> reasons;
-		public Set<String> goals;
-		public String stopReason;
-		public CarePlan(long time, String type, Set<String> activities) {
+		public Procedure(long time, String type) {
 			super(time, type);
-			this.activities = activities;
 			this.reasons = new LinkedHashSet<String>();
-			this.goals = new LinkedHashSet<String>();
+		}
+	}
+
+	public class CarePlan extends Entry {
+		public Set<Code> activities;
+		public Set<String> reasons;
+		public Set<JsonObject> goals;
+		public String stopReason;
+		public CarePlan(long time, String type) {
+			super(time, type);
+			this.activities = new LinkedHashSet<Code>();
+			this.reasons = new LinkedHashSet<String>();
+			this.goals = new LinkedHashSet<JsonObject>();
 		}
 	}
 	
@@ -126,7 +135,7 @@ public class HealthRecord {
 		public List<Report> reports;
 		public List<Entry> conditions;
 		public List<Entry> allergies;
-		public List<Entry> procedures;
+		public List<Procedure> procedures;
 		public List<Entry> immunizations;
 		public List<Medication> medications;
 		public List<CarePlan> careplans;
@@ -139,7 +148,7 @@ public class HealthRecord {
 			reports = new ArrayList<Report>();
 			conditions = new ArrayList<Entry>();
 			allergies = new ArrayList<Entry>();
-			procedures = new ArrayList<Entry>();
+			procedures = new ArrayList<Procedure>();
 			immunizations = new ArrayList<Entry>();
 			medications = new ArrayList<Medication>();
 			careplans = new ArrayList<CarePlan>();
@@ -204,7 +213,19 @@ public class HealthRecord {
 		currentEncounter(time).observations.add(observation);
 		return observation;
 	}
-	
+
+	public Observation getLatestObservation(String type) {
+		for(int i=encounters.size()-1; i >= 0; i--) {
+			Encounter encounter = encounters.get(i);
+			for(Observation observation : encounter.observations) {
+				if(observation.type == type) {
+					return observation;
+				}
+			}
+		}
+		return null;
+	}
+
 	public Entry conditionStart(long time, String primaryCode) {
 		if(!present.containsKey(primaryCode)) {
 			Entry condition = new Entry(time, primaryCode);
@@ -269,12 +290,13 @@ public class HealthRecord {
 		}
 	}
 
-	public void procedure(long time, String type) {
-		Entry procedure = new Entry(time, type);
+	public Procedure procedure(long time, String type) {
+		Procedure procedure = new Procedure(time, type);
 		currentEncounter(time).procedures.add(procedure);
 		present.put(type, procedure);
+		return procedure;
 	}
-	
+
 	public void report(long time, String type, int numberOfObservations) {
 		Encounter encounter = currentEncounter(time);
 		List<Observation> observations = null;
@@ -308,25 +330,16 @@ public class HealthRecord {
 		currentEncounter(time).immunizations.add(immunization);	
 	}
 	
-	public void medicationStart(long time, String type, Set<String> reasons) {
+	public Medication medicationStart(long time, String type) {
+		Medication medication;
 		if(!present.containsKey(type)) {
-			Medication medication = new Medication(time, type, reasons);
+			medication = new Medication(time, type);
 			currentEncounter(time).medications.add(medication);
 			present.put(type, medication);			
 		} else {
-			Medication medication = (Medication) present.get(type);
-			medication.reasons.addAll(reasons);
+			medication = (Medication) present.get(type);
 		}
-	}
-	
-	public void medicationUpdate(long time, String type, Set<String> reasons) {
-		// TODO is this the correct behavior?
-		// Perhaps we should end the previous prescription and create a new one
-		if(present.containsKey(type)) {
-			Medication medication = (Medication) present.get(type);
-			medication.start = time;
-			medication.reasons = reasons;
-		}
+		return medication;
 	}
 	
 	public void medicationEnd(long time, String type, String reason) {
@@ -338,29 +351,37 @@ public class HealthRecord {
 		}
 	}
 	
+	public void medicationEndByState(long time, String stateName, String reason) {
+		Medication medication = null;
+		Iterator<Entry> iter = present.values().iterator();
+		while(iter.hasNext()) {
+			Entry e = iter.next();
+			if(e.name == stateName) {
+				medication = (Medication) e;
+				break;
+			}
+		}
+		if(medication != null) {
+			medication.stop = time;
+			medication.stopReason = reason;
+			present.remove(medication.type);
+		}
+	}
+	
 	public boolean medicationActive(String type) {
 		return present.containsKey(type) && ((Medication)present.get(type)).stop==0l;
 	}
 	
-	public void careplanStart(long time, String type, Set<String> activities) {
+	public CarePlan careplanStart(long time, String type) {
+		CarePlan careplan;
 		if(!present.containsKey(type)) {
-			CarePlan careplan = new CarePlan(time, type, activities);
+			careplan = new CarePlan(time, type);
 			currentEncounter(time).careplans.add(careplan);
 			present.put(type, careplan);			
 		} else {
-			CarePlan careplan = (CarePlan) present.get(type);
-			careplan.activities = activities;
+			careplan = (CarePlan) present.get(type);
 		}
-	}
-	
-	public void careplanUpdate(long time, String type, Set<String> reasons) {
-		// TODO is this the correct behavior?
-		// Perhaps we should end the previous prescription and create a new one
-		if(present.containsKey(type)) {
-			CarePlan careplan = (CarePlan) present.get(type);
-			careplan.start = time;
-			careplan.reasons = reasons;
-		}
+		return careplan;
 	}
 	
 	public void careplanEnd(long time, String type, String reason) {
@@ -369,6 +390,23 @@ public class HealthRecord {
 			careplan.stop = time;
 			careplan.stopReason = reason;
 			present.remove(type);
+		}
+	}
+	
+	public void careplanEndByState(long time, String stateName, String reason) {
+		CarePlan careplan = null;
+		Iterator<Entry> iter = present.values().iterator();
+		while(iter.hasNext()) {
+			Entry e = iter.next();
+			if(e.name == stateName) {
+				careplan = (CarePlan) e;
+				break;
+			}
+		}
+		if(careplan != null) {
+			careplan.stop = time;
+			careplan.stopReason = reason;
+			present.remove(careplan.type);
 		}
 	}
 	
