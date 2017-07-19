@@ -18,7 +18,7 @@ synthea:
     text:
       export: false
     csv:
-      export: false
+      export: true
       export_headers: true
     years_of_history: 10
     location: <%= (ENV['OUTPUT_DIR'] || './output/') %>  # should either start with . for relative path or / for absolute
@@ -37,7 +37,7 @@ synthea:
   sequential: # sequential population generation... one at a time...
     # population is scaled to accurately represent MA (using a "true" population of 6,794,422)
     only_dead_patients: false
-    population: 100
+    population: 1
     real_world_population: 6794422 #sum of the jsons in the config folder
     track_detailed_prevalence: true
     multithreading: false
