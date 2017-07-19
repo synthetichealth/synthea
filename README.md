@@ -1,16 +1,16 @@
-# synthea_java
+# synthea_java [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java)
 Java implementation of the Synthea engine.
 
 Partially implemented.
-- No export.
+- Partial FHIR STU3 Export.
 - Transitions are complete.
 - Not all logic or states are finished.
-- Demographics are fixed to 'John Doe'
+- Demographics to not vary.
 - System output and error messages slows everything down.
 
 ### Build and Test
 ```
-./gradlew build
+./gradlew build test
 ```
 
 ### Run
