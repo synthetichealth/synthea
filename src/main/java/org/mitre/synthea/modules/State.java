@@ -192,6 +192,7 @@ public class State {
 					return false;
 				}
 			} else {
+				// TODO: if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW interventions
 				String encounter_class = definition.get("encounter_class").getAsString();
 				Encounter encounter = person.record.encounterStart(time, encounter_class);
 				encounter.name = this.name;
@@ -214,6 +215,7 @@ public class State {
 				return true;
 			}
 		case ENCOUNTEREND:
+			// TODO: if CHW policy is enabled for discharge follow up, add CHW interventions
 			Encounter encounter = person.record.currentEncounter(time);
 			if(encounter.type != EncounterType.WELLNESS.toString()) {
 				encounter.stop = time;

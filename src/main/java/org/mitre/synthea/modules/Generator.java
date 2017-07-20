@@ -84,6 +84,10 @@ public class Generator {
 							iter.remove(); // this module has completed/terminated.
 						}
 					}
+					// TODO: if CHW policy is enabled for community, possibly add CHW interventions
+					// if true
+					// then add chw encounter to record
+					// and set chw variable(s) on person.attributes.put(KEY, VALUE)
 					time += timestep;
 				}
 				
