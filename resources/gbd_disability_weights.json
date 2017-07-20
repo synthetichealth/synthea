@@ -510,7 +510,7 @@
     "disability_weight": 0.049
     },
 
-  "antepartum_preeclampsia" : {
+  "antepartum_eclampsia" : {
     "system": "SNOMED-CT",
     "code": "198992004",
     "disability_weight": 0.049
