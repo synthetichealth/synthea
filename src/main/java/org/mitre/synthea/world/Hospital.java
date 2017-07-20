@@ -50,6 +50,10 @@ public class Hospital extends Provider{
 		}
 	}
 	
+	public static ArrayList<Hospital> getHospitalList(){
+		return hospitalList;
+	}
+	
 	// find closest hospital with ambulatory service
 	public static Hospital findClosestAmbulatory(Point personLocation){
 		Double personLat = personLocation.getY();

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.HospitalExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Hospital;
 
@@ -111,6 +112,13 @@ public class Generator {
 				AtomicInteger count = stats.get(key);
 				count.incrementAndGet();
 			});
+		}
+		
+		try{
+			HospitalExporter.export();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
 
 		try 

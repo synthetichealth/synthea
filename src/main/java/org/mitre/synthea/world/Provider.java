@@ -37,6 +37,8 @@ public class Provider {
 	public Provider(LinkedTreeMap p) {
 		LinkedTreeMap properties = (LinkedTreeMap) p.get("properties");
 		attributes = properties;
+		String resourceID = (String) p.get("resourceID");
+		attributes.put("resourceID", resourceID);
 
 		ArrayList<Double> coorList = (ArrayList<Double>) p.get("coordinates");
 		Point coor = new GeometryFactory().createPoint(new Coordinate(coorList.get(0), coorList.get(1)));
@@ -59,8 +61,7 @@ public class Provider {
 		}
 		
 		utilization = new HashMap<String, Integer>();
-		// TODO: person begins with one wellness encounter, change to 0 when code to count wellness encounters is added
-		utilization.put(ENCOUNTERS, 1);
+		utilization.put(ENCOUNTERS, 0);
 		utilization.put(PROCEDURES, 0);
 		utilization.put(LABS, 0);
 		utilization.put(PRESCRIPTIONS, 0);
@@ -69,6 +70,10 @@ public class Provider {
 	public static void clear(){
 		providerList.clear();
 		services.clear();
+	}
+	
+	public String getResourceID(){
+		return attributes.get("resourceID").toString();
 	}
 	
 	public Point getCoordinates(){
