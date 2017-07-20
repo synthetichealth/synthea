@@ -504,6 +504,18 @@
     "disability_weight": 0.079
     },
 
+  "preeclampsia" : {
+    "system": "SNOMED-CT",
+    "code": "398254007",
+    "disability_weight": 0.049
+    },
+
+  "antepartum_preeclampsia" : {
+    "system": "SNOMED-CT",
+    "code": "198992004",
+    "disability_weight": 0.049
+    },
+
   "rheumatoid_arthritis" : {
     "system": "SNOMED-CT",
     "code": "69896004",
