@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -7,6 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.world.Hospital;
+import org.mitre.synthea.world.Provider;
+
+import com.vividsolutions.jts.geom.Point;
 
 public class Person {
 	
@@ -144,5 +150,70 @@ public class Person {
 			}
 		}
 		return false;
+	}
+	
+	// Providers API -----------------------------------------------------------
+	public static final String CURRENTPROVIDER = "currentProvider";
+	public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
+	public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
+	public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
+	
+	
+	public Provider getAmbulatoryProvider(){
+		return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
+	}
+	
+	public void setAmbulatoryProvider(Provider provider){
+		if(provider == null){
+			Point personLocation = (Point) attributes.get(Person.COORDINATE);
+			provider = Hospital.findClosestAmbulatory(personLocation);
+		}
+		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+	}
+	
+	public Provider getInpatientProvider(){
+		return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
+	}
+	
+	public void setInpatientProvider(Provider provider){
+		if(provider == null){
+			Point personLocation = (Point) attributes.get(Person.COORDINATE);
+			provider = Hospital.findClosestInpatient(personLocation);
+		}
+		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
+	}
+	
+	public Provider getEmergencyProvider(){
+		return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
+	}
+	
+	public void setEmergencyProvider(Provider provider){
+		if(provider == null){
+			Point personLocation = (Point) attributes.get(Person.COORDINATE);
+			provider = Hospital.findClosestEmergency(personLocation);
+		}
+		attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
+	}
+	
+	public void addCurrentProvider(String context, Provider provider){
+		if(attributes.containsKey(CURRENTPROVIDER)){
+			Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
+			currentProviders.put(context, provider);
+			attributes.put(CURRENTPROVIDER, currentProviders);
+		} else {
+			Map<String, Provider> currentProviders = new HashMap<String, Provider>();
+			currentProviders.put(context, provider);
+			attributes.put(CURRENTPROVIDER, currentProviders);
+		}
+	}
+	
+	public void removeCurrentProvider(String module){
+		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
+		currentProviders.remove(module);
+	}
+	
+	public Provider getCurrentProvider(String module){
+		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
+		return currentProviders.get(module);
 	}
 }

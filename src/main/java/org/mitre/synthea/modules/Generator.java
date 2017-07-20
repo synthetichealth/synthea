@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.Hospital;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -48,6 +49,9 @@ public class Generator {
 		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
 		stats.put("alive", new AtomicInteger(0));
 		stats.put("dead", new AtomicInteger(0));
+		
+		// initialize hospitals
+		Hospital.loadHospitals();
 	}
 	
 	public void run()
