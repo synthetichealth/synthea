@@ -39,6 +39,11 @@ module Synthea
         if synthea_record.observations && !synthea_record.observations.empty?
           latest = synthea_record.observations.last['time']
           synthea_record.observations.each do |item|
+            # quality of life scores use SNOMED codes, use quality_of_life_observation to export
+            if item['type'] == :DALY || item['type'] == :QALY
+              quality_of_life_observation(item, text_record)
+              next
+            end
             observation(item, text_record, nil, nil) if item['time'] == latest
           end
         end
@@ -130,6 +135,14 @@ module Synthea
           obs_value = "#{obs_value} #{obs_data[:unit]}"
         end
         text_record << "#{observation['time'].strftime('%Y-%m-%d')} : #{obs_data[:description].ljust(40)} #{obs_value}"
+        text_record
+      end
+
+      def self.quality_of_life_observation(observation, text_record)
+        qol_data = QOL_CODES[observation['type']]
+        qol_value = observation['value']
+        qol_value = "#{qol_value} #{qol_data[:unit]}"
+        text_record << "#{observation['time'].strftime('%Y-%m-%d')} : #{qol_data[:description].ljust(40)} #{qol_value}"
         text_record
       end
 

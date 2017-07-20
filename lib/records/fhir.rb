@@ -24,6 +24,22 @@ module Synthea
             end
           end
         end
+
+        # quality of life scores are not associated with a particular encounter and use SNOMED codes, use quality_of_life_observation method to export
+        daly_recorded = false
+        qaly_recorded = false
+        synthea_record.observations.reverse_each do |observation|
+          if observation['type'] == :DALY
+            quality_of_life_observation(observation, fhir_record, patient)
+            daly_recorded = true
+          end
+          if observation['type'] == :QALY
+            quality_of_life_observation(observation, fhir_record, patient)
+            qaly_recorded = true
+          end
+          break if daly_recorded && qaly_recorded
+        end
+
         fhir_record
       end
 
@@ -345,6 +361,9 @@ module Synthea
       end
 
       def self.observation(observation, fhir_record, patient, encounter)
+        # use quality_of_life_observation method, and not this method, for DALY and QALY export
+        return if observation['type'] == :DALY || observation['type'] == :QALY
+
         obs_data = OBS_LOOKUP[observation['type']]
         entry = FHIR::Bundle::Entry.new
         resource_id = SecureRandom.uuid
@@ -404,6 +423,10 @@ module Synthea
         end
 
         fhir_record.entry << entry
+      end
+
+      def self.quality_of_life_observation(observation, fhir_record, patient)
+        Synthea::Output::FHIRVersionIndependent.quality_of_life_observation(observation, fhir_record, patient, FHIR)
       end
 
       def self.multi_observation(multi_obs, fhir_record, patient, encounter)
