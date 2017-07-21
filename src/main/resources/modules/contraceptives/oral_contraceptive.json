@@ -1,0 +1,535 @@
+{
+  "name": "Oral Contraceptive",
+  "remarks": [
+    "This module prescribes an oral, hormonal contraceptive if one is available ",
+    "for the current year of the simulation. There are 2 classes of oral contraceptives: ",
+    "1. Combination (estrogen, progestin), either monophasic and triphasic ",
+    "2. Minipill (progestin-only)",
+
+    "Combination pills may be either monophasic (same dosage, all month long) or triphasic ",
+    "(dosage increases progressively throughout the month). Potential side-effects of oral ",
+    "contraceptives include nausea, breast tenderness, mood swings, headaches, weight gain, ",
+    "spotting, and decreased libido. None of these side-effects are currently modeled.",
+
+    "Smoking, especially over the age of 35, significantly increases the risk of: ",
+    "1. Blood clots (1.6x with minipill, 2x with estrogen) ",
+    "2. Myocardial Infarction (1.6x) ",
+    "3. Ischemic Stroke (1.7x) ",
+    "Source: https://www.ncbi.nlm.nih.gov/pubmedhealth/PMH0079002/",
+    "No changes were made to the cardiovascular disease module.",
+
+    "Minipill (progestin-only) contraceptives are safe for smokers, those at risk of ",
+    "heart disease, and new mothers who are breastfeeding. They carry a slightly elevated ",
+    "risk of ectopic pregnancy, are less effective than combination pills (91 - 99% effective), ",
+    "and must be taken very consistently to be effective. Source: ",
+    "http://www.feministcenter.org/en/health-wellness-services/comprehensive-gyn/birth-control-options/birth-control-information/101-mini-pills",
+
+    "The majority of women taking oral contraceptives take the combination pill.",
+
+    "Sources for historical availability: ",
+    "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
+    "http://www.pbs.org/wnet/need-to-know/health/a-brief-history-of-the-birth-control-pill/480/"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Males, pregnant females, and those arriving here before the year 1960 ",
+        "do not get oral contraceptives."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "transition": "Terminal"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Terminal"
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1960
+          },
+          "transition": "Terminal"
+        },
+        {
+          "transition": "Set_Contraceptive_Type"
+        }
+      ]
+    },
+
+    "Set_Contraceptive_Type": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive_type",
+      "value": "pill",
+      "direct_transition": "Encounter_For_Oral_Contraceptive"
+    },
+
+    "Encounter_For_Oral_Contraceptive": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698314001",
+          "display": "Consultation for treatment"
+        }
+      ],
+      "direct_transition": "Combination_Or_Minipill"
+    },
+
+    "Combination_Or_Minipill": {
+      "type": "Simple",
+      "remarks": [
+        "If the patient has a high BMI (>30), was recently pregnant (w/in 6 months), smokes, ",
+        "or has high blood pressure (systolic > 130) the minipill is prescribed. Otherwise, a ",
+        "combination pill is prescribed.",
+
+        "TODO: Check if the patient was recently pregnant. We need a 'Prior Condition', or ",
+        "'Prior Event' condition to check for this. If the mother is breastfeeding, the ",
+        "combination pill should not be used."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "BMI",
+                "operator": ">",
+                "value": 30
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": ">",
+                "value": 130
+              }
+            ]
+          },
+          "transition": "Prescribe_Minipill"
+        },
+        {
+          "transition": "Prescribe_Combination_Pill"
+        }
+      ]
+    },
+
+    "Prescribe_Minipill": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MINIPILL                                                             ",
+        "======================================================================",
+        "What type of pill is prescribed (if any) depends on the current year ",
+        "of the simulation."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2002
+          },
+          "remarks": [
+            "If before 2002, the patient instead gets prescribed a combination pill.",
+            "This will have averse affects on that patient's health if they meet one ",
+            "of the conditions above."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Combination_Pill"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2003
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Camila"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Camila"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Errin"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Jolivette"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prescribe_Camila": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "748962",
+          "display": "Camila 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Errin": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "831533",
+          "display": "Errin 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Jolivette": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "757594",
+          "display": "Jolivette 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Combination_Pill": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " COMBINATION PILL                                                     ",
+        "======================================================================",
+        "What type of pill is prescribed (if any) depends on the current year ",
+        "of the simulation."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1974
+          },
+          "remarks": [
+            "Enovid got FDA approval in May, 1960 for contraceptive use.",
+            "10mg mestranol/noretynodrel, high-dose hormone pill."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Enovid"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1988
+          },
+          "remarks": [
+            "Use of the high dose 10mg mestranol/noretynodrel (Enovid) steadily grew. ",
+            "The first documented case of blood clots (likely in a smoker), were in ",
+            "1961. Norinyl (norethindrone-ethinyl estradiol) was introduced in 1974."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Enovid"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Norinyl"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1989
+          },
+          "remarks": [
+            "Enovid was taken off the market in 1988 in favor of low-dose alternatives."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Norinyl"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1998
+          },
+          "remarks": [
+            "Ortho-Tri Cyclen was introduced in 1989."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Norinyl"
+            },
+            {
+              "distribution": 0.6,
+              "transition": "Prescribe_Ortho_Tri_Cyclen"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2003
+          },
+          "remarks": [
+            "Estrostep introduced in 1997, Ortho-Novum 1998 (same composition as Norinyl)."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Norinyl"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Ortho_Tri_Cyclen"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Estrostep"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2010
+          },
+          "remarks": [
+            "Trinessa and Seasonique (2003), Yaz (2006)."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Ortho_Tri_Cyclen"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Estrostep"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Trinessa"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Seasonique"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Yaz"
+            }
+          ]
+        },
+        {
+          "remarks": [
+            "Natazia (2010), Levora (2016)."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Trinessa"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Seasonique"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Yaz"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Natazia"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Levora"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prescribe_Enovid": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "235389",
+          "display": "Mestranol / Norethynodrel [Enovid]"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Norinyl": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "749882",
+          "display": "Norinyl 1+50 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Estrostep": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1359133",
+          "display": "Estrostep Fe 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Ortho_Tri_Cyclen": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "749785",
+          "display": "Ortho Tri-Cyclen 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Trinessa": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "751905",
+          "display": "Trinessa 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Seasonique": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "remarks": [
+        "These are long-term, low-dose hormones that cause only 4 menstruations per year."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "749762",
+          "display": "Seasonique 91 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Yaz": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "748856",
+          "display": "Yaz 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Natazia": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "978950",
+          "display": "Natazia 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "Prescribe_Levora": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "748879",
+          "display": "Levora 0.15/30 28 Day Pack"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

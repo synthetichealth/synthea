@@ -609,7 +609,7 @@
           "display": "Suicide - firearms"
         }
       ],
-      "direct_transition": "Autopsy_Encounter"
+      "direct_transition": "Death"
     },
 
     "Suicide_By_Suffocation": {
@@ -623,7 +623,7 @@
           "display": "Suicide - suffocation"
         }
       ],
-      "direct_transition": "Autopsy_Encounter"
+      "direct_transition": "Death"
     },
 
     "Suicide_By_Poisoning": {
@@ -637,7 +637,7 @@
           "display": "Suicidal deliberate poisoning"
         }
       ],
-      "direct_transition": "Autopsy_Encounter"
+      "direct_transition": "Death"
     },
 
     "Suicide_By_Other_Means": {
@@ -651,6 +651,12 @@
           "display": "Suicide"
         }
       ],
+      "direct_transition": "Death"
+    },
+
+    "Death": {
+      "type": "Death",
+      "referenced_by_attribute": "suicide",
       "direct_transition": "Autopsy_Encounter"
     },
 
@@ -687,7 +693,7 @@
       "referenced_by_attribute": "suicide",
       "direct_transition": "Terminal"
     },
-    
+
     "Terminal": {
       "type": "Terminal"
     }

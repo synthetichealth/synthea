@@ -1,0 +1,58 @@
+{
+  "name": "Clear Contraceptive",
+  "remarks": [
+    "This submodule ends any active contraceptive medication assigned to the ",
+    "'contraceptive' attribute and clears the 'contraceptive_type' attribute ",
+    "for reassignment."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Clear_Contraceptive_Med"
+    },
+
+    "Clear_Contraceptive_Med": {
+      "type": "Simple",
+      "remarks": [
+        "If the 'contraceptive' attribute is currently set, the medication it ",
+        "references will be active."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "contraceptive",
+            "operator": "is not nil"
+          },
+          "transition": "End_Contraceptive_Med"
+        },
+        {
+          "transition": "Clear_Contraceptive_Type"
+        }
+      ]
+    },
+
+    "End_Contraceptive_Med": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "contraceptive",
+      "direct_transition": "Clear_Contraceptive"
+    },
+
+    "Clear_Contraceptive": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive",
+      "direct_transition": "Clear_Contraceptive_Type"
+    },
+
+    "Clear_Contraceptive_Type": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive_type",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

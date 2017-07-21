@@ -1,13 +1,11 @@
 {
   "name": "Pregnancy",
   "remarks": [
-    "Most of the statistics in this module come from the CDC. It's difficult to find very",
-    "recent statistics for pregnancy - they simply haven't been compiled yet. The latest",
-    "comprehensive stats I could find for the United States were from 2010, compiled by the",
-    "CDC in 2013, see: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm.",
-    "Although the birth rate in the United States is still declining these statistics are still",
-    "consistent (< 1 percentage point difference) with some 2014 statistics collected by",
-    "the Guttmacher Institute, see: https://www.guttmacher.org/fact-sheet/induced-abortion-united-states.",
+    "Whenever a female becomes pregnant, the 'pregnant' attribute is set to true ",
+    "by the Female Reproduction module. The likelihood of becoming pregnant is ",
+    "determined by a wide variety of factors including age, sexual activity, ",
+    "and contraceptive use.",
+
     "Some notable complications NOT modeled in this module:",
     "1. Maternal death (very low incidence in developed countries)",
     "2. Gestational diabetes (because of the complex interplay with the diabetes module)",
@@ -23,7 +21,7 @@
             "condition_type": "Gender",
             "gender": "F"
           },
-          "transition": "Wait_For_Maturity"
+          "transition": "Initially_Not_Pregnant"
         },
         {
           "transition": "Terminal"
@@ -31,123 +29,27 @@
       ]
     },
 
-    "Wait_For_Maturity": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 15,
-        "unit": "years"
-      },
-      "direct_transition": "Wellness_Visit"
-    },
-
-    "Wellness_Visit": {
-      "type": "Encounter",
-      "wellness": true,
-      "remarks": [
-        "======================================================================",
-        " INCIDENCE                                                            ",
-        "======================================================================",
-        "From the U.S. Census: https://www.census.gov/content/dam/Census/library/publications/2014/demo/p20-575.pdf ",
-        "Of women age 15 - 50 about 59% are mothers. 17.2% had one child, 23.1% had two, and 18.5% had 3 or more. ",
-        "About 11% of women are infertile."
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.11,
-          "transition": "Is_Infertile",
-          "remarks": [
-            "Source: https://www.asrm.org/detail.aspx?id=2322 (CDC)"
-          ]
-        },
-        {
-          "distribution": 0.588,
-          "transition": "Distribute_Number_Of_Children"
-        },
-        {
-          "distribution": 0.312,
-          "transition": "Terminal"
-        }
-      ]
-    },
-
-    "Is_Infertile": {
-      "type": "ConditionOnset",
-      "target_encounter": "Wellness_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "6738008",
-          "display": "Female infertility"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-
-    "Distribute_Number_Of_Children": {
-      "type": "Simple",
-      "remarks": [
-        "To match the CDC statistics for the number of children mothers typically have, we start the ",
-        "'pregnancy_iterator' at different values."
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.293,
-          "transition": "Will_Have_One_Child"
-        },
-        {
-          "distribution": 0.393,
-          "transition": "Will_Have_Two_Children"
-        },
-        {
-          "distribution": 0.314,
-          "transition": "Will_Have_Three_Or_More_Children"
-        }
-      ]
-    },
-
-    "Will_Have_One_Child": {
+    "Initially_Not_Pregnant": {
       "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": 4,
-      "remarks": [
-        "This leaves the mother with 3 remaining passes through the pregnancy module (out of 7 total). ",
-        "Additional passes account for potential miscarriages or abortions."
-      ],
-      "direct_transition": "Wait_For_First_Conception"
+      "attribute": "pregnant",
+      "value": false,
+      "direct_transition": "Initially_No_Children"
     },
 
-    "Will_Have_Two_Children": {
+    "Initially_No_Children": {
       "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
-      "value": 2,
-      "remarks": [
-        "This leaves the mother with 5 remaining passes through the pregnancy module (out of 7 total). ",
-        "Additional passes account for potential miscarriages or abortions."
-      ],
-      "direct_transition": "Wait_For_First_Conception"
-    },
-
-    "Will_Have_Three_Or_More_Children": {
-      "type": "SetAttribute",
-      "attribute": "pregnancy_iterator",
+      "attribute": "number_of_children",
       "value": 0,
-      "remarks": [
-        "This leaves the mother with 7 remaining passes through the pregnancy module (out of 7 total). ",
-        "Additional passes account for potential miscarriages or abortions."
-      ],
-      "direct_transition": "Wait_For_First_Conception"
+      "direct_transition": "Become_Pregnant_Guard"
     },
 
-    "Wait_For_First_Conception": {
-      "type": "Delay",
-      "remarks": [
-        "After establishing fertility we wait for 1-20 years (between age 16 and 35) ",
-        "for the first pregnancy to occur."
-      ],
-      "range": {
-        "low": 1,
-        "high": 20,
-        "unit": "years"
+    "Become_Pregnant_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "pregnant",
+        "operator": "==",
+        "value": true
       },
       "direct_transition": "Become_Pregnant"
     },
@@ -190,32 +92,7 @@
           "display": "Prenatal initial visit"
         }
       ],
-      "remarks": [
-        "Following an initial prenatal visit there are 3 broad outcomes for a pregnancy:",
-        "1. Fetal Loss: 1.053M miscarriages --> 17.1% of all pregnancies",
-        "2. Induced Abortion: 1.103M induced abortions --> 17.9% of all pregnancies",
-        "3. Birth: 3.988M live births --> 65% of all pregnancies",
-        "Total pregnancies:  6.155M",
-        "Source: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm"
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.179,
-          "transition": "End_Initial_Visit_Towards_Abortion",
-          "remarks": [
-            "See bottom of this module for abortion and miscarriage handling"
-          ]
-        },
-        {
-          "distribution": 0.821,
-          "transition": "Pregnancy_Test"
-        }
-      ]
-    },
-
-    "End_Initial_Visit_Towards_Abortion" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Wait_For_Induced_Abortion"
+      "direct_transition": "Pregnancy_Test"
     },
 
     "Pregnancy_Test": {
@@ -229,19 +106,179 @@
           "display": "Standard pregnancy test"
         }
       ],
-      "distributed_transition": [
+      "remarks": [
+        "Following an initial prenatal visit there are 3 broad outcomes for a pregnancy:",
+        "1. Fetal Loss: 1.053M miscarriages --> 17.1% of all pregnancies",
+        "2. Induced Abortion: 1.103M induced abortions --> 17.9% of all pregnancies",
+        "3. Birth: 3.988M live births --> 65% of all pregnancies",
+        "Total pregnancies:  6.155M",
+        "Source: http://www.cdc.gov/nchs/data/hestat/pregnancy/2010_pregnancy_rates.htm",
+
+        "In terms of trends, the likelihood of abortion peaks age 20-30, then decreases with age. ",
+        "Meanwhile, the likelihood of miscarriage significantly increases with age. 85% will ",
+        "miscarriage in the first trimester, the remaining 15% in the second.",
+
+        "|     Age     |  Abortion %  | Miscarriage % | ",
+        "|-------------|--------------|---------------| ",
+        "|     <20     |    11.4%     |       8%      | ",
+        "|    20-24    |    32.7%     |       8%      | ",
+        "|    25-29    |    25.9%     |       8%      | ",
+        "|    30-34    |    16.8%     |      12%      | ",
+        "|    35-39    |     9.2%     |      19%      | ",
+        "|    40-44    |     3.6%     |      39%      | ",
+        "|     45+     |     3.6%     |      60%      | ",
+        "'--------------------------------------------' ",
+        "Abortions source: https://www.cdc.gov/mmwr/volumes/65/ss/ss6512a1.htm",
+        "Miscarriage source: http://www.advancedfertility.com/age-miscarriage.htm"
+      ],
+      "complex_transition": [
         {
-          "distribution": 0.177,
-          "transition": "Miscarriage_In_First_Trimester",
-          "remarks": [
-            "For a total percentage of 17.1% fetal loss, of the 82.1% that do not have an ",
-            "abortion 20.8% must have a miscarriage. 85% of those will miscarriage in the first ",
-            "trimester so 17.7% of all patients that reach this state will miscarriage now."
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 45,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.036,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.51,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.454,
+              "transition": "Pregnancy_CarePlan"
+            }
           ]
         },
         {
-          "distribution": 0.823,
-          "transition": "Pregnancy_CarePlan"
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 40,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.036,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.332,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.632,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 35,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.092,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.162,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.746,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 30,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.168,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.102,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.73,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 25,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.259,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.068,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.673,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 20,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.327,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.068,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.605,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.114,
+              "transition": "End_Initial_Visit_Towards_Abortion"
+            },
+            {
+              "distribution": 0.068,
+              "transition": "Miscarriage_In_First_Trimester"
+            },
+            {
+              "distribution": 0.818,
+              "transition": "Pregnancy_CarePlan"
+            }
+          ]
         }
       ]
     },
@@ -281,6 +318,11 @@
       ],
       "assign_to_attribute": "pregnancy_careplan",
       "direct_transition": "End_Prenatal_Initial_Visit"
+    },
+
+    "End_Initial_Visit_Towards_Abortion": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_For_Induced_Abortion"
     },
 
     "End_Prenatal_Initial_Visit" : {
@@ -1279,11 +1321,16 @@
     },
 
     "Normal_Pregnancy_Completion": {
-      "type": "Simple",
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "number_of_children",
       "remarks": [
         "======================================================================",
         " PREGNANCY COMPLETION                                                 ",
-        "======================================================================"
+        "======================================================================",
+
+        "A pregnancy resulting in live birth increments the 'number_of_children' ",
+        "counter. This allows us to track how many children are born to each mother."
       ],
       "conditional_transition": [
         {
@@ -1326,60 +1373,14 @@
     "Pregnancy_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Become_Pregnant",
-      "direct_transition": "Potential_For_Another_Pregnancy"
+      "direct_transition": "Unset_Pregnant_Attribute"
     },
 
-    "Potential_For_Another_Pregnancy": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "pregnancy_iterator",
-                "operator": "<",
-                "value": 7,
-                "remarks": [
-                  "We use 7 as a hard limit. Given the probabilities of miscarriage and abortion ",
-                  "if a woman goes through the module all 7 times we expect 3-4 pregnancies."
-                ]
-              },
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 50,
-                "unit": "years"
-              }
-            ]
-          },
-          "transition": "Wait_For_Next_Conception"
-        },
-        {
-          "transition": "Terminal",
-          "remarks": [
-            "That's all folks..."
-          ]
-        }
-      ]
-    },
-
-    "Wait_For_Next_Conception": {
-      "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 5,
-        "unit": "years"
-      },
-      "direct_transition": "Increment_Pregnancy_Count"
-    },
-
-    "Increment_Pregnancy_Count": {
-      "type": "Counter",
-      "action": "increment",
-      "attribute": "pregnancy_iterator",
-      "direct_transition": "Become_Pregnant"
+    "Unset_Pregnant_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "pregnant",
+      "value": false,
+      "direct_transition": "Become_Pregnant_Guard"
     },
 
     "Terminal": {

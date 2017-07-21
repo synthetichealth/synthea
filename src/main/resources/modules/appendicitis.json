@@ -199,7 +199,7 @@
 
     "Appendectomy_Encounter": {
       "type": "Encounter",
-      "encounter_class": "daytime",
+      "encounter_class": "inpatient",
       "reason": "Appendicitis",
       "codes": [
         {
