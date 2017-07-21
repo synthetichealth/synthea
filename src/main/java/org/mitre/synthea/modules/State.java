@@ -186,9 +186,9 @@ public class State {
 			if(definition.has("wellness") && definition.get("wellness").getAsBoolean()) {
 				Encounter encounter = person.record.currentEncounter(time);
 				
-				// TODO: provider.incrementEncounters() for wellness encounters 
-				
 				if(encounter.type==EncounterType.WELLNESS.toString() && encounter.stop!=0l) {
+					// TODO: provider.incrementEncounters() for wellness encounters 
+					
 					this.exited = time;
 					return true;
 				} else {
@@ -201,7 +201,7 @@ public class State {
 				Encounter encounter = person.record.encounterStart(time, encounter_class);
 				
 				// find closest provider and increment encounters count
-				Provider provider = Provider.findClosestService(person, Provider.AMBULATORY);
+				Provider provider = Provider.findClosestService(person, encounter_class);
 				person.addCurrentProvider(module, provider);
 				provider.incrementEncounters();
 				
@@ -487,7 +487,7 @@ public class State {
 				String units = definition.get("duration").getAsJsonObject().get("unit").getAsString();
 				procedure.stop = procedure.start + Utilities.convertTime(units, (long) duration);
 			}
-			// increment number of prescriptions prescribed by respective hospital
+			// increment number of procedures by respective hospital
 			Provider provider;
 			if(person.getCurrentProvider(module) != null){
 				provider = person.getCurrentProvider(module);

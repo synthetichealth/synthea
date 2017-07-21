@@ -76,6 +76,10 @@ public class Provider {
 		return attributes.get("resourceID").toString();
 	}
 	
+	public LinkedTreeMap getAttributes(){
+		return attributes;
+	}
+	
 	public Point getCoordinates(){
 		return coordinates;
 	}
@@ -109,8 +113,16 @@ public class Provider {
 		return utilization;
 	}
 	
+	public Integer getBedCount(){
+		if(attributes.containsKey("bed_count")){
+			return Integer.parseInt(attributes.get("bed_count").toString());
+		} else {
+			return null;
+		}
+	}
+	
 	public static Provider findClosestService(Person person, String service){
-		if( service == "outpatient"){
+		if( service.equals("outpatient")){
 			service = AMBULATORY;
 		}
 		switch(service) {

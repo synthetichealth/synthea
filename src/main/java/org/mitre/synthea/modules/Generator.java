@@ -113,13 +113,6 @@ public class Generator {
 				count.incrementAndGet();
 			});
 		}
-		
-		try{
-			HospitalExporter.export();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
 
 		try 
 		{
@@ -130,6 +123,13 @@ public class Generator {
 			}
 		} catch (InterruptedException e)
 		{
+			e.printStackTrace();
+		}
+		
+		// export hospital information
+		try{
+			HospitalExporter.export();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
