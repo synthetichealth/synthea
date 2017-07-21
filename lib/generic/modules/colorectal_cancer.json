@@ -19,14 +19,24 @@
 
     "Initial": {
       "type": "Initial",
+      "direct_transition": "Delay_For_Smoking_History"
+    },
+
+    "Delay_For_Smoking_History": {
+      "type": "Delay",
       "remarks": [
         "======================================================================",
         " INCIDENCE                                                            ",
         "======================================================================",
         "About 1/3 of people over age 50 still do not get regular colonoscopies. ",
         "These people develop more advanced colorectal cancer before it's detected.",
-        "Smoking increases your risk of colorectal cancer by 1.5x."
+        "Smoking increases your risk of colorectal cancer by 1.5x.",
+        "Wait for smoking history (possibly none) to accumulate."
       ],
+      "exact": {
+        "quantity": 30,
+        "unit": "years"
+      },
       "complex_transition": [
         {
           "condition": {
@@ -77,8 +87,8 @@
         "is 44. See the 'Colorectal Cancer Symptoms' section."
       ],
       "range": {
-        "low": 35,
-        "high": 70,
+        "low": 5,
+        "high": 40,
         "unit": "years"
       },
       "direct_transition": "Colorectal_Cancer_Symptom_1"
