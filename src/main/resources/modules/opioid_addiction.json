@@ -48,10 +48,9 @@
 
     "General_Population": {
       "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 20,
-        "unit": "years"
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
       },
       "remarks": [
         "Project SAMMI originally used a 1-day timestep and modeled opioid addiction over the course of ",
@@ -84,11 +83,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.5,
+              "distribution": 0.0001,
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.5,
+              "distribution": 0.000003,
               "transition": "Misuse"
             },
             {
@@ -104,11 +103,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.5,
+              "distribution": 0.0001,
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.5,
+              "distribution": 0.000005,
               "transition": "Misuse"
             },
             {
@@ -124,11 +123,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.5,
+              "distribution": 0.0001,
               "transition": "Enter_Directed_Use"
             },
             {
-              "distribution": 0.5,
+              "distribution": 0.000008,
               "transition": "Misuse"
             },
             {
@@ -307,14 +306,13 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.0215,
+          "distribution": 0.2381,
           "remarks": [
-            "0.95% transition to misuse each day, so that's 1 - (1 - 0.0095)^7, or 6.46%/wk. However, ",
-            "this incidence of patients misusing opioid prescriptions came from a particularly opioid- ",
-            "heavy city: Worcester, MA. Reducing this incidence by a factor of 3."
+            "0.03810 return to general population each day, so that's 1 - (1 - 0.0381)^7, or 23.81%/wk"
           ],
-          "transition": "End_Prescription_Towards_Misuse"
-        },        {
+          "transition": "End_Prescription_Towards_Gen_Pop"
+        },
+        {
           "distribution": 0.00028,
           "remarks": [
             "0.004%/day = 0.000280/wk"
@@ -322,11 +320,13 @@
           "transition": "Directed_Use_Overdose"
         },
         {
-          "distribution": 0.2381,
+          "distribution": 0.0215,
           "remarks": [
-            "0.03810 return to general population each day, so that's 1 - (1 - 0.0381)^7, or 23.81%/wk"
+            "0.95% transition to misuse each day, so that's 1 - (1 - 0.0095)^7, or 6.46%/wk. However, ",
+            "this incidence of patients misusing opioid prescriptions came from a particularly opioid- ",
+            "heavy city: Worcester, MA. Reducing this incidence by a factor of 3."
           ],
-          "transition": "End_Prescription_Towards_Gen_Pop"
+          "transition": "End_Prescription_Towards_Misuse"
         },
         {
           "distribution": 0.74037,
@@ -440,20 +440,20 @@
       ],
       "distributed_transition": [
         {
-          "distribution": 0.0425,
-          "transition": "Enter_Addiction_Treatment"
-        },
-        {
-          "distribution": 0.10375,
-          "transition": "Recovery_Management"
-        },
-        {
           "distribution": 0.75,
           "transition": "Detoxification"
         },
         {
           "distribution": 0.10375,
           "transition": "Active_Addiction"
+        },
+        {
+          "distribution": 0.0425,
+          "transition": "Enter_Addiction_Treatment"
+        },
+        {
+          "distribution": 0.10375,
+          "transition": "Recovery_Management"
         }
       ]
     },
@@ -524,15 +524,15 @@
       },
       "distributed_transition": [
         {
+          "distribution": 0.2603,
+          "transition": "Active_Addiction"
+        },
+        {
           "distribution": 0.7397,
           "transition": "Recovery_Management",
           "remarks": [
             "Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"
           ]
-        },
-        {
-          "distribution": 0.2603,
-          "transition": "Active_Addiction"
         }
       ]
     },
@@ -703,7 +703,7 @@
       "type" : "EncounterEnd",
       "direct_transition" : "Detoxification"
     },
-    
+
     "Death": {
       "type": "Death",
       "codes": [

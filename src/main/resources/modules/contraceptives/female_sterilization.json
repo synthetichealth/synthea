@@ -1,0 +1,135 @@
+{
+  "name": "Female Sterilization",
+  "remarks": [
+    "This submodule performs a female sterilization procedure. This procedure ",
+    "is not reversible."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Contraceptive_Type"
+    },
+
+    "Set_Contraceptive_Type": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive_type",
+      "value": "sterilization",
+      "direct_transition": "Consultation_Encounter"
+    },
+
+    "Consultation_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698314001",
+          "display": "Consultation for treatment"
+        }
+      ],
+      "direct_transition": "End_Consultation"
+    },
+
+    "End_Consultation": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_For_Procedure"
+    },
+
+    "Delay_For_Procedure": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Tubal_Ligation_Surgery_Encounter"
+    },
+
+    "Tubal_Ligation_Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305408004",
+          "display": "Admission to surgical department"
+        }
+      ],
+      "direct_transition": "Tubal_Ligation_Procedure"
+    },
+
+    "Tubal_Ligation_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287664005",
+          "display": "Bilateral tubal ligation"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 3,
+        "unit": "hours"
+      },
+      "direct_transition": "Become_Infertile"
+    },
+
+    "Become_Infertile": {
+      "type": "SetAttribute",
+      "attribute": "infertile",
+      "value": true,
+      "direct_transition": "Post_Surgery_Care"
+    },
+
+    "Post_Surgery_Care": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "787301000000101",
+          "display": "Surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "243077000",
+          "display": "Recommendation to limit sexual activity"
+        }
+      ],
+      "direct_transition": "End_Surgery_Encounter"
+    },
+
+    "End_Surgery_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Recovery_Period"
+    },
+
+    "Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Post_Surgery_Care"
+    },
+
+    "End_Post_Surgery_Care": {
+      "type": "CarePlanEnd",
+      "careplan": "Post_Surgery_Care",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

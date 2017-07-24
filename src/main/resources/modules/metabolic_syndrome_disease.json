@@ -483,7 +483,7 @@
       "codes" : [{
         "system" : "SNOMED-CT",
         "code" : "46177005",
-        "display" : "End stage renal disease"
+        "display" : "End stage renal disease (disorder)"
       }],
       "remarks" : ["Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
                    "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"],

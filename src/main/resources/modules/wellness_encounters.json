@@ -446,12 +446,12 @@
     "Record_ACR" : {
       "type" : "Observation",
       "target_encounter" : "Wellness_Encounter",
-      "vital_sign" : "Microalbumin Creatine Ratio",
+      "vital_sign" : "Microalbumin Creatinine Ratio",
       "category" : "laboratory",
       "codes" : [{
         "system" : "LOINC",
         "code" : "14959-1",
-        "display" : "Microalbumin Creatine Ratio"
+        "display" : "Microalbumin Creatinine Ratio"
       }],
       "unit" : "mg/g",
       "direct_transition" : "Lab_5_EGFR"
