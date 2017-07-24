@@ -364,8 +364,8 @@ module Synthea
 
         entry.resource.item << FHIR::Claim::Item.new({
           'sequence' => 1,
-          'net' => {'value' => 100, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
-          #LINK TO ENCOUNTER 
+          'net' => {'value' => 100, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'},
+          'encounter' => {'reference' => curr_encounter}
           })
         entry
       end
@@ -663,8 +663,8 @@ module Synthea
           'procedureReference' => {'reference' => entry.fullUrl.to_s})
 
         claim.resource.item = FHIR::Claim::Item.new(
-          'sequence' => claim.resource.item.length + 1,
-          'procedureLinkId' => [claim.resource.procedure.length], 
+          #'sequence' => claim.resource.item.length + 1,
+          #'procedureLinkId' => claim.resource.procedure.length, 
           'net' => {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
           )
 
@@ -938,14 +938,13 @@ module Synthea
         med_claim.resource.prescription = {'reference' => entry.fullUrl.to_s}
         med_claim.resource.total =  {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
 
-=begin
-        med_claim.resource.item << FHIR::Claim::Item.new({
+        #replace encounter item in claim with medication item 
+        med_claim.resource.item = FHIR::Claim::Item.new({
           'sequence' => 1,
+          #'categoryCodableConcept' => [['coding' => ]]
           'net' => {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
-          #link to med 
           })
-=end
-        #med_claim.resource.item.
+
       end
 
       def self.convert_fhir_date_time(date, option = nil)
