@@ -122,7 +122,7 @@ public class Provider {
 	}
 	
 	public static Provider findClosestService(Person person, String service){
-		if( service.equals("outpatient")){
+		if( service.equals("outpatient") || service.equals("wellness")){
 			service = AMBULATORY;
 		}
 		switch(service) {

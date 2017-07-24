@@ -192,6 +192,7 @@ public class State {
 					Provider provider = Provider.findClosestService(person, "wellness");
 					person.addCurrentProvider(module, provider);
 					provider.incrementEncounters();
+					encounter.setProvider(provider);
 					
 					this.exited = time;
 					return true;
@@ -208,6 +209,7 @@ public class State {
 				Provider provider = Provider.findClosestService(person, encounter_class);
 				person.addCurrentProvider(module, provider);
 				provider.incrementEncounters();
+				encounter.setProvider(provider);
 				
 				encounter.name = this.name;
 				if(definition.has("reason")) {
