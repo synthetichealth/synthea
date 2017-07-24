@@ -42,7 +42,7 @@ module Synthea
     death_certificate: { description: 'U.S. standard certificate of death - 2003 revision', code: '69409-1' },
       cause_of_death: { description: 'Cause of Death [US Standard Certificate of Death]', code: '69453-9', value_type: 'condition' },
 
-    microalbumin_creatine_ratio: { description: 'Microalbumin Creatine Ratio', code: '14959-1', unit: 'mg/g'},
+    microalbumin_creatinine_ratio: { description: 'Microalbumin Creatinine Ratio', code: '14959-1', unit: 'mg/g'},
     egfr: { description: 'Estimated Glomerular Filtration Rate', code: '33914-3', unit: 'mL/min/{1.73_m2}'}
   }
 
