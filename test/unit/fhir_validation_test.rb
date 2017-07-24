@@ -75,7 +75,7 @@ class FhirValidationTest < Minitest::Test
     @time = Time.now
     @patient.events.create(@time, :birth, :birth)
     @patient_entry = Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
-
+    
     validate_by_profile(@patient_entry.resource)
 
     @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour }
@@ -143,7 +143,7 @@ class FhirValidationTest < Minitest::Test
     Synthea::OBS_LOOKUP.keys.each do |obs|
       next if obs == :blood_pressure # skip blood pressure, it's a MultiObservation, so we'll test that separately
       observation = {'type' => obs, 'time' => Time.now, 'value' => "1234", 'category' => categories[obs] }
-      Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @, claim_entry)
+      Synthea::Output::FhirRecord.observation(observation, @fhir_record, @patient_entry, @encounter_entry, claim_entry)
       obs_entry = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Observation)}
       validate_by_profile(obs_entry.resource, false)
     end

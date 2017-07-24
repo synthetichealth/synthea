@@ -251,15 +251,17 @@ module Synthea
         puts "add diagnosis and item into claim ($100)" 
         value = 100
         claim.resource.diagnosis << FHIR::Claim::Diagnosis.new(
-          'sequence' => claim.resource.diagnosis.length + 1,
+          'sequence' => (claim.resource.diagnosis.length + 1).to_i,
           'diagnosisCodeableConcept' => {'coding'=> [{'code' => condition_data[:codes]['SNOMED-CT'][0]}]},
           'diagnosisReference' => {'reference' => entry.fullUrl.to_s}
         )
+
         claim.resource.item << FHIR::Claim::Item.new({
-          'sequence' => 1,
+          'sequence' => (claim.resource.item.length + 1).to_s,
           'diagnosisLinkId' => [claim.resource.diagnosis.length],
           'net' => {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
           })
+
         #update total 
         old_value = claim.resource.total.value
         claim.resource.total.value = old_value + value #{ 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
@@ -662,9 +664,9 @@ module Synthea
           'procedureCodeableConcept' => {'coding' => [{'code' => proc_code, 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures'}]},
           'procedureReference' => {'reference' => entry.fullUrl.to_s})
 
-        claim.resource.item = FHIR::Claim::Item.new(
-          #'sequence' => claim.resource.item.length + 1,
-          #'procedureLinkId' => claim.resource.procedure.length, 
+        claim.resource.item << FHIR::Claim::Item.new(
+          'sequence' => (claim.resource.item.length + 1).to_i,
+          'procedureLinkId' => claim.resource.procedure.length + 1, 
           'net' => {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
           )
 
@@ -939,7 +941,7 @@ module Synthea
         med_claim.resource.total =  {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
 
         #replace encounter item in claim with medication item 
-        med_claim.resource.item = FHIR::Claim::Item.new({
+        med_claim.resource.item << FHIR::Claim::Item.new({
           'sequence' => 1,
           #'categoryCodableConcept' => [['coding' => ]]
           'net' => {'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
