@@ -187,7 +187,11 @@ public class State {
 				Encounter encounter = person.record.currentEncounter(time);
 				
 				if(encounter.type==EncounterType.WELLNESS.toString() && encounter.stop!=0l) {
-					// TODO: provider.incrementEncounters() for wellness encounters 
+					
+					// find closest provider and increment encounters count
+					Provider provider = Provider.findClosestService(person, "wellness");
+					person.addCurrentProvider(module, provider);
+					provider.incrementEncounters();
 					
 					this.exited = time;
 					return true;
@@ -376,7 +380,6 @@ public class State {
 				medicationProvider = person.getAmbulatoryProvider();
 			}
 			medicationProvider.incrementPrescriptions();
-			
 			this.exited = time;
 			return true;
 		case MEDICATIONEND:

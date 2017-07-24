@@ -38,10 +38,11 @@ public abstract class HospitalExporter{
 		if(Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))){
 			
 			String bundleJson = "";
+			Bundle bundle = new Bundle();
 			for(Hospital h : Hospital.getHospitalList()){
 				// filter - exports only those hospitals in use
 				if(h.getUtilization().get(Provider.ENCOUNTERS) != 0){
-					bundleJson = bundleJson + convertToFHIR(h);
+					bundleJson = convertToFHIR(h, bundle);
 				}
 			}
 			
@@ -68,8 +69,7 @@ public abstract class HospitalExporter{
 		}
 	}
 	
-	public static String convertToFHIR(Hospital h){
-		Bundle bundle = new Bundle();
+	public static String convertToFHIR(Hospital h, Bundle bundle){
 		Organization organizationResource = new Organization();
 		
 		organizationResource.addIdentifier()
