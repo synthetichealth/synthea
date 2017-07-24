@@ -18,7 +18,6 @@ public class Person {
 	
 	public static final String BIRTHDATE = "birthdate";
 	public static final String NAME = "name";
-	public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";
 	public static final String ID = "id";
@@ -29,8 +28,12 @@ public class Person {
 	public static final String COORDINATE = "coordinate";
 	public static final String HEIGHT = "height";
 	public static final String WEIGHT = "weight";
+	public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
+	public static final String INCOME = "income";
+	public static final String EDUCATION = "education";
 	
-	private Random random;
+	public final Random random;
+	public final long seed;
 	public Map<String,Object> attributes;
 	private Map<String,Map<String,Integer>> symptoms;
 	public EventList events;
@@ -39,6 +42,7 @@ public class Person {
 	public List<State> history;
 	
 	public Person(long seed) {
+		this.seed = seed; // keep track of seed so it can be exported later
 		random = new Random(seed);
 		attributes = new ConcurrentHashMap<String,Object>();
 		symptoms = new ConcurrentHashMap<String,Map<String,Integer>>();
