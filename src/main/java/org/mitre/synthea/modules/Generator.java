@@ -20,6 +20,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Demographics;
 import org.mitre.synthea.world.Location;
+import org.mitre.synthea.helpers.QualityOfLife;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -36,6 +37,7 @@ public class Generator {
 	public long stop;
 	public Map<String,AtomicInteger> stats;
 	public Map<String,Demographics> demographics;
+	public QualityOfLife qolCalculator;
 	
 	public Generator(int people) throws IOException
 	{
@@ -69,7 +71,11 @@ public class Generator {
 	public void run()
 	{
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
-		for(int i = 0 ; i < this.numberOfPeople ; i++)
+	
+	    // initialize QoL calculator
+		qolCalculator = new QualityOfLife();
+			
+		for(int i=0; i < this.numberOfPeople; i++)
 		{
 			final int index = i;
 			threadPool.submit( () -> generatePerson(index) );
@@ -123,11 +129,11 @@ public class Generator {
 				// and then putting people into those
 				// -- but: how will that work with seeds?
 				long start = setDemographics(person, cityName, city);
-				
+			
 				LifecycleModule.birth(person, start);
-				
+					
 				people.add(person);
-				
+					
 				long time = start;
 				while(person.alive(time) && time < stop)
 				{
@@ -135,10 +141,10 @@ public class Generator {
 					while(iter.hasNext())
 					{
 						Module module = iter.next();
-	//					System.out.format("Processing module %s\n", module.name);
+		//				System.out.format("Processing module %s\n", module.name);
 						if(module.process(person, time))
 						{
-	//						System.out.format("Removing module %s\n", module.name);
+		//					System.out.format("Removing module %s\n", module.name);
 							iter.remove(); // this module has completed/terminated.
 						}
 					}
@@ -149,6 +155,8 @@ public class Generator {
 					time += timestep;
 				}
 				
+				// calculate quality of life
+				qolCalculator.calculate(person, stop);
 				
 				Exporter.export(person, stop);
 				

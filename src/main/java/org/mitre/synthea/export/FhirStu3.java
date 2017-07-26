@@ -13,9 +13,11 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
+import org.hl7.fhir.dstu3.model.DecimalType;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Immunization;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
 import org.hl7.fhir.dstu3.model.Patient;
@@ -114,6 +116,17 @@ public class FhirStu3
 		{
 			patientResource.setGender(AdministrativeGender.FEMALE);
 		}
+		
+		// DALY and QALY values
+		Extension dalyExtension = new Extension(SNOMED_URI + "/disability-adjusted-life-years");
+		DecimalType daly = new DecimalType((double) person.attributes.get("DALY"));
+		dalyExtension.setValue(daly);
+		patientResource.addExtension(dalyExtension);
+		
+		Extension qalyExtension = new Extension(SNOMED_URI + "/quality-adjusted-life-years");
+		DecimalType qaly = new DecimalType((double) person.attributes.get("QALY"));
+		qalyExtension.setValue(qaly);
+		patientResource.addExtension(qalyExtension);
 		
 		return newEntry(bundle, patientResource);
 	}
