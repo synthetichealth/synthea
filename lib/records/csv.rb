@@ -161,9 +161,10 @@ module Synthea
         billable_period = @@claim_hash['billable_period']
         claim_organization = 'temp organization' # claim_hash['claim_organization']
         claim_total = 100 # claim_hash['total']
+        blank = ''
         if @@claim_hash['patient_id']
           puts 'writing to claims'
-          @@claims.write("#{claim_id},#{patient_id},#{billable_period},#{claim_organization},#{patient_id},#{''},#{claim_total}\n")
+          @@claims.write("#{claim_id},#{patient_id},#{billable_period},#{claim_organization},#{patient_id},#{blank},#{claim_total}\n")
         end
         @@claim_hash = { 'billable_period' => encounter['time'].strftime('%Y-%m-%d'), 'claim_organization' => 'temp_organization' }
         encounter_id
@@ -179,7 +180,9 @@ module Synthea
         # @@claims.write("#{sequence},#{net_value,net_system,net_code}")
         # if encounter
         item_value = 100
-        @@claim_hash.merge!('item_link' => 'temp_encounter', 'item_value' => item_value)
+        @@claim_hash['item_link'] = 'temp_encounter'
+        @@claim_hash['item_value'] = item_value
+
         # if medication
         # claim_hash << Hash.new('item_link' => 'temp_medication', 'item_value' => item_value)
         @@claim_hash['claim_id']

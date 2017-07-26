@@ -339,21 +339,20 @@ module Synthea
         # diagnosis, procedure, prescription, item added later
         # total = 100
         fhir_claim = FHIR::Claim.new('id' => resource_id,
-                                    'status' => 'active',
-                                   # 'type' => [{}], #codeableconcept
-                                   'use' => 'complete',
-                                   'patient' => { 'reference' => patient.fullUrl.to_s },
-                                   'billablePeriod' => { 'start' => period.start, 'end' => period.end },
-                                   # 'enterer' => { 'reference' => 'practitioner'},
-                                   # 'insurer' => { 'reference' => curr_encounter.resource.insurer},
-                                   'organization' => { 'reference' => curr_encounter.resource.serviceProvider },
-                                   # 'payee'
-                                   # 'insurance'
-                                  'encounter' => { 'reference' => curr_encounter.fullUrl.to_s },
-                                  'total' => { 'value' => 100, 
-                                               'system' => 'urn:iso:std:iso:4217', 
-                                               'code' => 'USD' },
-                                  'extension' => [])            
+                                     'status' => 'active',
+                                     # 'type' => [{}], #codeableconcept
+                                     'use' => 'complete',
+                                     'patient' => { 'reference' => patient.fullUrl.to_s },
+                                     'billablePeriod' => { 'start' => period.start, 'end' => period.end },
+                                     # 'enterer' => { 'reference' => 'practitioner'},
+                                     # 'insurer' => { 'reference' => curr_encounter.resource.insurer},
+                                     'organization' => { 'reference' => curr_encounter.resource.serviceProvider },
+                                     # 'payee'
+                                     # 'insurance'
+                                     'encounter' => { 'reference' => curr_encounter.fullUrl.to_s },
+                                     'total' => { 'value' => 100,
+                                                  'system' => 'urn:iso:std:iso:4217',
+                                                  'code' => 'USD' })
         # if curr_encounter.resource.hospitalization
         #  puts 'has hospitalization'
         #  fhir_claim.hospitalization = {'start' => period.start,'end' => period.end}
@@ -375,13 +374,15 @@ module Synthea
       def self.claim_cost(curr_code)
         # this file is at synthea/lib/records/fhir.rb,
         # we want synthea/resources/claim_costs.json
+        curr_code = curr_code.to_s
         cost_file = File.join(File.dirname(__FILE__), '..', '..', 'resources', 'claim_costs.json')
         claim_costs = JSON.parse(File.read(cost_file))
-        if claim_costs.key? curr_code.to_s
-          value = claim_costs[curr_code.to_s]['cost']
-        else
-          value = 0
-        end
+        has_code = claim_costs.key? curr_code
+        value = if has_code
+                  claim_costs[curr_code]['cost']
+                else
+                  0
+                end
         puts 'value is ' + value.to_s
         value
       end
@@ -617,7 +618,6 @@ module Synthea
                                              # 'performer' => { 'reference' => doctor_no_good },
                                              'context' => { 'reference' => encounter.fullUrl.to_s })
 
-
         fhir_procedure.reasonReference = FHIR::Reference.new('reference' => reason.fullUrl.to_s, 'display' => reason.resource.code.text) if reason
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
@@ -655,7 +655,8 @@ module Synthea
         claim.resource.procedure << FHIR::Claim::Procedure.new(
           'sequence' => claim.resource.procedure.length + 1,
           'procedureCodeableConcept' => { 'coding' => [{ 'code' => proc_code, 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures' }] },
-          'procedureReference' => { 'reference' => entry.fullUrl.to_s})
+          'procedureReference' => { 'reference' => entry.fullUrl.to_s }
+        )
 
         claim.resource.item << FHIR::Claim::Item.new(
           'sequence' => (claim.resource.item.length + 1).to_i,

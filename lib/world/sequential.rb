@@ -138,9 +138,6 @@ module Synthea
           all_prevalence = File.open(File.join(folder, 'all_prevalences.csv'), 'w:UTF-8')
           all_prevalence.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
 
-
-
-
           conditions = @stats[:occurrences][:unique_conditions]['*']['*']['*']['*']['*'].keys
           conditions.each do |condition|
             write_prevalences(all_prevalence, condition.to_s.titleize, :unique_conditions, condition)
