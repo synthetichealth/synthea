@@ -52,7 +52,6 @@ public class Provider {
 			if (services.containsKey(s)){
 				ArrayList<Provider> l = services.get(s);
 				l.add(this);
-				services.put(s,l);
 			} else{
 				ArrayList<Provider> l = new ArrayList<Provider>();
 				l.add(this);
