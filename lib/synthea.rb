@@ -21,7 +21,7 @@ require 'concurrent'
 require 'chunky_png'
 require 'graphviz'
 require 'distribution'
-require 'byebug'
+# require 'byebug'
 
 root = File.expand_path '..', File.dirname(File.absolute_path(__FILE__))
 
