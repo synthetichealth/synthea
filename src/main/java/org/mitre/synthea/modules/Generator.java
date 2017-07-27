@@ -128,7 +128,7 @@ public class Generator {
 		
 		// export hospital information
 		try{
-			HospitalExporter.export();
+			HospitalExporter.export(stop);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

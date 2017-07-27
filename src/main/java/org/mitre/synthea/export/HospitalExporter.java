@@ -34,7 +34,7 @@ public abstract class HospitalExporter{
 	
 	private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 	
-	public static void export(){
+	public static void export(long stop){
 		if(Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))){
 			
 			String bundleJson = "";
@@ -52,13 +52,7 @@ public abstract class HospitalExporter{
 			String baseDirectory = Config.get("exporter.baseDirectory");
 			File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
 			f.mkdirs();
-			Path outFilePath = f.toPath().resolve("hospitalInformation.json");
-			
-			// delete previous file if it exists
-			try {
-				Files.delete(outFilePath);
-			} catch (IOException e) {
-			}
+			Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
 		
 			try {
 				Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);

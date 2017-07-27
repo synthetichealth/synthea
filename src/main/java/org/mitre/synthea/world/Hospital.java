@@ -56,16 +56,16 @@ public class Hospital extends Provider{
 	
 	// find closest hospital with ambulatory service
 	public static Hospital findClosestAmbulatory(Point personLocation){
-		Double personLat = personLocation.getY();
-		Double personLong = personLocation.getX();
+		double personLat = personLocation.getY();
+		double personLong = personLocation.getX();
 		
-		Double closestDistance = 100000000.0;
+		double closestDistance = Double.MAX_VALUE;
 		Provider closestHospital = null;
 		for(Provider p : Provider.getServices().get(Provider.AMBULATORY)){
 			Point hospitalLocation = p.getCoordinates();
-			Double hospitalLat = hospitalLocation.getY();
-			Double hospitalLong = hospitalLocation.getX();
-			Double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
+			double hospitalLat = hospitalLocation.getY();
+			double hospitalLong = hospitalLocation.getX();
+			double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
 			if( sphericalDistance < closestDistance ) {
 				closestDistance = sphericalDistance;
 				closestHospital = p;
@@ -76,16 +76,16 @@ public class Hospital extends Provider{
 	
 	// find closest hospital with inpatient service
 	public static Hospital findClosestInpatient(Point personLocation){
-		Double personLat = personLocation.getY();
-		Double personLong = personLocation.getX();
+		double personLat = personLocation.getY();
+		double personLong = personLocation.getX();
 		
-		Double closestDistance = 100000000.0;
+		double closestDistance = Double.MAX_VALUE;
 		Provider closestHospital = null;
 		for(Provider p : Provider.getServices().get(Provider.INPATIENT)){
 			Point hospitalLocation = p.getCoordinates();
-			Double hospitalLat = hospitalLocation.getY();
-			Double hospitalLong = hospitalLocation.getX();
-			Double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
+			double hospitalLat = hospitalLocation.getY();
+			double hospitalLong = hospitalLocation.getX();
+			double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
 			if( sphericalDistance < closestDistance ) {
 				closestDistance = sphericalDistance;
 				closestHospital = p;
@@ -96,16 +96,16 @@ public class Hospital extends Provider{
 	
 	// find closest hospital with emergency service
 	public static Hospital findClosestEmergency(Point personLocation){
-		Double personLat = personLocation.getY();
-		Double personLong = personLocation.getX();
+		double personLat = personLocation.getY();
+		double personLong = personLocation.getX();
 		
-		Double closestDistance = 100000000.0;
+		double closestDistance = Double.MAX_VALUE;
 		Provider closestHospital = null;
 		for(Provider p : Provider.getServices().get(Provider.EMERGENCY)){
 			Point hospitalLocation = p.getCoordinates();
-			Double hospitalLat = hospitalLocation.getY();
-			Double hospitalLong = hospitalLocation.getX();
-			Double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
+			double hospitalLat = hospitalLocation.getY();
+			double hospitalLong = hospitalLocation.getX();
+			double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
 			if( sphericalDistance < closestDistance ) {
 				closestDistance = sphericalDistance;
 				closestHospital = p;

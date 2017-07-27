@@ -156,10 +156,6 @@ public class HealthRecord {
 			medications = new ArrayList<Medication>();
 			careplans = new ArrayList<CarePlan>();
 		}
-		
-		public void setProvider(Provider p){
-			provider = p;
-		}
 	}
 	
 	public List<Encounter> encounters;

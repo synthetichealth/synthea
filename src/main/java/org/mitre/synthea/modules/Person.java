@@ -163,11 +163,13 @@ public class Person {
 		return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
 	}
 	
+	public void setAmbulatoryProvider(){
+		Point personLocation = (Point) attributes.get(Person.COORDINATE);
+		Provider provider = Hospital.findClosestAmbulatory(personLocation);
+		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+	}
+	
 	public void setAmbulatoryProvider(Provider provider){
-		if(provider == null){
-			Point personLocation = (Point) attributes.get(Person.COORDINATE);
-			provider = Hospital.findClosestAmbulatory(personLocation);
-		}
 		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
 	}
 	
@@ -175,16 +177,24 @@ public class Person {
 		return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
 	}
 	
+	public void setInpatientProvider(){
+		Point personLocation = (Point) attributes.get(Person.COORDINATE);
+		Provider provider = Hospital.findClosestInpatient(personLocation);
+		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
+	}
+	
 	public void setInpatientProvider(Provider provider){
-		if(provider == null){
-			Point personLocation = (Point) attributes.get(Person.COORDINATE);
-			provider = Hospital.findClosestInpatient(personLocation);
-		}
 		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
 	}
 	
 	public Provider getEmergencyProvider(){
 		return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
+	}
+
+	public void setEmergencyProvider(){
+		Point personLocation = (Point) attributes.get(Person.COORDINATE);
+		Provider provider = Hospital.findClosestEmergency(personLocation);
+		attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
 	}
 	
 	public void setEmergencyProvider(Provider provider){

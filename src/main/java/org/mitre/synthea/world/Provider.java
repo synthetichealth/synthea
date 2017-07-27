@@ -52,7 +52,7 @@ public class Provider {
 			if (services.containsKey(s)){
 				ArrayList<Provider> l = services.get(s);
 				l.add(this);
-				services.put(s, l);
+				services.put(s,l);
 			} else{
 				ArrayList<Provider> l = new ArrayList<Provider>();
 				l.add(this);
@@ -128,17 +128,17 @@ public class Provider {
 		switch(service) {
 		case AMBULATORY :
 			if( person.getAmbulatoryProvider() == null ){
-				person.setAmbulatoryProvider(null);
+				person.setAmbulatoryProvider();
 			}
 			return person.getAmbulatoryProvider();
 		case INPATIENT :
 			if( person.getInpatientProvider() == null ){
-				person.setInpatientProvider(null);
+				person.setInpatientProvider();
 			}
 			return person.getInpatientProvider();
 		case EMERGENCY :
 			if( person.getEmergencyProvider() == null ){
-				person.setEmergencyProvider(null);
+				person.setEmergencyProvider();
 			}
 			return person.getEmergencyProvider();
 		}
