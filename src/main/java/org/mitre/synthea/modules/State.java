@@ -141,8 +141,15 @@ public class State {
 			return exit;
 		case SETATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
-			Object value = Utilities.primitive( definition.get("value").getAsJsonPrimitive() );
-			person.attributes.put(attribute, value);
+			if (definition.has("value"))
+			{
+				Object value = Utilities.primitive( definition.get("value").getAsJsonPrimitive() );
+				person.attributes.put(attribute, value);
+			} else if (person.attributes.containsKey(attribute))
+			{
+				// intentionally clear out the variable
+				person.attributes.remove(attribute);
+			}
 			this.exited = time;
 			return true;
 		case COUNTER:
@@ -311,7 +318,7 @@ public class State {
 			return true;
 		case OBSERVATION:
 			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
-			value = null;
+			Object value = null;
 			if(definition.has("exact")) {
 				value = Utilities.primitive( definition.get("exact").getAsJsonObject().get("quantity").getAsJsonPrimitive() );
 			} else if(definition.has("range")) {
