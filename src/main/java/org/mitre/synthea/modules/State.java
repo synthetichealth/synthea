@@ -12,6 +12,7 @@ import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.Transition.TransitionType;
+import org.mitre.synthea.world.Provider;
 
 import com.google.gson.JsonObject;
 
@@ -86,7 +87,7 @@ public class State {
 	 * `false` if the processing should halt for this time step.
 	 */
 	public boolean process(Person person, long time) {
-		System.out.format("State: %s\n", this.name);
+		// System.out.format("State: %s\n", this.name);
 		if(this.entered == 0) {
 			this.entered = time;
 		}
@@ -184,7 +185,15 @@ public class State {
 		case ENCOUNTER:
 			if(definition.has("wellness") && definition.get("wellness").getAsBoolean()) {
 				Encounter encounter = person.record.currentEncounter(time);
+				
 				if(encounter.type==EncounterType.WELLNESS.toString() && encounter.stop!=0l) {
+					
+					// find closest provider and increment encounters count
+					Provider provider = Provider.findClosestService(person, "wellness");
+					person.addCurrentProvider(module, provider);
+					provider.incrementEncounters();
+					encounter.provider = provider;
+					
 					this.exited = time;
 					return true;
 				} else {
@@ -195,6 +204,13 @@ public class State {
 				// TODO: if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW interventions
 				String encounter_class = definition.get("encounter_class").getAsString();
 				Encounter encounter = person.record.encounterStart(time, encounter_class);
+				
+				// find closest provider and increment encounters count
+				Provider provider = Provider.findClosestService(person, encounter_class);
+				person.addCurrentProvider(module, provider);
+				provider.incrementEncounters();
+				encounter.provider = provider;
+				
 				encounter.name = this.name;
 				if(definition.has("reason")) {
 					String reason = definition.get("reason").getAsString();
@@ -224,6 +240,9 @@ public class State {
 				Code code = new Code((JsonObject) definition.get("discharge_disposition"));
 				encounter.discharge = code;
 			}
+			// reset current provider hash
+			person.removeCurrentProvider(module);
+			
 			this.exited = time;
 			return true;
 		case CONDITIONONSET:
@@ -355,6 +374,14 @@ public class State {
 				attribute = definition.get("assign_to_attribute").getAsString();
 				person.attributes.put(attribute, medication);
 			}
+			// increment number of prescriptions prescribed by respective hospital
+			Provider medicationProvider;
+			if(person.getCurrentProvider(module) != null){
+				medicationProvider = person.getCurrentProvider(module);
+			} else { // no provider associated with encounter or medication order
+				medicationProvider = person.getAmbulatoryProvider();
+			}
+			medicationProvider.incrementPrescriptions();
 			this.exited = time;
 			return true;
 		case MEDICATIONEND:
@@ -465,6 +492,15 @@ public class State {
 				String units = definition.get("duration").getAsJsonObject().get("unit").getAsString();
 				procedure.stop = procedure.start + Utilities.convertTime(units, (long) duration);
 			}
+			// increment number of procedures by respective hospital
+			Provider provider;
+			if(person.getCurrentProvider(module) != null){
+				provider = person.getCurrentProvider(module);
+			} else { // no provider associated with encounter or procedure
+				provider = person.getAmbulatoryProvider();
+			}
+			provider.incrementProcedures();
+
 			this.exited = time;
 			return true;
 		case DEATH:
@@ -514,7 +550,7 @@ public class State {
 			}
 		default:
 			System.err.format("Unhandled State Type: %s\n", type);
-			return false;
+			return true;
 		}
 	}
 		

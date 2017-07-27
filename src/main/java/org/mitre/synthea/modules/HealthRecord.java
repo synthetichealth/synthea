@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.mitre.synthea.world.Provider;
+
 import com.google.gson.JsonObject;
 
 /**
@@ -141,6 +143,7 @@ public class HealthRecord {
 		public List<CarePlan> careplans;
 		public String reason;
 		public Code discharge;
+		public Provider provider;
 		
 		public Encounter(long time, String type) {
 			super(time, type);
