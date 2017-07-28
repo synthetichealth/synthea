@@ -3,6 +3,7 @@ package org.mitre.synthea.world;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.modules.Person;
@@ -56,6 +57,25 @@ public class Location {
 	public static String getZipCode(String cityName)
 	{
 		return "00000"; // TODO
+	}
+	
+	public static String randomCityName(Random random)
+	{
+		long targetPop = (long) (random.nextDouble() * totalPopulation);
+		
+		for (Feature f : cities.getFeatures())
+		{
+			Double pop = (Double) f.getProperties().get("pop");
+			targetPop -= pop.longValue();
+			
+			if (targetPop < 0)
+			{
+				return (String)f.getProperties().get("cs_name");
+
+			}
+		}
+		// should never happen
+		throw new RuntimeException("Unable to select a random city name.");
 	}
 	
 	/**

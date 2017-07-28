@@ -7,7 +7,7 @@ import org.mitre.synthea.modules.Person;
  */
 public class App {
  
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Generator generator = new Generator(1);
 		generator.run();
 		for(Person person : generator.people) {

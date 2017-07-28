@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -16,61 +18,112 @@ import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.HospitalExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Hospital;
+import org.mitre.synthea.world.Demographics;
+import org.mitre.synthea.world.Location;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
  */
 public class Generator {
 
-	public long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
+	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
 	public List<Person> people;
-	public int numberOfPeople;
+	public long numberOfPeople;
+	public final int MAX_TRIES = 10;
 	public long seed;
 	private Random random;
 	public long timestep;
+	public long stop;
 	public Map<String,AtomicInteger> stats;
+	public Map<String,Demographics> demographics;
 	
-	public Generator(int people)
+	public Generator(int people) throws IOException
 	{
 		init(people, System.currentTimeMillis());
 	}
 	
-	public Generator(int people, long seed)
+	public Generator(int people, long seed) throws IOException
 	{
 		init(people, seed);
 	}
 	
-	private void init(int people, long seed)
+	private void init(int people, long seed) throws IOException
 	{
 		this.people = Collections.synchronizedList(new ArrayList<Person>());
 		this.numberOfPeople = people;
 		this.seed = seed;
 		this.random = new Random(seed);
 		this.timestep = Long.parseLong( Config.get("generate.timestep") );
+		this.stop = System.currentTimeMillis();
+		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
+		
 		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
 		stats.put("alive", new AtomicInteger(0));
 		stats.put("dead", new AtomicInteger(0));
 		
 		// initialize hospitals
 		Hospital.loadHospitals();
+		Module.getModules(); // ensure modules load early
 	}
 	
 	public void run()
 	{
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
-		long stop = System.currentTimeMillis();
-
-		for(int i=0; i < numberOfPeople; i++)
+		for(int i = 0 ; i < this.numberOfPeople ; i++)
 		{
 			final int index = i;
-			threadPool.submit( () -> 
+			threadPool.submit( () -> generatePerson(index) );
+		}
+
+		try 
+		{
+			threadPool.shutdown();
+			while (!threadPool.awaitTermination(30, TimeUnit.SECONDS))
+			{
+				System.out.println("Waiting for threads to finish... " + threadPool);
+			}
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
+		// export hospital information
+		try{
+			HospitalExporter.export(stop);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(stats);
+	}
+	
+	private void generatePerson(int index)
+	{
+		try 
+		{
+			boolean isAlive = true;
+			String cityName = Location.randomCityName(random);
+			Demographics city = demographics.get(cityName);
+			if (city == null && cityName.endsWith(" Town"))
+			{
+				cityName = cityName.substring(0, cityName.length() - 5);
+				city = demographics.get(cityName);
+			}
+			
+			do
 			{
 				List<Module> modules = Module.getModules();
 				
-				long start = stop - (long)(ONE_HUNDRED_YEARS * random.nextDouble());
-	//			System.out.format("Born : %s\n", Instant.ofEpochMilli(start).toString());
-				Person person = new Person(System.currentTimeMillis());
-
+				// System.currentTimeMillis is not unique enough
+				long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+				Person person = new Person(personSeed);
+				
+				// TODO - this is quick & easy to implement,
+				// but we need to adapt the ruby method of pre-defining all the demographic buckets
+				// and then putting people into those
+				// -- but: how will that work with seeds?
+				long start = setDemographics(person, cityName, city);
+				
 				LifecycleModule.birth(person, start);
 				
 				people.add(person);
@@ -96,43 +149,57 @@ public class Generator {
 					time += timestep;
 				}
 				
-				try {
-					Exporter.export(person, stop);
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-					throw e;
-				}
 				
-				String deceased = person.alive(time) ? "" : "DECEASED";
-				System.out.format("%d -- %s (%d y/o) %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(stop), deceased);
+				Exporter.export(person, stop);
 				
-				String key = person.alive(time) ? "alive" : "dead";
+				isAlive = person.alive(time);
+				
+				String deceased = isAlive ? "" : "DECEASED";
+				System.out.format("%d -- %s (%d y/o) %s %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
+				
+				String key = isAlive ? "alive" : "dead";
 				
 				AtomicInteger count = stats.get(key);
 				count.incrementAndGet();
-			});
+			} while (!isAlive);
+		} catch (Throwable e) // lots of fhir things throw errors for some reason
+		{
+			e.printStackTrace();
+			throw e;
 		}
+	}
+	
+	private long setDemographics(Person person, String cityName, Demographics city)
+	{
+		person.attributes.put(Person.CITY, cityName);
 
-		try 
-		{
-			threadPool.shutdown();
-			while (!threadPool.awaitTermination(30, TimeUnit.SECONDS))
-			{
-				System.out.println("Waiting for threads to finish... " + threadPool);
-			}
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		String race = city.pickRace(person.random);
+		person.attributes.put(Person.RACE, race);
 		
-		// export hospital information
-		try{
-			HospitalExporter.export(stop);
-		} catch (Exception e) {
-			e.printStackTrace();
+		String gender = city.pickGender(person.random);
+		if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M"))
+		{
+			gender = "M";
+		} else
+		{
+			gender = "F";
 		}
+		person.attributes.put(Person.GENDER, gender);
+
+		String education = city.pickEducation(person.random);
+		person.attributes.put(Person.EDUCATION, education);
 		
-		System.out.println(stats);
+		int income = city.pickIncome(person.random);
+		person.attributes.put(Person.INCOME, income);
+		
+		long targetAge = city.pickAge(person.random);
+		
+		// TODO this is terrible date handling, figure out how to use the java time library
+        long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
+        long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
+
+        long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
+		
+		return birthdate;
 	}
 }

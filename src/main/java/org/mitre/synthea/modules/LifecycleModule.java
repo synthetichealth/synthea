@@ -38,11 +38,17 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.BIRTHDATE, time);
 		person.events.create(time, Event.BIRTH, "Generator.run", true);
 		attributes.put(Person.NAME, faker.name().name());
-		attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // High Middle Low
-		attributes.put(Person.RACE, "White"); // "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-		attributes.put(Person.GENDER, person.rand() < 0.5 ? "M" : "F");
+		attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // TODO High Middle Low
+		if (!attributes.containsKey(Person.RACE))
+		{
+			attributes.put(Person.RACE, "White"); // TODO "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
+		}
+		if (!attributes.containsKey(Person.GENDER))
+		{
+			attributes.put(Person.GENDER, person.rand() < 0.5 ? "M" : "F");
+		}
 
-		Location.assignPoint(person, null);
+		Location.assignPoint(person, (String)attributes.get(Person.CITY));
 		boolean hasStreetAddress2 = person.rand() < 0.5;
 		attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
 
