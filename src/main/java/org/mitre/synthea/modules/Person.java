@@ -1,6 +1,5 @@
 package org.mitre.synthea.modules;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +115,10 @@ public class Person {
 			total += getSymptom(type);			
 		}
 		return total;
+	}
+
+	public void resetSymptoms() {
+		symptoms.clear();
 	}
 
 	public boolean hadPriorState(String name) {

@@ -125,23 +125,27 @@ public class Generator {
 				long start = setDemographics(person, cityName, city);
 				
 				LifecycleModule.birth(person, start);
+				EncounterModule encounterModule = new EncounterModule();
 				
 				people.add(person);
 				
 				long time = start;
 				while(person.alive(time) && time < stop)
 				{
+					encounterModule.process(person, time);
 					Iterator<Module> iter = modules.iterator();
 					while(iter.hasNext())
 					{
 						Module module = iter.next();
-	//					System.out.format("Processing module %s\n", module.name);
+						//System.out.format("Processing module %s\n", module.name);
 						if(module.process(person, time))
 						{
-	//						System.out.format("Removing module %s\n", module.name);
+							//System.out.format("Removing module %s\n", module.name);
 							iter.remove(); // this module has completed/terminated.
 						}
 					}
+					encounterModule.endWellnessEncounter(person, time);
+
 					// TODO: if CHW policy is enabled for community, possibly add CHW interventions
 					// if true
 					// then add chw encounter to record

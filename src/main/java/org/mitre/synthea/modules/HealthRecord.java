@@ -84,10 +84,12 @@ public class HealthRecord {
 		public Object value;
 		public String category;
 		public String unit;
+		public List<Observation> observations;
 		
 		public Observation(long time, String type, Object value) {
 			super(time, type);
 			this.value = value;
+			this.observations = new ArrayList<Observation>();
 		}
 	}
 	
@@ -206,14 +208,39 @@ public class HealthRecord {
 			encounter = encounters.get(encounters.size() - 1);
 		} else {
 			encounter = new Encounter(time, EncounterType.WELLNESS.toString());
+			encounter.name = "First Wellness";
 			encounters.add(encounter);
 		}
 		return encounter;
 	}
 	
+	public long timeSinceLastWellnessEncounter(long time) {
+		for(int i=encounters.size()-1; i >= 0; i--) {
+			Encounter encounter = encounters.get(i);
+			if(encounter.type == EncounterType.WELLNESS.toString()) {
+				return (time - encounter.start);
+			}
+		}
+		return Long.MAX_VALUE;
+	}
+
 	public Observation observation(long time, String type, Object value) {
 		Observation observation = new Observation(time, type, value);
 		currentEncounter(time).observations.add(observation);
+		return observation;
+	}
+
+	public Observation multiObservation(long time, String type, int number_of_observations) {
+		Observation observation = new Observation(time, type, null);
+		Encounter encounter = currentEncounter(time);
+		int count = number_of_observations;
+		if(encounter.observations.size() >= number_of_observations) {
+			while(count > 0) {
+				observation.observations.add(encounter.observations.remove(encounter.observations.size()-1));
+				count--;
+			}
+		}
+		encounter.observations.add(observation);
 		return observation;
 	}
 

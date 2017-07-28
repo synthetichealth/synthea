@@ -28,7 +28,7 @@ public class State {
 		VITALSIGN, OBSERVATION, OBSERVATIONGROUP, MULTIOBSERVATION,
 		DIAGNOSTICREPORT, SYMPTOM, DEATH
 	}
-	
+
 	public String module;
 	public String name;
 	public StateType type;
@@ -192,8 +192,9 @@ public class State {
 		case ENCOUNTER:
 			if(definition.has("wellness") && definition.get("wellness").getAsBoolean()) {
 				Encounter encounter = person.record.currentEncounter(time);
-				
-				if(encounter.type==EncounterType.WELLNESS.toString() && encounter.stop!=0l) {
+				String activeKey = String.format("%s %s", EncounterModule.ACTIVE_WELLNESS_ENCOUNTER, this.module);
+				if(person.attributes.containsKey(activeKey)) {
+					person.attributes.remove(activeKey);
 					
 					// find closest provider and increment encounters count
 					Provider provider = Provider.findClosestService(person, "wellness");
@@ -345,6 +346,22 @@ public class State {
 			}
 			if(definition.has("unit")) {
 				observation.unit = definition.get("unit").getAsString();
+			}
+			this.exited = time;
+			return true;
+		case MULTIOBSERVATION:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			int number_of_observations = definition.get("number_of_observations").getAsInt();
+			observation = person.record.multiObservation(time, primary_code, number_of_observations);
+			observation.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = new Code((JsonObject) item);
+					observation.codes.add(code);
+				});
+			}
+			if(definition.has("category")) {
+				observation.category = definition.get("category").getAsString();
 			}
 			this.exited = time;
 			return true;
