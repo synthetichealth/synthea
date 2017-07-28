@@ -150,6 +150,7 @@ public class State {
 				// intentionally clear out the variable
 				person.attributes.remove(attribute);
 			}
+			
 			this.exited = time;
 			return true;
 		case COUNTER:
