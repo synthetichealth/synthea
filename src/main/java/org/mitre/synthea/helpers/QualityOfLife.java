@@ -45,7 +45,7 @@ public class QualityOfLife{
         // from http://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/
 		double yll = 0.0;
 		double yld = 0.0;
-		
+
 		int age = person.ageInYears(stop);
 		long birthdate = (long) person.attributes.get("birthdate");
 		
@@ -65,9 +65,9 @@ public class QualityOfLife{
 		}
 		
 		// calculate yld with yearly timestep
-		for(int i = 0; i < age; i++){
-			long yearStart = birthdate + i * TimeUnit.DAYS.toMillis(365);
-			long yearEnd = birthdate + (i+1) * TimeUnit.DAYS.toMillis(365);
+		for(int i = 0; i < age + 1; i++){
+			long yearStart = birthdate + TimeUnit.DAYS.toMillis((long) (365.25 * i));
+			long yearEnd = birthdate + (TimeUnit.DAYS.toMillis((long) (365.25 * (i+1) - 1)));
 			List<Entry> conditionsInYear = conditionsInYear(allConditions, yearStart, yearEnd);
 			
 			for(Entry condition : conditionsInYear){
@@ -88,7 +88,8 @@ public class QualityOfLife{
 		List<Entry> conditionsInYear = new ArrayList<Entry>();
 		for(Entry condition : conditions){
 			if(disabilityWeights.containsKey(condition.codes.get(0).display)){
-				if(yearStart >= condition.start && condition.start < yearEnd){
+				// condition.stop == 0 for conditions that have not yet ended
+				if(yearStart >= condition.start && condition.start <= yearEnd && (condition.stop > yearStart || condition.stop == 0)){
 					conditionsInYear.add(condition);
 				}
 			}
