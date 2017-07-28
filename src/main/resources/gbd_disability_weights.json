@@ -20,13 +20,13 @@
 
   "Microalbuminuria due to type 2 diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "9.08E+13",
+    "code": "90800000000000",
     "disability_weight": 0.049
     },
 
   "Proteinuria due to type 2 diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "1.57E+14",
+    "code": "157000000000000",
     "disability_weight": 0.049
     },
 
@@ -44,31 +44,31 @@
 
   "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "1.55E+12",
+    "code": "1550000000000",
     "disability_weight": 0.003
     },
 
   "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "1.50E+12",
+    "code": "1500000000000",
     "disability_weight": 0.031
     },
 
   "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "9.73E+13",
+    "code": "97300000000000",
     "disability_weight": 0.031
     },
 
   "Blindness due to type 2 diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "6.10E+13",
+    "code": "61000000000000",
     "disability_weight": 0.187
     },
 
   "Neuropathy due to type 2 diabetes mellitus (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "3.69E+14",
+    "code": "369000000000000",
     "disability_weight": 0.133
     },
 
@@ -458,25 +458,25 @@
 
   "Primary small cell malignant neoplasm of lung  TNM stage 1 (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "6.78E+13",
+    "code": "67800000000000",
     "disability_weight": 0.049
     },
 
   "Primary small cell malignant neoplasm of lung  TNM stage 2 (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "6.78E+13",
+    "code": "67800000000000",
     "disability_weight": 0.049
     },
 
   "Primary small cell malignant neoplasm of lung  TNM stage 3 (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "6.78E+13",
+    "code": "67800000000000",
     "disability_weight": 0.451
     },
 
   "Primary small cell malignant neoplasm of lung  TNM stage 4 (disorder)" : {
     "system": "SNOMED-CT",
-    "code": "6.78E+13",
+    "code": "67800000000000",
     "disability_weight": 0.54
     },
 
@@ -488,7 +488,7 @@
 
   "Chronic intractable migraine without aura" : {
     "system": "SNOMED-CT",
-    "code": "1.24E+14",
+    "code": "124000000000000",
     "disability_weight": 0.441
     },
 
