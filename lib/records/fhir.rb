@@ -248,7 +248,8 @@ module Synthea
         fhir_record.entry << entry
 
         puts 'add diagnosis and item into claim ($100)'
-        value = 100
+        value = cost_lookup('SNOMED', condition_data[:codes]['SNOMED-CT'][0])
+        puts 'testing' + value.to_s
         claim.resource.diagnosis << FHIR::Claim::Diagnosis.new(
           'sequence' => (claim.resource.diagnosis.length + 1).to_i,
           'diagnosisCodeableConcept' => { 'coding' => [{ 'code' => condition_data[:codes]['SNOMED-CT'][0] }] },
@@ -385,6 +386,12 @@ module Synthea
                 end
         puts 'value is ' + value.to_s
         value
+      end
+
+      def self.cost_lookup(code_type, curr_code)
+        cost_file = JSON.parse(File.read(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'costs_output.json')))
+        value = cost_file[code_type][curr_code.to_s]['cost']
+        value.to_i
       end
 
       def self.claim_response(_claim, fhir_record, patient)
@@ -650,8 +657,10 @@ module Synthea
         fhir_record.entry << entry
 
         puts 'enter procedure and item into claim ($100)'
-        proc_code = proc_data[:codes]['SNOMED-CT'][0]
-        value = claim_cost(proc_code)
+        proc_code = proc_data[:codes]['SNOMED-CT'][0] # NOT THE RIGHT PROC_CODE 
+        # byebug
+        value = 100 # cost_lookup(proc_code) 
+        puts 'procedure value is ' + value.to_s
         claim.resource.procedure << FHIR::Claim::Procedure.new(
           'sequence' => claim.resource.procedure.length + 1,
           'procedureCodeableConcept' => { 'coding' => [{ 'code' => proc_code, 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures' }] },
@@ -929,7 +938,8 @@ module Synthea
         entry.fullUrl = "urn:uuid:#{med_order_id}"
         fhir_record.entry << entry
 
-        value = 100
+        puts med_data[:codes]['RxNorm'][0]
+        value = cost_lookup('RxNorm', med_data[:codes]['RxNorm'][0])
         med_claim = claim(encounter, fhir_record, patient)
         med_claim.resource.prescription = { 'reference' => entry.fullUrl.to_s }
         med_claim.resource.total = { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
