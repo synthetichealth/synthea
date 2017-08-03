@@ -13,6 +13,10 @@ public final class LifecycleModule extends Module
 {
 	private static final Faker faker = new Faker();
 	
+	public LifecycleModule() {
+		this.name = "Lifecycle";
+	}
+
 	@Override
 	public boolean process(Person person, long time) 
 	{

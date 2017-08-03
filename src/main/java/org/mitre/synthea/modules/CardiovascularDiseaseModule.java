@@ -5,6 +5,10 @@ import java.util.Calendar;
 
 public final class CardiovascularDiseaseModule extends Module 
 {
+	public CardiovascularDiseaseModule() {
+		this.name = "Cardiovascular Disease";
+	}
+
 	@Override
 	public boolean process(Person person, long time) 
 	{

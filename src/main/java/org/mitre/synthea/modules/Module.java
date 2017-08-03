@@ -34,7 +34,10 @@ public class Module {
 	
 	private static Map<String,Module> loadModules() {
 		Map<String,Module> retVal = new ConcurrentHashMap<String,Module>();
-		
+
+		retVal.put("Lifecycle", new LifecycleModule());
+		retVal.put("Cardiovascular Disease", new CardiovascularDiseaseModule());
+
 		try {
 			URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
 			Path path = Paths.get(modulesFolder.toURI());
@@ -51,11 +54,6 @@ public class Module {
 						e.printStackTrace();
 					}
 				});
-			
-			// TODO - better way to do this?
-			retVal.put("Lifecycle", new LifecycleModule());
-			retVal.put("Cardiovascular Disease", new CardiovascularDiseaseModule());
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,16 +153,23 @@ public class Module {
 			person.attributes.put(this.name, person.history);
 		}
 		person.history = (ArrayList<State>) person.attributes.get(this.name);
+		String activeKey = String.format("%s %s", EncounterModule.ACTIVE_WELLNESS_ENCOUNTER, this.name);
+		if(person.attributes.containsKey(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER)) {
+			person.attributes.put(activeKey, true);
+		}
 		State current = person.history.get(0);
+		//System.out.println("  Resuming at " + current.name);
 		// process the current state,
 		// looping until module is finished, 
 		// probably more than one state
 		String nextStateName = null;
 		while(current.process(person, time)) {
 			nextStateName = current.transition(person, time);
+			//System.out.println("  Transitioning to " + nextStateName);
 			current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
 			person.history.add(0, current);
 		}
+		person.attributes.remove(activeKey);
 		return (current.type == State.StateType.TERMINAL);
 	}
 
