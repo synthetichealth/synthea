@@ -4,8 +4,12 @@ import java.sql.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
+import org.hl7.fhir.dstu3.model.CarePlan.CarePlanStatus;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
@@ -18,24 +22,36 @@ import org.hl7.fhir.dstu3.model.DiagnosticReport;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Extension;
+import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.Immunization;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
+import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent;
+import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus;
+import org.hl7.fhir.dstu3.model.Narrative;
+import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
+import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Procedure;
+import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Type;
+import org.hl7.fhir.utilities.xhtml.NodeType;
+import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.modules.HealthRecord;
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Observation;
+import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.HealthRecord.Report;
 import org.mitre.synthea.modules.Person;
 
 import ca.uhn.fhir.context.FhirContext;
+
+import com.vividsolutions.jts.geom.Point;
 
 public class FhirStu3 
 {
@@ -45,10 +61,18 @@ public class FhirStu3
 	
 	private static final String SNOMED_URI = "http://snomed.info/sct";
 	private static final String LOINC_URI = "http://loinc.org";
+	private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
 	
+	/**
+	 * Convert the given Person into a JSON String, 
+	 * containing a FHIR Bundle of the Person and the associated entries from their health record.
+	 * @param person Person to generate the FHIR JSON for
+	 * @return String containing a JSON representation of a FHIR Bundle containing the Person's health record
+	 */
 	public static String convertToFHIR(Person person)
 	{
 		Bundle bundle = new Bundle();
+		bundle.setType(BundleType.COLLECTION);
 		
 		BundleEntryComponent personEntry = basicInfo(person, bundle);
 		
@@ -66,7 +90,7 @@ public class FhirStu3
 				observation(personEntry, bundle, encounterEntry, observation);
 			}
 			
-			for (HealthRecord.Entry procedure : encounter.procedures)
+			for (Procedure procedure : encounter.procedures)
 			{
 				procedure(personEntry, bundle, encounterEntry, procedure);
 			}
@@ -94,11 +118,17 @@ public class FhirStu3
 		
 		String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 		
+		
+		
 		return bundleJson;
 	}
 	
-
-
+	/**
+	 * Map the given Person to a FHIR Patient resource, and add it to the given Bundle.
+	 * @param person The Person
+	 * @param bundle The Bundle to add to
+	 * @return The created Entry
+	 */
 	private static BundleEntryComponent basicInfo(Person person, Bundle bundle)
 	{		
 		Patient patientResource = new Patient();
@@ -117,6 +147,38 @@ public class FhirStu3
 			patientResource.setGender(AdministrativeGender.FEMALE);
 		}
 		
+		long birthdate = (long)person.attributes.get(Person.BIRTHDATE);
+		patientResource.setBirthDate(new Date(birthdate));
+		
+		Point coord = (Point)person.attributes.get(Person.COORDINATE);
+		
+		Address addrResource = patientResource.addAddress();
+		
+		addrResource.addLine((String)person.attributes.get(Person.ADDRESS))
+			.setCity((String)person.attributes.get(Person.CITY))
+			.setPostalCode((String)person.attributes.get(Person.ZIP))
+			.setState((String)person.attributes.get(Person.STATE))
+			.setCountry("US");
+		
+		
+		Extension geolocation = addrResource.addExtension();
+		
+		geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+		geolocation.addExtension("latitude", new DecimalType(coord.getY()));
+		geolocation.addExtension("longitude", new DecimalType(coord.getX()));
+
+		// TODO: ruby version also has:
+		//  telecom, language, race, ethnicity, place of birth, mother's maiden name,
+		//  birth sex, prefix+suffix, marital status, multiple birth status,
+		//  identifiers (SSN, driver's lic, passport, fingerprint), deceased date
+
+		String generatedBySynthea = 
+				"Generated by <a href=\"https://github.com/synthetichealth/synthea\">Synthea</a>. "
+				+ "Version identifier: JAVA-0.0.0 . "
+				+ "Person seed: " + person.seed + "</div>"; // TODO
+
+		patientResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED).setDiv(new XhtmlNode(NodeType.Element).setValue(generatedBySynthea)));
+
 		// DALY and QALY values
 		Extension dalyExtension = new Extension(SNOMED_URI + "/disability-adjusted-life-years");
 		DecimalType daly = new DecimalType((double) person.attributes.get("DALY"));
@@ -131,7 +193,13 @@ public class FhirStu3
 		return newEntry(bundle, patientResource);
 	}
 	
-	
+	/**
+	 * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
+	 * @param personEntry Entry for the Person
+	 * @param bundle The Bundle to add to
+	 * @param encounter The current Encounter
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent encounter(BundleEntryComponent personEntry, Bundle bundle,
 			Encounter encounter) 
 	{
@@ -142,19 +210,36 @@ public class FhirStu3
 		if (encounter.codes.isEmpty())
 		{
 			// wellness encounter
+			encounterResource.addType().addCoding()
+				.setCode("185349003")
+				.setDisplay("Encounter for check up")
+				.setSystem(SNOMED_URI);
+
 		} else
 		{
 			Code code = encounter.codes.get(0); 
 			encounterResource.addType( mapCodeToCodeableConcept(code, SNOMED_URI) );
 		}
 		
+		encounterResource.setClass_(new Coding().setCode(encounter.type));
+		
 		long encounter_end = encounter.stop > 0 ? encounter.stop : encounter.stop + TimeUnit.MINUTES.toMillis(15);
 		
 		encounterResource.setPeriod( new Period().setStart(new Date(encounter.start)).setEnd( new Date(encounter_end)) );
 		
+		// TODO: provider, reason, discharge
+		
 		return newEntry(bundle, encounterResource);
 	}
 	
+	/**
+	 * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
+	 * @param personEntry The Entry for the Person
+	 * @param bundle The Bundle to add to
+	 * @param encounterEntry The current Encounter entry
+	 * @param condition The Condition
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry, HealthRecord.Entry condition)
 	{
@@ -180,6 +265,14 @@ public class FhirStu3
 		return newEntry(bundle, conditionResource);
 	}
 	
+	/**
+	 * Map the given Observation into a FHIR Observation resource, and add it to the given Bundle.
+	 * @param personEntry The Person Entry
+	 * @param bundle The Bundle to add to
+	 * @param encounterEntry The current Encounter entry
+	 * @param observation The Observation
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent observation(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry, Observation observation)
 	{
@@ -188,22 +281,77 @@ public class FhirStu3
 		observationResource.setSubject(new Reference(personEntry.getFullUrl()));
 		observationResource.setContext(new Reference(encounterEntry.getFullUrl()));
 		
+		observationResource.setStatus(ObservationStatus.FINAL);
+		
 		Code code = observation.codes.get(0); 
 		observationResource.setCode( mapCodeToCodeableConcept(code, LOINC_URI) );
+		
+		observationResource.addCategory().addCoding()
+				.setCode(observation.category)
+				.setSystem("http://hl7.org/fhir/observation-category")
+				.setDisplay(observation.category);
+		
+		Type value = null;
+		if (observation.value instanceof Condition)
+		{
+			Code conditionCode = ((HealthRecord.Entry)observation.value).codes.get(0); 
+			value = mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
+		} else if (observation.value instanceof String)
+		{
+			value = new StringType((String)observation.value);
+		} else if (observation.value instanceof Number)
+		{
+			value = new Quantity()
+				.setValue(((Number)observation.value).doubleValue())
+				.setCode(observation.unit)
+				.setSystem("http://unitsofmeasure.org/")
+				.setUnit(observation.unit);
+		} else if (observation.value != null)
+		{
+			throw new IllegalArgumentException("unexpected observation value class: " + observation.value.getClass().toString() + "; " + observation.value);
+		}
+		
+		if (value != null)
+		{
+			observationResource.setValue(value);
+		}
+		
+		observationResource.setEffective(convertFhirDateTime(observation.start, true));
+		observationResource.setIssued(new Date(observation.start));
 		
 		return newEntry(bundle, observationResource);
 	}
 	
+	/**
+	 * Map the given Procedure into a FHIR Procedure resource, and add it to the given Bundle.
+	 * @param personEntry The Person entry
+	 * @param bundle Bundle to add to
+	 * @param encounterEntry The current Encounter entry
+	 * @param procedure The Procedure
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent procedure(BundleEntryComponent personEntry, Bundle bundle,
-			BundleEntryComponent encounterEntry, HealthRecord.Entry procedure)
+			BundleEntryComponent encounterEntry, Procedure procedure)
 	{
-		Procedure procedureResource = new Procedure();
+		org.hl7.fhir.dstu3.model.Procedure procedureResource = new org.hl7.fhir.dstu3.model.Procedure();
 		
 		procedureResource.setSubject(new Reference(personEntry.getFullUrl()));
 		procedureResource.setContext(new Reference(encounterEntry.getFullUrl()));
 		
 		Code code = procedure.codes.get(0); 
 		procedureResource.setCode( mapCodeToCodeableConcept(code, SNOMED_URI) );
+		
+		if (procedure.stop > 0L)
+		{
+			Date startDate = new Date(procedure.start);
+			Date endDate = new Date(procedure.stop);
+			procedureResource.setPerformed(new Period().setStart(startDate).setEnd(endDate));
+		} else
+		{
+			procedureResource.setPerformed(convertFhirDateTime(procedure.start, true));
+		}
+		
+		// TODO - reason
 		
 		return newEntry(bundle, procedureResource);
 	}
@@ -220,6 +368,14 @@ public class FhirStu3
 		return newEntry(bundle, immResource);
 	}
 
+	/**
+	 * Map the given Medication to a FHIR MedicationRequest resource, and add it to the given Bundle.
+	 * @param personEntry The Entry for the Person
+	 * @param bundle Bundle to add the Medication to
+	 * @param encounterEntry Current Encounter entry
+	 * @param medication The Medication
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent medication(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry, Medication medication)
 	{
@@ -228,9 +384,32 @@ public class FhirStu3
 		medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
 		medicationResource.setContext(new Reference(encounterEntry.getFullUrl()));
 		
+		medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
+		
+		medicationResource.setAuthoredOn(new Date(medication.start));
+		medicationResource.setIntent(MedicationRequestIntent.ORDER);
+		
+		if (medication.stop > 0L)
+		{
+			medicationResource.setStatus(MedicationRequestStatus.STOPPED);
+		} else
+		{
+			medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
+		}
+		
+		// TODO - prescription details & reason
+		
 		return newEntry(bundle, medicationResource);
 	}
 
+	/**
+	 * Map the given Report to a FHIR DiagnosticReport resource, and add it to the given Bundle.
+	 * @param personEntry The Entry for the Person
+	 * @param bundle Bundle to add the Report to
+	 * @param encounterEntry Current Encounter entry
+	 * @param report The Report
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent report(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry, Report report)
 	{
@@ -239,9 +418,19 @@ public class FhirStu3
 		reportResource.setSubject(new Reference(personEntry.getFullUrl()));
 		reportResource.setContext(new Reference(encounterEntry.getFullUrl()));
 		
+		// TODO - everything
+		
 		return newEntry(bundle, reportResource);
 	}
 
+	/**
+	 * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
+	 * @param personEntry The Entry for the Person
+	 * @param bundle Bundle to add the CarePlan to
+	 * @param encounterEntry Current Encounter entry
+	 * @param carePlan The CarePlan to map to FHIR and add to the bundle
+	 * @return The added Entry
+	 */
 	private static BundleEntryComponent careplan(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry, CarePlan carePlan)
 	{
@@ -253,9 +442,36 @@ public class FhirStu3
 		Code code = carePlan.codes.get(0); 
 		careplanResource.addCategory( mapCodeToCodeableConcept(code, SNOMED_URI) );
 		
+		CarePlanActivityStatus activityStatus;
+		GoalStatus goalStatus;
+		
+		Period period = new Period().setStart(new Date(carePlan.start));
+		careplanResource.setPeriod(period);
+		if (carePlan.stop > 0L)
+		{
+			period.setEnd(new Date(carePlan.stop));
+			careplanResource.setStatus(CarePlanStatus.COMPLETED);
+			activityStatus = CarePlanActivityStatus.COMPLETED;
+			goalStatus = GoalStatus.ACHIEVED;
+		} else
+		{
+			careplanResource.setStatus(CarePlanStatus.ACTIVE);
+			activityStatus = CarePlanActivityStatus.INPROGRESS;
+			goalStatus = GoalStatus.INPROGRESS;
+		}
+		
+		// TODO - goals, activities, reasons
+		
 		return newEntry(bundle, careplanResource);
 	}
 	
+	/**
+	 * Convert the timestamp into a FHIR DateType or DateTimeType.
+	 * 
+	 * @param datetime Timestamp
+	 * @param time If true, return a DateTime; if false, return a Date.
+	 * @return a DateType or DateTimeType representing the given timestamp
+	 */
 	private static Type convertFhirDateTime(long datetime, boolean time)
 	{
 		Date date = new Date(datetime);
@@ -275,6 +491,14 @@ public class FhirStu3
 //		return mapCodeToCodeableConcept(from, null);
 //	}
 
+	/**
+	 * Helper function to convert a Code into a CodeableConcept.
+	 * Takes an optional system, which replaces the Code.system in the resulting CodeableConcept if not null.
+	 * 
+	 * @param from The Code to create a CodeableConcept from.
+	 * @param system The system identifier, such as a URI. Optional; may be null.
+	 * @return The converted CodeableConcept
+	 */
 	private static CodeableConcept mapCodeToCodeableConcept(Code from, String system)
 	{
 		CodeableConcept to = new CodeableConcept();
@@ -300,6 +524,15 @@ public class FhirStu3
 		return to;
 	}
 
+	/**
+	 * Helper function to create an Entry for the given Resource within the given Bundle.
+	 * Sets the resourceID to a random UUID, sets the entry's fullURL to that resourceID,
+	 * and adds the entry to the bundle.
+	 * 
+	 * @param bundle The Bundle to add the Entry to
+	 * @param resource Resource the new Entry should contain
+	 * @return the created Entry
+	 */
 	private static BundleEntryComponent newEntry(Bundle bundle, Resource resource)
 	{
 		BundleEntryComponent entry = bundle.addEntry();
