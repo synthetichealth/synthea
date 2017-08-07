@@ -36,7 +36,7 @@ class FhirTest < Minitest::Test
     @patientID = @fhir_record.entry[1].fullUrl
 
     @claim_entry = Synthea::Output::FhirRecord.claim(@encounter_entry, @fhir_record, @patient_entry)
-    @patientID = @fhir_record.entry[0].fullUrl
+    # @patientID = @fhir_record.entry[0].fullUrl
     # @fhir_record.entry[1] is the provider
     @encounterID = @fhir_record.entry[2].fullUrl
   end
@@ -69,8 +69,9 @@ class FhirTest < Minitest::Test
     #test_abatement
     disease = fhir.entry.find {|e| e.resource.is_a?(FHIR::Condition)}.resource
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time + 10.minutes, 'time'), disease.abatementDateTime)
+    # byebug
     order = [FHIR::Encounter, FHIR::Claim, FHIR::ClaimResponse, FHIR::Condition, FHIR::Observation, FHIR::Procedure, FHIR::Immunization]
-    order = [FHIR::Patient, FHIR::Organization] + order + order
+    order = [FHIR::Organization, FHIR::Patient] + order + order
 
     order.zip(fhir.entry) do |klass, entry|
       assert_equal(klass, entry.resource.class)
@@ -119,11 +120,12 @@ class FhirTest < Minitest::Test
     @patient[:race] = :hispanic
     @patient[:ethnicity] = :mexican
     Synthea::Output::FhirRecord.basic_info(@patient, @fhir_record)
-
-    race = @fhir_record.entry[4].resource.extension[0].valueCodeableConcept.coding[0]
+  
+    # byebug
+    race = @fhir_record.entry[5].resource.extension[0].valueCodeableConcept.coding[0]
     assert_equal('Other',race.display)
     assert_equal('2131-1',race.code)
-    ethnicity = @fhir_record.entry[4].resource.extension[1].valueCodeableConcept.coding[0]
+    ethnicity = @fhir_record.entry[5].resource.extension[1].valueCodeableConcept.coding[0]
     assert_equal('Mexican',ethnicity.display)
     assert_equal('2148-5',ethnicity.code)
     refute_empty person.text.div
@@ -146,6 +148,7 @@ class FhirTest < Minitest::Test
   end
 
   def test_encounter
+    # byebug
     encounter = @fhir_record.entry[2].resource
     assert_match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,@encounterID)
     assert_equal('finished', encounter.status)

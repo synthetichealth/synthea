@@ -9,22 +9,17 @@ module Synthea
         fhir_record = FHIR::Bundle.new
         fhir_record.type = 'collection'
         patient = basic_info(entity, fhir_record, end_time)
-
         synthea_record.encounters.each do |encounter|
           curr_encounter = encounter(encounter, fhir_record, patient)
           curr_claim = claim(curr_encounter, fhir_record, patient)
           claim_response(curr_claim, fhir_record, patient)
-
           encounter_end = encounter['end_time'] || synthea_record.patient_info[:deathdate] || end_time
           # if an encounter doesn't have an end date, either the patient died during the encounter, or they are still in the encounter
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
             entry = synthea_record.send(attribute)[indices[attribute]]
-
             while entry && entry['time'] <= encounter_end
               method = entry['fhir']
               method = attribute.to_s if method.nil?
-
-              # send(method, entry, fhir_record, patient, curr_encounter)
               send(method, entry, fhir_record, patient, curr_encounter, curr_claim)
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]
@@ -59,7 +54,6 @@ module Synthea
           ethnicity_fhir = :nonhispanic
         end
         resource_id = SecureRandom.uuid.to_s.strip
-
         # calls provider to create provider fhir for generalPractitioner in patient_resource
         prov = provider(fhir_record, entity.ambulatory_provider)
 
@@ -264,6 +258,7 @@ module Synthea
 
         # update total
         old_value = claim.resource.total.value
+        # byebug
         claim.resource.total.value = old_value + value # { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD'}
       end
 
@@ -329,9 +324,6 @@ module Synthea
         entry
       end
 
-      def self.provider(fhir_record, provider)
-        resource_id = provider.attributes[:resource_id]
-
       def self.claim(curr_encounter, fhir_record, patient)
         puts 'a claim'
         resource_id = SecureRandom.uuid.to_s
@@ -392,6 +384,9 @@ module Synthea
         cost_file = JSON.parse(File.read(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'costs_output.json')))
         value = cost_file[code_type][curr_code.to_s]['cost']
         value.to_i
+      rescue
+        puts 'no value found in cost_lookup'
+        0
       end
 
       def self.claim_response(_claim, fhir_record, patient)
@@ -406,16 +401,8 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.provider(_encounter, fhir_record, _patient)
-        prov = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.name == 'Synthetic Provider' }
-        return prov if prov
-        # add the dummy provider since it wasnt't there already; this also means it's not added unless it's needed
-        build_dummy_provider(fhir_record)
-      end
-
-      def self.build_dummy_provider(fhir_record)
-        # for now just create a single provider per patient. eventually we will need a more robust system
-        resource_id = SecureRandom.uuid
+      def self.provider(fhir_record, provider)
+        resource_id = provider.attributes[:resource_id]
         prov = FHIR::Organization.new('id' => resource_id,
                                       'name' => provider.attributes['name'],
                                       'type' => {
@@ -657,9 +644,8 @@ module Synthea
         fhir_record.entry << entry
 
         puts 'enter procedure and item into claim ($100)'
-        proc_code = proc_data[:codes]['SNOMED-CT'][0] # NOT THE RIGHT PROC_CODE 
-        # byebug
-        value = 100 # cost_lookup(proc_code) 
+        proc_code = proc_data[:codes]['SNOMED-CT'][0] # NOT THE RIGHT PROC_CODE
+        value = 100 # cost_lookup(proc_code)
         puts 'procedure value is ' + value.to_s
         claim.resource.procedure << FHIR::Claim::Procedure.new(
           'sequence' => claim.resource.procedure.length + 1,
@@ -709,7 +695,6 @@ module Synthea
           r = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && reason_code == e.resource.code.coding[0].code }
           reasons << r unless r.nil?
         end
-
         careplan = FHIR::CarePlan.new('subject' => { 'reference' => patient.fullUrl.to_s },
                                       'context' => { 'reference' => encounter.fullUrl.to_s },
                                       'period' => { 'start' => convert_fhir_date_time(plan['start_time']) },

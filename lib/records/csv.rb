@@ -53,7 +53,8 @@ module Synthea
         synthea_record.encounters.each do |encounter|
           encounter_id = encounter(encounter, patient_id)
 
-          claim_id = claim(encounter_id, patient_id)
+          # claim_id =
+          claim(encounter_id, patient_id)
           # claim_response_id = claim_response(claim_id, patient_id)
 
           encounter_end = encounter['end_time'] || synthea_record.patient_info[:deathdate] || end_time
@@ -185,7 +186,7 @@ module Synthea
 
         # if medication
         # claim_hash << Hash.new('item_link' => 'temp_medication', 'item_value' => item_value)
-        #x@@claim_hash['claim_id']
+        # x@@claim_hash['claim_id']
       end
 
       def self.observation(observation, patient_id, encounter_id)
