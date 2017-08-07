@@ -67,7 +67,7 @@ public class Module {
 		return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "").replace("\\", "/");
 	}
 	
-	private static Module loadFile(Path path, Path modulesFolder) throws IOException {
+	public static Module loadFile(Path path, Path modulesFolder) throws IOException {
 		System.out.format("Loading %s\n", path.toString());
 		boolean submodule = !path.getParent().equals(modulesFolder);
 		JsonObject object = null;
