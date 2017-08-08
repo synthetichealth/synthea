@@ -1,0 +1,73 @@
+{
+    "name": "Encounter",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Annual_Physical"
+        },
+        "Annual_Physical": {
+            "type": "Encounter",
+            "wellness": true,
+            "direct_transition": "6_Month_Delay"
+        },
+        "6_Month_Delay": {
+            "type": "Delay",
+            "exact": {
+                "quantity": 6,
+                "unit": "months"
+            },
+            "direct_transition": "Diabetes"
+        },
+        "Diabetes": {
+            "type": "ConditionOnset",
+            "target_encounter": "Annual_Physical_2",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "73211009",
+                "display": "Diabetes Mellitus"
+            }],
+            "assign_to_attribute" : "some_active_condition",
+            "direct_transition": "Annual_Physical_2"
+        },
+        "Annual_Physical_2": {
+            "type": "Encounter",
+            "wellness": true,
+            "direct_transition": "2_Year_Delay"
+        },
+        "2_Year_Delay": {
+            "type": "Delay",
+            "exact": {
+                "quantity": 2,
+                "unit": "years"
+            },
+            "direct_transition": "ED_Visit"
+        },
+        "ED_Visit": {
+            "type": "Encounter",
+            "encounter_class": "emergency",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "50849002",
+                "display": "Emergency Room Admission"
+            }],
+            "reason" : "Diabetes",
+            "direct_transition": "ED_Visit_AttributeReason"
+        },
+
+        "ED_Visit_AttributeReason": {
+            "type": "Encounter",
+            "encounter_class": "emergency",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "50849002",
+                "display": "Emergency Room Admission"
+            }],
+            "reason" : "some_active_condition",
+            "direct_transition": "Terminal"
+        },
+
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

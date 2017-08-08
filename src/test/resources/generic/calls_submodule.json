@@ -1,0 +1,53 @@
+{
+  "name": "Calls Submodule",
+  "remarks": [
+    "This module calls a basic submodule that performs a MedicationOrder."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Encounter"
+    },
+
+    "Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "12345678",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Examplitis"
+    },
+
+    "Examplitis": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "target_encounter is optional in this case since this ConditionOnset ",
+        "state directly follows and is concurrent with an Encounter state."
+      ],
+      "assign_to_attribute": "examplitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "87654321",
+          "display": "Acute examplitis"
+        }
+      ],
+      "direct_transition": "CallSubmodule"
+    },
+
+    "CallSubmodule": {
+      "type": "CallSubmodule",
+      "submodule": "submodules/basic_submodule",
+      "direct_transition": "Main_Terminal"
+    },
+
+    "Main_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

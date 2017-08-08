@@ -20,7 +20,7 @@ public class Transition {
 	
 	public TransitionType type;
 	public List<String> transitions;
-	public List<Double> distributions;
+	public List<Object> distributions;
 	public List<JsonObject> conditions;
 	public List<Transition> contained;
 	
@@ -32,11 +32,17 @@ public class Transition {
 			transitions.add(jsonElement.getAsString());
 			break;
 		case DISTRIBUTED:
-			distributions = new ArrayList<Double>();
+			distributions = new ArrayList<Object>();
 			jsonElement.getAsJsonArray().forEach(item -> {
 				JsonObject transition = item.getAsJsonObject();
 				transitions.add(transition.get("transition").getAsString());
-				distributions.add(transition.get("distribution").getAsDouble());
+
+				JsonElement distribution = transition.get("distribution");
+				if (distribution.isJsonPrimitive()) {
+					distributions.add(distribution.getAsDouble());
+				} else {
+					distributions.add(new NamedDistribution(distribution.getAsJsonObject()));
+				}
 			});
 			break;
 		case CONDITIONAL:
@@ -85,7 +91,19 @@ public class Transition {
 			double p = person.rand();
 			double high = 0.0;
 			for(int i=0; i < distributions.size(); i++) {
-				high += distributions.get(i);
+				Object d = distributions.get(i);
+				if (d instanceof Double) {
+					high += (Double) d;
+				} else {
+					NamedDistribution nd = (NamedDistribution) d;
+					double dist = nd.defaultDistribution;
+					if (person.attributes.containsKey( nd.attribute )) {
+						dist = (Double) person.attributes.get(nd.attribute);
+					}
+
+					high += dist;
+				}
+
 				if(p < high) {
 					return transitions.get(i);
 				}
@@ -119,6 +137,22 @@ public class Transition {
 			return contained.get(contained.size() - 1).follow(person, time);
 		default:
 			return transitions.get(0);
+		}
+	}
+
+	/**
+	 * Helper class for distributions, which may either be a double, 
+	 * or a NamedDistribution with an attribute to fetch the desired probability from and a default.
+	 */
+	public static class NamedDistribution
+	{
+		public String attribute;
+		public double defaultDistribution;
+
+		public NamedDistribution(JsonObject definition)
+		{
+			this.attribute = definition.get("attribute").getAsString();
+			this.defaultDistribution = definition.get("default").getAsDouble();
 		}
 	}
 }

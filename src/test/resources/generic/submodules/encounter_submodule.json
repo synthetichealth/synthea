@@ -1,0 +1,55 @@
+{
+  "name": "Encounter Submodule",
+  "remarks": [
+    "Called by the main 'recursively_calls_submodules' module"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay"
+    },
+
+    "Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Encounter_In_Submodule"
+    },
+
+    "Encounter_In_Submodule": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Example_Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "503552143",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Call_MedicationOrder_Submodule"
+    },
+
+    "Call_MedicationOrder_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "submodules/medication_submodule",
+      "direct_transition": "Delay_Some_More"
+    },
+
+    "Delay_Some_More": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 4,
+        "unit": "weeks"
+      },
+      "direct_transition": "Encounter_Terminal"
+    },
+
+    "Encounter_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

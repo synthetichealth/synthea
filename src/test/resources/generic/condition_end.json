@@ -1,0 +1,75 @@
+{
+	"name" : "Condition End",
+  "states" : {
+    "Initial" : {
+      "type" : "Initial",
+      "direct_transition" : "Condition1_Start"
+    },
+
+    "Condition1_Start" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "DiagnosisEncounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "228380004",
+        "display" : "Chases the dragon (finding)"
+      }],
+      "assign_to_attribute" : "Drug Use Behavior",
+      "direct_transition" : "Condition2_Start"
+    },
+
+    "Condition2_Start" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "DiagnosisEncounter",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "6142004",
+        "display" : "Influenza"
+      }],
+      "direct_transition" : "Condition3_Start"
+    },
+
+    "Condition3_Start" : {
+      "type" : "ConditionOnset",
+      "target_encounter" : "DiagnosisEncounter",
+      "codes": [{
+          "system": "SNOMED-CT",
+          "code": "73211009",
+          "display": "Diabetes mellitus"
+      }],
+      "direct_transition" : "DiagnosisEncounter"
+    },
+
+    "DiagnosisEncounter" : {
+      "type" : "Encounter",
+      "wellness" : true,
+      "direct_transition" : "Condition1_End"
+    },
+
+    "Condition1_End" : {
+      "type" : "ConditionEnd",
+      "referenced_by_attribute" : "Drug Use Behavior",
+      "direct_transition" : "Condition2_End"
+    },
+
+    "Condition2_End" : {
+      "type" : "ConditionEnd",
+      "condition_onset" : "Condition2_Start",
+      "direct_transition" : "Condition3_End"
+    },
+
+    "Condition3_End" : {
+      "type" : "ConditionEnd",
+      "codes": [{
+          "system": "SNOMED-CT",
+          "code": "73211009",
+          "display": "Diabetes mellitus"
+      }],
+      "direct_transition" : "Terminal"
+		},
+
+    "Terminal" : {
+      "type" : "Terminal"
+    }
+  }
+}
