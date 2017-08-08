@@ -110,11 +110,11 @@ public class Generator {
 			CommunityHealthWorker chw = new CommunityHealthWorker();
 			
 			String cityName = Location.randomCityName(random);
-			chw.services.put(CommunityHealthWorker.CITY, Location.assignCity(chw, cityName));	
-			
+			chw.services.put(CommunityHealthWorker.CITY, cityName);			
 			CommunityHealthWorker.generateCHW(chw);
 			
 			chws.add(chw);
+			
 		}
 	}
 	
@@ -172,6 +172,12 @@ public class Generator {
 					// if true
 					// then add chw encounter to record
 					// and set chw variable(s) on person.attributes.put(KEY, VALUE)
+					
+					if(chws.size() > 0){
+						System.out.println("sizey" + chws.size());
+						//person.attributes.put("CommunityHealthWorker", chws.get(1));
+					}
+					
 					time += timestep;
 				}
 				

@@ -155,10 +155,4 @@ public class Location {
 		person.attributes.put(Person.COORDINATE, selectedPoint);
 	}
 	
-	public static String assignCity(CommunityHealthWorker chw, String cityName){
-
-		chw.services.put(CommunityHealthWorker.CITY, cityName);
-		return cityName;
-		
-	}
 }
