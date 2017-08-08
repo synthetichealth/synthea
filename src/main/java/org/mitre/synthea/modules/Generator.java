@@ -29,6 +29,8 @@ public class Generator {
 
 	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
 	public List<Person> people;
+	public List<CommunityHealthWorker> chws;
+	public int budget;
 	public long numberOfPeople;
 	public final int MAX_TRIES = 10;
 	public long seed;
@@ -53,9 +55,11 @@ public class Generator {
 	{
 		this.people = Collections.synchronizedList(new ArrayList<Person>());
 		this.numberOfPeople = people;
+		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
 		this.random = new Random(seed);
 		this.timestep = Long.parseLong( Config.get("generate.timestep") );
+		this.budget = Integer.parseInt(Config.get("generate.budget"));
 		this.stop = System.currentTimeMillis();
 		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
 		
@@ -101,7 +105,19 @@ public class Generator {
 		}
 		
 		System.out.println(stats);
+		
+		for(int i=0;i<= budget / CommunityHealthWorker.getCost();i++){
+			CommunityHealthWorker chw = new CommunityHealthWorker();
+			
+			String cityName = Location.randomCityName(random);
+			chw.services.put(CommunityHealthWorker.CITY, Location.assignCity(chw, cityName));	
+			
+			CommunityHealthWorker.generateCHW(chw);
+			
+			chws.add(chw);
+		}
 	}
+	
 	
 	private void generatePerson(int index)
 	{

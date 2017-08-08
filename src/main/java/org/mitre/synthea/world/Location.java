@@ -1,12 +1,14 @@
 package org.mitre.synthea.world;
 
 import java.io.BufferedReader;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.modules.CommunityHealthWorker;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.GeoJSONFactory;
@@ -151,5 +153,12 @@ public class Location {
 		person.attributes.put(Person.STATE, "MA");
 		person.attributes.put(Person.ZIP, getZipCode(cityName));
 		person.attributes.put(Person.COORDINATE, selectedPoint);
+	}
+	
+	public static String assignCity(CommunityHealthWorker chw, String cityName){
+
+		chw.services.put(CommunityHealthWorker.CITY, cityName);
+		return cityName;
+		
 	}
 }
