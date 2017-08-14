@@ -132,7 +132,27 @@ public final class LifecycleModule extends Module
 	
 	private static void diabeticVitalSigns(Person person, long time)
 	{
-		
+		// TODO - most of the rest of the vital signs
+		boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
+		/*
+		    blood_pressure:
+		      normal:
+		        systolic: [100,139] # mmHg
+		        diastolic: [70,89]  # mmHg
+		      hypertensive:
+		        systolic: [140,200] # mmHg
+		        diastolic: [90,120] # mmHg
+		 */
+        if (hypertension)
+        {
+        	person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(140, 200));
+        	person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(90, 120));
+        }
+        else
+        {
+        	person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(100, 139));
+        	person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(70, 89));
+        }
 	}
 	
 	private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000", "Natural death with unknown cause");

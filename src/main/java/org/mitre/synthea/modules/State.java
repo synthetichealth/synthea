@@ -332,7 +332,7 @@ public class State {
 				value = person.attributes.get(attribute);
 			} else if(definition.has("vital_sign")) {
 				attribute = definition.get("vital_sign").getAsString();
-				value = person.attributes.get(attribute);
+				value = person.getVitalSign(VitalSign.fromString(attribute));
 			}
 			Observation observation = person.record.observation(time, primary_code, value);
 			observation.name = this.name;

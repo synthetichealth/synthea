@@ -34,6 +34,7 @@ public class Person {
 	public final Random random;
 	public final long seed;
 	public Map<String,Object> attributes;
+	public Map<VitalSign, Double> vitalSigns;
 	private Map<String,Map<String,Integer>> symptoms;
 	public EventList events;
 	public HealthRecord record;
@@ -44,6 +45,7 @@ public class Person {
 		this.seed = seed; // keep track of seed so it can be exported later
 		random = new Random(seed);
 		attributes = new ConcurrentHashMap<String,Object>();
+		vitalSigns = new ConcurrentHashMap<VitalSign,Double>();
 		symptoms = new ConcurrentHashMap<String,Map<String,Integer>>();
 		events = new EventList();
 		record = new HealthRecord();
@@ -99,6 +101,16 @@ public class Person {
 			}
 		}
 		return max;
+	}
+	
+	public Double getVitalSign(VitalSign vitalSign)
+	{
+		return vitalSigns.get(vitalSign);
+	}
+	
+	public void setVitalSign(VitalSign vitalSign, double value)
+	{
+		vitalSigns.put(vitalSign, value);
 	}
 	
 	public void recordDeath(long time, Code cause, String ruleName)
