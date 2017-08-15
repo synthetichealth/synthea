@@ -155,4 +155,11 @@ public class Location {
 		person.attributes.put(Person.COORDINATE, selectedPoint);
 	}
 	
+	public static void assignCity(CommunityHealthWorker chw){
+
+		Random random = new Random();
+		String city = Location.randomCityName(random);
+		chw.services.put(CommunityHealthWorker.CITY, city);
+		
+	}
 }

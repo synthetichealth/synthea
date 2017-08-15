@@ -159,6 +159,50 @@ public class Person {
 		return false;
 	}
 	
+	// Community Health Workers API -----------------------------------------------------------
+	public static final String CHW = "communityHealthWorker";
+	
+	public void setCHW(CommunityHealthWorker chw){
+		attributes.put(CHW, chw);
+	}
+	
+	
+	public CommunityHealthWorker getCHW(){
+		return (CommunityHealthWorker) attributes.get(CHW);
+	}
+	
+	//TODO incorporate this method 
+	public boolean chwEncounterChance(Person person, CommunityHealthWorker chw){
+		if(person.CITY.equals(chw.CITY)){
+			return true;
+		} else{
+			return false;
+		}
+	}
+	
+	public static void chwEncounter(Person person, long time){
+		int age = person.ageInYears(time);
+		CommunityHealthWorker chw = CommunityHealthWorker.generateCHW();
+		
+		//TODO additional rules/percentages to define these encounters more probabilistically 
+		
+		//note: add a "CHW intervention" count to the health record (i.e. encounters, observations, etc)
+
+		if(age >= 20 && age % 2 == 0 && age < 65){
+				if((person.attributes.containsKey(CHW))){
+					Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get(CHW);
+					chws.put(age, chw);
+					person.attributes.put(CHW, chws);
+					
+				}
+				else{
+					Map<Integer, CommunityHealthWorker> chws = new HashMap<Integer, CommunityHealthWorker>();
+					chws.put(age, chw);
+					person.attributes.put(CHW, chws);	
+				}
+			}
+		}
+	
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";
 	public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";

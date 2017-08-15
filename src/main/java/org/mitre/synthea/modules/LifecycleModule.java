@@ -27,6 +27,7 @@ public final class LifecycleModule extends Module
 		// birth(person, time); intentionally left out - call it only once from Generator
 		age(person, time);
 		grow(person, time);
+		person.chwEncounter(person, time);
 		diabeticVitalSigns(person, time);
 		death(person, time);
 		
@@ -145,6 +146,7 @@ public final class LifecycleModule extends Module
 			person.recordDeath(time, NATURAL_CAUSES, "death");
 		}
 	}
+	
 	
 	private static double likelihoodOfDeath(int age)
 	{

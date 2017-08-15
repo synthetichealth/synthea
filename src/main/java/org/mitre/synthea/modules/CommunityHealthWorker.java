@@ -1,10 +1,10 @@
 package org.mitre.synthea.modules;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.Location;
 
 
 public class CommunityHealthWorker {
@@ -31,7 +31,8 @@ public class CommunityHealthWorker {
 
 	public static final String CITY = "city";
 	
-	public static final int cost = Integer.parseInt(Config.get("generate.cost"));
+	public static int cost = Integer.parseInt(Config.get("generate.chwCost"));
+	public static int budget = Integer.parseInt(Config.get("generate.chwBudget"));
 
 	// TODO Should be global variables, not necessarily specific to CHWs
 	// Will determine the scenarios in which CHWs are assigned
@@ -64,11 +65,52 @@ public class CommunityHealthWorker {
 		services.put(CommunityHealthWorker.STATIN_Medication, chw);
 		services.put(CommunityHealthWorker.TOBACCO_SCREENING, chw);
 		services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, chw);
+		Location.assignCity(chw);
 
 	}
+	
+	public static CommunityHealthWorker generateCHW(){
+		
+		CommunityHealthWorker chw = new CommunityHealthWorker();
+		
+		services.put(CommunityHealthWorker.ALCOHOL_SCREENING, chw);
+		services.put(CommunityHealthWorker.ASPIRIN_MEDICATION, chw);
+		services.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, chw);
+		services.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, chw);
+		services.put(CommunityHealthWorker.DIABETES_SCREENING, chw);
+		services.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, chw);
+		services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, chw);
+		services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, chw);
+		services.put(CommunityHealthWorker.OBESITY_SCREENING, chw);
+		services.put(CommunityHealthWorker.ORGANIZE, chw);
+		services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, chw);
+		services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, chw);
+		services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, chw);
+			
+		services.put(CommunityHealthWorker.STATIN_Medication, chw);
+		services.put(CommunityHealthWorker.TOBACCO_SCREENING, chw);
+		services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, chw);
+		Location.assignCity(chw);
+		
+		return chw;
 
+	}
+	
 	public static int getCost() {
 		return CommunityHealthWorker.cost;
-	}		
+	}	
+	
+	public static void setCost(int cost){
+		CommunityHealthWorker.cost = cost;
+	}
+	
+	public static int getBudget(){
+		return CommunityHealthWorker.budget;
+	}
+	
+	public static void setBudget(int budget){
+		CommunityHealthWorker.budget = budget;
+	}
+		
 }
 	
