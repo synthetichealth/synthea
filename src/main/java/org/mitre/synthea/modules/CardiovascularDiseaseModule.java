@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.modules.HealthRecord.Code;
+
 
 public final class CardiovascularDiseaseModule extends Module 
 {
@@ -20,6 +22,7 @@ public final class CardiovascularDiseaseModule extends Module
 		// run through all of the rules defined
 		// ruby "rules" are converted to static functions here
 		// since this is intended to only be temporary
+		// until we can convert this module to GMF
 		
 		startSmoking(person, time);
 		calculateCardioRisk(person, time);
@@ -63,6 +66,11 @@ public final class CardiovascularDiseaseModule extends Module
     private static final Map<Integer, Double> risk_chd_f; 
     
     private static int[] hdl_lookup_chd;
+    
+    // Framingham score system for calculating atrial fibrillation (significant factor for stroke risk)
+    private static int[][] age_af;
+    private static double[] risk_af_table;
+    
     
     private static final Map<String, Integer> MEDICATION_AVAILABLE;
     static {
@@ -161,6 +169,21 @@ public final class CardiovascularDiseaseModule extends Module
        risk_chd_f.put(24, 0.27);
        risk_chd_f.put(25, 0.3); // '25' represents all scores >24
 
+       age_af = new int[][] { // age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84
+    		      {1, 2, 3, 4, 5, 6, 7, 7, 8}, // male
+    		      {-3, -2, 0, 1, 3, 4, 6, 7, 8} // female
+    		    };
+    		    
+    		    // only covers points 1-9. <=0 and >= 10 are in if statement
+    		    risk_af_table = new double[] {
+    		      0.01, // 0 or less
+    		      0.02, 0.02, 0.03,
+    		      0.04, 0.06, 0.08,
+    		      0.12, 0.16, 0.22,
+    		      0.3 // 10 or greater
+    		    };
+       
+       
         MEDICATION_AVAILABLE = new HashMap<>();
         MEDICATION_AVAILABLE.put("clopidogrel", 1997);
         MEDICATION_AVAILABLE.put("simvastatin", 1991);
@@ -184,6 +207,8 @@ public final class CardiovascularDiseaseModule extends Module
 		double year = calendar.get(Calendar.YEAR);
     	return meds.stream().filter( med -> year >= MEDICATION_AVAILABLE.get(med)).collect(Collectors.toList());
     }
+    
+    
 	
 	/////////////////////////
 	// MIGRATED JAVA RULES //
@@ -305,11 +330,12 @@ public final class CardiovascularDiseaseModule extends Module
 	
 	private static void onsetCoronaryHeartDisease(Person person, long time)
 	{
-		double cardioRisk = (double)person.attributes.getOrDefault("cardio_risk", -1.0);
 		if (person.attributes.containsKey("coronary_heart_disease"))
 		{
 			return;
 		}
+		
+		double cardioRisk = (double)person.attributes.getOrDefault("cardio_risk", -1.0);
         if (person.rand() < cardioRisk)
         {
         	person.attributes.put("coronary_heart_disease", true);
@@ -320,36 +346,270 @@ public final class CardiovascularDiseaseModule extends Module
 	private static void coronaryHeartDiseaseProgression(Person person, long time)
 	{
 		// numbers are from appendix: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf	
+		boolean coronary_heart_disease = (Boolean)person.attributes.getOrDefault("coronary_heart_disease", false);
+		
+		if (!coronary_heart_disease)
+		{
+			return;
+		}
+		
+		String gender = (String)person.attributes.get(Person.GENDER);
+		
+		double annual_risk;
+		// http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
+		// annual probability of coronary attack given history of angina
+		if (gender.equals("M"))
+		{
+			annual_risk = 0.042;
+		} else
+		{
+			annual_risk = 0.015;
+		}
+		
+		double cardiac_event_chance = Utilities.convertRiskToTimestep(annual_risk, TimeUnit.DAYS.toMillis(365));
+		
+		if (person.rand() < cardiac_event_chance)
+		{
+			String cardiac_event;
+			
+			if (person.rand() < 0.8) // Proportion of coronary attacks that are MI ,given history of CHD
+			{
+				cardiac_event = "myocardial_infarction";
+			} else
+			{
+				cardiac_event = "cardiac_arrest";
+			}
+			
+			person.events.create(time, cardiac_event, "coronaryHeartDiseaseProgression", false);
+			// creates unprocessed emergency encounter. Will be processed at next time step.
+			person.events.create(time, "emergency_encounter", "coronaryHeartDiseaseProgression", false);
+			
+			// TODO  Synthea::Modules::Encounters.emergency_visit(time, entity)
+			
+          double survival_rate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
+          // survival rate triples if a bystander is present
+          if (person.rand() < 0.46)  // http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
+          {
+        	  survival_rate *= 3.0;
+          }
+          
+          if (person.rand() > survival_rate)
+          {
+        	  Code causeOfDeath = new Code("SNOMED-CT", null, cardiac_event);
+        	  if (cardiac_event.equals("cardiac_arrest"))
+        	  {
+        		  causeOfDeath.code = "410429000";
+        	  } else
+        	  {
+        		  // MI
+        		  causeOfDeath.code = "22298006";
+        	  }
+        	  
+        	  person.recordDeath(time, causeOfDeath, "coronaryHeartDiseaseProgression");
+          }
+		}
+		
 	}
 	
 	private static void noCoronaryHeartDisease(Person person, long time)
 	{
-		// chance of getting a sudden cardiac arrest without heart disease. (Most probable cardiac event w/o cause or history)	
+		// chance of getting a sudden cardiac arrest without heart disease. (Most probable cardiac event w/o cause or history)
+		if (person.attributes.containsKey("coronary_heart_disease"))
+		{
+			return;
+		}
+		
+        double annual_risk = 0.00076;
+        double cardiac_event_chance = Utilities.convertRiskToTimestep(annual_risk, TimeUnit.DAYS.toMillis(365));
+        if (person.rand() < cardiac_event_chance)
+        {
+	        person.events.create(time, "cardiac_arrest", "noCoronaryHeartDisease", false);
+	        person.events.create(time, "emergency_encounter", "noCoronaryHeartDisease", false);
+	        // TODO Synthea::Modules::Encounters.emergency_visit(time, entity)
+	        double survival_rate = 1 - (0.00069);
+	        if (person.rand() < 0.46)
+	        {
+	        	survival_rate *= 3.0;
+	        }
+	        double annual_death_risk = 1 - survival_rate;
+	        if(person.rand() < Utilities.convertRiskToTimestep(annual_death_risk, TimeUnit.DAYS.toMillis(365)));
+	        {
+	        	Code cause = new Code("SNOMED-CT", "410429000", "Cardiac Arrest");
+	        	person.recordDeath(time, cause, "noCoronaryHeartDisease");
+	        }
+        }
 	}
+	
+
 	
 	private static void calculateAtrialFibrillationRisk(Person person, long time)
 	{
-		
+		int age = person.ageInYears(time);
+		if (age < 45 || person.attributes.containsKey("atrial_fibrillation") || person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE) == null
+				|| person.getVitalSign(VitalSign.BMI) == null)
+		{
+			return;
+		}
+
+          int af_score = 0;
+          int age_range = Math.min((age - 45) / 5, 8);
+          int gender_index = (person.attributes.get(Person.GENDER).equals("M")) ? 0 : 1;
+          af_score += age_af[gender_index][age_range];
+          if(person.getVitalSign(VitalSign.BMI) >= 30)
+		  {
+        	  af_score += 1;
+		  }
+          
+          if (person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE) >= 160)
+          {
+        	  af_score += 1;
+          }
+          
+          if ( (Boolean) person.attributes.getOrDefault("bp_treated?", false) )
+          {
+        	  af_score += 1;
+          }
+          
+          af_score = bound(af_score, 0, 10);
+
+          double af_risk = risk_af_table[af_score]; // 10-yr risk
+          person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
 	}
 	
 	private static void getAtrialFibrillation(Person person, long time)
 	{
-
+        if(!person.attributes.containsKey("atrial_fibrillation") 
+        		&& person.attributes.containsKey("atrial_fibrillation_risk") 
+        		&& person.rand() < (Double) person.attributes.get("atrial_fibrillation_risk"))
+        {
+        	person.events.create(time, "atrial_fibrillation", "getAtrialFibrillation", false);
+        	person.attributes.put("atrial_fibrillation", true);
+        }
 	}
 
+	// https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
+	private static final double[] stroke_rate_20_39 = {0.002, 0.007}; // Prevalence of stroke by age and sex (Male, Female)
+	private static final double[] stroke_rate_40_59 = {0.019, 0.022};
+	
+	private static final double[][] ten_year_stroke_risk = {
+		{ 0, 0.03, 0.03, 0.04, 0.04, 0.05, 0.05, 0.06, 0.07, 0.08, 0.1, // male section
+	      0.11, 0.13, 0.15, 0.17, 0.2, 0.22, 0.26, 0.29, 0.33, 0.37,
+	      0.42, 0.47, 0.52, 0.57, 0.63, 0.68, 0.74, 0.79, 0.84, 0.88 },
+        { 0, 0.01, 0.01, 0.02, 0.02, 0.02, 0.03, 0.04, 0.04, 0.05, 0.06, // female
+	      0.08, 0.09, 0.11, 0.13,  0.16, 0.19, 0.23, 0.27, 0.32, 0.37,
+	      0.43, 0.5, 0.57, 0.64, 0.71, 0.78, 0.84 }
+	};
+	
+	private static final double[] diabetes_stroke = { 2, 3 };
+	private static final double[] chd_stroke_points = { 4, 2 };
+	private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
+	
 	private static void calculateStrokeRisk(Person person, long time)
 	{
+		Double bloodPressure = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE);
+		if (bloodPressure == null)
+		{
+			return;
+		}
+		
+		// https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
+        // calculate stroke risk based off of prevalence of stroke in age group for people younger than 54. Framingham score system does not cover these.
+		
+		int genderIndex = ((String)person.attributes.get(Person.GENDER)).equals("M") ? 0 : 1;
+		
+		int age = person.ageInYears(time);
+		
+		
+		if (age < 20)
+		{
+			// no risk set
+			return;
+		} else if (age < 40)
+		{
+			double rate = stroke_rate_20_39[genderIndex];
+			person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(rate, TimeUnit.DAYS.toMillis(3650)));
+			return;
+		} else if (age < 55)
+		{
+			double rate = stroke_rate_40_59[genderIndex];
+			person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(rate, TimeUnit.DAYS.toMillis(3650)));
+			return;
+		}
+		
+		int stroke_points = 0;
+		if ( (Boolean) person.attributes.getOrDefault("SMOKER", false))
+		{
+			stroke_points += 3;
+		}
+		if ( (Boolean) person.attributes.getOrDefault("left_ventricular_hypertrophy", false))
+		{
+			stroke_points += 5;
+		}
+		
+		// TODO age_stroke
+		
+		if ( (Boolean) person.attributes.getOrDefault("bp_treated?", false))
+		{ // TODO treating blood pressure currently is not a feature. Modify this for when it is.
+			// TODO treated_sys_bp_stroke
+		} else
+		{
+			// TODO untreated_sys_bp_stroke
+		}
+		
+		if ( (Boolean) person.attributes.getOrDefault("diabetes", false))
+		{
+			stroke_points += diabetes_stroke[genderIndex];
+		}
+		
+		if ( (Boolean) person.attributes.getOrDefault("coronary_heart_disease", false))
+		{
+			stroke_points += chd_stroke_points[genderIndex];
+		}
 
+		if ( (Boolean) person.attributes.getOrDefault("atrial_fibrillation", false))
+		{
+			stroke_points += atrial_fibrillation_stroke_points[genderIndex];
+		}
+		
+		// off the charts
+		
+		double ten_stroke_risk;
+		
+		if (stroke_points >= ten_year_stroke_risk[genderIndex].length)
+		{
+			ten_stroke_risk = ten_year_stroke_risk[genderIndex][stroke_points];
+		} else
+		{
+			// off the charts
+			int worst_case = ten_year_stroke_risk[genderIndex].length - 1;
+			ten_stroke_risk = ten_year_stroke_risk[genderIndex][worst_case];
+		}
+		
+		// divide 10 year risk by 365 * 10 to get daily risk.
+		person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(ten_stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+		person.attributes.put("stroke_points", stroke_points); 
 	}
 
 	private static void getStroke(Person person, long time)
 	{
-
+        if(person.attributes.containsKey("stroke_risk") 
+        		&& person.rand() < (Double)person.attributes.get("stroke_risk"))
+        {
+        	person.events.create(time, "stroke", "getStroke", false);
+        	person.attributes.put("stroke_history", true);
+            person.events.create(time + TimeUnit.MINUTES.toMillis(10), "emergency_encounter", "getStroke", false);
+           // TODO Synthea::Modules::Encounters.emergency_visit(time + 15.minutes, entity)
+            if (person.rand() < 0.15) // Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
+            {
+            	Code cause = new Code("SNOMED-CT", "230690007", "Stroke");
+            	person.recordDeath(time, cause, "getStroke");
+            }
+        }
 	}
 
 	private static void heartHealthyLifestyle(Person person, long time)
 	{
-
+		
 	}
 
 	private static void chdTreatment(Person person, long time)
@@ -364,7 +624,13 @@ public final class CardiovascularDiseaseModule extends Module
 	
 	private static void performEncounter(Person person, long time)
 	{
+		// step 1 - diagnosis
 		
+		// step 2 - care plan
+		
+		// step 3 - medications
+		
+		// step 4 - procedures
 	}
 	
 	private static void performEmergency(Person person, long time)

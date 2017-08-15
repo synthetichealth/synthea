@@ -130,6 +130,12 @@ public final class LifecycleModule extends Module
 		return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
 	}
 	
+	// LIPID PANEL  https://www.nlm.nih.gov/medlineplus/magazine/issues/summer12/articles/summer12pg6-7.html
+    private static final int[] CHOLESTEROL = new int[] {160,200,239,259,279,300}; // # mg/dL
+    private static final int[] TRIGLYCERIDES = new int[] {100,150,199,499,550,600}; // mg/dL
+    private static final int[] HDL = new int[] { 80, 59, 40, 20, 10,  0}; // mg/dL
+
+	
 	private static void diabeticVitalSigns(Person person, long time)
 	{
 		// TODO - most of the rest of the vital signs
@@ -153,6 +159,22 @@ public final class LifecycleModule extends Module
         	person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(100, 139));
         	person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(70, 89));
         }
+        
+        int index = 0;
+        if (person.attributes.containsKey("diabetes_severity"))
+        {
+        	index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
+        }
+        
+        double total_cholesterol = person.rand(CHOLESTEROL[index], CHOLESTEROL[index+1]);
+        double triglycerides = person.rand(TRIGLYCERIDES[index], TRIGLYCERIDES[index+1]);
+        double hdl = person.rand(HDL[index], HDL[index+1]);
+        double ldl = total_cholesterol - hdl - (0.2 * triglycerides);
+        
+        person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, total_cholesterol);
+        person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
+        person.setVitalSign(VitalSign.HDL, hdl);
+        person.setVitalSign(VitalSign.LDL, ldl);
 	}
 	
 	private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000", "Natural death with unknown cause");
