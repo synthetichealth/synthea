@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Procedure;
 
 
 public final class CardiovascularDiseaseModule extends Module 
@@ -50,83 +53,77 @@ public final class CardiovascularDiseaseModule extends Module
 
     // Indices in the array correspond to these age ranges: 20-24, 25-29, 30-34 35-39, 40-44, 45-49,
     // 50-54, 55-59, 60-64, 65-69, 70-74, 75-79
-    private static final int[] age_chd_m;
-    private static final int[] age_chd_f;
+    private static final int[] age_chd_m = {-9, -9, -9, -4, 0, 3, 6, 8, 10, 11, 12, 13};
+    private static final int[] age_chd_f = {-7, -7, -7, -3, 0, 3, 6, 8, 10, 12, 14, 16};
     
-    private static final int[][] age_chol_chd_m;
-    private static final int[][] age_chol_chd_f;
+	private static final int[][] age_chol_chd_m = {
+			// <160, 160-199, 200-239, 240-279, >280
+			{ 0, 4, 7, 9, 11 }, // 20-29 years
+			{ 0, 4, 7, 9, 11 }, // 30-39 years
+			{ 0, 3, 5, 6, 8 }, // 40-49 years
+			{ 0, 2, 3, 4, 5 }, // 50-59 years
+			{ 0, 1, 1, 2, 3 }, // 60-69 years
+			{ 0, 0, 0, 1, 1 } // 70-79 years
+	};
+	
+	private static final int[][] age_chol_chd_f = {
+			// <160, 160-199, 200-239, 240-279, >280
+			{ 0, 4, 8, 11, 13 }, // 20-29 years
+			{ 0, 4, 8, 11, 13 }, // 30-39 years
+			{ 0, 3, 6, 8, 10 }, // 40-49 years
+			{ 0, 2, 4, 5, 7 }, // 50-59 years
+			{ 0, 1, 2, 3, 4 }, // 60-69 years
+			{ 0, 1, 1, 2, 2 } // 70-79 years
+	};
     
-    private static final int[] age_smoke_chd_m;
-    private static final int[] age_smoke_chd_f;
+	// 20-29, 30-39, 40-49, 50-59, 60-69, 70-79 age ranges
+    private static final int[] age_smoke_chd_m = {8, 8, 5, 3, 1, 1};
+    private static final int[] age_smoke_chd_f = {9, 9, 7, 4, 2, 1};
     
-    private static final int[][] sys_bp_chd_m;
-    private static final int[][] sys_bp_chd_f;
+    // true/false refers to whether or not blood pressure is treated
+	private static final int[][] sys_bp_chd_m = {
+			// true, false
+			{ 0, 0 }, // <120
+			{ 1, 0 }, // 120-129
+			{ 2, 1 }, // 130-139
+			{ 2, 1 }, // 140-149
+			{ 2, 1 }, // 150-159
+			{ 3, 2 } // >=160
+    };
+	private static final int[][] sys_bp_chd_f = {
+			// true, false
+			{ 0, 0 }, // <120
+			{ 3, 1 }, // 120-129
+			{ 4, 2 }, // 130-139
+			{ 5, 3 }, // 140-149
+			{ 5, 3 }, // 150-159
+			{ 6, 4 } // >=160
+	};
     
     private static final Map<Integer, Double> risk_chd_m;
     private static final Map<Integer, Double> risk_chd_f; 
     
-    private static int[] hdl_lookup_chd;
+    private static final int[] hdl_lookup_chd = new int[]{2, 1, 0, -1}; // <40, 40-49, 50-59, >60
     
     // Framingham score system for calculating atrial fibrillation (significant factor for stroke risk)
-    private static int[][] age_af;
-    private static double[] risk_af_table;
+	private static final int[][] age_af = {
+			// age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84
+			{ 1, 2, 3, 4, 5, 6, 7, 7, 8 }, // male
+			{ -3, -2, 0, 1, 3, 4, 6, 7, 8 } // female
+	};
+	    
+	    // only covers points 1-9. <=0 and >= 10 are in if statement
+    private static final double[] risk_af_table = {
+	      0.01, // 0 or less
+	      0.02, 0.02, 0.03,
+	      0.04, 0.06, 0.08,
+	      0.12, 0.16, 0.22,
+	      0.3 // 10 or greater
+	    };
     
-    
+    private static final Map<String, Code> LOOKUP;
     private static final Map<String, Integer> MEDICATION_AVAILABLE;
     static {
-    	age_chd_m = new int[]{-9, -9, -9, -4, 0, 3, 6, 8, 10, 11, 12, 13};
-    	age_chd_f = new int[]{-7, -7, -7, -3, 0, 3, 6, 8, 10, 12, 14, 16};
-
-    	age_chol_chd_m = new int[][] 
-    			{
-    	            // <160, 160-199, 200-239, 240-279, >280
-    	            {0, 4, 7, 9, 11}, // 20-29 years
-    	            {0, 4, 7, 9, 11}, // 30-39 years
-    	            {0, 3, 5, 6, 8}, // 40-49 years
-    	            {0, 2, 3, 4, 5}, // 50-59 years
-    	            {0, 1, 1, 2, 3}, // 60-69 years
-    	            {0, 0, 0, 1, 1} // 70-79 years
-    	         };
-
-    	age_chol_chd_f = new int[][]
-        	{
-                 // <160, 160-199, 200-239, 240-279, >280
-                 {0, 4, 8, 11, 13}, // 20-29 years
-                 {0, 4, 8, 11, 13}, // 30-39 years
-                 {0, 3, 6, 8, 10}, // 40-49 years
-                 {0, 2, 4, 5, 7}, // 50-59 years
-                 {0, 1, 2, 3, 4}, // 60-69 years
-                 {0, 1, 1, 2, 2} // 70-79 years
-             };
-
-     	// 20-29, 30-39, 40-49, 50-59, 60-69, 70-79 age ranges
-        age_smoke_chd_m = new int[]{8, 8, 5, 3, 1, 1};
-        age_smoke_chd_f = new int[]{9, 9, 7, 4, 2, 1};
-
-
-        hdl_lookup_chd = new int[]{2, 1, 0, -1}; // <40, 40-49, 50-59, >60
-
-        // true/false refers to whether or not blood pressure is treated
-        sys_bp_chd_m = new int[][]{
-        // true, false
-            { 0, 0 }, // <120
-            { 1, 0 }, // 120-129
-            { 2, 1 }, // 130-139
-            { 2, 1 }, // 140-149
-            { 2, 1 }, // 150-159
-            { 3, 2 } // >=160
-        };
-        
-        sys_bp_chd_f = new int[][]{
-         // true, false
-            { 0, 0 }, // <120
-            { 3, 1 }, // 120-129
-            { 4, 2 }, // 130-139
-            { 5, 3 }, // 140-149
-            { 5, 3 }, // 150-159
-            { 6, 4 } // >=160
-        };
-
         // framingham point scores gives a 10-year risk
         risk_chd_m = new HashMap<>();
         risk_chd_m.put(-1, 0.005); // '-1' represents all scores <0
@@ -169,21 +166,6 @@ public final class CardiovascularDiseaseModule extends Module
        risk_chd_f.put(24, 0.27);
        risk_chd_f.put(25, 0.3); // '25' represents all scores >24
 
-       age_af = new int[][] { // age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84
-    		      {1, 2, 3, 4, 5, 6, 7, 7, 8}, // male
-    		      {-3, -2, 0, 1, 3, 4, 6, 7, 8} // female
-    		    };
-    		    
-    		    // only covers points 1-9. <=0 and >= 10 are in if statement
-    		    risk_af_table = new double[] {
-    		      0.01, // 0 or less
-    		      0.02, 0.02, 0.03,
-    		      0.04, 0.06, 0.08,
-    		      0.12, 0.16, 0.22,
-    		      0.3 // 10 or greater
-    		    };
-       
-       
         MEDICATION_AVAILABLE = new HashMap<>();
         MEDICATION_AVAILABLE.put("clopidogrel", 1997);
         MEDICATION_AVAILABLE.put("simvastatin", 1991);
@@ -198,6 +180,13 @@ public final class CardiovascularDiseaseModule extends Module
         MEDICATION_AVAILABLE.put("epinephrine", 1906);
         MEDICATION_AVAILABLE.put("amiodarone", 1962);
         MEDICATION_AVAILABLE.put("atropine", 1903);
+        
+        LOOKUP = new HashMap<>();
+        LOOKUP.put("atrial_fibrillation", new Code("SNOMED-CT", "49436004", "Atrial Fibrillation"));
+        LOOKUP.put("coronary_heart_disease", new Code("SNOMED-CT", "53741008", "Coronary Heart Disease"));
+        LOOKUP.put("stroke", new Code("SNOMED-CT", "230690007", "Stroke"));
+        LOOKUP.put("cardiac_arrest", new Code("SNOMED-CT", "410429000", "Cardiac Arrest"));
+        LOOKUP.put("myocardial_infarction", new Code("SNOMED-CT", "22298006", "Myocardial Infarction"));
     }
 
     private static List<String> filter_meds_by_year(List<String> meds, long time)
@@ -210,9 +199,9 @@ public final class CardiovascularDiseaseModule extends Module
     
     
 	
-	/////////////////////////
-	// MIGRATED JAVA RULES //
-	/////////////////////////
+	////////////////////
+	// MIGRATED RULES //
+	////////////////////
 	private static void startSmoking(Person person, long time)
 	{
 		// 9/10 smokers start before age 18. We will use 16.
@@ -394,18 +383,8 @@ public final class CardiovascularDiseaseModule extends Module
           }
           
           if (person.rand() > survival_rate)
-          {
-        	  Code causeOfDeath = new Code("SNOMED-CT", null, cardiac_event);
-        	  if (cardiac_event.equals("cardiac_arrest"))
-        	  {
-        		  causeOfDeath.code = "410429000";
-        	  } else
-        	  {
-        		  // MI
-        		  causeOfDeath.code = "22298006";
-        	  }
-        	  
-        	  person.recordDeath(time, causeOfDeath, "coronaryHeartDiseaseProgression");
+          {        	  
+        	  person.recordDeath(time, LOOKUP.get(cardiac_event), "coronaryHeartDiseaseProgression");
           }
 		}
 		
@@ -434,13 +413,10 @@ public final class CardiovascularDiseaseModule extends Module
 	        double annual_death_risk = 1 - survival_rate;
 	        if(person.rand() < Utilities.convertRiskToTimestep(annual_death_risk, TimeUnit.DAYS.toMillis(365)));
 	        {
-	        	Code cause = new Code("SNOMED-CT", "410429000", "Cardiac Arrest");
-	        	person.recordDeath(time, cause, "noCoronaryHeartDisease");
+	        	person.recordDeath(time, LOOKUP.get("cardiac_arrest"), "noCoronaryHeartDisease");
 	        }
         }
 	}
-	
-
 	
 	private static void calculateAtrialFibrillationRisk(Person person, long time)
 	{
@@ -500,6 +476,72 @@ public final class CardiovascularDiseaseModule extends Module
 	      0.43, 0.5, 0.57, 0.64, 0.71, 0.78, 0.84 }
 	};
 	
+	/* Original ruby code here for comparison. Java doesn't have ranges so instead 
+	   we'll just keep the lower bound, and check against arr[i] and arr[i+i]
+	  
+	  # The index for each range corresponds to the number of points
+
+      # data for men is first array, women in second.
+      age_stroke = [
+        [(54..56), (57..59), (60..62), (63..65), (66..68), (69..72),
+         (73..75), (76..78), (79..81), (82..84), (85..999)],
+
+        [(54..56), (57..59), (60..62), (63..64), (65..67), (68..70),
+         (71..73), (74..76), (77..78), (79..81), (82..999)]
+      ]
+
+      untreated_sys_bp_stroke = [
+        [(0..105), (106..115), (116..125), (126..135), (136..145), (146..155),
+         (156..165), (166..175), (176..185), (185..195), (196..205)],
+
+        [(0..95), (95..106), (107..118), (119..130), (131..143), (144..155),
+         (156..167), (168..180), (181..192), (193..204), (205..216)]
+      ]
+
+      treated_sys_bp_stroke = [
+        [(0..105), (106..112), (113..117), (118..123), (124..129), (130..135),
+         (136..142), (143..150), (151..161), (162..176), (177..205)],
+
+        [(0..95), (95..106), (107..113), (114..119), (120..125), (126..131),
+         (132..139), (140..148), (149..160), (161..204), (205..216)]
+      ]
+	 */
+	
+	// the index for each range corresponds to the number of points
+	private static final int[][] age_stroke = {
+		{ 54, 57, 60, 63, 66, 69, 73, 76, 79, 82, 85 }, // male
+		{ 54, 57, 60, 63, 65, 68, 71, 74, 77, 79, 82 }  // female
+	};
+	
+	private static final int[][] untreated_sys_bp_stroke = {
+		{ 0, 106, 116, 126, 136, 146, 156, 166, 176, 185, 196 }, // male
+		{ 0, 95, 107, 119, 131, 144, 156, 168, 181, 193, 205}  // female
+	};
+	
+	private static final int[][] treated_sys_bp_stroke = {
+		{ 0, 106, 113, 118, 124, 130, 136, 143, 151, 162, 177 }, // male
+		{ 0, 95, 107, 114, 120, 126, 132, 140, 149, 161, 205 }  // female
+	};
+	
+	private static final int getIndexForValueInRangelist(int value, int[] data)
+	{
+		for (int i = 0 ; i < data.length - 1 ; i++)
+		{
+			if (data[i] <= value && value <= data[i+1])
+			{
+				return i;
+			}
+		}
+		// the last segment is open-ended
+		if (value >= data[data.length - 1])
+		{
+			return data.length - 1;
+		}
+		
+		// shouldn't be possible to get here if we do everything right
+		throw new RuntimeException("unexpected value " + value + " for data " + Arrays.toString(data));
+	}
+	
 	private static final double[] diabetes_stroke = { 2, 3 };
 	private static final double[] chd_stroke_points = { 4, 2 };
 	private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
@@ -546,14 +588,16 @@ public final class CardiovascularDiseaseModule extends Module
 			stroke_points += 5;
 		}
 		
-		// TODO age_stroke
+		stroke_points += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
 		
+		int bp = bloodPressure.intValue();
+		// TODO treating blood pressure currently is not a feature. Modify this for when it is.
 		if ( (Boolean) person.attributes.getOrDefault("bp_treated?", false))
-		{ // TODO treating blood pressure currently is not a feature. Modify this for when it is.
-			// TODO treated_sys_bp_stroke
+		{
+			stroke_points += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
 		} else
 		{
-			// TODO untreated_sys_bp_stroke
+			stroke_points += getIndexForValueInRangelist(bp, untreated_sys_bp_stroke[genderIndex]);
 		}
 		
 		if ( (Boolean) person.attributes.getOrDefault("diabetes", false))
@@ -570,9 +614,7 @@ public final class CardiovascularDiseaseModule extends Module
 		{
 			stroke_points += atrial_fibrillation_stroke_points[genderIndex];
 		}
-		
-		// off the charts
-		
+
 		double ten_stroke_risk;
 		
 		if (stroke_points >= ten_year_stroke_risk[genderIndex].length)
@@ -601,36 +643,112 @@ public final class CardiovascularDiseaseModule extends Module
            // TODO Synthea::Modules::Encounters.emergency_visit(time + 15.minutes, entity)
             if (person.rand() < 0.15) // Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
             {
-            	Code cause = new Code("SNOMED-CT", "230690007", "Stroke");
-            	person.recordDeath(time, cause, "getStroke");
+            	person.recordDeath(time, LOOKUP.get("stroke"), "getStroke");
             }
         }
 	}
 
 	private static void heartHealthyLifestyle(Person person, long time)
 	{
-		
+		// TODO - intentionally ignoring this rule for now; it only sets careplan activities and reasons
 	}
 
 	private static void chdTreatment(Person person, long time)
 	{
-
+		List<String> meds = filter_meds_by_year(Arrays.asList("clopidogrel", "simvastatin", "amlodipine", "nitroglycerin"), time);
+		
+		if ( (Boolean) person.attributes.getOrDefault("coronary_heart_disease", false))
+		{
+			for (String med : meds)
+			{
+//				prescribe_medication();
+			}
+		} else if (person.attributes.containsKey("medications"))
+		{
+			for (String med : meds)
+			{
+				// stop_medication
+			}
+		}
+		
 	}
 
 	private static void atrialFibrillationTreatment(Person person, long time)
 	{
-
+		List<String> meds = filter_meds_by_year(Arrays.asList("warfarin", "verapamil", "digoxin"), time);
+		
+		if ( (Boolean) person.attributes.getOrDefault("atrial_fibrillation", false))
+		{
+			for (String med : meds)
+			{
+//				prescribe_medication();
+			}
+			
+	          // catheter ablation is a more extreme measure than electrical cardioversion and is usually only performed
+	          // when medication and other procedures are not preferred or have failed. As a rough simulation of this,
+	          // we arbitrarily chose a 20% chance of getting catheter ablation and 80% of getting cardioversion
+	          String afib_procedure = person.rand() < 0.2 ? "catheter_ablation" : "electrical_cardioversion";
+	          
+	          Map<String,List<String>> cardiovascular_procedures = (Map<String,List<String>>) person.attributes.get("cardiovascular_procedures");
+	          
+	          if (cardiovascular_procedures == null)
+	          {
+	        	  cardiovascular_procedures = new HashMap<String, List<String>>();
+	        	  person.attributes.put("cardiovascular_procedures", cardiovascular_procedures);
+	          }
+	          cardiovascular_procedures.put("atrial_fibrillation", Arrays.asList(afib_procedure));
+		} else if (person.attributes.containsKey("medications"))
+		{
+			for (String med : meds)
+			{
+				// stop_medication
+			}
+		}
 	}
 	
 	private static void performEncounter(Person person, long time)
 	{
 		// step 1 - diagnosis
-		
+		for (String diagnosis : new String[] {"coronary_heart_disease", "atrial_fibrillation"})
+		{
+			if ( (Boolean) person.attributes.getOrDefault(diagnosis, false) && !person.record.present.containsKey(diagnosis))
+			{
+				Code code = LOOKUP.get(diagnosis);
+				Entry conditionEntry = person.record.conditionStart(time, code.display);
+				conditionEntry.codes.add(code);
+			}
+		}
+
 		// step 2 - care plan
+		// TODO - intentionally ignored at the moment
 		
 		// step 3 - medications
 		
 		// step 4 - procedures
+		Map<String,List<String>> cardiovascular_procedures = (Map<String,List<String>>) person.attributes.get("cardiovascular_procedures");
+        
+        if (cardiovascular_procedures != null)
+        {
+        	for (Map.Entry<String, List<String>> entry : cardiovascular_procedures.entrySet())
+        	{
+        		String reason = entry.getKey();
+        		List<String> procedures = entry.getValue();
+        		
+        		for (String proc : procedures)
+        		{
+        			if (!person.record.present.containsKey(proc))
+        			{
+        				// TODO: assumes a procedure will only be performed once, might need to be revisited
+        				Code code = LOOKUP.get(proc);
+        				Procedure procedure = person.record.procedure(time, code.display);
+        				procedure.codes.add(code);
+        				procedure.reasons.add(reason);
+        				// TODO provider stuff, increment procedures
+        			}
+        		}
+        		
+        	}
+        }
 	}
 	
 	private static void performEmergency(Person person, long time)
