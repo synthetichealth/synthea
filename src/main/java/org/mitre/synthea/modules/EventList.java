@@ -42,7 +42,7 @@ public class EventList {
 		List<Event> retVal = new ArrayList<Event>();
 		synchronized(LOCK) {
 			for(Event event : events) {
-				if (event.time < time) {
+				if (event.time <= time) {
 					retVal.add(event);
 				} else if (event.time > time) {
 					break;
@@ -62,7 +62,7 @@ public class EventList {
 		List<Event> retVal = new ArrayList<Event>();
 		synchronized(LOCK) {
 			for(Event event : events) {
-				if (event.type == type && event.time < time) {
+				if (event.type == type && event.time <= time) {
 					retVal.add(event);
 				} else if (event.time > time) {
 					break;
@@ -81,7 +81,7 @@ public class EventList {
 		List<Event> retVal = new ArrayList<Event>();
 		synchronized(LOCK) {
 			for(Event event : events) {
-				if (event.time > time) {
+				if (event.time >= time) {
 					retVal.add(event);
 				}
 			}
@@ -99,7 +99,7 @@ public class EventList {
 		List<Event> retVal = new ArrayList<Event>();
 		synchronized(LOCK) {
 			for(Event event : events) {
-				if (event.time > time && event.type == type) {
+				if (event.time >= time && event.type == type) {
 					retVal.add(event);
 				}
 			}

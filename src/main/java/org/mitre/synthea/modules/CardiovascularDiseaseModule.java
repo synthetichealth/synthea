@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +11,9 @@ import java.util.stream.Collectors;
 
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
+import org.mitre.synthea.world.Provider;
 
 
 public final class CardiovascularDiseaseModule extends Module 
@@ -123,6 +126,9 @@ public final class CardiovascularDiseaseModule extends Module
     
     private static final Map<String, Code> LOOKUP;
     private static final Map<String, Integer> MEDICATION_AVAILABLE;
+	private static final Map<String, List<String>> EMERGENCY_MEDS;
+	private static final Map<String, List<String>> EMERGENCY_PROCEDURES;
+	private static final Map<String, List<String>> HISTORY_CONDITIONS;
     static {
         // framingham point scores gives a 10-year risk
         risk_chd_m = new HashMap<>();
@@ -182,11 +188,55 @@ public final class CardiovascularDiseaseModule extends Module
         MEDICATION_AVAILABLE.put("atropine", 1903);
         
         LOOKUP = new HashMap<>();
-        LOOKUP.put("atrial_fibrillation", new Code("SNOMED-CT", "49436004", "Atrial Fibrillation"));
-        LOOKUP.put("coronary_heart_disease", new Code("SNOMED-CT", "53741008", "Coronary Heart Disease"));
-        LOOKUP.put("stroke", new Code("SNOMED-CT", "230690007", "Stroke"));
-        LOOKUP.put("cardiac_arrest", new Code("SNOMED-CT", "410429000", "Cardiac Arrest"));
-        LOOKUP.put("myocardial_infarction", new Code("SNOMED-CT", "22298006", "Myocardial Infarction"));
+        // conditions
+        LOOKUP.put( "stroke", new Code("SNOMED-CT", "230690007", "Stroke")  );
+        LOOKUP.put( "natural_causes", new Code("SNOMED-CT", "9855000", "Natural death with unknown cause")  );
+        LOOKUP.put( "coronary_heart_disease", new Code("SNOMED-CT", "53741008", "Coronary Heart Disease")  );
+        LOOKUP.put( "myocardial_infarction", new Code("SNOMED-CT", "22298006", "Myocardial Infarction")  );
+        LOOKUP.put( "cardiac_arrest", new Code("SNOMED-CT", "410429000", "Cardiac Arrest")  );
+        LOOKUP.put( "atrial_fibrillation", new Code("SNOMED-CT", "49436004", "Atrial Fibrillation")  );
+        LOOKUP.put( "cardiovascular_disease", new Code("SNOMED-CT", "49601007", "Disorder of cardiovascular system")  );
+        LOOKUP.put( "history_of_myocardial_infarction", new Code("SNOMED-CT", "399211009", "History of myocardial infarction (situation)")  );
+        LOOKUP.put( "history_of_cardiac_arrest", new Code("SNOMED-CT", "429007001", "History of cardiac arrest (situation)")  );
+        
+        //procedures
+        LOOKUP.put( "defibrillation", new Code("SNOMED-CT", "429500007", "Monophasic defibrillation")  );
+        LOOKUP.put( "implant_cardioverter_defib", new Code("SNOMED-CT", "447365002", "Insertion of biventricular implantable cardioverter defibrillator")  );
+        LOOKUP.put( "catheter_ablation", new Code("SNOMED-CT", "18286008", "Catheter ablation of tissue of heart")  );
+        LOOKUP.put( "percutaneous_coronary_intervention", new Code("SNOMED-CT", "415070008", "Percutaneous coronary intervention")  );
+        LOOKUP.put( "coronary_artery_bypass_grafting", new Code("SNOMED-CT", "232717009", "Coronary artery bypass grafting")  );
+        LOOKUP.put( "mechanical_thrombectomy", new Code("SNOMED-CT", "433112001", "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance")  );
+        LOOKUP.put( "electrical_cardioversion", new Code("SNOMED-CT", "180325003", "Electrical cardioversion")  );
+        
+        // medications
+        LOOKUP.put( "clopidogrel", new Code("RxNorm", "309362", "Clopidogrel 75 MG Oral Tablet")  );
+        LOOKUP.put( "simvastatin", new Code("RxNorm", "312961", "Simvastatin 20 MG Oral Tablet")  );
+        LOOKUP.put( "amlodipine", new Code("RxNorm", "197361", "Amlodipine 5 MG Oral Tablet")  );
+        LOOKUP.put( "nitroglycerin", new Code("RxNorm", "564666", "Nitroglycerin 0.4 MG/ACTUAT [Nitrolingual]")  );
+        LOOKUP.put( "atorvastatin", new Code("RxNorm", "259255", "Atorvastatin 80 MG Oral Tablet")  );
+        LOOKUP.put( "captopril", new Code("RxNorm", "833036", "Captopril 25 MG Oral Tablet")  );
+        LOOKUP.put( "warfarin", new Code("RxNorm", "855332", "Warfarin Sodium 5 MG Oral Tablet")  );
+        LOOKUP.put( "verapamil", new Code("RxNorm", "897718", "Verapamil Hydrochloride 40 MG")  );
+        LOOKUP.put( "digoxin", new Code("RxNorm", "197604", "Digoxin 0.125 MG Oral Tablet")  );
+        LOOKUP.put( "epinephrine", new Code("RxNorm", "727374", "1 ML Epinephrine 1 MG/ML Prefilled Syringe")  );
+        LOOKUP.put( "amiodarone", new Code("RxNorm", "834357", "3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe")  );
+        LOOKUP.put( "atropine", new Code("RxNorm", "1190795", "Atropine Sulfate 1 MG/ML Injectable Solution")  );
+        LOOKUP.put( "alteplase", new Code("RxNorm", "308056", "Alteplase 1 MG/ML Injectable Solution")  );
+        
+        EMERGENCY_MEDS = new HashMap<>();
+        EMERGENCY_MEDS.put("myocardial_infarction", Arrays.asList("nitroglycerin", "atorvastatin", "captopril", "clopidogrel"));
+        EMERGENCY_MEDS.put("stroke", Arrays.asList("clopidogrel", "alteplase"));
+        EMERGENCY_MEDS.put("cardiac_arrest", Arrays.asList("epinephrine", "amiodarone", "atropine"));
+        
+        EMERGENCY_PROCEDURES = new HashMap<>();
+        EMERGENCY_PROCEDURES.put("myocardial_infarction", Arrays.asList("percutaneous_coronary_intervention", "coronary_artery_bypass_grafting"));
+        EMERGENCY_PROCEDURES.put("stroke", Arrays.asList("mechanical_thrombectomy"));
+        EMERGENCY_PROCEDURES.put("cardiac_arrest", Arrays.asList("implant_cardioverter_defib", "catheter_ablation"));
+        
+        HISTORY_CONDITIONS = new HashMap<>();
+        HISTORY_CONDITIONS.put("myocardial_infarction", Arrays.asList("history_of_myocardial_infarction"));
+        HISTORY_CONDITIONS.put("stroke", Arrays.asList());
+        HISTORY_CONDITIONS.put("cardiac_arrest", Arrays.asList("history_of_cardiac_arrest"));
     }
 
     private static List<String> filter_meds_by_year(List<String> meds, long time)
@@ -373,7 +423,7 @@ public final class CardiovascularDiseaseModule extends Module
 			// creates unprocessed emergency encounter. Will be processed at next time step.
 			person.events.create(time, "emergency_encounter", "coronaryHeartDiseaseProgression", false);
 			
-			// TODO  Synthea::Modules::Encounters.emergency_visit(time, entity)
+			EncounterModule.emergencyVisit(person, time);
 			
           double survival_rate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
           // survival rate triples if a bystander is present
@@ -387,7 +437,6 @@ public final class CardiovascularDiseaseModule extends Module
         	  person.recordDeath(time, LOOKUP.get(cardiac_event), "coronaryHeartDiseaseProgression");
           }
 		}
-		
 	}
 	
 	private static void noCoronaryHeartDisease(Person person, long time)
@@ -404,7 +453,7 @@ public final class CardiovascularDiseaseModule extends Module
         {
 	        person.events.create(time, "cardiac_arrest", "noCoronaryHeartDisease", false);
 	        person.events.create(time, "emergency_encounter", "noCoronaryHeartDisease", false);
-	        // TODO Synthea::Modules::Encounters.emergency_visit(time, entity)
+	        EncounterModule.emergencyVisit(person, time);
 	        double survival_rate = 1 - (0.00069);
 	        if (person.rand() < 0.46)
 	        {
@@ -640,7 +689,7 @@ public final class CardiovascularDiseaseModule extends Module
         	person.events.create(time, "stroke", "getStroke", false);
         	person.attributes.put("stroke_history", true);
             person.events.create(time + TimeUnit.MINUTES.toMillis(10), "emergency_encounter", "getStroke", false);
-           // TODO Synthea::Modules::Encounters.emergency_visit(time + 15.minutes, entity)
+            EncounterModule.emergencyVisit(person, time);
             if (person.rand() < 0.15) // Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
             {
             	person.recordDeath(time, LOOKUP.get("stroke"), "getStroke");
@@ -661,16 +710,15 @@ public final class CardiovascularDiseaseModule extends Module
 		{
 			for (String med : meds)
 			{
-//				prescribe_medication();
+				prescribeMedication(med, person, time);
 			}
-		} else if (person.attributes.containsKey("medications"))
+		} else
 		{
 			for (String med : meds)
 			{
-				// stop_medication
+				stopMedication(med, person, time);
 			}
 		}
-		
 	}
 
 	private static void atrialFibrillationTreatment(Person person, long time)
@@ -681,7 +729,7 @@ public final class CardiovascularDiseaseModule extends Module
 		{
 			for (String med : meds)
 			{
-//				prescribe_medication();
+				prescribeMedication(med, person, time);
 			}
 			
 	          // catheter ablation is a more extreme measure than electrical cardioversion and is usually only performed
@@ -697,16 +745,48 @@ public final class CardiovascularDiseaseModule extends Module
 	        	  person.attributes.put("cardiovascular_procedures", cardiovascular_procedures);
 	          }
 	          cardiovascular_procedures.put("atrial_fibrillation", Arrays.asList(afib_procedure));
-		} else if (person.attributes.containsKey("medications"))
+		} else
 		{
 			for (String med : meds)
 			{
-				// stop_medication
+				stopMedication(med, person, time);
 			}
 		}
 	}
 	
-	private static void performEncounter(Person person, long time)
+	private static void prescribeMedication(String med, Person person, long time)
+	{
+		if (!person.record.medicationActive(med))
+		{
+			// add med to med_changes
+			List<String> medChanges = (List<String>)person.attributes.get("cardiovascular_disease_med_changes");
+			
+			if (medChanges == null)
+			{
+				medChanges = new LinkedList<String>();
+				person.attributes.put("cardiovascular_disease_med_changes", medChanges);
+			}
+			medChanges.add(med);
+		}
+	}
+	
+	private static void stopMedication(String med, Person person, long time)
+	{
+		if (!person.record.medicationActive(med))
+		{
+			// add med to med_changes
+			List<String> medChanges = (List<String>)person.attributes.get("cardiovascular_disease_med_changes");
+			
+			if (medChanges == null)
+			{
+				medChanges = new LinkedList<String>();
+				person.attributes.put("cardiovascular_disease_med_changes", medChanges);
+			}
+			medChanges.add(med);
+		}
+	}
+	
+	public static void performEncounter(Person person, long time)
 	{
 		// step 1 - diagnosis
 		for (String diagnosis : new String[] {"coronary_heart_disease", "atrial_fibrillation"})
@@ -723,7 +803,34 @@ public final class CardiovascularDiseaseModule extends Module
 		// TODO - intentionally ignored at the moment
 		
 		// step 3 - medications
+		List<String> medChanges = (List<String>)person.attributes.get("cardiovascular_disease_med_changes");
 		
+		if (medChanges != null)
+		{
+			for (String med : medChanges)
+			{
+				if (person.record.medicationActive(med))
+				{
+					// This prescription can be stopped...
+		             person.record.medicationEnd(time, med, "cardiovascular_improved");
+				}
+				else
+				{
+					Medication entry = person.record.medicationStart(time, med);
+					entry.codes.add(LOOKUP.get(med));
+	                // increment number of prescriptions prescribed by respective hospital
+	                Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
+					if(provider == null) // no provider associated with encounter or procedure
+					{
+						provider = person.getAmbulatoryProvider();
+					}
+					provider.incrementPrescriptions();
+				}
+			}
+			
+			medChanges.clear();
+		}
+
 		// step 4 - procedures
 		Map<String,List<String>> cardiovascular_procedures = (Map<String,List<String>>) person.attributes.get("cardiovascular_procedures");
         
@@ -743,17 +850,55 @@ public final class CardiovascularDiseaseModule extends Module
         				Procedure procedure = person.record.procedure(time, code.display);
         				procedure.codes.add(code);
         				procedure.reasons.add(reason);
-        				// TODO provider stuff, increment procedures
+        				
+        				// increment number of procedures by respective hospital
+        				Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
+        				if(provider == null) // no provider associated with encounter or procedure
+        				{
+        					provider = person.getAmbulatoryProvider();
+        				}
+        				provider.incrementProcedures();
         			}
         		}
-        		
         	}
         }
 	}
 	
-	private static void performEmergency(Person person, long time)
+	public static void performEmergency(Person person, long time, String diagnosis)
 	{
+		Provider provider = person.getEmergencyProvider();
+		if (provider == null)
+		{
+			person.setEmergencyProvider();
+			provider = person.getEmergencyProvider();
+		}
 		
+		Entry condition = person.record.conditionStart(time, diagnosis);
+		condition.codes.add(LOOKUP.get(diagnosis));
+
+        for (String med : filter_meds_by_year(EMERGENCY_MEDS.get(diagnosis), time))
+        {
+          Medication medication = person.record.medicationStart(time, med);
+          medication.codes.add(LOOKUP.get(med));
+          // increment number of prescriptions prescribed by respective hospital
+    
+          provider.incrementPrescriptions();
+          person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med, "stop_drug");
+        }
+
+        for (String proc : EMERGENCY_PROCEDURES.get(diagnosis))
+        {
+        	Procedure procedure = person.record.procedure(time, proc);
+        	procedure.codes.add(LOOKUP.get(proc));
+        	procedure.reasons.add(diagnosis);
+          // increment number of procedures performed by respective hospital
+          provider.incrementProcedures();
+        }
+
+        for (String cond : HISTORY_CONDITIONS.get(diagnosis))
+        {
+          Entry historyCond = person.record.conditionStart(time, cond);
+          historyCond.codes.add(LOOKUP.get(cond));
+        }
 	}
-	
 }
