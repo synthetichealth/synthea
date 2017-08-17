@@ -1,6 +1,8 @@
 package org.mitre.synthea.export;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,7 @@ import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
 import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.PositiveIntType;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -50,6 +53,12 @@ import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.HealthRecord.Report;
 import org.mitre.synthea.modules.Person;
+import org.hl7.fhir.dstu3.model.Claim;
+import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
+import org.hl7.fhir.dstu3.model.Claim.Use;
+import org.hl7.fhir.dstu3.model.Claim.ItemComponent;
+import org.hl7.fhir.dstu3.model.Money;
+import org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent;
 
 import ca.uhn.fhir.context.FhirContext;
 
@@ -83,10 +92,22 @@ public class FhirStu3
 		for (Encounter encounter : person.record.encounters)
 		{
 			BundleEntryComponent encounterEntry = encounter(personEntry, bundle, encounter);
+			org.hl7.fhir.dstu3.model.Claim claimResource = claim(personEntry, bundle, encounterEntry, false, null);
 			
+			List<Claim.ItemComponent> claimItems = new LinkedList<ItemComponent>(); 
+			claimResource.setItem(claimItems);
+			//int claimTotal = 0;
+			
+			System.out.println("new encounter");
+			int diagnosisSequence = 1;
+			List<Claim.DiagnosisComponent> claimDiagnoses = new LinkedList<>();
+			claimResource.setDiagnosis(claimDiagnoses);
 			for (HealthRecord.Entry condition : encounter.conditions)
 			{
-				condition(personEntry, bundle, encounterEntry, condition);
+				System.out.println("diagnosisSequence: " + diagnosisSequence);
+				PositiveIntType sequence = new PositiveIntType(diagnosisSequence);
+				condition(personEntry, bundle, encounterEntry, condition, claimResource, sequence);
+				diagnosisSequence += 1;
 			}
 			
 			for (Observation observation : encounter.observations)
@@ -94,9 +115,15 @@ public class FhirStu3
 				observation(personEntry, bundle, encounterEntry, observation);
 			}
 			
+			int procedureSequence = 1;
+			//List<Claim.ProcedureComponent> claimProcedures = new LinkedList<>();
 			for (Procedure procedure : encounter.procedures)
 			{
-				procedure(personEntry, bundle, encounterEntry, procedure);
+				System.out.println("new procedure");
+				PositiveIntType sequence = new PositiveIntType(procedureSequence);
+				//claimResource.setProcedure(claimProcedures);
+				procedure(personEntry, bundle, encounterEntry, procedure, claimResource, sequence);
+				procedureSequence += 1;
 			}
 			
 			for (Medication medication : encounter.medications)
@@ -106,7 +133,7 @@ public class FhirStu3
 			
 			for (HealthRecord.Entry immunization : encounter.immunizations)
 			{
-				immunization(personEntry, bundle, encounterEntry, immunization);
+				immunization(personEntry, bundle, encounterEntry, immunization);//, claimEntry);
 			}
 			
 			for (Report report : encounter.reports)
@@ -118,6 +145,9 @@ public class FhirStu3
 			{
 				careplan(personEntry, bundle, encounterEntry, careplan);
 			}
+			
+			//one claim per encounter
+			newEntry(bundle, claimResource);
 		}
 		
 		String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
@@ -249,15 +279,58 @@ public class FhirStu3
 	}
 	
 	/**
+	* ...
+	* @param personEntry The Entry for the Person
+	* @param bundle The Bundle to add to
+	* @param encounterEntry The current Encounter entry
+	* @param claim The Claim
+	* @return The added Entry
+	*/
+	private static org.hl7.fhir.dstu3.model.Claim claim(BundleEntryComponent personEntry, Bundle bundle, 
+			BundleEntryComponent encounterEntry, boolean isMedication, MedicationRequest medicationResource) {
+
+		org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
+		org.hl7.fhir.dstu3.model.Encounter encounterResource = (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
+
+		claimResource.setStatus(ClaimStatus.ACTIVE);
+		claimResource.setUse(Claim.Use.COMPLETE);
+
+		//duration of encounter
+		claimResource.setBillablePeriod(encounterResource.getPeriod());
+		
+		claimResource.setPatient(new Reference(personEntry.getFullUrl()));
+		claimResource.setOrganization(encounterResource.getServiceProvider());
+		
+		if(isMedication)
+		{
+			//add prescription.
+			//add item?
+			//add cost. 
+			newEntry(bundle, claimResource);
+			return claimResource;
+		}
+		
+		//add item for encounter			
+		claimResource.addItem(new Claim.ItemComponent().addEncounter(new Reference(encounterEntry.getFullUrl())));
+		//TODO - encounter free for now 
+		double encounterCost = 0.0;
+		claimResource.setTotal(new Money());
+		
+		//return newEntry(bundle, claimResource);
+		return claimResource;
+	}
+	/**
 	 * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
 	 * @param personEntry The Entry for the Person
 	 * @param bundle The Bundle to add to
 	 * @param encounterEntry The current Encounter entry
 	 * @param condition The Condition
+	 * @param claimEntry 
+	 * @param sequence 
 	 * @return The added Entry
 	 */
-	private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
-			BundleEntryComponent encounterEntry, HealthRecord.Entry condition)
+	private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,BundleEntryComponent encounterEntry, 
+			HealthRecord.Entry condition,  org.hl7.fhir.dstu3.model.Claim claimResource, PositiveIntType sequence)
 	{
 		Condition conditionResource = new Condition();
 		
@@ -278,7 +351,22 @@ public class FhirStu3
 			conditionResource.setAbatement(convertFhirDateTime(condition.stop, true));
 		}
 		
-		return newEntry(bundle, conditionResource);
+		BundleEntryComponent conditionEntry = newEntry(bundle, conditionResource);
+		
+		//add diagnosisComponent to claim
+		Reference diagnosisReference = new Reference(conditionEntry.getFullUrl());
+		org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diagnosisComponent = 
+				new org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent(sequence,diagnosisReference);
+		//diagnosisReference.setPackageCode() ? 
+		claimResource.addDiagnosis(diagnosisComponent);
+		
+		//update claimItems with diagnosis
+		org.hl7.fhir.dstu3.model.Claim.ItemComponent diagnosisItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
+		diagnosisItem.addDiagnosisLinkId(sequence.getValue()); 
+		diagnosisItem.setNet(new Money());
+		claimResource.addItem(diagnosisItem);
+		
+		return conditionEntry;
 	}
 	
 	/**
@@ -346,10 +434,12 @@ public class FhirStu3
 	 * @param bundle Bundle to add to
 	 * @param encounterEntry The current Encounter entry
 	 * @param procedure The Procedure
+	 * @param claimResource 
+	 * @param sequence 
 	 * @return The added Entry
 	 */
 	private static BundleEntryComponent procedure(BundleEntryComponent personEntry, Bundle bundle,
-			BundleEntryComponent encounterEntry, Procedure procedure)
+			BundleEntryComponent encounterEntry, Procedure procedure, Claim claimResource, PositiveIntType sequence)
 	{
 		org.hl7.fhir.dstu3.model.Procedure procedureResource = new org.hl7.fhir.dstu3.model.Procedure();
 		
@@ -369,9 +459,25 @@ public class FhirStu3
 			procedureResource.setPerformed(convertFhirDateTime(procedure.start, true));
 		}
 		
+		BundleEntryComponent procedureEntry = newEntry(bundle, procedureResource); 
 		// TODO - reason
 		
-		return newEntry(bundle, procedureResource);
+		//add ProcedureComponent to claim
+		Type procedureReference= new Reference(procedureEntry.getFullUrl());
+		org.hl7.fhir.dstu3.model.Claim.ProcedureComponent claimProcedure = 
+				new org.hl7.fhir.dstu3.model.Claim.ProcedureComponent(sequence, procedureReference);
+		//codeable concept with code and system....setProperty()?
+		claimResource.addProcedure(claimProcedure);
+		
+		//update claimItems list
+		org.hl7.fhir.dstu3.model.Claim.ItemComponent procedureItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
+		procedureItem.addProcedureLinkId(sequence.getValue());
+		procedureItem.setNet(new Money());
+		claimResource.addItem(procedureItem);
+		
+		//add to total
+		
+		return procedureEntry;
 	}
 
 	private static BundleEntryComponent immunization(BundleEntryComponent personEntry, Bundle bundle,
@@ -418,6 +524,9 @@ public class FhirStu3
 		}
 		
 		// TODO - prescription details & reason
+		
+		//create new claim for medication 
+		claim(personEntry, bundle, encounterEntry, true, medicationResource);
 		
 		return newEntry(bundle, medicationResource);
 	}
