@@ -1,7 +1,6 @@
 package org.mitre.synthea.modules;
 
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
