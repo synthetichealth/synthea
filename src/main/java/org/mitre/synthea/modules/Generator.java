@@ -29,6 +29,7 @@ public class Generator {
 
 	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
 	public List<Person> people;
+	public List<CommunityHealthWorker> chws;
 	public long numberOfPeople;
 	public final int MAX_TRIES = 10;
 	public long seed;
@@ -53,6 +54,7 @@ public class Generator {
 	{
 		this.people = Collections.synchronizedList(new ArrayList<Person>());
 		this.numberOfPeople = people;
+		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
 		this.random = new Random(seed);
 		this.timestep = Long.parseLong( Config.get("generate.timestep") );
@@ -101,7 +103,9 @@ public class Generator {
 		}
 		
 		System.out.println(stats);
+	
 	}
+	
 	
 	private void generatePerson(int index)
 	{
@@ -156,6 +160,8 @@ public class Generator {
 					// if true
 					// then add chw encounter to record
 					// and set chw variable(s) on person.attributes.put(KEY, VALUE)
+			
+					
 					time += timestep;
 				}
 				

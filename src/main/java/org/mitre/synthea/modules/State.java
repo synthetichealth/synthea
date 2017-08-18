@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
@@ -202,7 +203,7 @@ public class State {
 					person.addCurrentProvider(module, provider);
 					provider.incrementEncounters();
 					encounter.provider = provider;
-					
+			
 					this.exited = time;
 					return true;
 				} else {

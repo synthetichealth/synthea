@@ -146,6 +146,7 @@ public class HealthRecord {
 		public String reason;
 		public Code discharge;
 		public Provider provider;
+		public CommunityHealthWorker chw;
 		
 		public Encounter(long time, String type) {
 			super(time, type);

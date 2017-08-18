@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -170,6 +171,62 @@ public class Person {
 		}
 		return false;
 	}
+	
+	// Community Health Workers API -----------------------------------------------------------
+	public static final String CHW = "communityHealthWorker";
+	
+	public void setCHW(CommunityHealthWorker chw){
+		attributes.put(CHW, chw);
+	}
+	
+	
+	public CommunityHealthWorker getCHW(){
+		return (CommunityHealthWorker) attributes.get(CHW);
+	}
+	
+	//TODO incorporate this method 
+	public boolean chwEncounterChance(Person person, CommunityHealthWorker chw){
+		if(person.CITY.equals(chw.CITY)){
+			return true;
+		} else{
+			return false;
+		}
+	}
+	
+	public static void chwEncounter(Person person, long time){
+		int age = person.ageInYears(time);
+		CommunityHealthWorker chw = CommunityHealthWorker.generateCHW();
+		
+		//TODO additional rules/percentages to define these encounters more probabilistically 
+		
+		//note: add a "CHW intervention" count to the health record (i.e. encounters, observations, etc)
+
+		if(age >= 20 && age <= 65){
+
+				if((person.attributes.containsKey(CHW))){
+					Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get(CHW);
+					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
+						if(randomChance >= 99){
+							Random rand = new Random();
+							int randomAge = rand.nextInt(age);
+							if(randomAge >= 20 && randomAge <= 65){
+								chws.put(randomAge, chw);}
+							}
+						person.attributes.put(CHW, chws);
+				}
+				else{
+					Map<Integer, CommunityHealthWorker> chws = new HashMap<Integer, CommunityHealthWorker>();
+					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
+					if(randomChance >= 99){
+						Random rand = new Random();
+						int randomAge = rand.nextInt(age);
+						if(randomAge >= 20 && randomAge <= 65){
+							chws.put(randomAge, chw);}
+						}
+					person.attributes.put(CHW, chws);	
+				}
+			}
+		}
 	
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";
