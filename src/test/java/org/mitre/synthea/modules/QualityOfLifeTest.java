@@ -18,7 +18,6 @@ import static org.junit.Assert.*;
 public class QualityOfLifeTest {
 	
 	private Person person;
-	private QualityOfLife qolCalculator;
 	
 	public static final long stopTime = ((long) (365.25 * 35)) + 1;
 	
@@ -57,15 +56,13 @@ public class QualityOfLifeTest {
 		diabetesCondition.codes.add(diabetesCode);
 		
 		person.record.conditionEnd((TimeUnit.DAYS.toMillis((long) (365.25 * 25) - 1)), "195967001"); // asthma ends
-		
-		qolCalculator = new QualityOfLife();
 	}
 	
 	@Test
 	public void testCalculateLiving(){
 		// living patient
 		// + 1 ms because (365.25 * 35) = 12783.75 as double and 12783 as long
-		qolCalculator.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
+		QualityOfLife.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
 		
 		double daly_living = (double) person.attributes.get("DALY");
 		double qaly_living = (double) person.attributes.get("QALY");
@@ -77,7 +74,7 @@ public class QualityOfLifeTest {
 	public void testCalculateDeceased(){
 		// deceased patient
 		person.events.create(TimeUnit.DAYS.toMillis((long) (365.25 * 35)), "death", "QualityOfLifeTest", true);
-		qolCalculator.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
+		QualityOfLife.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
 		
 		double daly_deceased = (double) person.attributes.get("DALY");
 		double qaly_deceased = (double) person.attributes.get("QALY");
@@ -95,18 +92,18 @@ public class QualityOfLifeTest {
 		}
 		
 		// conditions in year 5
-		List<Entry> conditionsYear5 = qolCalculator.conditionsInYear(allConditions, TimeUnit.DAYS.toMillis((long) (365.25 * 5)), TimeUnit.DAYS.toMillis((long) (365.25 * 6)));
+		List<Entry> conditionsYear5 = QualityOfLife.conditionsInYear(allConditions, TimeUnit.DAYS.toMillis((long) (365.25 * 5)), TimeUnit.DAYS.toMillis((long) (365.25 * 6)));
 		List<Entry> empty = new ArrayList<Entry>();	
 		assertEquals(empty, conditionsYear5);
 		
 		// conditions in year 10
-		List<Entry> conditionsYear10 = qolCalculator.conditionsInYear(allConditions, TimeUnit.DAYS.toMillis((long) (365.25 * 10)), TimeUnit.DAYS.toMillis((long) (365.25 * 11)));
+		List<Entry> conditionsYear10 = QualityOfLife.conditionsInYear(allConditions, TimeUnit.DAYS.toMillis((long) (365.25 * 10)), TimeUnit.DAYS.toMillis((long) (365.25 * 11)));
 		assertEquals(2, conditionsYear10.size());
 		assertEquals("Child attention deficit disorder", conditionsYear10.get(0).name);
 		assertEquals("Asthma", conditionsYear10.get(1).name);
 		
 		// conditions in year 30
-		List<Entry> conditionsYear30 = qolCalculator.conditionsInYear(allConditions, TimeUnit.DAYS.toMillis((long) (365.25 * 30)), TimeUnit.DAYS.toMillis((long) (365.25 * 31)));
+		List<Entry> conditionsYear30 = QualityOfLife.conditionsInYear(allConditions, TimeUnit.DAYS.toMillis((long) (365.25 * 30)), TimeUnit.DAYS.toMillis((long) (365.25 * 31)));
 		assertEquals(1, conditionsYear30.size());
 		assertEquals("Diabetes", conditionsYear30.get(0).name);
 	}
@@ -114,7 +111,7 @@ public class QualityOfLifeTest {
 	@Test
 	public void testWeight(){
 		// age 15 with disability weight of 0.45
-		double weight = qolCalculator.weight(0.45,  15);
+		double weight = QualityOfLife.weight(0.45,  15);
 		assertEquals(true, (weight > 0.614 && weight < 0.615));
 	}
 	

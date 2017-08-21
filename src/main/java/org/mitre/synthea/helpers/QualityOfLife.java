@@ -1,10 +1,9 @@
 package org.mitre.synthea.helpers;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -16,22 +15,21 @@ import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.Person;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
 public class QualityOfLife{
 	
-	public static HashMap<String, LinkedTreeMap> disabilityWeights;
+	private static Map<String, Map<String,Object>> disabilityWeights = loadDisabilityWeights();
 	
-	public QualityOfLife(){
+	@SuppressWarnings("unchecked")
+	private static Map<String,Map<String,Object>> loadDisabilityWeights() {
 		String filename = "/gbd_disability_weights.json";
 		try {
 			InputStream stream = QualityOfLife.class.getResourceAsStream(filename);
 			String json = new BufferedReader(new InputStreamReader(stream)).lines()
 					.parallel().collect(Collectors.joining("\n"));
 			Gson g = new Gson();
-			disabilityWeights = g.fromJson(json, HashMap.class);
-		}
-		catch (Exception e) {
+			return g.fromJson(json, HashMap.class);
+		} catch (Exception e) {
 			System.err.println("ERROR: unable to load json: " + filename);
 			e.printStackTrace();
 			throw new ExceptionInInitializerError(e);
