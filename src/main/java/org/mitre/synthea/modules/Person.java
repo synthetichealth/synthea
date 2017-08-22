@@ -26,12 +26,13 @@ public class Person {
 	public static final String STATE = "state";
 	public static final String ZIP = "zip";
 	public static final String COORDINATE = "coordinate";
-	public static final String HEIGHT = "height";
-	public static final String WEIGHT = "weight";
+	public static final String SOCIOECONOMIC_SCORE = "socioeconomic_score";
 	public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
 	public static final String INCOME = "income";
+	public static final String INCOME_LEVEL = "income_level";
 	public static final String EDUCATION = "education";
-	
+	public static final String EDUCATION_LEVEL = "education_level";
+	public static final String OCCUPATION_LEVEL = "occupation_level";
 	public final Random random;
 	public final long seed;
 	public Map<String,Object> attributes;

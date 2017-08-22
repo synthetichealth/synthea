@@ -12,6 +12,8 @@ import com.github.javafaker.Faker;
 public final class LifecycleModule extends Module 
 {
 	private static final Faker faker = new Faker();
+	private static final String AGE = "AGE";
+	private static final String AGE_MONTHS = "AGE_MONTHS";
 	
 	public LifecycleModule() {
 		this.name = "Lifecycle";
@@ -43,28 +45,18 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.BIRTHDATE, time);
 		person.events.create(time, Event.BIRTH, "Generator.run", true);
 		attributes.put(Person.NAME, faker.name().name());
-		attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle"); // TODO High Middle Low
-		if (!attributes.containsKey(Person.RACE))
-		{
-			attributes.put(Person.RACE, "White"); // TODO "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other"
-		}
-		if (!attributes.containsKey(Person.GENDER))
-		{
-			attributes.put(Person.GENDER, person.rand() < 0.5 ? "M" : "F");
-		}
 
 		Location.assignPoint(person, (String)attributes.get(Person.CITY));
 		boolean hasStreetAddress2 = person.rand() < 0.5;
 		attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
 
 		
-		attributes.put(Person.HEIGHT, 51.0); // cm
-		attributes.put(Person.WEIGHT, 3.5); // kg
-		attributes.put("height-percentile", 50);
-		attributes.put("weight-percentile", 50);
+		attributes.put(VitalSign.HEIGHT.toString(), 51.0); // cm
+		attributes.put(VitalSign.WEIGHT.toString(), 3.5); // kg
+		attributes.put(VitalSign.SIZE_PERCENTILE.toString(), 50.0);
 		
-		attributes.put("AGE", 0);
-		attributes.put("AGE-months", 0);
+		attributes.put(AGE, 0);
+		attributes.put(AGE_MONTHS, 0);
 	}
 	
 	private static void age(Person person, long time)
@@ -96,13 +88,13 @@ public final class LifecycleModule extends Module
 	{
 		Map<String, Object> attributes = person.attributes;
 		
-		int prevAge = (int) attributes.get("AGE");
-		int prevAgeMos = (int) attributes.get("AGE-months");
+		int prevAge = (int) attributes.get(AGE);
+		int prevAgeMos = (int) attributes.get(AGE_MONTHS);
 		
 		int newAge = person.ageInYears(time);
 		int newAgeMos = person.ageInMonths(time);
-		attributes.put("AGE", newAge);
-		attributes.put("AGE-months", newAgeMos);
+		attributes.put(AGE, newAge);
+		attributes.put(AGE_MONTHS, newAgeMos);
 		
 		boolean shouldGrow;
 		
