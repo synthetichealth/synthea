@@ -20,7 +20,6 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Demographics;
 import org.mitre.synthea.world.Location;
-import org.mitre.synthea.helpers.QualityOfLife;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -160,9 +159,6 @@ public class Generator {
 					
 					time += timestep;
 				}
-				
-				// calculate quality of life
-				QualityOfLife.calculate(person, stop);
 				
 				Exporter.export(person, stop);
 				

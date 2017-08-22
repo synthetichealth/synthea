@@ -37,6 +37,7 @@ public class Module {
 
 		retVal.put("Lifecycle", new LifecycleModule());
 		retVal.put("Cardiovascular Disease", new CardiovascularDiseaseModule());
+		retVal.put("Quality Of Life", new QualityOfLifeModule());
 
 		try {
 			URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
