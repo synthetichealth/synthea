@@ -1,4 +1,4 @@
-package org.mitre.synthea.helpers;
+package org.mitre.synthea.modules;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,19 +12,50 @@ import java.io.BufferedReader;
 
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.Entry;
-import org.mitre.synthea.modules.Person;
 
 import com.google.gson.Gson;
 
-public class QualityOfLife{
+public class QualityOfLifeModule extends Module 
+{
 	
 	private static Map<String, Map<String,Object>> disabilityWeights = loadDisabilityWeights();
+	
+	public QualityOfLifeModule()
+	{
+		this.name = "Quality of Life";
+	}
+	
+	@Override
+	public boolean process(Person person, long time) 
+	{
+		if (!person.attributes.containsKey("QALY"))
+		{
+			person.attributes.put("QALY", new Double[128]); // use 128 because it's a nice power of 2, and nobody will reach that age
+			person.attributes.put("DALY", new Double[128]); // use Double so we can have nulls to indicate not set
+		}
+
+		Double[] qalys = (Double[])person.attributes.get("QALY");
+		Double[] dalys = (Double[])person.attributes.get("DALY");
+		
+		int age = person.ageInYears(time);
+		
+		if (qalys[age] == null)
+		{
+			double[] qol = calculate(person, time);
+			
+			dalys[age] = qol[0];
+			qalys[age] = qol[1];
+		}
+		
+		// java modules will never "finish"
+		return false;
+	}
 	
 	@SuppressWarnings("unchecked")
 	private static Map<String,Map<String,Object>> loadDisabilityWeights() {
 		String filename = "/gbd_disability_weights.json";
 		try {
-			InputStream stream = QualityOfLife.class.getResourceAsStream(filename);
+			InputStream stream = QualityOfLifeModule.class.getResourceAsStream(filename);
 			String json = new BufferedReader(new InputStreamReader(stream)).lines()
 					.parallel().collect(Collectors.joining("\n"));
 			Gson g = new Gson();
@@ -36,7 +67,7 @@ public class QualityOfLife{
 		}
 	}
 	
-	public static void calculate(Person person, long stop){
+	public static double[] calculate(Person person, long stop){
         // Disability-Adjusted Life Year = DALY = YLL + YLD
         // Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in years)
         // Years Lost due to Disability = YLD = (disability weight) * (average duration of case)
@@ -78,8 +109,7 @@ public class QualityOfLife{
 		double daly = yll + yld;
 		double qaly = age - yld;
 		
-		person.attributes.put("DALY", daly);
-		person.attributes.put("QALY", qaly);
+		return new double[] {daly, qaly};
 	}
 	
 	public static List<Entry> conditionsInYear(List<Entry> conditions, long yearStart, long yearEnd){

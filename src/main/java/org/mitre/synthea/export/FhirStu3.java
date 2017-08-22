@@ -180,15 +180,36 @@ public class FhirStu3
 		patientResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED).setDiv(new XhtmlNode(NodeType.Element).setValue(generatedBySynthea)));
 
 		// DALY and QALY values
-		Extension dalyExtension = new Extension(SNOMED_URI + "/disability-adjusted-life-years");
-		DecimalType daly = new DecimalType((double) person.attributes.get("DALY"));
-		dalyExtension.setValue(daly);
-		patientResource.addExtension(dalyExtension);
-		
-		Extension qalyExtension = new Extension(SNOMED_URI + "/quality-adjusted-life-years");
-		DecimalType qaly = new DecimalType((double) person.attributes.get("QALY"));
-		qalyExtension.setValue(qaly);
-		patientResource.addExtension(qalyExtension);
+		// we only write the last(current) one to the patient record
+		Double[] dalys = (Double[]) person.attributes.get("DALY");
+		Double[] qalys = (Double[]) person.attributes.get("QALY");
+		if (dalys != null)
+		{
+			Double dalyValue = null;
+			Double qalyValue = null;
+			for (int i = dalys.length - 1; i >= 0; i--)
+			{
+				dalyValue = dalys[i];
+				qalyValue = qalys[i];
+				// these are always added together in the same method, so we don't have to check both individually
+				if (dalyValue != null)
+				{
+					break;
+				}
+			}
+			if (dalyValue != null)
+			{
+				Extension dalyExtension = new Extension(SNOMED_URI + "/disability-adjusted-life-years");
+				DecimalType daly = new DecimalType(dalyValue);
+				dalyExtension.setValue(daly); 
+				patientResource.addExtension(dalyExtension);
+				
+				Extension qalyExtension = new Extension(SNOMED_URI + "/quality-adjusted-life-years");
+				DecimalType qaly = new DecimalType(qalyValue);
+				qalyExtension.setValue(qaly);
+				patientResource.addExtension(qalyExtension);
+			}
+		}
 		
 		return newEntry(bundle, patientResource);
 	}
