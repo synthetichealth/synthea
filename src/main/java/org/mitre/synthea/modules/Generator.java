@@ -38,7 +38,6 @@ public class Generator {
 	public long stop;
 	public Map<String,AtomicInteger> stats;
 	public Map<String,Demographics> demographics;
-	public QualityOfLife qolCalculator;
 	
 	public Generator(int people) throws IOException
 	{
@@ -73,10 +72,7 @@ public class Generator {
 	public void run()
 	{
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
-	
-	    // initialize QoL calculator
-		qolCalculator = new QualityOfLife();
-			
+		
 		for(int i=0; i < this.numberOfPeople; i++)
 		{
 			final int index = i;
@@ -166,7 +162,7 @@ public class Generator {
 				}
 				
 				// calculate quality of life
-				qolCalculator.calculate(person, stop);
+				QualityOfLife.calculate(person, stop);
 				
 				Exporter.export(person, stop);
 				
