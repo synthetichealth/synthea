@@ -204,11 +204,23 @@ public class Generator {
 		}
 		person.attributes.put(Person.GENDER, gender);
 
+		// Socioeconomic variables of education, income, and education are set.
 		String education = city.pickEducation(person.random);
 		person.attributes.put(Person.EDUCATION, education);
-		
+		double education_level = city.educationLevel(education, person);
+		person.attributes.put(Person.EDUCATION_LEVEL, education_level);
+
 		int income = city.pickIncome(person.random);
 		person.attributes.put(Person.INCOME, income);
+		double income_level = city.incomeLevel(income);
+		person.attributes.put(Person.INCOME_LEVEL, income_level);
+
+		double occupation = person.rand();
+		person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
+
+		double ses_score = city.socioeconomicScore(income_level, education_level, occupation);
+		person.attributes.put(Person.SOCIOECONOMIC_SCORE, ses_score);
+		person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(ses_score));
 		
 		long targetAge = city.pickAge(person.random);
 		
