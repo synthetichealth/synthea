@@ -1,22 +1,47 @@
 package org.mitre.synthea.modules;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.world.Location;
 
 import com.github.javafaker.Faker;
+import com.google.gson.Gson;
 
 public final class LifecycleModule extends Module 
 {
+	@SuppressWarnings("rawtypes")
+	private static final Map growthChart = loadGrowthChart();
 	private static final Faker faker = new Faker();
 	private static final String AGE = "AGE";
 	private static final String AGE_MONTHS = "AGE_MONTHS";
 	
 	public LifecycleModule() {
 		this.name = "Lifecycle";
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static Map loadGrowthChart() {
+		String filename = "/cdc_growth_charts.json";
+		try {
+			InputStream stream = LifecycleModule.class.getResourceAsStream(filename);
+			String json = new BufferedReader(new InputStreamReader(stream)).lines()
+					.parallel().collect(Collectors.joining("\n"));
+			Gson g = new Gson();
+			return g.fromJson(json, HashMap.class);
+		} catch (Exception e) {
+			System.err.println("ERROR: unable to load json: " + filename);
+			e.printStackTrace();
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
 	@Override
@@ -27,8 +52,9 @@ public final class LifecycleModule extends Module
 		// since this is intended to only be temporary
 		
 		// birth(person, time); intentionally left out - call it only once from Generator
-		age(person, time);
-		grow(person, time);
+		if( age(person, time) ) {
+			grow(person, time);
+		}
 		person.chwEncounter(person, time);
 		diabeticVitalSigns(person, time);
 		death(person, time);
@@ -50,20 +76,33 @@ public final class LifecycleModule extends Module
 		boolean hasStreetAddress2 = person.rand() < 0.5;
 		attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
 
-		
-		attributes.put(VitalSign.HEIGHT.toString(), 51.0); // cm
-		attributes.put(VitalSign.WEIGHT.toString(), 3.5); // kg
-		attributes.put(VitalSign.SIZE_PERCENTILE.toString(), 50.0);
+		double height_percentile = person.rand();
+		double weight_percentile = person.rand();
+		person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, height_percentile);
+		person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weight_percentile);
+		person.setVitalSign(VitalSign.HEIGHT, 51.0); // cm
+		person.setVitalSign(VitalSign.WEIGHT, 3.5);  // kg
 		
 		attributes.put(AGE, 0);
 		attributes.put(AGE_MONTHS, 0);
+
+		grow(person, time); // set initial height and weight from percentiles
 	}
 	
-	private static void age(Person person, long time)
+	/**
+	 * @return whether or not the patient should grow
+	 */
+	private static boolean age(Person person, long time)
 	{
-		int age = person.ageInYears(time);
+		int prevAge = (int) person.attributes.get(AGE);
+		int prevAgeMos = (int) person.attributes.get(AGE_MONTHS);
 		
-		switch(age)
+		int newAge = person.ageInYears(time);
+		int newAgeMos = person.ageInMonths(time);
+		person.attributes.put(AGE, newAge);
+		person.attributes.put(AGE_MONTHS, newAgeMos);
+
+		switch(newAge)
 		{
 		// TODO - none of these are critical so leaving them out for now
 		case 16:
@@ -82,40 +121,70 @@ public final class LifecycleModule extends Module
 			// "overeducated" -> suffix
 			break;
 		}
-	}
-	
-	private static void grow(Person person, long time)
-	{
-		Map<String, Object> attributes = person.attributes;
-		
-		int prevAge = (int) attributes.get(AGE);
-		int prevAgeMos = (int) attributes.get(AGE_MONTHS);
-		
-		int newAge = person.ageInYears(time);
-		int newAgeMos = person.ageInMonths(time);
-		attributes.put(AGE, newAge);
-		attributes.put(AGE_MONTHS, newAgeMos);
 		
 		boolean shouldGrow;
-		
 		if (newAge > 20)
 		{
 			// adults 20 and over grow once per year
 			shouldGrow = (newAge > prevAge);
-		} else
-		{
+		} else {
 			// people under 20 grow once per month
 			shouldGrow = (newAgeMos > prevAgeMos);
 		}
+		return shouldGrow;
+	}
 
-		if (!shouldGrow)
-		{
-			return;
+	private static void grow(Person person, long time)
+	{
+		int age = person.ageInYears(time);
+		int adult_max_weight_age = Integer.parseInt( Config.get("lifecycle.adult_max_weight_age", "49"));
+		int geriatric_weight_loss_age = Integer.parseInt( Config.get("lifecycle.geriatric_weight_loss_age", "60"));
+
+		double height = person.getVitalSign(VitalSign.HEIGHT);
+		double weight = person.getVitalSign(VitalSign.WEIGHT);
+		
+		if(age < 20) {
+			// follow growth charts
+			String gender = (String) person.attributes.get(Person.GENDER);
+			int ageInMonths = person.ageInMonths(time);
+			height = lookupGrowthChart("height", gender, ageInMonths, person.getVitalSign(VitalSign.HEIGHT_PERCENTILE));
+			weight = lookupGrowthChart("weight", gender, ageInMonths, person.getVitalSign(VitalSign.WEIGHT_PERCENTILE));
+		} else if(age <= adult_max_weight_age) {
+			// getting older and fatter
+			double min = Double.parseDouble( Config.get("lifecycle.adult_weight_gain.min","1.0"));
+			double max = Double.parseDouble( Config.get("lifecycle.adult_weight_gain.max","2.0"));
+			double adult_weight_gain = person.rand(min, max);
+			weight += adult_weight_gain;
+		} else if(age >= geriatric_weight_loss_age) {
+			// getting older and wasting away
+			double min = Double.parseDouble( Config.get("lifecycle.geriatric_weight_loss.min","1.0"));
+			double max = Double.parseDouble( Config.get("lifecycle.geriatric_weight_loss.max","2.0"));
+			double geriatric_weight_loss = person.rand(min, max);
+			weight -= geriatric_weight_loss;
 		}
 		
+		person.setVitalSign(VitalSign.HEIGHT, height);
+		person.setVitalSign(VitalSign.WEIGHT, weight);
+		person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths, double percentile)
+	{
+		String[] percentile_buckets = {"3", "5", "10", "25", "50", "75", "90", "95", "97"};
 		
-		
-		
+		Map chart = (Map) growthChart.get(heightOrWeight);
+		Map byGender = (Map) chart.get(gender);
+		Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
+		int bucket = 0;
+		for(int i=0; i < percentile_buckets.length; i++) {
+			if( (Double.parseDouble(percentile_buckets[i]) / 100.0) <= percentile) {
+				bucket = i;
+			} else {
+				break;
+			}
+		}
+		return Double.parseDouble((String) byAge.get(percentile_buckets[bucket]));
 	}
 	
 	private static double bmi(double heightCM, double weightKG)
