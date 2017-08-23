@@ -4,7 +4,8 @@ public enum VitalSign {
 	
 	HEIGHT("Height"),
 	WEIGHT("Weight"),
-	SIZE_PERCENTILE("Height Weight Percentile"),
+	HEIGHT_PERCENTILE("Height Percentile"),
+	WEIGHT_PERCENTILE("Weight Percentile"),
 	BMI("BMI"),
 	SYSTOLIC_BLOOD_PRESSURE("Systolic Blood Pressure"),
 	DIASTOLIC_BLOOD_PRESSURE("Diastolic Blood Pressure"),
