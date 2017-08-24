@@ -1,7 +1,6 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
@@ -12,6 +11,7 @@ import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
+import org.mitre.synthea.modules.HealthRecord.Report;
 import org.mitre.synthea.modules.Transition.TransitionType;
 import org.mitre.synthea.world.Provider;
 
@@ -364,6 +364,19 @@ public class State {
 			}
 			if(definition.has("category")) {
 				observation.category = definition.get("category").getAsString();
+			}
+			this.exited = time;
+			return true;
+		case DIAGNOSTICREPORT:
+			primary_code = definition.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("code").getAsString();
+			number_of_observations = definition.get("number_of_observations").getAsInt();
+			Report report = person.record.report(time, primary_code, number_of_observations);
+			report.name = this.name;
+			if(definition.has("codes")) {
+				definition.get("codes").getAsJsonArray().forEach(item -> {
+					Code code = new Code((JsonObject) item);
+					report.codes.add(code);
+				});
 			}
 			this.exited = time;
 			return true;
