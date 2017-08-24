@@ -1,6 +1,6 @@
 package org.mitre.synthea.export;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +19,7 @@ import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
+import org.hl7.fhir.dstu3.model.DiagnosticReport.DiagnosticReportStatus;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Extension;
@@ -340,7 +341,9 @@ public class FhirStu3
 		observationResource.setEffective(convertFhirDateTime(observation.start, true));
 		observationResource.setIssued(new Date(observation.start));
 		
-		return newEntry(bundle, observationResource);
+		BundleEntryComponent entry = newEntry(bundle, observationResource);
+		observation.fullUrl = entry.getFullUrl();
+		return entry;
 	}
 	
 	/**
@@ -435,11 +438,17 @@ public class FhirStu3
 			BundleEntryComponent encounterEntry, Report report)
 	{
 		DiagnosticReport reportResource = new DiagnosticReport();
-		
+		reportResource.setStatus(DiagnosticReportStatus.FINAL);
+		reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
 		reportResource.setSubject(new Reference(personEntry.getFullUrl()));
 		reportResource.setContext(new Reference(encounterEntry.getFullUrl()));
-		
-		// TODO - everything
+		reportResource.setEffective(convertFhirDateTime(report.start, true));
+		reportResource.setIssued(new Date(report.start));
+		for(Observation observation : report.observations) {
+			Reference reference = new Reference(observation.fullUrl);
+			reference.setDisplay(observation.codes.get(0).display);
+			reportResource.addResult(reference);
+		}
 		
 		return newEntry(bundle, reportResource);
 	}
