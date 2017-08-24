@@ -176,7 +176,7 @@ class FhirDstu2Test < Minitest::Test
     assert_equal('91935009', allergy.substance.coding[0].code)
     assert_equal('Food Allergy: Peanuts', allergy.substance.coding[0].display)
     assert_equal('active', allergy.status)
-    assert(allergy.criticality == 'low' || allergy.criticality == 'high')
+    assert(allergy.criticality == 'CRITL' || allergy.criticality == 'CRITH')
     assert_equal(Synthea::Output::FhirDstu2Record.convert_fhir_date_time(@time, 'time'), allergy.recordedDate)
     assert_equal('food', allergy.category)
     assert_empty @fhir_record.validate

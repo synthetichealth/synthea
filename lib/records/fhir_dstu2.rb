@@ -298,7 +298,7 @@ module Synthea
                                                       'status' => allergy['end_time'] ? 'inactive' : 'active',
                                                       'type' => 'allergy',
                                                       'category' => 'food',
-                                                      'criticality' => %w(low high).sample,
+                                                      'criticality' => %w(CRITL CRITH).sample,
                                                       'verificationStatus' => 'confirmed',
                                                       'patient' => { 'reference' => patient.fullUrl.to_s },
                                                       'substance' => { 'coding' => [{
