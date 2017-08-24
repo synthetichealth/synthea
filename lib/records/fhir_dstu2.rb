@@ -298,7 +298,7 @@ module Synthea
                                                       'status' => allergy['end_time'] ? 'inactive' : 'active',
                                                       'type' => 'allergy',
                                                       'category' => 'food',
-                                                      'criticality' => %w(low high).sample,
+                                                      'criticality' => %w(CRITL CRITH).sample,
                                                       'verificationStatus' => 'confirmed',
                                                       'patient' => { 'reference' => patient.fullUrl.to_s },
                                                       'substance' => { 'coding' => [{
@@ -519,19 +519,13 @@ module Synthea
 
         fhir_goal.description =
           if goal[:text]
-            FHIR::DSTU2::CodeableConcept.new('text' => goal[:text])
+            goal[:text]
           elsif goal[:codes]
-            code = goal[:codes][0]
-            FHIR::DSTU2::CodeableConcept.new('coding' => [{ 'system' => 'http://loinc.org', 'code' => code.code, 'display' => code.display }],
-                                             'text' => code.display)
+            goal[:codes][0].display
           elsif goal[:observation]
             # build up our own text from the observation condition, similar to the graphviz logic
             logic = goal[:observation]
-            text = "#{logic.codes[0].display} #{logic.operator} #{logic.value}"
-
-            # don't use the code here because the code by itself doesn't specify the goal,
-            # it specifies the attribute on which a goal has been set
-            FHIR::DSTU2::CodeableConcept.new('text' => text)
+            "#{logic.codes[0].display} #{logic.operator} #{logic.value}"
           end
 
         reasons = []
