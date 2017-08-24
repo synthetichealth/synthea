@@ -414,7 +414,7 @@ class FhirDstu2Test < Minitest::Test
     #goal
     goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::DSTU2::Goal)}.resource
     assert_equal('achieved', goal.status)
-    assert_equal('Reduce weight to 180 lbs', goal.description.text)
+    assert_equal('Reduce weight to 180 lbs', goal.description)
     assert_equal("#{condition1fhir.fullUrl}", goal.addresses[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", goal.addresses[1].reference)
     assert_empty @fhir_record.validate
@@ -428,7 +428,7 @@ class FhirDstu2Test < Minitest::Test
 
     goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::DSTU2::Goal)}.resource
     assert_equal('achieved', goal.status)
-    assert_equal('Reduce weight to 180 lbs', goal.description.text)
+    assert_equal('Reduce weight to 180 lbs', goal.description)
     assert_empty @fhir_record.validate
   end
 
@@ -441,9 +441,7 @@ class FhirDstu2Test < Minitest::Test
 
     goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::DSTU2::Goal)}.resource
     assert_equal('achieved', goal.status)
-    assert_equal('123456', goal.description.coding[0].code)
-    assert_equal('Some CarePlan Code Here', goal.description.coding[0].display)
-    assert_equal('Some CarePlan Code Here', goal.description.text)
+    assert_equal('Some CarePlan Code Here', goal.description)
     assert_empty @fhir_record.validate
   end
 
@@ -457,7 +455,7 @@ class FhirDstu2Test < Minitest::Test
 
     goal = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::DSTU2::Goal)}.resource
     assert_equal('achieved', goal.status)
-    assert_equal('Wellness > 100', goal.description.text)
+    assert_equal('Wellness > 100', goal.description)
     assert_empty @fhir_record.validate
   end
 end
