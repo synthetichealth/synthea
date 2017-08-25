@@ -33,6 +33,7 @@ public class Person {
 	public static final String EDUCATION = "education";
 	public static final String EDUCATION_LEVEL = "education_level";
 	public static final String OCCUPATION_LEVEL = "occupation_level";
+	public static final String intervention = "CHW Intervention";
 	public final Random random;
 	public final long seed;
 	public Map<String,Object> attributes;
@@ -175,7 +176,6 @@ public class Person {
 	
 	// Community Health Workers API -----------------------------------------------------------
 	public static final String CHW = "communityHealthWorker";
-	public static final String intervention = "CHW Intervention";
 	
 	public void setCHW(CommunityHealthWorker chw){
 		attributes.put(CHW, chw);
@@ -212,7 +212,7 @@ public class Person {
 								chws.put(age, chw);
 								if(chws.size() > 0){
 									boolean chwIntervention = true;
-									person.attributes.put(intervention, chwIntervention);
+									person.attributes.put(Person.intervention, chwIntervention);
 									}
 								person.attributes.put(CHW, chws);	
 							}
@@ -224,7 +224,7 @@ public class Person {
 							chws.put(age, chw);
 							if(chws.size() > 0){
 								boolean chwIntervention = true;
-								person.attributes.put(intervention, chwIntervention);
+								person.attributes.put(Person.intervention, chwIntervention);
 								}
 						person.attributes.put(CHW, chws);
 						}

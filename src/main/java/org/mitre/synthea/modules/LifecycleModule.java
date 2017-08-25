@@ -305,7 +305,7 @@ public final class LifecycleModule extends Module
 		int age = person.ageInYears(time);
 		
 		if(person.attributes.containsKey("SMOKER")){
-			if(person.attributes.get("SMOKER").equals(true) && person.attributes.containsKey("CHW Intervention")){
+			if(person.attributes.get("SMOKER").equals(true) && person.attributes.containsKey(Person.intervention)){
 				int smokingDuration = age - 16;
 							
 				if(smokingDuration < 5){
