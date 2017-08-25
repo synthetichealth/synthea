@@ -2,6 +2,7 @@ package org.mitre.synthea.modules;
 
 import java.util.Calendar;
 
+import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
@@ -220,6 +221,24 @@ public class Logic {
 				if(person.attributes.containsKey(attribute)) {
 					Medication medication = (Medication) person.attributes.get(attribute);
 					return person.record.medicationActive(medication.type);
+				} else {
+					return false;
+				}
+			}
+		case ACTIVE_CAREPLAN:
+			if(definition.has("codes")) {
+				for(JsonElement item : definition.get("codes").getAsJsonArray()) {
+					Code code = new Code((JsonObject) item);
+					if(person.record.careplanActive(code.code)) {
+						return true;
+					}
+				}
+				return false;
+			} else if(definition.has("referenced_by_attribute")) {
+				attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					CarePlan carePlan = (CarePlan) person.attributes.get(attribute);
+					return person.record.careplanActive(carePlan.type);
 				} else {
 					return false;
 				}

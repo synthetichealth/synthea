@@ -64,6 +64,7 @@ public class HealthRecord {
 	 * of associated codes.
 	 */
 	public class Entry {
+		public String fullUrl;
 		public String name;
 		public long start;
 		public long stop;
@@ -328,16 +329,18 @@ public class HealthRecord {
 		return procedure;
 	}
 
-	public void report(long time, String type, int numberOfObservations) {
+	public Report report(long time, String type, int numberOfObservations) {
 		Encounter encounter = currentEncounter(time);
 		List<Observation> observations = null;
 		if(encounter.observations.size() > numberOfObservations) {
 			int fromIndex = encounter.observations.size() - numberOfObservations - 1;
 			int toIndex = encounter.observations.size() - 1;
-			observations = encounter.observations.subList(fromIndex, toIndex);			
+			observations = new ArrayList<Observation>();
+			observations.addAll(encounter.observations.subList(fromIndex, toIndex));
 		}
 		Report report = new Report(time, type, observations);
 		encounter.reports.add(report);
+		return report;
 	}
 	
 	public Encounter encounterStart(long time, String type) {
