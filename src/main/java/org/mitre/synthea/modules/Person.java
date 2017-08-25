@@ -176,7 +176,6 @@ public class Person {
 	// Community Health Workers API -----------------------------------------------------------
 	public static final String CHW = "communityHealthWorker";
 	public static final String intervention = "CHW Intervention";
-
 	
 	public void setCHW(CommunityHealthWorker chw){
 		attributes.put(CHW, chw);
@@ -210,31 +209,23 @@ public class Person {
 					Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get(CHW);
 					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
 						if(randomChance >= 99){
-							Random rand = new Random();
-							int randomAge = rand.nextInt(age);
-							if(randomAge >= 20 && randomAge <= 65){
-								chws.put(randomAge, chw);
+								chws.put(age, chw);
 								if(chws.size() > 0){
 									boolean chwIntervention = true;
 									person.attributes.put(intervention, chwIntervention);
 									}
 								person.attributes.put(CHW, chws);	
-								}
 							}
 				}
 				else{
 					Map<Integer, CommunityHealthWorker> chws = new HashMap<Integer, CommunityHealthWorker>();
 					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
 					if(randomChance >= 99){
-						Random rand = new Random();
-						int randomAge = rand.nextInt(age);
-						if(randomAge >= 20 && randomAge <= 65){
-							chws.put(randomAge, chw);
+							chws.put(age, chw);
 							if(chws.size() > 0){
 								boolean chwIntervention = true;
 								person.attributes.put(intervention, chwIntervention);
 								}
-							}
 						person.attributes.put(CHW, chws);
 						}
 				}

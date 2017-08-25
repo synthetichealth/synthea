@@ -198,6 +198,8 @@ public class State {
 				if(person.attributes.containsKey(activeKey)) {
 					person.attributes.remove(activeKey);
 					
+					person.chwEncounter(person, time);
+
 					// find closest provider and increment encounters count
 					Provider provider = Provider.findClosestService(person, "wellness");
 					person.addCurrentProvider(module, provider);

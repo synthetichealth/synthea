@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public final class LifecycleModule extends Module
 		if( age(person, time) ) {
 			grow(person, time);
 		}
-		person.chwEncounter(person, time);
+		quitSmoking(person, time); 
 		diabeticVitalSigns(person, time);
 		death(person, time);
 		
@@ -297,6 +298,56 @@ public final class LifecycleModule extends Module
 		double adjustedRisk = Utilities.convertRiskToTimestep(yearlyRisk, oneYearInMs);
 		
 		return adjustedRisk;
+	}
+	
+	public static void quitSmoking(Person person, long time){
+		
+		int age = person.ageInYears(time);
+		
+		if(person.attributes.containsKey("SMOKER")){
+			if(person.attributes.get("SMOKER").equals(true) && person.attributes.containsKey("CHW Intervention")){
+				int smokingDuration = age - 16;
+							
+				if(smokingDuration < 5){
+					if(person.rand() < .8){
+						person.attributes.put("SMOKER", false);
+						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));
+					}
+				} else if(smokingDuration > 5 && smokingDuration < 10){
+					if(person.rand() < .6){
+						person.attributes.put("SMOKER", false);
+						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));					}
+				}
+				else if(smokingDuration > 10 && smokingDuration < 20){
+					if(person.rand() < .4){
+						person.attributes.put("SMOKER", false);
+						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));					}
+				} else{
+					if(person.rand() < .2){
+						person.attributes.put("SMOKER", false);
+						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));					}
+				}
+			}
+		}
+	}
+	
+	//get patient's age at first contact with CHW
+	
+	public static int ageFirstCHWIntervention (Person person){
+		
+		Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get("communityHealthWorker");
+
+		ArrayList<Integer> list = new ArrayList<Integer>(chws.keySet());
+		
+		  int age = list.get(0);
+		  
+		  for(int i=1;i<list.size();i++){
+		    if(list.get(i) < age){
+			  age = list.get(i);
+			}
+		  }
+		return age;
+		
 	}
 	
 }
