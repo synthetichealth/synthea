@@ -53,7 +53,7 @@ public class CommunityHealthWorker {
 	//public static boolean enabledforER;
 	//public static boolean discharged;
 	
-	public static Map<String,Object> services;
+	public Map<String,Object> services;
 	
 	//TODO possible arguments, randomization/computation of services later on
 	public CommunityHealthWorker(){ 
@@ -94,6 +94,7 @@ public class CommunityHealthWorker {
 			}
 			workers.get(city).add(worker);
 		}
+
 		return workers;
 	}
 	
@@ -101,26 +102,26 @@ public class CommunityHealthWorker {
 		
 		CommunityHealthWorker chw = new CommunityHealthWorker();
 		
-		services.put(CommunityHealthWorker.ALCOHOL_SCREENING, chw);
-		services.put(CommunityHealthWorker.ASPIRIN_MEDICATION, chw);
-		services.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, chw);
-		services.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, chw);
-		services.put(CommunityHealthWorker.DIABETES_SCREENING, chw);
-		services.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, chw);
-		services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, chw);
-		services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, chw);
-		services.put(CommunityHealthWorker.OBESITY_SCREENING, chw);
-		services.put(CommunityHealthWorker.ORGANIZE, chw);
-		services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, chw);
-		services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, chw);
-		services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, chw);
+		chw.services.put(CommunityHealthWorker.ALCOHOL_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.ASPIRIN_MEDICATION, true);
+		chw.services.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.DIABETES_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, true);
+		chw.services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.OBESITY_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.ORGANIZE, true);
+		chw.services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, true);
+		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, true);
 			
-		services.put(CommunityHealthWorker.STATIN_Medication, chw);
-		services.put(CommunityHealthWorker.TOBACCO_SCREENING, chw);
-		services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, chw);
+		chw.services.put(CommunityHealthWorker.STATIN_Medication, true);
+		chw.services.put(CommunityHealthWorker.TOBACCO_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, true);
 		Location.assignCity(chw);
 		
-		services.put(DEPLOYMENT, deploymentType);
+		chw.services.put(DEPLOYMENT, deploymentType);
 
 		return chw;
 	}
@@ -134,7 +135,7 @@ public class CommunityHealthWorker {
 		switch(deploymentType) {
 		case DEPLOYMENT_COMMUNITY:
 			if(workers.containsKey(city)) {
-				probability = (workers.get(city).size() * 100) / Location.getPopulation(city);
+				probability = (double)(workers.get(city).size()) / (double)Location.getPopulation(city);
 			}
 			break;
 		case DEPLOYMENT_EMERGENCY:
@@ -146,8 +147,7 @@ public class CommunityHealthWorker {
 		}
 		if(person.rand() < probability && workers.containsKey(city)) {
 			List<CommunityHealthWorker> candidates = workers.get(city).stream()
-					.filter(p -> p.services.get(CITY).equals(person.attributes.get(Person.CITY))
-							  && p.services.get(DEPLOYMENT).equals(deploymentType))
+					.filter(p -> p.services.get(DEPLOYMENT).equals(deploymentType))
 					.collect(Collectors.toList());
 			if(!candidates.isEmpty()) {
 				worker = candidates.get((int)person.rand(0, candidates.size()-1));
