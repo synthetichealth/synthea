@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -62,7 +63,10 @@ public final class LifecycleModule extends Module
 			grow(person, time);
 		}
 		Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_COMMUNITY);
-		quitSmoking(person, time); 
+		startSmoking(person, time);
+		startAlcoholism(person, time);
+		quitSmoking(person, time);
+		quitAlcoholism(person, time);
 		diabeticVitalSigns(person, time);
 		death(person, time);
 		
@@ -306,6 +310,59 @@ public final class LifecycleModule extends Module
 		return adjustedRisk;
 	}
 	
+	private static void startSmoking(Person person, long time)
+	{
+		// 9/10 smokers start before age 18. We will use 16.
+	    // http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
+		if (person.attributes.get(Person.SMOKER) == null && person.ageInYears(time) == 16)
+		{
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(time);
+			long year = calendar.get(Calendar.YEAR);
+			Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
+			person.attributes.put(Person.SMOKER, smoker);
+			double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+			person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quit_smoking_baseline);
+		}
+	}
+	
+	private static double likelihoodOfBeingASmoker(long year)
+	{
+        // 16.1% of MA are smokers in 2016. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
+        // but the rate is decreasing over time
+		// http://www.cdc.gov/tobacco/data_statistics/tables/trends/cig_smoking/
+		// selected #s:
+		// 1965 - 42.4%
+		// 1975 - 37.1%
+		// 1985 - 30.1%
+		// 1995 - 24.7%
+		// 2005 - 20.9%
+		// 2015 - 16.1%
+		// assume that it was never significantly higher than 42% pre-1960s, but will continue to drop slowly after 2016
+		// it's decreasing about .5% per year
+		if (year < 1965)
+		{
+			return 0.424;
+		}
+		
+		return ((year * -0.4865) + 996.41) / 100.0;
+	}
+	
+	private static void startAlcoholism(Person person, long time)
+	{
+		// TODO there are various types of alcoholics with different characteristics
+		// including age of onset of dependence. we pick 25 as a starting point
+	    // https://www.therecoveryvillage.com/alcohol-abuse/types-alcoholics/
+		if (person.attributes.get(Person.ALCOHOLIC) == null && person.ageInYears(time) == 25)
+		{
+			Boolean alcoholic = person.rand() < 0.025; // TODO assume about 8 mil alcoholics/320 mil gen pop
+			person.attributes.put(Person.ALCOHOLIC, alcoholic);
+			double quit_alcoholism_baseline = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
+			person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quit_alcoholism_baseline);
+		}
+	}
+	
+	
 	public static void quitSmoking(Person person, long time){
 		
 		int age = person.ageInYears(time);
@@ -320,10 +377,35 @@ public final class LifecycleModule extends Module
 				} else {
 					double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
 					double quit_smoking_timestep_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
+					probability += quit_smoking_timestep_delta;
 					if(probability < quit_smoking_baseline) {
 						probability = quit_smoking_baseline;
 					}
 					person.attributes.put(QUIT_SMOKING_PROBABILITY, probability);
+				}
+			}
+		}
+	}
+	
+	public static void quitAlcoholism(Person person, long time){
+		
+		int age = person.ageInYears(time);
+		
+		if(person.attributes.containsKey(Person.ALCOHOLIC)){
+			if(person.attributes.get(Person.ALCOHOLIC).equals(true))
+			{
+				double probability = (double) person.attributes.get(QUIT_ALCOHOLISM_PROBABILITY);
+				if (person.rand() < probability) {
+					person.attributes.put(Person.ALCOHOLIC, false);
+					person.attributes.put(QUIT_ALCOHOLISM_AGE, age);
+				} else {
+					double quit_alcoholism_baseline = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
+					double quit_alcoholism_timestep_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.timestep_delta", "-0.1"));
+					probability += quit_alcoholism_timestep_delta;
+					if(probability < quit_alcoholism_baseline) {
+						probability = quit_alcoholism_baseline;
+					}
+					person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, probability);
 				}
 			}
 		}

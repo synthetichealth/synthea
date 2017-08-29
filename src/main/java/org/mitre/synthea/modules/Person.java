@@ -36,6 +36,7 @@ public class Person {
 	public static final String OCCUPATION_LEVEL = "occupation_level";
 	public static final String CHW_INTERVENTION = "CHW Intervention";
 	public static final String SMOKER = "smoker";
+	public static final String ALCOHOLIC = "alcoholic";
 
 	public final Random random;
 	public final long seed;
@@ -191,6 +192,16 @@ public class Person {
 				probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
 				person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
 			}
+			
+			if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false)) {
+				double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
+				double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
+				double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
+				int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
+				probability += (quit_alcoholism_chw_delta / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
+				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
+			}
+			
 		}
 	}
 	
