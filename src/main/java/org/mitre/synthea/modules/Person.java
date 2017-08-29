@@ -33,7 +33,7 @@ public class Person {
 	public static final String EDUCATION = "education";
 	public static final String EDUCATION_LEVEL = "education_level";
 	public static final String OCCUPATION_LEVEL = "occupation_level";
-	public static final String intervention = "CHW Intervention";
+	public static final String INTERVENTION = "CHW Intervention";
 	public final Random random;
 	public final long seed;
 	public Map<String,Object> attributes;
@@ -207,24 +207,22 @@ public class Person {
 
 				if((person.attributes.containsKey(CHW))){
 					Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get(CHW);
-					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
+					int randomChance = (int) person.rand(1, 100);
 						if(randomChance >= 99){
 								chws.put(age, chw);
 								if(chws.size() > 0){
-									boolean chwIntervention = true;
-									person.attributes.put(Person.intervention, chwIntervention);
+									person.attributes.put(Person.INTERVENTION, true);
 									}
 								person.attributes.put(CHW, chws);	
 							}
 				}
 				else{
 					Map<Integer, CommunityHealthWorker> chws = new HashMap<Integer, CommunityHealthWorker>();
-					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
+					int randomChance = (int) person.rand(1, 100);
 					if(randomChance >= 99){
 							chws.put(age, chw);
 							if(chws.size() > 0){
-								boolean chwIntervention = true;
-								person.attributes.put(Person.intervention, chwIntervention);
+								person.attributes.put(Person.INTERVENTION, true);
 								}
 						person.attributes.put(CHW, chws);
 						}

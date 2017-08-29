@@ -305,27 +305,28 @@ public final class LifecycleModule extends Module
 		int age = person.ageInYears(time);
 		
 		if(person.attributes.containsKey("SMOKER")){
-			if(person.attributes.get("SMOKER").equals(true) && person.attributes.containsKey(Person.intervention)){
+			if(person.attributes.get("SMOKER").equals(true) && person.attributes.containsKey(Person.INTERVENTION)){
 				int smokingDuration = age - 16;
+				int ageFirstCHW = ageFirstCHWIntervention(person);
 							
 				if(smokingDuration < 5){
 					if(person.rand() < .8){
 						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));
+						person.attributes.put("QUIT SMOKING", ageFirstCHW);
 					}
 				} else if(smokingDuration > 5 && smokingDuration < 10){
 					if(person.rand() < .6){
 						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));					}
+						person.attributes.put("QUIT SMOKING", ageFirstCHW);					}
 				}
 				else if(smokingDuration > 10 && smokingDuration < 20){
 					if(person.rand() < .4){
 						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));					}
+						person.attributes.put("QUIT SMOKING", ageFirstCHW);					}
 				} else{
 					if(person.rand() < .2){
 						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHWIntervention(person));					}
+						person.attributes.put("QUIT SMOKING", ageFirstCHW);					}
 				}
 			}
 		}
