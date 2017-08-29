@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
@@ -256,13 +257,15 @@ public final class CardiovascularDiseaseModule extends Module
 	{
 		// 9/10 smokers start before age 18. We will use 16.
 	    // http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
-		if (person.attributes.get("SMOKER") == null && person.ageInYears(time) == 16)
+		if (person.attributes.get(Person.SMOKER) == null && person.ageInYears(time) == 16)
 		{
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(time);
 			long year = calendar.get(Calendar.YEAR);
 			Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
-			person.attributes.put("SMOKER", smoker);
+			person.attributes.put(Person.SMOKER, smoker);
+			double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+			person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quit_smoking_baseline);
 		}
 	}
 	
@@ -341,7 +344,7 @@ public final class CardiovascularDiseaseModule extends Module
       framingham_points += age_chd[short_age_range];
       framingham_points += age_chol_chd[long_age_range][chol_range];
 
-      if ((Boolean)person.attributes.getOrDefault("SMOKER", false))
+      if ((Boolean)person.attributes.getOrDefault(Person.SMOKER, false))
       {
         framingham_points += age_smoke_chd[long_age_range];
       }
@@ -628,7 +631,7 @@ public final class CardiovascularDiseaseModule extends Module
 		}
 		
 		int stroke_points = 0;
-		if ( (Boolean) person.attributes.getOrDefault("SMOKER", false))
+		if ( (Boolean) person.attributes.getOrDefault(Person.SMOKER, false))
 		{
 			stroke_points += 3;
 		}

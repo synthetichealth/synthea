@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Provider;
@@ -33,7 +34,9 @@ public class Person {
 	public static final String EDUCATION = "education";
 	public static final String EDUCATION_LEVEL = "education_level";
 	public static final String OCCUPATION_LEVEL = "occupation_level";
-	public static final String INTERVENTION = "CHW Intervention";
+	public static final String CHW_INTERVENTION = "CHW Intervention";
+	public static final String SMOKER = "smoker";
+
 	public final Random random;
 	public final long seed;
 	public Map<String,Object> attributes;
@@ -174,61 +177,20 @@ public class Person {
 		return false;
 	}
 	
-	// Community Health Workers API -----------------------------------------------------------
-	public static final String CHW = "communityHealthWorker";
-	
-	public void setCHW(CommunityHealthWorker chw){
-		attributes.put(CHW, chw);
-	}
-	
-	
-	public CommunityHealthWorker getCHW(){
-		return (CommunityHealthWorker) attributes.get(CHW);
-	}
-	
-	//TODO incorporate this method 
-	public boolean chwEncounterChance(Person person, CommunityHealthWorker chw){
-		if(person.CITY.equals(chw.CITY)){
-			return true;
-		} else{
-			return false;
-		}
-	}
-	
 	public static void chwEncounter(Person person, long time){
-		int age = person.ageInYears(time);
-		CommunityHealthWorker chw = CommunityHealthWorker.generateCHW();
-		
-		//TODO additional rules/percentages to define these encounters more probabilistically 
-		
-		//note: add a "CHW intervention" count to the health record (i.e. encounters, observations, etc)
-
-		if(age >= 20 && age <= 65){
-
-				if((person.attributes.containsKey(CHW))){
-					Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get(CHW);
-					int randomChance = (int) person.rand(1, 100);
-						if(randomChance >= 99){
-								chws.put(age, chw);
-								if(chws.size() > 0){
-									person.attributes.put(Person.INTERVENTION, true);
-									}
-								person.attributes.put(CHW, chws);	
-							}
-				}
-				else{
-					Map<Integer, CommunityHealthWorker> chws = new HashMap<Integer, CommunityHealthWorker>();
-					int randomChance = (int) person.rand(1, 100);
-					if(randomChance >= 99){
-							chws.put(age, chw);
-							if(chws.size() > 0){
-								person.attributes.put(Person.INTERVENTION, true);
-								}
-						person.attributes.put(CHW, chws);
-						}
-				}
+		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(person, time);
+		if(chw != null) {
+			int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
+			chw_interventions++;
+			person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
+			if((boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
+				double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
+				double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
+				probability += quit_smoking_chw_delta;
+				person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
 			}
 		}
+	}
 	
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";

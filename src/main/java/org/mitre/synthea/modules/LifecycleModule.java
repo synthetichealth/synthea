@@ -24,7 +24,12 @@ public final class LifecycleModule extends Module
 	private static final Faker faker = new Faker();
 	private static final String AGE = "AGE";
 	private static final String AGE_MONTHS = "AGE_MONTHS";
-	
+	public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
+	public static final String QUIT_SMOKING_AGE = "quit smoking age";
+	public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
+	public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
+	public static final String ADHERENCE = "adherence";
+
 	public LifecycleModule() {
 		this.name = "Lifecycle";
 	}
@@ -304,51 +309,22 @@ public final class LifecycleModule extends Module
 		
 		int age = person.ageInYears(time);
 		
-		if(person.attributes.containsKey("SMOKER")){
-			if(person.attributes.get("SMOKER").equals(true) && person.attributes.containsKey(Person.INTERVENTION)){
-				int smokingDuration = age - 16;
-				int ageFirstCHW = ageFirstCHWIntervention(person);
-							
-				if(smokingDuration < 5){
-					if(person.rand() < .8){
-						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHW);
+		if(person.attributes.containsKey(Person.SMOKER)){
+			if(person.attributes.get(Person.SMOKER).equals(true))
+			{
+				double probability = (double) person.attributes.get(QUIT_SMOKING_PROBABILITY);
+				if (person.rand() < probability) {
+					person.attributes.put(Person.SMOKER, false);
+					person.attributes.put(QUIT_SMOKING_AGE, age);
+				} else {
+					double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+					double quit_smoking_timestep_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
+					if(probability < quit_smoking_baseline) {
+						probability = quit_smoking_baseline;
 					}
-				} else if(smokingDuration > 5 && smokingDuration < 10){
-					if(person.rand() < .6){
-						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHW);					}
-				}
-				else if(smokingDuration > 10 && smokingDuration < 20){
-					if(person.rand() < .4){
-						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHW);					}
-				} else{
-					if(person.rand() < .2){
-						person.attributes.put("SMOKER", false);
-						person.attributes.put("QUIT SMOKING", ageFirstCHW);					}
+					person.attributes.put(QUIT_SMOKING_PROBABILITY, probability);
 				}
 			}
 		}
 	}
-	
-	//get patient's age at first contact with CHW
-	
-	public static int ageFirstCHWIntervention (Person person){
-		
-		Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get("communityHealthWorker");
-
-		ArrayList<Integer> list = new ArrayList<Integer>(chws.keySet());
-		
-		  int age = list.get(0);
-		  
-		  for(int i=1;i<list.size();i++){
-		    if(list.get(i) < age){
-			  age = list.get(i);
-			}
-		  }
-		return age;
-		
-	}
-	
 }

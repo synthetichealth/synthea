@@ -160,6 +160,5 @@ public class Location {
 		Random random = new Random();
 		String city = Location.randomCityName(random);
 		chw.services.put(CommunityHealthWorker.CITY, city);
-		
 	}
 }
