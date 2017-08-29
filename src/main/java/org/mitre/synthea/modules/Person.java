@@ -185,8 +185,10 @@ public class Person {
 			person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
 			if((boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
 				double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
+				double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
 				double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
-				probability += quit_smoking_chw_delta;
+				int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
+				probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
 				person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
 			}
 		}
