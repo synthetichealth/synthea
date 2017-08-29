@@ -61,6 +61,7 @@ public final class LifecycleModule extends Module
 		if( age(person, time) ) {
 			grow(person, time);
 		}
+		Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_COMMUNITY);
 		quitSmoking(person, time); 
 		diabeticVitalSigns(person, time);
 		death(person, time);

@@ -177,8 +177,8 @@ public class Person {
 		return false;
 	}
 	
-	public static void chwEncounter(Person person, long time){
-		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(person, time);
+	public static void chwEncounter(Person person, long time, String deploymentType){
+		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(person, time, deploymentType);
 		if(chw != null) {
 			int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
 			chw_interventions++;
