@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Provider;
 
