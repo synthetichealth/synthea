@@ -182,6 +182,16 @@ public class Person {
 	public static void chwEncounter(Person person, long time, String deploymentType){
 		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(person, time, deploymentType);
 		if(chw != null) {
+
+			// encounter class doesn't fit into the FHIR-prescribed set
+			// so we use our own "community" encounter class
+			Encounter enc = person.record.encounterStart(time, "community");
+			enc.chw = chw;
+			// TODO - different codes based on different services offered?
+			enc.codes.add( new Code("SNOMED-CT","389067005","Community health procedure") );
+
+			enc.stop = time + TimeUnit.MINUTES.toMillis(35); // encounter lasts 35 minutes on avg
+
 			int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
 			chw_interventions++;
 			person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
@@ -203,12 +213,11 @@ public class Person {
 				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
 			}
 			
-				double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
-				double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
-				probability += (adherence_chw_delta);
-				person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
-			}
-		
+			double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
+			double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
+			probability += (adherence_chw_delta);
+			person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
+		}
 	}
 	
 	// Providers API -----------------------------------------------------------
