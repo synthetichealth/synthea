@@ -161,7 +161,7 @@ public class State {
 				counter = (int) person.attributes.get(attribute);
 			}
 			String action = definition.get("action").getAsString();
-			if(action == "increment") {
+			if(action.equals("increment")) {
 				counter++;
 			} else {
 				counter--;
@@ -197,7 +197,7 @@ public class State {
 				String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module;
 				if(person.attributes.containsKey(activeKey)) {
 					person.attributes.remove(activeKey);
-					
+
 					// find closest provider and increment encounters count
 					Provider provider = Provider.findClosestService(person, "wellness");
 					person.addCurrentProvider(module, provider);
@@ -210,11 +210,15 @@ public class State {
 					// Block until we're in a wellness encounter... then proceed.
 					return false;
 				}
-			} else {
-				// TODO: if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW interventions
+			} else {				
 				String encounter_class = definition.get("encounter_class").getAsString();
 				Encounter encounter = person.record.encounterStart(time, encounter_class);
-				
+
+				if(encounter_class.equals("emergency")) {
+					// if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW interventions
+					Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_EMERGENCY);
+				}
+
 				// find closest provider and increment encounters count
 				Provider provider = Provider.findClosestService(person, encounter_class);
 				person.addCurrentProvider(module, provider);
@@ -241,10 +245,12 @@ public class State {
 				return true;
 			}
 		case ENCOUNTEREND:
-			// TODO: if CHW policy is enabled for discharge follow up, add CHW interventions
+
 			Encounter encounter = person.record.currentEncounter(time);
 			if(encounter.type != EncounterType.WELLNESS.toString()) {
 				encounter.stop = time;
+				// if CHW policy is enabled for discharge follow up, add CHW interventions for all non-wellness encounters
+				Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_POSTDISCHARGE);
 			}
 			if(definition.has("discharge_disposition")) {
 				Code code = new Code((JsonObject) definition.get("discharge_disposition"));
@@ -400,7 +406,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name == reason) {
+						if(entry.name.equals(reason)) {
 							medication.reasons.add(entry.type);
 						}
 					}
@@ -470,7 +476,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name == reason) {
+						if(entry.name.equals(reason)) {
 							careplan.reasons.add(entry.type);
 						}
 					}
@@ -518,7 +524,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name == reason) {
+						if(entry.name.equals(reason)) {
 							procedure.reasons.add(entry.type);
 						}
 					}
@@ -553,7 +559,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name == state_name) {
+						if(entry.name.equals(state_name)) {
 							reason = entry.codes.get(0);
 						}
 					}

@@ -30,7 +30,6 @@ public final class CardiovascularDiseaseModule extends Module
 		// since this is intended to only be temporary
 		// until we can convert this module to GMF
 		
-		startSmoking(person, time);
 		calculateCardioRisk(person, time);
 		onsetCoronaryHeartDisease(person, time);
 		coronaryHeartDiseaseProgression(person, time);
@@ -251,43 +250,7 @@ public final class CardiovascularDiseaseModule extends Module
 	
 	////////////////////
 	// MIGRATED RULES //
-	////////////////////
-	private static void startSmoking(Person person, long time)
-	{
-		// 9/10 smokers start before age 18. We will use 16.
-	    // http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
-		if (person.attributes.get("SMOKER") == null && person.ageInYears(time) == 16)
-		{
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(time);
-			long year = calendar.get(Calendar.YEAR);
-			Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
-			person.attributes.put("SMOKER", smoker);
-		}
-	}
-	
-	private static double likelihoodOfBeingASmoker(long year)
-	{
-        // 16.1% of MA are smokers in 2016. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
-        // but the rate is decreasing over time
-		// http://www.cdc.gov/tobacco/data_statistics/tables/trends/cig_smoking/
-		// selected #s:
-		// 1965 - 42.4%
-		// 1975 - 37.1%
-		// 1985 - 30.1%
-		// 1995 - 24.7%
-		// 2005 - 20.9%
-		// 2015 - 16.1%
-		// assume that it was never significantly higher than 42% pre-1960s, but will continue to drop slowly after 2016
-		// it's decreasing about .5% per year
-		if (year < 1965)
-		{
-			return 0.424;
-		}
-		
-		return ((year * -0.4865) + 996.41) / 100.0;
-	}
-	
+	////////////////////	
 	private static int bound(int value, int min, int max)
 	{
 		return Math.min(Math.max(value, min), max);
@@ -341,7 +304,7 @@ public final class CardiovascularDiseaseModule extends Module
       framingham_points += age_chd[short_age_range];
       framingham_points += age_chol_chd[long_age_range][chol_range];
 
-      if ((Boolean)person.attributes.getOrDefault("SMOKER", false))
+      if ((Boolean)person.attributes.getOrDefault(Person.SMOKER, false))
       {
         framingham_points += age_smoke_chd[long_age_range];
       }
@@ -628,7 +591,7 @@ public final class CardiovascularDiseaseModule extends Module
 		}
 		
 		int stroke_points = 0;
-		if ( (Boolean) person.attributes.getOrDefault("SMOKER", false))
+		if ( (Boolean) person.attributes.getOrDefault(Person.SMOKER, false))
 		{
 			stroke_points += 3;
 		}

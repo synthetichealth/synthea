@@ -1,3 +1,4 @@
+import org.mitre.synthea.modules.CommunityHealthWorker;
 import org.mitre.synthea.modules.Generator;
 import org.mitre.synthea.modules.Person;
 //import org.mitre.synthea.modules.Module;
@@ -22,6 +23,13 @@ public class App {
 			for(VitalSign vitalSign : person.vitalSigns.keySet()) {
 				System.out.format("  * %25s = %6.2f\n", vitalSign, person.getVitalSign(vitalSign).doubleValue());
 			}
+			System.out.format("Number of CHW Interventions: %d\n", person.attributes.get(Person.CHW_INTERVENTION));
 		}
+
+		System.out.format("Number of Towns: %d\n", CommunityHealthWorker.workers.size());
+		System.out.format("Number of CHWs: %d\n", CommunityHealthWorker.budget / CommunityHealthWorker.cost);
+//		for(String city : CommunityHealthWorker.workers.keySet()) {
+//			System.out.format("Number of CHWs in %s: %d\n", city, CommunityHealthWorker.workers.get(city).size());
+//		}
 	}
 }

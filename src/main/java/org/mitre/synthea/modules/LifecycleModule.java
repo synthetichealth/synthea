@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +24,12 @@ public final class LifecycleModule extends Module
 	private static final Faker faker = new Faker();
 	private static final String AGE = "AGE";
 	private static final String AGE_MONTHS = "AGE_MONTHS";
-	
+	public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
+	public static final String QUIT_SMOKING_AGE = "quit smoking age";
+	public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
+	public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
+	public static final String ADHERENCE_PROBABILITY = "adherence probability";
+
 	public LifecycleModule() {
 		this.name = "Lifecycle";
 	}
@@ -55,7 +61,12 @@ public final class LifecycleModule extends Module
 		if( age(person, time) ) {
 			grow(person, time);
 		}
-		person.chwEncounter(person, time);
+		Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_COMMUNITY);
+		startSmoking(person, time);
+		startAlcoholism(person, time);
+		quitSmoking(person, time);
+		quitAlcoholism(person, time);
+		adherence(person, time);
 		diabeticVitalSigns(person, time);
 		death(person, time);
 		
@@ -85,6 +96,9 @@ public final class LifecycleModule extends Module
 		
 		attributes.put(AGE, 0);
 		attributes.put(AGE_MONTHS, 0);
+		
+		double aherence_baseline = Double.parseDouble( Config.get("lifecycle.adherence.baseline", ".05"));
+		person.attributes.put(ADHERENCE_PROBABILITY, aherence_baseline);
 
 		grow(person, time); // set initial height and weight from percentiles
 	}
@@ -299,4 +313,119 @@ public final class LifecycleModule extends Module
 		return adjustedRisk;
 	}
 	
+	private static void startSmoking(Person person, long time)
+	{
+		// 9/10 smokers start before age 18. We will use 16.
+	    // http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
+		if (person.attributes.get(Person.SMOKER) == null && person.ageInYears(time) == 16)
+		{
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(time);
+			long year = calendar.get(Calendar.YEAR);
+			Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
+			person.attributes.put(Person.SMOKER, smoker);
+			double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+			person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quit_smoking_baseline);
+		}
+	}
+	
+	private static double likelihoodOfBeingASmoker(long year)
+	{
+        // 16.1% of MA are smokers in 2016. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
+        // but the rate is decreasing over time
+		// http://www.cdc.gov/tobacco/data_statistics/tables/trends/cig_smoking/
+		// selected #s:
+		// 1965 - 42.4%
+		// 1975 - 37.1%
+		// 1985 - 30.1%
+		// 1995 - 24.7%
+		// 2005 - 20.9%
+		// 2015 - 16.1%
+		// assume that it was never significantly higher than 42% pre-1960s, but will continue to drop slowly after 2016
+		// it's decreasing about .5% per year
+		if (year < 1965)
+		{
+			return 0.424;
+		}
+		
+		return ((year * -0.4865) + 996.41) / 100.0;
+	}
+	
+	private static void startAlcoholism(Person person, long time)
+	{
+		// TODO there are various types of alcoholics with different characteristics
+		// including age of onset of dependence. we pick 25 as a starting point
+	    // https://www.therecoveryvillage.com/alcohol-abuse/types-alcoholics/
+		if (person.attributes.get(Person.ALCOHOLIC) == null && person.ageInYears(time) == 25)
+		{
+			Boolean alcoholic = person.rand() < 0.025; // TODO assume about 8 mil alcoholics/320 mil gen pop
+			person.attributes.put(Person.ALCOHOLIC, alcoholic);
+			double quit_alcoholism_baseline = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.baseline", "0.05"));
+			person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quit_alcoholism_baseline);
+		}
+	}
+	
+	public static void quitSmoking(Person person, long time){
+		
+		int age = person.ageInYears(time);
+		
+		if(person.attributes.containsKey(Person.SMOKER)){
+			if(person.attributes.get(Person.SMOKER).equals(true))
+			{
+				double probability = (double) person.attributes.get(QUIT_SMOKING_PROBABILITY);
+				if (person.rand() < probability) {
+					person.attributes.put(Person.SMOKER, false);
+					person.attributes.put(QUIT_SMOKING_AGE, age);
+				} else {
+					double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+					double quit_smoking_timestep_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
+					probability += quit_smoking_timestep_delta;
+					if(probability < quit_smoking_baseline) {
+						probability = quit_smoking_baseline;
+					}
+					person.attributes.put(QUIT_SMOKING_PROBABILITY, probability);
+				}
+			}
+		}
+	}
+	
+	public static void quitAlcoholism(Person person, long time){
+		
+		int age = person.ageInYears(time);
+		
+		if(person.attributes.containsKey(Person.ALCOHOLIC)){
+			if(person.attributes.get(Person.ALCOHOLIC).equals(true))
+			{
+				double probability = (double) person.attributes.get(QUIT_ALCOHOLISM_PROBABILITY);
+				if (person.rand() < probability) {
+					person.attributes.put(Person.ALCOHOLIC, false);
+					person.attributes.put(QUIT_ALCOHOLISM_AGE, age);
+				} else {
+					double quit_alcoholism_baseline = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
+					double quit_alcoholism_timestep_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.timestep_delta", "-0.1"));
+					probability += quit_alcoholism_timestep_delta;
+					if(probability < quit_alcoholism_baseline) {
+						probability = quit_alcoholism_baseline;
+					}
+					person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, probability);
+				}
+			}
+		}
+	}
+	
+	public static void adherence(Person person, long time){
+
+		if(person.attributes.containsKey(Person.ADHERENCE)){
+			double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
+
+			double aherence_baseline = Double.parseDouble( Config.get("lifecycle.adherence.baseline", "0.05"));
+			double adherence_timestep_delta = Double.parseDouble( Config.get("lifecycle.aherence.timestep_delta", "-.01"));
+			probability += adherence_timestep_delta;
+			if(probability < aherence_baseline) {
+				probability = aherence_baseline;
+			}
+			person.attributes.put(ADHERENCE_PROBABILITY, probability);
+
+		}
+	}
 }

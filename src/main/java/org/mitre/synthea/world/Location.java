@@ -61,6 +61,17 @@ public class Location {
 		return "00000"; // TODO
 	}
 	
+	public static int getPopulation(String cityName)
+	{
+		for (Feature f : cities.getFeatures())
+		{
+			if(f.getProperties().get("cs_name").equals(cityName)) {
+				return ((Double) f.getProperties().get("pop")).intValue();
+			}
+		}
+		return 0;
+	}
+	
 	public static String randomCityName(Random random)
 	{
 		long targetPop = (long) (random.nextDouble() * totalPopulation);
@@ -160,6 +171,5 @@ public class Location {
 		Random random = new Random();
 		String city = Location.randomCityName(random);
 		chw.services.put(CommunityHealthWorker.CITY, city);
-		
 	}
 }

@@ -8,7 +8,9 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Provider;
 
@@ -33,6 +35,11 @@ public class Person {
 	public static final String EDUCATION = "education";
 	public static final String EDUCATION_LEVEL = "education_level";
 	public static final String OCCUPATION_LEVEL = "occupation_level";
+	public static final String CHW_INTERVENTION = "CHW Intervention";
+	public static final String SMOKER = "smoker";
+	public static final String ALCOHOLIC = "alcoholic";
+	public static final String ADHERENCE = "adherence";
+
 	public final Random random;
 	public final long seed;
 	public Map<String,Object> attributes;
@@ -173,61 +180,46 @@ public class Person {
 		return false;
 	}
 	
-	// Community Health Workers API -----------------------------------------------------------
-	public static final String CHW = "communityHealthWorker";
-	
-	public void setCHW(CommunityHealthWorker chw){
-		attributes.put(CHW, chw);
-	}
-	
-	
-	public CommunityHealthWorker getCHW(){
-		return (CommunityHealthWorker) attributes.get(CHW);
-	}
-	
-	//TODO incorporate this method 
-	public boolean chwEncounterChance(Person person, CommunityHealthWorker chw){
-		if(person.CITY.equals(chw.CITY)){
-			return true;
-		} else{
-			return false;
-		}
-	}
-	
-	public static void chwEncounter(Person person, long time){
-		int age = person.ageInYears(time);
-		CommunityHealthWorker chw = CommunityHealthWorker.generateCHW();
-		
-		//TODO additional rules/percentages to define these encounters more probabilistically 
-		
-		//note: add a "CHW intervention" count to the health record (i.e. encounters, observations, etc)
+	public static void chwEncounter(Person person, long time, String deploymentType){
+		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(person, time, deploymentType);
+		if(chw != null) {
 
-		if(age >= 20 && age <= 65){
+			// encounter class doesn't fit into the FHIR-prescribed set
+			// so we use our own "community" encounter class
+			Encounter enc = person.record.encounterStart(time, "community");
+			enc.chw = chw;
+			// TODO - different codes based on different services offered?
+			enc.codes.add( new Code("SNOMED-CT","389067005","Community health procedure") );
 
-				if((person.attributes.containsKey(CHW))){
-					Map<Integer, CommunityHealthWorker> chws = (Map) person.attributes.get(CHW);
-					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
-						if(randomChance >= 99){
-							Random rand = new Random();
-							int randomAge = rand.nextInt(age);
-							if(randomAge >= 20 && randomAge <= 65){
-								chws.put(randomAge, chw);}
-							}
-						person.attributes.put(CHW, chws);
-				}
-				else{
-					Map<Integer, CommunityHealthWorker> chws = new HashMap<Integer, CommunityHealthWorker>();
-					int randomChance = (int) (Math.random() * (100 - 1)) + 1;
-					if(randomChance >= 99){
-						Random rand = new Random();
-						int randomAge = rand.nextInt(age);
-						if(randomAge >= 20 && randomAge <= 65){
-							chws.put(randomAge, chw);}
-						}
-					person.attributes.put(CHW, chws);	
-				}
+			enc.stop = time + TimeUnit.MINUTES.toMillis(35); // encounter lasts 35 minutes on avg
+
+			int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
+			chw_interventions++;
+			person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
+			if((boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
+				double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
+				double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
+				double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
+				int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
+				probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
+				person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
 			}
+			
+			if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false)) {
+				double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
+				double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
+				double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
+				int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
+				probability += (quit_alcoholism_chw_delta / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
+				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
+			}
+			
+			double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
+			double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
+			probability += (adherence_chw_delta);
+			person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
 		}
+	}
 	
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";

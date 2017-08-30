@@ -66,6 +66,7 @@ public class Generator {
 		// initialize hospitals
 		Hospital.loadHospitals();
 		Module.getModules(); // ensure modules load early
+		CommunityHealthWorker.getCost(); // ensure CHWs are set early
 	}
 	
 	public void run()
