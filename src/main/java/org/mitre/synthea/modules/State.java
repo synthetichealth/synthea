@@ -194,7 +194,7 @@ public class State {
 		case ENCOUNTER:
 			if(definition.has("wellness") && definition.get("wellness").getAsBoolean()) {
 				Encounter encounter = person.record.currentEncounter(time);
-				String activeKey = String.format("%s %s", EncounterModule.ACTIVE_WELLNESS_ENCOUNTER, this.module);
+				String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module;
 				if(person.attributes.containsKey(activeKey)) {
 					person.attributes.remove(activeKey);
 					
