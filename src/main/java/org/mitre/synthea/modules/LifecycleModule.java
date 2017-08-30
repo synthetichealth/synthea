@@ -3,7 +3,6 @@ package org.mitre.synthea.modules;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +28,7 @@ public final class LifecycleModule extends Module
 	public static final String QUIT_SMOKING_AGE = "quit smoking age";
 	public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
 	public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
-	public static final String ADHERENCE = "adherence";
+	public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
 	public LifecycleModule() {
 		this.name = "Lifecycle";
@@ -67,6 +66,7 @@ public final class LifecycleModule extends Module
 		startAlcoholism(person, time);
 		quitSmoking(person, time);
 		quitAlcoholism(person, time);
+		adherence(person, time);
 		diabeticVitalSigns(person, time);
 		death(person, time);
 		
@@ -96,6 +96,9 @@ public final class LifecycleModule extends Module
 		
 		attributes.put(AGE, 0);
 		attributes.put(AGE_MONTHS, 0);
+		
+		double aherence_baseline = Double.parseDouble( Config.get("lifecycle.adherence.baseline", ".05"));
+		person.attributes.put(ADHERENCE_PROBABILITY, aherence_baseline);
 
 		grow(person, time); // set initial height and weight from percentiles
 	}
@@ -357,11 +360,10 @@ public final class LifecycleModule extends Module
 		{
 			Boolean alcoholic = person.rand() < 0.025; // TODO assume about 8 mil alcoholics/320 mil gen pop
 			person.attributes.put(Person.ALCOHOLIC, alcoholic);
-			double quit_alcoholism_baseline = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
+			double quit_alcoholism_baseline = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.baseline", "0.05"));
 			person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quit_alcoholism_baseline);
 		}
 	}
-	
 	
 	public static void quitSmoking(Person person, long time){
 		
@@ -408,6 +410,22 @@ public final class LifecycleModule extends Module
 					person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, probability);
 				}
 			}
+		}
+	}
+	
+	public static void adherence(Person person, long time){
+
+		if(person.attributes.containsKey(Person.ADHERENCE)){
+			double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
+
+			double aherence_baseline = Double.parseDouble( Config.get("lifecycle.adherence.baseline", "0.05"));
+			double adherence_timestep_delta = Double.parseDouble( Config.get("lifecycle.aherence.timestep_delta", "-.01"));
+			probability += adherence_timestep_delta;
+			if(probability < aherence_baseline) {
+				probability = aherence_baseline;
+			}
+			person.attributes.put(ADHERENCE_PROBABILITY, probability);
+
 		}
 	}
 }

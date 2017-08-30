@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -47,11 +46,6 @@ public class CommunityHealthWorker {
 	public static double postdischarge = Double.parseDouble(Config.get("generate.chw.postdischarge", "0.25"));
 
 	public static Map<String,List<CommunityHealthWorker>> workers = generateWorkers();
-
-	// TODO Should be global variables, not necessarily specific to CHWs
-	// Will determine the scenarios in which CHWs are assigned
-	//public static boolean enabledforER;
-	//public static boolean discharged;
 	
 	public Map<String,Object> services;
 	

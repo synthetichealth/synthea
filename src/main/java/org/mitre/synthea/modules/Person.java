@@ -37,6 +37,7 @@ public class Person {
 	public static final String CHW_INTERVENTION = "CHW Intervention";
 	public static final String SMOKER = "smoker";
 	public static final String ALCOHOLIC = "alcoholic";
+	public static final String ADHERENCE = "adherence";
 
 	public final Random random;
 	public final long seed;
@@ -202,7 +203,12 @@ public class Person {
 				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
 			}
 			
-		}
+				double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
+				double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
+				probability += (adherence_chw_delta);
+				person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
+			}
+		
 	}
 	
 	// Providers API -----------------------------------------------------------
