@@ -155,7 +155,7 @@ public class Module {
 			person.attributes.put(this.name, person.history);
 		}
 		person.history = (ArrayList<State>) person.attributes.get(this.name);
-		String activeKey = String.format("%s %s", EncounterModule.ACTIVE_WELLNESS_ENCOUNTER, this.name);
+		String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.name;
 		if(person.attributes.containsKey(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER)) {
 			person.attributes.put(activeKey, true);
 		}
