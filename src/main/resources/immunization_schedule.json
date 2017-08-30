@@ -1,0 +1,315 @@
+{
+  "hepb": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "08",
+      "display": "Hep B, adolescent or pediatric"
+    },
+    "at_months": [
+      0,
+      1,
+      6
+    ],
+    "first_available": 1981
+  },
+  "rv_mono": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "119",
+      "display": "rotavirus, monovalent"
+    },
+    "remark": "Monovalent (Rotarix) is a 2-dose series, as opposed to pentavalent (RotaTeq) which is a 3-dose series",
+    "at_months": [
+      2,
+      4
+    ],
+    "first_available": 2006
+  },
+  "dtap": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "20",
+      "display": "DTaP"
+    },
+    "at_months": [
+      2,
+      4,
+      6,
+      15,
+      48
+    ],
+    "first_available": 1997,
+    "remark": "Note that DTaP is a combined vaccine, and prior to 1997 other DTP vaccines existed"
+  },
+  "hib": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "49",
+      "display": "Hib (PRP-OMP)"
+    },
+    "remark": "PRP-OMP (PedvaxHib or COMVAX) is a 2-dose series with a booster at 12-15 months, as opposed to PRP-T (AC-THIB) which is a 3-dose series with a booster at 12-15 months",
+    "at_months": [
+      2,
+      4,
+      12
+    ],
+    "first_available": 1977
+  },
+  "pcv13": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "133",
+      "display": "Pneumococcal conjugate PCV 13"
+    },
+    "at_months": [
+      2,
+      4,
+      6,
+      12,
+      780
+    ],
+    "first_available": 2010
+  },
+  "ipv": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "10",
+      "display": "IPV"
+    },
+    "at_months": [
+      2,
+      4,
+      6,
+      48
+    ],
+    "first_available": 1955
+  },
+  "flu": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "140",
+      "display": "Influenza, seasonal, injectable, preservative free"
+    },
+    "remark": "This should really only happen Aug - Feb (preferring earlier). That may take some trickery. Since this is annual administration just populate the array with every 12 months, starting at 6 months.",
+    "at_months": [
+      6,
+      18,
+      30,
+      42,
+      54,
+      66,
+      78,
+      90,
+      102,
+      114,
+      126,
+      138,
+      150,
+      162,
+      174,
+      186,
+      198,
+      210,
+      222,
+      234,
+      246,
+      258,
+      270,
+      282,
+      294,
+      306,
+      318,
+      330,
+      342,
+      354,
+      366,
+      378,
+      390,
+      402,
+      414,
+      426,
+      438,
+      450,
+      462,
+      474,
+      486,
+      498,
+      510,
+      522,
+      534,
+      546,
+      558,
+      570,
+      582,
+      594,
+      606,
+      618,
+      630,
+      642,
+      654,
+      666,
+      678,
+      690,
+      702,
+      714,
+      726,
+      738,
+      750,
+      762,
+      774,
+      786,
+      798,
+      810,
+      822,
+      834,
+      846,
+      858,
+      870,
+      882,
+      894,
+      906,
+      918,
+      930,
+      942,
+      954,
+      966,
+      978,
+      990,
+      1002,
+      1014,
+      1026,
+      1038,
+      1050,
+      1062,
+      1074,
+      1086,
+      1098,
+      1110,
+      1122,
+      1134,
+      1146,
+      1158,
+      1170,
+      1182,
+      1194,
+      1206
+    ],
+    "first_available": 1945
+  },
+  "mmr": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "03",
+      "display": "MMR"
+    },
+    "at_months": [
+      12,
+      48
+    ],
+    "first_available": 1971
+  },
+  "var": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "21",
+      "display": "varicella"
+    },
+    "at_months": [
+      12,
+      48
+    ],
+    "first_available": 1984
+  },
+  "hepa": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "83",
+      "display": "Hep A, ped/adol, 2 dose"
+    },
+    "remark": "First dose should be 12-23 months, second dose 6-18 months after.  Choosing to do 12 months after.",
+    "at_months": [
+      12,
+      24
+    ],
+    "first_available": 1995
+  },
+  "men": {
+    "remark": "MenACWY can be Menactra (114) or Menveo (136).  Arbitrarily chose Menactra. Other types of meningococcal vaccines were available earlier",
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "114",
+      "display": "meningococcal MCV4P"
+    },
+    "at_months": [
+      132,
+      192
+    ],
+    "first_available": 2005
+  },
+  "tdap": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "115",
+      "display": "Tdap"
+    },
+    "at_months": [
+      132
+    ],
+    "first_available": 2005
+  },
+  "hpv": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "62",
+      "display": "HPV, quadrivalent"
+    },
+    "remark": "[11 years, boosters 2 months and 6 months later] -- but since we only have encounters scheduled yearly at this age, the boosters will be late.  To be revisited later.",
+    "at_months": [
+      132,
+      134,
+      138
+    ],
+    "first_available": 2006
+  },
+  "td": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "113",
+      "display": "Td (adult) preservative free"
+    },
+    "remark": "21 years and every 10 years after. This particular combination of tetanus and diphtheria first available 1992.",
+    "at_months": [
+      252,
+      372,
+      492,
+      612,
+      732,
+      852,
+      972,
+      1092
+    ],
+    "first_available": 1992
+  },
+  "zoster": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "121",
+      "display": "zoster"
+    },
+    "at_months": [
+      720
+    ],
+    "first_available": 2006
+  },
+  "ppsv23": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "33",
+      "display": "pneumococcal polysaccharide vaccine, 23 valent"
+    },
+    "at_months": [
+      792
+    ],
+    "first_available": 1983
+  }
+}
