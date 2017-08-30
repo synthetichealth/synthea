@@ -39,6 +39,7 @@ public final class EncounterModule extends Module {
 		if (startedEncounter)
 		{
 			CardiovascularDiseaseModule.performEncounter(person, time);
+			Immunizations.performEncounter(person, time);
 		}
 		
 		// java modules will never "finish"

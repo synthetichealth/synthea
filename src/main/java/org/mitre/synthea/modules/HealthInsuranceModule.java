@@ -23,7 +23,7 @@ public class HealthInsuranceModule extends Module
 	
 	public HealthInsuranceModule() {
 		int mandate_year = Integer.parseInt( Config.get("generate.insurance.mandate.year", "2006") );
-		mandate_time = Utilities.convertTime("years", mandate_year);
+		mandate_time = Utilities.convertCalendarYearsToTime(mandate_year);
 		mandate_occupation = Double.parseDouble( Config.get("generate.insurance.mandate.occupation", "0.2") );
 		private_income_threshold = Integer.parseInt( Config.get("generate.insurance.private.minimum_income", "24000") );
 		poverty_level = Double.parseDouble( Config.get("generate.demographics.socioeconomic.income.poverty","11000") );

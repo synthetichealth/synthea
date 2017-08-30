@@ -29,6 +29,10 @@ public class Utilities {
 		return (long) value;
 	}
 	
+	public static long convertCalendarYearsToTime(int years) {
+		return convertTime( "years", (long)(years - 1970) );
+	}
+
 	/**
 	 * Converts a JsonPrimitive into a primitive Boolean, Double, or String.
 	 * @param p : JsonPrimitive
