@@ -32,114 +32,14 @@
 
     "Lung Cancer Probabilities": {
       "type": "Simple",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Gender",
-                "gender": "M"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": false
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "distribution": 0.002,
-              "transition": "Cough"
-            },
-            {
-              "distribution": 0.998,
-              "transition": "Terminal"
-            }
-          ]
+          "distribution": { "attribute" : "probability_of_lung_cancer", "default" : 0.0645 },
+          "transition": "Onset_Lung_Cancer"
         },
         {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Gender",
-                "gender": "M"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "distribution": 0.244,
-              "transition": "Cough"
-            },
-            {
-              "distribution": 0.766,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Gender",
-                "gender": "F"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": false
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "distribution": 0.004,
-              "transition": "Cough"
-            },
-            {
-              "distribution": 0.996,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Gender",
-                "gender": "F"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "distribution": 0.185,
-              "transition": "Cough"
-            },
-            {
-              "distribution": 0.815,
-              "transition": "Terminal"
-            }
-          ]
+          "distribution": { "attribute" : "probability_of_no_lung_cancer", "default" : 0.93355 },
+          "transition": "Terminal"
         }
       ],
       "remarks": [
@@ -150,6 +50,42 @@
         "In a 2006 European study, the risk of developing lung cancer was: 0.2 percent for men who never smoked (0.4% for women); 5.5 percent of male former smokers (2.6% in women); 15.9 percent of current male smokers (9.5% for women); 24.4 percent for male “heavy smokers” defined as smoking more than 5 cigarettes per day (18.5 percent for women)",
         "https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868"
       ]
+    },
+    
+    "Onset_Lung_Cancer" : {
+      "type" : "SetAttribute",
+      "attribute" : "lung_cancer",
+      "value" : true,
+      "direct_transition" : "Init_Lung_Cancer_Counter"
+    },
+    
+    "Init_Lung_Cancer_Counter" : {
+      "type" : "SetAttribute",
+      "attribute" : "lung_cancer_nondiagnosis_counter",
+      "value" : 0,
+      "direct_transition" : "Undiagnosed_Lung_Cancer"
+    },
+    
+    "Undiagnosed_Lung_Cancer" : {
+      "type" : "Delay",
+      "exact" : { "quantity" : 1, "unit" : "months" },
+      "distributed_transition" : [
+         {
+          "distribution": { "attribute" : "probability_of_lung_cancer_treatment", "default" : 0.2 },
+          "transition": "Cough"
+        },
+        {
+          "distribution": { "attribute" : "probability_of_no_lung_cancer_treatment", "default" : 0.8 },
+          "transition": "Increment_Counter"
+        }
+      ]
+    },
+    
+    "Increment_Counter" : {
+      "type" : "Counter",
+      "action" : "increment",
+      "attribute" : "lung_cancer_nondiagnosis_counter",
+      "direct_transition" : "Undiagnosed_Lung_Cancer"
     },
 
     "Cough": {
@@ -434,61 +370,44 @@
         "http://seer.cancer.gov/csr/1975_2013/browse_csr.php?sectionSEL=15&pageSEL=sect_15_table.14.html",
         "http://seer.cancer.gov/csr/1975_2013/browse_csr.php?sectionSEL=15&pageSEL=sect_15_table.13.html",
         "only 15 percent of lung cancer cases are diagnosed at an early stage.",
-        "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html"
+        "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html",
+    "updated remarks 2017-08-31:",
+    "http://oregon.providence.org/our-services/a/ask-a-providence-expert/forms-and-information/ask-an-expert-lung-cancer-growth-and-spread/",
+    "It takes at least 30 divisions of one cancer cell to create a tumor that is 1 centimeter in size (about half an inch).",
+    "That is the smallest size likely to be seen on an X-ray. It takes about three to six months for most lung cancers to double their size. ",
+    "Therefore, it could take several years for a typical lung cancer to reach a size at which it could be diagnosed on a chest X-ray. "
       ],
-      "complex_transition": [
+    "conditional_transition" : [
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Lung Cancer Type",
-            "operator": "==",
-            "value": "NSCLC"
+            "attribute" : "lung_cancer_nondiagnosis_counter",
+            "operator": "<=",
+            "value": 36
           },
-          "distributions": [
-            {
-              "distribution": 0.19,
-              "transition": "Stage I"
-            },
-            {
-              "distribution": 0.12,
-              "transition": "Stage II"
-            },
-            {
-              "distribution": 0.12,
-              "transition": "Stage III"
-            },
-            {
-              "distribution": 0.55,
-              "transition": "Stage IV"
-            }
-          ]
+        "transition" : "Stage I"
+      },
+      {
+        "condition": {
+          "condition_type": "Attribute",
+          "attribute" : "lung_cancer_nondiagnosis_counter",
+          "operator": "<=",
+          "value": 72
         },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "Lung Cancer Type",
-            "operator": "==",
-            "value": "SCLC"
-          },
-          "distributions": [
-            {
-              "distribution": 0.04,
-              "transition": "Stage I"
-            },
-            {
-              "distribution": 0.1,
-              "transition": "Stage II"
-            },
-            {
-              "distribution": 0.1,
-              "transition": "Stage III"
-            },
-            {
-              "distribution": 0.74,
-              "transition": "Stage IV"
-            }
-          ]
-        }
+        "transition" : "Stage II"
+      },
+      {
+        "condition": {
+          "condition_type": "Attribute",
+          "attribute" : "lung_cancer_nondiagnosis_counter",
+          "operator": "<=",
+          "value": 108
+        },
+        "transition" : "Stage III"
+      },
+      {
+        "transition" : "Stage IV"
+      }
       ]
     },
 
