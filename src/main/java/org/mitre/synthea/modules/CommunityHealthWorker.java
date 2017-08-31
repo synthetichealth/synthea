@@ -29,9 +29,6 @@ public class CommunityHealthWorker {
 	public static final String VITAMIN_D_INJURY_SCREENING = "Fall prevention in older adults: Vitamin D";
 	public static final String DIET_PHYSICAL_ACTIVITY = "Diet and physical activity counseling";
 	public static final String STATIN_Medication = "Statin preventive medication";	
-	
-	// TODO social support variable, to be measured/implemented later on
-	//public static final String ORGANIZE = "Organize"; 
 
 	public static final String CITY = "city";
 	public static final String DEPLOYMENT = "deployment";
@@ -104,7 +101,6 @@ public class CommunityHealthWorker {
 		chw.services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
 		chw.services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
 		chw.services.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
-		//chw.services.put(CommunityHealthWorker.ORGANIZE, true);
 		chw.services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
 		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
 		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
