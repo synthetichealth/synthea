@@ -1,14 +1,16 @@
 package org.mitre.synthea.modules;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.io.BufferedReader;
 
 import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.modules.HealthRecord.Entry;
@@ -30,21 +32,30 @@ public class QualityOfLifeModule extends Module
 	{
 		if (!person.attributes.containsKey("QALY"))
 		{
-			person.attributes.put("QALY", new Double[128]); // use 128 because it's a nice power of 2, and nobody will reach that age
-			person.attributes.put("DALY", new Double[128]); // use Double so we can have nulls to indicate not set
+			person.attributes.put("QALY", new LinkedHashMap<Integer,Double>());
+			person.attributes.put("DALY", new LinkedHashMap<Integer,Double>());
+			person.attributes.put("QOL", new LinkedHashMap<Integer,Double>());
+			// linked hashmaps to preserve insertion order, and then we can iterate by year
 		}
 
-		Double[] qalys = (Double[])person.attributes.get("QALY");
-		Double[] dalys = (Double[])person.attributes.get("DALY");
+		Map<Integer,Double> qalys = (Map<Integer,Double>)person.attributes.get("QALY");
+		Map<Integer,Double> dalys = (Map<Integer,Double>)person.attributes.get("DALY");
+		Map<Integer,Double> qols = (Map<Integer,Double>)person.attributes.get("QOL");
 		
-		int age = person.ageInYears(time);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(time);
+		int year = calendar.get(Calendar.YEAR);
 		
-		if (qalys[age] == null)
+		if (!qalys.containsKey(year))
 		{
-			double[] qol = calculate(person, time);
-			
-			dalys[age] = qol[0];
-			qalys[age] = qol[1];
+//			double age = person.ageInYears(time) + 1;
+			double[] values = calculate(person, time);
+
+			dalys.put(year, values[0]);
+			qalys.put(year, values[1]);
+			qols.put(year, values[2]);
+			person.attributes.put("most-recent-daly", values[0]);
+			person.attributes.put("most-recent-qaly", values[1]);
 		}
 		
 		// java modules will never "finish"
@@ -67,6 +78,13 @@ public class QualityOfLifeModule extends Module
 		}
 	}
 	
+	/**
+	 * Calculate the HALYs for this person, at the given time.
+	 * HALYs include QALY and DALY.
+	 * @param person Person to calculate
+	 * @param stop current timestamp
+	 * @return array of [daly (cumulative), qaly (cumulative), current disability weight]
+	 */
 	public static double[] calculate(Person person, long stop){
         // Disability-Adjusted Life Year = DALY = YLL + YLD
         // Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in years)
@@ -93,23 +111,27 @@ public class QualityOfLifeModule extends Module
 			}
 		}
 		
+		double disabilityWeight = 0.0;
 		// calculate yld with yearly timestep
 		for(int i = 0; i < age + 1; i++){
 			long yearStart = birthdate + TimeUnit.DAYS.toMillis((long) (365.25 * i));
 			long yearEnd = birthdate + (TimeUnit.DAYS.toMillis((long) (365.25 * (i+1) - 1)));
 			List<Entry> conditionsInYear = conditionsInYear(allConditions, yearStart, yearEnd);
 			
+			disabilityWeight = 0.0;
+			
 			for(Entry condition : conditionsInYear){
-				double disabilityWeight = (double) disabilityWeights.get(condition.codes.get(0).display).get("disability_weight");
-				double weight = weight(disabilityWeight, i+1);
-				yld += weight;
+				disabilityWeight += (double) disabilityWeights.get(condition.codes.get(0).display).get("disability_weight");
 			}
+			
+			disabilityWeight = Math.min(1.0, weight(disabilityWeight, i+1));
+			yld += disabilityWeight;
 		}
 		
 		double daly = yll + yld;
 		double qaly = age - yld;
 		
-		return new double[] {daly, qaly};
+		return new double[] {daly, qaly, 1-disabilityWeight};
 	}
 	
 	public static List<Entry> conditionsInYear(List<Entry> conditions, long yearStart, long yearEnd){

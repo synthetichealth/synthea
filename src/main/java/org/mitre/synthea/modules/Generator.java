@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.datastore.InMemoryDatabase;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.HospitalExporter;
 import org.mitre.synthea.helpers.Config;
@@ -27,7 +28,7 @@ import org.mitre.synthea.world.Location;
 public class Generator {
 
 	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
-	public List<Person> people;
+	public InMemoryDatabase people; //List<Person> people;
 	public List<CommunityHealthWorker> chws;
 	public long numberOfPeople;
 	public final int MAX_TRIES = 10;
@@ -50,7 +51,7 @@ public class Generator {
 	
 	private void init(int people, long seed) throws IOException
 	{
-		this.people = Collections.synchronizedList(new ArrayList<Person>());
+		this.people =  InMemoryDatabase.getInstance(); //Collections.synchronizedList(new ArrayList<Person>());
 		this.numberOfPeople = people;
 		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
@@ -133,7 +134,7 @@ public class Generator {
 				LifecycleModule.birth(person, start);
 				EncounterModule encounterModule = new EncounterModule();
 
-				people.add(person);
+				
 					
 				long time = start;
 				while(person.alive(time) && time < stop)
@@ -162,6 +163,10 @@ public class Generator {
 				}
 				
 				Exporter.export(person, stop);
+				if (people != null)
+				{
+					people.store(person);
+				}
 				
 				isAlive = person.alive(time);
 				

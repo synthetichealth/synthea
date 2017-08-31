@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,10 @@ import org.mitre.synthea.world.Provider;
 
 import com.vividsolutions.jts.geom.Point;
 
-public class Person {
-	
+public class Person implements Serializable
+{
+	private static final long serialVersionUID = 4322116644425686379L;
+
 	public static final String BIRTHDATE = "birthdate";
 	public static final String NAME = "name";
 	public static final String RACE = "race";
