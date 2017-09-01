@@ -115,6 +115,9 @@ public class Immunizations
 			double recommendedAge = (double) at_months.get(0);
 			if(ageAtDate >= recommendedAge && ((ageAtDate - recommendedAge) < 48)) {
 				at_months.remove(0);
+				if(at_months.isEmpty()) {
+					return false;
+				}
 			}
 		}
 

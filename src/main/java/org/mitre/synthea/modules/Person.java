@@ -196,7 +196,7 @@ public class Person {
 			int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
 			chw_interventions++;
 			person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
-			if((boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
+			if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && (boolean) chw.services.getOrDefault(CommunityHealthWorker.TOBACCO_SCREENING, false)) {
 				double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
 				double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
 				double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
@@ -205,7 +205,7 @@ public class Person {
 				person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
 			}
 			
-			if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false)) {
+			if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && (boolean) chw.services.getOrDefault(CommunityHealthWorker.ALCOHOL_SCREENING, false)) {
 				double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
 				double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
 				double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);

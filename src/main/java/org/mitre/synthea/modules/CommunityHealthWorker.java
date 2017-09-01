@@ -29,9 +29,6 @@ public class CommunityHealthWorker {
 	public static final String VITAMIN_D_INJURY_SCREENING = "Fall prevention in older adults: Vitamin D";
 	public static final String DIET_PHYSICAL_ACTIVITY = "Diet and physical activity counseling";
 	public static final String STATIN_Medication = "Statin preventive medication";	
-	
-	// TODO social support variable, to be measured/implemented later on
-	public static final String ORGANIZE = "Organize"; 
 
 	public static final String CITY = "city";
 	public static final String DEPLOYMENT = "deployment";
@@ -49,7 +46,6 @@ public class CommunityHealthWorker {
 	
 	public Map<String,Object> services;
 	
-	//TODO possible arguments, randomization/computation of services later on
 	public CommunityHealthWorker(){ 
 		services = new ConcurrentHashMap<String,Object>();
 	}
@@ -96,27 +92,25 @@ public class CommunityHealthWorker {
 		
 		CommunityHealthWorker chw = new CommunityHealthWorker();
 		
-		chw.services.put(CommunityHealthWorker.ALCOHOL_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.ASPIRIN_MEDICATION, true);
-		chw.services.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.DIABETES_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, true);
-		chw.services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.OBESITY_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.ORGANIZE, true);
-		chw.services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, true);
-		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(Config.get("chw.alcohol_screening")));
+		chw.services.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.aspirin_medication")));
+		chw.services.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(Config.get("chw.blood_pressure_screening")));
+		chw.services.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.colorectal_cancer_screening")));
+		chw.services.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(Config.get("chw.diabetes_screening")));
+		chw.services.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(Config.get("chw.diet_physical_activity")));
+		chw.services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
+		chw.services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
+		chw.services.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
+		chw.services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
+		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
+		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
 			
-		chw.services.put(CommunityHealthWorker.STATIN_Medication, true);
-		chw.services.put(CommunityHealthWorker.TOBACCO_SCREENING, true);
-		chw.services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, true);
+		chw.services.put(CommunityHealthWorker.STATIN_Medication, Boolean.parseBoolean(Config.get("chw.statin_medication")));
+		chw.services.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
+		chw.services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
 		Location.assignCity(chw);
 		
 		chw.services.put(DEPLOYMENT, deploymentType);
-
 		return chw;
 	}
 
