@@ -359,9 +359,10 @@ public class HealthRecord {
 		}
 	}
 	
-	public void immunization(long time, String type) {
+	public Entry immunization(long time, String type) {
 		Entry immunization = new Entry(time, type);
 		currentEncounter(time).immunizations.add(immunization);	
+		return immunization;
 	}
 	
 	public Medication medicationStart(long time, String type) {

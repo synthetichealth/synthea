@@ -25,6 +25,7 @@ import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.Immunization;
+import org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus;
@@ -63,6 +64,7 @@ public class FhirStu3
 	private static final String SNOMED_URI = "http://snomed.info/sct";
 	private static final String LOINC_URI = "http://loinc.org";
 	private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
+	private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
 	
 	/**
 	 * Convert the given Person into a JSON String, 
@@ -379,16 +381,18 @@ public class FhirStu3
 		
 		return newEntry(bundle, procedureResource);
 	}
-	
-	// TODO - no immunizations in GMF yet
+
 	private static BundleEntryComponent immunization(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry, HealthRecord.Entry immunization)
 	{
 		Immunization immResource = new Immunization();
-		
+		immResource.setStatus(ImmunizationStatus.COMPLETED);
+		immResource.setDate(new Date(immunization.start));
+		immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0), CVX_URI));
+		immResource.setNotGiven(false);
+		immResource.setPrimarySource(true);
 		immResource.setPatient(new Reference(personEntry.getFullUrl()));
 		immResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
-		
 		return newEntry(bundle, immResource);
 	}
 
@@ -514,12 +518,6 @@ public class FhirStu3
 			return new DateType(date);
 		}
 	}
-
-
-//	private static CodeableConcept mapCodeToCodeableConcept(Code from)
-//	{
-//		return mapCodeToCodeableConcept(from, null);
-//	}
 
 	/**
 	 * Helper function to convert a Code into a CodeableConcept.

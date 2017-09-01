@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.modules.HealthRecord.Entry;
+
 import com.google.gson.Gson;
 
 /**
@@ -61,7 +63,10 @@ public class Immunizations
 			{
 				List<Long> history = immunizationsGiven.get(immunization);
 				history.add(time);
-				person.record.immunization(time, immunization);
+				HealthRecord.Entry entry = person.record.immunization(time, immunization);
+				Map code = (Map) immunizationSchedule.get(immunization).get("code");
+				HealthRecord.Code immCode = new HealthRecord.Code(code.get("system").toString(), code.get("code").toString(), code.get("display").toString());
+				entry.codes.add(immCode);
 			}
 		}
 	}
