@@ -3,10 +3,14 @@
 .project
 .settings
 .gradle
-build/**
+/build/**
 bin/**
 
 /.gradle/
 /bin/
 
 /output/
+
+# H2 database files
+**/*.mv.db
+**/*.trace.db

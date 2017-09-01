@@ -95,6 +95,14 @@ public class Generator {
 		// export hospital information
 		try{
 			HospitalExporter.export(stop);
+			
+			for(Hospital h : Hospital.getHospitalList())
+			{
+				people.store(h);
+			}
+			
+			CommunityHealthWorker.workers.forEach( (city,list) ->  list.forEach( chw -> people.store(chw) )  );
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -133,8 +141,6 @@ public class Generator {
 			
 				LifecycleModule.birth(person, start);
 				EncounterModule encounterModule = new EncounterModule();
-
-				
 					
 				long time = start;
 				while(person.alive(time) && time < stop)
