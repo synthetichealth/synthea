@@ -67,7 +67,7 @@ public class CommunityHealthWorker {
 		}
 		for(int i=0; i < Math.round(numWorkers * emergency); i++)
 		{
-			worker = generateCHW(DEPLOYMENT_COMMUNITY);
+			worker = generateCHW(DEPLOYMENT_EMERGENCY);
 			String city = (String) worker.services.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -77,7 +77,7 @@ public class CommunityHealthWorker {
 		}
 		for(int i=numWorkersGenerated; i < numWorkers; i++)
 		{
-			worker = generateCHW(DEPLOYMENT_COMMUNITY);
+			worker = generateCHW(DEPLOYMENT_POSTDISCHARGE);
 			String city = (String) worker.services.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
