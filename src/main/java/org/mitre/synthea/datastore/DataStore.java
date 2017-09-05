@@ -24,8 +24,8 @@ import com.google.gson.internal.LinkedTreeMap;
 
 /**
  * In-memory database, intended to be the primary repository for Synthea data as it runs.
- * Eventually this should be augmented to be more generic (possibly using an ORM?),
- * and allow for the (optional) use of a persistent database.
+ * Allows for the (optional) use of a persistent database.
+ * Eventually this should be augmented to be more generic (possibly using an ORM?).
  */
 public class DataStore
 {	
@@ -59,26 +59,29 @@ public class DataStore
 			// in the long term I want more standardized schemas
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint)").execute();
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS attribute (person_id varchar, name varchar, value varchar)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS provider (id varchar, name varchar, is_chw boolean)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS provider_attribute (provider_id varchar, name varchar, value varchar)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS encounter (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS condition (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS medication (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS procedure (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS observation (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)").execute();
-			
-			// TODO diagnostic reports, immunizations
-			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS immunization (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)").execute();
-			
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROVIDER_ATTRIBUTE (provider_id varchar, name varchar, value varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS REPORT (id varchar, person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS OBSERVATION (person_id varchar, encounter_id varchar, report_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS IMMUNIZATION (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CAREPLAN (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS quality_of_life (person_id varchar, year int, value double)").execute();
 			
@@ -103,6 +106,7 @@ public class DataStore
 		
 		try ( Connection connection = getConnection() )
 		{
+			// CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint)
 			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PERSON (id, name, birthdate) VALUES (?,?,?);");
 			
 			stmt.setString(1, personID);
@@ -111,6 +115,7 @@ public class DataStore
 			
 			stmt.execute();
 			
+			// CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)
 			stmt = connection.prepareStatement("INSERT INTO ATTRIBUTE (person_id, name, value) VALUES (?,?,?);");            
 			for (Map.Entry<String,Object> attr : p.attributes.entrySet()) {
 				stmt.setString(1, personID);
@@ -123,10 +128,8 @@ public class DataStore
 			for (Encounter encounter : p.record.encounters)
 			{
 				String encounterID = UUID.randomUUID().toString();
-				
-				// TODO insert encounter
-				//table encounter (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-				
+
+				// CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
 				stmt = connection.prepareStatement("INSERT INTO ENCOUNTER (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");  
 				stmt.setString(1, encounterID);
 				stmt.setString(2, personID);
@@ -160,7 +163,7 @@ public class DataStore
 				
 				for (HealthRecord.Entry condition : encounter.conditions)
 				{
-					// 			connection.prepareStatement("create table condition (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+					// CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
 					stmt = connection.prepareStatement("INSERT INTO CONDITION (person_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?);");  
 					stmt.setString(1, personID);
 					stmt.setString(2, condition.name);
@@ -182,28 +185,91 @@ public class DataStore
 					stmt.execute();
 				}
 				
-				for (Observation observation : encounter.observations)
+				for (Report report : encounter.reports)
 				{
-					// 			connection.prepareStatement("create table observation (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)").execute();
-					stmt = connection.prepareStatement("INSERT INTO OBSERVATION (person_id, encounter_id, name, type, start, value, unit, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");  
+					String reportID = UUID.randomUUID().toString();
+					
+					// CREATE TABLE IF NOT EXISTS REPORT (id varchar, person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)
+					stmt = connection.prepareStatement("INSERT INTO report (id, person_id, encounter_id, name, type, start, code, display, system) VALUES (?,?,?,?,?,?,?,?,?);");  
 					stmt.setString(1, personID);
 					stmt.setString(2, encounterID);
-					stmt.setString(3, observation.name);
-					stmt.setString(4, observation.type);
-					stmt.setLong(5, observation.start);
-					stmt.setString(6, String.valueOf(observation.value));
-					stmt.setString(7, observation.unit);
-					if (observation.codes.isEmpty())
+					stmt.setString(3, reportID);
+					stmt.setString(4, report.name);
+					stmt.setString(5, report.type);
+					stmt.setLong(6, report.start);
+					if (report.codes.isEmpty())
 					{
+						stmt.setString(7, null);
 						stmt.setString(8, null);
 						stmt.setString(9, null);
+					} else
+					{
+						Code code = report.codes.get(0);
+						stmt.setString(7, code.code);
+						stmt.setString(8, code.display);
+						stmt.setString(9, code.system);
+					}
+
+					stmt.execute();
+					
+					
+					for (Observation observation : report.observations)
+					{
+						// CREATE TABLE IF NOT EXISTS OBSERVATION (person_id varchar, encounter_id varchar, report_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)
+						stmt = connection.prepareStatement("INSERT INTO OBSERVATION (person_id, encounter_id, report_id, name, type, start, value, unit, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?,?);");  
+						stmt.setString(1, personID);
+						stmt.setString(2, encounterID);
+						stmt.setString(3, reportID); // report ID
+						stmt.setString(4, observation.name);
+						stmt.setString(5, observation.type);
+						stmt.setLong(6, observation.start);
+						stmt.setString(7, String.valueOf(observation.value));
+						stmt.setString(8, observation.unit);
+						if (observation.codes.isEmpty())
+						{
+							stmt.setString(9, null);
+							stmt.setString(10, null);
+							stmt.setString(11, null);
+						} else
+						{
+							Code code = observation.codes.get(0);
+							stmt.setString(9, code.code);
+							stmt.setString(10, code.display);
+							stmt.setString(11, code.system);
+						}
+
+						stmt.execute();
+					}
+				}
+				
+				for (Observation observation : encounter.observations)
+				{
+					if (observation.report != null)
+					{
+						// only add observations that don't belong to a diagnostic report here
+						continue;
+					}
+					// CREATE TABLE IF NOT EXISTS OBSERVATION (person_id varchar, encounter_id varchar, report_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)
+					stmt = connection.prepareStatement("INSERT INTO OBSERVATION (person_id, encounter_id, report_id, name, type, start, value, unit, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?,?);");  
+					stmt.setString(1, personID);
+					stmt.setString(2, encounterID);
+					stmt.setString(3, null); // report ID
+					stmt.setString(4, observation.name);
+					stmt.setString(5, observation.type);
+					stmt.setLong(6, observation.start);
+					stmt.setString(7, String.valueOf(observation.value));
+					stmt.setString(8, observation.unit);
+					if (observation.codes.isEmpty())
+					{
+						stmt.setString(9, null);
 						stmt.setString(10, null);
+						stmt.setString(11, null);
 					} else
 					{
 						Code code = observation.codes.get(0);
-						stmt.setString(8, code.code);
-						stmt.setString(9, code.display);
-						stmt.setString(10, code.system);
+						stmt.setString(9, code.code);
+						stmt.setString(10, code.display);
+						stmt.setString(11, code.system);
 					}
 
 					stmt.execute();
@@ -211,7 +277,7 @@ public class DataStore
 				
 				for (Procedure procedure : encounter.procedures)
 				{
-					// 			connection.prepareStatement("create table procedure (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+					// CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
 					stmt = connection.prepareStatement("INSERT INTO PROCEDURE (person_id, encounter_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?);");  
 					stmt.setString(1, personID);
 					stmt.setString(2, encounterID);
@@ -238,7 +304,7 @@ public class DataStore
 				
 				for (Medication medication : encounter.medications)
 				{
-					// create table medication (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
+					// CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
 					stmt = connection.prepareStatement("INSERT INTO MEDICATION (person_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?);");  
 					stmt.setString(1, personID);
 					stmt.setString(2, medication.name);
@@ -262,7 +328,7 @@ public class DataStore
 				
 				for (HealthRecord.Entry immunization : encounter.immunizations)
 				{
-					// "CREATE TABLE IF NOT EXISTS immunization (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)"
+					// CREATE TABLE IF NOT EXISTS IMMUNIZATION (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)
 					stmt = connection.prepareStatement("INSERT INTO IMMUNIZATION (person_id, encounter_id, name, type, start, code, display, system) VALUES (?,?,?,?,?,?,?,?);");  
 					stmt.setString(1, personID);
 					stmt.setString(2, encounterID);
@@ -283,15 +349,40 @@ public class DataStore
 					}
 					stmt.execute();
 				}
-				
-				for (Report report : encounter.reports)
-				{
-					// TODO insert report
-				}
-				
+
 				for (CarePlan careplan : encounter.careplans)
 				{
-					// TODO insert careplan - ignored in phase 1
+					// CREATE TABLE IF NOT EXISTS careplan (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
+					stmt = connection.prepareStatement("INSERT INTO careplan (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");  
+					stmt.setString(1, UUID.randomUUID().toString());
+					stmt.setString(2, personID);
+					if (encounter.provider == null && encounter.chw == null)
+					{
+						stmt.setString(3, null);
+					} else if (encounter.provider != null)
+					{
+						stmt.setString(3, encounter.provider.getResourceID());
+					} else if (encounter.chw != null)
+					{
+						stmt.setString(3, (String) encounter.chw.services.get("resourceID"));
+					}
+					stmt.setString(4, careplan.name);
+					stmt.setString(5, careplan.type);
+					stmt.setLong(6, careplan.start);
+					stmt.setLong(7, careplan.stop);
+					if (careplan.codes.isEmpty())
+					{
+						stmt.setString(8, null);
+						stmt.setString(9, null);
+						stmt.setString(10, null);
+					} else 
+					{
+						Code code = careplan.codes.get(0);
+						stmt.setString(8, code.code);
+						stmt.setString(9, code.display);
+						stmt.setString(10, code.system);
+					}
+					stmt.execute();
 				}
 			}
 			
@@ -325,7 +416,7 @@ public class DataStore
 	{
 		try ( Connection connection = getConnection() )
 		{
-			// "create table provider (id varchar, name varchar, is_chw boolean)"
+			// CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)
 			PreparedStatement providerTable = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
 			
 			// create table provider_attribute (provider_id varchar, name varchar, value varchar)
@@ -362,13 +453,12 @@ public class DataStore
 	
 	public boolean storeCHWs(Collection<CommunityHealthWorker> chws)
 	{
-
 		try ( Connection connection = getConnection() )
 		{
-			// "create table provider (id varchar, name varchar, is_chw boolean)"
+			// CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)
 			PreparedStatement providerTable = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
 
-			// create table provider_attribute (provider_id varchar, name varchar, value varchar)
+			// CREATE TABLE IF NOT EXISTS PROVIDER_ATTRIBUTE (provider_id varchar, name varchar, value varchar)
 			PreparedStatement attributeTable = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");
 
 			for (CommunityHealthWorker chw : chws)
@@ -398,6 +488,5 @@ public class DataStore
 			e.printStackTrace();
 			return false;	
 		}
-	}
-	
+	}	
 }
