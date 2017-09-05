@@ -86,6 +86,7 @@ public class HealthRecord {
 		public String category;
 		public String unit;
 		public List<Observation> observations;
+		public Report report;
 		
 		public Observation(long time, String type, Object value) {
 			super(time, type);
@@ -340,6 +341,7 @@ public class HealthRecord {
 		}
 		Report report = new Report(time, type, observations);
 		encounter.reports.add(report);
+		observations.forEach( o -> o.report = report);
 		return report;
 	}
 	
