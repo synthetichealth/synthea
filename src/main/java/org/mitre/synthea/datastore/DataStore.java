@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,10 +27,8 @@ import com.google.gson.internal.LinkedTreeMap;
  * Eventually this should be augmented to be more generic (possibly using an ORM?),
  * and allow for the (optional) use of a persistent database.
  */
-public class InMemoryDatabase
-{
-	private static InMemoryDatabase INSTANCE;
-	
+public class DataStore
+{	
 	// DB_CLOSE_DELAY=-1 maintains the DB in memory after all connections closed
 	// (so that we don't lose everything between 1 connection closing and the next being opened)
 	private static final String JDBC_OPTIONS = "DB_CLOSE_DELAY=-1";
@@ -44,49 +43,44 @@ public class InMemoryDatabase
 			throw new Error(e);
 		}
 	}
+
+	/**
+	 * Flag for whether the DB uses a file (true) or is in-memory only (false).
+	 */
+	private boolean fileBased;
 	
-	public static InMemoryDatabase getInstance()
+	public DataStore(boolean fileBased) 
 	{
-		if (INSTANCE == null)
-		{
-			INSTANCE = new InMemoryDatabase();
-		}
-		
-		return INSTANCE;
-	}	
-	
-	private InMemoryDatabase() 
-	{
+		this.fileBased = fileBased;
 		try(Connection connection = getConnection()) 
 		{
 			// TODO all of this needs to be done generically, ORM?
 			// but this is faster in the short term
-			// in the long term I want more standardized schemas	
+			// in the long term I want more standardized schemas
 			
-			connection.prepareStatement("CREATE TABLE PERSON (id varchar, name varchar, birthdate bigint)").execute();
-			connection.prepareStatement("CREATE TABLE attribute (person_id varchar, name varchar, value varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS attribute (person_id varchar, name varchar, value varchar)").execute();
 			
-			connection.prepareStatement("CREATE TABLE provider (id varchar, name varchar, is_chw boolean)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS provider (id varchar, name varchar, is_chw boolean)").execute();
 			
-			connection.prepareStatement("CREATE TABLE provider_attribute (provider_id varchar, name varchar, value varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS provider_attribute (provider_id varchar, name varchar, value varchar)").execute();
 			
-			connection.prepareStatement("CREATE TABLE encounter (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS encounter (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 			
-			// are conditions needed in phase 1?
-			connection.prepareStatement("CREATE TABLE condition (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS condition (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 			
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS medication (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 			
-			connection.prepareStatement("CREATE TABLE medication (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS procedure (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 			
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS observation (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)").execute();
 			
-			connection.prepareStatement("CREATE TABLE procedure (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+			// TODO diagnostic reports, immunizations
 			
-			connection.prepareStatement("CREATE TABLE observation (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)").execute();
-			
-			// TODO diagnostic reports
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS immunization (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)").execute();
 			
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
-			connection.prepareStatement("CREATE TABLE quality_of_life (person_id varchar, year int, value double)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS quality_of_life (person_id varchar, year int, value double)").execute();
 			
 			connection.commit();
 			
@@ -98,7 +92,9 @@ public class InMemoryDatabase
 	
 	public Connection getConnection() throws SQLException
 	{
-		return DriverManager.getConnection(FILEBASED_JDBC_STRING);
+		Connection connection = DriverManager.getConnection( this.fileBased ? FILEBASED_JDBC_STRING : IN_MEMORY_JDBC_STRING);
+		connection.setAutoCommit(false);
+		return connection;
 	}
 	
 	public boolean store(Person p) 
@@ -106,8 +102,7 @@ public class InMemoryDatabase
 		String personID = (String) p.attributes.get(Person.ID);
 		
 		try ( Connection connection = getConnection() )
-		{	
-			connection.setAutoCommit(false);  
+		{
 			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PERSON (id, name, birthdate) VALUES (?,?,?);");
 			
 			stmt.setString(1, personID);
@@ -267,7 +262,26 @@ public class InMemoryDatabase
 				
 				for (HealthRecord.Entry immunization : encounter.immunizations)
 				{
-					// TODO insert immunization - ignored in phase 1
+					// "CREATE TABLE IF NOT EXISTS immunization (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)"
+					stmt = connection.prepareStatement("INSERT INTO IMMUNIZATION (person_id, encounter_id, name, type, start, code, display, system) VALUES (?,?,?,?,?,?,?,?);");  
+					stmt.setString(1, personID);
+					stmt.setString(2, encounterID);
+					stmt.setString(3, immunization.name);
+					stmt.setString(4, immunization.type);
+					stmt.setLong(5, immunization.start);
+					if (immunization.codes.isEmpty())
+					{
+						stmt.setString(6, null);
+						stmt.setString(7, null);
+						stmt.setString(8, null);
+					} else
+					{
+						Code code = immunization.codes.get(0);
+						stmt.setString(6, code.code);
+						stmt.setString(7, code.display);
+						stmt.setString(8, code.system);
+					}
+					stmt.execute();
 				}
 				
 				for (Report report : encounter.reports)
@@ -307,33 +321,36 @@ public class InMemoryDatabase
 		}
 	}
 	
-	public boolean store(Provider p)
+	public boolean store(Collection<? extends Provider> providers)
 	{
-		String providerID = p.getResourceID();
-		LinkedTreeMap attributes = p.getAttributes();
 		try ( Connection connection = getConnection() )
 		{
-			connection.setAutoCommit(false);  
 			// "create table provider (id varchar, name varchar, is_chw boolean)"
-			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
-			
-			stmt.setString(1, providerID);
-			stmt.setString(2, (String)attributes.get("name"));
-			stmt.setBoolean(3, false);
-			
-			stmt.execute();
+			PreparedStatement providerTable = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
 			
 			// create table provider_attribute (provider_id varchar, name varchar, value varchar)
-			stmt = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");            
-			for (Object key : attributes.keySet()) {
-				stmt.setString(1, providerID);
-				stmt.setString(2, (String)key );
-				stmt.setString(3, String.valueOf(attributes.get(key)) );
-				stmt.addBatch();
+			PreparedStatement attributeTable = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");            
+			
+			for (Provider p : providers)
+			{
+				String providerID = p.getResourceID();
+				LinkedTreeMap attributes = p.getAttributes();
+				
+				providerTable.setString(1, providerID);
+				providerTable.setString(2, (String)attributes.get("name"));
+				providerTable.setBoolean(3, false);
+				providerTable.addBatch();
+				
+				for (Object key : attributes.keySet()) {
+					attributeTable.setString(1, providerID);
+					attributeTable.setString(2, (String)key );
+					attributeTable.setString(3, String.valueOf(attributes.get(key)) );
+					attributeTable.addBatch();
+				}
 			}
-			stmt.executeBatch();
-			
-			
+
+			providerTable.executeBatch();
+			attributeTable.executeBatch();
 			connection.commit();
 			return true;
 		}catch (SQLException e) 
@@ -343,34 +360,37 @@ public class InMemoryDatabase
 		}
 	}
 	
-	
-	public boolean store(CommunityHealthWorker chw)
+	public boolean storeCHWs(Collection<CommunityHealthWorker> chws)
 	{
-		String providerID = (String) chw.services.get("resourceID");
-		Map<String, Object> attributes = chw.services;
+
 		try ( Connection connection = getConnection() )
 		{
-			connection.setAutoCommit(false);  
 			// "create table provider (id varchar, name varchar, is_chw boolean)"
-			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
-			
-			stmt.setString(1, providerID);
-			stmt.setString(2, "CHW providing " + attributes.get(CommunityHealthWorker.DEPLOYMENT) + " services in " + attributes.get(CommunityHealthWorker.CITY));
-			stmt.setBoolean(3, true);
-			
-			stmt.execute();
-			
+			PreparedStatement providerTable = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
+
 			// create table provider_attribute (provider_id varchar, name varchar, value varchar)
-			stmt = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");            
-			for (Object key : attributes.keySet()) {
-				stmt.setString(1, providerID);
-				stmt.setString(2, (String)key );
-				stmt.setString(3, String.valueOf(attributes.get(key)) );
-				stmt.addBatch();
+			PreparedStatement attributeTable = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");
+
+			for (CommunityHealthWorker chw : chws)
+			{
+				String providerID = (String) chw.services.get("resourceID");
+				Map<String, Object> attributes = chw.services;
+				
+				providerTable.setString(1, providerID);
+				providerTable.setString(2,  "CHW providing " + attributes.get(CommunityHealthWorker.DEPLOYMENT) + " services in " + attributes.get(CommunityHealthWorker.CITY));
+				providerTable.setBoolean(3, true);
+				providerTable.addBatch();
+				
+				for (Object key : attributes.keySet()) {
+					attributeTable.setString(1, providerID);
+					attributeTable.setString(2, (String)key );
+					attributeTable.setString(3, String.valueOf(attributes.get(key)) );
+					attributeTable.addBatch();
+				}
 			}
-			stmt.executeBatch();
-			
-			
+
+			providerTable.executeBatch();
+			attributeTable.executeBatch();
 			connection.commit();
 			return true;
 		}catch (SQLException e) 

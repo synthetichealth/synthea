@@ -13,13 +13,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-import org.mitre.synthea.datastore.InMemoryDatabase;
+import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.HospitalExporter;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Demographics;
+import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Location;
 
 /**
@@ -28,7 +29,7 @@ import org.mitre.synthea.world.Location;
 public class Generator {
 
 	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
-	public InMemoryDatabase people; //List<Person> people;
+	public DataStore database;
 	public List<CommunityHealthWorker> chws;
 	public long numberOfPeople;
 	public final int MAX_TRIES = 10;
@@ -39,20 +40,36 @@ public class Generator {
 	public Map<String,AtomicInteger> stats;
 	public Map<String,Demographics> demographics;
 	
-	public Generator(int people) throws IOException
+	public Generator(int population) throws IOException
 	{
-		init(people, System.currentTimeMillis());
+		init(population, System.currentTimeMillis());
 	}
 	
-	public Generator(int people, long seed) throws IOException
+	public Generator(int population, long seed) throws IOException
 	{
-		init(people, seed);
+		init(population, seed);
 	}
 	
-	private void init(int people, long seed) throws IOException
+	private void init(int population, long seed) throws IOException
 	{
-		this.people =  InMemoryDatabase.getInstance(); //Collections.synchronizedList(new ArrayList<Person>());
-		this.numberOfPeople = people;
+		String dbType = Config.get("generate.database_type");
+		
+		switch(dbType)
+		{
+		case "in-memory":
+			this.database = new DataStore(false);
+			break;
+		case "file":
+			this.database = new DataStore(true);
+			break;
+		case "none":
+			this.database = null;
+			break;
+		default:
+			throw new IllegalArgumentException("Unexpected value for config setting generate.database_type: '" + dbType + "' . Valid values are file, in-memory, or none.");
+		}
+		
+		this.numberOfPeople = population;
 		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
 		this.random = new Random(seed);
@@ -72,6 +89,19 @@ public class Generator {
 	
 	public void run()
 	{
+		// insert providers at startup, so just in case we crash midway through the records are consistent
+		// TODO - this looping here is inefficient, do an insert batch or something
+		// TODO - de-dup hospitals if using a file-based database?
+		if (database != null)
+		{
+			database.store( Hospital.getHospitalList() );
+			
+			List<CommunityHealthWorker> chws = CommunityHealthWorker.workers
+					.values().stream().flatMap(List::stream)
+					.collect(Collectors.toList());
+			database.storeCHWs(chws);
+		}
+		
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		
 		for(int i=0; i < this.numberOfPeople; i++)
@@ -94,21 +124,12 @@ public class Generator {
 		
 		// export hospital information
 		try{
-			HospitalExporter.export(stop);
-			
-			for(Hospital h : Hospital.getHospitalList())
-			{
-				people.store(h);
-			}
-			
-			CommunityHealthWorker.workers.forEach( (city,list) ->  list.forEach( chw -> people.store(chw) )  );
-			
+			HospitalExporter.export(stop);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		System.out.println(stats);
-	
 	}
 	
 	
@@ -169,9 +190,9 @@ public class Generator {
 				}
 				
 				Exporter.export(person, stop);
-				if (people != null)
+				if (database != null)
 				{
-					people.store(person);
+					database.store(person);
 				}
 				
 				isAlive = person.alive(time);
