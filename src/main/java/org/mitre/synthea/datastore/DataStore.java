@@ -58,7 +58,7 @@ public class DataStore
 			// but this is faster in the short term
 			// in the long term I want more standardized schemas
 			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint, race varchar, gender varchar, socioeconomic_status varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)").execute();
 
@@ -83,7 +83,9 @@ public class DataStore
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CAREPLAN (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS quality_of_life (person_id varchar, year int, value double)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)").execute();
+
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, encounters int, procedures int, labs int, prescriptions int)").execute();
 			
 			connection.commit();
 			
@@ -106,12 +108,15 @@ public class DataStore
 		
 		try ( Connection connection = getConnection() )
 		{
-			// CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint)
-			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PERSON (id, name, birthdate) VALUES (?,?,?);");
+			// CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, race varchar, ethnicity varchar, gender varchar, birthdate bigint)
+			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PERSON (id, name, birthdate, race, gender, socioeconomic_status) VALUES (?,?,?,?,?,?);");
 			
 			stmt.setString(1, personID);
 			stmt.setString(2, (String)p.attributes.get(Person.NAME));
 			stmt.setLong(3, (long)p.attributes.get(Person.BIRTHDATE));
+			stmt.setString(4, (String)p.attributes.get(Person.RACE));
+			stmt.setString(5, (String)p.attributes.get(Person.GENDER));
+			stmt.setString(6, (String)p.attributes.get(Person.SOCIOECONOMIC_CATEGORY));
 			
 			stmt.execute();
 			
@@ -386,18 +391,21 @@ public class DataStore
 				}
 			}
 			
+			Map<Integer,Double> qalys = (Map<Integer,Double>)p.attributes.get("QALY");
+			Map<Integer,Double> dalys = (Map<Integer,Double>)p.attributes.get("DALY");
 			Map<Integer,Double> qols = (Map<Integer,Double>)p.attributes.get("QOL");
-			
 			if (qols != null)
 			{
 				// TODO - would rather have something more generic
-				stmt = connection.prepareStatement("INSERT INTO QUALITY_OF_LIFE (person_id, year, value) VALUES (?,?,?);");     
+				stmt = connection.prepareStatement("INSERT INTO QUALITY_OF_LIFE (person_id, year, qol, qaly, daly) VALUES (?,?,?,?,?);");     
 				
-				for (Map.Entry<Integer,Double> attr : qols.entrySet()) 
+				for (Integer year : qols.keySet()) 
 				{
 					stmt.setString(1, personID);
-					stmt.setInt(2, attr.getKey() );
-					stmt.setDouble(3, attr.getValue() );
+					stmt.setInt(2, year );
+					stmt.setDouble(3, qols.get(year) );
+					stmt.setDouble(4, qalys.get(year) );
+					stmt.setDouble(5, dalys.get(year) );
 					stmt.addBatch();
 				}
 				stmt.executeBatch();
@@ -422,6 +430,8 @@ public class DataStore
 			// create table provider_attribute (provider_id varchar, name varchar, value varchar)
 			PreparedStatement attributeTable = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");            
 			
+			// CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, encounters int, procedures int, labs int, prescriptions int)
+			PreparedStatement utilizationTable = connection.prepareStatement("INSERT INTO UTILIZATION (provider_id, encounters, procedures, labs, prescriptions) VALUES (?,?,?,?,?)");
 			for (Provider p : providers)
 			{
 				String providerID = p.getResourceID();
@@ -438,10 +448,19 @@ public class DataStore
 					attributeTable.setString(3, String.valueOf(attributes.get(key)) );
 					attributeTable.addBatch();
 				}
+
+				Map<String,Integer> u = p.getUtilization();
+				utilizationTable.setString(1,  providerID);
+				utilizationTable.setInt(2, u.get(Provider.ENCOUNTERS));
+				utilizationTable.setInt(3, u.get(Provider.PROCEDURES));
+				utilizationTable.setInt(4, u.get(Provider.LABS));
+				utilizationTable.setInt(5, u.get(Provider.PRESCRIPTIONS));
+				utilizationTable.addBatch();
 			}
 
 			providerTable.executeBatch();
 			attributeTable.executeBatch();
+			utilizationTable.executeBatch();
 			connection.commit();
 			return true;
 		}catch (SQLException e) 
