@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -109,8 +110,12 @@ public class CommunityHealthWorker {
 		chw.services.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
 		chw.services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
 		Location.assignCity(chw);
-		
+
 		chw.services.put(DEPLOYMENT, deploymentType);
+
+		//resourceID so that it's the same as Provider. TODO make CHW a subclass of Providers
+		chw.services.put("resourceID", UUID.randomUUID().toString());
+
 		return chw;
 	}
 

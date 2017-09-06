@@ -13,12 +13,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.HospitalExporter;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Demographics;
+import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Location;
 
 /**
@@ -27,7 +29,7 @@ import org.mitre.synthea.world.Location;
 public class Generator {
 
 	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
-	public List<Person> people;
+	public DataStore database;
 	public List<CommunityHealthWorker> chws;
 	public long numberOfPeople;
 	public final int MAX_TRIES = 10;
@@ -37,27 +39,45 @@ public class Generator {
 	public long stop;
 	public Map<String,AtomicInteger> stats;
 	public Map<String,Demographics> demographics;
+	private String logLevel;
 	
-	public Generator(int people) throws IOException
+	public Generator(int population) throws IOException
 	{
-		init(people, System.currentTimeMillis());
+		init(population, System.currentTimeMillis());
 	}
 	
-	public Generator(int people, long seed) throws IOException
+	public Generator(int population, long seed) throws IOException
 	{
-		init(people, seed);
+		init(population, seed);
 	}
 	
-	private void init(int people, long seed) throws IOException
+	private void init(int population, long seed) throws IOException
 	{
-		this.people = Collections.synchronizedList(new ArrayList<Person>());
-		this.numberOfPeople = people;
+		String dbType = Config.get("generate.database_type");
+		
+		switch(dbType)
+		{
+		case "in-memory":
+			this.database = new DataStore(false);
+			break;
+		case "file":
+			this.database = new DataStore(true);
+			break;
+		case "none":
+			this.database = null;
+			break;
+		default:
+			throw new IllegalArgumentException("Unexpected value for config setting generate.database_type: '" + dbType + "' . Valid values are file, in-memory, or none.");
+		}
+		
+		this.numberOfPeople = population;
 		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
 		this.random = new Random(seed);
 		this.timestep = Long.parseLong( Config.get("generate.timestep") );
 		this.stop = System.currentTimeMillis();
 		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
+		this.logLevel = Config.get("generate.log_patients.detail", "simple");
 		
 		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
 		stats.put("alive", new AtomicInteger(0));
@@ -71,6 +91,19 @@ public class Generator {
 	
 	public void run()
 	{
+		// insert providers at startup, so just in case we crash midway through the records are consistent
+		// TODO - this looping here is inefficient, do an insert batch or something
+		// TODO - de-dup hospitals if using a file-based database?
+		if (database != null)
+		{
+			database.store( Hospital.getHospitalList() );
+			
+			List<CommunityHealthWorker> chws = CommunityHealthWorker.workers
+					.values().stream().flatMap(List::stream)
+					.collect(Collectors.toList());
+			database.storeCHWs(chws);
+		}
+		
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		
 		for(int i=0; i < this.numberOfPeople; i++)
@@ -93,13 +126,12 @@ public class Generator {
 		
 		// export hospital information
 		try{
-			HospitalExporter.export(stop);
+			HospitalExporter.export(stop);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		System.out.println(stats);
-	
 	}
 	
 	
@@ -132,8 +164,6 @@ public class Generator {
 			
 				LifecycleModule.birth(person, start);
 				EncounterModule encounterModule = new EncounterModule();
-
-				people.add(person);
 					
 				long time = start;
 				while(person.alive(time) && time < stop)
@@ -162,11 +192,17 @@ public class Generator {
 				}
 				
 				Exporter.export(person, stop);
+				if (database != null)
+				{
+					database.store(person);
+				}
 				
 				isAlive = person.alive(time);
 				
-				String deceased = isAlive ? "" : "DECEASED";
-				System.out.format("%d -- %s (%d y/o) %s %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
+				if (!this.logLevel.equals("none"))
+				{
+					writeToConsole(person, index, time, isAlive);
+				}
 				
 				String key = isAlive ? "alive" : "dead";
 				
@@ -177,6 +213,29 @@ public class Generator {
 		{
 			e.printStackTrace();
 			throw e;
+		}
+	}
+	
+	private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive)
+	{
+		// this is synchronized to ensure all lines for a single person are always printed consecutively
+		String deceased = isAlive ? "" : "DECEASED";
+		System.out.format("%d -- %s (%d y/o) %s %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
+		
+		if (this.logLevel.equals("detailed"))
+		{
+			System.out.println("ATTRIBUTES");
+			for(String attribute : person.attributes.keySet()) {
+				System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
+			}
+			System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
+			System.out.println(person.record.textSummary());
+			System.out.println("VITAL SIGNS");
+			for(VitalSign vitalSign : person.vitalSigns.keySet()) {
+				System.out.format("  * %25s = %6.2f\n", vitalSign, person.getVitalSign(vitalSign).doubleValue());
+			}
+			System.out.format("Number of CHW Interventions: %d\n", person.attributes.get(Person.CHW_INTERVENTION));
+			System.out.println("-----");
 		}
 	}
 	
