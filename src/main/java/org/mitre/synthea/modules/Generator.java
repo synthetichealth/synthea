@@ -39,6 +39,7 @@ public class Generator {
 	public long stop;
 	public Map<String,AtomicInteger> stats;
 	public Map<String,Demographics> demographics;
+	private String logLevel;
 	
 	public Generator(int population) throws IOException
 	{
@@ -76,6 +77,7 @@ public class Generator {
 		this.timestep = Long.parseLong( Config.get("generate.timestep") );
 		this.stop = System.currentTimeMillis();
 		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
+		this.logLevel = Config.get("generate.log_patients.detail", "simple");
 		
 		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
 		stats.put("alive", new AtomicInteger(0));
@@ -197,8 +199,10 @@ public class Generator {
 				
 				isAlive = person.alive(time);
 				
-				String deceased = isAlive ? "" : "DECEASED";
-				System.out.format("%d -- %s (%d y/o) %s %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
+				if (!this.logLevel.equals("none"))
+				{
+					writeToConsole(person, index, time, isAlive);
+				}
 				
 				String key = isAlive ? "alive" : "dead";
 				
@@ -209,6 +213,29 @@ public class Generator {
 		{
 			e.printStackTrace();
 			throw e;
+		}
+	}
+	
+	private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive)
+	{
+		// this is synchronized to ensure all lines for a single person are always printed consecutively
+		String deceased = isAlive ? "" : "DECEASED";
+		System.out.format("%d -- %s (%d y/o) %s %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
+		
+		if (this.logLevel.equals("detailed"))
+		{
+			System.out.println("ATTRIBUTES");
+			for(String attribute : person.attributes.keySet()) {
+				System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
+			}
+			System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
+			System.out.println(person.record.textSummary());
+			System.out.println("VITAL SIGNS");
+			for(VitalSign vitalSign : person.vitalSigns.keySet()) {
+				System.out.format("  * %25s = %6.2f\n", vitalSign, person.getVitalSign(vitalSign).doubleValue());
+			}
+			System.out.format("Number of CHW Interventions: %d\n", person.attributes.get(Person.CHW_INTERVENTION));
+			System.out.println("-----");
 		}
 	}
 	

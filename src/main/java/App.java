@@ -12,25 +12,8 @@ public class App {
 	public static void main(String[] args) throws Exception {
 		Generator generator = new Generator(10);
 		generator.run();
-//		for(Person person : generator.people) {
-//			System.out.println("\n" + person.attributes.get(Person.NAME));
-////			System.out.println("ATTRIBUTES");
-////			for(String attribute : person.attributes.keySet()) {
-////				System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
-////			}
-////			System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
-//			System.out.println(person.record.textSummary());
-////			System.out.println("VITAL SIGNS");
-////			for(VitalSign vitalSign : person.vitalSigns.keySet()) {
-////				System.out.format("  * %25s = %6.2f\n", vitalSign, person.getVitalSign(vitalSign).doubleValue());
-////			}
-//			System.out.format("Number of CHW Interventions: %d\n", person.attributes.get(Person.CHW_INTERVENTION));
-//		}
-//
-//		System.out.format("Number of Towns: %d\n", CommunityHealthWorker.workers.size());
-//		System.out.format("Number of CHWs: %d\n", CommunityHealthWorker.budget / CommunityHealthWorker.cost);
-//		for(String city : CommunityHealthWorker.workers.keySet()) {
-//			System.out.format("Number of CHWs in %s: %d\n", city, CommunityHealthWorker.workers.get(city).size());
-//		}
+
+		System.out.format("Number of Towns: %d\n", CommunityHealthWorker.workers.size());
+		System.out.format("Number of CHWs: %d\n", CommunityHealthWorker.budget / CommunityHealthWorker.cost);
 	}
 }
