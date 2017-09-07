@@ -172,20 +172,11 @@ public class Module {
 			person.history.add(0, current);
 		}
 		person.attributes.remove(activeKey);
-		return (current.type == State.StateType.TERMINAL);
+		return (current.type.equals(State.StateType.TERMINAL));
 	}
 
 	private State initialState() {
-		Iterator<State> iter = states.values().iterator();
-		while(iter.hasNext())
-		{
-			State state = iter.next();
-			if(state.type == State.StateType.INITIAL)
-			{
-				return state.clone(); // clone the state so we don't dirty the original.
-			}
-		}
-		return null;
+		return states.get("Initial"); // all Initial states have name Initial
 	}
 	
 }

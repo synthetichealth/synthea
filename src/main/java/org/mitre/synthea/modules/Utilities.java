@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules;
 
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Config;
@@ -31,6 +33,13 @@ public class Utilities {
 	
 	public static long convertCalendarYearsToTime(int years) {
 		return convertTime( "years", (long)(years - 1970) );
+	}
+	
+	public static int getYear(long time)
+	{
+		Calendar calendar = Calendar.getInstance( TimeZone.getTimeZone("UTC") );
+		calendar.setTimeInMillis(time);
+		return calendar.get(Calendar.YEAR);
 	}
 
 	/**

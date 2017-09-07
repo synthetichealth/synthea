@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,9 +41,7 @@ public class QualityOfLifeModule extends Module
 		Map<Integer,Double> dalys = (Map<Integer,Double>)person.attributes.get("DALY");
 		Map<Integer,Double> qols = (Map<Integer,Double>)person.attributes.get("QOL");
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(time);
-		int year = calendar.get(Calendar.YEAR);
+		int year = Utilities.getYear(time);
 		
 		if (!qalys.containsKey(year))
 		{

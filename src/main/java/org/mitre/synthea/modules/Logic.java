@@ -1,7 +1,5 @@
 package org.mitre.synthea.modules;
 
-import java.util.Calendar;
-
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Entry;
@@ -81,9 +79,7 @@ public class Logic {
 		case DATE:
 			operator = definition.get("operator").getAsString();
 			quantity = definition.get("year").getAsLong();
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(time);
-			double year = calendar.get(Calendar.YEAR) - 1900;
+			int year = Utilities.getYear(time);
 			return Utilities.compare(year, (double)quantity, operator);
 		case SOCIOECONOMIC_STATUS:
 			String category = definition.get("category").getAsString();
@@ -111,9 +107,9 @@ public class Logic {
 			}
 			if(definition.has("value")) {
 				value = definition.get("value").getAsDouble();
-				return Utilities.compare(observation, value, operator);
+				return Utilities.compare(observation.value, value, operator);
 			} else {
-				return Utilities.compare(observation, null, operator);
+				return Utilities.compare(observation.value, null, operator);
 			}
 		case ATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
@@ -243,6 +239,12 @@ public class Logic {
 					return false;
 				}
 			}
+		case VITAL_SIGN:
+			String vitalSignName = definition.get("vital_sign").getAsString();
+			VitalSign vs = VitalSign.fromString(vitalSignName);
+			operator = definition.get("operator").getAsString();
+			value = definition.get("value").getAsDouble();
+			return Utilities.compare(person.getVitalSign(vs), value, operator);
 		default:
 			System.err.format("Unhandled Logic: %s\n", type);
 			return false;

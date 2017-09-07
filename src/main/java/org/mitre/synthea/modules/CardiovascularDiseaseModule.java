@@ -1,7 +1,6 @@
 package org.mitre.synthea.modules;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -240,9 +239,7 @@ public final class CardiovascularDiseaseModule extends Module
 
     private static List<String> filter_meds_by_year(List<String> meds, long time)
     {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(time);
-		double year = calendar.get(Calendar.YEAR);
+		int year = Utilities.getYear(time);
     	return meds.stream().filter( med -> year >= MEDICATION_AVAILABLE.get(med)).collect(Collectors.toList());
     }
     
