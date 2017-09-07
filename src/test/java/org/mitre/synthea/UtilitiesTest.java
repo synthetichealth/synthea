@@ -21,5 +21,13 @@ public class UtilitiesTest {
 		System.out.println(date);
 		assertTrue(date > year);
 	}
+	
+	@Test
+	public void testGetYear()
+	{
+		assertEquals(1970, Utilities.getYear(0L) );
+		assertEquals(2017, Utilities.getYear(1504783221000L) ); // the time as of this writing, 2017-09-07
+		assertEquals(2009, Utilities.getYear(1234567890000L) );
+	}
 
 }
