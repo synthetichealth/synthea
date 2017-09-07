@@ -7,11 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -24,9 +22,10 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Provider;
 
-import com.google.gson.internal.LinkedTreeMap;
-
 import ca.uhn.fhir.context.FhirContext;
+
+import com.google.common.collect.Table;
+import com.google.gson.internal.LinkedTreeMap;
 
 public abstract class HospitalExporter{
 	
@@ -37,14 +36,19 @@ public abstract class HospitalExporter{
 	public static void export(long stop){
 		if(Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))){
 			
-			String bundleJson = "";
 			Bundle bundle = new Bundle();
 			for(Hospital h : Hospital.getHospitalList()){
 				// filter - exports only those hospitals in use
-				if(h.getUtilization().get(Provider.ENCOUNTERS) != 0){
-					bundleJson = convertToFHIR(h, bundle);
+				
+				Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
+				int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt( ai-> ai.get() ).sum();
+				if (totalEncounters > 0)
+				{
+					addHospitalToBundle(h, bundle);
 				}
 			}
+			
+			String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 			
 			// get output folder
 			List<String> folders = new ArrayList<>();
@@ -63,7 +67,7 @@ public abstract class HospitalExporter{
 		}
 	}
 	
-	public static String convertToFHIR(Hospital h, Bundle bundle){
+	public static void addHospitalToBundle(Hospital h, Bundle bundle){
 		Organization organizationResource = new Organization();
 		
 		organizationResource.addIdentifier()
@@ -81,23 +85,30 @@ public abstract class HospitalExporter{
 		address.setState(hAttributes.get("state").toString());
 		organizationResource.addAddress(address);
 
+		
+		Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
+		// calculate totals for utilization
+		int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt( ai-> ai.get() ).sum();
 		Extension encountersExtension = new Extension(SYNTHEA_URI + "utilization-encounters-extension");
-		IntegerType encountersValue = new IntegerType(h.getUtilization().get(Provider.ENCOUNTERS));
+		IntegerType encountersValue = new IntegerType(totalEncounters);
 		encountersExtension.setValue(encountersValue);
 		organizationResource.addExtension(encountersExtension);
 		
+		int totalProcedures = utilization.column(Provider.PROCEDURES).values().stream().mapToInt( ai-> ai.get() ).sum();
 		Extension proceduresExtension = new Extension(SYNTHEA_URI + "utilization-procedures-extension");
-		IntegerType proceduresValue = new IntegerType(h.getUtilization().get(Provider.PROCEDURES));
+		IntegerType proceduresValue = new IntegerType(totalProcedures);
 		proceduresExtension.setValue(proceduresValue);
 		organizationResource.addExtension(proceduresExtension);
 		
+		int totalLabs = utilization.column(Provider.LABS).values().stream().mapToInt( ai-> ai.get() ).sum();
 		Extension labsExtension = new Extension(SYNTHEA_URI + "utilization-labs-extension");
-		IntegerType labsValue = new IntegerType(h.getUtilization().get(Provider.LABS));
+		IntegerType labsValue = new IntegerType(totalLabs);
 		labsExtension.setValue(labsValue);
 		organizationResource.addExtension(labsExtension);
 		
+		int totalPrescriptions = utilization.column(Provider.PRESCRIPTIONS).values().stream().mapToInt( ai-> ai.get() ).sum();
 		Extension prescriptionsExtension = new Extension(SYNTHEA_URI + "utilization-prescriptions-extension");
-		IntegerType prescriptionsValue = new IntegerType(h.getUtilization().get(Provider.PRESCRIPTIONS));
+		IntegerType prescriptionsValue = new IntegerType(totalPrescriptions);
 		prescriptionsExtension.setValue(prescriptionsValue);
 		organizationResource.addExtension(prescriptionsExtension);
 		
@@ -109,9 +120,7 @@ public abstract class HospitalExporter{
 			organizationResource.addExtension(bedCountExtension);
 		}
 		
-		BundleEntryComponent hospitalEntry = newEntry(bundle, organizationResource, h.getResourceID());
-		String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
-		return bundleJson;
+		newEntry(bundle, organizationResource, h.getResourceID());
 	}
 	
 	private static BundleEntryComponent newEntry(Bundle bundle, Resource resource, String resourceID){

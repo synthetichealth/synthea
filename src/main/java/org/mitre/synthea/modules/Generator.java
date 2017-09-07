@@ -90,20 +90,7 @@ public class Generator {
 	}
 	
 	public void run()
-	{
-		// insert providers at startup, so just in case we crash midway through the records are consistent
-		// TODO - this looping here is inefficient, do an insert batch or something
-		// TODO - de-dup hospitals if using a file-based database?
-		if (database != null)
-		{
-			database.store( Hospital.getHospitalList() );
-			
-			List<CommunityHealthWorker> chws = CommunityHealthWorker.workers
-					.values().stream().flatMap(List::stream)
-					.collect(Collectors.toList());
-			database.storeCHWs(chws);
-		}
-		
+	{		
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		
 		for(int i=0; i < this.numberOfPeople; i++)
@@ -122,6 +109,18 @@ public class Generator {
 		} catch (InterruptedException e)
 		{
 			e.printStackTrace();
+		}
+		
+		// have to store providers at the end to correctly capture utilization #s
+		// TODO - de-dup hospitals if using a file-based database?
+		if (database != null)
+		{
+			database.store( Hospital.getHospitalList() );
+			
+			List<CommunityHealthWorker> chws = CommunityHealthWorker.workers
+					.values().stream().flatMap(List::stream)
+					.collect(Collectors.toList());
+			database.storeCHWs(chws);
 		}
 		
 		// export hospital information

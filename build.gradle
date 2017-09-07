@@ -39,6 +39,9 @@ dependencies {
 	
     compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
 
+    // google guava for some data structures
+    compile 'com.google.guava:guava:23.0'
+
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
