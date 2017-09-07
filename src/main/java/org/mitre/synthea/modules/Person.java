@@ -162,7 +162,7 @@ public class Person implements Serializable
 			return false;
 		}
 		for(State state : history) {
-			if(state.name == priorState && state.exited > time) {
+			if(state.name.equals(priorState) && state.exited > time) {
 				return true;
 			}
 		}
@@ -174,9 +174,9 @@ public class Person implements Serializable
 			return false;
 		}
 		for(State state : history) {
-			if(state.name == priorState) {
+			if(state.name.equals(priorState)) {
 				return true;
-			} else if(state.name == sinceState) {
+			} else if(state.name.equals(sinceState)) {
 				return false;
 			}
 		}

@@ -50,7 +50,7 @@ public class HealthRecord {
 			this.display = definition.get("display").getAsString();
 		}
 		public boolean equals(Code other) {
-			return this.system == other.system && this.code == other.code;
+			return this.system.equals(other.system) && this.code.equals(other.code);
 		}
 		public String toString() {
 			return String.format("%s %s %s", system, code, display);
@@ -220,7 +220,7 @@ public class HealthRecord {
 	public long timeSinceLastWellnessEncounter(long time) {
 		for(int i=encounters.size()-1; i >= 0; i--) {
 			Encounter encounter = encounters.get(i);
-			if(encounter.type == EncounterType.WELLNESS.toString()) {
+			if(encounter.type.equals(EncounterType.WELLNESS.toString())) {
 				return (time - encounter.start);
 			}
 		}
@@ -251,7 +251,7 @@ public class HealthRecord {
 		for(int i=encounters.size()-1; i >= 0; i--) {
 			Encounter encounter = encounters.get(i);
 			for(Observation observation : encounter.observations) {
-				if(observation.type == type) {
+				if(observation.type.equals(type)) {
 					return observation;
 				}
 			}
@@ -280,7 +280,7 @@ public class HealthRecord {
 		Iterator<Entry> iter = present.values().iterator();
 		while(iter.hasNext()) {
 			Entry e = iter.next();
-			if(e.name == stateName) {
+			if(e.name != null && e.name.equals(stateName)) {
 				condition = e;
 				break;
 			}
@@ -312,7 +312,7 @@ public class HealthRecord {
 		Iterator<Entry> iter = present.values().iterator();
 		while(iter.hasNext()) {
 			Entry e = iter.next();
-			if(e.name == stateName) {
+			if(e.name != null && e.name.equals(stateName)) {
 				allergy = e;
 				break;
 			}
@@ -354,7 +354,7 @@ public class HealthRecord {
 	public void encounterEnd(long time, String type) {
 		for(int i=encounters.size()-1; i >= 0; i--) {
 			Encounter encounter = encounters.get(i);
-			if(encounter.type==type && encounter.stop==0l) {
+			if(encounter.type.equals(type) && encounter.stop==0l) {
 				encounter.stop = time;
 				return;
 			}
@@ -393,7 +393,7 @@ public class HealthRecord {
 		Iterator<Entry> iter = present.values().iterator();
 		while(iter.hasNext()) {
 			Entry e = iter.next();
-			if(e.name == stateName) {
+			if(e.name != null && e.name.equals(stateName)) {
 				medication = (Medication) e;
 				break;
 			}
@@ -435,7 +435,7 @@ public class HealthRecord {
 		Iterator<Entry> iter = present.values().iterator();
 		while(iter.hasNext()) {
 			Entry e = iter.next();
-			if(e.name == stateName) {
+			if(e.name != null && e.name.equals(stateName)) {
 				careplan = (CarePlan) e;
 				break;
 			}

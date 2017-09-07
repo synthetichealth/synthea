@@ -243,6 +243,12 @@ public class Logic {
 					return false;
 				}
 			}
+		case VITAL_SIGN:
+			String vitalSignName = definition.get("vital_sign").getAsString();
+			VitalSign vs = VitalSign.fromString(vitalSignName);
+			operator = definition.get("operator").getAsString();
+			value = definition.get("value").getAsDouble();
+			return Utilities.compare(person.getVitalSign(vs), value, operator);
 		default:
 			System.err.format("Unhandled Logic: %s\n", type);
 			return false;

@@ -54,10 +54,10 @@ public class HealthInsuranceModule extends Module
 	}
 	
 	private String determineInsurance(Person person, int age, long time) {
-		boolean female = (person.attributes.get(Person.GENDER) == "F");
-		boolean pregnant = (person.attributes.containsKey("pregnant") && (Boolean) person.attributes.get("pregnant") == true);
-		boolean blind = (person.attributes.containsKey("blindness") && (Boolean) person.attributes.get("blindness") == true);
-		boolean esrd = (person.attributes.containsKey("end_stage_renal_disease") && (Boolean) person.attributes.get("end_stage_renal_disease") == true);
+		boolean female = (person.attributes.get(Person.GENDER).equals("F"));
+		boolean pregnant = (person.attributes.containsKey("pregnant") && (boolean) person.attributes.get("pregnant"));
+		boolean blind = (person.attributes.containsKey("blindness") && (boolean) person.attributes.get("blindness"));
+		boolean esrd = (person.attributes.containsKey("end_stage_renal_disease") && (boolean) person.attributes.get("end_stage_renal_disease"));
 		boolean sixty_five = (age >= 65);		
 		double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 		int income = (Integer) person.attributes.get(Person.INCOME);
