@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.text.html.parser.Entity;
 
 import org.mitre.synthea.modules.Person;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -32,7 +35,7 @@ public class Provider {
 	private LinkedTreeMap attributes;
 	private Point coordinates;
 	private ArrayList<String> services_provided;
-	private Map<String, Integer> utilization;
+	private Table<Integer, String, AtomicInteger> utilization; // row: year, column: type, value: count
 	
 	public Provider(LinkedTreeMap p) {
 		LinkedTreeMap properties = (LinkedTreeMap) p.get("properties");
@@ -59,11 +62,7 @@ public class Provider {
 			}
 		}
 		
-		utilization = new HashMap<String, Integer>();
-		utilization.put(ENCOUNTERS, 0);
-		utilization.put(PROCEDURES, 0);
-		utilization.put(LABS, 0);
-		utilization.put(PRESCRIPTIONS, 0);
+		utilization = HashBasedTable.create();
 	}
 	
 	public static void clear(){
@@ -87,28 +86,39 @@ public class Provider {
 		return services_provided.contains(service);
 	}
 	
-	public void incrementEncounters(){
-		int count = utilization.get(ENCOUNTERS) + 1;
-		utilization.put(ENCOUNTERS, count);
+	public void incrementEncounters(String encounterType, int year)
+	{
+		increment(year, ENCOUNTERS);
+		increment(year, ENCOUNTERS + "-" + encounterType);
 	}
 	
-	public void incrementProcedures(){
-		int count = utilization.get(PROCEDURES) + 1;
-		utilization.put(PROCEDURES, count);
+	public void incrementProcedures(int year)
+	{	
+		increment(year, PROCEDURES);
 	}
 	
 	// TODO: increment labs when there are reports
-	public void incrementLabs(){
-		int count = utilization.get(LABS) + 1;
-		utilization.put(LABS, count);
+	public void incrementLabs(int year)
+	{	
+		increment(year, LABS);
 	}
 	
-	public void incrementPrescriptions(){
-		int count = utilization.get(PRESCRIPTIONS) + 1;
-		utilization.put(PRESCRIPTIONS, count);
+	public void incrementPrescriptions(int year)
+	{	
+		increment(year, PRESCRIPTIONS);
 	}
 	
-	public Map<String, Integer> getUtilization(){
+	private void increment(Integer year, String key)
+	{
+		if (!utilization.contains(year, key))
+		{
+			utilization.put(year, key, new AtomicInteger(0));
+		}
+		
+		utilization.get(year, key).incrementAndGet();
+	}
+	
+	public Table<Integer, String, AtomicInteger> getUtilization(){
 		return utilization;
 	}
 	

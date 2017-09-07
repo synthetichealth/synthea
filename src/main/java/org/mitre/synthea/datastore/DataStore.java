@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.modules.CommunityHealthWorker;
 import org.mitre.synthea.modules.HealthRecord;
@@ -20,6 +21,7 @@ import org.mitre.synthea.modules.HealthRecord.Report;
 import org.mitre.synthea.modules.Person;
 import org.mitre.synthea.world.Provider;
 
+import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
 /**
@@ -70,7 +72,7 @@ public class DataStore
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
@@ -85,7 +87,9 @@ public class DataStore
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)").execute();
 
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, encounters int, procedures int, labs int, prescriptions int)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, year int, encounters int, procedures int, labs int, prescriptions int)").execute();
+			
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS UTILIZATION_DETAIL (provider_id varchar, year int, category varchar, value int)").execute();
 			
 			connection.commit();
 			
@@ -134,20 +138,21 @@ public class DataStore
 			{
 				String encounterID = UUID.randomUUID().toString();
 
+				String providerID = null;
+				
+				if (encounter.provider != null)
+				{
+					providerID = encounter.provider.getResourceID();
+				} else if (encounter.chw != null)
+				{
+					providerID = (String) encounter.chw.services.get("resourceID");
+				}
+				
 				// CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
 				stmt = connection.prepareStatement("INSERT INTO ENCOUNTER (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");  
 				stmt.setString(1, encounterID);
 				stmt.setString(2, personID);
-				if (encounter.provider == null && encounter.chw == null)
-				{
-					stmt.setString(3, null);
-				} else if (encounter.provider != null)
-				{
-					stmt.setString(3, encounter.provider.getResourceID());
-				} else if (encounter.chw != null)
-				{
-					stmt.setString(3, (String) encounter.chw.services.get("resourceID"));
-				}
+				stmt.setString(3, providerID);
 				stmt.setString(4, encounter.name);
 				stmt.setString(5, encounter.type);
 				stmt.setLong(6, encounter.start);
@@ -309,24 +314,25 @@ public class DataStore
 				
 				for (Medication medication : encounter.medications)
 				{
-					// CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
-					stmt = connection.prepareStatement("INSERT INTO MEDICATION (person_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?);");  
+					// CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
+					stmt = connection.prepareStatement("INSERT INTO MEDICATION (person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?);");  
 					stmt.setString(1, personID);
-					stmt.setString(2, medication.name);
-					stmt.setString(3, medication.type);
-					stmt.setLong(4, medication.start);
-					stmt.setLong(5, medication.stop);
+					stmt.setString(2, providerID);
+					stmt.setString(3, medication.name);
+					stmt.setString(4, medication.type);
+					stmt.setLong(5, medication.start);
+					stmt.setLong(6, medication.stop);
 					if (medication.codes.isEmpty())
 					{
-						stmt.setString(6, null);
 						stmt.setString(7, null);
 						stmt.setString(8, null);
+						stmt.setString(9, null);
 					} else
 					{
 						Code code = medication.codes.get(0);
-						stmt.setString(6, code.code);
-						stmt.setString(7, code.display);
-						stmt.setString(8, code.system);
+						stmt.setString(7, code.code);
+						stmt.setString(8, code.display);
+						stmt.setString(9, code.system);
 					}
 					stmt.execute();
 				}
@@ -431,7 +437,10 @@ public class DataStore
 			PreparedStatement attributeTable = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");            
 			
 			// CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, encounters int, procedures int, labs int, prescriptions int)
-			PreparedStatement utilizationTable = connection.prepareStatement("INSERT INTO UTILIZATION (provider_id, encounters, procedures, labs, prescriptions) VALUES (?,?,?,?,?)");
+			PreparedStatement utilizationTable = connection.prepareStatement("INSERT INTO UTILIZATION (provider_id, year, encounters, procedures, labs, prescriptions) VALUES (?,?,?,?,?,?)");
+			
+			// CREATE TABLE IF NOT EXISTS UTILIZATION_DETAIL (provider_id varchar, year int, category string, value int)
+			PreparedStatement utilizationDetailTable = connection.prepareStatement("INSERT INTO UTILIZATION_DETAIL (provider_id, year, category, value) VALUES (?,?,?,?)");
 			for (Provider p : providers)
 			{
 				String providerID = p.getResourceID();
@@ -449,24 +458,63 @@ public class DataStore
 					attributeTable.addBatch();
 				}
 
-				Map<String,Integer> u = p.getUtilization();
-				utilizationTable.setString(1,  providerID);
-				utilizationTable.setInt(2, u.get(Provider.ENCOUNTERS));
-				utilizationTable.setInt(3, u.get(Provider.PROCEDURES));
-				utilizationTable.setInt(4, u.get(Provider.LABS));
-				utilizationTable.setInt(5, u.get(Provider.PRESCRIPTIONS));
-				utilizationTable.addBatch();
+				Table<Integer, String, AtomicInteger> u = p.getUtilization();
+				for (Integer year : u.rowKeySet())
+				{
+					utilizationTable.setString(1,  providerID);
+					utilizationTable.setInt(2, year);
+					utilizationTable.setInt(3, pickUtilization(u, year, Provider.ENCOUNTERS) );
+					utilizationTable.setInt(4, pickUtilization(u, year, Provider.PROCEDURES) );
+					utilizationTable.setInt(5, pickUtilization(u, year, Provider.LABS) );
+					utilizationTable.setInt(6, pickUtilization(u, year, Provider.PRESCRIPTIONS) );
+					utilizationTable.addBatch();
+					
+					for (String category : u.columnKeySet())
+					{
+						if (!category.startsWith(Provider.ENCOUNTERS))
+						{
+							continue;
+						}
+						
+						int count = pickUtilization(u, year, category);
+						
+						if (count == 0)
+						{
+							// don't bother storing 0 in the database
+							continue;
+						}
+						
+						utilizationDetailTable.setString(1, providerID);
+						utilizationDetailTable.setInt(2, year);
+						utilizationDetailTable.setString(3, category);
+						utilizationDetailTable.setInt(4, count);
+						utilizationDetailTable.addBatch();
+					}
+				}
 			}
 
 			providerTable.executeBatch();
 			attributeTable.executeBatch();
 			utilizationTable.executeBatch();
+			utilizationDetailTable.executeBatch();
 			connection.commit();
 			return true;
 		}catch (SQLException e) 
 		{			
 			e.printStackTrace();
 			return false;	
+		}
+	}
+	
+	private static int pickUtilization(Table<Integer, String, AtomicInteger> u, int year, String category)
+	{
+		AtomicInteger value = u.get(year, category);
+		if (value == null)
+		{
+			return 0;
+		} else
+		{
+			return value.get();
 		}
 	}
 	

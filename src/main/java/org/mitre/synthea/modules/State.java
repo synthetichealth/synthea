@@ -201,7 +201,8 @@ public class State {
 					// find closest provider and increment encounters count
 					Provider provider = Provider.findClosestService(person, "wellness");
 					person.addCurrentProvider(module, provider);
-					provider.incrementEncounters();
+					int year = Utilities.getYear(time);
+					provider.incrementEncounters("wellness", year);
 					encounter.provider = provider;
 			
 					this.exited = time;
@@ -222,7 +223,8 @@ public class State {
 				// find closest provider and increment encounters count
 				Provider provider = Provider.findClosestService(person, encounter_class);
 				person.addCurrentProvider(module, provider);
-				provider.incrementEncounters();
+				int year = Utilities.getYear(time);
+				provider.incrementEncounters(encounter_class, year);
 				encounter.provider = provider;
 				
 				encounter.name = this.name;
@@ -426,7 +428,8 @@ public class State {
 			} else { // no provider associated with encounter or medication order
 				medicationProvider = person.getAmbulatoryProvider();
 			}
-			medicationProvider.incrementPrescriptions();
+			int year = Utilities.getYear(time);
+			medicationProvider.incrementPrescriptions( year );
 			this.exited = time;
 			return true;
 		case MEDICATIONEND:
@@ -544,7 +547,8 @@ public class State {
 			} else { // no provider associated with encounter or procedure
 				provider = person.getAmbulatoryProvider();
 			}
-			provider.incrementProcedures();
+			year = Utilities.getYear(time);
+			provider.incrementProcedures( year );
 
 			this.exited = time;
 			return true;

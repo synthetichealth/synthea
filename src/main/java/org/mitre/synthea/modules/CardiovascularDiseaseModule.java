@@ -748,6 +748,8 @@ public final class CardiovascularDiseaseModule extends Module
 	
 	public static void performEncounter(Person person, long time)
 	{
+		int year = Utilities.getYear(time);
+		
 		// step 1 - diagnosis
 		for (String diagnosis : new String[] {"coronary_heart_disease", "atrial_fibrillation"})
 		{
@@ -784,7 +786,7 @@ public final class CardiovascularDiseaseModule extends Module
 					{
 						provider = person.getAmbulatoryProvider();
 					}
-					provider.incrementPrescriptions();
+					provider.incrementPrescriptions(year);
 				}
 			}
 			
@@ -817,7 +819,7 @@ public final class CardiovascularDiseaseModule extends Module
         				{
         					provider = person.getAmbulatoryProvider();
         				}
-        				provider.incrementProcedures();
+        				provider.incrementProcedures(year);
         			}
         		}
         	}
@@ -833,6 +835,8 @@ public final class CardiovascularDiseaseModule extends Module
 			provider = person.getEmergencyProvider();
 		}
 		
+		int year = Utilities.getYear(time);
+		
 		Entry condition = person.record.conditionStart(time, diagnosis);
 		condition.codes.add(LOOKUP.get(diagnosis));
 
@@ -842,7 +846,7 @@ public final class CardiovascularDiseaseModule extends Module
           medication.codes.add(LOOKUP.get(med));
           // increment number of prescriptions prescribed by respective hospital
     
-          provider.incrementPrescriptions();
+          provider.incrementPrescriptions(year);
           person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med, "stop_drug");
         }
 
@@ -852,7 +856,7 @@ public final class CardiovascularDiseaseModule extends Module
         	procedure.codes.add(LOOKUP.get(proc));
         	procedure.reasons.add(diagnosis);
           // increment number of procedures performed by respective hospital
-          provider.incrementProcedures();
+          provider.incrementProcedures(year);
         }
 
         for (String cond : HISTORY_CONDITIONS.get(diagnosis))
