@@ -1,7 +1,5 @@
 package org.mitre.synthea.modules;
 
-import java.util.Calendar;
-
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Entry;
@@ -81,9 +79,7 @@ public class Logic {
 		case DATE:
 			operator = definition.get("operator").getAsString();
 			quantity = definition.get("year").getAsLong();
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(time);
-			double year = calendar.get(Calendar.YEAR) - 1900;
+			int year = Utilities.getYear(time);
 			return Utilities.compare(year, (double)quantity, operator);
 		case SOCIOECONOMIC_STATUS:
 			String category = definition.get("category").getAsString();

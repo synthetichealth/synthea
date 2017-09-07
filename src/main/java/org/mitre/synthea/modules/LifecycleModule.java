@@ -3,7 +3,6 @@ package org.mitre.synthea.modules;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -319,9 +318,7 @@ public final class LifecycleModule extends Module
 	    // http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
 		if (person.attributes.get(Person.SMOKER) == null && person.ageInYears(time) == 16)
 		{
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(time);
-			long year = calendar.get(Calendar.YEAR);
+			int year = Utilities.getYear(time);
 			Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
 			person.attributes.put(Person.SMOKER, smoker);
 			double quit_smoking_baseline = Double.parseDouble( Config.get("lifecycle.quit_smoking.baseline", "0.01"));
@@ -329,7 +326,7 @@ public final class LifecycleModule extends Module
 		}
 	}
 	
-	private static double likelihoodOfBeingASmoker(long year)
+	private static double likelihoodOfBeingASmoker(int year)
 	{
         // 16.1% of MA are smokers in 2016. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
         // but the rate is decreasing over time
