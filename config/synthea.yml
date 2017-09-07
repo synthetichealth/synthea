@@ -18,7 +18,7 @@ synthea:
     text:
       export: false
     csv:
-      export: false
+      export: true
       export_headers: true
     years_of_history: 10
     location: <%= (ENV['OUTPUT_DIR'] || './output/') %>  # should either start with . for relative path or / for absolute
@@ -142,6 +142,8 @@ synthea:
         hs_degree: [0.1, 0.75]
         some_college: [0.3, 0.85]
         bs_degree: [0.5, 1.0]
+  costs: 
+    gpci_locality: 'REST OF MASSACHUSETTS'
   generic:
     log: false
     log_state_statistics: false
