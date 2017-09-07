@@ -107,9 +107,9 @@ public class Logic {
 			}
 			if(definition.has("value")) {
 				value = definition.get("value").getAsDouble();
-				return Utilities.compare(observation, value, operator);
+				return Utilities.compare(observation.value, value, operator);
 			} else {
-				return Utilities.compare(observation, null, operator);
+				return Utilities.compare(observation.value, null, operator);
 			}
 		case ATTRIBUTE:
 			String attribute = definition.get("attribute").getAsString();
