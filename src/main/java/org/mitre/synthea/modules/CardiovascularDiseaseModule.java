@@ -239,7 +239,7 @@ public final class CardiovascularDiseaseModule extends Module
 
     private static List<String> filter_meds_by_year(List<String> meds, long time)
     {
-		double year = Utilities.getYear(time);
+		int year = Utilities.getYear(time);
     	return meds.stream().filter( med -> year >= MEDICATION_AVAILABLE.get(med)).collect(Collectors.toList());
     }
     
