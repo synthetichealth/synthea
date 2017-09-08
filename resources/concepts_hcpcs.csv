@@ -181,7 +181,7 @@ SNOMED-CT,23426006,HCPCS,94375,ICD-10,,Measurement of respiratory function (proc
 SNOMED-CT,53950000,Respiratory therapy
 SNOMED-CT,304510005,Recommendation to avoid exercise
 SNOMED-CT,371605008,Deep breathing and coughing exercises
-SNOMED-CT,HCPCS,73761001,HCPCS,44388,ICD-10,,Colonoscopy
+SNOMED-CT,73761001,HCPCS,44388,ICD-10,,Colonoscopy
 SNOMED-CT,68496003,Polyp of colon
 SNOMED-CT,1.02E+15,Fecal occult blood test
 SNOMED-CT,274031008,Rectal polypectomy
