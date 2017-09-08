@@ -59,6 +59,7 @@ module Synthea
       hashed_data = data.map(&:to_hash)
 
       # turns addendum B file into json (relative_value_units.json)
+      # TODO: need newline before first hash entries for gson
       if is_rvu
         formatted_data = {}
         for entry in hashed_data
@@ -67,13 +68,15 @@ module Synthea
         File.open(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'relative_value_units.json'), 'w') do |f|
           content = JSON.pretty_generate(formatted_data).gsub('},', "},\n")
           f.write(content)
-
-          # TODO: newline before first hash entry
-          # f.write(content.gsub("\"0001F\" : {","\n\n\"0001F\" : {"))
         end
       else
+        formatted_data = {}
+        for entry in hashed_data
+          formatted_data[entry[:locality_name]] = entry
+        end
         File.open(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'geographical_practice_cost_index.json'), 'w') do |f|
-          f.write(JSON.pretty_generate(hashed_data).gsub('},', "},\n"))
+          content = JSON.pretty_generate(formatted_data).gsub('},', "},\n")
+          f.write(content)
         end
       end
       hashed_data
