@@ -9,6 +9,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hl7.fhir.dstu3.model.Address;
@@ -25,7 +26,6 @@ import org.mitre.synthea.world.Provider;
 import ca.uhn.fhir.context.FhirContext;
 
 import com.google.common.collect.Table;
-import com.google.gson.internal.LinkedTreeMap;
 
 public abstract class HospitalExporter{
 	
@@ -74,7 +74,7 @@ public abstract class HospitalExporter{
 			.setSystem("https://github.com/synthetichealth/synthea")
 			.setValue((String) h.getResourceID());
 		
-		LinkedTreeMap hAttributes = h.getAttributes();
+		Map<String,Object> hAttributes = h.getAttributes();
 		
 		organizationResource.setName(hAttributes.get("name").toString());
 		

@@ -3,10 +3,7 @@ package org.mitre.synthea.world;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.swing.text.html.parser.Entity;
 
 import org.mitre.synthea.modules.Person;
 
@@ -32,14 +29,22 @@ public class Provider {
 	// Hash of services to Providers that provide them
 	private static HashMap<String, ArrayList<Provider>> services = new HashMap<String, ArrayList<Provider>>();
 	
-	private LinkedTreeMap attributes;
+	public Map<String,Object> attributes;
 	private Point coordinates;
 	private ArrayList<String> services_provided;
 	private Table<Integer, String, AtomicInteger> utilization; // row: year, column: type, value: count
 	
+	protected Provider()
+	{
+		// no-arg constructor provided for subclasses
+		attributes = new LinkedTreeMap<>();
+		utilization = HashBasedTable.create();
+		services_provided = new ArrayList<String>();
+	}
+	
 	public Provider(LinkedTreeMap p) {
-		LinkedTreeMap properties = (LinkedTreeMap) p.get("properties");
-		attributes = properties;
+		this();
+		attributes = (LinkedTreeMap) p.get("properties");
 		String resourceID = (String) p.get("resourceID");
 		attributes.put("resourceID", resourceID);
 
@@ -47,8 +52,7 @@ public class Provider {
 		Point coor = new GeometryFactory().createPoint(new Coordinate(coorList.get(0), coorList.get(1)));
 		coordinates = coor;
 		
-		services_provided = new ArrayList<String>();
-		String[] servicesList = ( (String) properties.get("services_provided") ).split(" ");
+		String[] servicesList = ( (String) attributes.get("services_provided") ).split(" ");
 		for(String s : servicesList){
 			services_provided.add(s);
 			// add provider to hash of services
@@ -61,8 +65,6 @@ public class Provider {
 				services.put(s, l);
 			}
 		}
-		
-		utilization = HashBasedTable.create();
 	}
 	
 	public static void clear(){
@@ -74,7 +76,7 @@ public class Provider {
 		return attributes.get("resourceID").toString();
 	}
 	
-	public LinkedTreeMap getAttributes(){
+	public Map<String,Object> getAttributes(){
 		return attributes;
 	}
 	

@@ -11,10 +11,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.Generator;
 import org.mitre.synthea.modules.Person;
 
 public abstract class Exporter 
 {
+	/**
+	 * Export a single patient, into all the formats supported.
+	 * (Formats may be enabled or disabled by configuration)
+	 * 
+	 * @param person Patient to export
+	 * @param stopTime Time at which the simulation stopped
+	 */
 	public static void export(Person person, long stopTime)
 	{
 		// TODO: filter for export
@@ -36,13 +44,33 @@ public abstract class Exporter
 		}
 	}
 	
+	/**
+	 * Run any exporters that require the full dataset to be generated prior to exporting.
+	 * (Ex, an aggregate statistical exporter)
+	 * 
+	 * @param generator Generator that generated the patients
+	 */
+	public static void runPostCompletionExports(Generator generator) 
+	{
+		try{
+			HospitalExporter.export(generator.stop);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (Boolean.parseBoolean(Config.get("exporter.cost_access_outcomes_report")))
+		{
+			ReportExporter.export(generator);
+		}	
+	}
+	
 	public static File getOutputFolder(String folderName, Person person)
 	{
 		List<String> folders = new ArrayList<>();
 		
 		folders.add(folderName);
 		
-		if (Boolean.parseBoolean(Config.get("exporter.subfolders_by_id_substring")))
+		if (person != null && Boolean.parseBoolean(Config.get("exporter.subfolders_by_id_substring")))
 		{
 			String id = (String)person.attributes.get(Person.ID);
 			

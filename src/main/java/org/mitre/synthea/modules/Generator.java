@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
-import org.mitre.synthea.export.HospitalExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Demographics;
 import org.mitre.synthea.world.Hospital;
@@ -86,7 +85,7 @@ public class Generator {
 		// initialize hospitals
 		Hospital.loadHospitals();
 		Module.getModules(); // ensure modules load early
-		CommunityHealthWorker.getCost(); // ensure CHWs are set early
+		CommunityHealthWorker.workers.size(); // ensure CHWs are set early
 	}
 	
 	public void run()
@@ -120,15 +119,10 @@ public class Generator {
 			List<CommunityHealthWorker> chws = CommunityHealthWorker.workers
 					.values().stream().flatMap(List::stream)
 					.collect(Collectors.toList());
-			database.storeCHWs(chws);
+			database.store(chws);
 		}
 		
-		// export hospital information
-		try{
-			HospitalExporter.export(stop);			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Exporter.runPostCompletionExports(this);
 		
 		System.out.println(stats);
 	}
