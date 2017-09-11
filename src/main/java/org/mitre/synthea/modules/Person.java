@@ -162,8 +162,11 @@ public class Person implements Serializable
 			return false;
 		}
 		for(State state : history) {
-			if(state.name.equals(priorState) && state.exited > time) {
+			if(state.name.equals(priorState)) {
 				return true;
+			} else if(state.exited > 0 && state.exited <= time) {
+				// break out when we reach the desired time
+				return false;
 			}
 		}
 		return false;
