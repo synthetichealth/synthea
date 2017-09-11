@@ -10,11 +10,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.Generator;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.google.gson.stream.JsonWriter;
 
 /**
@@ -41,6 +45,7 @@ public class ReportExporter
 			writer.setIndent("  ");
 			writer.beginObject(); // top-level
 			
+			reportParameters(writer);
 			processOutcomes(connection, writer);
 			processAccess(connection, writer);
 			processCosts(connection, writer);
@@ -52,6 +57,16 @@ public class ReportExporter
 			e.printStackTrace();
 			throw new RuntimeException("error exporting statistics");
 		}
+	}
+	
+	private static void reportParameters(JsonWriter writer) throws IOException
+	{
+		writer.name("run-parameters").beginObject();
+		for (String key : Config.allPropertyNames())
+		{
+			writer.name(key).value(Config.get(key, ""));
+		}
+		writer.endObject(); // run-parameters
 	}
 	
 	private static void processOutcomes(Connection connection, JsonWriter writer) throws IOException, SQLException
@@ -118,7 +133,62 @@ public class ReportExporter
 		writer.name("access").beginObject();
 		
 		writer.name("encounters").beginObject();
+		
+		Table<Integer, String, Integer> table = HashBasedTable.create();
+		
+		PreparedStatement stmt = connection.prepareStatement("select year, category, sum(value) as num from UTILIZATION_DETAIL group by year, category order by year asc");
+		ResultSet rs = stmt.executeQuery();
+		
+		int firstYear = 0;
+		int lastYear = 0;
+		
+		while (rs.next())
+		{
+			int year = rs.getInt(1);
+			
+			if (firstYear == 0)
+			{
+				firstYear = year;
+			}
+			lastYear = year;
+
+			String category = rs.getString(2);
+			
+			if (category.contains("-"))
+			{
+				// it's a subcategory, ex "encounters-wellness" so split off the "encounters-" part (11 chars)
+				category = category.substring(11);
+			} else
+			{
+				category = "all-encounters";
+			}
+			
+			int count = rs.getInt(3);
+			
+			table.put(year, category, count);
+		}
+		
+		writer.name("first_year").value(firstYear);
+		
+		for (String encType : table.columnKeySet())
+		{
+			writer.name(encType).beginArray();
+
+			for (int y = firstYear ; y <= lastYear ; y++)
+			{
+				Integer count = table.get(y, encType);
 				
+				if (count == null)
+				{
+					count = 0;
+				}
+				
+				writer.value(count);
+			}
+			
+			writer.endArray(); // encType
+		}
+		
 		writer.endObject(); // encounters
 		
 		writer.endObject(); // access

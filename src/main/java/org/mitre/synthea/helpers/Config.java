@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Set;
 
 public abstract class Config
 {
@@ -78,5 +79,20 @@ public abstract class Config
   public static void set(String key, String value)
   {
     properties.setProperty(key, value);
+  }
+  
+  /**
+   * Get a set of the names for all properties in the config file.
+   * 
+   * Returns a set of keys in this property list where the key and its corresponding value are strings, 
+   *  including distinct keys in the default property list if a key of the same name has not already been found from the main properties list. 
+   *  Properties whose key or value is not of type String are omitted. 
+   * The returned set is not backed by the Properties object. Changes to this Properties are not reflected in the set, or vice versa.
+   *
+   * @return Set of property key names
+   */
+  public static Set<String> allPropertyNames()
+  {
+	  return properties.stringPropertyNames();
   }
 }
