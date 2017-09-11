@@ -123,12 +123,7 @@ public class Generator {
 			database.storeCHWs(chws);
 		}
 		
-		// export hospital information
-		try{
-			HospitalExporter.export(stop);			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Exporter.runPostCompletionExports(this);
 		
 		System.out.println(stats);
 	}
