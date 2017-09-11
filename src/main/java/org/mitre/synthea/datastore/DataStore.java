@@ -145,7 +145,7 @@ public class DataStore
 					providerID = encounter.provider.getResourceID();
 				} else if (encounter.chw != null)
 				{
-					providerID = (String) encounter.chw.services.get("resourceID");
+					providerID = (String) encounter.chw.attributes.get("resourceID");
 				}
 				
 				// CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
@@ -375,7 +375,7 @@ public class DataStore
 						stmt.setString(3, encounter.provider.getResourceID());
 					} else if (encounter.chw != null)
 					{
-						stmt.setString(3, (String) encounter.chw.services.get("resourceID"));
+						stmt.setString(3, (String) encounter.chw.attributes.get("resourceID"));
 					}
 					stmt.setString(4, careplan.name);
 					stmt.setString(5, careplan.type);
@@ -444,11 +444,11 @@ public class DataStore
 			for (Provider p : providers)
 			{
 				String providerID = p.getResourceID();
-				LinkedTreeMap attributes = p.getAttributes();
+				Map<String,Object> attributes = p.getAttributes();
 				
 				providerTable.setString(1, providerID);
 				providerTable.setString(2, (String)attributes.get("name"));
-				providerTable.setBoolean(3, false);
+				providerTable.setBoolean(3, p instanceof CommunityHealthWorker);
 				providerTable.addBatch();
 				
 				for (Object key : attributes.keySet()) {
@@ -517,43 +517,4 @@ public class DataStore
 			return value.get();
 		}
 	}
-	
-	public boolean storeCHWs(Collection<CommunityHealthWorker> chws)
-	{
-		try ( Connection connection = getConnection() )
-		{
-			// CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)
-			PreparedStatement providerTable = connection.prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
-
-			// CREATE TABLE IF NOT EXISTS PROVIDER_ATTRIBUTE (provider_id varchar, name varchar, value varchar)
-			PreparedStatement attributeTable = connection.prepareStatement("INSERT INTO PROVIDER_ATTRIBUTE (provider_id, name, value) VALUES (?,?,?);");
-
-			for (CommunityHealthWorker chw : chws)
-			{
-				String providerID = (String) chw.services.get("resourceID");
-				Map<String, Object> attributes = chw.services;
-				
-				providerTable.setString(1, providerID);
-				providerTable.setString(2,  "CHW providing " + attributes.get(CommunityHealthWorker.DEPLOYMENT) + " services in " + attributes.get(CommunityHealthWorker.CITY));
-				providerTable.setBoolean(3, true);
-				providerTable.addBatch();
-				
-				for (Object key : attributes.keySet()) {
-					attributeTable.setString(1, providerID);
-					attributeTable.setString(2, (String)key );
-					attributeTable.setString(3, String.valueOf(attributes.get(key)) );
-					attributeTable.addBatch();
-				}
-			}
-
-			providerTable.executeBatch();
-			attributeTable.executeBatch();
-			connection.commit();
-			return true;
-		}catch (SQLException e) 
-		{			
-			e.printStackTrace();
-			return false;	
-		}
-	}	
 }

@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.Location;
+import org.mitre.synthea.world.Provider;
 
 
-public class CommunityHealthWorker {
+public class CommunityHealthWorker extends Provider {
 
 	public static final String LUNG_CANCER_SCREENING = "Lung cancer screening";	
 	public static final String TOBACCO_SCREENING = "Tobacco screening";	
@@ -29,7 +29,7 @@ public class CommunityHealthWorker {
 	public static final String EXERCISE_PT_INJURY_SCREENING = "Fall prevention in older adults: Exercise or physical therapy";
 	public static final String VITAMIN_D_INJURY_SCREENING = "Fall prevention in older adults: Vitamin D";
 	public static final String DIET_PHYSICAL_ACTIVITY = "Diet and physical activity counseling";
-	public static final String STATIN_Medication = "Statin preventive medication";	
+	public static final String STATIN_MEDICATION = "Statin preventive medication";	
 
 	public static final String CITY = "city";
 	public static final String DEPLOYMENT = "deployment";
@@ -45,10 +45,9 @@ public class CommunityHealthWorker {
 
 	public static Map<String,List<CommunityHealthWorker>> workers = generateWorkers();
 	
-	public Map<String,Object> services;
-	
-	public CommunityHealthWorker(){ 
-		services = new ConcurrentHashMap<String,Object>();
+	private CommunityHealthWorker()
+	{
+		// don't allow anyone else to instantiate this
 	}
 	
 	private static Map<String,List<CommunityHealthWorker>> generateWorkers() {
@@ -59,7 +58,7 @@ public class CommunityHealthWorker {
 		for(int i=0; i < Math.round(numWorkers * community); i++)
 		{
 			worker = generateCHW(DEPLOYMENT_COMMUNITY);
-			String city = (String) worker.services.get(CITY);
+			String city = (String) worker.attributes.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
 			}
@@ -69,7 +68,7 @@ public class CommunityHealthWorker {
 		for(int i=0; i < Math.round(numWorkers * emergency); i++)
 		{
 			worker = generateCHW(DEPLOYMENT_EMERGENCY);
-			String city = (String) worker.services.get(CITY);
+			String city = (String) worker.attributes.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
 			}
@@ -79,7 +78,7 @@ public class CommunityHealthWorker {
 		for(int i=numWorkersGenerated; i < numWorkers; i++)
 		{
 			worker = generateCHW(DEPLOYMENT_POSTDISCHARGE);
-			String city = (String) worker.services.get(CITY);
+			String city = (String) worker.attributes.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
 			}
@@ -93,28 +92,30 @@ public class CommunityHealthWorker {
 		
 		CommunityHealthWorker chw = new CommunityHealthWorker();
 		
-		chw.services.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(Config.get("chw.alcohol_screening")));
-		chw.services.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.aspirin_medication")));
-		chw.services.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(Config.get("chw.blood_pressure_screening")));
-		chw.services.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.colorectal_cancer_screening")));
-		chw.services.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(Config.get("chw.diabetes_screening")));
-		chw.services.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(Config.get("chw.diet_physical_activity")));
-		chw.services.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
-		chw.services.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
-		chw.services.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
-		chw.services.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
-		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
-		chw.services.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
+		chw.attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(Config.get("chw.alcohol_screening")));
+		chw.attributes.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.aspirin_medication")));
+		chw.attributes.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(Config.get("chw.blood_pressure_screening")));
+		chw.attributes.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.colorectal_cancer_screening")));
+		chw.attributes.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(Config.get("chw.diabetes_screening")));
+		chw.attributes.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(Config.get("chw.diet_physical_activity")));
+		chw.attributes.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
+		chw.attributes.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
+		chw.attributes.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
+		chw.attributes.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
+		chw.attributes.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
+		chw.attributes.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
 			
-		chw.services.put(CommunityHealthWorker.STATIN_Medication, Boolean.parseBoolean(Config.get("chw.statin_medication")));
-		chw.services.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
-		chw.services.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
+		chw.attributes.put(CommunityHealthWorker.STATIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.statin_medication")));
+		chw.attributes.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
+		chw.attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
 		Location.assignCity(chw);
 
-		chw.services.put(DEPLOYMENT, deploymentType);
+		chw.attributes.put(DEPLOYMENT, deploymentType);
 
-		//resourceID so that it's the same as Provider. TODO make CHW a subclass of Providers
-		chw.services.put("resourceID", UUID.randomUUID().toString());
+		//resourceID so that it's the same as Provider.
+		chw.attributes.put("resourceID", UUID.randomUUID().toString());
+		
+		chw.attributes.put("name", "CHW providing " + deploymentType + " services in " + chw.attributes.get(CITY));
 
 		return chw;
 	}
@@ -140,30 +141,13 @@ public class CommunityHealthWorker {
 		}
 		if(person.rand() < probability && workers.containsKey(city)) {
 			List<CommunityHealthWorker> candidates = workers.get(city).stream()
-					.filter(p -> p.services.get(DEPLOYMENT).equals(deploymentType))
+					.filter(p -> p.attributes.get(DEPLOYMENT).equals(deploymentType))
 					.collect(Collectors.toList());
 			if(!candidates.isEmpty()) {
 				worker = candidates.get((int)person.rand(0, candidates.size()-1));
 			}
 		}
 		return worker;
-	}
-	
-	public static int getCost() {
-		return CommunityHealthWorker.cost;
-	}	
-	
-	public static void setCost(int cost){
-		CommunityHealthWorker.cost = cost;
-	}
-	
-	public static int getBudget(){
-		return CommunityHealthWorker.budget;
-	}
-	
-	public static void setBudget(int budget){
-		CommunityHealthWorker.budget = budget;
-	}
-		
+	}		
 }
 	
