@@ -29,6 +29,7 @@ public class Hospital extends Provider{
 	
 	public static void loadHospitals(){
 		String filename = "/geography/healthcare_facilities.json";
+
 		try {
 			InputStream stream = Hospital.class.getResourceAsStream(filename);
 			// read all text into a string

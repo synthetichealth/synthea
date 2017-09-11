@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Demographics;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Location;
