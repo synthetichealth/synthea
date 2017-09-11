@@ -22,7 +22,6 @@ import org.mitre.synthea.modules.Person;
 import org.mitre.synthea.world.Provider;
 
 import com.google.common.collect.Table;
-import com.google.gson.internal.LinkedTreeMap;
 
 /**
  * In-memory database, intended to be the primary repository for Synthea data as it runs.
