@@ -628,12 +628,12 @@ public final class CardiovascularDiseaseModule extends Module
 		
 		if (stroke_points >= ten_year_stroke_risk[genderIndex].length)
 		{
-			ten_stroke_risk = ten_year_stroke_risk[genderIndex][stroke_points];
-		} else
-		{
 			// off the charts
 			int worst_case = ten_year_stroke_risk[genderIndex].length - 1;
 			ten_stroke_risk = ten_year_stroke_risk[genderIndex][worst_case];
+		} else
+		{
+			ten_stroke_risk = ten_year_stroke_risk[genderIndex][stroke_points];
 		}
 		
 		// divide 10 year risk by 365 * 10 to get daily risk.
