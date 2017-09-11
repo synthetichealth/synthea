@@ -222,6 +222,11 @@ public class Person implements Serializable
 				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
 			}
 			
+			if((boolean) person.attributes.getOrDefault("lung_cancer", false) && (boolean) chw.services.getOrDefault(CommunityHealthWorker.LUNG_CANCER_SCREENING, false))
+			{
+				person.attributes.put("probability_of_lung_cancer_treatment", 1.0); // screening caught lung cancer, send them to treatment
+			}
+
 			double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 			double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
 			probability += (adherence_chw_delta);
