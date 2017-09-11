@@ -1,14 +1,16 @@
 package org.mitre.synthea.world;
 
 import java.io.BufferedReader;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.modules.Person;
 import org.mitre.synthea.modules.CommunityHealthWorker;
+import org.mitre.synthea.modules.Person;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.GeoJSONFactory;
@@ -26,11 +28,17 @@ public class Location {
 	private static final FeatureCollection cities;
 	private static final long totalPopulation;
 	
+	// cache the population by city name for performance
+	private static final Map<String,Long> populationByCity;
+	private static final Map<String,Feature> featuresByName;
+	
 	static {
 		// load the GeoJSON once so we can use it for all patients
 		String filename = "/geography/ma_geo.json";
 		
 		long runningPopulation = 0;
+		populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
+		featuresByName = new HashMap<>(); 
 		
 		try 
 		{
@@ -43,8 +51,12 @@ public class Location {
 
 			for (Feature f : cities.getFeatures())
 			{
-				Double pop = (Double) f.getProperties().get("pop");
-				runningPopulation += pop.longValue();
+				long pop = ((Double) f.getProperties().get("pop")).longValue();
+				runningPopulation += pop;
+				
+				String cityName = (String) f.getProperties().get("cs_name");
+				populationByCity.put(cityName, pop);
+				featuresByName.put(cityName, f);
 			}
 			
 			totalPopulation = runningPopulation;
@@ -61,32 +73,25 @@ public class Location {
 		return "00000"; // TODO
 	}
 	
-	public static int getPopulation(String cityName)
+	public static long getPopulation(String cityName)
 	{
-		for (Feature f : cities.getFeatures())
-		{
-			if(f.getProperties().get("cs_name").equals(cityName)) {
-				return ((Double) f.getProperties().get("pop")).intValue();
-			}
-		}
-		return 0;
+		return populationByCity.getOrDefault(cityName, 0L);
 	}
 	
 	public static String randomCityName(Random random)
 	{
 		long targetPop = (long) (random.nextDouble() * totalPopulation);
 		
-		for (Feature f : cities.getFeatures())
+		for (Map.Entry<String, Long> city : populationByCity.entrySet())
 		{
-			Double pop = (Double) f.getProperties().get("pop");
-			targetPop -= pop.longValue();
+			targetPop -= city.getValue();
 			
 			if (targetPop < 0)
 			{
-				return (String)f.getProperties().get("cs_name");
-
+				return city.getKey();
 			}
 		}
+
 		// should never happen
 		throw new RuntimeException("Unable to select a random city name.");
 	}
@@ -107,31 +112,25 @@ public class Location {
 		if (cityName == null)
 		{
 			long targetPop = (long) (person.rand() * totalPopulation);
-			
-			for (Feature f : cities.getFeatures())
+
+			for (Map.Entry<String, Long> city : populationByCity.entrySet())
 			{
-				Double pop = (Double) f.getProperties().get("pop");
-				targetPop -= pop.longValue();
+				targetPop -= city.getValue();
 				
 				if (targetPop < 0)
 				{
-					cityFeature = f;
-					cityName = (String)cityFeature.getProperties().get("cs_name");
+					cityName =  city.getKey();
+					cityFeature = featuresByName.get(cityName);
 					break;
 				}
-				
 			}
 		} else
 		{
-			for (Feature f : cities.getFeatures())
+			cityFeature = featuresByName.get(cityName);
+			
+			if (cityFeature == null)
 			{
-				String name = (String)f.getProperties().get("cs_name");
-				
-				if (name.equals(cityName) || name.equals(cityName + " Town"))
-				{
-					cityFeature = f;
-					break;
-				}
+				cityFeature = featuresByName.get(cityName + " Town");
 			}
 		}
 		

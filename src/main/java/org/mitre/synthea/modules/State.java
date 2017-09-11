@@ -604,6 +604,6 @@ public class State {
 	}
 		
 	public String toString() {
-		return String.format("%s '%s'", type, name);
+		return type + " '" + name + "'";
 	}
 }

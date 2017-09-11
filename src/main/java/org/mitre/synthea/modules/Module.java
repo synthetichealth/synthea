@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -150,11 +150,11 @@ public class Module {
 		person.history = null;
 		// what current state is this person in?
 		if(!person.attributes.containsKey(this.name)) {
-			person.history = new ArrayList<State>();
+			person.history = new LinkedList<State>();
 			person.history.add(initialState());
 			person.attributes.put(this.name, person.history);
 		}
-		person.history = (ArrayList<State>) person.attributes.get(this.name);
+		person.history = (List<State>) person.attributes.get(this.name);
 		String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.name;
 		if(person.attributes.containsKey(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER)) {
 			person.attributes.put(activeKey, true);
