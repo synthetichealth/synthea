@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +12,9 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanStatus;
+import org.hl7.fhir.dstu3.model.Claim;
+import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
+import org.hl7.fhir.dstu3.model.Claim.ItemComponent;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
@@ -43,10 +45,8 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Type;
-import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
-import org.mitre.synthea.helpers.RelativeValueUnit;
 import org.mitre.synthea.modules.HealthRecord;
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
@@ -56,20 +56,12 @@ import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.HealthRecord.Report;
 import org.mitre.synthea.modules.Person;
-import org.mitre.synthea.world.BillingConcept;
 import org.mitre.synthea.world.Costs;
-//import org.mitre.synthea.world.Cost;
-import org.mitre.synthea.world.Hospital;
-import org.hl7.fhir.dstu3.model.Claim;
-import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
-import org.hl7.fhir.dstu3.model.Claim.Use;
-import org.hl7.fhir.dstu3.model.Claim.ItemComponent;
-import org.hl7.fhir.dstu3.model.Money;
-import org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent;
 
 import ca.uhn.fhir.context.FhirContext;
 
 import com.vividsolutions.jts.geom.Point;
+
 
 public class FhirStu3 
 {

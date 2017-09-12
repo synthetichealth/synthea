@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.world.BillingConcept;
-
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
