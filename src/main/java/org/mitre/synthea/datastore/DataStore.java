@@ -71,7 +71,7 @@ public class DataStore
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
@@ -83,6 +83,8 @@ public class DataStore
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CAREPLAN (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)").execute();
+			
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)").execute();
 
@@ -322,27 +324,40 @@ public class DataStore
 				
 				for (Medication medication : encounter.medications)
 				{
-					// CREATE TABLE IF NOT EXISTS MEDICATION (person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
-					stmt = connection.prepareStatement("INSERT INTO MEDICATION (person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?);");  
-					stmt.setString(1, personID);
-					stmt.setString(2, providerID);
-					stmt.setString(3, medication.name);
-					stmt.setString(4, medication.type);
-					stmt.setLong(5, medication.start);
-					stmt.setLong(6, medication.stop);
+					// CREATE TABLE IF NOT EXISTS MEDICATION (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)
+					stmt = connection.prepareStatement("INSERT INTO MEDICATION (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");
+					String medicationID = UUID.randomUUID().toString();
+					stmt.setString(1, medicationID);
+					stmt.setString(2, personID);
+					stmt.setString(3, providerID);
+					stmt.setString(4, medication.name);
+					stmt.setString(5, medication.type);
+					stmt.setLong(6, medication.start);
+					stmt.setLong(7, medication.stop);
 					if (medication.codes.isEmpty())
 					{
-						stmt.setString(7, null);
 						stmt.setString(8, null);
 						stmt.setString(9, null);
+						stmt.setString(10, null);
 					} else
 					{
 						Code code = medication.codes.get(0);
-						stmt.setString(7, code.code);
-						stmt.setString(8, code.display);
-						stmt.setString(9, code.system);
+						stmt.setString(8, code.code);
+						stmt.setString(9, code.display);
+						stmt.setString(10, code.system);
 					}
 					stmt.execute();
+					
+					// CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)
+					stmt = connection.prepareStatement("INSERT INTO CLAIM (id, person_id, encounter_id, medication_id, time, cost) VALUES (?,?,?,?,?,?)");
+					stmt.setString(1, UUID.randomUUID().toString());
+					stmt.setString(2, personID);
+					stmt.setString(3, encounterID);
+					stmt.setString(4, medicationID);
+					stmt.setLong(5, medication.start);
+					stmt.setBigDecimal(6, medication.claim.total());
+					stmt.execute();
+					
 				}
 				
 				for (HealthRecord.Entry immunization : encounter.immunizations)
@@ -403,6 +418,18 @@ public class DataStore
 					}
 					stmt.execute();
 				}
+				
+				
+				// CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)
+				stmt = connection.prepareStatement("INSERT INTO CLAIM (id, person_id, encounter_id, medication_id, time, cost) VALUES (?,?,?,?,?,?)");
+				stmt.setString(1, UUID.randomUUID().toString());
+				stmt.setString(2, personID);
+				stmt.setString(3, encounterID);
+				stmt.setString(4, null);
+				stmt.setLong(5, encounter.start);
+				stmt.setBigDecimal(6, encounter.claim.total());
+				stmt.execute();
+				
 			}
 			
 			Map<Integer,Double> qalys = (Map<Integer,Double>)p.attributes.get("QALY");
