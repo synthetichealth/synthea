@@ -28,7 +28,6 @@ public class GeographicalPracticeCostIndex {
 	private static HashMap<String, GeographicalPracticeCostIndex> gpciHash = 
 			new HashMap<String,GeographicalPracticeCostIndex>();
 		
-
 	public GeographicalPracticeCostIndex(LinkedTreeMap m){
 		carrier = (String) m.get("carrier");
 		try{
@@ -61,7 +60,7 @@ public class GeographicalPracticeCostIndex {
 			String json = new BufferedReader(new InputStreamReader(stream)).lines()
 					.parallel().collect(Collectors.joining("\n"));
 			Gson g = new Gson();
-			//gpciHash = g.fromJson(json, HashMap.class);
+
 			LinkedTreeMap<String, LinkedTreeMap> gson = g.fromJson(json, LinkedTreeMap.class);
 			for(Entry<String, LinkedTreeMap> entry : gson.entrySet()) {
 				String locName = entry.getKey();
@@ -69,31 +68,20 @@ public class GeographicalPracticeCostIndex {
 				GeographicalPracticeCostIndex gpci = new GeographicalPracticeCostIndex(value);
 				gpciHash.put(locName,gpci);
 			}
-			//LinkedTreeMap gpci = gson.get("REST OF MASSACHUSETTS");
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			throw new ExceptionInInitializerError(e);
 		}
-		
-//		//create TreeMap for now
-//		LinkedTreeMap map = new LinkedTreeMap();
-//		LinkedTreeMap values = new LinkedTreeMap();
-//		values.put("2017_pe_gpci", 1.067);
-//		values.put("2017_pw_gpci_with_10_floor", 1.019);
-//		values.put("2017_mp_gpci", 0.839);
-//		values.put("locality_number", 99);
-//		map.put("REST OF MASSACHUSETTS",values);
-//		GeographicalPracticeCostIndex gpci = new GeographicalPracticeCostIndex(values);
-//		gpciHash.put("REST OF MASSACHUSETTS", gpci);
 	}
 	
-	public static HashMap<String,GeographicalPracticeCostIndex> getGpciHash(){
-		
+	public static HashMap<String,GeographicalPracticeCostIndex> getGpciHash()
+	{	
 		return gpciHash;
 	}
 	
-	public static GeographicalPracticeCostIndex getGpci(String localityName){
-		
+	public static GeographicalPracticeCostIndex getGpci(String localityName)
+	{
 		return gpciHash.get(localityName);
 	}
 	
