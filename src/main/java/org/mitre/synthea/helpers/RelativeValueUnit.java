@@ -43,7 +43,6 @@ public class RelativeValueUnit {
 		}catch(Exception e){
 			facilityPeRvu = 0;
 			totalFRvu = 0;
-			System.out.println("no facility values");
 		}
 		//for non facility NA values 
 		try{
@@ -52,7 +51,6 @@ public class RelativeValueUnit {
 		}catch(Exception e){
 			nonfacilityPeRvu = 0;
 			totalNfRvu = 0;
-			System.out.println("no nonfacility values");
 		}
 	}
 	
@@ -75,7 +73,6 @@ public class RelativeValueUnit {
 				LinkedTreeMap value = entry.getValue();
 				RelativeValueUnit rvu = new RelativeValueUnit(value);
 				rvuHash.put(hcpc,rvu);
-				System.out.println(rvuHash.get(hcpc).getClass());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
