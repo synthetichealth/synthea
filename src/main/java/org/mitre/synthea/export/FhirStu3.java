@@ -256,15 +256,16 @@ public class FhirStu3
 	}
 	
 	/**
-	* ...
-	* @param personEntry The Entry for the Person
-	* @param bundle The Bundle to add to
-	* @param encounterEntry The current Encounter entry
-	* @param claim The Claim
-	* @return The added Entry
-	*/
+	 * Create an entry for the given Claim, which references a Medication.
+	 * @param personEntry Entry for the person
+	 * @param bundle The Bundle to add to
+	 * @param encounterEntry The current Encounter
+	 * @param claim the Claim object
+	 * @param medicationEntry The Entry for the Medication object, previously created
+	 * @return the added Entry
+	 */
 	private static BundleEntryComponent medicationClaim(BundleEntryComponent personEntry, Bundle bundle, 
-			BundleEntryComponent encounterEntry, BundleEntryComponent medicationEntry) 
+			BundleEntryComponent encounterEntry, Claim claim, BundleEntryComponent medicationEntry) 
 	{
 		org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
 		org.hl7.fhir.dstu3.model.Encounter encounterResource = (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
@@ -284,16 +285,21 @@ public class FhirStu3
 		//add prescription.
 		claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 		
-		//cost of prescription currently set to $255.00
-		double medCost = 255.0;
-		org.hl7.fhir.dstu3.model.Money moneyResource = new org.hl7.fhir.dstu3.model.Money();
-		moneyResource.setValue(medCost);
+		Money moneyResource = new Money();
+		moneyResource.setValue(claim.total());
 		claimResource.setTotal(moneyResource);
 
 		return newEntry(bundle, claimResource);
 	}
 	
-	
+	/**
+	 * Create an entry for the given Claim, associated to an Encounter
+	 * @param personEntry Entry for the person
+	 * @param bundle The Bundle to add to
+	 * @param encounterEntry The current Encounter
+	 * @param claim the Claim object
+	 * @return the added Entry
+	 */
 	private static BundleEntryComponent encounterClaim(BundleEntryComponent personEntry, Bundle bundle,
 			BundleEntryComponent encounterEntry,
 			Claim claim) 
@@ -360,8 +366,6 @@ public class FhirStu3
 		
 		return newEntry(bundle, claimResource);
 	}
-	
-	
 	
 	/**
 	 * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
@@ -547,7 +551,7 @@ public class FhirStu3
 		
 		BundleEntryComponent medicationEntry = newEntry(bundle, medicationResource);
 		//create new claim for medication 
-		medicationClaim(personEntry, bundle, encounterEntry, medicationEntry);
+		medicationClaim(personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
 		
 		return medicationEntry;
 	}
