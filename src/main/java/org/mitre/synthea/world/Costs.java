@@ -5,28 +5,26 @@ import org.mitre.synthea.helpers.RelativeValueUnit;
 
 public class Costs {
 
-	public static void loadCostData(){
+	public static void loadCostData()
+	{
 		BillingConcept.loadConceptMappings();
 		RelativeValueUnit.loadRVUs();
 		GeographicalPracticeCostIndex.loadGpciData();
 	}
 	
-	public double calculateCost(String syntheaCode, boolean isFacility){
+	public static double calculateCost(String syntheaCode, boolean isFacility)
+	{
 		//get hcpc mapping from concepts
 		BillingConcept cncpt = BillingConcept.getConcept(syntheaCode); 
 		String hcpcCode;
-		try{
-			hcpcCode = cncpt.getHcpcCode();
-			
-			//cncpt exists but has null hcpc value
-			if(hcpcCode == null){
-				Exception e = new Exception();
-				throw e;
-			}
-		}catch(Exception e){
+		if (cncpt == null || cncpt.getHcpcCode() == null)
+		{
 			//default to total hip replacement procedure if no hcpc mapping 
 			hcpcCode = "27130";
-			System.out.println("can't find hcpc mapping. default to 27130");
+		}
+		else
+		{
+			hcpcCode = cncpt.getHcpcCode();
 		}
 			
 		//get rvu object using hcpc
@@ -51,7 +49,4 @@ public class Costs {
 		return (workRvu * workGpci + pracExpenseRvu * pracExpenseGpci + malpracticeRvu
 				* malpracticeGpci) * conversionFactor;
 	}
-	
-	
-
 }
