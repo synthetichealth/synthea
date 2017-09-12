@@ -3,6 +3,7 @@ package org.mitre.synthea.export;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -197,6 +198,53 @@ public class ReportExporter
 	{
 		writer.name("costs").beginObject();
 		
-		writer.endObject(); // access	
+		PreparedStatement stmt = connection.prepareStatement("select year, type, sum(cost) from (SELECT c.cost, YEAR(DATEADD('SECOND', e.start/ 1000 , DATE '1970-01-01')) as year, e.type FROM ENCOUNTER e, CLAIM c where e.id = c.encounter_id) group by year, type order by year asc");
+		ResultSet rs = stmt.executeQuery();
+		
+		Table<Integer, String, BigDecimal> table = HashBasedTable.create();
+		
+		int firstYear = 0;
+		int lastYear = 0;
+		
+		while (rs.next())
+		{
+			int year = rs.getInt(1);
+			
+			if (firstYear == 0)
+			{
+				firstYear = year;
+			}
+			lastYear = year;
+
+			String type = rs.getString(2);
+			
+			BigDecimal total = rs.getBigDecimal(3);
+			
+			table.put(year, type, total);
+		}
+		
+		writer.name("first_year").value(firstYear);
+		
+		for (String encType : table.columnKeySet())
+		{
+			writer.name(encType).beginArray();
+
+			for (int y = firstYear ; y <= lastYear ; y++)
+			{
+				BigDecimal count = table.get(y, encType);
+				
+				if (count == null)
+				{
+					count = BigDecimal.ZERO;
+				}
+				
+				writer.value(count);
+			}
+			
+			writer.endArray(); // encType
+		}
+		
+		
+		writer.endObject(); // costs	
 	}
 }

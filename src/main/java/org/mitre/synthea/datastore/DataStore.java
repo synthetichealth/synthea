@@ -60,15 +60,18 @@ public class DataStore
 			// in the long term I want more standardized schemas
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint, date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)").execute();
-
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_ID ON PERSON(ID);").execute();
+			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PROVIDER_ID ON PROVIDER(ID);").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROVIDER_ATTRIBUTE (provider_id varchar, name varchar, value varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS ENCOUNTER_ID ON ENCOUNTER(ID);").execute();
+			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
@@ -84,6 +87,7 @@ public class DataStore
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CAREPLAN (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS CLAIM_ID ON CLAIM(ID);").execute();
 			
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)").execute();
