@@ -217,7 +217,7 @@ public class State {
 
 				if(encounter_class.equals("emergency")) {
 					// if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW interventions
-					Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_EMERGENCY);
+					person.chwEncounter(time, CommunityHealthWorker.DEPLOYMENT_EMERGENCY);
 				}
 
 				// find closest provider and increment encounters count
@@ -252,7 +252,7 @@ public class State {
 			if(encounter.type != EncounterType.WELLNESS.toString()) {
 				encounter.stop = time;
 				// if CHW policy is enabled for discharge follow up, add CHW interventions for all non-wellness encounters
-				Person.chwEncounter(person, time, CommunityHealthWorker.DEPLOYMENT_POSTDISCHARGE);
+				person.chwEncounter(time, CommunityHealthWorker.DEPLOYMENT_POSTDISCHARGE);
 			}
 			if(definition.has("discharge_disposition")) {
 				Code code = new Code((JsonObject) definition.get("discharge_disposition"));

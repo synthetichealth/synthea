@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.HealthRecord.Code;
+import org.mitre.synthea.modules.HealthRecord.Encounter;
+import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.world.Location;
 import org.mitre.synthea.world.Provider;
 
@@ -45,9 +49,34 @@ public class CommunityHealthWorker extends Provider {
 
 	public static Map<String,List<CommunityHealthWorker>> workers = generateWorkers();
 	
-	private CommunityHealthWorker()
+	private CommunityHealthWorker(String deploymentType)
 	{
 		// don't allow anyone else to instantiate this
+		
+		attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(Config.get("chw.alcohol_screening")));
+		attributes.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.aspirin_medication")));
+		attributes.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(Config.get("chw.blood_pressure_screening")));
+		attributes.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.colorectal_cancer_screening")));
+		attributes.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(Config.get("chw.diabetes_screening")));
+		attributes.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(Config.get("chw.diet_physical_activity")));
+		attributes.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
+		attributes.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
+		attributes.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
+		attributes.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
+		attributes.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
+		attributes.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
+		attributes.put(CommunityHealthWorker.STATIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.statin_medication")));
+		attributes.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
+		attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
+		
+		Location.assignCity(this);
+
+		attributes.put(DEPLOYMENT, deploymentType);
+
+		//resourceID so that it's the same as Provider.
+		attributes.put("resourceID", UUID.randomUUID().toString());
+		
+		attributes.put("name", "CHW providing " + deploymentType + " services in " + attributes.get(CITY));
 	}
 	
 	private static Map<String,List<CommunityHealthWorker>> generateWorkers() {
@@ -57,7 +86,7 @@ public class CommunityHealthWorker extends Provider {
 		CommunityHealthWorker worker;
 		for(int i=0; i < Math.round(numWorkers * community); i++)
 		{
-			worker = generateCHW(DEPLOYMENT_COMMUNITY);
+			worker = new CommunityHealthWorker(DEPLOYMENT_COMMUNITY);
 			String city = (String) worker.attributes.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -67,7 +96,7 @@ public class CommunityHealthWorker extends Provider {
 		}
 		for(int i=0; i < Math.round(numWorkers * emergency); i++)
 		{
-			worker = generateCHW(DEPLOYMENT_EMERGENCY);
+			worker = new CommunityHealthWorker(DEPLOYMENT_EMERGENCY);
 			String city = (String) worker.attributes.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -77,7 +106,7 @@ public class CommunityHealthWorker extends Provider {
 		}
 		for(int i=numWorkersGenerated; i < numWorkers; i++)
 		{
-			worker = generateCHW(DEPLOYMENT_POSTDISCHARGE);
+			worker = new CommunityHealthWorker(DEPLOYMENT_POSTDISCHARGE);
 			String city = (String) worker.attributes.get(CITY);
 			if(!workers.containsKey(city)) {
 				workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -86,38 +115,6 @@ public class CommunityHealthWorker extends Provider {
 		}
 
 		return workers;
-	}
-	
-	public static CommunityHealthWorker generateCHW(String deploymentType){
-		
-		CommunityHealthWorker chw = new CommunityHealthWorker();
-		
-		chw.attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(Config.get("chw.alcohol_screening")));
-		chw.attributes.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.aspirin_medication")));
-		chw.attributes.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(Config.get("chw.blood_pressure_screening")));
-		chw.attributes.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.colorectal_cancer_screening")));
-		chw.attributes.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(Config.get("chw.diabetes_screening")));
-		chw.attributes.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(Config.get("chw.diet_physical_activity")));
-		chw.attributes.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
-		chw.attributes.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
-		chw.attributes.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
-		chw.attributes.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
-		chw.attributes.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
-		chw.attributes.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
-			
-		chw.attributes.put(CommunityHealthWorker.STATIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.statin_medication")));
-		chw.attributes.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
-		chw.attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
-		Location.assignCity(chw);
-
-		chw.attributes.put(DEPLOYMENT, deploymentType);
-
-		//resourceID so that it's the same as Provider.
-		chw.attributes.put("resourceID", UUID.randomUUID().toString());
-		
-		chw.attributes.put("name", "CHW providing " + deploymentType + " services in " + chw.attributes.get(CITY));
-
-		return chw;
 	}
 
 	public static CommunityHealthWorker findNearbyCHW(Person person, long time, String deploymentType)
@@ -148,6 +145,90 @@ public class CommunityHealthWorker extends Provider {
 			}
 		}
 		return worker;
-	}		
+	}
+	
+	/**
+	 * Check whether this CHW offers the given service.
+	 * @param service Service name
+	 * 
+	 * @return true if the service is offered by this CHW
+	 */
+	public boolean offers(String service)
+	{
+		return (boolean) this.attributes.getOrDefault(service, false);
+	}
+	
+	public void performEncounter(Person person, long time, String deploymentType)
+	{
+		// encounter class doesn't fit into the FHIR-prescribed set
+		// so we use our own "community" encounter class
+		Encounter enc = person.record.encounterStart(time, "community");
+		enc.chw = this;
+		// TODO - different codes based on different services offered?
+		enc.codes.add( new Code("SNOMED-CT","389067005","Community health procedure") );
+
+		this.incrementEncounters(deploymentType, Utilities.getYear(time));
+
+		int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
+		chw_interventions++;
+		person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
+		
+		tobaccoScreening(enc, person, time);
+		alcoholScreening(enc, person, time);
+		lungCancerScreening(enc, person, time);
+
+		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
+		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
+		probability += (adherence_chw_delta);
+		person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
+		
+		enc.stop = time + TimeUnit.MINUTES.toMillis(35); // encounter lasts 35 minutes on avg
+	}
+
+	///////////////////////////
+	// INDIVIDUAL SCREENINGS //
+	///////////////////////////
+	
+	private void tobaccoScreening(Encounter encounter, Person person, long time)
+	{
+		if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && this.offers(TOBACCO_SCREENING)) 
+		{
+			double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
+			double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
+			double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
+			int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
+			probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
+			person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
+		}
+	}
+	
+	private void alcoholScreening(Encounter encounter, Person person, long time)
+	{
+		if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && this.offers(ALCOHOL_SCREENING)) 
+		{
+			double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
+			double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
+			double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
+			int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
+			probability += (quit_alcoholism_chw_delta / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
+			person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
+		}
+	}
+	
+	private void lungCancerScreening(Encounter encounter, Person person, long time)
+	{
+		if (this.offers(LUNG_CANCER_SCREENING))
+		{
+			Procedure ct = person.record.procedure(time, "Low dose computed tomography of thorax (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","16334891000119106","Low dose computed tomography of thorax"));
+			
+			if((boolean) person.attributes.getOrDefault("lung_cancer", false))
+			{
+				person.attributes.put("probability_of_lung_cancer_treatment", 1.0); // screening caught lung cancer, send them to treatment
+			}
+		}
+	}
+	
 }
 	
