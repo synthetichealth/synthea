@@ -59,7 +59,7 @@ public class DataStore
 			// but this is faster in the short term
 			// in the long term I want more standardized schemas
 			
-			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, birthdate bigint, race varchar, gender varchar, socioeconomic_status varchar)").execute();
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint, date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)").execute();
 
@@ -111,15 +111,24 @@ public class DataStore
 		
 		try ( Connection connection = getConnection() )
 		{
-			// CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, race varchar, ethnicity varchar, gender varchar, birthdate bigint)
-			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PERSON (id, name, birthdate, race, gender, socioeconomic_status) VALUES (?,?,?,?,?,?);");
+			// CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint, date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)
+			PreparedStatement stmt = connection.prepareStatement("INSERT INTO PERSON (id, name, date_of_birth, date_of_death, race, gender, socioeconomic_status) VALUES (?,?,?,?,?,?,?);");
 			
 			stmt.setString(1, personID);
 			stmt.setString(2, (String)p.attributes.get(Person.NAME));
 			stmt.setLong(3, (long)p.attributes.get(Person.BIRTHDATE));
-			stmt.setString(4, (String)p.attributes.get(Person.RACE));
-			stmt.setString(5, (String)p.attributes.get(Person.GENDER));
-			stmt.setString(6, (String)p.attributes.get(Person.SOCIOECONOMIC_CATEGORY));
+			if (p.record.death == null)
+			{
+				stmt.setObject(4, null);
+			}
+			else
+			{
+				stmt.setLong(4, p.record.death);
+			}
+			
+			stmt.setString(5, (String)p.attributes.get(Person.RACE));
+			stmt.setString(6, (String)p.attributes.get(Person.GENDER));
+			stmt.setString(7, (String)p.attributes.get(Person.SOCIOECONOMIC_CATEGORY));
 			
 			stmt.execute();
 			

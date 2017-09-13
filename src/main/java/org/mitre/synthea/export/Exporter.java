@@ -28,7 +28,7 @@ public abstract class Exporter
 		// TODO: filter for export
 		if (Boolean.parseBoolean(Config.get("exporter.fhir.export")))
 		{
-			String bundleJson = FhirStu3.convertToFHIR(person);
+			String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
 			
 			File outDirectory = getOutputFolder("fhir", person);
 			
