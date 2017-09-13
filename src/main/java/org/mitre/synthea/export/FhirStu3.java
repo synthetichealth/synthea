@@ -373,8 +373,6 @@ public class FhirStu3
 	 * @param bundle The Bundle to add to
 	 * @param encounterEntry The current Encounter entry
 	 * @param condition The Condition
-	 * @param claimEntry 
-	 * @param sequence 
 	 * @return The added Entry
 	 */
 	private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
