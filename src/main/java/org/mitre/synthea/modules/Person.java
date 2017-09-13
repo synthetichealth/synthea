@@ -9,9 +9,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Provider;
 
@@ -128,17 +126,6 @@ public class Person implements Serializable
 	public void recordDeath(long time, Code cause, String ruleName)
 	{
 		events.create(time, Event.DEATH, ruleName, true);
-
-		if (record.death == null)
-		{
-			record.death = time;
-		} else
-		{
-			// it's possible for a person to have a death date in the future 
-			// (ex, a condition with some life expectancy sets a future death date)
-			// but then the patient dies sooner because of something else
-			record.death = Math.min(record.death, time);
-		}
 	}
 	
 	/**
@@ -197,53 +184,12 @@ public class Person implements Serializable
 		return false;
 	}
 	
-	public static void chwEncounter(Person person, long time, String deploymentType){
-		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(person, time, deploymentType);
-		if(chw != null) {
-
-			// encounter class doesn't fit into the FHIR-prescribed set
-			// so we use our own "community" encounter class
-			Encounter enc = person.record.encounterStart(time, "community");
-			enc.chw = chw;
-			// TODO - different codes based on different services offered?
-			enc.codes.add( new Code("SNOMED-CT","389067005","Community health procedure") );
-
-			enc.stop = time + TimeUnit.MINUTES.toMillis(35); // encounter lasts 35 minutes on avg
-			
-			chw.incrementEncounters(deploymentType, Utilities.getYear(time));
-
-			int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
-			chw_interventions++;
-			person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
-			if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && (boolean) chw.attributes.getOrDefault(CommunityHealthWorker.TOBACCO_SCREENING, false)) {
-				double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
-				double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
-				double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
-				int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
-				probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
-				person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
-			}
-			
-			if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && (boolean) chw.attributes.getOrDefault(CommunityHealthWorker.ALCOHOL_SCREENING, false)) {
-				double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
-				double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
-				double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
-				int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
-				probability += (quit_alcoholism_chw_delta / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
-				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
-			}
-			
-			double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
-			double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
-			probability += (adherence_chw_delta);
-			person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
-			
-			if((boolean) chw.attributes.getOrDefault(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, false)) {
-				double cardiorisk = (double) person.attributes.get("cardio_risk");
-				//if the person got a bp screening, cardio risk is halved. temporary
-				cardiorisk = cardiorisk / 2;
-				person.attributes.put("cardio_risk", cardiorisk);
-			}
+	public void chwEncounter(long time, String deploymentType)
+	{
+		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(this, time, deploymentType);
+		if(chw != null)
+		{
+			chw.performEncounter(this, time, deploymentType);
 		}
 	}
 	
