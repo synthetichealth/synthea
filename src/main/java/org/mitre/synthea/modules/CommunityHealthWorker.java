@@ -173,9 +173,9 @@ public class CommunityHealthWorker extends Provider {
 		chw_interventions++;
 		person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
 		
-		tobaccoScreening(enc, person, time);
-		alcoholScreening(enc, person, time);
-		lungCancerScreening(enc, person, time);
+		tobaccoScreening(person, time);
+		alcoholScreening(person, time);
+		lungCancerScreening(person, time);
 
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
@@ -189,7 +189,7 @@ public class CommunityHealthWorker extends Provider {
 	// INDIVIDUAL SCREENINGS //
 	///////////////////////////
 	
-	private void tobaccoScreening(Encounter encounter, Person person, long time)
+	private void tobaccoScreening(Person person, long time)
 	{
 		if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && this.offers(TOBACCO_SCREENING)) 
 		{
@@ -202,7 +202,7 @@ public class CommunityHealthWorker extends Provider {
 		}
 	}
 	
-	private void alcoholScreening(Encounter encounter, Person person, long time)
+	private void alcoholScreening(Person person, long time)
 	{
 		if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && this.offers(ALCOHOL_SCREENING)) 
 		{
@@ -215,9 +215,20 @@ public class CommunityHealthWorker extends Provider {
 		}
 	}
 	
-	private void lungCancerScreening(Encounter encounter, Person person, long time)
+	// The USPSTF recommends annual screening for lung cancer with low-dose computed tomography 
+	// in adults ages 55 to 80 years who have a 30 pack-year smoking history and currently smoke 
+	// or have quit within the past 15 years. 
+	// Screening should be discontinued once a person has not smoked for 15 years or 
+	// develops a health problem that substantially limits life expectancy or the ability or willingness to have curative lung surgery.
+	private void lungCancerScreening(Person person, long time)
 	{
-		if (this.offers(LUNG_CANCER_SCREENING))
+		int age = person.ageInYears(time);
+		boolean isSmoker = (boolean) person.attributes.getOrDefault(Person.SMOKER, false);
+		int quitSmokingAge = (int)person.attributes.getOrDefault(LifecycleModule.QUIT_SMOKING_AGE, 0);
+		int yearsSinceQuitting = age - quitSmokingAge;
+		
+		// TODO: 30-year pack history
+		if (this.offers(LUNG_CANCER_SCREENING) && age >= 55 && age <= 80 && (isSmoker || yearsSinceQuitting <= 15))
 		{
 			Procedure ct = person.record.procedure(time, "Low dose computed tomography of thorax (procedure)");
 			
