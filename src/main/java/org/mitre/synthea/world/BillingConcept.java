@@ -4,36 +4,31 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
-public class BillingConcept {
-	
+public class BillingConcept 
+{
 	//HashMap of all codes in synthea 
 	private static HashMap<String, BillingConcept> conceptHash = new HashMap<String,BillingConcept>();
 	
+	private String type;
 	private String hcpc;
 	private String description;
 	private String icd;
 	private String cost;
 	
-	public BillingConcept(LinkedTreeMap p) {
-		if(p.get("hcpc") != null)
-			hcpc = (String) p.get("hcpc");
+	public BillingConcept(String type, Map<String, ?> p) {
+		this.type = type;
+		hcpc = (String) p.get("hcpc");
 		description = (String) p.get("description");
-		if(p.get("icd-10") != null)
-			icd = (String) p.get("icd-10");
-		if(p.get("cost") != null)
-			cost = (String) p.get("cost");
+		icd = (String) p.get("icd-10");
+		cost = (String) p.get("cost");
 	}
-	
-	public static void clear(){
-		conceptHash.clear();
-	}
-	
+
 	public static void loadConceptMappings() {
 		
 		String filename = "/concept_mappings.json";
@@ -43,13 +38,14 @@ public class BillingConcept {
 			String json = new BufferedReader(new InputStreamReader(stream)).lines()
 					.parallel().collect(Collectors.joining("\n"));
 			Gson g = new Gson(); 
-			HashMap<String, LinkedTreeMap> gson = g.fromJson(json, HashMap.class);
-			for(Entry<String, LinkedTreeMap> entry : gson.entrySet()) {
-				LinkedTreeMap value = entry.getValue(); 
-				for(Object o : value.entrySet()){
-					String syntheaCode = ((Entry<String, LinkedTreeMap>) o).getKey();
-					LinkedTreeMap conceptInfo = ((Entry<String, LinkedTreeMap>) o).getValue();
-					BillingConcept cncpt = new BillingConcept(conceptInfo);
+			HashMap<String, Map<String,?>> gson = g.fromJson(json, HashMap.class);
+			for(Entry<String, ?> entry : gson.entrySet()) {
+				String type = entry.getKey();
+				Map<String,?> value = (Map<String,?>)entry.getValue(); 
+				for(Map.Entry<String,?> o : value.entrySet()){
+					String syntheaCode = o.getKey();
+					Map<String,?> conceptInfo = (Map<String,?>)o.getValue();
+					BillingConcept cncpt = new BillingConcept(type,conceptInfo);
 					conceptHash.put(syntheaCode,cncpt);
 				}
 			}
@@ -58,14 +54,9 @@ public class BillingConcept {
 			throw new ExceptionInInitializerError(e);
 		}	
 	}
-
-	public static HashMap<String,BillingConcept> getConceptHash(){
-		
-		return conceptHash;
-	}  
 	
-	public static BillingConcept getConcept(String code){
-		
+	public static BillingConcept getConcept(String code)
+	{	
 		return conceptHash.get(code);
 	}
 	
@@ -74,18 +65,18 @@ public class BillingConcept {
 		return hcpc;
 	}
 	
-	public String getDescription(){
-		
+	public String getDescription()
+	{	
 		return description;
 	}
 	
-	public String getICDCode(){
-		
+	public String getICDCode()
+	{	
 		return icd;
 	}
 	
-	public String getCost(){
-		
+	public String getCost()
+	{	
 		return cost;
 	}
   }

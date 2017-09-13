@@ -2,6 +2,7 @@ package org.mitre.synthea.world;
 
 import org.mitre.synthea.helpers.GeographicalPracticeCostIndex;
 import org.mitre.synthea.helpers.RelativeValueUnit;
+import org.mitre.synthea.modules.HealthRecord.Entry;
 
 public class Costs {
 
@@ -12,8 +13,10 @@ public class Costs {
 		GeographicalPracticeCostIndex.loadGpciData();
 	}
 	
-	public static double calculateCost(String syntheaCode, boolean isFacility)
+	public static double calculateCost(Entry entry, boolean isFacility)
 	{
+		String syntheaCode = entry.codes.get(0).code;
+		
 		//get hcpc mapping from concepts
 		BillingConcept cncpt = BillingConcept.getConcept(syntheaCode); 
 		String hcpcCode;

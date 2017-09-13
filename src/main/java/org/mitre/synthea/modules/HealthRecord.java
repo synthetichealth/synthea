@@ -204,7 +204,7 @@ public class HealthRecord {
 			{
 				if (cost == null)
 				{
-					cost = BigDecimal.valueOf(Costs.calculateCost(entry.codes.get(0).code, true));
+					cost = BigDecimal.valueOf(Costs.calculateCost(entry, true));
 					cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
 				}
 				
