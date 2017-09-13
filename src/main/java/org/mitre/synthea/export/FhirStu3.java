@@ -71,7 +71,7 @@ public class FhirStu3
 	private static final String LOINC_URI = "http://loinc.org";
 	private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
 	private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
-
+	
 	/**
 	 * Convert the given Person into a JSON String, 
 	 * containing a FHIR Bundle of the Person and the associated entries from their health record.
@@ -80,14 +80,14 @@ public class FhirStu3
 	 * @return String containing a JSON representation of a FHIR Bundle containing the Person's health record
 	 */
 	public static String convertToFHIR(Person person, long stopTime)
-	{   
+	{
 		Bundle bundle = new Bundle();
 		bundle.setType(BundleType.COLLECTION);
 		
 		BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 		
 		for (Encounter encounter : person.record.encounters)
-		{	
+		{
 			BundleEntryComponent encounterEntry = encounter(personEntry, bundle, encounter);
 
 			for (HealthRecord.Entry condition : encounter.conditions)
@@ -133,7 +133,7 @@ public class FhirStu3
 
 		return bundleJson;
 	}
-
+	
 	/**
 	 * Map the given Person to a FHIR Patient resource, and add it to the given Bundle.
 	 * @param person The Person
@@ -377,8 +377,8 @@ public class FhirStu3
 	 * @param sequence 
 	 * @return The added Entry
 	 */
-	private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,BundleEntryComponent encounterEntry, 
-			HealthRecord.Entry condition)
+	private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
+			BundleEntryComponent encounterEntry, HealthRecord.Entry condition)
 	{
 		Condition conditionResource = new Condition();
 		
@@ -471,8 +471,6 @@ public class FhirStu3
 	 * @param bundle Bundle to add to
 	 * @param encounterEntry The current Encounter entry
 	 * @param procedure The Procedure
-	 * @param claimResource 
-	 * @param sequence 
 	 * @return The added Entry
 	 */
 	private static BundleEntryComponent procedure(BundleEntryComponent personEntry, Bundle bundle,

@@ -131,7 +131,6 @@ public class ReportExporter
 	private static void processAccess(Connection connection, JsonWriter writer) throws IOException, SQLException
 	{
 		writer.name("access").beginObject();
-		
 		writer.name("encounters").beginObject();
 		
 		Table<Integer, String, Integer> table = HashBasedTable.create();
@@ -177,12 +176,10 @@ public class ReportExporter
 			for (int y = firstYear ; y <= lastYear ; y++)
 			{
 				Integer count = table.get(y, encType);
-				
 				if (count == null)
 				{
 					count = 0;
 				}
-				
 				writer.value(count);
 			}
 			
@@ -190,7 +187,6 @@ public class ReportExporter
 		}
 		
 		writer.endObject(); // encounters
-		
 		writer.endObject(); // access
 	}
 	
@@ -209,17 +205,15 @@ public class ReportExporter
 		while (rs.next())
 		{
 			int year = rs.getInt(1);
-			
+			String type = rs.getString(2);
+			BigDecimal total = rs.getBigDecimal(3);
+
 			if (firstYear == 0)
 			{
 				firstYear = year;
 			}
 			lastYear = year;
 
-			String type = rs.getString(2);
-			
-			BigDecimal total = rs.getBigDecimal(3);
-			
 			table.put(year, type, total);
 		}
 		
@@ -232,19 +226,15 @@ public class ReportExporter
 			for (int y = firstYear ; y <= lastYear ; y++)
 			{
 				BigDecimal count = table.get(y, encType);
-				
 				if (count == null)
 				{
 					count = BigDecimal.ZERO;
 				}
-				
 				writer.value(count);
 			}
-			
 			writer.endArray(); // encType
 		}
-		
-		
+
 		writer.endObject(); // costs	
 	}
 }
