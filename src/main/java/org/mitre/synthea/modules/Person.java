@@ -237,6 +237,13 @@ public class Person implements Serializable
 			double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
 			probability += (adherence_chw_delta);
 			person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
+			
+			if((boolean) chw.attributes.getOrDefault(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, false)) {
+				double cardiorisk = (double) person.attributes.get("cardio_risk");
+				//if the person got a bp screening, cardio risk is halved. temporary
+				cardiorisk = cardiorisk / 2;
+				person.attributes.put("cardio_risk", cardiorisk);
+			}
 		}
 	}
 	
