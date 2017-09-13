@@ -417,13 +417,13 @@
       "description": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
     },
 
-    "1.55E+12": {
+    "1551000119108": {
       "hcpc": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)",
       "icd-10": null,
       "description": null
     },
 
-    "1.50E+12": {
+    "1501000119109": {
       "hcpc": "67227",
       "icd-10": "E11.3599",
       "description": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
