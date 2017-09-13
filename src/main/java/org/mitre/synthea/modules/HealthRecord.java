@@ -166,7 +166,7 @@ public class HealthRecord {
 	public List<Encounter> encounters;
 	public Map<String,Entry> present;
 	/** recorded death date/time */
-	public long death;
+	public Long death;
 	
 	public HealthRecord() {
 		encounters = new ArrayList<Encounter>();
