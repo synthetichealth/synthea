@@ -226,10 +226,24 @@ module Synthea
             end
           elsif state.has_key? 'distributed_transition'
             state['distributed_transition'].each do |t|
-              pct = t['distribution'] * 100
-              pct = pct.to_i if pct == pct.to_i
+              distribution = t['distribution']
+              if distribution.is_a?(Hash)
+                # named attribute transition
+                dist_label = "p(#{distribution['attribute']})"
+
+                if distribution['default']
+                  pct = distribution['default'] * 100
+                  pct = pct.to_i if pct == pct.to_i
+                  dist_label << ", default #{pct}%" 
+                end
+              else
+                pct = distribution * 100
+                pct = pct.to_i if pct == pct.to_i
+                dist_label = "#{pct}%"
+              end
+
               begin
-                g.add_edges( nodeMap[name], nodeMap[t['transition']], label("#{pct}%") )
+                g.add_edges( nodeMap[name], nodeMap[t['transition']], label( dist_label ) )
               rescue
                 raise "State '#{name}' is transitioning to an unknown state: '#{t['transition']}'"
               end
