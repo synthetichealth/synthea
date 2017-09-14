@@ -176,6 +176,7 @@ public class CommunityHealthWorker extends Provider {
 		tobaccoScreening(person, time);
 		alcoholScreening(person, time);
 		lungCancerScreening(person, time);
+		bloodPressureScreening(person, time);
 
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
@@ -193,6 +194,10 @@ public class CommunityHealthWorker extends Provider {
 	{
 		if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && this.offers(TOBACCO_SCREENING)) 
 		{
+			Procedure ct = person.record.procedure(time, "Tobacco usage screening (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","171209009","Tobacco usage screening (procedure)"));
+
 			double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
 			double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
 			double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
@@ -206,6 +211,10 @@ public class CommunityHealthWorker extends Provider {
 	{
 		if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && this.offers(ALCOHOL_SCREENING)) 
 		{
+			Procedure ct = person.record.procedure(time, "Screening for alcohol abuse (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","713107002","Screening for alcohol abuse (procedure)"));
+			
 			double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
 			double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
 			double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
@@ -239,6 +248,17 @@ public class CommunityHealthWorker extends Provider {
 				person.attributes.put("probability_of_lung_cancer_treatment", 1.0); // screening caught lung cancer, send them to treatment
 			}
 		}
+	}
+	
+	private void bloodPressureScreening(Person person, long time){
+		if (this.offers(BLOOD_PRESSURE_SCREENING)){
+			Procedure ct = person.record.procedure(time, "Blood pressure screening - first call (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","185665008","Blood pressure screening - first call (procedure)"));
+			
+			 
+		}
+		
 	}
 	
 }
