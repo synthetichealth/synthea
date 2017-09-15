@@ -279,11 +279,8 @@ public class CommunityHealthWorker extends Provider {
 			if(person.attributes.containsKey("stroke_points")){
 				int stroke_points = (int) person.attributes.get("stroke_points");
 				stroke_points = stroke_points - 2;
-				person.attributes.put("stroke_points", stroke_points);
-			}
-			
-
-			
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
 		}
 	}
 	
