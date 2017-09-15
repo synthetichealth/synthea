@@ -256,9 +256,15 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","185665008","Blood pressure screening - first call (procedure)"));
 			
-			 
+			double blood_pressure_chw_delta = Double.parseDouble( Config.get("lifecycle.blood_pressure.chw_delta", "0.1"));
+
+			double cardioRisk = (double) person.attributes.get("cardio_risk");
+			cardioRisk = cardioRisk / (2 + blood_pressure_chw_delta);
+			
+			if(person.attributes.containsKey("cardio_risk")){
+				person.attributes.put("cardio_risk", cardioRisk);
+			}
 		}
-		
 	}
 	
 }
