@@ -258,12 +258,32 @@ public class CommunityHealthWorker extends Provider {
 			
 			double blood_pressure_chw_delta = Double.parseDouble( Config.get("lifecycle.blood_pressure.chw_delta", "0.1"));
 
-			double cardioRisk = (double) person.attributes.get("cardio_risk");
-			cardioRisk = cardioRisk / (2 + blood_pressure_chw_delta);
-			
 			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (2 + blood_pressure_chw_delta);
 				person.attributes.put("cardio_risk", cardioRisk);
 			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (2 + blood_pressure_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", af_risk);
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (2 + blood_pressure_chw_delta);
+				person.attributes.put("stroke_risk", stroke_risk);
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				double stroke_points = (double) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", stroke_points);
+			}
+			
+
+			
 		}
 	}
 	

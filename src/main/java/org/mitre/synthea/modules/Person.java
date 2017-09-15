@@ -126,6 +126,17 @@ public class Person implements Serializable
 	public void recordDeath(long time, Code cause, String ruleName)
 	{
 		events.create(time, Event.DEATH, ruleName, true);
+
+		if (record.death == null)
+		{
+			record.death = time;
+		} else
+		{
+			// it's possible for a person to have a death date in the future 
+			// (ex, a condition with some life expectancy sets a future death date)
+			// but then the patient dies sooner because of something else
+			record.death = Math.min(record.death, time);
+		}
 	}
 	
 	/**
