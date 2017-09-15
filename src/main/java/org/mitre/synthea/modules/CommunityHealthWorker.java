@@ -177,6 +177,7 @@ public class CommunityHealthWorker extends Provider {
 		alcoholScreening(person, time);
 		lungCancerScreening(person, time);
 		bloodPressureScreening(person, time);
+		dietPhysicalActivity(person, time);
 
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
@@ -252,6 +253,8 @@ public class CommunityHealthWorker extends Provider {
 	
 	private void bloodPressureScreening(Person person, long time){
 		if (this.offers(BLOOD_PRESSURE_SCREENING)){
+			//TODO metabolic syndrome module
+
 			Procedure ct = person.record.procedure(time, "Blood pressure screening - first call (procedure)");
 			
 			ct.codes.add(new Code("SNOMED-CT","185665008","Blood pressure screening - first call (procedure)"));
@@ -261,19 +264,20 @@ public class CommunityHealthWorker extends Provider {
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");
 				cardioRisk = cardioRisk / (2 + blood_pressure_chw_delta);
-				person.attributes.put("cardio_risk", cardioRisk);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
 			}
 
 			if(person.attributes.containsKey("atrial_fibrillation_risk")){
 				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
 				af_risk = af_risk / (2 + blood_pressure_chw_delta);
-				person.attributes.put("atrial_fibrillation_risk", af_risk);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+				System.out.println("AFFFFFF" + person.attributes.get("atrial_fibrillation_risk"));
 			}
 			
 			if(person.attributes.containsKey("stroke_risk")){
 				double stroke_risk = (double) person.attributes.get("stroke_risk");
 				stroke_risk = stroke_risk / (2 + blood_pressure_chw_delta);
-				person.attributes.put("stroke_risk", stroke_risk);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
 			}
 			
 			if(person.attributes.containsKey("stroke_points")){
@@ -284,5 +288,80 @@ public class CommunityHealthWorker extends Provider {
 		}
 	}
 	
+	private void dietPhysicalActivity(Person person, long time){
+		if (this.offers(DIET_PHYSICAL_ACTIVITY)){
+			//TODO metabolic syndrome module, colorectal cancer module
+
+			// only for adults who have CVD risk factors
+			// the exact threshold for CVD risk factors can be determined later
+			// TODO this should also apply to obese/overweight adults
+			
+			double diet_physical_activity_chw_delta = Double.parseDouble( Config.get("lifecycle.diet_physical_activity.chw_delta", "0.1"));
+			
+			if(person.attributes.containsKey("cardio_risk")){
+				if( person.attributes.get(Person.GENDER).equals("M") && (double)person.attributes.get("cardio_risk") > .0000002){
+					Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+					ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+					
+					Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+					ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+					
+					double cardioRisk = (double) person.attributes.get("cardio_risk");
+					cardioRisk = cardioRisk / (2 + diet_physical_activity_chw_delta);
+				    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+					
+				}
+				
+				if( person.attributes.get(Person.GENDER).equals("F") && (double)person.attributes.get("cardio_risk") > .0000004){
+					Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+					ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+					
+					Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+					ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+					
+					double cardioRisk = (double) person.attributes.get("cardio_risk");
+					cardioRisk = cardioRisk / (2 + diet_physical_activity_chw_delta);
+				    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+					
+				}
+			}
+			
+			if(person.attributes.containsKey("atrial_fibrillation_risk") && (double) person.attributes.get("atrial_fibrillation_risk") > .00000003){
+				Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+				ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+				
+				Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+				
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (2 + diet_physical_activity_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk") && (double)person.attributes.get("stroke_risk") > .00000003){
+				Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+				ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+				
+				Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+				
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (2 + diet_physical_activity_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points") && (int)person.attributes.get("stroke_points") > 3){
+				Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+				ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+				
+				Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+				
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
+		}
+	}
 }
 	
