@@ -177,7 +177,8 @@ public class CommunityHealthWorker extends Provider {
 		alcoholScreening(person, time);
 		lungCancerScreening(person, time);
 		bloodPressureScreening(person, time);
-		dietPhysicalActivity(person, time);
+		dietPhysicalActivityCounseling(person, time);
+		obesityScreening(person, time);
 
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
@@ -193,7 +194,9 @@ public class CommunityHealthWorker extends Provider {
 	
 	private void tobaccoScreening(Person person, long time)
 	{
-		if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && this.offers(TOBACCO_SCREENING)) 
+		int age = person.ageInYears(time);
+
+		if(this.offers(TOBACCO_SCREENING) && age >= 18) 
 		{
 			Procedure ct = person.record.procedure(time, "Tobacco usage screening (procedure)");
 			
@@ -210,8 +213,11 @@ public class CommunityHealthWorker extends Provider {
 	
 	private void alcoholScreening(Person person, long time)
 	{
+		int age = person.ageInYears(time);
+
 		if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && this.offers(ALCOHOL_SCREENING)) 
 		{
+			//TODO will have to rework alcoholism to accommodate screenings for all adults, not just alcoholics
 			Procedure ct = person.record.procedure(time, "Screening for alcohol abuse (procedure)");
 			
 			ct.codes.add(new Code("SNOMED-CT","713107002","Screening for alcohol abuse (procedure)"));
@@ -263,20 +269,20 @@ public class CommunityHealthWorker extends Provider {
 
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");
-				cardioRisk = cardioRisk / (2 + blood_pressure_chw_delta);
+				cardioRisk = cardioRisk / (4 + blood_pressure_chw_delta);
 			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
 			}
 
 			if(person.attributes.containsKey("atrial_fibrillation_risk")){
 				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-				af_risk = af_risk / (2 + blood_pressure_chw_delta);
+				af_risk = af_risk / (4 + blood_pressure_chw_delta);
 				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
 				System.out.println("AFFFFFF" + person.attributes.get("atrial_fibrillation_risk"));
 			}
 			
 			if(person.attributes.containsKey("stroke_risk")){
 				double stroke_risk = (double) person.attributes.get("stroke_risk");
-				stroke_risk = stroke_risk / (2 + blood_pressure_chw_delta);
+				stroke_risk = stroke_risk / (4 + blood_pressure_chw_delta);
 				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
 			}
 			
@@ -288,8 +294,10 @@ public class CommunityHealthWorker extends Provider {
 		}
 	}
 	
-	private void dietPhysicalActivity(Person person, long time){
-		if (this.offers(DIET_PHYSICAL_ACTIVITY)){
+	private void dietPhysicalActivityCounseling(Person person, long time){
+		if (this.offers(DIET_PHYSICAL_ACTIVITY) && person.getVitalSign(VitalSign.BMI) >= 25.0){
+			//add obese/overweight BMI condition above
+
 			//TODO metabolic syndrome module, colorectal cancer module
 
 			// only for adults who have CVD risk factors
@@ -297,7 +305,7 @@ public class CommunityHealthWorker extends Provider {
 			// TODO this should also apply to obese/overweight adults
 			
 			double diet_physical_activity_chw_delta = Double.parseDouble( Config.get("lifecycle.diet_physical_activity.chw_delta", "0.1"));
-			
+
 			if(person.attributes.containsKey("cardio_risk")){
 				if( person.attributes.get(Person.GENDER).equals("M") && (double)person.attributes.get("cardio_risk") > .0000002){
 					Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
@@ -307,7 +315,7 @@ public class CommunityHealthWorker extends Provider {
 					ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
 					
 					double cardioRisk = (double) person.attributes.get("cardio_risk");
-					cardioRisk = cardioRisk / (2 + diet_physical_activity_chw_delta);
+					cardioRisk = cardioRisk / (4 + diet_physical_activity_chw_delta);
 				    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
 					
 				}
@@ -320,7 +328,7 @@ public class CommunityHealthWorker extends Provider {
 					ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
 					
 					double cardioRisk = (double) person.attributes.get("cardio_risk");
-					cardioRisk = cardioRisk / (2 + diet_physical_activity_chw_delta);
+					cardioRisk = cardioRisk / (4 + diet_physical_activity_chw_delta);
 				    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
 					
 				}
@@ -334,7 +342,7 @@ public class CommunityHealthWorker extends Provider {
 				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
 				
 				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-				af_risk = af_risk / (2 + diet_physical_activity_chw_delta);
+				af_risk = af_risk / (4 + diet_physical_activity_chw_delta);
 				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
 			}
 			
@@ -346,7 +354,7 @@ public class CommunityHealthWorker extends Provider {
 				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
 				
 				double stroke_risk = (double) person.attributes.get("stroke_risk");
-				stroke_risk = stroke_risk / (2 + diet_physical_activity_chw_delta);
+				stroke_risk = stroke_risk / (4 + diet_physical_activity_chw_delta);
 				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
 			}
 			
@@ -363,5 +371,45 @@ public class CommunityHealthWorker extends Provider {
 			}	
 		}
 	}
+	
+	private void obesityScreening(Person person, long time){
+		int age = person.ageInYears(time);
+
+		if (this.offers(OBESITY_SCREENING) && age >= 6){
+			//TODO metabolic syndrome module, diabetes
+			//TODO change weight, if referred to "intensive behavioral interventions (USPSTF)"?
+			
+			Procedure ct = person.record.procedure(time, "Obesity screening (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","268551005","Obesity screening (procedure)"));
+			
+			double obesity_chw_delta = Double.parseDouble( Config.get("lifecycle.obesity_screening.chw_delta", "0.1"));
+
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + obesity_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + obesity_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+				System.out.println("AFFFFFF" + person.attributes.get("atrial_fibrillation_risk"));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + obesity_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
+		}	
+	}		
 }
 	
