@@ -350,7 +350,9 @@ public class CommunityHealthWorker extends Provider {
 	}
 	
 	private void dietPhysicalActivityCounseling(Person person, long time){
-		if (this.offers(DIET_PHYSICAL_ACTIVITY) && person.getVitalSign(VitalSign.BMI) >= 25.0){
+		int age = person.ageInYears(time);
+
+		if (this.offers(DIET_PHYSICAL_ACTIVITY) && age >=18 && person.getVitalSign(VitalSign.BMI) >= 25.0){
 			//TODO metabolic syndrome module, colorectal cancer module
 
 			// only for adults who have CVD risk factors
