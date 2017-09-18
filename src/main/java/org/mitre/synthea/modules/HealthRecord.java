@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.mitre.synthea.world.Costs;
 import org.mitre.synthea.world.Provider;
 
 import com.google.gson.JsonObject;
@@ -107,9 +110,11 @@ public class HealthRecord {
 		public Set<String> reasons;
 		public String stopReason;
 		public JsonObject prescriptionDetails;
+		public Claim claim;
 		public Medication(long time, String type) {
 			super(time, type);
 			this.reasons = new LinkedHashSet<String>();
+			this.claim = new Claim(this);
 		}
 	}
 	
@@ -134,6 +139,82 @@ public class HealthRecord {
 		}
 	}
 	
+	public class Claim 
+	{
+		public double baseCost;
+		public Encounter encounter;
+		public Medication medication;
+		public List<ClaimItem> items;
+		
+		public Claim(Encounter encounter)
+		{
+			//Encounter inpatient
+			if( encounter.type.equalsIgnoreCase("inpatient"))
+			{
+				baseCost = 75.00;
+			}
+			//Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for problem,
+	        //patient initiated encounter, patient encounter procedure
+			else
+			{
+				baseCost = 125.00;
+			}
+			this.encounter = encounter;
+			items = new ArrayList<>();
+		}
+		
+		public Claim(Medication medication)
+		{
+			baseCost = 255.0;
+			this.medication = medication;
+			items = new ArrayList<>();
+		}
+		
+		public void addItem(Entry entry)
+		{
+			items.add( new ClaimItem(entry, null) );
+		}
+		
+		public BigDecimal total()
+		{
+			BigDecimal total = BigDecimal.valueOf(baseCost);
+			
+			for (ClaimItem lineItem : items)
+			{
+				total = total.add( lineItem.cost() );
+			}
+			return total;
+		}
+	}
+	
+	public class ClaimItem
+	{
+		public Entry entry;
+		private BigDecimal cost;
+		
+		public ClaimItem(Entry entry, BigDecimal cost)
+		{
+			this.entry = entry;
+			this.cost = cost;
+		}
+		
+		public BigDecimal cost()
+		{
+			if (entry instanceof Procedure)
+			{
+				if (cost == null)
+				{
+					cost = BigDecimal.valueOf(Costs.calculateCost(entry, true));
+					cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+				}
+				
+				return cost;
+			}
+			
+			return BigDecimal.ZERO;
+		}
+	}
+	
 	public enum EncounterType { WELLNESS, EMERGENCY, INPATIENT, AMBULATORY };
 	
 	public class Encounter extends Entry {
@@ -145,6 +226,7 @@ public class HealthRecord {
 		public List<Entry> immunizations;
 		public List<Medication> medications;
 		public List<CarePlan> careplans;
+		public Claim claim; // for now assume 1 claim per encounter
 		public String reason;
 		public Code discharge;
 		public Provider provider;
@@ -160,6 +242,7 @@ public class HealthRecord {
 			immunizations = new ArrayList<Entry>();
 			medications = new ArrayList<Medication>();
 			careplans = new ArrayList<CarePlan>();
+			claim = new Claim(this);
 		}
 	}
 	
@@ -262,7 +345,9 @@ public class HealthRecord {
 	public Entry conditionStart(long time, String primaryCode) {
 		if(!present.containsKey(primaryCode)) {
 			Entry condition = new Entry(time, primaryCode);
-			currentEncounter(time).conditions.add(condition);
+			Encounter encounter = currentEncounter(time);
+			encounter.conditions.add(condition);
+			encounter.claim.addItem(condition);
 			present.put(primaryCode, condition);
 		}
 		return present.get(primaryCode);
@@ -325,7 +410,9 @@ public class HealthRecord {
 
 	public Procedure procedure(long time, String type) {
 		Procedure procedure = new Procedure(time, type);
-		currentEncounter(time).procedures.add(procedure);
+		Encounter encounter = currentEncounter(time);
+		encounter.procedures.add(procedure);
+		encounter.claim.addItem(procedure);
 		present.put(type, procedure);
 		return procedure;
 	}
