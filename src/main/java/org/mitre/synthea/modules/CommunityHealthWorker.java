@@ -47,6 +47,8 @@ public class CommunityHealthWorker extends Provider {
 	public static double emergency = Double.parseDouble(Config.get("generate.chw.emergency", "0.25"));
 	public static double postdischarge = Double.parseDouble(Config.get("generate.chw.postdischarge", "0.25"));
 
+	public static int yearIntroduced = Integer.parseInt(Config.get("generate.chw.year_introduced"));
+	
 	public static Map<String,List<CommunityHealthWorker>> workers = generateWorkers();
 	
 	private CommunityHealthWorker(String deploymentType)
@@ -119,6 +121,14 @@ public class CommunityHealthWorker extends Provider {
 
 	public static CommunityHealthWorker findNearbyCHW(Person person, long time, String deploymentType)
 	{
+		int year = Utilities.getYear(time);
+		
+		if (year < yearIntroduced)
+		{
+			// CHWs not introduced to the system yet
+			return null;
+		}
+
 		CommunityHealthWorker worker = null;
 		String city = (String) person.attributes.get(Person.CITY);
 
