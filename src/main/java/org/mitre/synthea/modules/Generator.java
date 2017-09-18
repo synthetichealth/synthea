@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.Costs;
 import org.mitre.synthea.world.Demographics;
 import org.mitre.synthea.world.Hospital;
 import org.mitre.synthea.world.Location;
@@ -86,6 +87,7 @@ public class Generator {
 		Hospital.loadHospitals();
 		Module.getModules(); // ensure modules load early
 		CommunityHealthWorker.workers.size(); // ensure CHWs are set early
+		Costs.loadCostData();
 	}
 	
 	public void run()
