@@ -219,7 +219,6 @@ public class CommunityHealthWorker extends Provider {
 				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
 				af_risk = af_risk / (4 + quit_smoking_chw_delta);
 				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
-				System.out.println("AFFFFFF" + person.attributes.get("atrial_fibrillation_risk"));
 			}
 			
 			if(person.attributes.containsKey("stroke_risk")){
@@ -303,7 +302,6 @@ public class CommunityHealthWorker extends Provider {
 				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
 				af_risk = af_risk / (4 + blood_pressure_chw_delta);
 				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
-				System.out.println("AFFFFFF" + person.attributes.get("atrial_fibrillation_risk"));
 			}
 			
 			if(person.attributes.containsKey("stroke_risk")){
@@ -418,7 +416,6 @@ public class CommunityHealthWorker extends Provider {
 				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
 				af_risk = af_risk / (4 + obesity_chw_delta);
 				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
-				System.out.println("AFFFFFF" + person.attributes.get("atrial_fibrillation_risk"));
 			}
 			
 			if(person.attributes.containsKey("stroke_risk")){
