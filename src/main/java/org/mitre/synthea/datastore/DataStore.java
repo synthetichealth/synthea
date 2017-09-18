@@ -34,7 +34,7 @@ public class DataStore
 	// (so that we don't lose everything between 1 connection closing and the next being opened)
 	private static final String JDBC_OPTIONS = "DB_CLOSE_DELAY=-1";
 	private static final String IN_MEMORY_JDBC_STRING = "jdbc:h2:mem:synthea;"+JDBC_OPTIONS;
-	private static final String FILEBASED_JDBC_STRING = "jdbc:h2:~/synthea_java/database;"+JDBC_OPTIONS;
+	private static final String FILEBASED_JDBC_STRING = "jdbc:h2:./database;"+JDBC_OPTIONS;
 	
 	static
 	{
