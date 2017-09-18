@@ -732,7 +732,7 @@ public final class CardiovascularDiseaseModule extends Module
 	
 	private static void stopMedication(String med, Person person, long time)
 	{
-		if (!person.record.medicationActive(med))
+		if (person.record.medicationActive(med))
 		{
 			// add med to med_changes
 			List<String> medChanges = (List<String>)person.attributes.get("cardiovascular_disease_med_changes");
