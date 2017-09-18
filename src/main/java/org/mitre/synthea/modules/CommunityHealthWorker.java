@@ -429,9 +429,8 @@ public class CommunityHealthWorker extends Provider {
 	private void obesityScreening(Person person, long time){
 		int age = person.ageInYears(time);
 
-		if (this.offers(OBESITY_SCREENING) && age >= 6){
+		if (this.offers(OBESITY_SCREENING) && age >= 18){
 			//TODO metabolic syndrome module, diabetes
-			//TODO change weight, if referred to "intensive behavioral interventions (USPSTF)"?
 			
 			Procedure ct = person.record.procedure(time, "Obesity screening (procedure)");
 			
@@ -461,7 +460,14 @@ public class CommunityHealthWorker extends Provider {
 				int stroke_points = (int) person.attributes.get("stroke_points");
 				stroke_points = stroke_points - 2;
 				person.attributes.put("stroke_points", Math.max(0, stroke_points));
-			}	
+			}
+			
+			if(person.getVitalSign(VitalSign.BMI) >= 30.0){
+				//Clinicians should offer or refer patients with a body mass index of 30 kg/m2 or higher to intensive, multicomponent behavioral interventions.
+				Procedure ct2 = person.record.procedure(time, "Obesity monitoring invitation (procedure)");
+				
+				ct2.codes.add(new Code("SNOMED-CT","310428009","Obesity monitoring invitation (procedure)"));
+			}
 		}	
 	}		
 }
