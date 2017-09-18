@@ -193,7 +193,9 @@ $duration: 1s;
 .rwd-break { 
     display: inline; 
 }
-
+.clickable-img { 
+    cursor: pointer;
+}
 //
 // Image modals
 // This fixes the modal shifting peculiarity 
