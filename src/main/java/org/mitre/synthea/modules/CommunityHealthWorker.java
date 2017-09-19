@@ -202,6 +202,7 @@ public class CommunityHealthWorker extends Provider {
 	// INDIVIDUAL SCREENINGS //
 	///////////////////////////
 	
+	//TODO published studies and numbers to support impact of CHW on various conditions
 	private void tobaccoScreening(Person person, long time)
 	{
 		int age = person.ageInYears(time);
