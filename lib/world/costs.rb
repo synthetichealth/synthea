@@ -1,5 +1,4 @@
 require 'csv'
-require 'byebug'
 require 'json'
 
 module Synthea
