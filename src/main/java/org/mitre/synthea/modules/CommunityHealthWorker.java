@@ -9,8 +9,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
+import org.mitre.synthea.modules.HealthRecord.Medication;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.world.Location;
 import org.mitre.synthea.world.Provider;
@@ -603,8 +605,38 @@ public class CommunityHealthWorker extends Provider {
 	// in community-dwelling adults age 65 years and older who are at increased risk for falls.
 	private void fallsPreventionExercise(Person person, long time)
 	{
-		if (this.offers(EXERCISE_PT_INJURY_SCREENING))
+		int age = person.ageInYears(time);
+		if (this.offers(EXERCISE_PT_INJURY_SCREENING) && age > 65)
 		{
+			// TODO - implement fall risk using "Morse Fall Scale" - http://www.networkofcare.org/library/Morse%20Fall%20Scale.pdf
+			// technically this refers to patients receiving care in acute situations, ie hospitals
+			// 1. History of falling; immediate or within 3 months : No = 0, Yes = 25 
+			// 2. Secondary diagnosis : No = 0, Yes = 15  
+			// 3. Ambulatory aid : Bed rest/nurse assist = 0, Crutches/cane/walker = 15, Furniture = 30
+			// 4. IV/Heparin Lock : No = 0, Yes = 20 
+			// 5. Gait/Transferring : Normal/bedrest/immobile = 0,  Weak = 10, Impaired = 20
+			// 6. Mental status : Oriented to own ability = 0, Forgets limitations = 15
+
+			// Risk Level | MFS Score | Action
+			// -----------+-----------+-------
+			// No Risk    | 0 - 24    | Basic Care
+			// Low Risk   | 25 - 50   | Standard Fall Prevention Interventions
+			// High Risk  | 51 - 135  | High Risk Fall Prevention Interventions
+			// These #s may be tailored to specific patients or situations.
+
+			int fallRisk = (int)person.rand(0, 60);
+			
+			if (fallRisk > 50)
+			{
+				CarePlan pt = person.record.careplanStart(time, "Physical therapy");
+				pt.codes.add(new Code("SNOMED-CT", "91251008", "Physical therapy"));
+			} else if (fallRisk > 40)
+			{
+				CarePlan exercise = person.record.careplanStart(time, "Physical activity target light exercise");
+				exercise.codes.add(new Code("SNOMED-CT", "408580007", "Physical activity target light exercise"));
+			}
+			
+			
 			// CHW interaction will decrease probability of injuries by f(x) % (this adds careplan for exercise)
 		}
 	}
@@ -613,9 +645,23 @@ public class CommunityHealthWorker extends Provider {
 	// in community-dwelling adults age 65 years and older who are at increased risk for falls.
 	private void fallsPreventionVitaminD(Person person, long time)
 	{
-		if (this.offers(VITAMIN_D_INJURY_SCREENING))
+		// https://www.uspreventiveservicestaskforce.org/Page/Document/RecommendationStatementFinal/falls-prevention-in-older-adults-counseling-and-preventive-medication#consider
+		
+		int age = person.ageInYears(time);
+		if (this.offers(VITAMIN_D_INJURY_SCREENING) && age > 65)
 		{
 			// CHW interaction will decrease probability of injuries by g(x) % (this adds medication for vitamin D)
+			
+			// According to the Institute of Medicine, the recommended daily allowance for vitamin D
+			// is 600 IU for adults aged 51 to 70 years and 800 IU for adults older than 70 years 7.
+			// The AGS recommends 800 IU per day for persons at increased risk for falls.
+			
+			if (!person.record.medicationActive("Cholecalciferol 600 UNT"))
+			{
+				Medication vitD = person.record.medicationStart(time, "Cholecalciferol 600 UNT");
+				vitD.codes.add(new Code("RxNorm", "994830", "Cholecalciferol 600 UNT"));
+			}
+			
 		}
 	}
 
@@ -625,10 +671,24 @@ public class CommunityHealthWorker extends Provider {
 	// who has no additional risk factors.
 	private void osteoporosisScreening(Person person, long time)
 	{
-		if (this.offers(OSTEOPOROSIS_SCREENING))
+		// https://www.uspreventiveservicestaskforce.org/Page/Document/RecommendationStatementFinal/osteoporosis-screening
+		int age = person.ageInYears(time);
+		String gender = (String) person.attributes.get(Person.GENDER);
+		boolean elevatedFractureRisk = (person.rand() < 0.05); 
+		// TODO - use FRAX instead of just guessing https://en.wikipedia.org/wiki/FRAX
+		boolean alreadyDiagnosedOsteoporosis = person.record.conditionActive("Osteoporosis (disorder)");
+		if (this.offers(OSTEOPOROSIS_SCREENING) && "F".equals(gender) && (age > 65 || elevatedFractureRisk) && !alreadyDiagnosedOsteoporosis)
 		{
+			// note that a lot of this already exists in the injuries module
+			
 			// if(CHW interaction and osteoprosis = true) then increase adherence Fosamax.
 			// Modify injuries module to decrease the probability of injury if osteoporosis and adherence of Fosamax by foo(x) %.
+			
+			// bone density test
+			
+			// observation of density
+			
+			// diagnosis
 		}
 	}
 }
