@@ -57,7 +57,12 @@ module Synthea
         # patient.religious_affiliation
         # patient.effective_time
         patient.race = { 'name' => entity[:race].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:race]] }
-        patient.ethnicity = { 'name' => entity[:ethnicity].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:ethnicity]] }
+        ethnic_code = if entity[:race] == :hispanic
+                        :hispanic
+                      else
+                        :nonhispanic
+                      end
+        patient.ethnicity = { 'name' => ethnic_code.to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[ethnic_code] }
 
         unless entity.alive?(end_time)
           patient.deathdate = entity.record_synthea.patient_info[:deathdate].to_i

@@ -147,7 +147,7 @@ module Synthea
 
   RACE_ETHNICITY_CODES = {
     :white => '2106-3',
-    :hispanic => '2131-1',
+    :hispanic => '2135-2',
     :black => '2054-5',
     :asian => '2028-9',
     :native => '1002-5',
