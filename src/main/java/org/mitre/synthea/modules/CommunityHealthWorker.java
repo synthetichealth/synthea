@@ -192,6 +192,10 @@ public class CommunityHealthWorker extends Provider {
 		aspirinMedication(person, time);
 		statinMedication(person, time);
 
+		fallsPreventionExercise(person, time);
+		fallsPreventionVitaminD(person, time);
+		osteoporosisScreening(person, time);
+
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
 		probability += (adherence_chw_delta);
@@ -592,6 +596,39 @@ public class CommunityHealthWorker extends Provider {
 				stroke_points = stroke_points - 2;
 				person.attributes.put("stroke_points", Math.max(0, stroke_points));
 			}
+		}
+	}
+
+	// The USPSTF recommends exercise or physical therapy to prevent falls
+	// in community-dwelling adults age 65 years and older who are at increased risk for falls.
+	private void fallsPreventionExercise(Person person, long time)
+	{
+		if (this.offers(EXERCISE_PT_INJURY_SCREENING))
+		{
+			// CHW interaction will decrease probability of injuries by f(x) % (this adds careplan for exercise)
+		}
+	}
+
+	// The USPSTF recommends vitamin D supplementation to prevent falls
+	// in community-dwelling adults age 65 years and older who are at increased risk for falls.
+	private void fallsPreventionVitaminD(Person person, long time)
+	{
+		if (this.offers(VITAMIN_D_INJURY_SCREENING))
+		{
+			// CHW interaction will decrease probability of injuries by g(x) % (this adds medication for vitamin D)
+		}
+	}
+
+	// The USPSTF recommends screening for osteoporosis in women age 65 years
+	// and older and in younger women whose fracture risk is equal
+	// to or greater than that of a 65-year-old white woman
+	// who has no additional risk factors.
+	private void osteoporosisScreening(Person person, long time)
+	{
+		if (this.offers(OSTEOPOROSIS_SCREENING))
+		{
+			// if(CHW interaction and osteoprosis = true) then increase adherence Fosamax.
+			// Modify injuries module to decrease the probability of injury if osteoporosis and adherence of Fosamax by foo(x) %.
 		}
 	}
 }
