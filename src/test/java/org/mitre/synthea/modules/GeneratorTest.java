@@ -13,5 +13,12 @@ public class GeneratorTest {
         generator.run();
         assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
         // there may be more than the requested number of people, because we re-generate on death
+        
+        
+        numberOfPeople = 3;
+    	Config.set("generate.default_population", Integer.toString(numberOfPeople));
+        generator = new Generator();
+        generator.run();
+        assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
     }
 }

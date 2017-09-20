@@ -41,6 +41,12 @@ public class Generator {
 	public Map<String,Demographics> demographics;
 	private String logLevel;
 	
+	public Generator() throws IOException
+	{
+		int population = Integer.parseInt( Config.get("generate.default_population", "1") );
+		init(population, System.currentTimeMillis());
+	}
+	
 	public Generator(int population) throws IOException
 	{
 		init(population, System.currentTimeMillis());
