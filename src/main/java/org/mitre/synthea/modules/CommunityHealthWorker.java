@@ -186,6 +186,11 @@ public class CommunityHealthWorker extends Provider {
 		tobaccoScreening(person, time);
 		alcoholScreening(person, time);
 		lungCancerScreening(person, time);
+		bloodPressureScreening(person, time);
+		dietPhysicalActivityCounseling(person, time);
+		obesityScreening(person, time);
+		aspirinMedication(person, time);
+		statinMedication(person, time);
 
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
@@ -199,29 +204,103 @@ public class CommunityHealthWorker extends Provider {
 	// INDIVIDUAL SCREENINGS //
 	///////////////////////////
 	
+	//TODO published studies and numbers to support impact of CHW on various conditions
+	
+	//The USPSTF recommends that clinicians ask all adults about tobacco use, advise them to stop using tobacco, and provide 
+	//behavioral interventions and U.S. Food and Drug Administration (FDA)–approved pharmacotherapy for cessation to adults who use tobacco.
 	private void tobaccoScreening(Person person, long time)
 	{
-		if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) && this.offers(TOBACCO_SCREENING)) 
+		int age = person.ageInYears(time);
+
+		if(this.offers(TOBACCO_SCREENING) && age >= 18) 
 		{
+			Procedure ct = person.record.procedure(time, "Tobacco usage screening (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","171209009","Tobacco usage screening (procedure)"));
+
 			double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
 			double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
 			double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
 			int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
 			probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
 			person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
+			
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + quit_smoking_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + quit_smoking_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + quit_smoking_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
 		}
 	}
 	
+	//The USPSTF recommends that clinicians screen adults age 18 years or older for alcohol misuse and provide persons engaged 
+	//in risky or hazardous drinking with brief behavioral counseling interventions to reduce alcohol misuse.
 	private void alcoholScreening(Person person, long time)
 	{
-		if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false) && this.offers(ALCOHOL_SCREENING)) 
+		int age = person.ageInYears(time);
+
+		if(this.offers(ALCOHOL_SCREENING) && age >= 18) 
 		{
+			Procedure ct = person.record.procedure(time, "Screening for alcohol abuse (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","713107002","Screening for alcohol abuse (procedure)"));
+	
 			double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
 			double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
-			double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
-			int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
-			probability += (quit_alcoholism_chw_delta / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
-			person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
+			
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + quit_alcoholism_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + quit_alcoholism_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + quit_alcoholism_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
+
+			if((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false)){
+				Procedure ct2 = person.record.procedure(time, "Alcoholism counseling (procedure)");
+				
+				ct2.codes.add(new Code("SNOMED-CT","24165007","Alcoholism counseling (procedure)"));
+				
+				double probability = (double) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
+				int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
+				probability += (quit_alcoholism_chw_delta / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
+				person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
+				
+			}
 		}
 	}
 	
@@ -251,5 +330,269 @@ public class CommunityHealthWorker extends Provider {
 		}
 	}
 	
+	//The USPSTF recommends screening for high blood pressure in adults aged 18 years or older.
+	//The USPSTF recommends obtaining measurements outside of the clinical setting for diagnostic 
+	//confirmation before starting treatment.
+	private void bloodPressureScreening(Person person, long time){
+		if (this.offers(BLOOD_PRESSURE_SCREENING)){
+			//TODO metabolic syndrome module
+
+			Procedure ct = person.record.procedure(time, "Blood pressure screening - first call (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","185665008","Blood pressure screening - first call (procedure)"));
+			
+			double blood_pressure_chw_delta = Double.parseDouble( Config.get("lifecycle.blood_pressure.chw_delta", "0.1"));
+
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + blood_pressure_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + blood_pressure_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + blood_pressure_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
+		}
+	}
+	
+	//The USPSTF recommends offering or referring adults who are overweight or obese and have 
+	//additional cardiovascular disease (CVD) risk factors to intensive behavioral counseling 
+	//interventions to promote a healthful diet and physical activity for CVD prevention.
+	private void dietPhysicalActivityCounseling(Person person, long time){
+		int age = person.ageInYears(time);
+
+		if (this.offers(DIET_PHYSICAL_ACTIVITY) && age >=18 && person.getVitalSign(VitalSign.BMI) >= 25.0){
+			//TODO metabolic syndrome module, colorectal cancer module
+
+			// only for adults who have CVD risk factors
+			// the exact threshold for CVD risk factors can be determined later
+			
+			double diet_physical_activity_chw_delta = Double.parseDouble( Config.get("lifecycle.diet_physical_activity.chw_delta", "0.1"));
+
+			if(person.attributes.containsKey("cardio_risk")){
+				if( person.attributes.get(Person.GENDER).equals("M") && (double)person.attributes.get("cardio_risk") > .0000002){
+					Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+					ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+					
+					Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+					ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+					
+					double cardioRisk = (double) person.attributes.get("cardio_risk");
+					cardioRisk = cardioRisk / (4 + diet_physical_activity_chw_delta);
+				    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+					
+				}
+				
+				if( person.attributes.get(Person.GENDER).equals("F") && (double)person.attributes.get("cardio_risk") > .0000004){
+					Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+					ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+					
+					Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+					ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+					
+					double cardioRisk = (double) person.attributes.get("cardio_risk");
+					cardioRisk = cardioRisk / (4 + diet_physical_activity_chw_delta);
+				    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+					
+				}
+			}
+			
+			if(person.attributes.containsKey("atrial_fibrillation_risk") && (double) person.attributes.get("atrial_fibrillation_risk") > .00000003){
+				Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+				ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+				
+				Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+				
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + diet_physical_activity_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk") && (double)person.attributes.get("stroke_risk") > .00000003){
+				Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+				ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+				
+				Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+				
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + diet_physical_activity_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points") && (int)person.attributes.get("stroke_points") > 3){
+				Procedure ct = person.record.procedure(time, "Referral to physical activity program (procedure)");
+				ct.codes.add(new Code("SNOMED-CT","390893007","Referral to physical activity program (procedure)"));
+				
+				Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
+				ct2.codes.add(new Code("SNOMED-CT","699849008","Healthy eating education (procedure)"));
+				
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}	
+		}
+	}
+	
+	//The USPSTF recommends screening all adults for obesity. Clinicians should offer or refer 
+	//patients with a body mass index of 30 kg/m2 or higher to intensive, multicomponent behavioral interventions.
+	private void obesityScreening(Person person, long time){
+		int age = person.ageInYears(time);
+		
+		if (this.offers(OBESITY_SCREENING) && age >= 18){
+			//TODO metabolic syndrome module, diabetes
+			
+			Procedure ct = person.record.procedure(time, "Obesity screening (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","268551005","Obesity screening (procedure)"));
+			
+			double obesity_chw_delta = Double.parseDouble( Config.get("lifecycle.obesity_screening.chw_delta", "0.1"));
+
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + obesity_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + obesity_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + obesity_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}
+			
+			if(person.getVitalSign(VitalSign.BMI) >= 30.0){
+				//"Clinicians should offer or refer patients with a body mass index of 30 kg/m2 or higher to intensive, multicomponent behavioral interventions."(USPSTF)
+				Procedure ct2 = person.record.procedure(time, "Obesity monitoring invitation (procedure)");
+				
+				ct2.codes.add(new Code("SNOMED-CT","310428009","Obesity monitoring invitation (procedure)"));
+			}
+		}	
+	}
+	
+	//The USPSTF recommends initiating low-dose aspirin use for the primary prevention of cardiovascular disease
+	//and colorectal cancer in adults aged 50 to 59 years who have a 10% or greater 10-year cardiovascular risk,
+	//are not at increased risk for bleeding, have a life expectancy of at least 10 years, and are willing to take low-dose aspirin daily for at least 10 years.
+	private void aspirinMedication(Person person, long time){
+		int age = person.ageInYears(time);
+		
+		// From QualityofLifeModule:
+        // life expectancy equation derived from IHME GBD 2015 Reference Life Table
+        // 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
+        // R^2 = 0.99978
+		double lifeExpectancy = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
+		double tenYearStrokeRisk = (double) person.attributes.get("cardio_risk") * 3650;
+
+		if(this.offers(ASPIRIN_MEDICATION) && age >= 50 && age < 60 && tenYearStrokeRisk >= .1 && lifeExpectancy >= 10){
+			
+			Procedure ct = person.record.procedure(time, "Administration of aspirin (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","431463004","Administration of aspirin (procedure)"));
+			
+			double aspirin_chw_delta = Double.parseDouble( Config.get("lifecycle.aspirin_medication.chw_delta", "0.1"));
+
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + aspirin_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + aspirin_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + aspirin_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}
+		}
+	}
+	
+	//The USPSTF recommends that adults without a history of cardiovascular disease (CVD) (i.e., symptomatic coronary artery disease or ischemic stroke)
+	//use a low- to moderate-dose statin for the prevention of CVD events and mortality when all of the following criteria are met:
+	//1) they are ages 40 to 75 years; 2) they have 1 or more CVD risk factors (i.e., dyslipidemia, diabetes, hypertension, or smoking); 
+	//and 3) they have a calculated 10-year risk of a cardiovascular event of 10% or greater. Identification of dyslipidemia and calculation 
+	//of 10-year CVD event risk requires universal lipids screening in adults ages 40 to 75 years.
+	private void statinMedication(Person person, long time){
+		int age = person.ageInYears(time);
+		
+		double tenYearStrokeRisk = (double) person.attributes.get("cardio_risk") * 3650;
+		
+		boolean riskFactors = false;
+		
+		if((boolean) person.attributes.getOrDefault(Person.SMOKER, false) || ((boolean) person.attributes.getOrDefault("diabetes", false)) || ((boolean) person.attributes.getOrDefault("hypertension", false))){
+			riskFactors = true;
+		}
+
+		//TODO check for history of CVD
+		if(this.offers(STATIN_MEDICATION) && age >= 40 && age <= 75 && (riskFactors = true) && tenYearStrokeRisk >= .1){
+			
+			// TODO may need a better snomed code
+			Procedure ct = person.record.procedure(time, "Over the counter statin therapy (procedure)");
+			
+			ct.codes.add(new Code("SNOMED-CT","414981001","Over the counter statin therapy (procedure)"));
+			
+			double statin_chw_delta = Double.parseDouble( Config.get("lifecycle.statin_medication.chw_delta", "0.1"));
+
+			if(person.attributes.containsKey("cardio_risk")){
+				double cardioRisk = (double) person.attributes.get("cardio_risk");
+				cardioRisk = cardioRisk / (4 + statin_chw_delta);
+			    person.attributes.put("cardio_risk", Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
+			}
+
+			if(person.attributes.containsKey("atrial_fibrillation_risk")){
+				double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
+				af_risk = af_risk / (4 + statin_chw_delta);
+				person.attributes.put("atrial_fibrillation_risk", Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_risk")){
+				double stroke_risk = (double) person.attributes.get("stroke_risk");
+				stroke_risk = stroke_risk / (4 + statin_chw_delta);
+				person.attributes.put("stroke_risk", Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+			}
+			
+			if(person.attributes.containsKey("stroke_points")){
+				int stroke_points = (int) person.attributes.get("stroke_points");
+				stroke_points = stroke_points - 2;
+				person.attributes.put("stroke_points", Math.max(0, stroke_points));
+			}
+		}
+	}
 }
 	
