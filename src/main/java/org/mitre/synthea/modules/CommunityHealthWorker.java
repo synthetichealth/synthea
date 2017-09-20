@@ -12,7 +12,9 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
+import org.mitre.synthea.modules.HealthRecord.Entry;
 import org.mitre.synthea.modules.HealthRecord.Medication;
+import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.world.Location;
 import org.mitre.synthea.world.Provider;
@@ -661,7 +663,6 @@ public class CommunityHealthWorker extends Provider {
 				Medication vitD = person.record.medicationStart(time, "Cholecalciferol 600 UNT");
 				vitD.codes.add(new Code("RxNorm", "994830", "Cholecalciferol 600 UNT"));
 			}
-			
 		}
 	}
 
@@ -679,16 +680,37 @@ public class CommunityHealthWorker extends Provider {
 		boolean alreadyDiagnosedOsteoporosis = person.record.conditionActive("Osteoporosis (disorder)");
 		if (this.offers(OSTEOPOROSIS_SCREENING) && "F".equals(gender) && (age > 65 || elevatedFractureRisk) && !alreadyDiagnosedOsteoporosis)
 		{
-			// note that a lot of this already exists in the injuries module
+			// note that a lot of this already exists in the injuries & osteoporosis modules
+			// TODO: ideally we would rework all 3 such that this CHW intervention would trigger an osteoporosis workup later
+			// but this is the approach for now
 			
 			// if(CHW interaction and osteoprosis = true) then increase adherence Fosamax.
 			// Modify injuries module to decrease the probability of injury if osteoporosis and adherence of Fosamax by foo(x) %.
 			
 			// bone density test
 			
-			// observation of density
+			Procedure proc = person.record.procedure(time, "Bone density scan (procedure)");
+			proc.codes.add(new Code("SNOMED-CT","312681000","Bone density scan (procedure)"));
+
+			boolean hasOsteoporosis = (boolean)person.attributes.getOrDefault("osteoporosis", false);
 			
-			// diagnosis
+			double boneDensity;
+			Observation obs;
+			
+			if (hasOsteoporosis)
+			{
+				boneDensity = person.rand(-3.8, -2.5);
+				obs = person.record.observation(time, "DXA [T-score] Bone density", boneDensity);
+
+				Entry condition = person.record.conditionStart(time, "osteoporosis");
+				condition.codes.add(new Code("SNOMED-CT","64859006","Osteoporosis (disorder)"));				
+			} else
+			{
+				boneDensity = person.rand(-0.5, 0.5);
+				obs = person.record.observation(time, "DXA [T-score] Bone density", boneDensity);
+			}
+
+			obs.codes.add(new Code("LOINC","38265-5","DXA [T-score] Bone density"));
 		}
 	}
 }
