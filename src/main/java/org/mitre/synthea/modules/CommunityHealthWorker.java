@@ -515,7 +515,7 @@ public class CommunityHealthWorker extends Provider {
         // 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
         // R^2 = 0.99978
 		double lifeExpectancy = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
-		double tenYearStrokeRisk = (double) person.attributes.get("cardio_risk") * 3650;
+		double tenYearStrokeRisk = (double) person.attributes.getOrDefault("cardio_risk", 0.0) * 3650;
 
 		if(this.offers(ASPIRIN_MEDICATION) && age >= 50 && age < 60 && tenYearStrokeRisk >= .1 && lifeExpectancy >= 10){
 			
@@ -559,7 +559,7 @@ public class CommunityHealthWorker extends Provider {
 	private void statinMedication(Person person, long time){
 		int age = person.ageInYears(time);
 		
-		double tenYearStrokeRisk = (double) person.attributes.get("cardio_risk") * 3650;
+		double tenYearStrokeRisk = (double) person.attributes.getOrDefault("cardio_risk", 0.0) * 3650;
 		
 		boolean riskFactors = false;
 		
