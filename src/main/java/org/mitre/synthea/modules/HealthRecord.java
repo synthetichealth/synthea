@@ -376,6 +376,11 @@ public class HealthRecord {
 		}
 	}
 	
+	public boolean conditionActive(String type)
+	{
+		return present.containsKey(type) && present.get(type).stop==0L;
+	}
+	
 	public Entry allergyStart(long time, String primaryCode) {
 		if(!present.containsKey(primaryCode)) {
 			Entry allergy = new Entry(time, primaryCode);

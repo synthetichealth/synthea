@@ -9,8 +9,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
 import org.mitre.synthea.modules.HealthRecord.Encounter;
+import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.modules.HealthRecord.Medication;
+import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.world.Location;
 import org.mitre.synthea.world.Provider;
@@ -191,6 +195,10 @@ public class CommunityHealthWorker extends Provider {
 		obesityScreening(person, time);
 		aspirinMedication(person, time);
 		statinMedication(person, time);
+
+		fallsPreventionExercise(person, time);
+		fallsPreventionVitaminD(person, time);
+		osteoporosisScreening(person, time);
 
 		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
@@ -507,7 +515,7 @@ public class CommunityHealthWorker extends Provider {
         // 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
         // R^2 = 0.99978
 		double lifeExpectancy = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
-		double tenYearStrokeRisk = (double) person.attributes.get("cardio_risk") * 3650;
+		double tenYearStrokeRisk = (double) person.attributes.getOrDefault("cardio_risk", 0.0) * 3650;
 
 		if(this.offers(ASPIRIN_MEDICATION) && age >= 50 && age < 60 && tenYearStrokeRisk >= .1 && lifeExpectancy >= 10){
 			
@@ -551,7 +559,7 @@ public class CommunityHealthWorker extends Provider {
 	private void statinMedication(Person person, long time){
 		int age = person.ageInYears(time);
 		
-		double tenYearStrokeRisk = (double) person.attributes.get("cardio_risk") * 3650;
+		double tenYearStrokeRisk = (double) person.attributes.getOrDefault("cardio_risk", 0.0) * 3650;
 		
 		boolean riskFactors = false;
 		
@@ -592,6 +600,110 @@ public class CommunityHealthWorker extends Provider {
 				stroke_points = stroke_points - 2;
 				person.attributes.put("stroke_points", Math.max(0, stroke_points));
 			}
+		}
+	}
+
+	// The USPSTF recommends exercise or physical therapy to prevent falls
+	// in community-dwelling adults age 65 years and older who are at increased risk for falls.
+	private void fallsPreventionExercise(Person person, long time)
+	{
+		int age = person.ageInYears(time);
+		if (this.offers(EXERCISE_PT_INJURY_SCREENING) && age > 65)
+		{
+			// TODO - implement fall risk using "Morse Fall Scale" - http://www.networkofcare.org/library/Morse%20Fall%20Scale.pdf
+			// technically this refers to patients receiving care in acute situations, ie hospitals
+			// 1. History of falling; immediate or within 3 months : No = 0, Yes = 25 
+			// 2. Secondary diagnosis : No = 0, Yes = 15  
+			// 3. Ambulatory aid : Bed rest/nurse assist = 0, Crutches/cane/walker = 15, Furniture = 30
+			// 4. IV/Heparin Lock : No = 0, Yes = 20 
+			// 5. Gait/Transferring : Normal/bedrest/immobile = 0,  Weak = 10, Impaired = 20
+			// 6. Mental status : Oriented to own ability = 0, Forgets limitations = 15
+
+			// Risk Level | MFS Score | Action
+			// -----------+-----------+-------
+			// No Risk    | 0 - 24    | Basic Care
+			// Low Risk   | 25 - 50   | Standard Fall Prevention Interventions
+			// High Risk  | 51 - 135  | High Risk Fall Prevention Interventions
+			// These #s may be tailored to specific patients or situations.
+
+			int fallRisk = (int)person.rand(0, 60);
+			
+			if (fallRisk > 50)
+			{
+				CarePlan pt = person.record.careplanStart(time, "Physical therapy");
+				pt.codes.add(new Code("SNOMED-CT", "91251008", "Physical therapy"));
+			} else if (fallRisk > 40)
+			{
+				CarePlan exercise = person.record.careplanStart(time, "Physical activity target light exercise");
+				exercise.codes.add(new Code("SNOMED-CT", "408580007", "Physical activity target light exercise"));
+			}
+		}
+	}
+
+	// The USPSTF recommends vitamin D supplementation to prevent falls
+	// in community-dwelling adults age 65 years and older who are at increased risk for falls.
+	private void fallsPreventionVitaminD(Person person, long time)
+	{
+		// https://www.uspreventiveservicestaskforce.org/Page/Document/RecommendationStatementFinal/falls-prevention-in-older-adults-counseling-and-preventive-medication#consider
+		
+		int age = person.ageInYears(time);
+		if (this.offers(VITAMIN_D_INJURY_SCREENING) && age > 65)
+		{
+			// CHW interaction will decrease probability of injuries by g(x) % (this adds medication for vitamin D)
+			
+			// According to the Institute of Medicine, the recommended daily allowance for vitamin D
+			// is 600 IU for adults aged 51 to 70 years and 800 IU for adults older than 70 years 7.
+			// The AGS recommends 800 IU per day for persons at increased risk for falls.
+			
+			if (!person.record.medicationActive("Cholecalciferol 600 UNT"))
+			{
+				Medication vitD = person.record.medicationStart(time, "Cholecalciferol 600 UNT");
+				vitD.codes.add(new Code("RxNorm", "994830", "Cholecalciferol 600 UNT"));
+			}
+		}
+	}
+
+	// The USPSTF recommends screening for osteoporosis in women age 65 years
+	// and older and in younger women whose fracture risk is equal
+	// to or greater than that of a 65-year-old white woman
+	// who has no additional risk factors.
+	private void osteoporosisScreening(Person person, long time)
+	{
+		// https://www.uspreventiveservicestaskforce.org/Page/Document/RecommendationStatementFinal/osteoporosis-screening
+		int age = person.ageInYears(time);
+		String gender = (String) person.attributes.get(Person.GENDER);
+		boolean elevatedFractureRisk = (person.rand() < 0.05); 
+		// TODO - use FRAX instead of just guessing https://en.wikipedia.org/wiki/FRAX
+		boolean alreadyDiagnosedOsteoporosis = person.record.conditionActive("Osteoporosis (disorder)");
+		if (this.offers(OSTEOPOROSIS_SCREENING) && "F".equals(gender) && (age > 65 || elevatedFractureRisk) && !alreadyDiagnosedOsteoporosis)
+		{
+			// note that a lot of this already exists in the injuries & osteoporosis modules
+			// TODO: ideally we would rework all 3 such that this CHW intervention would trigger an osteoporosis workup later
+			// but this is the approach for now
+
+			// bone density test
+			Procedure proc = person.record.procedure(time, "Bone density scan (procedure)");
+			proc.codes.add(new Code("SNOMED-CT","312681000","Bone density scan (procedure)"));
+
+			boolean hasOsteoporosis = (boolean)person.attributes.getOrDefault("osteoporosis", false);
+			
+			double boneDensity;
+			Observation obs;
+			
+			if (hasOsteoporosis)
+			{
+				boneDensity = person.rand(-3.8, -2.5);
+				obs = person.record.observation(time, "DXA [T-score] Bone density", boneDensity);
+
+				Entry condition = person.record.conditionStart(time, "osteoporosis");
+				condition.codes.add(new Code("SNOMED-CT","64859006","Osteoporosis (disorder)"));				
+			} else
+			{
+				boneDensity = person.rand(-0.5, 0.5);
+				obs = person.record.observation(time, "DXA [T-score] Bone density", boneDensity);
+			}
+
+			obs.codes.add(new Code("LOINC","38265-5","DXA [T-score] Bone density"));
 		}
 	}
 }

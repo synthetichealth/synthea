@@ -68,12 +68,13 @@ public final class LifecycleModule extends Module
 		quitAlcoholism(person, time);
 		adherence(person, time);
 		diabeticVitalSigns(person, time);
+		calculateFallRisk(person, time);
 		death(person, time);
 		
 		// java modules will never "finish"
 		return false;
 	}
-	
+
 	public static void birth(Person person, long time)
 	{
 		Map<String, Object> attributes = person.attributes;
@@ -479,6 +480,43 @@ public final class LifecycleModule extends Module
 			}
 			person.attributes.put(ADHERENCE_PROBABILITY, probability);
 
+		}
+	}
+	
+	// referenced in the Injuries module - adults > age 65 have multiple screenings that affect fall risk
+	private void calculateFallRisk(Person person, long time) 
+	{
+		if (person.ageInYears(time) >= 65)
+		{
+			boolean hasOsteoporosis = (boolean)person.attributes.getOrDefault("osteporosis", false);
+			double baselineFallRisk = hasOsteoporosis ? 0.06 : 0.035;// numbers from injuries module
+			
+			int activeInterventions = 0;
+			
+			// careplan for exercise or PT
+			if (person.record.careplanActive("Physical therapy") 
+					|| person.record.careplanActive("Physical activity target light exercise"))
+			{
+				activeInterventions++;
+			}
+			
+			// taking vitamin D
+			if (person.record.medicationActive("Cholecalciferol 600 UNT"))
+			{
+				activeInterventions++;
+			}
+			
+			// osteoporosis diagnosis makes them more careful
+			if (person.record.conditionActive("Osteoporosis (disorder)"))
+			{
+				activeInterventions++;
+			}
+			
+			double fallRisk = baselineFallRisk * (1 - 0.02*activeInterventions); 
+			// reduce the fall risk by 2% per intervention
+			// TODO - research actual effectiveness of these interventions
+			
+			person.attributes.put("probability_of_fall_injury", fallRisk);
 		}
 	}
 }
