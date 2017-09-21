@@ -637,9 +637,6 @@ public class CommunityHealthWorker extends Provider {
 				CarePlan exercise = person.record.careplanStart(time, "Physical activity target light exercise");
 				exercise.codes.add(new Code("SNOMED-CT", "408580007", "Physical activity target light exercise"));
 			}
-			
-			
-			// CHW interaction will decrease probability of injuries by f(x) % (this adds careplan for exercise)
 		}
 	}
 
@@ -683,12 +680,8 @@ public class CommunityHealthWorker extends Provider {
 			// note that a lot of this already exists in the injuries & osteoporosis modules
 			// TODO: ideally we would rework all 3 such that this CHW intervention would trigger an osteoporosis workup later
 			// but this is the approach for now
-			
-			// if(CHW interaction and osteoprosis = true) then increase adherence Fosamax.
-			// Modify injuries module to decrease the probability of injury if osteoporosis and adherence of Fosamax by foo(x) %.
-			
+
 			// bone density test
-			
 			Procedure proc = person.record.procedure(time, "Bone density scan (procedure)");
 			proc.codes.add(new Code("SNOMED-CT","312681000","Bone density scan (procedure)"));
 

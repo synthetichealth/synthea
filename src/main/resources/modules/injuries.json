@@ -278,7 +278,7 @@
               "transition": "Whiplash_Injury"
             },
             {
-              "distribution": 0.06,
+              "distribution": { "attribute" : "probability_of_fall_injury", "default" : 0.06 },
               "remarks": [
                 "Highest probability for elderly with osteoporosis.",
                 "see also http://www.shef.ac.uk/FRAX/charts.aspx",
@@ -338,7 +338,7 @@
               "transition": "Whiplash_Injury"
             },
             {
-              "distribution": 0.035,
+              "distribution": { "attribute" : "probability_of_fall_injury", "default" : 0.035 },
               "remarks": [
                 "Retain high probability for elderly - reduced somewhat here since these are the patients without osteoporosis"
               ],
