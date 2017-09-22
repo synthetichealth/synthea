@@ -197,7 +197,13 @@ module Synthea
           if @expiration.nil?
             if !@range.nil?
               # choose a random duration within the specified range
-              @expiration = @range.value.since(@start_time)
+              selected = @range.value
+
+              # TODO: sometimes instead of an ActiveSupport::Duration we get a Float back
+              # so this is a hack to force it to a Duration
+              selected = selected.seconds if selected.class == Float
+
+              @expiration = selected.since(@start_time)
             elsif !@exact.nil?
               @expiration = @exact.value.since(@start_time)
             else
