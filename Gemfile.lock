@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/projectcypress/health-data-standards.git
-  revision: 311b640fea834fd77647ae38621eaabcf8d8c2c6
+  revision: e0f7d9def8a2eb858ea15ca23dd10200c3a5f3e4
   branch: ruby_24
   specs:
     health-data-standards (3.6.1)
@@ -42,10 +42,10 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.2.8)
-      activesupport (= 4.2.8)
+    activemodel (4.2.10)
+      activesupport (= 4.2.10)
       builder (~> 3.1)
-    activesupport (4.2.8)
+    activesupport (4.2.10)
       i18n (~> 0.7)
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
@@ -59,8 +59,8 @@ GEM
     awesome_print (1.7.0)
     bcp47 (0.3.3)
       i18n
-    bson (4.2.1)
-    bson (4.2.1-java)
+    bson (4.2.2)
+    bson (4.2.2-java)
     builder (3.2.3)
     cane (2.3.0)
       parallel
@@ -79,6 +79,7 @@ GEM
     faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
+    ffi (1.9.18)
     ffi (1.9.18-java)
     ffi (1.9.18-x64-mingw32)
     fhir_client (3.0.2)
@@ -104,7 +105,7 @@ GEM
     highline (1.7.8)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (0.8.4)
+    i18n (0.8.6)
     json (2.1.0)
     json (2.1.0-java)
     jwt (1.5.6)
@@ -115,13 +116,13 @@ GEM
     method_source (0.8.2)
     mime-types (2.99.3)
     mini_portile2 (2.1.0)
-    minitest (5.10.2)
+    minitest (5.10.3)
     minitest-reporters (1.1.14)
       ansi
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    mongo (2.4.2)
+    mongo (2.4.3)
       bson (>= 4.2.1, < 5.0.0)
     mongoid (5.0.2)
       activemodel (~> 4.0)

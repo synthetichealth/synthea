@@ -54,9 +54,17 @@ module Synthea
         patient.expired = false
         patient.marital_status = { 'name' => entity[:marital_status], 'code' => entity[:marital_status] } if entity[:marital_status]
 
+        patient.languages = [entity[:first_language][0..2].downcase]
         # patient.religious_affiliation
         # patient.effective_time
-        patient.race = { 'name' => entity[:race].to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[entity[:race]] }
+        # Allowed CDC race codes are extremely limited
+        race_code = if [:hispanic, :other].include?(entity[:race])
+                      :white
+                    else
+                      entity[:race]
+                    end
+        patient.race = { 'name' => race_code.to_s.capitalize, 'code' => RACE_ETHNICITY_CODES[race_code] }
+        # Allowed CDC ethnicity codes are extremely limited (hispanic or not)
         ethnic_code = if entity[:race] == :hispanic
                         :hispanic
                       else
