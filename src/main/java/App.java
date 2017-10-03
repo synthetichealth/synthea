@@ -7,7 +7,9 @@ import org.mitre.synthea.world.agents.CommunityHealthWorker;
 public class App {
  
 	public static void main(String[] args) throws Exception {
+
 		Generator generator = new Generator();
+
 		generator.run();
 
 		System.out.format("Number of Towns: %d\n", CommunityHealthWorker.workers.size());

@@ -69,14 +69,14 @@
           "display": "Normal pregnancy"
         }
       ],
-      "direct_transition": "Week_10"
+      "direct_transition": "Delay_Six_Weeks"
     },
 
-    "Week_10": {
+    "Delay_Six_Weeks": {
       "type": "Delay",
       "exact": {
-        "quantity": 10,
-        "unit": "weeks"
+      "quantity": 6,
+      "unit": "weeks"
       },
       "direct_transition": "Prenatal_Initial_Visit"
     },
@@ -317,6 +317,202 @@
         }
       ],
       "assign_to_attribute": "pregnancy_careplan",
+      "direct_transition": "Rhogam_Crossmatch"
+    },
+
+    "Rhogam_Crossmatch": {
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "8294001",
+          "display": "Blood typing, Rhogam typing"
+        }
+      ],
+      "direct_transition": "Hemoglobin_Test"
+    },
+
+    "Hemoglobin_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "104091002",
+          "display": "Hemoglobin / Hematocrit / Platelet count"
+        }
+      ],
+      "direct_transition": "Hep_B_Surface_Antigen"
+    },
+
+    "Hep_B_Surface_Antigen":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "47758006",
+          "display": "Hepatitis B Surface Antigen Measurement"
+        }
+      ],
+      "direct_transition": "HIV_Test"
+    },
+
+    "HIV_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "31676001",
+          "display": "Human immunodeficiency virus antigen test"
+        }
+      ],
+      "direct_transition": "Chlamydia_Test"
+    },
+
+    "Chlamydia_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "310861008",
+          "display": "Chlamydia antigen test"
+        }
+      ],
+      "direct_transition": "Gonorrhea_Test"
+    },
+
+    "Gonorrhea_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "165829005",
+          "display": "Gonorrhea infection test"
+        }
+      ],
+      "direct_transition": "Syphilis_Test"
+    },
+
+    "Syphilis_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "269828009",
+          "display": "Syphilis infection test"
+        }
+      ],
+      "direct_transition": "Urine_Culture"
+    },
+
+    "Urine_Culture":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "117010004",
+          "display": "Urine culture"
+        }
+      ],
+      "direct_transition": "Pap_Smear"
+    },
+
+    "Pap_Smear":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90226004",
+          "display": "Cytopathology procedure, preparation of smear, genital source"
+        }
+      ],
+      "direct_transition": "Genetic_Screen"
+    },
+
+    "Genetic_Screen":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "473200002",
+          "display": "Genetic screening for disorder"
+        }
+      ],
+      "direct_transition": "Diabetes_Screen"
+    },
+
+    "Diabetes_Screen":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395123002",
+          "display": "Urine screening test for diabetes"
+        }
+      ],
+      "direct_transition": "Hep_C_Test"
+    },
+
+    "Hep_C_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "104375008",
+          "display": "Hepatitis C antibody test"
+        }
+      ],
+      "direct_transition": "Tuberculosis_Test"
+    },
+
+    "Tuberculosis_Test":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "28163009",
+          "display": "Skin test for tuberculosis"
+        }
+      ],
+      "direct_transition": "First_Ultrasonography_First_Trimester"
+    },
+
+    "First_Ultrasonography_First_Trimester":{
+      "type": "Procedure",
+      "target_encounter": "Prenatal_Initial_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "446522006",
+          "display": "Ultrasonography in first trimester"
+        }
+      ],
       "direct_transition": "End_Prenatal_Initial_Visit"
     },
 
@@ -327,19 +523,89 @@
 
     "End_Prenatal_Initial_Visit" : {
       "type" : "EncounterEnd",
-      "direct_transition" : "Week_15"
+      "direct_transition" : "Week_10"
     },
 
-    "Week_15": {
+    "Week_10": {
       "type": "Delay",
       "exact": {
-        "quantity": 5,
+        "quantity": 4,
         "unit": "weeks"
       },
-      "direct_transition": "Week_15_Visit"
+      "direct_transition": "Week_10_Visit"
     },
 
-    "Week_15_Visit": {
+    "Week_10_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "424619006",
+          "display": "Prenatal visit"
+        }
+      ],
+      "direct_transition": "Second_Ultrasonography_First_Trimester"
+    },
+
+    "Second_Ultrasonography_First_Trimester":{
+      "type": "Procedure",
+      "target_encounter": "Week_10_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "446522006",
+          "display": "Ultrasonography in first trimester"
+        }
+      ],
+      "direct_transition": "Second_Diabetes_Screen"
+    },
+
+    "Second_Diabetes_Screen":{
+      "type": "Procedure",
+      "target_encounter": "Week_10_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395123002",
+          "display": "Urine screening test for diabetes"
+        }
+      ],
+      "direct_transition": "Fetal_Aneuploidy_Screen"
+    },
+
+    "Fetal_Aneuploidy_Screen":{
+      "type": "Procedure",
+      "target_encounter": "Week_10_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "443529005",
+          "display": "Screening for chromosomal aneuploidy in prenatal amniotic fluid"
+        }
+      ],
+      "direct_transition": "End_Week_10_Visit"
+    },
+
+    "End_Week_10_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_16"
+    },
+
+    "Week_16": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Week_16_Visit"
+    },
+
+    "Week_16_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Become_Pregnant",
@@ -363,26 +629,54 @@
         },
         {
           "distribution": 0.962,
-          "transition": "End_Week_15_Visit"
+          "transition": "First_Ultrasonography_Second_Trimester"
         }
       ]
     },
 
-    "End_Week_15_Visit" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Week_26"
+    "First_Ultrasonography_Second_Trimester":{
+      "type": "Procedure",
+      "target_encounter": "Week_16_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "446208007",
+          "display": "Ultrasonography in second trimester"
+        }
+      ],
+      "direct_transition": "Week_16_Cervical_Assessment"
     },
 
-    "Week_26": {
+    "Week_16_Cervical_Assessment":{
+      "type": "Procedure",
+      "target_encounter": "Week_16_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "711534004",
+          "display": "Maternal cervical assessment"
+        }
+      ],
+      "direct_transition": "End_Week_16_Visit"
+    },
+
+    "End_Week_16_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_22"
+    },
+
+    "Week_22": {
       "type": "Delay",
       "exact": {
-        "quantity": 11,
+        "quantity": 6,
         "unit": "weeks"
       },
-      "direct_transition": "Week_26_Visit"
+      "direct_transition" : "Week_22_Visit"
     },
 
-    "Week_26_Visit": {
+    "Week_22_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Become_Pregnant",
@@ -393,10 +687,165 @@
           "display": "Prenatal visit"
         }
       ],
-      "direct_transition": "End_Week_26_Visit"
+      "conditional_transition": 
+      [{
+        "condition": {
+          "condition_type": "Attribute",
+          "attribute": "RH_TYPE",
+          "operator": "==",
+          "value": true
+        },
+        "transition": "Antibody_Screen"
+        },
+        {
+        "transition": "Second_Ultrasonography_Second_Trimester"
+        }
+      ]
     },
 
-    "End_Week_26_Visit" : {
+    "Second_Ultrasonography_Second_Trimester":{
+      "type": "Procedure",
+      "target_encounter": "Week_22_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "446208007",
+          "display": "Ultrasonography in second trimester"
+        }
+      ],
+      "direct_transition": "Week_22_Cervical_Assessment"
+    },
+
+    "Week_22_Cervical_Assessment":{
+      "type": "Procedure",
+      "target_encounter": "Week_22_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "711534004",
+          "display": "Maternal cervical assessment"
+        }
+      ],
+      "direct_transition": "End_Week_22_Visit"
+    },
+
+    "Antibody_Screen":{
+      "type": "Procedure",
+      "target_encounter": "Week_22_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "169673001",
+          "display": "Antenatal RhD antibody screening"
+        }
+      ],
+      "direct_transition": "Second_Ultrasonography_Second_Trimester"
+    },
+
+    "End_Week_22_Visit" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Week_28"
+    },
+
+    "Week_28": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Week_28_Visit"
+    },
+
+
+    "Week_28_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "424619006",
+          "display": "Prenatal visit"
+        }
+      ],
+      "conditional_transition": 
+      [{
+        "condition": {
+          "condition_type": "Attribute",
+          "attribute": "RH_TYPE",
+          "operator": "==",
+          "value": true
+        },
+        "transition": "RhoD_Immune_Globulin"
+        },
+        {
+        "transition": "Third_Diabetes_Screen"
+        }
+      ]
+    },
+
+    "Third_Diabetes_Screen":{
+      "type": "Procedure",
+      "target_encounter": "Week_28_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395123002",
+          "display": "Urine screening test for diabetes"
+        }
+      ],
+      "direct_transition": "Second_Hemoglobin_Test"
+    },
+
+    "Second_Hemoglobin_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_28_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "104091002",
+          "display": "Hemoglobin / Hematocrit / Platelet count"
+        }
+      ],
+      "direct_transition": "Tdap_Vaccine"
+    },
+
+    "Tdap_Vaccine":{
+      "type": "Procedure",
+      "target_encounter": "Week_28_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399014008",
+          "display": "Vaccination for diphtheria, pertussis, and tetanus"
+        }
+      ],
+      "direct_transition": "End_Week_28_Visit"
+    },
+
+
+    "RhoD_Immune_Globulin":{
+      "type": "Procedure",
+      "target_encounter": "Week_28_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "51116004",
+          "display": "RhD passive immunization"
+        }
+      ],
+      "direct_transition": "Third_Diabetes_Screen"
+    },
+
+
+    "End_Week_28_Visit" : {
       "type" : "EncounterEnd",
       "direct_transition" : "Week_32"
     },
@@ -404,7 +853,7 @@
     "Week_32": {
       "type": "Delay",
       "exact": {
-        "quantity": 6,
+        "quantity": 4,
         "unit": "weeks"
       },
       "distributed_transition": [
@@ -444,6 +893,20 @@
           "display": "Prenatal visit"
         }
       ],
+      "direct_transition": "First_Nonstress_Test"
+    },
+
+    "First_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_32_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
+        }
+      ],
       "direct_transition": "End_Week_32_Visit"
     },
 
@@ -464,8 +927,12 @@
           "transition": "Pre_Eclampsia_Check"
         },
         {
-          "distribution": 0.92,
+          "distribution": 0.8518,
           "transition": "Week_36_Visit"
+        },
+        {
+        "distribution": 0.0682,
+        "transition": "Premature_Birth"
         }
       ]
     },
@@ -521,6 +988,20 @@
           "display": "Prenatal visit"
         }
       ],
+      "direct_transition": "Week_36_Nonstress_Test"
+    },
+
+    "Week_36_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_36_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
+        }
+      ],
       "direct_transition": "End_Week_36_Visit"
     },
 
@@ -537,21 +1018,14 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.06,
+          "distribution": 0.2476,
           "transition": "Premature_Birth"
         },
         {
-          "distribution": 0.94,
+          "distribution": 0.7524,
           "transition": "Week_38_Visit"
         }
       ]
-    },
-
-    "Premature_Birth": {
-      "type": "SetAttribute",
-      "attribute": "birth_type",
-      "value": "premature",
-      "direct_transition": "Birth"
     },
 
     "Week_38_Visit": {
@@ -565,6 +1039,20 @@
           "display": "Prenatal visit"
         }
       ],
+      "direct_transition": "Week_38_Nonstress_Test"
+    },
+
+    "Week_38_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_38_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
+        }
+      ],
       "direct_transition": "End_Week_38_Visit"
     },
 
@@ -572,6 +1060,7 @@
       "type" : "EncounterEnd",
       "direct_transition" : "Week_39"
     },
+
 
     "Week_39": {
       "type": "Delay",
@@ -581,15 +1070,23 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.15,
-          "transition": "Premature_Birth"
+          "distribution": 0.5872,
+          "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.85,
+          "distribution": 0.4128,
           "transition": "Week_39_Visit"
         }
       ]
     },
+
+    "Premature_Birth": {
+      "type": "SetAttribute",
+      "attribute": "birth_type",
+      "value": "premature",
+      "direct_transition": "Birth"
+    },
+      
 
     "Week_39_Visit": {
       "type": "Encounter",
@@ -602,12 +1099,33 @@
           "display": "Prenatal visit"
         }
       ],
+      "direct_transition": "Week_39_Nonstress_Test"
+    },
+
+    "Week_39_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_39_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
+        }
+      ],
       "direct_transition": "End_Week_39_Visit"
     },
 
     "End_Week_39_Visit" : {
       "type" : "EncounterEnd",
       "direct_transition" : "Week_40"
+    },
+
+    "Normal_Birth": {
+      "type": "SetAttribute",
+      "attribute": "birth_type",
+      "value": "normal",
+      "direct_transition": "Birth"
     },
 
     "Week_40": {
@@ -618,23 +1136,15 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.2,
+          "distribution": 0.5872,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.8,
+          "distribution": 0.4128,
           "transition": "Week_40_Visit"
         }
       ]
     },
-
-    "Normal_Birth": {
-      "type": "SetAttribute",
-      "attribute": "birth_type",
-      "value": "normal",
-      "direct_transition": "Birth"
-    },
-
     "Week_40_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -644,6 +1154,20 @@
           "system": "SNOMED-CT",
           "code": "424619006",
           "display": "Prenatal visit"
+        }
+      ],
+      "direct_transition": "Week_40_Nonstress_Test"
+    },
+
+    "Week_40_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_40_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
         }
       ],
       "direct_transition": "End_Week_40_Visit"
@@ -662,11 +1186,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.5,
+          "distribution": 0.0653,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.5,
+          "distribution": 0.9347,
           "transition": "Week_41_Visit"
         }
       ]
@@ -681,6 +1205,20 @@
           "system": "SNOMED-CT",
           "code": "424619006",
           "display": "Prenatal visit"
+        }
+      ],
+      "direct_transition": "Week_41_Nonstress_Test"
+    },
+
+    "Week_41_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_41_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
         }
       ],
       "direct_transition": "End_Week_41_Visit"
@@ -699,11 +1237,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.7,
+          "distribution": 0.0042,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.3,
+          "distribution": 0.9958,
           "transition": "Week_42_Visit"
         }
       ]
@@ -718,6 +1256,20 @@
           "system": "SNOMED-CT",
           "code": "424619006",
           "display": "Prenatal visit"
+        }
+      ],
+      "direct_transition": "Week_42_Nonstress_Test"
+    },
+
+    "Week_42_Nonstress_Test":{
+      "type": "Procedure",
+      "target_encounter": "Week_42_Visit",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387673001",
+          "display": "Nonstress test"
         }
       ],
       "direct_transition": "End_Week_42_Visit"
@@ -1269,7 +1821,7 @@
 
     "End_Miscarriage_Followup_Encounter" : {
       "type" : "EncounterEnd",
-      "direct_transition" : "Pregnancy_Ends"
+      "direct_transition" : "Miscarriage_Ends"
     },
 
     "Wait_For_Induced_Abortion": {
@@ -1284,6 +1836,20 @@
         "high": 3,
         "unit": "weeks"
       },
+      "direct_transition": "Induced_Abortion_Therapy"
+    },
+
+    "Induced_Abortion_Therapy": {
+      "type": "Procedure",
+      "target_encounter": "Induced_Abortion_Encounter",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "10383002",
+          "display": "Counseling for termination of pregnancy"
+        }
+      ],
       "direct_transition": "Induced_Abortion_Encounter"
     },
 
@@ -1312,12 +1878,26 @@
           "display": "Induced termination of pregnancy"
         }
       ],
+      "direct_transition": "Pregnancy_Termination_Care"
+    },
+
+    "Pregnancy_Termination_Care": {
+      "type": "Procedure",
+      "target_encounter": "Induced_Abortion_Encounter",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "386394001",
+          "display": "Pregnancy termination care"
+        }
+      ],
       "direct_transition": "End_Induced_Abortion_Encounter"
     },
 
     "End_Induced_Abortion_Encounter" : {
       "type" : "EncounterEnd",
-      "direct_transition" : "Pregnancy_Ends"
+      "direct_transition" : "Abortion_Ends"
     },
 
     "Normal_Pregnancy_Completion": {
@@ -1367,12 +1947,47 @@
 
     "End_Birth_Encounter" : {
       "type" : "EncounterEnd",
-      "direct_transition": "Pregnancy_Ends"
+      "direct_transition": "Normal_Pregnancy_Ends"
     },
 
-    "Pregnancy_Ends": {
+    "Normal_Pregnancy_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Become_Pregnant",
+      "direct_transition": "Six_Weeks_After_Birth"
+    },
+
+    "Miscarriage_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "Become_Pregnant",
+      "direct_transition": "Unset_Pregnant_Attribute"
+    },
+
+    "Abortion_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "Become_Pregnant",
+      "direct_transition": "Unset_Pregnant_Attribute"
+    },
+
+    "Six_Weeks_After_Birth": {
+      "type": "Delay",
+      "exact": {
+      "quantity": 6,
+      "unit": "weeks"
+      },
+      "direct_transition": "Postnatal_Visit"
+    },
+
+    "Postnatal_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Become_Pregnant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "169762003",
+          "display": "Postnatal visit"
+        }
+      ],
       "direct_transition": "Unset_Pregnant_Attribute"
     },
 
