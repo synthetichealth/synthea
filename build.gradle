@@ -42,8 +42,17 @@ dependencies {
     // google guava for some data structures
     compile 'com.google.guava:guava:23.0'
 
+	compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
+
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+}
+
+task graphviz(type: JavaExec) {
+	description 'Generate rule visualization'
+	
+	classpath sourceSets.main.runtimeClasspath
+	main = "Graphviz"
 }
 
 // Define the main class for the application
