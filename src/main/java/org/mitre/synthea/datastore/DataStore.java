@@ -5,11 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.modules.CommunityHealthWorker;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.HealthRecord;
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Code;
@@ -19,6 +21,7 @@ import org.mitre.synthea.modules.HealthRecord.Observation;
 import org.mitre.synthea.modules.HealthRecord.Procedure;
 import org.mitre.synthea.modules.HealthRecord.Report;
 import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.modules.Utilities;
 import org.mitre.synthea.world.Provider;
 
 import com.google.common.collect.Table;
@@ -89,6 +92,8 @@ public class DataStore
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)").execute();
 			connection.prepareStatement("CREATE INDEX IF NOT EXISTS CLAIM_ID ON CLAIM(ID);").execute();
 			
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS COVERAGE (person_id varchar, year int, category varchar)").execute();
+
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)").execute();
 
@@ -145,6 +150,24 @@ public class DataStore
 				stmt.setString(2, attr.getKey() );
 				stmt.setString(3, String.valueOf(attr.getValue()) );
 				stmt.addBatch();
+			}
+			stmt.executeBatch();
+
+			// Add coverage to database
+			stmt = connection.prepareStatement("INSERT INTO COVERAGE (person_id, year, category) VALUES (?,?,?);");
+			List<String> coverage = (List<String>) p.attributes.get(HealthInsuranceModule.INSURANCE);
+			long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
+			int birthYear = Utilities.getYear(birthdate);
+			for (int i=0; i < coverage.size(); i++) {
+				String category = coverage.get(i);
+				if(category == null) {
+					break;
+				} else {
+					stmt.setString(1, personID);
+					stmt.setInt(2, (birthYear + i) );
+					stmt.setString(3, category );
+					stmt.addBatch();
+				}
 			}
 			stmt.executeBatch();
 			
@@ -529,6 +552,17 @@ public class DataStore
 						utilizationDetailTable.setInt(4, count);
 						utilizationDetailTable.addBatch();
 					}
+				}
+			}
+
+			String[] encounterTypes = {"encounters-wellness","encounters-ambulatory","encounters-outpatient","encounters-emergency","encounters-inpatient","encounters-postdischarge","encounters-community","encounters"};
+			for(int year = 1900; year <= Utilities.getYear(System.currentTimeMillis()); year++) {
+				for(int t=0; t < encounterTypes.length; t++) {
+					utilizationDetailTable.setString(1, "None");
+					utilizationDetailTable.setInt(2, year);
+					utilizationDetailTable.setString(3, encounterTypes[t]);
+					utilizationDetailTable.setInt(4, 0);
+					utilizationDetailTable.addBatch();
 				}
 			}
 
