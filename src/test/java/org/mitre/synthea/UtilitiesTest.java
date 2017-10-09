@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Date;
 
 import org.junit.Test;
-import org.mitre.synthea.modules.Utilities;
+import org.mitre.synthea.helpers.Utilities;
 
 public class UtilitiesTest {
 

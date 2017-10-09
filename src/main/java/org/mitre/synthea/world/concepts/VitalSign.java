@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.world.concepts;
 
 public enum VitalSign {
 	

@@ -1,4 +1,4 @@
-package org.mitre.synthea.world;
+package org.mitre.synthea.world.geography;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.modules.CommunityHealthWorker;
-import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Person;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.GeoJSONFactory;

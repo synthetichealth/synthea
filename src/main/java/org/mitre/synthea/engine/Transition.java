@@ -1,7 +1,9 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.mitre.synthea.world.agents.Person;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

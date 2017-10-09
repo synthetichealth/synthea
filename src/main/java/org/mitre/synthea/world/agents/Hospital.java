@@ -1,4 +1,4 @@
-package org.mitre.synthea.world;
+package org.mitre.synthea.world.agents;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

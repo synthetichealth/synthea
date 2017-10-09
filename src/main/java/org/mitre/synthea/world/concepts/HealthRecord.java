@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.world.concepts;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.mitre.synthea.world.Costs;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Provider;
 
 import com.google.gson.JsonObject;
 

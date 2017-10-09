@@ -1,10 +1,8 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.helpers;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-
-import org.mitre.synthea.helpers.Config;
 
 import com.google.gson.JsonPrimitive;
 

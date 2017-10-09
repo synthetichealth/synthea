@@ -1,11 +1,9 @@
-package org.mitre.synthea.world;
+package org.mitre.synthea.world.agents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.mitre.synthea.modules.Person;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;

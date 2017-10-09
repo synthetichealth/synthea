@@ -3,7 +3,10 @@ package org.mitre.synthea.modules;
 import java.util.Arrays;
 import java.util.List;
 
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 public class HealthInsuranceModule extends Module 
 {

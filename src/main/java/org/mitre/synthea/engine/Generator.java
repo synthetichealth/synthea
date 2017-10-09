@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,10 +18,15 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.Costs;
-import org.mitre.synthea.world.Demographics;
-import org.mitre.synthea.world.Hospital;
-import org.mitre.synthea.world.Location;
+import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Hospital;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Costs;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Demographics;
+import org.mitre.synthea.world.geography.Location;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.

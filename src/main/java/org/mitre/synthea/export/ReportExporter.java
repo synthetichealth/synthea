@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.modules.Generator;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;

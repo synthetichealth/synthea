@@ -20,8 +20,8 @@ import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.Organization;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.Hospital;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.world.agents.Hospital;
+import org.mitre.synthea.world.agents.Provider;
 
 import ca.uhn.fhir.context.FhirContext;
 

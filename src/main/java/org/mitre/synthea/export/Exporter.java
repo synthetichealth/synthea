@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.modules.Generator;
-import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.world.agents.Person;
 
 public abstract class Exporter 
 {

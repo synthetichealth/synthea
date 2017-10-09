@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import org.junit.Test;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 
 import static org.junit.Assert.*;

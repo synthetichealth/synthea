@@ -1,8 +1,6 @@
-package org.mitre.synthea.world;
+package org.mitre.synthea.world.concepts;
 
-import org.mitre.synthea.helpers.GeographicalPracticeCostIndex;
-import org.mitre.synthea.helpers.RelativeValueUnit;
-import org.mitre.synthea.modules.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 public class Costs {
 

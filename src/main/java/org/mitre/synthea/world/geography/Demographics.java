@@ -1,4 +1,4 @@
-package org.mitre.synthea.world;
+package org.mitre.synthea.world.geography;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
-import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.world.agents.Person;
 
 import com.google.gson.Gson;
 

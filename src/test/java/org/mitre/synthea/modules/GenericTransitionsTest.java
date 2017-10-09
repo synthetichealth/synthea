@@ -10,6 +10,9 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
+import org.mitre.synthea.world.agents.Person;
 
 public class GenericTransitionsTest {
 

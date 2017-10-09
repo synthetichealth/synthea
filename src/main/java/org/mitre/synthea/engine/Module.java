@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.engine;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
+
+import org.mitre.synthea.modules.CardiovascularDiseaseModule;
+import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.world.agents.Person;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
