@@ -44,17 +44,17 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
-import org.mitre.synthea.modules.HealthRecord;
-import org.mitre.synthea.modules.HealthRecord.CarePlan;
-import org.mitre.synthea.modules.HealthRecord.Claim;
-import org.mitre.synthea.modules.HealthRecord.ClaimItem;
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.Medication;
-import org.mitre.synthea.modules.HealthRecord.Observation;
-import org.mitre.synthea.modules.HealthRecord.Procedure;
-import org.mitre.synthea.modules.HealthRecord.Report;
-import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Claim;
+import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import ca.uhn.fhir.context.FhirContext;
 

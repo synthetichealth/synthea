@@ -2,10 +2,14 @@ package org.mitre.synthea.modules;
 
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.EncounterType;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.engine.Event;
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public final class EncounterModule extends Module {
 	

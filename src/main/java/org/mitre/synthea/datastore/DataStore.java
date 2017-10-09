@@ -10,19 +10,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mitre.synthea.modules.CommunityHealthWorker;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.modules.HealthRecord;
-import org.mitre.synthea.modules.HealthRecord.CarePlan;
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.Medication;
-import org.mitre.synthea.modules.HealthRecord.Observation;
-import org.mitre.synthea.modules.HealthRecord.Procedure;
-import org.mitre.synthea.modules.HealthRecord.Report;
-import org.mitre.synthea.modules.Person;
-import org.mitre.synthea.modules.Utilities;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import com.google.common.collect.Table;
 

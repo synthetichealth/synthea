@@ -1,4 +1,4 @@
-package org.mitre.synthea.helpers;
+package org.mitre.synthea.world.concepts;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

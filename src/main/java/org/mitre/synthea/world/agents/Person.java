@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.world.agents;
 
 
 import java.io.Serializable;
@@ -9,9 +9,12 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.world.Hospital;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.engine.Event;
+import org.mitre.synthea.engine.EventList;
+import org.mitre.synthea.engine.State;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 import com.vividsolutions.jts.geom.Point;
 

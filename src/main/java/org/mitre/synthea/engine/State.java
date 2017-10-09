@@ -1,19 +1,25 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.engine;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mitre.synthea.modules.HealthRecord.CarePlan;
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.EncounterType;
-import org.mitre.synthea.modules.HealthRecord.Entry;
-import org.mitre.synthea.modules.HealthRecord.Medication;
-import org.mitre.synthea.modules.HealthRecord.Observation;
-import org.mitre.synthea.modules.HealthRecord.Procedure;
-import org.mitre.synthea.modules.HealthRecord.Report;
-import org.mitre.synthea.modules.Transition.TransitionType;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.engine.Transition.TransitionType;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import com.google.gson.JsonObject;
 

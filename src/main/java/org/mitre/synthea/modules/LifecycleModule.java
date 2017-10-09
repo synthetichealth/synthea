@@ -9,9 +9,15 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.engine.Event;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.world.Location;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.geography.Location;
 
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;

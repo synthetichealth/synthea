@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.mitre.synthea.modules.Module;
+import org.mitre.synthea.engine.Module;
 
 public abstract class TestHelper {
 
