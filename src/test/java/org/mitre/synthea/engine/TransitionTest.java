@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,17 +10,15 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.agents.Person;
 
-public class GenericTransitionsTest {
+public class TransitionTest {
 
 	private Person person;
 	
 	@Before public void setup()
 	{
-		person = new Person(56L); // seed chosen specifically for testDistributedTransition()
+		person = new Person(19L); // seed chosen specifically for testDistributedTransition()
 	} 
 	
 	@Test public void testDistributedTransition() throws IOException {
@@ -40,6 +38,10 @@ public class GenericTransitionsTest {
 			int count = counts.get(finalStateName);
 			counts.put(finalStateName, count + 1);
 		}
+
+		assertEquals(15, counts.get("Terminal1").intValue());
+		assertEquals(55, counts.get("Terminal2").intValue());
+		assertEquals(30, counts.get("Terminal3").intValue());
 	}
 	
 	@Test public void testDistributedTransitionWithAttributes() throws IOException {

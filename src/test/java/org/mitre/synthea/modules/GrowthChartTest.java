@@ -1,7 +1,8 @@
 package org.mitre.synthea.modules;
 
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public class GrowthChartTest {
     @Test public void testGrowthChartLookupMin() throws Exception {
