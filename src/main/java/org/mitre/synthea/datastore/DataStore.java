@@ -63,9 +63,11 @@ public class DataStore
 			// in the long term I want more standardized schemas
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint, date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)").execute();
-			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_ID ON PERSON(ID);").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_RACE ON PERSON(RACE);").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_GENDER ON PERSON(GENDER);").execute();
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS ATTRIBUTE_KEY ON ATTRIBUTE(PERSON_ID, NAME);").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)").execute();
 			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PROVIDER_ID ON PROVIDER(ID);").execute();
@@ -76,7 +78,8 @@ public class DataStore
 			connection.prepareStatement("CREATE INDEX IF NOT EXISTS ENCOUNTER_ID ON ENCOUNTER(ID);").execute();
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS CONDITION_PERSON ON CONDITION(PERSON_ID, TYPE);").execute();
+			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
