@@ -9,10 +9,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.helpers.SimpleCSV;
+
+
 
 public abstract class Exporter 
 {
@@ -75,7 +77,14 @@ public abstract class Exporter
 		if (Boolean.parseBoolean(Config.get("exporter.cost_access_outcomes_report")))
 		{
 			ReportExporter.export(generator);
-		}	
+		}
+		
+		try{
+			SimpleCSV.export(generator);	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static File getOutputFolder(String folderName, Person person)

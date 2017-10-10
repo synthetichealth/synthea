@@ -1,8 +1,12 @@
 package org.mitre.synthea.helpers;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.datastore.DataStore;
+import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.Exporter;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -70,16 +75,16 @@ public class SimpleCSV
 		return mapper.writer( schemaBuilder.build() ).writeValueAsString(data);
 	}
 
-	public static void main(String[] args) throws Exception
+	public static void export(Generator generator) throws Exception
     {
-        DataStore db = new DataStore(true); 
-        File source = new File("/Users/Seely/Desktop/prevalence_template(1).csv"); //for Mac
-        //File source = new File("C:\\Users\\dehall\\synthea\\resources\\prevalence_template.csv"); //for Windows
-        String csvData = Files.readAllLines(source.toPath()).stream().collect(Collectors.joining("\n"));
+		InputStream stream = SimpleCSV.class.getResourceAsStream("/prevalence_template.csv");
+		//read all text into a string
+		String csvData = new BufferedReader(new InputStreamReader(stream)).lines()
+				.parallel().collect(Collectors.joining("\n"));
          
         List<LinkedHashMap<String,String>> data = SimpleCSV.parse(csvData);
    	
-        try (Connection connection = db.getConnection()) 
+        try (Connection connection = generator.database.getConnection()) 
   	  { 
           for (LinkedHashMap<String,String> line : data)
           {
@@ -113,9 +118,11 @@ public class SimpleCSV
 
           String newCsvData = SimpleCSV.unparse(data);
           
-          File outFile = new File("/Users/Seely/Desktop/prev_data"+System.currentTimeMillis()+".csv"); //for Mac 
-          //File outFile = new File("C:\\Users\\dehall\\Desktop\\prev_data"+System.currentTimeMillis()+".csv"); //for Windows 
-          Files.write(outFile.toPath(), Collections.singleton(newCsvData), StandardOpenOption.CREATE_NEW);
+          File outDirectory = Exporter.getOutputFolder("prevalence", null);
+			
+			Path outFilePath = outDirectory.toPath().resolve("prev_data"+System.currentTimeMillis()+".csv");
+          
+          Files.write(outFilePath, Collections.singleton(newCsvData), StandardOpenOption.CREATE_NEW);
           
     }
 	
