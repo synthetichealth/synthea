@@ -72,8 +72,8 @@ public class SimpleCSV
 
 	public static void main(String[] args) throws Exception
     {
-        DataStore db = new DataStore(true);  
-        File source = new File("/Users/Seely/Desktop/prevalence_template.csv"); //for Mac
+        DataStore db = new DataStore(true); 
+        File source = new File("/Users/Seely/Desktop/prevalence_template(1).csv"); //for Mac
         //File source = new File("C:\\Users\\dehall\\synthea\\resources\\prevalence_template.csv"); //for Windows
         String csvData = Files.readAllLines(source.toPath()).stream().collect(Collectors.joining("\n"));
          
@@ -209,8 +209,6 @@ public class SimpleCSV
         			  sb.append("AND (a.NAME = 'AGE' AND CAST(a.VALUE AS INT) > 65)\n");
         		  }
 
-        		 
-        		  
         		PreparedStatement stmt = connection.prepareStatement(sb.toString());
         	  	
         	  	int i = 1;
@@ -237,8 +235,7 @@ public class SimpleCSV
      
      public static void completeSyntheaFields(Connection connection, LinkedHashMap<String,String> line) throws Exception
      {
-    	 
-	    	 
+
 	    	 if ((line.get("SYNTHEA OCCURRENCES").isEmpty()) || (line.get("SYNTHEA POPULATION").isEmpty()))
 	    	 {
 	    		 line.put("SYNTHEA PREVALENCE RATE", (null));
