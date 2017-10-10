@@ -99,13 +99,13 @@ public class Utilities {
 		case "<=":
 		  return lhs <= rhs;
 		case "==":
-		  return lhs == rhs;
+		  return lhs.doubleValue() == rhs.doubleValue();
 		case ">=":
 		  return lhs >= rhs;
 		case ">":
 		  return lhs > rhs;
 		case "!=":
-		  return lhs != rhs;
+		  return lhs.doubleValue() != rhs.doubleValue();
 		case "is nil":
 		  return lhs == null;
 		case "is not nil":

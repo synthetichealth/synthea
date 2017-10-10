@@ -2,6 +2,12 @@ package org.mitre.synthea.world.agents;
 
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +19,8 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -71,25 +77,28 @@ public class Person implements Serializable
 	public double rand(double low, double high) {
 		return (low + ((high - low) * random.nextDouble()));
 	}
-	
-	public long ageInMilliseconds(long time) {
-		long age = 0;
-		if(attributes.containsKey(BIRTHDATE)) {
-			age = time - (long)attributes.get(BIRTHDATE);
+
+	public Period age(long time)
+	{
+		Period age = Period.ZERO;
+		
+		if(attributes.containsKey(BIRTHDATE)) 
+		{
+			LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate birthdate = Instant.ofEpochMilli((long)attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault()).toLocalDate();
+			age = Period.between(birthdate, now);
 		}
 		return age;
 	}
 	
 	public int ageInMonths(long time)
 	{
-		// TODO - would prefer something more robust for these
-		long age = ageInMilliseconds(time);
-		return (int) (TimeUnit.MILLISECONDS.toDays(age) / (365.25 / 12));
+		return (int) age(time).toTotalMonths();
 	}
 	
-	public int ageInYears(long time) {
-		long age = ageInMilliseconds(time);
-		return (int) (TimeUnit.MILLISECONDS.toDays(age) / 365.25);
+	public int ageInYears(long time) 
+	{
+		return age(time).getYears();
 	}
 	
 	public boolean alive(long time) {

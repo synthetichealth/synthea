@@ -74,11 +74,24 @@ public class Logic {
 			String gender = definition.get("gender").getAsString();
 			return gender.equals(person.attributes.get(Person.GENDER));
 		case AGE:
-			long age = person.ageInMilliseconds(time);
+			long age;
 			String operator = definition.get("operator").getAsString();
 			long quantity = definition.get("quantity").getAsLong();
 			String units = definition.get("unit").getAsString();
-			quantity = Utilities.convertTime(units, quantity);
+			
+			switch (units)
+			{
+			case "years":
+				age = person.ageInYears(time);
+				break;
+			case "months":
+				age = person.ageInMonths(time);
+				break;
+			default:
+				// TODO - add more unit types if we determine they are necessary
+				throw new UnsupportedOperationException("Units '" + units + "' not currently supported in Age logic.");
+			}
+
 			return Utilities.compare((double)age, (double)quantity, operator);
 		case DATE:
 			operator = definition.get("operator").getAsString();
@@ -107,6 +120,13 @@ public class Logic {
 						observation = last;
 						break;
 					}
+				}
+			}  else if(definition.has("referenced_by_attribute")) {
+				String attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					observation = (Observation) person.attributes.get(attribute);
+				} else {
+					return false;
 				}
 			}
 			if(definition.has("value")) {
