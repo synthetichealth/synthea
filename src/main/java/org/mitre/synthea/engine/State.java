@@ -1,5 +1,8 @@
 package org.mitre.synthea.engine;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +42,13 @@ public class State {
 	public String module;
 	public String name;
 	public StateType type;
-	public long entered;
-	public long exited;
+	public Long entered;
+	public Long exited;
 	public long next;
 	private List<Transition> transitions;
 	private JsonObject definition;
 	
-	private State() { /* empty */ }
+	protected State() { /* empty */ }
 	public State(String module, String name, JsonObject definition) {
 		this.module = module;
 		this.name = name;
@@ -95,7 +98,7 @@ public class State {
 	 */
 	public boolean process(Person person, long time) {
 		// System.out.format("State: %s\n", this.name);
-		if(this.entered == 0) {
+		if(this.entered == null) {
 			this.entered = time;
 		}
 		switch(type) {
@@ -106,7 +109,7 @@ public class State {
 			return true;
 		case CALLSUBMODULE:
 			// e.g. "submodule": "medications/otc_antihistamine"
-			if(this.exited == 0) {
+			if(this.exited == null) {
 				String submodulePath = definition.get("submodule").getAsString();
 				Module submodule = Module.getModuleByPath(submodulePath);
 				submodule.process(person, time);
@@ -414,7 +417,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name.equals(reason)) {
+						if(reason.equals(entry.name)) {
 							medication.reasons.add(entry.type);
 						}
 					}
@@ -485,7 +488,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name.equals(reason)) {
+						if(reason.equals(entry.name)) {
 							careplan.reasons.add(entry.type);
 						}
 					}
@@ -533,7 +536,7 @@ public class State {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
-						if(entry.name.equals(reason)) {
+						if(reason.equals(entry.name)) {
 							procedure.reasons.add(entry.type);
 						}
 					}

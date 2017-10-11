@@ -197,18 +197,20 @@ public class Logic {
 			return false;
 		case PRIOR_STATE:
 			String priorStateName = definition.get("name").getAsString();
+			String priorStateSince = null;
+			Long sinceTime = null;
 			if(definition.has("since")) {
-				String priorStateSince = definition.get("since").getAsString();
-				return person.hadPriorStateSince(priorStateName, priorStateSince);
-			} else if(definition.has("within")) {
+				priorStateSince = definition.get("since").getAsString();
+			} 
+			if(definition.has("within")) {
 				units = definition.get("within").getAsJsonObject().get("unit").getAsString();
 				quantity = definition.get("within").getAsJsonObject().get("quantity").getAsLong();
 				long window = Utilities.convertTime(units, quantity);
-				long sinceTime = time - window;
-				return person.hadPriorStateSince(priorStateName, sinceTime);
-			} else {
-				return person.hadPriorState(priorStateName);
+				sinceTime = time - window;
 			}
+				
+			return person.hadPriorState(priorStateName, priorStateSince, sinceTime);
+			
 		case ACTIVE_CONDITION:
 			if(definition.has("codes")) {
 				for(JsonElement item : definition.get("codes").getAsJsonArray()) {

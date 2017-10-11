@@ -166,43 +166,28 @@ public class Person implements Serializable
 		symptoms.clear();
 	}
 
-	public boolean hadPriorState(String name) {
-		if(history == null) {
-			return false;
-		}
-		for(State state : history) {
-			if(state.name == name) {
-				return true;
-			}
-		}
-		return false;
+	public boolean hadPriorState(String name)
+	{
+		return hadPriorState(name, null, null);
 	}
-
-	public boolean hadPriorStateSince(String priorState, long time) {
+	
+	public boolean hadPriorState(String name, String since, Long within) {
 		if(history == null) {
 			return false;
 		}
 		for(State state : history) {
-			if(state.name.equals(priorState)) {
-				return true;
-			} else if(state.exited > 0 && state.exited <= time) {
-				// break out when we reach the desired time
-				return false;
-			}
-		}
-		return false;
-	}
-
-	public boolean hadPriorStateSince(String priorState, String sinceState) {
-		if(history == null) {
-			return false;
-		}
-		for(State state : history) {
-			if(state.name.equals(priorState)) {
-				return true;
-			} else if(state.name.equals(sinceState)) {
-				return false;
-			}
+            if(within != null && state.exited != null && state.exited <= within)
+            {
+            	return false;
+            }
+            if (since != null && state.name.equals(since))
+            {
+            	return false;
+            }
+            if (state.name.equals(name))
+            {
+            	return true;
+            }
 		}
 		return false;
 	}
