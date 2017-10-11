@@ -12,12 +12,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -243,7 +247,7 @@ public class LogicTest {
 		assertTrue(doTest("diabetesConditionTest"));
 		assertFalse(doTest("alzheimersConditionTest"));
 
-		time += 10 * 365.25 * 12 * 60 * 60;
+		time += Utilities.convertTime("years", 10);
 
 		person.record.conditionEnd(time, diabetesCode.code);
 		assertFalse(doTest("diabetesConditionTest"));
@@ -256,6 +260,36 @@ public class LogicTest {
 		person.attributes.put("Alzheimer's Variant", cond);
 
 		assertTrue(doTest("alzheimersConditionTest"));
+	}
+
+	@Test
+	public void test_careplan_condition() {
+
+		HealthRecord.Code diabetesCode = new HealthRecord.Code("SNOMED-CT",
+				"698360004", "Diabetes self management plan");
+
+		person.record = new HealthRecord();
+		assertFalse(doTest("diabetesCarePlanTest"));
+		assertFalse(doTest("anginaCarePlanTest"));
+
+		CarePlan dcp = person.record.careplanStart(time, diabetesCode.code);
+		dcp.codes.add(diabetesCode);
+		assertTrue(doTest("diabetesCarePlanTest"));
+		assertFalse(doTest("anginaCarePlanTest"));
+
+		time += Utilities.convertTime("years", 10);
+
+		person.record.careplanEnd(time, diabetesCode.code,
+				"diabetes well controlled");
+		assertFalse(doTest("diabetesCarePlanTest"));
+
+		HealthRecord.Code anginaCode = new HealthRecord.Code("SNOMED-CT",
+				"698360004", "Diabetes self management plan");
+
+		CarePlan acp = person.record.careplanStart(time, anginaCode.code);
+		acp.codes.add(anginaCode);
+		person.attributes.put("Angina_CarePlan", acp);
+		assertTrue(doTest("anginaCarePlanTest"));
 	}
 
 	@Test
@@ -276,6 +310,53 @@ public class LogicTest {
 		assertTrue(doTest("sesLowTest"));
 	}
 
+	  @Test public void test_prior_state() {
+		person.history = new LinkedList<>();
+	    assertFalse(doTest("priorStateDoctorVisitTest"));
+	    assertFalse(doTest("priorStateCarePlanSinceDoctorVisitTest"));
+	    assertFalse(doTest("priorStateDoctorVisitWithin3YearsTest"));
+	    assertFalse(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
+
+	    State state = new State();
+	    state.name = "CarePlan";
+	    state.entered = state.exited = time;
+	    person.history.add(0, state);
+	    assertFalse(doTest("priorStateDoctorVisitTest"));
+	    assertTrue(doTest("priorStateCarePlanSinceDoctorVisitTest"));
+	    assertFalse(doTest("priorStateDoctorVisitWithin3YearsTest"));
+	    assertTrue(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
+
+	    state = new State();
+	    state.name = "DoctorVisit";
+	    state.entered = state.exited = time;
+	    person.history.add(0, state);
+	    assertTrue(doTest("priorStateDoctorVisitTest"));
+	    assertFalse(doTest("priorStateCarePlanSinceDoctorVisitTest"));
+	    assertTrue(doTest("priorStateDoctorVisitWithin3YearsTest"));
+	    assertFalse(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
+
+		time += Utilities.convertTime("years", 2);
+
+	    state = new State();
+	    state.name = "CarePlan";
+	    state.entered = state.exited = time;
+	    person.history.add(0, state);
+	    assertTrue(doTest("priorStateDoctorVisitTest"));
+	    assertTrue(doTest("priorStateCarePlanSinceDoctorVisitTest"));
+	    assertTrue(doTest("priorStateDoctorVisitWithin3YearsTest"));
+	    assertTrue(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
+
+
+		time += Utilities.convertTime("years", 5);
+
+	    assertTrue(doTest("priorStateDoctorVisitTest"));
+	    assertTrue(doTest("priorStateCarePlanSinceDoctorVisitTest"));
+	    assertFalse(doTest("priorStateDoctorVisitWithin3YearsTest"));
+	    assertFalse(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
+	  }
+
+
+	
 	@Test
 	public void test_and_conditions() {
 		assertTrue(doTest("andAllTrueTest"));
