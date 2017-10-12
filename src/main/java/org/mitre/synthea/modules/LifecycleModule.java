@@ -104,7 +104,7 @@ public final class LifecycleModule extends Module
 		attributes.put(AGE, 0);
 		attributes.put(AGE_MONTHS, 0);
 		boolean isRHNeg = person.rand() < 0.15;
-		attributes.put("RH_TYPE", isRHNeg);
+		attributes.put("RH_NEG", isRHNeg);
 		
 		double aherence_baseline = Double.parseDouble( Config.get("lifecycle.adherence.baseline", ".05"));
 		person.attributes.put(ADHERENCE_PROBABILITY, aherence_baseline);

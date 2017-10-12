@@ -685,6 +685,9 @@
       "type": "Procedure",
       "target_encounter": "Week_12_Visit",
       "reason": "Become_Pregnant",
+      "remarks": [
+        "This is just one option for genetic screening, many options exist but it is unreasonable to represent all options."
+      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -936,7 +939,7 @@
       [{
         "condition": {
           "condition_type": "Attribute",
-          "attribute": "RH_TYPE",
+          "attribute": "RH_NEG",
           "operator": "==",
           "value": true
         },
@@ -1261,11 +1264,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.2476,
-          "transition": "Premature_Birth"
+          "distribution": 0.25,
+          "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.7524,
+          "distribution": 0.75,
           "transition": "Week_38_Visit"
         }
       ]
@@ -1327,11 +1330,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.5872,
+          "distribution": 0.6,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.4128,
+          "distribution": 0.4,
           "transition": "Week_39_Visit"
         }
       ]
@@ -1407,11 +1410,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.817,
+          "distribution": 0.7,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.183,
+          "distribution": 0.3,
           "transition": "Week_40_Visit"
         }
       ]
@@ -1471,11 +1474,11 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.9347,
+          "distribution": 0.9,
           "transition": "Normal_Birth"
         },
         {
-          "distribution": 0.0653,
+          "distribution": 0.1,
           "transition": "Week_41_Visit"
         }
       ]
@@ -2082,7 +2085,7 @@
       [{
         "condition": {
           "condition_type": "Attribute",
-          "attribute": "RH_TYPE",
+          "attribute": "RH_NEG",
           "operator": "==",
           "value": true
         },
@@ -2234,7 +2237,7 @@
       [{
         "condition": {
           "condition_type": "Attribute",
-          "attribute": "RH_TYPE",
+          "attribute": "RH_NEG",
           "operator": "==",
           "value": true
         },
@@ -2399,7 +2402,7 @@
       [{
         "condition": {
           "condition_type": "Attribute",
-          "attribute": "RH_TYPE",
+          "attribute": "RH_NEG",
           "operator": "==",
           "value": true
         },
