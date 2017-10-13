@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import org.junit.Test;
+import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 
@@ -9,7 +10,7 @@ import static org.junit.Assert.*;
 public class GeneratorTest {
     @Test public void testGeneratorCreatesPeople() throws Exception {
     	int numberOfPeople = 1;
-    	Config.set("generate.database_type", "none"); // ensure we don't write to a file-based DB
+    	TestHelper.exportOff();
         Generator generator = new Generator(numberOfPeople);
         generator.run();
         assertEquals(numberOfPeople, generator.stats.get("alive").longValue());

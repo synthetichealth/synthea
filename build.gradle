@@ -28,7 +28,10 @@ dependencies {
 
     compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
     compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
+	compile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
+	compile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 
+	compile 'org.freemarker:freemarker:2.3.26-incubating'
 
     // JTS for location processing
     compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'

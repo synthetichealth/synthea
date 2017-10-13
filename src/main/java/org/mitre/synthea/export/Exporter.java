@@ -31,8 +31,7 @@ public abstract class Exporter
 			String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
 			
 			File outDirectory = getOutputFolder("fhir", person);
-			
-			Path outFilePath = outDirectory.toPath().resolve(filename(person));
+			Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
 			
 			try 
 			{
@@ -42,6 +41,21 @@ public abstract class Exporter
 				e.printStackTrace();
 			}
 		}
+		if (Boolean.parseBoolean(Config.get("exporter.ccda.export")))
+		{
+			String ccdaXml = CCDAExporter.export(person, stopTime);
+			
+			File outDirectory = getOutputFolder("ccda", person);
+			Path outFilePath = outDirectory.toPath().resolve(filename(person, "xml"));
+			
+			try 
+			{
+				Files.write(outFilePath, Collections.singleton(ccdaXml), StandardOpenOption.CREATE_NEW);
+			} catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}		
 	}
 	
 	/**
@@ -86,15 +100,15 @@ public abstract class Exporter
 		return f;
 	}
 	
-	public static String filename(Person person)
+	public static String filename(Person person, String extension)
 	{
 		if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames")))
 		{
-			return person.attributes.get(Person.ID) + ".json";
+			return person.attributes.get(Person.ID) + "." + extension;
 		} else
 		{
 			// ensure unique filenames for now
-			return person.attributes.get(Person.NAME) + "_" + person.attributes.get(Person.ID) + ".json";
+			return person.attributes.get(Person.NAME) + "_" + person.attributes.get(Person.ID) + "." + extension;
 		}
 		
 	}
