@@ -28,9 +28,8 @@ dependencies {
 
     compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
     compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
-	compile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
-	compile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 
+	// C-CDA export uses Apache FreeMarker templates
 	compile 'org.freemarker:freemarker:2.3.26-incubating'
 
     // JTS for location processing
@@ -49,6 +48,8 @@ dependencies {
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+    testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
+    testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 }
 
 task graphviz(type: JavaExec) {
@@ -56,6 +57,10 @@ task graphviz(type: JavaExec) {
 	
 	classpath sourceSets.main.runtimeClasspath
 	main = "Graphviz"
+}
+
+task cleanOutput {
+    delete fileTree(dir: 'output' , include: '**/*')
 }
 
 // Define the main class for the application

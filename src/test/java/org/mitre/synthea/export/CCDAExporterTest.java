@@ -16,6 +16,10 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * Uses Model Driven Health Tools (MDHT) to validate exported CCDA R2.1.
+ * https://github.com/mdht/mdht-models
+ */
 public class CCDAExporterTest {
     @Test public void testCCDAExport() throws Exception
     {

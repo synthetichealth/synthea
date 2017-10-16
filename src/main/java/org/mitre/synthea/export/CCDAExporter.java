@@ -17,8 +17,7 @@ import java.util.UUID;
 
 
 /**
- * Uses Model Driven Health Tools (MDHT) to export CCDA R2.1.
- * https://github.com/mdht/mdht-models
+ * Export C-CDA R2.1 files using Apache FreeMarker templates.
  */
 public class CCDAExporter {
 	
@@ -62,7 +61,9 @@ public class CCDAExporter {
 	 * @throws TemplateNotFoundException 
 	 */
 	public static String export(Person person, long time) {
-		// create a super encounter...
+		// create a super encounter... this makes it easier to access
+		// all the Allergies (for example) in the export templates,
+		// instead of having to iterate through all the encounters.
 		Encounter superEncounter = person.record.new Encounter(time, "super");
 		for (Encounter encounter : person.record.encounters) {
 			if (encounter.start <= time) {
@@ -78,6 +79,8 @@ public class CCDAExporter {
 				break;
 			}
 		}
+		// The export templates fill in the record by accessing the attributes 
+		// of the Person, so we add a few attributes just for the purposes of export.
 		person.attributes.put("UUID", UUID_GEN);
 		person.attributes.put("ehr_encounters", person.record.encounters);
 		person.attributes.put("ehr_observations", superEncounter.observations);
