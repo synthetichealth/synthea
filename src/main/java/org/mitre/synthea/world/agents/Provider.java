@@ -108,7 +108,7 @@ public class Provider {
 		increment(year, PRESCRIPTIONS);
 	}
 	
-	private void increment(Integer year, String key)
+	private synchronized void increment(Integer year, String key)
 	{
 		if (!utilization.contains(year, key))
 		{
