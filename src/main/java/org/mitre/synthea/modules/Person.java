@@ -23,6 +23,7 @@ public class Person implements Serializable
 	public static final String NAME = "name";
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";
+	public static final String TELECOM = "telecom";
 	public static final String ID = "id";
 	public static final String ADDRESS = "address";
 	public static final String CITY = "city";
@@ -50,7 +51,7 @@ public class Person implements Serializable
 	public HealthRecord record;
 	/** history of the currently active module */
 	public List<State> history;
-	
+
 	public Person(long seed) {
 		this.seed = seed; // keep track of seed so it can be exported later
 		random = new Random(seed);
@@ -64,11 +65,11 @@ public class Person implements Serializable
 	public double rand() {
 		return random.nextDouble();
 	}
-	
+
 	public double rand(double low, double high) {
 		return (low + ((high - low) * random.nextDouble()));
 	}
-	
+
 	public long ageInMilliseconds(long time) {
 		long age = 0;
 		if(attributes.containsKey(BIRTHDATE)) {
@@ -76,30 +77,30 @@ public class Person implements Serializable
 		}
 		return age;
 	}
-	
+
 	public int ageInMonths(long time)
 	{
 		// TODO - would prefer something more robust for these
 		long age = ageInMilliseconds(time);
 		return (int) (TimeUnit.MILLISECONDS.toDays(age) / (365.25 / 12));
 	}
-	
+
 	public int ageInYears(long time) {
 		long age = ageInMilliseconds(time);
 		return (int) (TimeUnit.MILLISECONDS.toDays(age) / 365.25);
 	}
-	
+
 	public boolean alive(long time) {
 		return (events.event(Event.BIRTH) != null && events.before(time, Event.DEATH).isEmpty());
 	}
-	
+
 	public void setSymptom(String cause, String type, int value) {
 		if(!symptoms.containsKey(type)) {
 			symptoms.put(type, new ConcurrentHashMap<String,Integer>());
 		}
 		symptoms.get(type).put(cause, value);
 	}
-	
+
 	public int getSymptom(String type) {
 		int max = 0;
 		if(symptoms.containsKey(type)) {
@@ -112,17 +113,17 @@ public class Person implements Serializable
 		}
 		return max;
 	}
-	
+
 	public Double getVitalSign(VitalSign vitalSign)
 	{
 		return vitalSigns.get(vitalSign);
 	}
-	
+
 	public void setVitalSign(VitalSign vitalSign, double value)
 	{
 		vitalSigns.put(vitalSign, value);
 	}
-	
+
 	public void recordDeath(long time, Code cause, String ruleName)
 	{
 		events.create(time, Event.DEATH, ruleName, true);
@@ -132,20 +133,20 @@ public class Person implements Serializable
 			record.death = time;
 		} else
 		{
-			// it's possible for a person to have a death date in the future 
+			// it's possible for a person to have a death date in the future
 			// (ex, a condition with some life expectancy sets a future death date)
 			// but then the patient dies sooner because of something else
 			record.death = Math.min(record.death, time);
 		}
 	}
-	
+
 	/**
 	 * @return total : sum of all the symptom severities. This number drives care-seeking behaviors.
 	 */
 	public int symptomTotal() {
 		int total = 0;
 		for(String type : symptoms.keySet()) {
-			total += getSymptom(type);			
+			total += getSymptom(type);
 		}
 		return total;
 	}
@@ -194,7 +195,7 @@ public class Person implements Serializable
 		}
 		return false;
 	}
-	
+
 	public void chwEncounter(long time, String deploymentType)
 	{
 		CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(this, time, deploymentType);
@@ -203,42 +204,42 @@ public class Person implements Serializable
 			chw.performEncounter(this, time, deploymentType);
 		}
 	}
-	
+
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";
 	public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
 	public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
 	public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
-	
-	
+
+
 	public Provider getAmbulatoryProvider(){
 		return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
 	}
-	
+
 	public void setAmbulatoryProvider(){
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestAmbulatory(personLocation);
 		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
 	}
-	
+
 	public void setAmbulatoryProvider(Provider provider){
 		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
 	}
-	
+
 	public Provider getInpatientProvider(){
 		return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
 	}
-	
+
 	public void setInpatientProvider(){
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestInpatient(personLocation);
 		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
 	}
-	
+
 	public void setInpatientProvider(Provider provider){
 		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
 	}
-	
+
 	public Provider getEmergencyProvider(){
 		return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
 	}
@@ -248,7 +249,7 @@ public class Person implements Serializable
 		Provider provider = Hospital.findClosestEmergency(personLocation);
 		attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
 	}
-	
+
 	public void setEmergencyProvider(Provider provider){
 		if(provider == null){
 			Point personLocation = (Point) attributes.get(Person.COORDINATE);
@@ -256,7 +257,7 @@ public class Person implements Serializable
 		}
 		attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
 	}
-	
+
 	public void addCurrentProvider(String context, Provider provider){
 		if(attributes.containsKey(CURRENTPROVIDER)){
 			Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
@@ -268,12 +269,12 @@ public class Person implements Serializable
 			attributes.put(CURRENTPROVIDER, currentProviders);
 		}
 	}
-	
+
 	public void removeCurrentProvider(String module){
 		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
 		currentProviders.remove(module);
 	}
-	
+
 	public Provider getCurrentProvider(String module){
 		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
 		return currentProviders.get(module);

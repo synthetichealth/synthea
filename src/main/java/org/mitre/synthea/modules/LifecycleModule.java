@@ -16,7 +16,7 @@ import org.mitre.synthea.world.Location;
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 
-public final class LifecycleModule extends Module 
+public final class LifecycleModule extends Module
 {
 	@SuppressWarnings("rawtypes")
 	private static final Map growthChart = loadGrowthChart();
@@ -50,12 +50,12 @@ public final class LifecycleModule extends Module
 	}
 
 	@Override
-	public boolean process(Person person, long time) 
+	public boolean process(Person person, long time)
 	{
 		// run through all of the rules defined
 		// ruby "rules" are converted to static functions here
 		// since this is intended to only be temporary
-		
+
 		// birth(person, time); intentionally left out - call it only once from Generator
 		if( age(person, time) ) {
 			grow(person, time);
@@ -70,7 +70,7 @@ public final class LifecycleModule extends Module
 		diabeticVitalSigns(person, time);
 		calculateFallRisk(person, time);
 		death(person, time);
-		
+
 		// java modules will never "finish"
 		return false;
 	}
@@ -78,11 +78,12 @@ public final class LifecycleModule extends Module
 	public static void birth(Person person, long time)
 	{
 		Map<String, Object> attributes = person.attributes;
-		
+
 		attributes.put(Person.ID,  UUID.randomUUID().toString());
 		attributes.put(Person.BIRTHDATE, time);
 		person.events.create(time, Event.BIRTH, "Generator.run", true);
 		attributes.put(Person.NAME, faker.name().name());
+		attributes.put(Person.TELECOM, faker.phoneNumber().phoneNumber());
 
 		Location.assignPoint(person, (String)attributes.get(Person.CITY));
 		boolean hasStreetAddress2 = person.rand() < 0.5;
@@ -94,16 +95,16 @@ public final class LifecycleModule extends Module
 		person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weight_percentile);
 		person.setVitalSign(VitalSign.HEIGHT, 51.0); // cm
 		person.setVitalSign(VitalSign.WEIGHT, 3.5);  // kg
-		
+
 		attributes.put(AGE, 0);
 		attributes.put(AGE_MONTHS, 0);
-		
+
 		double aherence_baseline = Double.parseDouble( Config.get("lifecycle.adherence.baseline", ".05"));
 		person.attributes.put(ADHERENCE_PROBABILITY, aherence_baseline);
 
 		grow(person, time); // set initial height and weight from percentiles
 	}
-	
+
 	/**
 	 * @return whether or not the patient should grow
 	 */
@@ -111,7 +112,7 @@ public final class LifecycleModule extends Module
 	{
 		int prevAge = (int) person.attributes.get(AGE);
 		int prevAgeMos = (int) person.attributes.get(AGE_MONTHS);
-		
+
 		int newAge = person.ageInYears(time);
 		int newAgeMos = person.ageInMonths(time);
 		person.attributes.put(AGE, newAge);
@@ -136,7 +137,7 @@ public final class LifecycleModule extends Module
 			// "overeducated" -> suffix
 			break;
 		}
-		
+
 		boolean shouldGrow;
 		if (newAge > 20)
 		{
@@ -157,7 +158,7 @@ public final class LifecycleModule extends Module
 
 		double height = person.getVitalSign(VitalSign.HEIGHT);
 		double weight = person.getVitalSign(VitalSign.WEIGHT);
-		
+
 		if(age < 20) {
 			// follow growth charts
 			String gender = (String) person.attributes.get(Person.GENDER);
@@ -177,7 +178,7 @@ public final class LifecycleModule extends Module
 			double geriatric_weight_loss = person.rand(min, max);
 			weight -= geriatric_weight_loss;
 		}
-		
+
 		person.setVitalSign(VitalSign.HEIGHT, height);
 		person.setVitalSign(VitalSign.WEIGHT, weight);
 		person.setVitalSign(VitalSign.BMI, bmi(height, weight));
@@ -187,7 +188,7 @@ public final class LifecycleModule extends Module
 	public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths, double percentile)
 	{
 		String[] percentile_buckets = {"3", "5", "10", "25", "50", "75", "90", "95", "97"};
-		
+
 		Map chart = (Map) growthChart.get(heightOrWeight);
 		Map byGender = (Map) chart.get(gender);
 		Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
@@ -201,18 +202,18 @@ public final class LifecycleModule extends Module
 		}
 		return Double.parseDouble((String) byAge.get(percentile_buckets[bucket]));
 	}
-	
+
 	private static double bmi(double heightCM, double weightKG)
 	{
 		return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
 	}
-	
+
 	// LIPID PANEL  https://www.nlm.nih.gov/medlineplus/magazine/issues/summer12/articles/summer12pg6-7.html
     private static final int[] CHOLESTEROL = new int[] {160,200,239,259,279,300}; // # mg/dL
     private static final int[] TRIGLYCERIDES = new int[] {100,150,199,499,550,600}; // mg/dL
     private static final int[] HDL = new int[] { 80, 59, 40, 20, 10,  0}; // mg/dL
 
-	
+
 	private static void diabeticVitalSigns(Person person, long time)
 	{
 		// TODO - most of the rest of the vital signs
@@ -236,24 +237,24 @@ public final class LifecycleModule extends Module
         	person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(100, 139));
         	person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(70, 89));
         }
-        
+
         int index = 0;
         if (person.attributes.containsKey("diabetes_severity"))
         {
         	index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
         }
-        
+
         double total_cholesterol = person.rand(CHOLESTEROL[index], CHOLESTEROL[index+1]);
         double triglycerides = person.rand(TRIGLYCERIDES[index], TRIGLYCERIDES[index+1]);
         double hdl = person.rand(HDL[index], HDL[index+1]);
         double ldl = total_cholesterol - hdl - (0.2 * triglycerides);
-        
+
         person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, total_cholesterol);
         person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
         person.setVitalSign(VitalSign.HDL, hdl);
         person.setVitalSign(VitalSign.LDL, ldl);
 	}
-	
+
 	private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000", "Natural death with unknown cause");
 	private static void death(Person person, long time)
 	{
@@ -264,56 +265,56 @@ public final class LifecycleModule extends Module
 			person.recordDeath(time, NATURAL_CAUSES, "death");
 		}
 	}
-	
-	
+
+
 	private static double likelihoodOfDeath(int age)
 	{
 		double yearlyRisk;
-		
-		if (age < 1) 
+
+		if (age < 1)
 		{
 			yearlyRisk = 508.1 / 100_000.0;
-		} else if (age >= 1 && age <= 4) 
+		} else if (age >= 1 && age <= 4)
 		{
 			yearlyRisk = 15.6 / 100_000.0;
-		} else if (age >= 5 && age <= 14) 
+		} else if (age >= 5 && age <= 14)
 		{
 			yearlyRisk = 10.6 / 100_000.0;
-		} else if (age >= 15 && age <= 24) 
+		} else if (age >= 15 && age <= 24)
 		{
 			yearlyRisk = 56.4 / 100_000.0;
-		} else if (age >= 25 && age <= 34) 
+		} else if (age >= 25 && age <= 34)
 		{
 			yearlyRisk = 74.7 / 100_000.0;
-		} else if (age >= 35 && age <= 44) 
+		} else if (age >= 35 && age <= 44)
 		{
 			yearlyRisk = 145.7 / 100_000.0;
-		} else if (age >= 45 && age <= 54) 
+		} else if (age >= 45 && age <= 54)
 		{
 			yearlyRisk = 326.5 / 100_000.0;
-		} else if (age >= 55 && age <= 64) 
+		} else if (age >= 55 && age <= 64)
 		{
 			yearlyRisk = 737.8 / 100_000.0;
-		} else if (age >= 65 && age <= 74) 
+		} else if (age >= 65 && age <= 74)
 		{
 			yearlyRisk = 1817.0 / 100_000.0;
-		} else if (age >= 75 && age <= 84) 
+		} else if (age >= 75 && age <= 84)
 		{
 			yearlyRisk = 4877.3 / 100_000.0;
-		} else if (age >= 85 && age <= 94) 
+		} else if (age >= 85 && age <= 94)
 		{
 			yearlyRisk = 13_499.4 / 100_000.0;
-		} else 
+		} else
 		{
 			yearlyRisk = 50_000.0 / 100_000.0;
 		}
-		
+
 		double oneYearInMs = TimeUnit.DAYS.toMillis(365);
 		double adjustedRisk = Utilities.convertRiskToTimestep(yearlyRisk, oneYearInMs);
-		
+
 		return adjustedRisk;
 	}
-	
+
 	private static void startSmoking(Person person, long time)
 	{
 		// 9/10 smokers start before age 18. We will use 16.
@@ -327,7 +328,7 @@ public final class LifecycleModule extends Module
 			person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quit_smoking_baseline);
 		}
 	}
-	
+
 	private static double likelihoodOfBeingASmoker(int year)
 	{
         // 16.1% of MA are smokers in 2016. http://www.cdc.gov/tobacco/data_statistics/state_data/state_highlights/2010/states/massachusetts/
@@ -346,10 +347,10 @@ public final class LifecycleModule extends Module
 		{
 			return 0.424;
 		}
-		
+
 		return ((year * -0.4865) + 996.41) / 100.0;
 	}
-	
+
 	private static void chanceOfLungCancer(Person person, long time)
 	{
 		// TODO - make this calculation more elaborate, based on duration smoking,
@@ -418,11 +419,11 @@ public final class LifecycleModule extends Module
 			person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quit_alcoholism_baseline);
 		}
 	}
-	
+
 	public static void quitSmoking(Person person, long time){
-		
+
 		int age = person.ageInYears(time);
-		
+
 		if(person.attributes.containsKey(Person.SMOKER)){
 			if(person.attributes.get(Person.SMOKER).equals(true))
 			{
@@ -442,11 +443,11 @@ public final class LifecycleModule extends Module
 			}
 		}
 	}
-	
+
 	public static void quitAlcoholism(Person person, long time){
-		
+
 		int age = person.ageInYears(time);
-		
+
 		if(person.attributes.containsKey(Person.ALCOHOLIC)){
 			if(person.attributes.get(Person.ALCOHOLIC).equals(true))
 			{
@@ -466,7 +467,7 @@ public final class LifecycleModule extends Module
 			}
 		}
 	}
-	
+
 	public static void adherence(Person person, long time){
 
 		if(person.attributes.containsKey(Person.ADHERENCE)){
@@ -482,40 +483,40 @@ public final class LifecycleModule extends Module
 
 		}
 	}
-	
+
 	// referenced in the Injuries module - adults > age 65 have multiple screenings that affect fall risk
-	private void calculateFallRisk(Person person, long time) 
+	private void calculateFallRisk(Person person, long time)
 	{
 		if (person.ageInYears(time) >= 65)
 		{
 			boolean hasOsteoporosis = (boolean)person.attributes.getOrDefault("osteporosis", false);
 			double baselineFallRisk = hasOsteoporosis ? 0.06 : 0.035;// numbers from injuries module
-			
+
 			int activeInterventions = 0;
-			
+
 			// careplan for exercise or PT
-			if (person.record.careplanActive("Physical therapy") 
+			if (person.record.careplanActive("Physical therapy")
 					|| person.record.careplanActive("Physical activity target light exercise"))
 			{
 				activeInterventions++;
 			}
-			
+
 			// taking vitamin D
 			if (person.record.medicationActive("Cholecalciferol 600 UNT"))
 			{
 				activeInterventions++;
 			}
-			
+
 			// osteoporosis diagnosis makes them more careful
 			if (person.record.conditionActive("Osteoporosis (disorder)"))
 			{
 				activeInterventions++;
 			}
-			
-			double fallRisk = baselineFallRisk * (1 - 0.02*activeInterventions); 
+
+			double fallRisk = baselineFallRisk * (1 - 0.02*activeInterventions);
 			// reduce the fall risk by 2% per intervention
 			// TODO - research actual effectiveness of these interventions
-			
+
 			person.attributes.put("probability_of_fall_injury", fallRisk);
 		}
 	}

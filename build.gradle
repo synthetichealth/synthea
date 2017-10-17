@@ -18,7 +18,11 @@ apply plugin: 'eclipse'
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    jcenter {
+
+        url "http://jcenter.bintray.com/"
+
+    }
 }
 
 dependencies {
@@ -34,9 +38,9 @@ dependencies {
     compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
     // used to convert the ma_geo GeoJSON file to JTS
     compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
-	
+
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
-	
+
     compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
 
     // google guava for some data structures
