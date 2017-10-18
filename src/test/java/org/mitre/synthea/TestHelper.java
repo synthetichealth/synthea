@@ -11,7 +11,7 @@ import org.mitre.synthea.helpers.Config;
 
 public abstract class TestHelper {
 
-	public static Module getFixture(String filename) throws IOException
+	public static Module getFixture(String filename) throws Exception
 	{
 		Path modulesFolder = Paths.get("src/test/resources/generic");
 		Path module = modulesFolder.resolve(filename);

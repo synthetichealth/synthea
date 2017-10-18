@@ -13,7 +13,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -317,7 +316,7 @@ public class LogicTest {
 	    assertFalse(doTest("priorStateDoctorVisitWithin3YearsTest"));
 	    assertFalse(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
 
-	    State state = new State();
+	    State state = new State.Simple();
 	    state.name = "CarePlan";
 	    state.entered = state.exited = time;
 	    person.history.add(0, state);
@@ -326,7 +325,7 @@ public class LogicTest {
 	    assertFalse(doTest("priorStateDoctorVisitWithin3YearsTest"));
 	    assertTrue(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
 
-	    state = new State();
+	    state = new State.Simple();
 	    state.name = "DoctorVisit";
 	    state.entered = state.exited = time;
 	    person.history.add(0, state);
@@ -337,7 +336,7 @@ public class LogicTest {
 
 		time += Utilities.convertTime("years", 2);
 
-	    state = new State();
+	    state = new State.Simple();
 	    state.name = "CarePlan";
 	    state.entered = state.exited = time;
 	    person.history.add(0, state);

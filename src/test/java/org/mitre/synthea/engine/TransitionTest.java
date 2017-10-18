@@ -2,7 +2,6 @@ package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class TransitionTest {
 		person = new Person(19L); // seed chosen specifically for testDistributedTransition()
 	} 
 	
-	@Test public void testDistributedTransition() throws IOException {
+	@Test public void testDistributedTransition() throws Exception {
 		Module distributedTransition = TestHelper.getFixture("distributed_transition.json");
 
 		Map<String, Integer> counts = new HashMap<>();
@@ -44,7 +43,7 @@ public class TransitionTest {
 		assertEquals(30, counts.get("Terminal3").intValue());
 	}
 	
-	@Test public void testDistributedTransitionWithAttributes() throws IOException {
+	@Test public void testDistributedTransitionWithAttributes() throws Exception {
 		person.attributes.put("probability1", 1.0);
 		
 		Module distributedTransitionWithAttrs = TestHelper.getFixture("distributed_transition_with_attrs.json");

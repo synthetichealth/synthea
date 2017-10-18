@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
@@ -59,8 +60,9 @@ public class Module {
 						Module module = loadFile(t, path);
 						String relativePath = relativePath(t, path);
 						retVal.put(relativePath, module);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
 				});
 		} catch (Exception e) {
@@ -76,7 +78,7 @@ public class Module {
 		return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "").replace("\\", "/");
 	}
 	
-	public static Module loadFile(Path path, Path modulesFolder) throws IOException {
+	public static Module loadFile(Path path, Path modulesFolder) throws Exception {
 		System.out.format("Loading %s\n", path.toString());
 		boolean submodule = !path.getParent().equals(modulesFolder);
 		JsonObject object = null;
@@ -119,7 +121,6 @@ public class Module {
 	
 	public String name;
 	public boolean submodule;
-	public List<String> remarks;
 	private Map<String,State> states;
 	
 	protected Module()
@@ -127,22 +128,17 @@ public class Module {
 		// no-args constructor only allowed to be used by subclasses
 	}
 	
-	public Module(JsonObject definition, boolean submodule) {
+	public Module(JsonObject definition, boolean submodule) throws Exception{
 		name = String.format("%s Module", definition.get("name").getAsString());
 		this.submodule = submodule;
-		remarks = new ArrayList<String>();
-		if(definition.has("remarks")) {
-			for( JsonElement value : definition.get("remarks").getAsJsonArray())
-			{
-				remarks.add(value.getAsString());
-			}			
-		}
-		JsonObject object = definition.get("states").getAsJsonObject();
+
+		JsonObject jsonStates = definition.get("states").getAsJsonObject();
 		states = new ConcurrentHashMap<String,State>();
-		object.entrySet().forEach(entry -> {
-			State state = new State(name, entry.getKey(), (JsonObject) entry.getValue());
+		for(Entry<String, JsonElement> entry : jsonStates.entrySet())
+		{
+			State state = State.build(name, entry.getKey(), entry.getValue().getAsJsonObject());
 			states.put(entry.getKey(), state);
-		});
+		}
 	}
 	
 	/**
@@ -172,7 +168,7 @@ public class Module {
 		// looping until module is finished, 
 		// probably more than one state
 		String nextStateName = null;
-		while(current.process(person, time)) {
+		while(current.run(person, time)) {
 			nextStateName = current.transition(person, time);
 			//System.out.println("  Transitioning to " + nextStateName);
 			current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
@@ -184,6 +180,11 @@ public class Module {
 
 	private State initialState() {
 		return states.get("Initial"); // all Initial states have name Initial
+	}
+	
+	public State getState(String name)
+	{
+		return states.get(name);
 	}
 	
 }
