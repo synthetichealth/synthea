@@ -2,7 +2,6 @@ package org.mitre.synthea.engine;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,7 +135,7 @@ public class Module {
 		states = new ConcurrentHashMap<String,State>();
 		for(Entry<String, JsonElement> entry : jsonStates.entrySet())
 		{
-			State state = State.build(name, entry.getKey(), entry.getValue().getAsJsonObject());
+			State state = State.build(this, entry.getKey(), entry.getValue().getAsJsonObject());
 			states.put(entry.getKey(), state);
 		}
 	}
@@ -175,7 +174,7 @@ public class Module {
 			person.history.add(0, current);
 		}
 		person.attributes.remove(activeKey);
-		return (current.type.equals(State.StateType.TERMINAL));
+		return (current instanceof State.Terminal);
 	}
 
 	private State initialState() {

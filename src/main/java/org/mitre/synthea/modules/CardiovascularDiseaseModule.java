@@ -814,6 +814,7 @@ public final class CardiovascularDiseaseModule extends Module
         				// TODO: assumes a procedure will only be performed once, might need to be revisited
         				Code code = LOOKUP.get(proc);
         				Procedure procedure = person.record.procedure(time, code.display);
+        				procedure.name = "CardiovascularDisease_Encounter";
         				procedure.codes.add(code);
         				procedure.reasons.add(reason);
         				
@@ -833,11 +834,6 @@ public final class CardiovascularDiseaseModule extends Module
 	public static void performEmergency(Person person, long time, String diagnosis)
 	{
 		Provider provider = person.getEmergencyProvider();
-		if (provider == null)
-		{
-			person.setEmergencyProvider();
-			provider = person.getEmergencyProvider();
-		}
 		
 		int year = Utilities.getYear(time);
 		
@@ -857,6 +853,7 @@ public final class CardiovascularDiseaseModule extends Module
         for (String proc : EMERGENCY_PROCEDURES.get(diagnosis))
         {
         	Procedure procedure = person.record.procedure(time, proc);
+        	procedure.name = "CardiovascularDisease_Emergency";
         	procedure.codes.add(LOOKUP.get(proc));
         	procedure.reasons.add(diagnosis);
           // increment number of procedures performed by respective hospital

@@ -2,24 +2,23 @@ package org.mitre.synthea.world.agents;
 
 
 import java.io.Serializable;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 import com.vividsolutions.jts.geom.Point;
@@ -201,6 +200,39 @@ public class Person implements Serializable
 		}
 	}
 	
+	public static final String CURRENT_ENCOUNTERS = "current-encounters";
+	
+	public HealthRecord.Encounter getCurrentEncounter(Module module)
+	{
+		Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+		
+		if (moduleToCurrentEncounter == null)
+		{
+			moduleToCurrentEncounter = new HashMap<>();
+			attributes.put(CURRENT_ENCOUNTERS, moduleToCurrentEncounter);
+		}
+		
+		return moduleToCurrentEncounter.get(module.name);
+	}
+	
+	public void setCurrentEncounter(Module module, Encounter encounter)
+	{
+		Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+		
+		if (moduleToCurrentEncounter == null)
+		{
+			moduleToCurrentEncounter = new HashMap<>();
+			attributes.put(CURRENT_ENCOUNTERS, moduleToCurrentEncounter);
+		}
+		if (encounter == null)
+		{
+			moduleToCurrentEncounter.remove(module.name);
+		} else
+		{
+			moduleToCurrentEncounter.put(module.name, encounter);
+		}
+	}
+	
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";
 	public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
@@ -209,10 +241,16 @@ public class Person implements Serializable
 	
 	
 	public Provider getAmbulatoryProvider(){
+		
+		if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER))
+		{
+			setAmbulatoryProvider();
+		}
+		
 		return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
 	}
 	
-	public void setAmbulatoryProvider(){
+	private void setAmbulatoryProvider(){
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestAmbulatory(personLocation);
 		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
@@ -223,10 +261,15 @@ public class Person implements Serializable
 	}
 	
 	public Provider getInpatientProvider(){
+		
+		if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER))
+		{
+			setInpatientProvider();
+		}
 		return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
 	}
 	
-	public void setInpatientProvider(){
+	private void setInpatientProvider(){	
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestInpatient(personLocation);
 		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
@@ -237,10 +280,15 @@ public class Person implements Serializable
 	}
 	
 	public Provider getEmergencyProvider(){
+		
+		if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER))
+		{
+			setEmergencyProvider();
+		}
 		return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
 	}
 
-	public void setEmergencyProvider(){
+	private void setEmergencyProvider(){	
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestEmergency(personLocation);
 		attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
@@ -255,24 +303,30 @@ public class Person implements Serializable
 	}
 	
 	public void addCurrentProvider(String context, Provider provider){
-		if(attributes.containsKey(CURRENTPROVIDER)){
-			Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
-			currentProviders.put(context, provider);
-			attributes.put(CURRENTPROVIDER, currentProviders);
-		} else {
-			Map<String, Provider> currentProviders = new HashMap<String, Provider>();
-			currentProviders.put(context, provider);
-			attributes.put(CURRENTPROVIDER, currentProviders);
+		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
+		if(currentProviders == null){
+			currentProviders = new HashMap<String, Provider>();
+			currentProviders.put(context, provider);			
 		}
+		attributes.put(CURRENTPROVIDER, currentProviders);
 	}
 	
 	public void removeCurrentProvider(String module){
 		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
-		currentProviders.remove(module);
+		if (currentProviders != null)
+		{
+			currentProviders.remove(module);
+		}
 	}
 	
 	public Provider getCurrentProvider(String module){
 		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
-		return currentProviders.get(module);
+		if (currentProviders == null)
+		{
+			return null;
+		} else
+		{
+			return currentProviders.get(module);
+		}
 	}
 }

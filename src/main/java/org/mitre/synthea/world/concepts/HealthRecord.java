@@ -14,6 +14,7 @@ import java.util.Set;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Provider;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 /**
@@ -57,6 +58,15 @@ public class HealthRecord {
 		}
 		public String toString() {
 			return String.format("%s %s %s", system, code, display);
+		}
+		
+		public static List<Code> fromJson(JsonArray jsonCodes)
+		{
+			List<Code> codes = new ArrayList<>();
+			jsonCodes.forEach(item -> {
+				codes.add( new Code((JsonObject) item) );
+			});
+			return codes;
 		}
 	}
 	
