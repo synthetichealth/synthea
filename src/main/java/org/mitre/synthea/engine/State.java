@@ -243,7 +243,7 @@ public abstract class State implements Cloneable
 				}
 			}
 			
-			return time > this.next;
+			return time >= this.next;
 		}
 	}
 

@@ -9,7 +9,7 @@ import com.google.gson.JsonPrimitive;
 public class Utilities {
 	/**
 	 * Convert a quantity of time in a specified units into milliseconds
-	 * @param units : "hours", "minutes", "days", "years", or "months"
+	 * @param units : "hours", "minutes", "seconds", "days", "weeks", "years", or "months"
 	 * @param value : quantity of units
 	 * @return milliseconds
 	 */
@@ -19,14 +19,19 @@ public class Utilities {
 			return TimeUnit.HOURS.toMillis(value);
 		case "minutes":
 			return TimeUnit.MINUTES.toMillis(value);
+		case "seconds":
+			return TimeUnit.SECONDS.toMillis(value);
 		case "days":
 			return TimeUnit.DAYS.toMillis(value);
 		case "years":
 			return TimeUnit.DAYS.toMillis(365 * value);
 		case "months":
 			return TimeUnit.DAYS.toMillis(30 * value);
+		case "weeks":
+			return TimeUnit.DAYS.toMillis(7 * value);
+		default:
+			throw new RuntimeException("Unexpected time unit: " + units);
 		}
-		return (long) value;
 	}
 	
 	public static long convertCalendarYearsToTime(int years) {
@@ -87,8 +92,7 @@ public class Utilities {
 		} else if(lhs instanceof String && rhs instanceof String) {
 			return compare((String)lhs, (String)rhs, operator);
 		} else {
-			System.out.format("Cannot compare %s to %s.\n", lhs.getClass().getName(), rhs.getClass().getName());
-			return false;
+			throw new RuntimeException(String.format("Cannot compare %s to %s.\n", lhs.getClass().getName(), rhs.getClass().getName()));
 		}
 	}
 	
