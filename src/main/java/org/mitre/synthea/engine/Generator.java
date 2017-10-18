@@ -141,8 +141,9 @@ public class Generator {
 	}
 	
 	
-	private void generatePerson(int index)
+	public Person generatePerson(int index)
 	{
+		Person person = null;
 		try 
 		{
 			boolean isAlive = true;
@@ -160,7 +161,7 @@ public class Generator {
 				
 				// System.currentTimeMillis is not unique enough
 				long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-				Person person = new Person(personSeed);
+				person = new Person(personSeed);
 				
 				// TODO - this is quick & easy to implement,
 				// but we need to adapt the ruby method of pre-defining all the demographic buckets
@@ -220,6 +221,7 @@ public class Generator {
 			e.printStackTrace();
 			throw e;
 		}
+		return person;
 	}
 	
 	private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive)

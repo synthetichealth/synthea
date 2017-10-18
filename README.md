@@ -2,11 +2,9 @@
 Java implementation of the Synthea engine.
 
 Partially implemented.
-- Partial FHIR STU3 Export.
-- Transitions are complete.
-- Not all logic or states are finished.
-- Demographics to not vary.
-- System output and error messages slows everything down.
+
+- FHIR STU3 Export.
+- C-CDA R2.1 Export.
 
 ### Build and Test
 ```
