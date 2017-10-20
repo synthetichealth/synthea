@@ -22,6 +22,7 @@ public class Person implements Serializable
 	public static final String BIRTHDATE = "birthdate";
 	public static final String FIRST_NAME = "first_name";
 	public static final String LAST_NAME = "last_name";
+	public static final String MAIDEN_NAME = "maiden_name";
 	public static final String NAME_PREFIX = "name_prefix";
 	public static final String NAME_SUFFIX = "name_suffix";
 	public static final String NAME = "name";
@@ -34,6 +35,7 @@ public class Person implements Serializable
 	public static final String STATE = "state";
 	public static final String ZIP = "zip";
 	public static final String COORDINATE = "coordinate";
+	public static final String MARITAL_STATUS = "marital_status";
 	public static final String SOCIOECONOMIC_SCORE = "socioeconomic_score";
 	public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
 	public static final String INCOME = "income";

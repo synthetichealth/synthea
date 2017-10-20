@@ -163,6 +163,22 @@ public final class LifecycleModule extends Module
 			break;
 		case 27:
 			// get married
+			if (person.attributes.get(Person.MARITAL_STATUS) == null) {
+				Boolean getsMarried = (rn.nextInt(100) < 80);
+				if (getsMarried) {
+					person.attributes.put(Person.MARITAL_STATUS, "M");
+					if ("F".equals(person.attributes.get(Person.GENDER))) {
+						person.attributes.put(Person.NAME_PREFIX, "Mrs.");
+						person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
+						String firstName = ((String)person.attributes.get(Person.FIRST_NAME));
+						String newLastName = faker.name().lastName();
+						person.attributes.put(Person.LAST_NAME, newLastName);
+						person.attributes.put(Person.NAME, firstName + " " + newLastName);
+					}
+				} else {
+					person.attributes.put(Person.MARITAL_STATUS, "S");
+				}
+			}
 			break;
 		case 30:
 			// "overeducated" -> suffix
@@ -170,7 +186,7 @@ public final class LifecycleModule extends Module
 		}
 
 		boolean shouldGrow;
-		if (newAge > 20)
+		if (newAge >= 20)
 		{
 			// adults 20 and over grow once per year
 			shouldGrow = (newAge > prevAge);
