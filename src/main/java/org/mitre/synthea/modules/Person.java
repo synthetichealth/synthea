@@ -45,6 +45,7 @@ public class Person implements Serializable
 	public static final String SMOKER = "smoker";
 	public static final String ALCOHOLIC = "alcoholic";
 	public static final String ADHERENCE = "adherence";
+	public static final String IDENTIFIER_SSN = "identifier_ssn";
 	public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
 	public static final String IDENTIFIER_PASSPORT = "identifier_passport";
 

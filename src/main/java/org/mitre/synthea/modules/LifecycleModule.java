@@ -84,6 +84,7 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.ID,  UUID.randomUUID().toString());
 		attributes.put(Person.BIRTHDATE, time);
 		person.events.create(time, Event.BIRTH, "Generator.run", true);
+
 		String firstName = faker.name().firstName();
 		String lastName = faker.name().lastName();
 		attributes.put(Person.FIRST_NAME, firstName);
@@ -91,6 +92,9 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.NAME, firstName + " " + lastName);
 
 		attributes.put(Person.TELECOM, faker.phoneNumber().phoneNumber());
+
+		String ssn = "999-" + ((rn.nextInt(99-10+1)+10)) + "-" + ((rn.nextInt(9999-1000+1)+1000));
+		attributes.put(Person.IDENTIFIER_SSN, ssn);
 
 		Location.assignPoint(person, (String)attributes.get(Person.CITY));
 		boolean hasStreetAddress2 = person.rand() < 0.5;
@@ -131,7 +135,7 @@ public final class LifecycleModule extends Module
 		case 16:
 			// driver's license
 			if (person.attributes.get(Person.IDENTIFIER_DRIVERS) == null) {
-				String identifierDrivers = "S999" + (rn.nextInt(99999-10000+1) + 10000);
+				String identifierDrivers = "S999" + ((rn.nextInt(99999-10000+1) + 10000));
 				person.attributes.put(Person.IDENTIFIER_DRIVERS, identifierDrivers);
 			}
 			break;
