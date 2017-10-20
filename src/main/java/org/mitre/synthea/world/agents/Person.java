@@ -48,6 +48,7 @@ public class Person implements Serializable
 	public static final String SMOKER = "smoker";
 	public static final String ALCOHOLIC = "alcoholic";
 	public static final String ADHERENCE = "adherence";
+	public static final String CAUSE_OF_DEATH = "cause_of_death";
 
 	public final Random random;
 	public final long seed;
@@ -137,16 +138,19 @@ public class Person implements Serializable
 	public void recordDeath(long time, Code cause, String ruleName)
 	{
 		events.create(time, Event.DEATH, ruleName, true);
-
-		if (record.death == null)
-		{
-			record.death = time;
-		} else
+		if (record.death == null || record.death > time)
 		{
 			// it's possible for a person to have a death date in the future 
 			// (ex, a condition with some life expectancy sets a future death date)
 			// but then the patient dies sooner because of something else
-			record.death = Math.min(record.death, time);
+			record.death = time;
+			if (cause == null)
+			{
+				attributes.remove(CAUSE_OF_DEATH);
+			} else
+			{
+				attributes.put(CAUSE_OF_DEATH, cause);
+			}
 		}
 	}
 	

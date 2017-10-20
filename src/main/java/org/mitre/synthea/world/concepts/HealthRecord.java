@@ -434,12 +434,14 @@ public class HealthRecord {
 
 	public Report report(long time, String type, int numberOfObservations) {
 		Encounter encounter = currentEncounter(time);
-		List<Observation> observations = null;
+		List<Observation> observations = new ArrayList<Observation>();
 		if(encounter.observations.size() > numberOfObservations) {
 			int fromIndex = encounter.observations.size() - numberOfObservations - 1;
 			int toIndex = encounter.observations.size() - 1;
-			observations = new ArrayList<Observation>();
 			observations.addAll(encounter.observations.subList(fromIndex, toIndex));
+		} else
+		{
+			observations.addAll(encounter.observations);
 		}
 		Report report = new Report(time, type, observations);
 		encounter.reports.add(report);

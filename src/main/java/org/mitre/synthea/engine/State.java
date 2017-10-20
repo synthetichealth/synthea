@@ -408,7 +408,7 @@ public abstract class State implements Cloneable
 		{		
 			if(wellness) {
 				HealthRecord.Encounter encounter = person.record.currentEncounter(time);
-				String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module;
+				String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module.name;
 				if(person.attributes.containsKey(activeKey)) {
 					person.attributes.remove(activeKey);
 
@@ -431,6 +431,10 @@ public abstract class State implements Cloneable
 			} else {				
 				
 				HealthRecord.Encounter encounter = person.record.encounterStart(time, encounterClass);
+				if(codes != null) 
+				{
+					encounter.codes.addAll(codes);
+				}
 				person.setCurrentEncounter(module, encounter);
 				if(encounterClass.equals("emergency")) {
 					// if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW interventions
@@ -445,6 +449,9 @@ public abstract class State implements Cloneable
 				encounter.provider = provider;
 				
 				encounter.name = this.name;
+				
+				diagnosePastConditions(person, time);
+				
 				if(reason != null) {
 					Object item = person.attributes.get(reason);
 					if(item instanceof String) {
@@ -453,12 +460,7 @@ public abstract class State implements Cloneable
 						encounter.reason = ((Entry) item).type;
 					}
 				}
-				if(codes != null) 
-				{
-					encounter.codes.addAll(codes);
-				}
 				
-				diagnosePastConditions(person, time);
 				return true;
 			}
 		}
@@ -798,6 +800,13 @@ public abstract class State implements Cloneable
 			{
 				codes = Code.fromJson( definition.get("codes").getAsJsonArray() );
 			}
+			if (definition.has("medication_order"))
+			{
+				medicationOrder = definition.get("medication_order").getAsString();
+			}
+			if(definition.has("referenced_by_attribute")) {
+				referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
+			}
 		}
 		
 		public MedicationEnd clone()
@@ -965,6 +974,7 @@ public abstract class State implements Cloneable
 		private Double durationLow;
 		private Double durationHigh;
 		private String durationUnit;
+		private String assignToAttribute;
 		
 		@Override
 		protected void initialize(Module module, String name, JsonObject definition) 
@@ -984,6 +994,9 @@ public abstract class State implements Cloneable
 				durationHigh  = duration.get("high").getAsDouble();
 				durationUnit = duration.get("unit").getAsString();
 			}
+			if(definition.has("assign_to_attribute")) {
+				assignToAttribute = definition.get("assign_to_attribute").getAsString();
+			}
 		}
 		
 		public Procedure clone()
@@ -994,6 +1007,7 @@ public abstract class State implements Cloneable
 			clone.durationLow = durationLow;
 			clone.durationHigh = durationHigh;
 			clone.durationUnit = durationUnit;
+			clone.assignToAttribute = assignToAttribute;
 			return clone;
 		}
 
@@ -1034,6 +1048,10 @@ public abstract class State implements Cloneable
 			int year = Utilities.getYear(time);
 			provider.incrementProcedures( year );
 
+			if(assignToAttribute != null) {
+				person.attributes.put(assignToAttribute, procedure);
+			}
+			
 			return true;
 		}
 	}
@@ -1339,6 +1357,23 @@ public abstract class State implements Cloneable
 			{
 				codes = Code.fromJson( definition.get("codes").getAsJsonArray() );
 			}
+			if(definition.has("condition_onset")) {
+				conditionOnset = definition.get("condition_onset").getAsString();
+			}
+			if(definition.has("referenced_by_attribute")) {
+				referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
+			}
+			
+			JsonObject range = (JsonObject) definition.get("range");
+			JsonObject exact = (JsonObject) definition.get("exact");
+			if(range != null) {
+				low = range.get("low").getAsInt();
+				high = range.get("high").getAsInt();
+				unit = range.get("unit").getAsString();
+			} else if(exact != null) {
+				quantity = exact.get("quantity").getAsInt();
+				unit = exact.get("unit").getAsString();
+			}
 		}
 		
 		public Death clone()
@@ -1371,7 +1406,13 @@ public abstract class State implements Cloneable
 					}
 				}
 			} else if(referencedByAttribute != null) {
-				reason = ((Entry) person.attributes.get(referencedByAttribute)).codes.get(0);
+				Entry entry = (Entry) person.attributes.get(referencedByAttribute);
+				if (entry == null)
+				{
+					// TODO - condition referenced but not yet diagnosed
+					throw new RuntimeException("Attribute '" + referencedByAttribute + "' was referenced by state '" + name + "' but not set");
+				}
+				reason = entry.codes.get(0);
 			}
 			String rule = String.format("%s %s", module, name);
 			if(reason != null) {
@@ -1391,10 +1432,8 @@ public abstract class State implements Cloneable
 			} else
 			{
 				person.recordDeath(time, reason, rule);
-				return false;
+				return true;
 			}
 		}
 	}
-
-
 }
