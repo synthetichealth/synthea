@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ public final class LifecycleModule extends Module
 	@SuppressWarnings("rawtypes")
 	private static final Map growthChart = loadGrowthChart();
 	private static final Faker faker = new Faker();
+	private static final Random rn = new Random();
 	private static final String AGE = "AGE";
 	private static final String AGE_MONTHS = "AGE_MONTHS";
 	public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
@@ -123,12 +125,23 @@ public final class LifecycleModule extends Module
 		// TODO - none of these are critical so leaving them out for now
 		case 16:
 			// driver's license
+			if (person.attributes.get(Person.IDENTIFIER_DRIVERS) == null) {
+				String identifierDrivers = "S999" + (rn.nextInt(99999-10000+1) + 10000);
+				person.attributes.put(Person.IDENTIFIER_DRIVERS, identifierDrivers);
+			}
 			break;
 		case 18:
 			// name prefix
 			break;
 		case 20:
 			// passport number
+			if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
+				Boolean getsPassport = (rn.nextInt(2) == 1);
+				if (getsPassport) {
+					String identifierPassport = "X" + (rn.nextInt(99999999-10000000+1) + "X");
+					person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
+				}
+			}
 			break;
 		case 27:
 			// get married
