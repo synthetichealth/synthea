@@ -1152,19 +1152,19 @@ public class StateTest {
 	  }
 
 	  // TODO uncomment this once attributes for undiagnosed conditions work
-//	  @Test public void cause_of_death_attribute()
-//	  {
-//	    Module module = getModule("death_reason.json");
-//
-//	    // First, onset the Diabetes!
-//	    State condition = module.getState("OnsetDiabetes");
-//	    assertTrue(condition.process(person, time));
-//	    person.history.add(condition);
-//
-//	    // Now process the end of the condition
-//	    State death = module.getState("Death_by_Attribute");
-//	    assertTrue(death.process(person, time));
-//
-//	    assertFalse(person.alive(time));
-//	  }
+	  @Test public void cause_of_death_attribute()
+	  {
+	    Module module = getModule("death_reason.json");
+
+	    // First, onset the Diabetes!
+	    State condition = module.getState("OnsetDiabetes");
+	    assertTrue(condition.process(person, time));
+	    person.history.add(condition);
+
+	    // Now process the end of the condition
+	    State death = module.getState("Death_by_Attribute");
+	    assertTrue(death.process(person, time));
+
+	    assertFalse(person.alive(time));
+	  }
 }

@@ -553,6 +553,7 @@ public abstract class State implements Cloneable
 			OnsetState clone = (OnsetState)super.clone();
 			clone.codes = codes;
 			clone.assignToAttribute = assignToAttribute;
+			clone.targetEncounter = targetEncounter;
 			return clone;
 		}
 
@@ -565,6 +566,16 @@ public abstract class State implements Cloneable
 					(encounter != null && targetEncounter.equals(encounter.name)) )
 			{
 				diagnose(person, time);
+			} else if (assignToAttribute != null && codes != null)
+			{
+				// TODO - this is a hack. can we eventually split Diagnosis & Onset states?
+				
+				// create a temporary coded entry to use for reference in the attribute,
+				// which will be replaced if the thing is diagnosed
+				HealthRecord.Entry codedEntry = person.record.new Entry(time, codes.get(0).code);
+				codedEntry.codes.addAll(codes);
+				
+				person.attributes.put(assignToAttribute, codedEntry);
 			}
 			return true;
 		}
