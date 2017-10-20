@@ -28,6 +28,7 @@ import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
+import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.Immunization;
 import org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
@@ -169,7 +170,15 @@ public class FhirStu3
 				.setValue((String)person.attributes.get(Person.IDENTIFIER_PASSPORT));
 		}
 
-		patientResource.addName().addGiven((String)person.attributes.get(Person.NAME));
+		HumanName name = patientResource.addName();
+		name.addGiven((String)person.attributes.get(Person.FIRST_NAME));
+		name.setFamily((String)person.attributes.get(Person.LAST_NAME));
+		if (person.attributes.get(Person.NAME_PREFIX) != null) {
+			name.addPrefix((String)person.attributes.get(Person.NAME_PREFIX));
+		}
+		if (person.attributes.get(Person.NAME_SUFFIX) != null) {
+			name.addSuffix((String)person.attributes.get(Person.NAME_SUFFIX));
+		}
 
 		if (person.attributes.get(Person.GENDER).equals("M"))
 		{

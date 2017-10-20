@@ -20,6 +20,10 @@ public class Person implements Serializable
 	private static final long serialVersionUID = 4322116644425686379L;
 
 	public static final String BIRTHDATE = "birthdate";
+	public static final String FIRST_NAME = "first_name";
+	public static final String LAST_NAME = "last_name";
+	public static final String NAME_PREFIX = "name_prefix";
+	public static final String NAME_SUFFIX = "name_suffix";
 	public static final String NAME = "name";
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";

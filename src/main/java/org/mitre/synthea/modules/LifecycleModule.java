@@ -84,7 +84,12 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.ID,  UUID.randomUUID().toString());
 		attributes.put(Person.BIRTHDATE, time);
 		person.events.create(time, Event.BIRTH, "Generator.run", true);
-		attributes.put(Person.NAME, faker.name().name());
+		String firstName = faker.name().firstName();
+		String lastName = faker.name().lastName();
+		attributes.put(Person.FIRST_NAME, firstName);
+		attributes.put(Person.LAST_NAME, lastName);
+		attributes.put(Person.NAME, firstName + " " + lastName);
+
 		attributes.put(Person.TELECOM, faker.phoneNumber().phoneNumber());
 
 		Location.assignPoint(person, (String)attributes.get(Person.CITY));
@@ -132,6 +137,15 @@ public final class LifecycleModule extends Module
 			break;
 		case 18:
 			// name prefix
+			if (person.attributes.get(Person.NAME_PREFIX) == null) {
+				String namePrefix;
+				if ("M".equals(person.attributes.get(Person.GENDER))) {
+					namePrefix = "Mr.";
+				} else {
+					namePrefix = "Ms.";
+				}
+				person.attributes.put(Person.NAME_PREFIX, namePrefix);
+			}
 			break;
 		case 20:
 			// passport number
