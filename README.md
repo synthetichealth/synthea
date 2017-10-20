@@ -1,10 +1,10 @@
-# Synthea Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea)
+# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea)
 
-Synthea is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
+Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
 Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
 
-Currently, Synthea features:
+Currently, Synthea<sup>TM</sup> features:
 - Birth to Death Lifecycle
 - Configuration-based statistics and demographics (defaults with Massachusetts Census data)
 - Modular Rule System
@@ -23,9 +23,9 @@ Currently, Synthea features:
 ### Installation
 
 **System Requirements:**
-Synthea requires Ruby 2.1.0 or above.
+Synthea<sup>TM</sup> requires Ruby 2.1.0 or above.
 
-To clone the Synthea repo and install the necessary gems:
+To clone the Synthea<sup>TM</sup> repo and install the necessary gems:
 ```
 git clone https://github.com/synthetichealth/synthea.git
 cd synthea
@@ -48,7 +48,7 @@ bundle exec rake synthea:generate['./config/Suffolk_County.json']
 
 Some settings can be changed in `./config/synthea.yml`.
 
-Synthea will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `./output`.
+Synthea<sup>TM</sup> will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `./output`.
 
 ### Upload to FHIR Server
 After generating data, upload it to a STU3 FHIR server:
@@ -56,8 +56,8 @@ After generating data, upload it to a STU3 FHIR server:
 bundle exec rake synthea:fhirupload[http://server/fhir/baseDstu3]
 ```
 
-### Synthea GraphViz
-Generate graphical visualizations of Synthea rules and modules. Requires GraphViz to be installed.
+### Synthea<sup>TM</sup> GraphViz
+Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules. Requires GraphViz to be installed.
 
 ```
 brew install graphviz
@@ -66,7 +66,7 @@ bundle exec rake synthea:graphviz
 
 # License
 
-Copyright 2016 The MITRE Corporation
+Copyright 2016-2017 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
