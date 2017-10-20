@@ -19,7 +19,6 @@ import org.mockito.Mockito;
 
 public class DeathModuleTest {
 
-	private DeathModule module;
 	private Person person;
 	private long time;
 
@@ -37,8 +36,6 @@ public class DeathModuleTest {
 		person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 		
 		time = System.currentTimeMillis();
-		
-		module = new DeathModule();
 	}
 	
 	@Test public void testDeathCertificate()
@@ -53,7 +50,7 @@ public class DeathModuleTest {
 		Code causeOfDeath = new Code("SNOMED-CT", "12345", "Some disease");
 		person.recordDeath(time, causeOfDeath, DeathModuleTest.class.getName());
 		
-		module.process(person, time);
+		DeathModule.process(person, time);
 		
 		Encounter enc = person.record.encounters.get(0);
 		assertEquals("ambulatory", enc.type);

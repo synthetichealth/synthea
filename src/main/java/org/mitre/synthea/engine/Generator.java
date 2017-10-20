@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
@@ -197,6 +198,8 @@ public class Generator {
 					
 					time += timestep;
 				}
+				
+				DeathModule.process(person, time);
 				
 				Exporter.export(person, stop);
 				if (database != null)

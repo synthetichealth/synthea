@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
-import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -43,7 +41,7 @@ public class Module {
 	private static Map<String,Module> modules = Collections.unmodifiableMap( loadModules() );
 	
 	private static Map<String,Module> loadModules() {
-		Map<String,Module> retVal = new LinkedHashMap<String,Module>(); //linked to ensure order, ie Death must go last
+		Map<String,Module> retVal = new ConcurrentHashMap<String,Module>();
 
 		retVal.put("Lifecycle", new LifecycleModule());
 		retVal.put("Cardiovascular Disease", new CardiovascularDiseaseModule());
@@ -70,8 +68,6 @@ public class Module {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		retVal.put("Death", new DeathModule()); // death must go last
 		
 		System.out.format("Loaded %d modules.\n", retVal.size());
 
