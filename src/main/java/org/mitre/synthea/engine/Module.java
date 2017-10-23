@@ -122,6 +122,7 @@ public class Module {
 	
 	public String name;
 	public boolean submodule;
+	public List<String> remarks;
 	private Map<String,State> states;
 	
 	protected Module()
@@ -132,6 +133,19 @@ public class Module {
 	public Module(JsonObject definition, boolean submodule) throws Exception{
 		name = String.format("%s Module", definition.get("name").getAsString());
 		this.submodule = submodule;
+		remarks = new ArrayList<String>();
+		if(definition.has("remarks")) {
+			JsonElement jsonRemarks = definition.get("remarks");
+			if (jsonRemarks.isJsonArray()) {
+				for( JsonElement value : jsonRemarks.getAsJsonArray())
+				{
+					remarks.add(value.getAsString());
+				}
+			} else {
+				// must be a single string
+				remarks.add( jsonRemarks.getAsString() );
+			}	
+		}
 
 		JsonObject jsonStates = definition.get("states").getAsJsonObject();
 		states = new ConcurrentHashMap<String,State>();

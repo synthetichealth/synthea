@@ -17,6 +17,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public abstract class State implements Cloneable 
@@ -26,6 +27,7 @@ public abstract class State implements Cloneable
 	public Long entered;
 	public Long exited;
 	private Transition transition;
+	public List<String> remarks;
 
 	protected void initialize(Module module, String name, JsonObject definition) {
 		this.module = module;
@@ -46,6 +48,20 @@ public abstract class State implements Cloneable
 		} else if(!(this instanceof Terminal)) 
 		{
 			throw new RuntimeException("State `" + name + "` has no transition.\n");
+		}
+		
+		remarks = new ArrayList<String>();
+		if(definition.has("remarks")) {
+			JsonElement jsonRemarks = definition.get("remarks");
+			if (jsonRemarks.isJsonArray()) {
+				for( JsonElement value : jsonRemarks.getAsJsonArray())
+				{
+					remarks.add(value.getAsString());
+				}
+			} else {
+				// must be a single string
+				remarks.add( jsonRemarks.getAsString() );
+			}	
 		}
 	}
 	
@@ -84,6 +100,7 @@ public abstract class State implements Cloneable
 			clone.module = this.module;
 			clone.name = this.name;
 			clone.transition = this.transition;
+			clone.remarks = this.remarks;
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			// should not happen, and not something we can handle

@@ -66,6 +66,8 @@ public class Logic {
 	public Logic(JsonObject definition) {
 		this.type = ConditionType.fromString( definition.get("condition_type").getAsString() );
 		this.definition = definition;
+		// TODO - make Logic OO like States. 
+		// don't forget about remarks
 	}
 	
 	public boolean test(Person person, long time) {
