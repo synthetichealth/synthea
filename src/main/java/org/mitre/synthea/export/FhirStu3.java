@@ -155,6 +155,12 @@ public class FhirStu3
 			.setSystem("https://github.com/synthetichealth/synthea")
 			.setValue((String)person.attributes.get(Person.ID));
 
+		Code mrnCode = new Code("http://hl7.org/fhir/v2/0203", "MR", "Medical Record Number");
+		patientResource.addIdentifier()
+			.setType(mapCodeToCodeableConcept(mrnCode, "http://hl7.org/fhir/v2/0203"))
+			.setSystem("http://hospital.smarthealthit.org")
+			.setValue((String)person.attributes.get(Person.ID));
+
 		Code ssnCode = new Code("http://hl7.org/fhir/identifier-type", "SB", "Social Security Number");
 		patientResource.addIdentifier()
 			.setType(mapCodeToCodeableConcept(ssnCode, "http://hl7.org/fhir/identifier-type"))
