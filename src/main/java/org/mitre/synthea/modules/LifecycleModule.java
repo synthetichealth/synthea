@@ -91,6 +91,10 @@ public final class LifecycleModule extends Module
 		attributes.put(Person.LAST_NAME, lastName);
 		attributes.put(Person.NAME, firstName + " " + lastName);
 
+		String motherFirstName = faker.name().firstName();
+		String motherLastName = faker.name().lastName();
+		attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
+
 		attributes.put(Person.TELECOM, faker.phoneNumber().phoneNumber());
 
 		String ssn = "999-" + ((rn.nextInt(99-10+1)+10)) + "-" + ((rn.nextInt(9999-1000+1)+1000));
@@ -154,7 +158,7 @@ public final class LifecycleModule extends Module
 		case 20:
 			// passport number
 			if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
-				Boolean getsPassport = (rn.nextInt(2) == 1);
+				Boolean getsPassport = (person.rand() < 0.5);
 				if (getsPassport) {
 					String identifierPassport = "X" + (rn.nextInt(99999999-10000000+1) + "X");
 					person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
@@ -164,7 +168,7 @@ public final class LifecycleModule extends Module
 		case 27:
 			// get married
 			if (person.attributes.get(Person.MARITAL_STATUS) == null) {
-				Boolean getsMarried = (rn.nextInt(100) < 80);
+				Boolean getsMarried = (person.rand() < 0.8);
 				if (getsMarried) {
 					person.attributes.put(Person.MARITAL_STATUS, "M");
 					if ("F".equals(person.attributes.get(Person.GENDER))) {

@@ -219,6 +219,11 @@ public class FhirStu3
 		}
 		patientResource.addExtension(birthSexExtension);
 
+		Extension mothersMaidenNameExtension = new Extension("http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
+		String mothersMaidenName = (String)person.attributes.get(Person.NAME_MOTHER);
+		mothersMaidenNameExtension.setValue(new StringType(mothersMaidenName));
+		patientResource.addExtension(mothersMaidenNameExtension);
+
 		long birthdate = (long)person.attributes.get(Person.BIRTHDATE);
 		patientResource.setBirthDate(new Date(birthdate));
 
@@ -256,7 +261,7 @@ public class FhirStu3
 		}
 
 		// TODO: ruby version also has:
-		//  language, race, ethnicity, place of birth, mother's maiden name,
+		//  language, race, ethnicity, place of birth,
 		// suffix, multiple birth status, fingerprint
 
 		String generatedBySynthea =
