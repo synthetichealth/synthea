@@ -2,15 +2,16 @@ package org.mitre.synthea.engine;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
@@ -37,7 +38,7 @@ import com.google.gson.stream.JsonReader;
  */
 public class Module {
 
-	private static Map<String,Module> modules = loadModules();
+	private static Map<String,Module> modules = Collections.unmodifiableMap( loadModules() );
 	
 	private static Map<String,Module> loadModules() {
 		Map<String,Module> retVal = new ConcurrentHashMap<String,Module>();
@@ -59,13 +60,15 @@ public class Module {
 						Module module = loadFile(t, path);
 						String relativePath = relativePath(t, path);
 						retVal.put(relativePath, module);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
 				});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		System.out.format("Loaded %d modules.\n", retVal.size());
 
 		return retVal;
@@ -76,7 +79,7 @@ public class Module {
 		return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "").replace("\\", "/");
 	}
 	
-	public static Module loadFile(Path path, Path modulesFolder) throws IOException {
+	public static Module loadFile(Path path, Path modulesFolder) throws Exception {
 		System.out.format("Loading %s\n", path.toString());
 		boolean submodule = !path.getParent().equals(modulesFolder);
 		JsonObject object = null;
@@ -127,22 +130,30 @@ public class Module {
 		// no-args constructor only allowed to be used by subclasses
 	}
 	
-	public Module(JsonObject definition, boolean submodule) {
+	public Module(JsonObject definition, boolean submodule) throws Exception{
 		name = String.format("%s Module", definition.get("name").getAsString());
 		this.submodule = submodule;
 		remarks = new ArrayList<String>();
 		if(definition.has("remarks")) {
-			for( JsonElement value : definition.get("remarks").getAsJsonArray())
-			{
-				remarks.add(value.getAsString());
-			}			
+			JsonElement jsonRemarks = definition.get("remarks");
+			if (jsonRemarks.isJsonArray()) {
+				for( JsonElement value : jsonRemarks.getAsJsonArray())
+				{
+					remarks.add(value.getAsString());
+				}
+			} else {
+				// must be a single string
+				remarks.add( jsonRemarks.getAsString() );
+			}	
 		}
-		JsonObject object = definition.get("states").getAsJsonObject();
+
+		JsonObject jsonStates = definition.get("states").getAsJsonObject();
 		states = new ConcurrentHashMap<String,State>();
-		object.entrySet().forEach(entry -> {
-			State state = new State(name, entry.getKey(), (JsonObject) entry.getValue());
+		for(Entry<String, JsonElement> entry : jsonStates.entrySet())
+		{
+			State state = State.build(this, entry.getKey(), entry.getValue().getAsJsonObject());
 			states.put(entry.getKey(), state);
-		});
+		}
 	}
 	
 	/**
@@ -172,18 +183,23 @@ public class Module {
 		// looping until module is finished, 
 		// probably more than one state
 		String nextStateName = null;
-		while(current.process(person, time)) {
+		while(current.run(person, time)) {
 			nextStateName = current.transition(person, time);
 			//System.out.println("  Transitioning to " + nextStateName);
 			current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
 			person.history.add(0, current);
 		}
 		person.attributes.remove(activeKey);
-		return (current.type.equals(State.StateType.TERMINAL));
+		return (current instanceof State.Terminal);
 	}
 
 	private State initialState() {
 		return states.get("Initial"); // all Initial states have name Initial
+	}
+	
+	public State getState(String name)
+	{
+		return states.get(name);
 	}
 	
 }

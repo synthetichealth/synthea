@@ -1,11 +1,11 @@
-package org.mitre.synthea;
+package org.mitre.synthea.helpers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
 import org.junit.Test;
-import org.mitre.synthea.helpers.Utilities;
 
 public class UtilitiesTest {
 

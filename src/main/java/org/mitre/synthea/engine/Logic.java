@@ -66,6 +66,8 @@ public class Logic {
 	public Logic(JsonObject definition) {
 		this.type = ConditionType.fromString( definition.get("condition_type").getAsString() );
 		this.definition = definition;
+		// TODO - make Logic OO like States. 
+		// don't forget about remarks
 	}
 	
 	public boolean test(Person person, long time) {
@@ -74,11 +76,24 @@ public class Logic {
 			String gender = definition.get("gender").getAsString();
 			return gender.equals(person.attributes.get(Person.GENDER));
 		case AGE:
-			long age = person.ageInMilliseconds(time);
+			long age;
 			String operator = definition.get("operator").getAsString();
 			long quantity = definition.get("quantity").getAsLong();
 			String units = definition.get("unit").getAsString();
-			quantity = Utilities.convertTime(units, quantity);
+			
+			switch (units)
+			{
+			case "years":
+				age = person.ageInYears(time);
+				break;
+			case "months":
+				age = person.ageInMonths(time);
+				break;
+			default:
+				// TODO - add more unit types if we determine they are necessary
+				throw new UnsupportedOperationException("Units '" + units + "' not currently supported in Age logic.");
+			}
+
 			return Utilities.compare((double)age, (double)quantity, operator);
 		case DATE:
 			operator = definition.get("operator").getAsString();
@@ -107,6 +122,13 @@ public class Logic {
 						observation = last;
 						break;
 					}
+				}
+			}  else if(definition.has("referenced_by_attribute")) {
+				String attribute = definition.get("referenced_by_attribute").getAsString();
+				if(person.attributes.containsKey(attribute)) {
+					observation = (Observation) person.attributes.get(attribute);
+				} else {
+					return false;
 				}
 			}
 			if(definition.has("value")) {
@@ -177,18 +199,20 @@ public class Logic {
 			return false;
 		case PRIOR_STATE:
 			String priorStateName = definition.get("name").getAsString();
+			String priorStateSince = null;
+			Long sinceTime = null;
 			if(definition.has("since")) {
-				String priorStateSince = definition.get("since").getAsString();
-				return person.hadPriorStateSince(priorStateName, priorStateSince);
-			} else if(definition.has("within")) {
+				priorStateSince = definition.get("since").getAsString();
+			} 
+			if(definition.has("within")) {
 				units = definition.get("within").getAsJsonObject().get("unit").getAsString();
 				quantity = definition.get("within").getAsJsonObject().get("quantity").getAsLong();
 				long window = Utilities.convertTime(units, quantity);
-				long sinceTime = time - window;
-				return person.hadPriorStateSince(priorStateName, sinceTime);
-			} else {
-				return person.hadPriorState(priorStateName);
+				sinceTime = time - window;
 			}
+				
+			return person.hadPriorState(priorStateName, priorStateSince, sinceTime);
+			
 		case ACTIVE_CONDITION:
 			if(definition.has("codes")) {
 				for(JsonElement item : definition.get("codes").getAsJsonArray()) {

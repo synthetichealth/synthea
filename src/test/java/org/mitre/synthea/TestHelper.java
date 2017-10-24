@@ -1,15 +1,16 @@
 package org.mitre.synthea;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 
 public abstract class TestHelper {
 
-	public static Module getFixture(String filename) throws IOException
+	public static Module getFixture(String filename) throws Exception
 	{
 		Path modulesFolder = Paths.get("src/test/resources/generic");
 		Path module = modulesFolder.resolve(filename);
@@ -24,5 +25,10 @@ public abstract class TestHelper {
 		Config.set("exporter.fhir.export","false");
 		Config.set("exporter.hospital.fhir.export", "false");
 		Config.set("exporter.cost_access_outcomes_report", "false");
+	}
+
+	public static long timestamp(int year, int month, int day, int hr, int min, int sec)
+	{
+		return LocalDateTime.of(year, month, day, hr, min, sec).toInstant(ZoneOffset.UTC).toEpochMilli();
 	}
 }

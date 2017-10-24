@@ -1,11 +1,11 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.engine;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
-
-import static org.junit.Assert.*;
 
 public class GeneratorTest {
     @Test public void testGeneratorCreatesPeople() throws Exception {

@@ -50,6 +50,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
     testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
+	testCompile 'org.mockito:mockito-core:2.7.22'
 }
 
 task graphviz(type: JavaExec) {

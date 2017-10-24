@@ -27,6 +27,8 @@ public class Transition {
 	public List<Transition> contained;
 	
 	public Transition(TransitionType type, JsonElement jsonElement) {
+		// TODO - make Transitions OO like States.
+		// don't forget about remarks.
 		this.type = type;
 		this.transitions = new ArrayList<String>();
 		switch(type) {

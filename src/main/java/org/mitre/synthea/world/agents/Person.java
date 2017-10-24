@@ -2,19 +2,24 @@ package org.mitre.synthea.world.agents;
 
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -43,6 +48,7 @@ public class Person implements Serializable
 	public static final String SMOKER = "smoker";
 	public static final String ALCOHOLIC = "alcoholic";
 	public static final String ADHERENCE = "adherence";
+	public static final String CAUSE_OF_DEATH = "cause_of_death";
 
 	public final Random random;
 	public final long seed;
@@ -71,25 +77,28 @@ public class Person implements Serializable
 	public double rand(double low, double high) {
 		return (low + ((high - low) * random.nextDouble()));
 	}
-	
-	public long ageInMilliseconds(long time) {
-		long age = 0;
-		if(attributes.containsKey(BIRTHDATE)) {
-			age = time - (long)attributes.get(BIRTHDATE);
+
+	public Period age(long time)
+	{
+		Period age = Period.ZERO;
+		
+		if(attributes.containsKey(BIRTHDATE)) 
+		{
+			LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate birthdate = Instant.ofEpochMilli((long)attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault()).toLocalDate();
+			age = Period.between(birthdate, now);
 		}
 		return age;
 	}
 	
 	public int ageInMonths(long time)
 	{
-		// TODO - would prefer something more robust for these
-		long age = ageInMilliseconds(time);
-		return (int) (TimeUnit.MILLISECONDS.toDays(age) / (365.25 / 12));
+		return (int) age(time).toTotalMonths();
 	}
 	
-	public int ageInYears(long time) {
-		long age = ageInMilliseconds(time);
-		return (int) (TimeUnit.MILLISECONDS.toDays(age) / 365.25);
+	public int ageInYears(long time) 
+	{
+		return age(time).getYears();
 	}
 	
 	public boolean alive(long time) {
@@ -129,16 +138,19 @@ public class Person implements Serializable
 	public void recordDeath(long time, Code cause, String ruleName)
 	{
 		events.create(time, Event.DEATH, ruleName, true);
-
-		if (record.death == null)
-		{
-			record.death = time;
-		} else
+		if (record.death == null || record.death > time)
 		{
 			// it's possible for a person to have a death date in the future 
 			// (ex, a condition with some life expectancy sets a future death date)
 			// but then the patient dies sooner because of something else
-			record.death = Math.min(record.death, time);
+			record.death = time;
+			if (cause == null)
+			{
+				attributes.remove(CAUSE_OF_DEATH);
+			} else
+			{
+				attributes.put(CAUSE_OF_DEATH, cause);
+			}
 		}
 	}
 	
@@ -157,43 +169,28 @@ public class Person implements Serializable
 		symptoms.clear();
 	}
 
-	public boolean hadPriorState(String name) {
-		if(history == null) {
-			return false;
-		}
-		for(State state : history) {
-			if(state.name == name) {
-				return true;
-			}
-		}
-		return false;
+	public boolean hadPriorState(String name)
+	{
+		return hadPriorState(name, null, null);
 	}
-
-	public boolean hadPriorStateSince(String priorState, long time) {
+	
+	public boolean hadPriorState(String name, String since, Long within) {
 		if(history == null) {
 			return false;
 		}
 		for(State state : history) {
-			if(state.name.equals(priorState)) {
-				return true;
-			} else if(state.exited > 0 && state.exited <= time) {
-				// break out when we reach the desired time
-				return false;
-			}
-		}
-		return false;
-	}
-
-	public boolean hadPriorStateSince(String priorState, String sinceState) {
-		if(history == null) {
-			return false;
-		}
-		for(State state : history) {
-			if(state.name.equals(priorState)) {
-				return true;
-			} else if(state.name.equals(sinceState)) {
-				return false;
-			}
+            if(within != null && state.exited != null && state.exited <= within)
+            {
+            	return false;
+            }
+            if (since != null && state.name.equals(since))
+            {
+            	return false;
+            }
+            if (state.name.equals(name))
+            {
+            	return true;
+            }
 		}
 		return false;
 	}
@@ -207,6 +204,39 @@ public class Person implements Serializable
 		}
 	}
 	
+	public static final String CURRENT_ENCOUNTERS = "current-encounters";
+	
+	public HealthRecord.Encounter getCurrentEncounter(Module module)
+	{
+		Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+		
+		if (moduleToCurrentEncounter == null)
+		{
+			moduleToCurrentEncounter = new HashMap<>();
+			attributes.put(CURRENT_ENCOUNTERS, moduleToCurrentEncounter);
+		}
+		
+		return moduleToCurrentEncounter.get(module.name);
+	}
+	
+	public void setCurrentEncounter(Module module, Encounter encounter)
+	{
+		Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+		
+		if (moduleToCurrentEncounter == null)
+		{
+			moduleToCurrentEncounter = new HashMap<>();
+			attributes.put(CURRENT_ENCOUNTERS, moduleToCurrentEncounter);
+		}
+		if (encounter == null)
+		{
+			moduleToCurrentEncounter.remove(module.name);
+		} else
+		{
+			moduleToCurrentEncounter.put(module.name, encounter);
+		}
+	}
+	
 	// Providers API -----------------------------------------------------------
 	public static final String CURRENTPROVIDER = "currentProvider";
 	public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
@@ -215,10 +245,16 @@ public class Person implements Serializable
 	
 	
 	public Provider getAmbulatoryProvider(){
+		
+		if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER))
+		{
+			setAmbulatoryProvider();
+		}
+		
 		return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
 	}
 	
-	public void setAmbulatoryProvider(){
+	private void setAmbulatoryProvider(){
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestAmbulatory(personLocation);
 		attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
@@ -229,10 +265,15 @@ public class Person implements Serializable
 	}
 	
 	public Provider getInpatientProvider(){
+		
+		if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER))
+		{
+			setInpatientProvider();
+		}
 		return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
 	}
 	
-	public void setInpatientProvider(){
+	private void setInpatientProvider(){	
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestInpatient(personLocation);
 		attributes.put(PREFERREDINPATIENTPROVIDER, provider);
@@ -243,10 +284,15 @@ public class Person implements Serializable
 	}
 	
 	public Provider getEmergencyProvider(){
+		
+		if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER))
+		{
+			setEmergencyProvider();
+		}
 		return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
 	}
 
-	public void setEmergencyProvider(){
+	private void setEmergencyProvider(){	
 		Point personLocation = (Point) attributes.get(Person.COORDINATE);
 		Provider provider = Hospital.findClosestEmergency(personLocation);
 		attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
@@ -261,24 +307,30 @@ public class Person implements Serializable
 	}
 	
 	public void addCurrentProvider(String context, Provider provider){
-		if(attributes.containsKey(CURRENTPROVIDER)){
-			Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
-			currentProviders.put(context, provider);
-			attributes.put(CURRENTPROVIDER, currentProviders);
-		} else {
-			Map<String, Provider> currentProviders = new HashMap<String, Provider>();
-			currentProviders.put(context, provider);
-			attributes.put(CURRENTPROVIDER, currentProviders);
+		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
+		if(currentProviders == null){
+			currentProviders = new HashMap<String, Provider>();
+			currentProviders.put(context, provider);			
 		}
+		attributes.put(CURRENTPROVIDER, currentProviders);
 	}
 	
 	public void removeCurrentProvider(String module){
 		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
-		currentProviders.remove(module);
+		if (currentProviders != null)
+		{
+			currentProviders.remove(module);
+		}
 	}
 	
 	public Provider getCurrentProvider(String module){
 		Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
-		return currentProviders.get(module);
+		if (currentProviders == null)
+		{
+			return null;
+		} else
+		{
+			return currentProviders.get(module);
+		}
 	}
 }

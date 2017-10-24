@@ -435,6 +435,9 @@ public class FhirStu3
 		{
 			Code conditionCode = ((HealthRecord.Entry)observation.value).codes.get(0); 
 			value = mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
+		} else if (observation.value instanceof Code)
+		{
+			value = mapCodeToCodeableConcept((Code)observation.value, SNOMED_URI);
 		} else if (observation.value instanceof String)
 		{
 			value = new StringType((String)observation.value);

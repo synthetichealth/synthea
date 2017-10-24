@@ -136,19 +136,10 @@ public class Provider {
 		}
 		switch(service) {
 		case AMBULATORY :
-			if( person.getAmbulatoryProvider() == null ){
-				person.setAmbulatoryProvider();
-			}
 			return person.getAmbulatoryProvider();
 		case INPATIENT :
-			if( person.getInpatientProvider() == null ){
-				person.setInpatientProvider();
-			}
 			return person.getInpatientProvider();
 		case EMERGENCY :
-			if( person.getEmergencyProvider() == null ){
-				person.setEmergencyProvider();
-			}
 			return person.getEmergencyProvider();
 		}
 		// if service is null or not supported by simulation, patient goes to ambulatory hospital
