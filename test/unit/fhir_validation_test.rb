@@ -67,7 +67,8 @@ class FhirValidationTest < Minitest::Test
     @patient[:coordinates_address] = GeoRuby::SimpleFeatures::Point.from_x_y(10,15)
     # assign hospital
     p_file = File.join(File.dirname(__FILE__), '..', 'fixtures', 'test_healthcare_facilities.json')
-    Synthea::Hospital.load(p_file)    
+    Synthea::Hospital.load(p_file)
+    Synthea::Costs.load_costs
     @patient.assign_ambulatory_provider(Synthea::Hospital.hospital_list[0])
 
     @fhir_record = FHIR::Bundle.new
