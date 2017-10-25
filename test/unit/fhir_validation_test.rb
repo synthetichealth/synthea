@@ -6,6 +6,7 @@ class FhirValidationTest < Minitest::Test
     Synthea::COND_LOOKUP['1234'] = { description: '1234', codes: {'SNOMED-CT' => ['1234']}}
     # the Observation test in test_shr_validation below uses value "1234"
     # and some observations take the value as a Condition code, so this has to be in the lookup
+    Synthea::Costs.load_costs
   end
 
   def teardown
@@ -68,7 +69,6 @@ class FhirValidationTest < Minitest::Test
     # assign hospital
     p_file = File.join(File.dirname(__FILE__), '..', 'fixtures', 'test_healthcare_facilities.json')
     Synthea::Hospital.load(p_file)
-    Synthea::Costs.load_costs
     @patient.assign_ambulatory_provider(Synthea::Hospital.hospital_list[0])
 
     @fhir_record = FHIR::Bundle.new

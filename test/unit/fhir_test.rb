@@ -2,6 +2,8 @@ require_relative '../test_helper'
 
 class FhirTest < Minitest::Test
   def setup
+    Synthea::Costs.load_costs
+
     @patient = Synthea::Person.new
     @patient[:name_first] = "foo123"
     @patient[:name_last] = "bar456"
