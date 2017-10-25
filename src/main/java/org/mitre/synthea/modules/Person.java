@@ -28,6 +28,7 @@ public class Person implements Serializable
 	public static final String NAME = "name";
 	public static final String RACE = "race";
 	public static final String GENDER = "gender";
+	public static final String MULTIPLE_BIRTH_STATUS = "multiple_birth_status";
 	public static final String TELECOM = "telecom";
 	public static final String ID = "id";
 	public static final String ADDRESS = "address";
@@ -78,6 +79,14 @@ public class Person implements Serializable
 
 	public double rand(double low, double high) {
 		return (low + ((high - low) * random.nextDouble()));
+	}
+
+	public int randInt() {
+		return random.nextInt();
+	}
+
+	public int randInt(int bound) {
+		return random.nextInt(bound);
 	}
 
 	public long ageInMilliseconds(long time) {

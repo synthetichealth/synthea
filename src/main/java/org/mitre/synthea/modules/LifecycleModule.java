@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ public final class LifecycleModule extends Module
 	@SuppressWarnings("rawtypes")
 	private static final Map growthChart = loadGrowthChart();
 	private static final Faker faker = new Faker();
-	private static final Random rn = new Random();
 	private static final String AGE = "AGE";
 	private static final String AGE_MONTHS = "AGE_MONTHS";
 	public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
@@ -95,9 +93,14 @@ public final class LifecycleModule extends Module
 		String motherLastName = faker.name().lastName();
 		attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
 
+		double prevalenceOfTwins = Double.parseDouble( Config.get("lifecycle.prevalence_of_twins","0.02"));
+		if ((person.rand() < prevalenceOfTwins)) {
+			attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3)+1);
+		}
+
 		attributes.put(Person.TELECOM, faker.phoneNumber().phoneNumber());
 
-		String ssn = "999-" + ((rn.nextInt(99-10+1)+10)) + "-" + ((rn.nextInt(9999-1000+1)+1000));
+		String ssn = "999-" + ((person.randInt(99-10+1)+10)) + "-" + ((person.randInt(9999-1000+1)+1000));
 		attributes.put(Person.IDENTIFIER_SSN, ssn);
 
 		Location.assignPoint(person, (String)attributes.get(Person.CITY));
@@ -139,7 +142,7 @@ public final class LifecycleModule extends Module
 		case 16:
 			// driver's license
 			if (person.attributes.get(Person.IDENTIFIER_DRIVERS) == null) {
-				String identifierDrivers = "S999" + ((rn.nextInt(99999-10000+1) + 10000));
+				String identifierDrivers = "S999" + ((person.randInt(99999-10000+1) + 10000));
 				person.attributes.put(Person.IDENTIFIER_DRIVERS, identifierDrivers);
 			}
 			break;
@@ -160,7 +163,7 @@ public final class LifecycleModule extends Module
 			if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
 				Boolean getsPassport = (person.rand() < 0.5);
 				if (getsPassport) {
-					String identifierPassport = "X" + (rn.nextInt(99999999-10000000+1) + "X");
+					String identifierPassport = "X" + (person.randInt(99999999-10000000+1) + "X");
 					person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
 				}
 			}
