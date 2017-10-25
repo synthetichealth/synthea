@@ -75,7 +75,7 @@ module Synthea
         # import hospitals
         p_file = File.join(File.dirname(__FILE__), '..', '..', 'config', 'healthcare_facilities.json')
         Synthea::Hospital.load(p_file)
-
+        Synthea::Costs.load_costs
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start
       end
 
@@ -137,6 +137,7 @@ module Synthea
 
           all_prevalence = File.open(File.join(folder, 'all_prevalences.csv'), 'w:UTF-8')
           all_prevalence.write("ITEM,POPULATION TYPE,OCCURRENCES,POPULATION COUNT,PREVALENCE RATE,PREVALENCE PERCENTAGE\n")
+
           conditions = @stats[:occurrences][:unique_conditions]['*']['*']['*']['*']['*'].keys
           conditions.each do |condition|
             write_prevalences(all_prevalence, condition.to_s.titleize, :unique_conditions, condition)

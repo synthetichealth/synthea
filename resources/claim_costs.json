@@ -1,0 +1,65 @@
+{
+    "Procedures":{
+        "13995008": {
+            "description": "amputation_left_arm",
+            "price": 60000
+        },
+         "46028000":{
+            "description": "amputation_left_hand",
+            "price": 30000
+        },
+         "180030006":{
+            "description": "amputation_left_foot",
+            "price": 45000
+        },
+          "79733001":{
+            "description": "amputation_left_leg",
+            "price": 60000
+        },
+          "13995008":{
+            "description": "amputation_right_arm",
+            "price": 60000
+        },
+          "46028000":{
+            "description": "amputation_right_hand",
+            "price": 30000
+        },
+          "13995008":{
+            "description": "amputation_right_foot",
+            "price": 60000
+        },
+          "79733001":{
+            "description": "amputation_right_leg",
+            "price": 60000
+        },
+          "429500007":{
+            "description": "defibrillation",
+            "price": 40000
+        },
+          "447365002":{
+            "description": "implant_cardioverter_defib",
+            "price": 40000
+        },
+           "18286008":{
+            "description": "catheter_ablation",
+            "price": 10000
+        },
+           "415070008":{
+            "description": "percutaneous_coronary_intervention",
+            "price": 4000
+        },
+           "232717009":{
+            "description": "coronary_artery_bypass_grafting",
+            "price": 45000
+        },
+           "433112001":{
+            "description": "mechanical_thrombectomy",
+            "price": 13000
+        },
+           "180325003":{
+            "description": "electrical_cardioversion",
+            "price": 1000
+        }
+    }
+}
+

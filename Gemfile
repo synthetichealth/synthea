@@ -13,6 +13,7 @@ gem 'net-sftp'
 gem 'concurrent-ruby', require: 'concurrent'
 gem 'rack', '~> 1.6' # locked at 1.6 to maintain compatibility with ruby 2.0.0
 gem 'distribution', '~> 0.7.3'
+# gem 'byebug'
 
 group :test do
   gem 'rubocop', '~> 0.43.0', require: false

@@ -13,7 +13,9 @@ module Synthea
         @@procedures = File.open("#{folder}/procedures.csv", 'w:UTF-8')
         @@immunizations = File.open("#{folder}/immunizations.csv", 'w:UTF-8')
         @@encounters = File.open("#{folder}/encounters.csv", 'w:UTF-8')
+        @@claims = File.open("#{folder}/claims.csv", 'w:UTF-8')
         write_csv_headers if Synthea::Config.exporter.csv.export_headers
+        @@claim_hash = {}
       end
 
       def self.write_csv_headers
@@ -26,6 +28,7 @@ module Synthea
         @@procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION\n")
         @@immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION\n")
         @@encounters.write("ID,DATE,PATIENT,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION\n")
+        @@claims.write("ID,PATIENT,BILLABLEPERIOD,ORGANIZATION,ENCOUNTER,DIAGNOSIS, TOTAL\n")
       end
 
       def self.close_csv_files
@@ -38,6 +41,7 @@ module Synthea
         @@procedures.close
         @@immunizations.close
         @@encounters.close
+        @@claims.close
       end
 
       def self.convert_to_csv(entity, end_time = Time.now)
@@ -48,6 +52,11 @@ module Synthea
         indices = { observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0 }
         synthea_record.encounters.each do |encounter|
           encounter_id = encounter(encounter, patient_id)
+
+          # claim_id =
+          claim(encounter_id, patient_id)
+          # claim_response_id = claim_response(claim_id, patient_id)
+
           encounter_end = encounter['end_time'] || synthea_record.patient_info[:deathdate] || end_time
           # if an encounter doesn't have an end date, either the patient died during the encounter, or they are still in the encounter
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
@@ -119,6 +128,16 @@ module Synthea
         condition_data = COND_LOOKUP[condition['type']]
         start = condition['time'].strftime('%Y-%m-%d')
         stop = condition['end_time'].strftime('%Y-%m-%d') if condition['end_time']
+
+        # value = 100
+        # diagnosis
+        # @@claims.write("#{sequence},{#diagnosisCodeableConcept},{diagnosis_reference}")
+        # item
+        # @@claims.write("#{sequence}, #{diagnosisLinkId}, #{net_value, net_system, net_code}")
+        # update total
+        # total = old_value + value
+        # @@claims.write("total")
+
         @@conditions.write("#{start},#{stop},#{patient_id},#{encounter_id},#{condition_data[:codes]['SNOMED-CT'].first},#{clean_column(condition_data[:description])}\n")
       end
 
@@ -132,8 +151,37 @@ module Synthea
           reason_code = reason_data[:codes]['SNOMED-CT'].first
           reason_desc = clean_column(reason_data[:description])
         end
+
         @@encounters.write("#{encounter_id},#{encounter['time'].strftime('%Y-%m-%d')},#{patient_id},#{encounter_code},#{encounter_desc},#{reason_code},#{reason_desc}\n")
+        # @@claims.write("#{}, #{}, #{encounter['time'].strftime('%Y-%m-%d')}, #{}")
+
+        claim_id = @@claim_hash['claim_id']
+        billable_period = @@claim_hash['billable_period']
+        claim_organization = 'temp organization' # claim_hash['claim_organization']
+        claim_total = 100 # claim_hash['total']
+        blank = ''
+        if @@claim_hash['patient_id']
+          @@claims.write("#{claim_id},#{patient_id},#{billable_period},#{claim_organization},#{patient_id},#{blank},#{claim_total}\n")
+        end
+        @@claim_hash = { 'billable_period' => encounter['time'].strftime('%Y-%m-%d'), 'claim_organization' => 'temp_organization' }
         encounter_id
+      end
+
+      def self.claim(encounter_id, patient_id)
+        claim_total = 100
+        # @@claims.write("#{claim_id},#{patient_id}\n")#,#{},#{},#{encounter_id},#{claim_total}")
+        @@claim_hash = @@claim_hash.merge!('claim_id' => SecureRandom.uuid.to_s.strip, 'patient_id' => patient_id, 'encounter_id' => encounter_id, 'total' => claim_total)
+
+        # add item for either encounter of medication
+        # @@claims.write("#{sequence},#{net_value,net_system,net_code}")
+        # if encounter
+        item_value = 100
+        @@claim_hash['item_link'] = 'temp_encounter'
+        @@claim_hash['item_value'] = item_value
+
+        # if medication
+        # claim_hash << Hash.new('item_link' => 'temp_medication', 'item_value' => item_value)
+        # x@@claim_hash['claim_id']
       end
 
       def self.observation(observation, patient_id, encounter_id)

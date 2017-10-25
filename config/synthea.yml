@@ -142,6 +142,10 @@ synthea:
         hs_degree: [0.1, 0.75]
         some_college: [0.3, 0.85]
         bs_degree: [0.5, 1.0]
+  costs: 
+    gpci_locality: 'REST OF MASSACHUSETTS'
+    rvu_file: 'Addendum B Relative Value Units and Related Information Used in Determining Medicare Payments CY 2017 CMS 1654-F.csv'
+    gpci_file: 'Addendum E__Geographic Practice Cost Indicies (GPCIs)_CY 2017 CMS 1654-F....csv'
   generic:
     log: false
     log_state_statistics: false

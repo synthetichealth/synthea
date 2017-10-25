@@ -63,13 +63,14 @@ Dir.glob(File.join(root, 'lib', 'modules', '*.rb')).each do |file|
   require file
 end
 
-Dir.glob(File.join(root, 'lib', 'records', '*.rb')).each do |file|
+require File.join(root, 'lib', 'world', 'MA_geo.rb')
+require File.join(root, 'lib', 'world', 'provider.rb')
+require File.join(root, 'lib', 'world', 'costs.rb')
+Dir.glob(File.join(root, 'lib', 'world', '**', '*.rb')).each do |file|
   require file
 end
 
-require File.join(root, 'lib', 'world', 'MA_geo.rb')
-require File.join(root, 'lib', 'world', 'provider.rb')
-Dir.glob(File.join(root, 'lib', 'world', '**', '*.rb')).each do |file|
+Dir.glob(File.join(root, 'lib', 'records', '*.rb')).each do |file|
   require file
 end
 

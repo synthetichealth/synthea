@@ -11,6 +11,8 @@ module Synthea
         patient = basic_info(entity, fhir_record, end_time)
         synthea_record.encounters.each do |encounter|
           curr_encounter = encounter(encounter, fhir_record, patient)
+          curr_claim = claim(curr_encounter, fhir_record, patient)
+          claim_response(curr_claim, fhir_record, patient)
           encounter_end = encounter['end_time'] || synthea_record.patient_info[:deathdate] || end_time
           # if an encounter doesn't have an end date, either the patient died during the encounter, or they are still in the encounter
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
@@ -18,7 +20,7 @@ module Synthea
             while entry && entry['time'] <= encounter_end
               method = entry['fhir']
               method = attribute.to_s if method.nil?
-              send(method, entry, fhir_record, patient, curr_encounter)
+              send(method, entry, fhir_record, patient, curr_encounter, curr_claim)
               indices[attribute] += 1
               entry = synthea_record.send(attribute)[indices[attribute]]
             end
@@ -52,9 +54,7 @@ module Synthea
           ethnicity_fhir = :nonhispanic
         end
         resource_id = SecureRandom.uuid.to_s.strip
-
         # calls provider to create provider fhir for generalPractitioner in patient_resource
-
         prov = provider(fhir_record, entity.ambulatory_provider)
 
         patient_resource = FHIR::Patient.new('id' => resource_id,
@@ -123,6 +123,7 @@ module Synthea
                                                  'valueBoolean' => false
                                                }
                                              ])
+
         # add optional patient name information
         patient_resource.name.first.prefix << entity[:name_prefix] if entity[:name_prefix]
         patient_resource.name.first.suffix << entity[:name_suffix] if entity[:name_suffix]
@@ -206,7 +207,7 @@ module Synthea
         entry
       end
 
-      def self.condition(condition, fhir_record, patient, encounter)
+      def self.condition(condition, fhir_record, patient, encounter, claim)
         resource_id = SecureRandom.uuid
         condition_data = COND_LOOKUP[condition['type']]
         fhir_condition = FHIR::Condition.new('id' => resource_id,
@@ -238,6 +239,21 @@ module Synthea
         entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = fhir_condition
         fhir_record.entry << entry
+
+        claim.resource.diagnosis << FHIR::Claim::Diagnosis.new(
+          'sequence' => (claim.resource.diagnosis.length + 1).to_i,
+          'diagnosisCodeableConcept' => { 'coding' => [{ 'code' => condition_data[:codes]['SNOMED-CT'][0] }] },
+          'diagnosisReference' => { 'reference' => entry.fullUrl.to_s }
+        )
+
+        # no cost for condition/diagnosis
+        claim.resource.item << FHIR::Claim::Item.new(
+          'sequence' => (claim.resource.item.length + 1).to_s,
+          'diagnosisLinkId' => [claim.resource.diagnosis.length],
+          'net' => { 'value' => 0.00, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
+        )
+
+        entry
       end
 
       def self.encounter(encounter, fhir_record, patient)
@@ -276,7 +292,6 @@ module Synthea
                                                               'system' => 'http://snomed.info/sct'
                                                             }])
         end
-
         if encounter['discharge']
           fhir_encounter.hospitalization = FHIR::Encounter::Hospitalization.new('dischargeDisposition' => {
                                                                                   'coding' => [{
@@ -297,6 +312,65 @@ module Synthea
         entry.resource = fhir_encounter
         fhir_record.entry << entry
         entry
+      end
+
+      def self.claim(curr_encounter, fhir_record, patient)
+        resource_id = SecureRandom.uuid.to_s
+        period = curr_encounter.resource.period
+
+        # diagnosis, procedure, prescription, item added later
+        # total = 100
+        fhir_claim = FHIR::Claim.new('id' => resource_id,
+                                     'status' => 'active',
+                                     # 'type' => [{}], #codeableconcept
+                                     'use' => 'complete',
+                                     'patient' => { 'reference' => patient.fullUrl.to_s },
+                                     'billablePeriod' => { 'start' => period.start, 'end' => period.end },
+                                     # 'enterer' => { 'reference' => 'practitioner'},
+                                     # 'insurer' => { 'reference' => curr_encounter.resource.insurer},
+                                     'organization' => { 'reference' => curr_encounter.resource.serviceProvider },
+                                     # 'payee'
+                                     # 'insurance'
+                                     'encounter' => { 'reference' => curr_encounter.fullUrl.to_s },
+                                     'total' => { 'value' => 0.00,
+                                                  'system' => 'urn:iso:std:iso:4217',
+                                                  'code' => 'USD' })
+        # if curr_encounter.resource.hospitalization
+        #  fhir_claim.hospitalization = {'start' => period.start,'end' => period.end}
+        #  fhir_claim.employmentImpacted = {'start' => period.start ,'end' => period.end}
+        # end
+
+        entry = FHIR::Bundle::Entry.new
+        entry.fullUrl = "urn:uuid:#{resource_id}"
+        entry.resource = fhir_claim
+        fhir_record.entry << entry
+
+        # Encounters billed using avg prices from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3096340/
+        # Adjustments for initial or subsequent hospital visit and for level/complexity/time of encounter
+        # not included. Assume initial, low complexity encounter (Tables 4 & 6)
+        encounter_type = curr_encounter.resource.type[0].coding[0].code
+        encounter_cost = Synthea::Costs.get_encounter_cost(encounter_type)
+        entry.resource.item << FHIR::Claim::Item.new(
+          'sequence' => 1,
+          'net' => { 'value' => encounter_cost, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' },
+          'encounter' => { 'reference' => curr_encounter }
+        )
+
+        # update total cost of claim
+        entry.resource.total.value = encounter_cost
+        entry
+      end
+
+      def self.claim_response(_claim, fhir_record, patient)
+        resource_id = SecureRandom.uuid.to_s
+        fhir_claim_response = FHIR::ClaimResponse.new('id' => resource_id,
+                                                      'status' => 'draft',
+                                                      'patient' => { 'reference' => patient.fullUrl.to_s })
+
+        entry = FHIR::Bundle::Entry.new
+        entry.fullUrl = 'url'
+        entry.resource = fhir_claim_response
+        fhir_record.entry << entry
       end
 
       def self.provider(fhir_record, provider)
@@ -323,7 +397,7 @@ module Synthea
         entry
       end
 
-      def self.allergy(allergy, fhir_record, patient, _encounter)
+      def self.allergy(allergy, fhir_record, patient, _encounter, _claim)
         snomed_code = COND_LOOKUP[allergy['type']][:codes]['SNOMED-CT'][0]
         allergy = FHIR::AllergyIntolerance.new('assertedDate' => convert_fhir_date_time(allergy['time'], 'time'),
                                                'clinicalStatus' => allergy['end_time'] ? 'inactive' : 'active',
@@ -360,10 +434,9 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.observation(observation, fhir_record, patient, encounter)
+      def self.observation(observation, fhir_record, patient, encounter, _claim)
         # use quality_of_life_observation method, and not this method, for DALY and QALY export
         return if observation['type'] == :DALY || observation['type'] == :QALY
-
         obs_data = OBS_LOOKUP[observation['type']]
         entry = FHIR::Bundle::Entry.new
         resource_id = SecureRandom.uuid
@@ -429,7 +502,7 @@ module Synthea
         Synthea::Output::FHIRVersionIndependent.quality_of_life_observation(observation, fhir_record, patient, FHIR)
       end
 
-      def self.multi_observation(multi_obs, fhir_record, patient, encounter)
+      def self.multi_observation(multi_obs, fhir_record, patient, encounter, _claim)
         entry = FHIR::Bundle::Entry.new
         resource_id = SecureRandom.uuid
         entry.fullUrl = "urn:uuid:#{resource_id}"
@@ -463,7 +536,7 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.diagnostic_report(report, fhir_record, patient, encounter)
+      def self.diagnostic_report(report, fhir_record, patient, encounter, _claim)
         entry = FHIR::Bundle::Entry.new
         resource_id = SecureRandom.uuid
         entry.fullUrl = "urn:uuid:#{resource_id}"
@@ -491,14 +564,16 @@ module Synthea
         fhir_record.entry << entry
       end
 
-      def self.procedure(procedure, fhir_record, patient, encounter)
+      def self.procedure(procedure, fhir_record, patient, encounter, claim)
         if procedure['reason']
           reason_code = COND_LOOKUP[procedure['reason']][:codes]['SNOMED-CT'][0]
           reason = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && e.resource.code.coding.find { |c| c.code == reason_code } }
         end
+        resource_id = SecureRandom.uuid
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         # prov = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Organization) && e.resource.type[0].coding[0].code == 'prov' }
-        fhir_procedure = FHIR::Procedure.new('subject' => { 'reference' => patient.fullUrl.to_s },
+        fhir_procedure = FHIR::Procedure.new('id' => resource_id,
+                                             'subject' => { 'reference' => patient.fullUrl.to_s },
                                              'status' => 'completed',
                                              'code' => {
                                                'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'display' => proc_data[:description], 'system' => 'http://snomed.info/sct' }],
@@ -507,6 +582,7 @@ module Synthea
                                              # 'reasonReference' => { 'reference' => reason.resource.id },
                                              # 'performer' => { 'reference' => doctor_no_good },
                                              'context' => { 'reference' => encounter.fullUrl.to_s })
+
         fhir_procedure.reasonReference = FHIR::Reference.new('reference' => reason.fullUrl.to_s, 'display' => reason.resource.code.text) if reason
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
@@ -518,7 +594,6 @@ module Synthea
                                                             'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'display' => proc_data[:description], 'system' => 'http://snomed.info/sct' }]
                                                           })
         end
-
         start_time = convert_fhir_date_time(procedure['time'], 'time')
         if procedure['duration']
           end_time = convert_fhir_date_time(procedure['time'] + procedure['duration'], 'time')
@@ -528,11 +603,29 @@ module Synthea
         end
 
         entry = FHIR::Bundle::Entry.new
+        entry.fullUrl = "urn:uuid:#{resource_id}"
         entry.resource = fhir_procedure
         fhir_record.entry << entry
+
+        value = Synthea::Costs.get_procedure_cost(proc_data[:codes]['SNOMED-CT'][0])
+        claim.resource.procedure << FHIR::Claim::Procedure.new(
+          'sequence' => claim.resource.procedure.length + 1,
+          'procedureCodeableConcept' => { 'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures' }] },
+          'procedureReference' => { 'reference' => entry.fullUrl.to_s }
+        )
+
+        claim.resource.item << FHIR::Claim::Item.new(
+          'sequence' => (claim.resource.item.length + 1).to_i,
+          'procedureLinkId' => claim.resource.procedure.length + 1,
+          'net' => { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
+        )
+
+        # update claim total
+        claim.resource.total.value = claim.resource.total.value + value
+        entry
       end
 
-      def self.immunization(imm, fhir_record, patient, encounter)
+      def self.immunization(imm, fhir_record, patient, encounter, claim)
         immunization = FHIR::Immunization.new('status' => 'completed',
                                               'date' => convert_fhir_date_time(imm['time'], 'time'),
                                               'vaccineCode' => {
@@ -552,9 +645,18 @@ module Synthea
         entry = FHIR::Bundle::Entry.new
         entry.resource = immunization
         fhir_record.entry << entry
+
+        value = Synthea::Costs.get_vaccine_cost(IMM_SCHEDULE[imm['type']][:code]['code'])
+        claim.resource.item << FHIR::Claim::Item.new('sequence' => (claim.resource.item.length + 1).to_i,
+                                                     'category' => { 'coding' => [IMM_SCHEDULE[imm['type']][:code]], 'text' => IMM_SCHEDULE[imm['type']][:code]['display'] },
+                                                     'net' => { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' })
+
+        # update total cost of claim
+        claim.resource.total.value = claim.resource.total.value + value
+        entry
       end
 
-      def self.careplans(plan, fhir_record, patient, encounter)
+      def self.careplans(plan, fhir_record, patient, encounter, _claim)
         careplan_data = CAREPLAN_LOOKUP[plan['type']]
         reasons = []
         plan['reasons'].each do |reason|
@@ -562,7 +664,6 @@ module Synthea
           r = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Condition) && reason_code == e.resource.code.coding[0].code }
           reasons << r unless r.nil?
         end
-
         careplan = FHIR::CarePlan.new('subject' => { 'reference' => patient.fullUrl.to_s },
                                       'context' => { 'reference' => encounter.fullUrl.to_s },
                                       'period' => { 'start' => convert_fhir_date_time(plan['start_time']) },
@@ -657,7 +758,7 @@ module Synthea
         entry
       end
 
-      def self.medications(prescription, fhir_record, patient, encounter)
+      def self.medications(prescription, fhir_record, patient, encounter, _claim)
         med_data = MEDICATION_LOOKUP[prescription['type']]
         reasons = []
         prescription['reasons'].each do |reason|
@@ -754,6 +855,7 @@ module Synthea
                                                 'dispenseRequest' => dispense_request,
                                                 'intent' => 'order',
                                                 'id' => med_order_id)
+
         unless dosage_instruction.empty?
           med_order.dosageInstruction = [FHIR::Dosage.new(dosage_instruction)]
         end
@@ -788,6 +890,19 @@ module Synthea
         entry.resource = med_order
         entry.fullUrl = "urn:uuid:#{med_order_id}"
         fhir_record.entry << entry
+
+        value = Synthea::Costs.get_medication_cost(med_data[:codes]['RxNorm'][0])
+        med_claim = claim(encounter, fhir_record, patient)
+        med_claim.resource.prescription = { 'reference' => entry.fullUrl.to_s }
+        med_claim.resource.total = { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
+
+        # replace encounter item in claim with medication item
+        med_claim.resource.item << FHIR::Claim::Item.new(
+          'sequence' => 1,
+          # 'categoryCodableConcept' => [['coding' => ]]
+          'net' => { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
+        )
+        entry
       end
 
       def self.convert_fhir_date_time(date, option = nil)
