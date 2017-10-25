@@ -193,7 +193,9 @@ $duration: 1s;
 .rwd-break { 
     display: inline; 
 }
-
+.clickable-img { 
+    cursor: pointer;
+}
 //
 // Image modals
 // This fixes the modal shifting peculiarity 
@@ -267,6 +269,7 @@ header {
         }
         #site-menu {
             float: right;
+            text-align: left;
             li {
                 font-size: $sm-font-size;
                 margin:10px 5px 5px 5px;
@@ -347,7 +350,7 @@ header {
 /* About  */
 /**********/
 #about {
-    img.logo { 
+    img.syn-logo { 
         max-width: 150px;
         margin-left: auto;  
         margin-right: auto;
@@ -667,9 +670,6 @@ footer {
     #technology { 
         .section-heading { 
             padding-bottom: 45px;
-            h1 { 
-                font-size: $xxl-font-size;
-            }
             .description { 
                 padding: 0 25px;
             }
@@ -731,9 +731,6 @@ footer {
     #contact { 
         .section-heading { 
             padding-bottom: 25px;
-            h1 { 
-                font-size: $xxl-font-size;
-            }
         }
         .panel.contact-panel {
             .job-logo { 
@@ -781,7 +778,7 @@ footer {
             margin-left: auto;
             margin-right: auto;
             width: 110px;
-            height: 90px;
+            height: calc($logo-main-sm + 10px);
         }
         .navbar-header a img {
             left: 0px;
@@ -809,10 +806,11 @@ footer {
                 }
             }
             .navbar-header .logo-banner { 
-                height: 80px;
+                height: calc($logo-main-sm + 10px);
             }
         }
         &.affix #site-menu, &.affix-top #site-menu {
+            text-align: right;
             li {
                 margin:0 5px 0 5px;
             }
@@ -829,8 +827,8 @@ footer {
         }
     }
     #about { 
-        .logo { 
-            width: 120px;
+        .syn-logo { 
+            width: 100px;
         }
         .section-heading { 
             .description { 
