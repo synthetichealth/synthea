@@ -75,7 +75,7 @@ module Synthea
         # import hospitals
         p_file = File.join(File.dirname(__FILE__), '..', '..', 'config', 'healthcare_facilities.json')
         Synthea::Hospital.load(p_file)
-
+        Synthea::Costs.load_costs
         Synthea::Rules.modules # trigger the loading of modules here, to ensure they are set before all threads start
       end
 

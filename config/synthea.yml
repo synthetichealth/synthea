@@ -37,7 +37,7 @@ synthea:
   sequential: # sequential population generation... one at a time...
     # population is scaled to accurately represent MA (using a "true" population of 6,794,422)
     only_dead_patients: false
-    population: 1
+    population: 100
     real_world_population: 6794422 #sum of the jsons in the config folder
     track_detailed_prevalence: true
     multithreading: false
@@ -144,7 +144,8 @@ synthea:
         bs_degree: [0.5, 1.0]
   costs: 
     gpci_locality: 'REST OF MASSACHUSETTS'
-    terminal_output: true
+    rvu_file: 'Addendum B Relative Value Units and Related Information Used in Determining Medicare Payments CY 2017 CMS 1654-F.csv'
+    gpci_file: 'Addendum E__Geographic Practice Cost Indicies (GPCIs)_CY 2017 CMS 1654-F....csv'
   generic:
     log: false
     log_state_statistics: false

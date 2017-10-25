@@ -3,19 +3,12 @@ module Synthea
     module FhirRecord
       SHR_EXT = 'http://standardhealthrecord.org/fhir/StructureDefinition/'.freeze
 
-      # cost data
-      @@rvu_data = Synthea::Costs.read_from_addendum($rvu_file, true)
-      @@gpci_data = Synthea::Costs.read_from_addendum($gpci_file, false)
-      @@concepts_hash = Synthea::Costs.read_from_concepts
-      @@terminal_output = Synthea::Config.costs.terminal_output
-
       def self.convert_to_fhir(entity, end_time = Time.now)
         synthea_record = entity.record_synthea
         indices = { observations: 0, conditions: 0, procedures: 0, immunizations: 0, careplans: 0, medications: 0 }
         fhir_record = FHIR::Bundle.new
         fhir_record.type = 'collection'
         patient = basic_info(entity, fhir_record, end_time)
-        patient_total_cost = 0
         synthea_record.encounters.each do |encounter|
           curr_encounter = encounter(encounter, fhir_record, patient)
           curr_claim = claim(curr_encounter, fhir_record, patient)
@@ -247,7 +240,6 @@ module Synthea
         entry.resource = fhir_condition
         fhir_record.entry << entry
 
-        puts 'adding diagnosis item to claim, no cost.' if @@terminal_output
         claim.resource.diagnosis << FHIR::Claim::Diagnosis.new(
           'sequence' => (claim.resource.diagnosis.length + 1).to_i,
           'diagnosisCodeableConcept' => { 'coding' => [{ 'code' => condition_data[:codes]['SNOMED-CT'][0] }] },
@@ -323,7 +315,6 @@ module Synthea
       end
 
       def self.claim(curr_encounter, fhir_record, patient)
-        puts 'creating claim' if @@terminal_output
         resource_id = SecureRandom.uuid.to_s
         period = curr_encounter.resource.period
 
@@ -345,7 +336,6 @@ module Synthea
                                                   'system' => 'urn:iso:std:iso:4217',
                                                   'code' => 'USD' })
         # if curr_encounter.resource.hospitalization
-        #  puts 'has hospitalization'
         #  fhir_claim.hospitalization = {'start' => period.start,'end' => period.end}
         #  fhir_claim.employmentImpacted = {'start' => period.start ,'end' => period.end}
         # end
@@ -359,24 +349,14 @@ module Synthea
         # Adjustments for initial or subsequent hospital visit and for level/complexity/time of encounter
         # not included. Assume initial, low complexity encounter (Tables 4 & 6)
         encounter_type = curr_encounter.resource.type[0].coding[0].code
-        encounter_cost = 0.00
-        # Encounter inpatient
-        if (encounter_type == '183452005')
-          encounter_cost = 75.00
-        # Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for problem,
-        # patient initiated encounter, patient encounter procedure  
-        else
-          encounter_cost = 125.00
-        end
-
-        puts 'adding encounter item to claim. encounter cost - ' + encounter_cost.to_s if @@terminal_output
+        encounter_cost = Synthea::Costs.get_encounter_cost(encounter_type)
         entry.resource.item << FHIR::Claim::Item.new(
           'sequence' => 1,
           'net' => { 'value' => encounter_cost, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' },
           'encounter' => { 'reference' => curr_encounter }
         )
 
-        # update total cost of claim 
+        # update total cost of claim
         entry.resource.total.value = encounter_cost
         entry
       end
@@ -627,25 +607,10 @@ module Synthea
         entry.resource = fhir_procedure
         fhir_record.entry << entry
 
-        puts 'adding procedure item into claim' if @@terminal_output
-        # hcpc lookup assumes all procedures are coded in SYNTHEA using SNOMED-CT
-        proc_code = proc_data[:codes]['SNOMED-CT'][0]
-
-        begin 
-          hcpc_code = @@concepts_hash[:SNOMED][proc_code]['hcpc'] 
-        rescue
-          puts 'no mapping found. default to hcpc code 27130 (total hip replacement)'
-        end
-
-        # default to code 27130 if no mapping exists
-        hcpc_code = '27130' if hcpc_code.nil?
-        
-        locality = Synthea::Config.costs.gpci_locality 
-        value = Synthea::Costs.medicare_allowable_payment(@@rvu_data, hcpc_code, @@gpci_data, locality, true)
-
+        value = Synthea::Costs.get_procedure_cost(proc_data[:codes]['SNOMED-CT'][0])
         claim.resource.procedure << FHIR::Claim::Procedure.new(
           'sequence' => claim.resource.procedure.length + 1,
-          'procedureCodeableConcept' => { 'coding' => [{ 'code' => proc_code, 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures' }] },
+          'procedureCodeableConcept' => { 'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures' }] },
           'procedureReference' => { 'reference' => entry.fullUrl.to_s }
         )
 
@@ -655,15 +620,12 @@ module Synthea
           'net' => { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
         )
 
-        puts 'procedure details: code - ' + proc_code + ' hcpc code - ' + hcpc_code + ' calc cost - ' + value.to_s if @@terminal_output
-
         # update claim total
         claim.resource.total.value = claim.resource.total.value + value
-        puts 'new claim total is ' + (claim.resource.total.value).to_s if @@terminal_output
         entry
       end
 
-      def self.immunization(imm, fhir_record, patient, encounter, _claim)
+      def self.immunization(imm, fhir_record, patient, encounter, claim)
         immunization = FHIR::Immunization.new('status' => 'completed',
                                               'date' => convert_fhir_date_time(imm['time'], 'time'),
                                               'vaccineCode' => {
@@ -684,19 +646,13 @@ module Synthea
         entry.resource = immunization
         fhir_record.entry << entry
 
-        # https://www.nytimes.com/2014/07/03/health/Vaccine-Costs-Soaring-Paying-Till-It-Hurts.html
-        # no immunization field in fhir claim
-        puts 'adding vaccine item into claim. vaccine cost - 136.00' if @@terminal_output
-        value = 136.00
-        _claim.resource.item << FHIR::Claim::Item.new(
-          'sequence' => (_claim.resource.item.length + 1).to_i,
-          'category' => { 'coding' => [IMM_SCHEDULE[imm['type']][:code]], 'text' => IMM_SCHEDULE[imm['type']][:code]['display'] },
-          'net' => { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
-          )
+        value = Synthea::Costs.get_vaccine_cost(IMM_SCHEDULE[imm['type']][:code]['code'])
+        claim.resource.item << FHIR::Claim::Item.new('sequence' => (claim.resource.item.length + 1).to_i,
+                                                     'category' => { 'coding' => [IMM_SCHEDULE[imm['type']][:code]], 'text' => IMM_SCHEDULE[imm['type']][:code]['display'] },
+                                                     'net' => { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' })
 
         # update total cost of claim
-        _claim.resource.total.value = _claim.resource.total.value + value
-        puts 'new claim total is ' + (_claim.resource.total.value).to_s if @@terminal_output
+        claim.resource.total.value = claim.resource.total.value + value
         entry
       end
 
@@ -935,15 +891,11 @@ module Synthea
         entry.fullUrl = "urn:uuid:#{med_order_id}"
         fhir_record.entry << entry
 
-        # value = cost_lookup('RxNorm', med_data[:codes]['RxNorm'][0])
-
-        # currently all medications cost $255.
-        value = 255.00
+        value = Synthea::Costs.get_medication_cost(med_data[:codes]['RxNorm'][0])
         med_claim = claim(encounter, fhir_record, patient)
         med_claim.resource.prescription = { 'reference' => entry.fullUrl.to_s }
         med_claim.resource.total = { 'value' => value, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' }
 
-        puts 'adding prescription to new claim. medication cost - ' + value.to_s if @@terminal_output
         # replace encounter item in claim with medication item
         med_claim.resource.item << FHIR::Claim::Item.new(
           'sequence' => 1,

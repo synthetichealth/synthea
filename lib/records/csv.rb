@@ -125,12 +125,10 @@ module Synthea
       end
 
       def self.condition(condition, patient_id, encounter_id)
-        puts 'a condition'
         condition_data = COND_LOOKUP[condition['type']]
         start = condition['time'].strftime('%Y-%m-%d')
         stop = condition['end_time'].strftime('%Y-%m-%d') if condition['end_time']
 
-        puts 'add diagnosis and item into claim ($100)'
         # value = 100
         # diagnosis
         # @@claims.write("#{sequence},{#diagnosisCodeableConcept},{diagnosis_reference}")
@@ -144,7 +142,6 @@ module Synthea
       end
 
       def self.encounter(encounter, patient_id)
-        puts 'an encounter (need claim, $100)'
         encounter_id = SecureRandom.uuid.to_s.strip
         encounter_data = ENCOUNTER_LOOKUP[encounter['type']]
         encounter_code = encounter_data[:codes]['SNOMED-CT'].first
@@ -164,7 +161,6 @@ module Synthea
         claim_total = 100 # claim_hash['total']
         blank = ''
         if @@claim_hash['patient_id']
-          puts 'writing to claims'
           @@claims.write("#{claim_id},#{patient_id},#{billable_period},#{claim_organization},#{patient_id},#{blank},#{claim_total}\n")
         end
         @@claim_hash = { 'billable_period' => encounter['time'].strftime('%Y-%m-%d'), 'claim_organization' => 'temp_organization' }
@@ -172,7 +168,6 @@ module Synthea
       end
 
       def self.claim(encounter_id, patient_id)
-        puts 'a claim'
         claim_total = 100
         # @@claims.write("#{claim_id},#{patient_id}\n")#,#{},#{},#{encounter_id},#{claim_total}")
         @@claim_hash = @@claim_hash.merge!('claim_id' => SecureRandom.uuid.to_s.strip, 'patient_id' => patient_id, 'encounter_id' => encounter_id, 'total' => claim_total)
@@ -228,7 +223,6 @@ module Synthea
       end
 
       def self.procedure(procedure, patient_id, encounter_id)
-        puts 'a procedure'
         proc_data = PROCEDURE_LOOKUP[procedure['type']]
         proc_code = proc_data[:codes]['SNOMED-CT'].first
         proc_desc = clean_column(proc_data[:description])

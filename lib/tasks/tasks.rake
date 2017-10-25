@@ -143,7 +143,7 @@ namespace :synthea do
     if Synthea::Config.exporter.ccda.export || Synthea::Config.exporter.ccda.upload || Synthea::Config.exporter.html.export
       Mongoid.configure { |config| config.connect_to('synthea_test') }
     end
-
+    Synthea::Costs.load_costs
     patients.each do |patient|
       Synthea::Output::Exporter.export(patient)
     end

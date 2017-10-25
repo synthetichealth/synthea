@@ -32,6 +32,10 @@ module Synthea
         @people = []
         @dead = []
         @births = 0
+
+        # import hospitals
+        p_file = File.join(File.dirname(__FILE__), '..', '..', 'config', 'healthcare_facilities.json')
+        Synthea::Hospital.load(p_file)
       end
 
       def run
