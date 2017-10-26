@@ -3,7 +3,9 @@ package org.mitre.synthea.modules;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -189,6 +191,10 @@ public final class LifecycleModule extends Module
 			break;
 		case 30:
 			// "overeducated" -> suffix
+			if ((person.attributes.get(Person.NAME_SUFFIX) == null) && ((double)person.attributes.get(Person.EDUCATION_LEVEL) >= 0.95)) {
+				List<String> suffixList = Arrays.asList("PhD", "JD", "MD");
+				person.attributes.put(Person.NAME_SUFFIX, suffixList.get(person.randInt(suffixList.size())));
+			}
 			break;
 		}
 

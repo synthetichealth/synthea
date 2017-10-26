@@ -23,7 +23,7 @@ import com.google.gson.Gson;
  * TODO: add ways to better wrap these maps so they are more accessible and useful.
  * TODO: merge this with Location somehow. they probably don't need to be separate classes
  */
-public class Demographics 
+public class Demographics
 {
 	public long population;
 	public String state;
@@ -57,19 +57,19 @@ public class Demographics
 		      "85..110": 0.040978290790498896
       		}
 		 */
-		
+
 		String pickedRange = ageDistribution.next(random);
-		
+
 		String[] range = pickedRange.split("\\.\\.");
 		// TODO this seems like it would benefit from better caching
 		int low = Integer.parseInt(range[0]);
 		int high = Integer.parseInt(range[1]);
-		
+
 		// nextInt is normally exclusive of the top value,
 	    // so add 1 to make it inclusive
-		return random.nextInt((high - low) + 1) + low; 
+		return random.nextInt((high - low) + 1) + low;
 	}
-	
+
 	public String pickGender(Random random)
 	{
 		// lazy-load in case this randomcollection isn't necessary
@@ -77,7 +77,7 @@ public class Demographics
 		{
 			genderDistribution = buildRandomCollectionFromMap(gender);
 		}
-		
+
 		/*
 		 Sample Gender frequency:
 		   "gender": {
@@ -87,7 +87,7 @@ public class Demographics
 		 */
 		return genderDistribution.next(random);
 	}
-	
+
 	public String pickRace(Random random)
 	{
 		// lazy-load in case this randomcollection isn't necessary
@@ -95,7 +95,7 @@ public class Demographics
 		{
 			raceDistribution = buildRandomCollectionFromMap(race);
 		}
-		
+
 		/*
 		 * Sample Race frequency:
 		     "race": {
@@ -105,12 +105,12 @@ public class Demographics
 			      "asian": 0.014094889727666761,
 			      "native": 0.008015564565419232,
 			      "other": 0.001
-			    }, 
+			    },
 		 */
-		
+
 		return raceDistribution.next(random);
 	}
-	
+
 	public int pickIncome(Random random)
 	{
 		// lazy-load in case this randomcollection isn't necessary
@@ -121,7 +121,7 @@ public class Demographics
 			tempIncome.remove("median");
 			incomeDistribution = buildRandomCollectionFromMap(tempIncome);
 		}
-		
+
 		/*
 		 * Sample Income frequency:
 		   "income": {
@@ -139,19 +139,19 @@ public class Demographics
 		      "200..999": 0.054000000000000006
 		    },
 		 */
-		
+
 		String pickedRange = incomeDistribution.next(random);
-		
+
 		String[] range = pickedRange.split("\\.\\.");
 		// TODO this seems like it would benefit from better caching
 		int low = Integer.parseInt(range[0]) * 1000;
 		int high = Integer.parseInt(range[1]) * 1000;
-		
+
 		// nextInt is normally exclusive of the top value,
 	    // so add 1 to make it inclusive
-		return random.nextInt((high - low) + 1) + low; 
+		return random.nextInt((high - low) + 1) + low;
 	}
-	
+
 	public double incomeLevel(int income)
 	{
 		// simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0
@@ -175,21 +175,30 @@ public class Demographics
 		{
 			educationDistribution = buildRandomCollectionFromMap(education);
 		}
-		
+
 		return educationDistribution.next(random);
 	}
 
 	public double educationLevel(String level, Person person)
 	{
+		double less_than_hs_min = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.less_than_hs.min", "0.0") );
+		double less_than_hs_max = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.less_than_hs.max", "0.5") );
+		double hs_degree_min = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.hs_degree.min", "0.1") );
+		double hs_degree_max = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.hs_degree.max", "0.75") );
+		double some_college_min = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.some_college.min", "0.3") );
+		double some_college_max = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.some_college.max", "0.85") );
+		double bs_degree_min = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.bs_degree.min", "0.5") );
+		double bs_degree_max = Double.parseDouble( Config.get("generate.demographics.socioeconomic.education.bs_degree.max", "1.0") );
+
 		switch(level) {
 		case "less_than_hs":
-			return person.rand(0.0, 0.5);
+			return person.rand(less_than_hs_min, less_than_hs_min);
 		case "hs_degree":
-			return person.rand(0.1,0.75);
+			return person.rand(hs_degree_min, hs_degree_max);
 		case "some_college":
-			return person.rand(0.3,0.85);
+			return person.rand(some_college_min, some_college_max);
 		case "bs_degree":
-			return person.rand(0.5,1.0);
+			return person.rand(bs_degree_min, bs_degree_max);
 		default:
 			return 0.0;
 		}
@@ -217,23 +226,23 @@ public class Demographics
 			return "Low";
 		}
 	}
-	
+
 	/**
 	 * Load a map of Demographics from the JSON file at the given location.
-	 * 
+	 *
 	 * @param filename location of a file containing demographic info.
 	 * @return Map of City Name -> Demographics
 	 * @throws IOException if the file could not be found or read
 	 */
 	public static Map<String,Demographics> loadByName(String filename) throws IOException
-	{	
+	{
 		InputStream stream = Location.class.getResourceAsStream(filename);
 		// read all text into a string
 		String json = new BufferedReader(new InputStreamReader(stream)).lines()
 				   .collect(Collectors.joining("\n"));
 		return loadByContent(json);
 	}
-	
+
 	/**
 	 * Load a map of Demographics from the given JSON string.
 	 * @param json String containing JSON content.
@@ -244,12 +253,12 @@ public class Demographics
 		// wrap the json in a "demographicsFile" property so gson can parse it
 		json = "{ \"demographicsFile\" : " + json + " }";
 		Gson gson = new Gson();
-		
+
 		DemographicsFile parsed = gson.fromJson(json, DemographicsFile.class);
 
 		return parsed.demographicsFile;
 	}
-	
+
 	/**
 	 * Helper function to convert a map of frequencies into a RandomCollection.
 	 */
@@ -262,7 +271,7 @@ public class Demographics
 		}
 		return distribution;
 	}
-	
+
 	/**
 	 * Helper class only used to make it easier to parse the towns.json
 	 * and county .json files via Gson.
