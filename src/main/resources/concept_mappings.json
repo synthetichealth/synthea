@@ -393,13 +393,13 @@
       "description": "Diabetic renal disease (disorder)"
     },
 
-    "9.08E+13": {
+    "90781000119102": {
       "hcpc": "3060F",
       "icd-10": "E11.29",
       "description": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
     },
 
-    "1.57E+14": {
+    "157141000119108": {
       "hcpc": "84156",
       "icd-10": "R80.9",
       "description": "Proteinuria due to type 2 diabetes mellitus (disorder)"
@@ -429,19 +429,19 @@
       "description": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
     },
 
-    "9.73E+13": {
+    "97331000119101": {
       "hcpc": null,
       "icd-10": "E11.311",
       "description": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
     },
 
-    "6.10E+13": {
+    "60951000119105": {
       "hcpc": null,
       "icd-10": "E11.39",
       "description": "Blindness due to type 2 diabetes mellitus (disorder)"
     },
 
-    "3.69E+14": {
+    "368581000119106": {
       "hcpc": "3753F",
       "icd-10": "E11.40",
       "description": "Neuropathy due to type 2 diabetes mellitus (disorder)"
@@ -813,12 +813,6 @@
       "description": null
     },
 
-    "7.64E+14": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "395142003": {
       "hcpc": "95004",
       "icd-10": null,
@@ -861,12 +855,6 @@
       "description": null
     },
 
-    "3.26E+14": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "58332002": {
       "hcpc": null,
       "icd-10": null,
@@ -886,7 +874,7 @@
     },
 
     "428251008": {
-      "hcpc": "Z90.49",
+      "hcpc": "44140",
       "icd-10": null,
       "description": null
     },
@@ -1041,12 +1029,6 @@
       "description": null
     },
 
-    "1.02E+15": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "274031008": {
       "hcpc": null,
       "icd-10": null,
@@ -1120,13 +1102,7 @@
     },
 
     "43075005": {
-      "hcpc": "Z90.49",
-      "icd-10": null,
-      "description": null
-    },
-
-    "7.82E+14": {
-      "hcpc": null,
+      "hcpc": "44140",
       "icd-10": null,
       "description": null
     },
@@ -1173,12 +1149,6 @@
       "description": null
     },
 
-    "7.56E+14": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "301807007": {
       "hcpc": null,
       "icd-10": null,
@@ -1204,12 +1174,6 @@
     },
 
     "287664005": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
-    "7.87E+14": {
       "hcpc": null,
       "icd-10": null,
       "description": null
@@ -1317,12 +1281,6 @@
       "description": null
     },
 
-    "8.50E+14": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "710125008": {
       "hcpc": null,
       "icd-10": null,
@@ -1395,12 +1353,6 @@
       "description": null
     },
 
-    "8.73E+14": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "32485007": {
       "hcpc": null,
       "icd-10": null,
@@ -1444,12 +1396,6 @@
     },
 
     "75162002": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
-    "2.31E+14": {
       "hcpc": null,
       "icd-10": null,
       "description": null
@@ -1887,12 +1833,6 @@
       "description": null
     },
 
-    "6.78E+13": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
     "182964004": {
       "hcpc": null,
       "icd-10": null,
@@ -1918,12 +1858,6 @@
     },
 
     "200936003": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
-    "4.28E+14": {
       "hcpc": null,
       "icd-10": null,
       "description": null
@@ -1960,12 +1894,6 @@
     },
 
     "82423001": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
-    "1.24E+14": {
       "hcpc": null,
       "icd-10": null,
       "description": null
@@ -2230,12 +2158,6 @@
     },
 
     "183401008": {
-      "hcpc": null,
-      "icd-10": null,
-      "description": null
-    },
-
-    "7.84E+14": {
       "hcpc": null,
       "icd-10": null,
       "description": null
