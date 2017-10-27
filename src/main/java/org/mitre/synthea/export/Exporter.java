@@ -78,10 +78,14 @@ public abstract class Exporter
 			ReportExporter.export(generator);
 		}
 		
-		try{
-			PrevalenceReport.export(generator);	
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (Boolean.parseBoolean(Config.get("exporter.prevalence_report")))
+		{
+			try{
+				PrevalenceReport.export(generator);	
+			} catch (Exception e) {
+				System.err.println("Prevalence report generation failed!");
+				e.printStackTrace();
+			}
 		}
 		
 	}
