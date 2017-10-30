@@ -51,6 +51,9 @@ dependencies {
     testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
     testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 	testCompile 'org.mockito:mockito-core:2.7.22'
+	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:2.5'
+	testCompile 'com.phloc:phloc-schematron:2.7.1'
+	testCompile 'com.phloc:phloc-commons:4.4.11'
 }
 
 task graphviz(type: JavaExec) {
