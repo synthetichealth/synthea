@@ -246,6 +246,8 @@ public class Generator {
 
 		String race = city.pickRace(person.random);
 		person.attributes.put(Person.RACE, race);
+		String ethnicity = city.ethnicityFromRace(Person.RACE, person);
+		person.attributes.put(Person.ETHNICITY, ethnicity);
 
 		String gender = city.pickGender(person.random);
 		if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M"))

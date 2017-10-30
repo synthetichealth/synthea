@@ -111,6 +111,74 @@ public class Demographics
 		return raceDistribution.next(random);
 	}
 
+	public String ethnicityFromRace(String race, Person person) {
+		// https://en.wikipedia.org/wiki/Demographics_of_Massachusetts#Race.2C_ethnicity.2C_and_ancestry
+		String ethnicity;
+		if (race == "white") {
+			double num = person.rand(0.0, 86.8);
+			if (num < 22.8) {
+				return "irish";
+			} else if (num < 36.7) {
+				return "italian";
+			} else if (num < 47.4) {
+				return "english";
+			} else if (num < 55.2) {
+				return "french";
+			} else if (num < 61.6) {
+				return "german";
+			} else if (num < 66.6) {
+				return "polish";
+			} else if (num < 71.3) {
+				return "portuguese";
+			} else if (num < 75.7) {
+				return "american";
+			} else if (num < 79.5) {
+				return "french_canadian";
+			} else if (num < 81.9) {
+				return "scottish";
+			} else if (num < 83.8) {
+				return "russian";
+			} else if (num < 85.6) {
+				return "swedish";
+			} else {
+				return "greek";
+			}
+		} else if (race == "hispanic") {
+			double num = person.rand(0.0, 7.1);
+			if (num < 4.1) {
+				return "puerto_rican";
+			} else if (num < 5.1) {
+				return "mexican";
+			} else if (num < 6.1) {
+				return "central_american";
+			} else {
+				return "south_american";
+			}
+		} else if (race == "black") {
+			double num = person.rand(0.0, 5.4);
+			if (num < 1.8) {
+				return "african";
+			} else if (num < 1.8) {
+				return "dominican";
+			} else {
+				return "west_indian";
+			}
+		} else if (race == "asian") {
+			double num = person.rand(0.0, 3.1);
+			if (num < 2.0) {
+				return "chinese";
+			} else {
+				return "asian_indian";
+			}
+		}
+		else if (race == "native") {
+			return "american_indian";
+		}
+		else { // race == "other"
+			return "arab";
+		}
+	}
+
 	public int pickIncome(Random random)
 	{
 		// lazy-load in case this randomcollection isn't necessary
