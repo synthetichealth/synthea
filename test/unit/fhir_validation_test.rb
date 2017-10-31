@@ -111,9 +111,7 @@ class FhirValidationTest < Minitest::Test
                  'stop' => @time + 15.minutes, 'rx_info' => {}}
     Synthea::Output::FhirRecord.medications(med_hash, @fhir_record, @patient_entry, @encounter_entry, @claim_entry)
     med_request = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::MedicationRequest)}
-    validate_by_profile(med_request.resource)
-    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Medication)}
-    validate_by_profile(med.resource)
+    validate_by_profile(med_request.resource, false)
 
     plan_hash = { 'type' => :cardiovascular_disease, 'activities' => [:exercise, :healthy_diet], 'start_time'=>@time, 'time' => @time,
                   'reasons' => [], 'goals' => [], 'stop' => @time + 15.minutes}
