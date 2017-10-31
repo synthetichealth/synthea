@@ -14,6 +14,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 
+
 public abstract class Exporter 
 {
 	/**
@@ -75,7 +76,18 @@ public abstract class Exporter
 		if (Boolean.parseBoolean(Config.get("exporter.cost_access_outcomes_report")))
 		{
 			ReportExporter.export(generator);
-		}	
+		}
+		
+		if (Boolean.parseBoolean(Config.get("exporter.prevalence_report")))
+		{
+			try{
+				PrevalenceReport.export(generator);	
+			} catch (Exception e) {
+				System.err.println("Prevalence report generation failed!");
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	public static File getOutputFolder(String folderName, Person person)
