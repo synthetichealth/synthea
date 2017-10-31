@@ -564,10 +564,9 @@ public abstract class State implements Cloneable
 				
 				if(reason != null) {
 					Object item = person.attributes.get(reason);
-					if(item instanceof String) {
-						encounter.reason = (String) item;						
-					} else if(item instanceof Entry) {
-						encounter.reason = ((Entry) item).type;
+					if(item instanceof Entry) {
+						// technically it shouldn't be anything else
+						encounter.reason = ((Entry) item).codes.get(0);
 					}
 				}
 				
@@ -923,13 +922,13 @@ public abstract class State implements Cloneable
 				// "reason" is an attribute or stateName referencing a previous conditionOnset state
 				if(person.attributes.containsKey(reason)) {
 					Entry condition = (Entry) person.attributes.get(reason);
-					medication.reasons.add(condition.type);
+					medication.reasons.addAll(condition.codes);
 				} else if(person.hadPriorState(reason)) {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
 						if(reason.equals(entry.name)) {
-							medication.reasons.add(entry.type);
+							medication.reasons.addAll(entry.codes);
 						}
 					}
 				}
@@ -967,6 +966,10 @@ public abstract class State implements Cloneable
 		private String medicationOrder;
 		private String referencedByAttribute;
 		
+		// note that this code has some child codes for various different reasons,
+		// ex "medical aim achieved", "ineffective", "avoid interaction", "side effect", etc
+		private static final Code EXPIRED = new Code("SNOMED-CT", "182840001", "Drug treatment stopped - medical advice");
+		
 		@Override
 		protected void initialize(Module module, String name, JsonObject definition) 
 		{
@@ -997,13 +1000,13 @@ public abstract class State implements Cloneable
 		public boolean process(Person person, long time)
 		{
 			if(medicationOrder != null) {
-				person.record.medicationEndByState(time, medicationOrder, "expired");
+				person.record.medicationEndByState(time, medicationOrder, EXPIRED);
 			} else if(referencedByAttribute != null) {
 				Medication medication = (Medication) person.attributes.get(referencedByAttribute);
 				medication.stop = time;
-				person.record.medicationEnd(time, medication.type, "expired");
+				person.record.medicationEnd(time, medication.type, EXPIRED);
 			} else if(codes != null) {
-				codes.forEach(code -> person.record.medicationEnd(time, code.code, "expired"));
+				codes.forEach(code -> person.record.medicationEnd(time, code.code, EXPIRED));
 			}
 			return true;
 		}
@@ -1080,13 +1083,13 @@ public abstract class State implements Cloneable
 				// "reason" is an attribute or stateName referencing a previous conditionOnset state
 				if(person.attributes.containsKey(reason)) {
 					Entry condition = (Entry) person.attributes.get(reason);
-					careplan.reasons.add(condition.type);
+					careplan.reasons.addAll(condition.codes);
 				} else if(person.hadPriorState(reason)) {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
 						if(reason.equals(entry.name)) {
-							careplan.reasons.add(entry.type);
+							careplan.reasons.addAll(entry.codes);
 						}
 					}
 				}
@@ -1109,6 +1112,8 @@ public abstract class State implements Cloneable
 		private List<Code> codes;
 		private String careplan;
 		private String referencedByAttribute;
+		
+		private static final Code FINISHED = new Code("SNOMED-CT", "385658003", "Done");
 		
 		@Override
 		protected void initialize(Module module, String name, JsonObject definition) 
@@ -1139,13 +1144,13 @@ public abstract class State implements Cloneable
 		public boolean process(Person person, long time)
 		{
 			if(careplan != null) {
-				person.record.careplanEndByState(time, careplan, "finished");
+				person.record.careplanEndByState(time, careplan, FINISHED);
 			} else if(referencedByAttribute != null) {
 				CarePlan careplan = (CarePlan) person.attributes.get(referencedByAttribute);
 				careplan.stop = time;
-				person.record.careplanEnd(time, careplan.type, "finished");
+				person.record.careplanEnd(time, careplan.type, FINISHED);
 			}  else if(codes != null) {
-				codes.forEach(code -> person.record.careplanEnd(time, code.code, "finished"));
+				codes.forEach(code -> person.record.careplanEnd(time, code.code, FINISHED));
 			}
 			return true;
 		}
@@ -1213,13 +1218,13 @@ public abstract class State implements Cloneable
 				// "reason" is an attribute or stateName referencing a previous conditionOnset state
 				if(person.attributes.containsKey(reason)) {
 					Entry condition = (Entry) person.attributes.get(reason);
-					procedure.reasons.add(condition.type);
+					procedure.reasons.addAll(condition.codes);
 				} else if(person.hadPriorState(reason)) {
 					// loop through the present conditions, the condition "name" will match
 					// the name of the ConditionOnset state (aka "reason")
 					for(Entry entry : person.record.present.values()) {
 						if(reason.equals(entry.name)) {
-							procedure.reasons.add(entry.type);
+							procedure.reasons.addAll(entry.codes);
 						}
 					}
 				}

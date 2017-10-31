@@ -279,7 +279,7 @@ public class LogicTest {
 		time += Utilities.convertTime("years", 10);
 
 		person.record.careplanEnd(time, diabetesCode.code,
-				"diabetes well controlled");
+				new HealthRecord.Code("SNOMED-CT","444110003","Type II Diabetes Mellitus Well Controlled"));
 		assertFalse(doTest("diabetesCarePlanTest"));
 
 		HealthRecord.Code anginaCode = new HealthRecord.Code("SNOMED-CT",

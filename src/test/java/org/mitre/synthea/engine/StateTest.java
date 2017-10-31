@@ -520,7 +520,8 @@ public class StateTest {
 	    HealthRecord.Encounter enc = person.record.encounters.get(0);
 	    assertEquals(time, enc.start);
 	    assertEquals(0L, enc.stop);
-	    assertEquals("73211009", enc.reason); // diabetes code
+	    assertEquals("73211009", enc.reason.code);
+	    assertEquals("Diabetes Mellitus", enc.reason.display);
 	    
 	    Code code = enc.codes.get(0);
 	    assertEquals("50849002", code.code);
