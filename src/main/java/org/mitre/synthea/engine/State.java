@@ -563,10 +563,18 @@ public abstract class State implements Cloneable
 				diagnosePastConditions(person, time);
 				
 				if(reason != null) {
-					Object item = person.attributes.get(reason);
-					if(item instanceof Entry) {
-						// technically it shouldn't be anything else
-						encounter.reason = ((Entry) item).codes.get(0);
+					if(person.attributes.containsKey(reason)) {
+						Entry condition = (Entry) person.attributes.get(reason);
+						encounter.reason = condition.codes.get(0);
+					} else if(person.hadPriorState(reason)) {
+						// loop through the present conditions, the condition "name" will match
+						// the name of the ConditionOnset state (aka "reason")
+						for(Entry entry : person.record.present.values()) {
+							if(reason.equals(entry.name)) {
+								encounter.reason = entry.codes.get(0);
+								break;
+							}
+						}
 					}
 				}
 				
