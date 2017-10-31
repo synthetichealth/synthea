@@ -340,9 +340,7 @@ class FhirTest < Minitest::Test
     assert_equal('stopped', med.status)
     assert_equal("#{condition1fhir.fullUrl}", med.reasonReference[0].reference)
     assert_equal("#{condition2fhir.fullUrl}", med.reasonReference[1].reference)
-
-    med = @fhir_record.entry.reverse.find {|e| e.resource.is_a?(FHIR::Medication)}.resource
-    med_coding = med.code.coding[0]
+    med_coding = med.medicationCodeableConcept.coding[0]
     assert_equal('834357', med_coding.code)
     assert_equal('3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe', med_coding.display)
     assert_equal('http://www.nlm.nih.gov/research/umls/rxnorm',med_coding.system)
