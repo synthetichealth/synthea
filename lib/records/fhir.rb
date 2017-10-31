@@ -819,7 +819,7 @@ module Synthea
                 'code' => convert_ucum_code(rx_info['duration'].unit)
               }
             }
-            dispense_request.delete('numberOfRepeatsAllowed') if dispense_request['numberOfRepeatsAllowed'] == 0
+            dispense_request.delete('numberOfRepeatsAllowed') if dispense_request['numberOfRepeatsAllowed'].zero?
           end
         end
 
