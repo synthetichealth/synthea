@@ -227,6 +227,7 @@ module Synthea
                                              'context' => { 'reference' => encounter.fullUrl.to_s })
         if condition['end_time']
           fhir_condition.abatementDateTime = convert_fhir_date_time(condition['end_time'], 'time')
+          fhir_condition.clinicalStatus = 'resolved'
         end
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
@@ -242,7 +243,6 @@ module Synthea
 
         claim.resource.diagnosis << FHIR::Claim::Diagnosis.new(
           'sequence' => (claim.resource.diagnosis.length + 1).to_i,
-          'diagnosisCodeableConcept' => { 'coding' => [{ 'code' => condition_data[:codes]['SNOMED-CT'][0] }] },
           'diagnosisReference' => { 'reference' => entry.fullUrl.to_s }
         )
 
@@ -286,11 +286,11 @@ module Synthea
                                              'period' => { 'start' => convert_fhir_date_time(encounter['time'], 'time'), 'end' => convert_fhir_date_time(end_time, 'time') })
 
         if reason_data
-          fhir_encounter.reason = FHIR::CodeableConcept.new('coding' => [{
-                                                              'code' => reason_data[:codes]['SNOMED-CT'][0],
-                                                              'display' => reason_data[:description],
-                                                              'system' => 'http://snomed.info/sct'
-                                                            }])
+          fhir_encounter.reason = [FHIR::CodeableConcept.new('coding' => [{
+                                                               'code' => reason_data[:codes]['SNOMED-CT'][0],
+                                                               'display' => reason_data[:description],
+                                                               'system' => 'http://snomed.info/sct'
+                                                             }])]
         end
         if encounter['discharge']
           fhir_encounter.hospitalization = FHIR::Encounter::Hospitalization.new('dischargeDisposition' => {
@@ -376,14 +376,14 @@ module Synthea
         resource_id = provider.attributes[:resource_id]
         prov = FHIR::Organization.new('id' => resource_id,
                                       'name' => provider.attributes['name'],
-                                      'type' => {
+                                      'type' => [{
                                         'coding' => [{
                                           'code' => 'prov',
                                           'display' => 'Healthcare Provider',
-                                          'system' => 'http://hl7.org/fhir/ValueSet/organization-type'
+                                          'system' => 'http://hl7.org/fhir/organization-type'
                                         }],
                                         'text' => 'Healthcare Provider'
-                                      })
+                                      }])
         if Synthea::Config.exporter.fhir.use_shr_extensions
           prov.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-actor-Organization"])
           # required fields for this profile are name and type
@@ -582,7 +582,7 @@ module Synthea
                                              # 'performer' => { 'reference' => doctor_no_good },
                                              'context' => { 'reference' => encounter.fullUrl.to_s })
 
-        fhir_procedure.reasonReference = FHIR::Reference.new('reference' => reason.fullUrl.to_s, 'display' => reason.resource.code.text) if reason
+        fhir_procedure.reasonReference = [FHIR::Reference.new('reference' => reason.fullUrl.to_s, 'display' => reason.resource.code.text)] if reason
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
           fhir_procedure.meta = FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-procedure-Procedure"])
@@ -609,7 +609,6 @@ module Synthea
         value = Synthea::Costs.get_procedure_cost(proc_data[:codes]['SNOMED-CT'][0])
         claim.resource.procedure << FHIR::Claim::Procedure.new(
           'sequence' => claim.resource.procedure.length + 1,
-          'procedureCodeableConcept' => { 'coding' => [{ 'code' => proc_data[:codes]['SNOMED-CT'][0], 'system' => 'http://hl7.org/fhir/ValueSet/icd-10-procedures' }] },
           'procedureReference' => { 'reference' => entry.fullUrl.to_s }
         )
 
@@ -666,6 +665,7 @@ module Synthea
         careplan = FHIR::CarePlan.new('subject' => { 'reference' => patient.fullUrl.to_s },
                                       'context' => { 'reference' => encounter.fullUrl.to_s },
                                       'period' => { 'start' => convert_fhir_date_time(plan['start_time']) },
+                                      'intent' => 'order',
                                       'category' => [{
                                         'coding' => [{
                                           'code' => careplan_data[:codes]['SNOMED-CT'][0],
@@ -818,29 +818,19 @@ module Synthea
                 'code' => convert_ucum_code(rx_info['duration'].unit)
               }
             }
+            dispense_request.delete('numberOfRepeatsAllowed') if dispense_request['numberOfRepeatsAllowed'].zero?
           end
         end
 
-        med_entry = fhir_record.entry.find { |e| e.resource.is_a?(FHIR::Medication) && med_data[:codes]['RxNorm'][0] == e.resource.code.coding[0].code }
-
-        if med_entry.nil?
-          resource_id = SecureRandom.uuid
-          medication = FHIR::Medication.new('code' => {
-                                              'coding' => [{
-                                                'code' => med_data[:codes]['RxNorm'][0],
-                                                'display' => med_data[:description],
-                                                'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
-                                              }],
-                                              'text' => med_data[:description]
-                                            }, 'id' => resource_id)
-          med_entry = FHIR::Bundle::Entry.new
-          med_entry.fullUrl = "urn:uuid:#{resource_id}"
-          med_entry.resource = medication
-          fhir_record.entry << med_entry
-        end
-
         med_order_id = SecureRandom.uuid
-        med_order = FHIR::MedicationRequest.new('medicationReference' => { 'reference' => med_entry.fullUrl.to_s },
+        med_order = FHIR::MedicationRequest.new('medicationCodeableConcept' => {
+                                                  'coding' => [{
+                                                    'code' => med_data[:codes]['RxNorm'][0],
+                                                    'display' => med_data[:description],
+                                                    'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm'
+                                                  }],
+                                                  'text' => med_data[:description]
+                                                },
                                                 'stage' => {
                                                   'coding' => {
                                                     'code' => 'original-order',
@@ -870,8 +860,6 @@ module Synthea
                            end
 
         if Synthea::Config.exporter.fhir.use_shr_extensions
-          med_entry.resource.meta ||= FHIR::Meta.new('profile' => ["#{SHR_EXT}shr-medication-Medication"])
-
           med_order.extension = [FHIR::Extension.new('url' => "#{SHR_EXT}shr-base-ActionCode-extension",
                                                      'valueCodeableConcept' => {
                                                        'text' => 'Prescription of drug (procedure)',

@@ -394,7 +394,8 @@ module Synthea
                                                            'subject' => { 'reference' => patient.fullUrl.to_s },
                                                            'encounter' => { 'reference' => encounter.fullUrl.to_s },
                                                            'effectiveDateTime' => convert_fhir_date_time(report['time'], 'time'),
-                                                           'issued' => convert_fhir_date_time(report['time'], 'time'))
+                                                           'issued' => convert_fhir_date_time(report['time'], 'time'),
+                                                           'performer' => { 'reference' => patient.resource.careProvider[0].reference })
         entry.resource.result = []
         obs_entries = fhir_record.entry.last(report['numObs'])
         obs_entries.each do |e|
@@ -443,6 +444,7 @@ module Synthea
                                                      },
                                                      'patient' => { 'reference' => patient.fullUrl.to_s },
                                                      'wasNotGiven' => false,
+                                                     'reported' => false,
                                                      'encounter' => { 'reference' => encounter.fullUrl.to_s })
 
         entry = FHIR::DSTU2::Bundle::Entry.new
@@ -495,7 +497,8 @@ module Synthea
                                                                          'display' => activity_data[:description],
                                                                          'system' => 'http://snomed.info/sct'
                                                                        }]
-                                                                     }
+                                                                     },
+                                                                     'prohibited' => false
                                                                    })
         end
 
@@ -605,6 +608,7 @@ module Synthea
                 'code' => convert_ucum_code(rx_info['duration'].unit)
               }
             }
+            dispense_request.delete('numberOfRepeatsAllowed') if dispense_request['numberOfRepeatsAllowed'].zero?
           end
         end
 
