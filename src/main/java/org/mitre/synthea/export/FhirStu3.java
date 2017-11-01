@@ -82,6 +82,24 @@ public class FhirStu3
 	private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
 	private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/";
 
+	private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
+
+	@SuppressWarnings("rawtypes")
+	private static Map loadRaceEthnicityCodes() {
+		String filename = "/race_ethnicity_codes.json";
+		try {
+			InputStream stream = LifecycleModule.class.getResourceAsStream(filename);
+			String json = new BufferedReader(new InputStreamReader(stream)).lines()
+					.parallel().collect(Collectors.joining("\n"));
+			Gson g = new Gson();
+			return g.fromJson(json, HashMap.class);
+		} catch (Exception e) {
+			System.err.println("ERROR: unable to load json: " + filename);
+			e.printStackTrace();
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+
 	/**
 	 * Convert the given Person into a JSON String,
 	 * containing a FHIR Bundle of the Person and the associated entries from their health record.
@@ -198,12 +216,12 @@ public class FhirStu3
 		}
 
 		String raceNum = Config.get("generate.demographics.race_ethnicity." + race);
-		Code raceCode = new Code("http://hl7.org/fhir/v3/Race", raceNum, race.toUpperCase());
+		Code raceCode = new Code("http://hl7.org/fhir/v3/Race", raceNum, race.substring(0,1).toUpperCase() + race.substring(1));
 		raceExtension.setValue(mapCodeToCodeableConcept(raceCode, "http://hl7.org/fhir/v3/Race"));
 		patientResource.addExtension(raceExtension);
 
 		String ethnicityNum = Config.get("generate.demographics.race_ethnicity." + ethnicity);
-		Code ethnicityCode = new Code("http://hl7.org/fhir/v3/Ethnicity", ethnicityNum, ethnicity.toUpperCase());
+		Code ethnicityCode = new Code("http://hl7.org/fhir/v3/Ethnicity", ethnicityNum, ethnicity.substring(0,1).toUpperCase() + ethnicity.substring(1));
 		ethnicityExtension.setValue(mapCodeToCodeableConcept(ethnicityCode, "http://hl7.org/fhir/v3/Ethnicity"));
 		patientResource.addExtension(ethnicityExtension);
 

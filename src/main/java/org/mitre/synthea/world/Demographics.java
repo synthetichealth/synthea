@@ -113,7 +113,6 @@ public class Demographics
 
 	public String ethnicityFromRace(String race, Person person) {
 		// https://en.wikipedia.org/wiki/Demographics_of_Massachusetts#Race.2C_ethnicity.2C_and_ancestry
-		String ethnicity;
 		if (race == "white") {
 			double num = person.rand(0.0, 86.8);
 			if (num < 22.8) {
