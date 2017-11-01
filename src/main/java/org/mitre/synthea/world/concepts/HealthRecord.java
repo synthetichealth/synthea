@@ -117,34 +117,34 @@ public class HealthRecord {
 	}
 	
 	public class Medication extends Entry {
-		public Set<String> reasons;
-		public String stopReason;
+		public List<Code> reasons;
+		public Code stopReason;
 		public JsonObject prescriptionDetails;
 		public Claim claim;
 		public Medication(long time, String type) {
 			super(time, type);
-			this.reasons = new LinkedHashSet<String>();
+			this.reasons = new ArrayList<Code>();
 			this.claim = new Claim(this);
 		}
 	}
 	
 	public class Procedure extends Entry {
-		public Set<String> reasons;
+		public List<Code> reasons;
 		public Procedure(long time, String type) {
 			super(time, type);
-			this.reasons = new LinkedHashSet<String>();
+			this.reasons = new ArrayList<Code>();
 		}
 	}
 
 	public class CarePlan extends Entry {
 		public Set<Code> activities;
-		public Set<String> reasons;
+		public List<Code> reasons;
 		public Set<JsonObject> goals;
-		public String stopReason;
+		public Code stopReason;
 		public CarePlan(long time, String type) {
 			super(time, type);
 			this.activities = new LinkedHashSet<Code>();
-			this.reasons = new LinkedHashSet<String>();
+			this.reasons = new ArrayList<Code>();
 			this.goals = new LinkedHashSet<JsonObject>();
 		}
 	}
@@ -237,7 +237,7 @@ public class HealthRecord {
 		public List<Medication> medications;
 		public List<CarePlan> careplans;
 		public Claim claim; // for now assume 1 claim per encounter
-		public String reason;
+		public Code reason;
 		public Code discharge;
 		public Provider provider;
 		public CommunityHealthWorker chw;
@@ -483,7 +483,7 @@ public class HealthRecord {
 		return medication;
 	}
 	
-	public void medicationEnd(long time, String type, String reason) {
+	public void medicationEnd(long time, String type, Code reason) {
 		if(present.containsKey(type)) {
 			Medication medication = (Medication) present.get(type);
 			medication.stop = time;
@@ -492,7 +492,7 @@ public class HealthRecord {
 		}
 	}
 	
-	public void medicationEndByState(long time, String stateName, String reason) {
+	public void medicationEndByState(long time, String stateName, Code reason) {
 		Medication medication = null;
 		Iterator<Entry> iter = present.values().iterator();
 		while(iter.hasNext()) {
@@ -525,7 +525,7 @@ public class HealthRecord {
 		return careplan;
 	}
 	
-	public void careplanEnd(long time, String type, String reason) {
+	public void careplanEnd(long time, String type, Code reason) {
 		if(present.containsKey(type)) {
 			CarePlan careplan = (CarePlan) present.get(type);
 			careplan.stop = time;
@@ -534,7 +534,7 @@ public class HealthRecord {
 		}
 	}
 	
-	public void careplanEndByState(long time, String stateName, String reason) {
+	public void careplanEndByState(long time, String stateName, Code reason) {
 		CarePlan careplan = null;
 		Iterator<Entry> iter = present.values().iterator();
 		while(iter.hasNext()) {

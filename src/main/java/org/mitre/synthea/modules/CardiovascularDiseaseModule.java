@@ -225,6 +225,10 @@ public final class CardiovascularDiseaseModule extends Module
         LOOKUP.put( "atropine", new Code("RxNorm", "1190795", "Atropine Sulfate 1 MG/ML Injectable Solution")  );
         LOOKUP.put( "alteplase", new Code("RxNorm", "308056", "Alteplase 1 MG/ML Injectable Solution")  );
         
+        // reasons
+        LOOKUP.put( "stop_drug", new Code("SNOMED-CT", "182846007", "Dr stopped drug - medical aim achieved"));
+        LOOKUP.put( "cardiovascular_improved", new Code("SNOMED-CT", "413757005", "Cardiac status is consistent with or improved from preoperative baseline"));
+        
         EMERGENCY_MEDS = new HashMap<>();
         EMERGENCY_MEDS.put("myocardial_infarction", Arrays.asList("nitroglycerin", "atorvastatin", "captopril", "clopidogrel"));
         EMERGENCY_MEDS.put("stroke", Arrays.asList("clopidogrel", "alteplase"));
@@ -778,7 +782,7 @@ public final class CardiovascularDiseaseModule extends Module
 				if (person.record.medicationActive(med))
 				{
 					// This prescription can be stopped...
-		             person.record.medicationEnd(time, med, "cardiovascular_improved");
+		             person.record.medicationEnd(time, med, LOOKUP.get("cardiovascular_improved"));
 				}
 				else
 				{
@@ -816,7 +820,7 @@ public final class CardiovascularDiseaseModule extends Module
         				Procedure procedure = person.record.procedure(time, code.display);
         				procedure.name = "CardiovascularDisease_Encounter";
         				procedure.codes.add(code);
-        				procedure.reasons.add(reason);
+        				procedure.reasons.add(LOOKUP.get(reason));
         				
         				// increment number of procedures by respective hospital
         				Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
@@ -847,7 +851,7 @@ public final class CardiovascularDiseaseModule extends Module
           // increment number of prescriptions prescribed by respective hospital
     
           provider.incrementPrescriptions(year);
-          person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med, "stop_drug");
+          person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med, LOOKUP.get("stop_drug"));
         }
 
         for (String proc : EMERGENCY_PROCEDURES.get(diagnosis))
@@ -855,7 +859,7 @@ public final class CardiovascularDiseaseModule extends Module
         	Procedure procedure = person.record.procedure(time, proc);
         	procedure.name = "CardiovascularDisease_Emergency";
         	procedure.codes.add(LOOKUP.get(proc));
-        	procedure.reasons.add(diagnosis);
+        	procedure.reasons.add(LOOKUP.get(diagnosis));
           // increment number of procedures performed by respective hospital
           provider.incrementProcedures(year);
         }
