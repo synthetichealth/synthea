@@ -66,13 +66,12 @@ class FhirTest < Minitest::Test
 
     #Add 1 provider and an encounter and 1 entry for each 'category'. Repeat. Check that the order inserted is correct
     fhir = Synthea::Output::FhirRecord.convert_to_fhir(@patient)
-    assert_equal(16,fhir.entry.length)
-    #assert_equal(12,fhir.entry.length)
+    assert_equal(14,fhir.entry.length)
     #test_abatement
     disease = fhir.entry.find {|e| e.resource.is_a?(FHIR::Condition)}.resource
     assert_equal(Synthea::Output::FhirRecord.convert_fhir_date_time(@time + 10.minutes, 'time'), disease.abatementDateTime)
     # byebug
-    order = [FHIR::Encounter, FHIR::Claim, FHIR::ClaimResponse, FHIR::Condition, FHIR::Observation, FHIR::Procedure, FHIR::Immunization]
+    order = [FHIR::Encounter, FHIR::Claim, FHIR::Condition, FHIR::Observation, FHIR::Procedure, FHIR::Immunization]
     order = [FHIR::Organization, FHIR::Patient] + order + order
 
     order.zip(fhir.entry) do |klass, entry|

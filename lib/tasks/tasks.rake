@@ -81,10 +81,11 @@ namespace :synthea do
       client.default_format = FHIR::Formats::ResourceFormat::RESOURCE_JSON
       puts 'Uploading Patient records...'
       count = 0
+      success = 0
       Dir.glob(files).each do |file|
         json = File.open(file, 'r:UTF-8', &:read)
         bundle = FHIR.from_contents(json)
-        Synthea::Output::Exporter.fhir_upload(bundle, args.url, client)
+        success += 1 if Synthea::Output::Exporter.fhir_upload(bundle, args.url, client)
         count += 1
       end
       finish = Time.now
@@ -95,6 +96,7 @@ namespace :synthea do
       each_seconds = (each_minutes - each_minutes.floor) * 60
       puts "Completed in #{minutes.floor} minute(s) #{seconds.floor} second(s)."
       puts "Average time per record: #{each_minutes.floor} minute(s) #{each_seconds.floor} second(s)."
+      puts "Successfully uploaded #{success} of #{count} records."
     else
       puts 'No FHIR patient records have been generated yet.'
       puts 'Run synthea:generate task.'

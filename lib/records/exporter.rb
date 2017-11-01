@@ -105,12 +105,18 @@ module Synthea
           # defined our own 'add to transaction' function to preserve our entry information
           add_entry_transaction('POST', nil, entry, fhir_client)
         end
+        success = true
         begin
           reply = fhir_client.end_transaction
-          puts "  Error: #{reply.code}" if reply.code != 200
+          if reply.code != 200
+            puts "  Error: #{reply.code}"
+            success = false
+          end
         rescue StandardError => e
           puts "  Error: #{e.message}"
+          success = false
         end
+        success
       end
 
       def self.add_entry_transaction(_method, url, entry = nil, client)

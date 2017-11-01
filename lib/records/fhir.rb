@@ -12,7 +12,7 @@ module Synthea
         synthea_record.encounters.each do |encounter|
           curr_encounter = encounter(encounter, fhir_record, patient)
           curr_claim = claim(curr_encounter, fhir_record, patient)
-          claim_response(curr_claim, fhir_record, patient)
+          # claim_response(curr_claim, fhir_record, patient)
           encounter_end = encounter['end_time'] || synthea_record.patient_info[:deathdate] || end_time
           # if an encounter doesn't have an end date, either the patient died during the encounter, or they are still in the encounter
           [:conditions, :observations, :procedures, :immunizations, :careplans, :medications].each do |attribute|
@@ -361,17 +361,16 @@ module Synthea
         entry
       end
 
-      def self.claim_response(_claim, fhir_record, patient)
-        resource_id = SecureRandom.uuid.to_s
-        fhir_claim_response = FHIR::ClaimResponse.new('id' => resource_id,
-                                                      'status' => 'draft',
-                                                      'patient' => { 'reference' => patient.fullUrl.to_s })
-
-        entry = FHIR::Bundle::Entry.new
-        entry.fullUrl = 'url'
-        entry.resource = fhir_claim_response
-        fhir_record.entry << entry
-      end
+      # def self.claim_response(_claim, fhir_record, patient)
+      #   resource_id = SecureRandom.uuid.to_s
+      #   fhir_claim_response = FHIR::ClaimResponse.new('id' => resource_id,
+      #                                                 'status' => 'draft',
+      #                                                 'patient' => { 'reference' => patient.fullUrl.to_s })
+      #   entry = FHIR::Bundle::Entry.new
+      #   entry.fullUrl = "urn:uuid:#{resource_id}"
+      #   entry.resource = fhir_claim_response
+      #   fhir_record.entry << entry
+      # end
 
       def self.provider(fhir_record, provider)
         resource_id = provider.attributes[:resource_id]
