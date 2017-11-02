@@ -58,6 +58,28 @@ public abstract class Exporter
 				e.printStackTrace();
 			}
 		}
+		
+		if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) 
+		{
+			try 
+			{
+				CSVExporter.getInstance().export(person, stopTime);
+			} catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		if (Boolean.parseBoolean(Config.get("exporter.text.export"))) 
+		{
+			try 
+			{
+				TextExporter.export(person, stopTime);
+			} catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
