@@ -10,7 +10,7 @@ after_success:
   - bundle exec rake synthea:graphviz
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
 notifications:
-  slack: hdi10x:tgmWL6OKKgODjOMqHuRMerxC
+  slack: mitrecorp:HNikOgsZALD9WxBZh5oSJve9
 env:
   global:
     - JRUBY_OPTS="-J-Xmx2G"
