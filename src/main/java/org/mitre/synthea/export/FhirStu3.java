@@ -1,8 +1,14 @@
 package org.mitre.synthea.export;
 
-import java.util.Date;
-import java.util.UUID;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.BooleanType;
@@ -52,7 +58,6 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.HealthRecord;
 import org.mitre.synthea.modules.HealthRecord.CarePlan;
 import org.mitre.synthea.modules.HealthRecord.Claim;
@@ -69,6 +74,7 @@ import ca.uhn.fhir.context.FhirContext;
 
 import com.vividsolutions.jts.geom.Point;
 
+import com.google.gson.Gson;
 
 public class FhirStu3
 {
@@ -88,7 +94,7 @@ public class FhirStu3
 	private static Map loadRaceEthnicityCodes() {
 		String filename = "/race_ethnicity_codes.json";
 		try {
-			InputStream stream = LifecycleModule.class.getResourceAsStream(filename);
+			InputStream stream = FhirStu3.class.getResourceAsStream(filename);
 			String json = new BufferedReader(new InputStreamReader(stream)).lines()
 					.parallel().collect(Collectors.joining("\n"));
 			Gson g = new Gson();
@@ -215,12 +221,12 @@ public class FhirStu3
 			ethnicity = "nonhispanic";
 		}
 
-		String raceNum = Config.get("generate.demographics.race_ethnicity." + race);
+		String raceNum = (String) raceEthnicityCodes.get(race);
 		Code raceCode = new Code("http://hl7.org/fhir/v3/Race", raceNum, race.substring(0,1).toUpperCase() + race.substring(1));
 		raceExtension.setValue(mapCodeToCodeableConcept(raceCode, "http://hl7.org/fhir/v3/Race"));
 		patientResource.addExtension(raceExtension);
 
-		String ethnicityNum = Config.get("generate.demographics.race_ethnicity." + ethnicity);
+		String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);
 		Code ethnicityCode = new Code("http://hl7.org/fhir/v3/Ethnicity", ethnicityNum, ethnicity.substring(0,1).toUpperCase() + ethnicity.substring(1));
 		ethnicityExtension.setValue(mapCodeToCodeableConcept(ethnicityCode, "http://hl7.org/fhir/v3/Ethnicity"));
 		patientResource.addExtension(ethnicityExtension);
