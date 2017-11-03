@@ -1,0 +1,8 @@
+engines:
+  checkstyle:
+    enabled: true
+    config:
+      file: "config/checkstyle/checkstyle.xml"
+  sonar-java:
+    enabled: true
+

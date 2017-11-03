@@ -21,38 +21,37 @@ import org.mitre.synthea.world.agents.Person;
  * https://github.com/mdht/mdht-models
  */
 public class CCDAExporterTest {
-    @Test public void testCCDAExport() throws Exception
-    {
-        CDAUtil.loadPackages();
-    	TestHelper.exportOff();
-    	Config.set("exporter.ccda.export", "true");
-    	
-    	List<String> validationErrors = new ArrayList<String>();
-    	
-    	int numberOfPeople = 10;
-        Generator generator = new Generator(numberOfPeople);
-        for(int i=0; i < numberOfPeople; i++)
-        {
-        	int x = validationErrors.size();
-            Person person = generator.generatePerson(i);    
-            String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
-            InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
-            try {
-                CDAUtil.load(inputStream, new BasicValidationHandler() {
-                    public void handleError(Diagnostic diagnostic) {
-                    	System.out.println("ERROR: " + diagnostic.getMessage());
-                        validationErrors.add(diagnostic.getMessage());
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            int y = validationErrors.size();
-            if(x != y) {
-            	Exporter.export(person, System.currentTimeMillis());
-            }
-        }
+  @Test
+  public void testCCDAExport() throws Exception {
+    CDAUtil.loadPackages();
+    TestHelper.exportOff();
+    Config.set("exporter.ccda.export", "true");
 
-        assertEquals(0, validationErrors.size());
+    List<String> validationErrors = new ArrayList<String>();
+
+    int numberOfPeople = 10;
+    Generator generator = new Generator(numberOfPeople);
+    for (int i = 0; i < numberOfPeople; i++) {
+      int x = validationErrors.size();
+      Person person = generator.generatePerson(i);
+      String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
+      InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
+      try {
+        CDAUtil.load(inputStream, new BasicValidationHandler() {
+          public void handleError(Diagnostic diagnostic) {
+            System.out.println("ERROR: " + diagnostic.getMessage());
+            validationErrors.add(diagnostic.getMessage());
+          }
+        });
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      int y = validationErrors.size();
+      if (x != y) {
+        Exporter.export(person, System.currentTimeMillis());
+      }
     }
+
+    assertEquals(0, validationErrors.size());
+  }
 }
