@@ -11,6 +11,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -49,6 +50,15 @@ dependencies {
     testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 	testCompile 'org.mockito:mockito-core:2.7.22'
 }
+
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
+check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {
 	description 'Generate rule visualization'
