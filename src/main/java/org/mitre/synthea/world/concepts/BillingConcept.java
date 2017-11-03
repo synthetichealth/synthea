@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,11 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-
 public class BillingConcept {
   // HashMap of all codes in synthea
-  private static HashMap<String, BillingConcept> conceptHash = new HashMap<String, BillingConcept>();
+  private static HashMap<String, BillingConcept> conceptHash = 
+      new HashMap<String, BillingConcept>();
 
   private String type;
   private String hcpc;
@@ -28,6 +29,7 @@ public class BillingConcept {
     cost = (String) p.get("cost");
   }
 
+  @SuppressWarnings("unchecked")
   public static void loadConceptMappings() {
 
     String filename = "/concept_mappings.json";
@@ -58,8 +60,11 @@ public class BillingConcept {
     return conceptHash.get(code);
   }
 
+  public String getType() {
+    return type;
+  }
+  
   public String getHcpcCode() {
-
     return hcpc;
   }
 

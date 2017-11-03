@@ -73,7 +73,7 @@ public abstract class Config {
   /**
    * Get a set of the names for all properties in the config file.
    * 
-   * Returns a set of keys in this property list where the key and its corresponding value are
+   * <p>Returns a set of keys in this property list where the key and its corresponding value are
    * strings, including distinct keys in the default property list if a key of the same name has not
    * already been found from the main properties list. Properties whose key or value is not of type
    * String are omitted. The returned set is not backed by the Properties object. Changes to this

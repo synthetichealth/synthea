@@ -8,7 +8,8 @@ public class RaceAndEthnicity {
   public static final Map<String, String> LOOK_UP = createLookup();
   public static final Map<String, String> LOOK_UP_CDC_RACE = createCDCRaceLookup();
   public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_CODE = createCDCEthnicityLookup();
-  public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_DISPLAY = createCDCEthnicityDisplayLookup();
+  public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_DISPLAY = 
+      createCDCEthnicityDisplayLookup();
 
   private static Map<String, String> createLookup() {
     Map<String, String> result = new HashMap<String, String>();

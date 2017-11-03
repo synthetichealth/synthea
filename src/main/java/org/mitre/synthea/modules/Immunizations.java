@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,9 +15,6 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-
-import com.google.gson.Gson;
 
 /**
  * This is a complete, but fairly simplistic approach to synthesizing immunizations. It is encounter
@@ -94,8 +93,8 @@ public class Immunizations {
     }
 
     // Don't administer if all recommended doses have already been given
-    List at_months = new ArrayList((List) schedule.get("at_months"));
-    if (history.size() >= at_months.size()) {
+    List atMonths = new ArrayList((List) schedule.get("at_months"));
+    if (history.size() >= atMonths.size()) {
       return false;
     }
 
@@ -115,24 +114,24 @@ public class Immunizations {
     // 1) eliminate any recommended doses that are not within 4 years of the patient's age
     // at_months = at_months.reject { |am| age_in_months - am >= 48 }
     Predicate<Double> notWithinFourYears = p -> ((ageInMonths - p) >= 48);
-    at_months.removeIf(notWithinFourYears);
-    if (at_months.isEmpty()) {
+    atMonths.removeIf(notWithinFourYears);
+    if (atMonths.isEmpty()) {
       return false;
     }
 
     // 2) eliminate recommended doses that were actually administered
     for (Long date : history) {
       int ageAtDate = person.ageInMonths(date);
-      double recommendedAge = (double) at_months.get(0);
+      double recommendedAge = (double) atMonths.get(0);
       if (ageAtDate >= recommendedAge && ((ageAtDate - recommendedAge) < 48)) {
-        at_months.remove(0);
-        if (at_months.isEmpty()) {
+        atMonths.remove(0);
+        if (atMonths.isEmpty()) {
           return false;
         }
       }
     }
 
     // 3) see if there are any recommended doses remaining that this patient is old enough for
-    return !at_months.isEmpty() && ageInMonths >= (double) at_months.get(0);
+    return !atMonths.isEmpty() && ageInMonths >= (double) atMonths.get(0);
   }
 }

@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.agents;
 
+import com.vividsolutions.jts.geom.Point;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -19,8 +21,6 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
-
-import com.vividsolutions.jts.geom.Point;
 
 public class Person implements Serializable {
   private static final long serialVersionUID = 4322116644425686379L;
@@ -70,7 +70,7 @@ public class Person implements Serializable {
   private Map<String, Map<String, Integer>> symptoms;
   public EventList events;
   public HealthRecord record;
-  /** history of the currently active module */
+  /** history of the currently active module. */
   public List<State> history;
 
   public Person(long seed) {
@@ -212,9 +212,10 @@ public class Person implements Serializable {
 
   public static final String CURRENT_ENCOUNTERS = "current-encounters";
 
+  @SuppressWarnings("unchecked")
   public HealthRecord.Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes
-        .get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter = 
+        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -224,9 +225,10 @@ public class Person implements Serializable {
     return moduleToCurrentEncounter.get(module.name);
   }
 
+  @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes
-        .get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter = 
+        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -246,7 +248,6 @@ public class Person implements Serializable {
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
 
   public Provider getAmbulatoryProvider() {
-
     if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER)) {
       setAmbulatoryProvider();
     }
@@ -304,6 +305,7 @@ public class Person implements Serializable {
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void addCurrentProvider(String context, Provider provider) {
     Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
     if (currentProviders == null) {
@@ -313,6 +315,7 @@ public class Person implements Serializable {
     attributes.put(CURRENTPROVIDER, currentProviders);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void removeCurrentProvider(String module) {
     Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
     if (currentProviders != null) {
@@ -320,6 +323,7 @@ public class Person implements Serializable {
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public Provider getCurrentProvider(String module) {
     Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
     if (currentProviders == null) {

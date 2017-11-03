@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.geography;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +14,6 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.world.agents.Person;
-
-import com.google.gson.Gson;
 
 /**
  * Demographics class holds the information from the towns.json and associated county config files.
@@ -144,7 +144,6 @@ public class Demographics {
     // these numbers are intended to produce the above numbers overall but correlated by ethnicity
     // ex, only people of chinese ethnicity speak chinese
     // these are "manufactured" #s and not based on real citations
-    double num = person.rand(0.0, 100.0);
     if (ethnicity.equals("irish")) {
       return "english";
     } else if (ethnicity.equals("english")) {
@@ -327,7 +326,7 @@ public class Demographics {
 
     switch (level) {
       case "less_than_hs":
-        return person.rand(less_than_hs_min, less_than_hs_min);
+        return person.rand(less_than_hs_min, less_than_hs_max);
       case "hs_degree":
         return person.rand(hs_degree_min, hs_degree_max);
       case "some_college":

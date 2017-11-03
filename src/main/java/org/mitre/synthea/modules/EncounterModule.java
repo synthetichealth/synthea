@@ -13,8 +13,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public final class EncounterModule extends Module {
 
-  public final static String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
-  public final static int SYMPTOM_THRESHOLD = 200;
+  public static final String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
+  public static final int SYMPTOM_THRESHOLD = 200;
 
   public static final Code ENCOUNTER_CHECKUP = new Code("SNOMED-CT", "185349003",
       "Encounter for check up (procedure)");

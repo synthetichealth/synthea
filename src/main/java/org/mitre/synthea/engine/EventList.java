@@ -5,7 +5,7 @@ import java.util.List;
 
 public class EventList {
   private List<Event> events = new ArrayList<Event>();
-  private Object LOCK = new Object();
+  private final Object lock = new Object();
 
   /**
    * Get the last event of the given type.
@@ -16,7 +16,7 @@ public class EventList {
    */
   public Event event(String type) {
     Event retVal = null;
-    synchronized (LOCK) {
+    synchronized (lock) {
       for (int i = events.size() - 1; i >= 0; i--) {
         Event event = events.get(i);
         if (event.type.equals(type)) {
@@ -30,7 +30,7 @@ public class EventList {
 
   public void create(long time, String type, String rule, boolean processed) {
     Event event = new Event(time, type, rule, processed);
-    synchronized (LOCK) {
+    synchronized (lock) {
       events.add(event);
     }
   }
@@ -44,7 +44,7 @@ public class EventList {
    */
   public List<Event> before(long time) {
     List<Event> retVal = new ArrayList<Event>();
-    synchronized (LOCK) {
+    synchronized (lock) {
       for (Event event : events) {
         if (event.time <= time) {
           retVal.add(event);
@@ -67,7 +67,7 @@ public class EventList {
    */
   public List<Event> before(long time, String type) {
     List<Event> retVal = new ArrayList<Event>();
-    synchronized (LOCK) {
+    synchronized (lock) {
       for (Event event : events) {
         if (event.type.equals(type) && event.time <= time) {
           retVal.add(event);
@@ -88,7 +88,7 @@ public class EventList {
    */
   public List<Event> after(long time) {
     List<Event> retVal = new ArrayList<Event>();
-    synchronized (LOCK) {
+    synchronized (lock) {
       for (Event event : events) {
         if (event.time >= time) {
           retVal.add(event);
@@ -109,7 +109,7 @@ public class EventList {
    */
   public List<Event> after(long time, String type) {
     List<Event> retVal = new ArrayList<Event>();
-    synchronized (LOCK) {
+    synchronized (lock) {
       for (Event event : events) {
         if (event.time >= time && event.type.equals(type)) {
           retVal.add(event);

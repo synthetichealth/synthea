@@ -1,5 +1,7 @@
 package org.mitre.synthea.datastore;
 
+import com.google.common.collect.Table;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,8 +25,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
-
-import com.google.common.collect.Table;
 
 /**
  * In-memory database, intended to be the primary repository for Synthea data as it runs. Allows for
@@ -60,7 +60,9 @@ public class DataStore {
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint, date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)")
+              "CREATE TABLE IF NOT EXISTS PERSON "
+              + "(id varchar, name varchar, date_of_birth bigint, date_of_death bigint, "
+              + "race varchar, gender varchar, socioeconomic_status varchar)")
           .execute();
       connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_RACE ON PERSON(RACE);")
           .execute();
@@ -69,7 +71,8 @@ public class DataStore {
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)")
+              "CREATE TABLE IF NOT EXISTS ATTRIBUTE "
+              + "(person_id varchar, name varchar, value varchar)")
           .execute();
       connection.prepareStatement(
           "CREATE INDEX IF NOT EXISTS ATTRIBUTE_KEY ON ATTRIBUTE(PERSON_ID, NAME);").execute();
@@ -83,19 +86,24 @@ public class DataStore {
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS PROVIDER_ATTRIBUTE (provider_id varchar, name varchar, value varchar)")
+              "CREATE TABLE IF NOT EXISTS PROVIDER_ATTRIBUTE "
+              + "(provider_id varchar, name varchar, value varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS ENCOUNTER "
+              + "(id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, "
+              + "start bigint, stop bigint, code varchar, display varchar, system varchar)")
           .execute();
       connection.prepareStatement("CREATE INDEX IF NOT EXISTS ENCOUNTER_ID ON ENCOUNTER(ID);")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS CONDITION "
+              + "(person_id varchar, name varchar, type varchar, start bigint, stop bigint, "
+              + "code varchar, display varchar, system varchar)")
           .execute();
       connection
           .prepareStatement(
@@ -104,37 +112,52 @@ public class DataStore {
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS MEDICATION (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS MEDICATION "
+              + "(id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, "
+              + "start bigint, stop bigint, code varchar, display varchar, system varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS PROCEDURE "
+              + "(person_id varchar, encounter_id varchar, name varchar, type varchar, "
+              + "start bigint, stop bigint, code varchar, display varchar, system varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS REPORT (id varchar, person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS REPORT "
+              + "(id varchar, person_id varchar, encounter_id varchar, name varchar, type varchar, "
+              + "start bigint, code varchar, display varchar, system varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS OBSERVATION (person_id varchar, encounter_id varchar, report_id varchar, name varchar, type varchar, start bigint, value varchar, unit varchar, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS OBSERVATION "
+              + "(person_id varchar, encounter_id varchar, report_id varchar, name varchar, "
+              + "type varchar, start bigint, value varchar, unit varchar, "
+              + "code varchar, display varchar, system varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS IMMUNIZATION (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS IMMUNIZATION "
+              + "(person_id varchar, encounter_id varchar, name varchar, type varchar, "
+              + "start bigint, code varchar, display varchar, system varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS CAREPLAN (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)")
+              "CREATE TABLE IF NOT EXISTS CAREPLAN "
+              + "(id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, "
+              + "start bigint, stop bigint, code varchar, display varchar, system varchar)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)")
+              "CREATE TABLE IF NOT EXISTS CLAIM "
+              + "(id varchar, person_id varchar, encounter_id varchar, medication_id varchar, "
+              + "time bigint, cost decimal)")
           .execute();
       connection.prepareStatement("CREATE INDEX IF NOT EXISTS CLAIM_ID ON CLAIM(ID);").execute();
 
@@ -146,17 +169,21 @@ public class DataStore {
       // TODO - special case here, would like to refactor. maybe make all attributes time-based?
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)")
+              "CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE "
+              + "(person_id varchar, year int, qol double, qaly double, daly double)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, year int, encounters int, procedures int, labs int, prescriptions int)")
+              "CREATE TABLE IF NOT EXISTS UTILIZATION "
+              + "(provider_id varchar, year int, encounters int, procedures int, "
+              + "labs int, prescriptions int)")
           .execute();
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS UTILIZATION_DETAIL (provider_id varchar, year int, category varchar, value int)")
+              "CREATE TABLE IF NOT EXISTS UTILIZATION_DETAIL "
+              + "(provider_id varchar, year int, category varchar, value int)")
           .execute();
 
       connection.commit();
@@ -173,6 +200,7 @@ public class DataStore {
     return connection;
   }
 
+  @SuppressWarnings("unchecked")
   public boolean store(Person p) {
     String personID = (String) p.attributes.get(Person.ID);
 
@@ -180,7 +208,9 @@ public class DataStore {
       // CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint,
       // date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)
       PreparedStatement stmt = connection.prepareStatement(
-          "INSERT INTO PERSON (id, name, date_of_birth, date_of_death, race, gender, socioeconomic_status) VALUES (?,?,?,?,?,?,?);");
+          "INSERT INTO PERSON "
+          + "(id, name, date_of_birth, date_of_death, race, gender, socioeconomic_status) "
+          + "VALUES (?,?,?,?,?,?,?);");
 
       stmt.setString(1, personID);
       stmt.setString(2, (String) p.attributes.get(Person.NAME));
@@ -242,7 +272,9 @@ public class DataStore {
         // name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar,
         // system varchar)
         stmt = connection.prepareStatement(
-            "INSERT INTO ENCOUNTER (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");
+            "INSERT INTO ENCOUNTER "
+            + "(id, person_id, provider_id, name, type, start, stop, code, display, system) "
+            + "VALUES (?,?,?,?,?,?,?,?,?,?);");
         stmt.setString(1, encounterID);
         stmt.setString(2, personID);
         stmt.setString(3, providerID);
@@ -266,7 +298,9 @@ public class DataStore {
           // CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar,
           // start bigint, stop bigint, code varchar, display varchar, system varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO CONDITION (person_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?);");
+              "INSERT INTO CONDITION "
+              + "(person_id, name, type, start, stop, code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?);");
           stmt.setString(1, personID);
           stmt.setString(2, condition.name);
           stmt.setString(3, condition.type);
@@ -292,7 +326,9 @@ public class DataStore {
           // name varchar, type varchar, start bigint, code varchar, display varchar, system
           // varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO report (id, person_id, encounter_id, name, type, start, code, display, system) VALUES (?,?,?,?,?,?,?,?,?);");
+              "INSERT INTO report "
+              + "(id, person_id, encounter_id, name, type, start, code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, personID);
           stmt.setString(2, encounterID);
           stmt.setString(3, reportID);
@@ -317,7 +353,10 @@ public class DataStore {
             // report_id varchar, name varchar, type varchar, start bigint, value varchar, unit
             // varchar, code varchar, display varchar, system varchar)
             stmt = connection.prepareStatement(
-                "INSERT INTO OBSERVATION (person_id, encounter_id, report_id, name, type, start, value, unit, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?,?);");
+                "INSERT INTO OBSERVATION "
+                + "(person_id, encounter_id, report_id, name, type, start, value, unit, "
+                + "code, display, system) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?);");
             stmt.setString(1, personID);
             stmt.setString(2, encounterID);
             stmt.setString(3, reportID); // report ID
@@ -350,7 +389,10 @@ public class DataStore {
           // report_id varchar, name varchar, type varchar, start bigint, value varchar, unit
           // varchar, code varchar, display varchar, system varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO OBSERVATION (person_id, encounter_id, report_id, name, type, start, value, unit, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?,?);");
+              "INSERT INTO OBSERVATION "
+              + "(person_id, encounter_id, report_id, name, type, start, value, unit, "
+              + "code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, personID);
           stmt.setString(2, encounterID);
           stmt.setString(3, null); // report ID
@@ -378,7 +420,9 @@ public class DataStore {
           // varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system
           // varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO PROCEDURE (person_id, encounter_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?);");
+              "INSERT INTO PROCEDURE "
+              + "(person_id, encounter_id, name, type, start, stop, code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, personID);
           stmt.setString(2, encounterID);
 
@@ -405,7 +449,9 @@ public class DataStore {
           // varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display
           // varchar, system varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO MEDICATION (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");
+              "INSERT INTO MEDICATION "
+              + "(id, person_id, provider_id, name, type, start, stop, code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?,?,?);");
           String medicationID = UUID.randomUUID().toString();
           stmt.setString(1, medicationID);
           stmt.setString(2, personID);
@@ -429,7 +475,9 @@ public class DataStore {
           // CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar,
           // medication_id varchar, time bigint, cost decimal)
           stmt = connection.prepareStatement(
-              "INSERT INTO CLAIM (id, person_id, encounter_id, medication_id, time, cost) VALUES (?,?,?,?,?,?)");
+              "INSERT INTO CLAIM "
+              + "(id, person_id, encounter_id, medication_id, time, cost) "
+              + "VALUES (?,?,?,?,?,?)");
           stmt.setString(1, UUID.randomUUID().toString());
           stmt.setString(2, personID);
           stmt.setString(3, encounterID);
@@ -444,7 +492,9 @@ public class DataStore {
           // CREATE TABLE IF NOT EXISTS IMMUNIZATION (person_id varchar, encounter_id varchar, name
           // varchar, type varchar, start bigint, code varchar, display varchar, system varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO IMMUNIZATION (person_id, encounter_id, name, type, start, code, display, system) VALUES (?,?,?,?,?,?,?,?);");
+              "INSERT INTO IMMUNIZATION "
+              + "(person_id, encounter_id, name, type, start, code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?);");
           stmt.setString(1, personID);
           stmt.setString(2, encounterID);
           stmt.setString(3, immunization.name);
@@ -468,7 +518,9 @@ public class DataStore {
           // varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display
           // varchar, system varchar)
           stmt = connection.prepareStatement(
-              "INSERT INTO careplan (id, person_id, provider_id, name, type, start, stop, code, display, system) VALUES (?,?,?,?,?,?,?,?,?,?);");
+              "INSERT INTO careplan "
+              + "(id, person_id, provider_id, name, type, start, stop, code, display, system) "
+              + "VALUES (?,?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, UUID.randomUUID().toString());
           stmt.setString(2, personID);
           if (encounter.provider == null && encounter.chw == null) {
@@ -498,7 +550,9 @@ public class DataStore {
         // CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar,
         // medication_id varchar, time bigint, cost decimal)
         stmt = connection.prepareStatement(
-            "INSERT INTO CLAIM (id, person_id, encounter_id, medication_id, time, cost) VALUES (?,?,?,?,?,?)");
+            "INSERT INTO CLAIM "
+            + "(id, person_id, encounter_id, medication_id, time, cost) "
+            + "VALUES (?,?,?,?,?,?)");
         stmt.setString(1, UUID.randomUUID().toString());
         stmt.setString(2, personID);
         stmt.setString(3, encounterID);
@@ -549,7 +603,9 @@ public class DataStore {
       // CREATE TABLE IF NOT EXISTS UTILIZATION (provider_id varchar, encounters int, procedures
       // int, labs int, prescriptions int)
       PreparedStatement utilizationTable = connection.prepareStatement(
-          "INSERT INTO UTILIZATION (provider_id, year, encounters, procedures, labs, prescriptions) VALUES (?,?,?,?,?,?)");
+          "INSERT INTO UTILIZATION "
+          + "(provider_id, year, encounters, procedures, labs, prescriptions) "
+          + "VALUES (?,?,?,?,?,?)");
 
       // CREATE TABLE IF NOT EXISTS UTILIZATION_DETAIL (provider_id varchar, year int, category
       // string, value int)

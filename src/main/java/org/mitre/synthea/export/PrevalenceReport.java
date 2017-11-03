@@ -195,9 +195,7 @@ public class PrevalenceReport {
     if ((line.get(OCCUR).isEmpty()) || (line.get(POP).isEmpty())) {
       line.put(PREV_RATE, (null));
       line.put(PREV_PERCENT, (null));
-    }
-
-    else {
+    } else {
       double occurr = Double.parseDouble(line.get(OCCUR));
       double pop = Double.parseDouble(line.get(POP));
 
@@ -206,9 +204,7 @@ public class PrevalenceReport {
         double prevPercent = prevRate * 100;
         line.put(PREV_RATE, Double.toString(prevRate));
         line.put(PREV_PERCENT, Double.toString(prevPercent));
-      }
-
-      else {
+      } else {
         line.put(PREV_RATE, Double.toString(0));
         line.put(PREV_PERCENT, Double.toString(0));
       }
@@ -223,9 +219,7 @@ public class PrevalenceReport {
       LinkedHashMap<String, String> line) throws SQLException {
     if (line.get(ACTUAL_PREV_PERCENT).isEmpty()) {
       line.put(DIFFERENCE, (null));
-    }
-
-    else {
+    } else {
       double actualPrev = Double.parseDouble(line.get(ACTUAL_PREV_PERCENT));
       double prevPercent = Double.parseDouble(line.get(PREV_PERCENT));
       double diff = (prevPercent - actualPrev);
@@ -271,9 +265,13 @@ public class PrevalenceReport {
     int totalPopulation = rs.getInt(1);
 
     stmt = connection.prepareStatement(
-        "select distinct c.display as DistinctDisplay, count(distinct c.person_id) as CountDisplay \n"
-            + "from condition c, person p\n" + "where c.person_id = p.id\n"
-            + "and p.date_of_death is null\n" + "group by c.display\n" + "order by c.display ASC");
+        "select distinct c.display as DistinctDisplay, "
+        + "count(distinct c.person_id) as CountDisplay \n"
+        + "from condition c, person p\n" 
+        + "where c.person_id = p.id\n"
+        + "and p.date_of_death is null\n" 
+        + "group by c.display\n" 
+        + "order by c.display ASC");
     rs = stmt.executeQuery();
     while (rs.next()) {
       String disease = rs.getString("DistinctDisplay");

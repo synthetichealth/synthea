@@ -6,6 +6,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -25,10 +29,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 public class StateTest {
 
@@ -549,8 +549,8 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
 
     // Now process the end of the prescription
-    State med_end = module.getState("Allergy_Ends");
-    assertTrue(med_end.process(person, time));
+    State medEnd = module.getState("Allergy_Ends");
+    assertTrue(medEnd.process(person, time));
 
     HealthRecord.Entry allergy = person.record.encounters.get(0).allergies.get(0);
     assertEquals(time, allergy.start);
@@ -582,8 +582,8 @@ public class StateTest {
         .get("Drug Use Behavior");
 
     // Now process the end of the condition
-    State con_end = module.getState("Condition1_End");
-    assertTrue(con_end.process(person, time));
+    State conEnd = module.getState("Condition1_End");
+    assertTrue(conEnd.process(person, time));
 
     HealthRecord.Entry condition = person.record.encounters.get(0).conditions.get(0);
     assertEquals(time, condition.start);
@@ -615,8 +615,8 @@ public class StateTest {
     person.history.add(encounter);
 
     // Now process the end of the condition
-    State con_end = module.getState("Condition2_End");
-    assertTrue(con_end.process(person, time));
+    State conEnd = module.getState("Condition2_End");
+    assertTrue(conEnd.process(person, time));
 
     HealthRecord.Entry condition = person.record.encounters.get(0).conditions.get(0);
     assertEquals(time, condition.start);
@@ -646,8 +646,8 @@ public class StateTest {
     person.history.add(encounter);
 
     // Now process the end of the condition
-    State con_end = module.getState("Condition3_End");
-    assertTrue(con_end.process(person, time));
+    State conEnd = module.getState("Condition3_End");
+    assertTrue(conEnd.process(person, time));
 
     HealthRecord.Entry condition = person.record.encounters.get(0).conditions.get(0);
     assertEquals(time, condition.start);
@@ -799,8 +799,8 @@ public class StateTest {
     person.history.add(med);
 
     // Now process the end of the prescription
-    State med_end = module.getState("Insulin_End");
-    assertTrue(med_end.process(person, time));
+    State medEnd = module.getState("Insulin_End");
+    assertTrue(medEnd.process(person, time));
 
     HealthRecord.Medication medication = person.record.encounters.get(0).medications.get(0);
     assertEquals(time, medication.start);
@@ -835,8 +835,8 @@ public class StateTest {
     person.history.add(med);
 
     // Now process the end of the prescription
-    State med_end = module.getState("Bromocriptine_End");
-    assertTrue(med_end.process(person, time));
+    State medEnd = module.getState("Bromocriptine_End");
+    assertTrue(medEnd.process(person, time));
 
     HealthRecord.Medication medication = person.record.encounters.get(0).medications.get(0);
     assertEquals(time, medication.start);
@@ -871,8 +871,8 @@ public class StateTest {
     person.history.add(med);
 
     // Now process the end of the prescription
-    State med_end = module.getState("Metformin_End");
-    assertTrue(med_end.process(person, time));
+    State medEnd = module.getState("Metformin_End");
+    assertTrue(medEnd.process(person, time));
 
     HealthRecord.Medication medication = person.record.encounters.get(0).medications.get(0);
     assertEquals(time, medication.start);
@@ -960,17 +960,18 @@ public class StateTest {
 
     // Now process the careplan
     State plan = module.getState("CarePlan1_Start");
-    assertTrue(plan.process(person, time)); // have to use run not process here because the entity
-                                            // attribute stuff happens in run
+    // have to use `run` not `process` here because the entity
+    // attribute stuff happens in `run`
+    assertTrue(plan.process(person, time));
     person.history.add(plan);
 
     HealthRecord.CarePlan entityAttribute = (HealthRecord.CarePlan) person.attributes
         .get("Diabetes_CarePlan");
 
     // Now process the end of the careplan
-    State plan_end = module.getState("CarePlan1_End");
-    assertTrue(plan_end.process(person, time));
-    person.history.add(plan_end);
+    State planEnd = module.getState("CarePlan1_End");
+    assertTrue(planEnd.process(person, time));
+    person.history.add(planEnd);
 
     HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
     assertEquals(time, cp.start);
@@ -1009,9 +1010,9 @@ public class StateTest {
     person.history.add(plan);
 
     // Now process the end of the careplan
-    State plan_end = module.getState("CarePlan2_End");
-    assertTrue(plan_end.process(person, time));
-    person.history.add(plan_end);
+    State planEnd = module.getState("CarePlan2_End");
+    assertTrue(planEnd.process(person, time));
+    person.history.add(planEnd);
 
     HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
     assertEquals(time, cp.start);
@@ -1056,9 +1057,9 @@ public class StateTest {
     person.history.add(plan);
 
     // Now process the end of the careplan
-    State plan_end = module.getState("CarePlan3_End");
-    assertTrue(plan_end.process(person, time));
-    person.history.add(plan_end);
+    State planEnd = module.getState("CarePlan3_End");
+    assertTrue(planEnd.process(person, time));
+    person.history.add(planEnd);
 
     HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
     assertEquals(time, cp.start);

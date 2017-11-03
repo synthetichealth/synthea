@@ -38,11 +38,11 @@ public class QualityOfLifeTest {
     // |-----|-----|-----|-----|-----|-----|-----|
     // 0 5 10 15 20 25 30 35
 
-    Entry ADDCondition = person.record.conditionStart(TimeUnit.DAYS.toMillis((long) (365.25 * 10)),
+    Entry addCondition = person.record.conditionStart(TimeUnit.DAYS.toMillis((long) (365.25 * 10)),
         "192127007");
-    ADDCondition.name = "Child attention deficit disorder";
-    Code ADDCode = new Code("SNOMED", "192127007", "Child attention deficit disorder");
-    ADDCondition.codes.add(ADDCode);
+    addCondition.name = "Child attention deficit disorder";
+    Code addCode = new Code("SNOMED", "192127007", "Child attention deficit disorder");
+    addCondition.codes.add(addCode);
 
     Entry asthmaCondition = person.record
         .conditionStart(TimeUnit.DAYS.toMillis((long) (365.25 * 10)), "195967001");
@@ -50,8 +50,8 @@ public class QualityOfLifeTest {
     Code asthmaCode = new Code("SNOMED", "195967001", "Asthma");
     asthmaCondition.codes.add(asthmaCode);
 
-    person.record.conditionEnd((TimeUnit.DAYS.toMillis((long) (365.25 * 15) - 1)), "192127007"); // ADD
-                                                                                                 // ends
+    // ADD ends
+    person.record.conditionEnd((TimeUnit.DAYS.toMillis((long) (365.25 * 15) - 1)), "192127007");
 
     Entry diabetesCondition = person.record
         .conditionStart(TimeUnit.DAYS.toMillis((long) (365.25 * 20)), "44054006");
@@ -59,8 +59,8 @@ public class QualityOfLifeTest {
     Code diabetesCode = new Code("SNOMED", "4405400", "Diabetes");
     diabetesCondition.codes.add(diabetesCode);
 
-    person.record.conditionEnd((TimeUnit.DAYS.toMillis((long) (365.25 * 25) - 1)), "195967001"); // asthma
-                                                                                                 // ends
+    // asthma ends
+    person.record.conditionEnd((TimeUnit.DAYS.toMillis((long) (365.25 * 25) - 1)), "195967001");
   }
 
   @Test
@@ -69,10 +69,10 @@ public class QualityOfLifeTest {
     // + 1 ms because (365.25 * 35) = 12783.75 as double and 12783 as long
     double[] qol = QualityOfLifeModule.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
 
-    double daly_living = qol[0];
-    double qaly_living = qol[1];
-    assertEquals(true, (daly_living > 1.7 && daly_living < 1.8));
-    assertEquals(true, (qaly_living > 33 && qaly_living < 34));
+    double dalyLiving = qol[0];
+    double qalyLiving = qol[1];
+    assertEquals(true, (dalyLiving > 1.7 && dalyLiving < 1.8));
+    assertEquals(true, (qalyLiving > 33 && qalyLiving < 34));
   }
 
   @Test
@@ -82,10 +82,10 @@ public class QualityOfLifeTest {
         true);
     double[] qol = QualityOfLifeModule.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
 
-    double daly_deceased = qol[0];
-    double qaly_deceased = qol[1];
-    assertEquals(true, (daly_deceased > 54 && daly_deceased < 55));
-    assertEquals(true, (qaly_deceased > 33 && qaly_deceased < 34));
+    double dalyDeceased = qol[0];
+    double qalyDeceased = qol[1];
+    assertEquals(true, (dalyDeceased > 54 && dalyDeceased < 55));
+    assertEquals(true, (qalyDeceased > 33 && qalyDeceased < 34));
   }
 
   @Test

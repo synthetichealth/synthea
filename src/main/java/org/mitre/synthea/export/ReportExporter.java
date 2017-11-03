@@ -1,5 +1,9 @@
 package org.mitre.synthea.export;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.google.gson.stream.JsonWriter;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,10 +20,6 @@ import java.util.List;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.gson.stream.JsonWriter;
 
 /**
  * The ReportExporter generates a "report" of the current run of Synthea, tracking information on
@@ -66,7 +66,9 @@ public class ReportExporter {
   private static void processOutcomes(Connection connection, JsonWriter writer)
       throws IOException, SQLException {
     PreparedStatement stmt = connection.prepareStatement(
-        "select year, MIN(qol) minimum, MAX(qol) maximum, AVG(qol) average, STDDEV_POP(qol) stddev, COUNT(qol) num from quality_of_life group by year order by year asc");
+        "select year, MIN(qol) minimum, MAX(qol) maximum, "
+        + "AVG(qol) average, STDDEV_POP(qol) stddev, COUNT(qol) num "
+        + "from quality_of_life group by year order by year asc");
     // ASSUMPTION - there should never be a gap in years
     ResultSet rs = stmt.executeQuery();
 
@@ -144,7 +146,9 @@ public class ReportExporter {
     Table<Integer, String, Integer> table = HashBasedTable.create();
 
     PreparedStatement stmt = connection.prepareStatement(
-        "select year, category, sum(value) as num from UTILIZATION_DETAIL group by year, category order by year asc");
+        "select year, category, sum(value) as num "
+        + "from UTILIZATION_DETAIL "
+        + "group by year, category order by year asc");
     ResultSet rs = stmt.executeQuery();
 
     int firstYear = 0;
@@ -198,7 +202,10 @@ public class ReportExporter {
     writer.name("costs").beginObject();
 
     PreparedStatement stmt = connection.prepareStatement(
-        "select year, type, sum(cost) from (SELECT c.cost, YEAR(DATEADD('SECOND', e.start/ 1000 , DATE '1970-01-01')) as year, e.type FROM ENCOUNTER e, CLAIM c where e.id = c.encounter_id) group by year, type order by year asc");
+        "select year, type, sum(cost) from "
+        + "(SELECT c.cost, YEAR(DATEADD('SECOND', e.start/ 1000 , DATE '1970-01-01')) as year, "
+        + "e.type FROM ENCOUNTER e, CLAIM c where e.id = c.encounter_id) group by year, type "
+        + "order by year asc");
     ResultSet rs = stmt.executeQuery();
 
     Table<Integer, String, BigDecimal> table = HashBasedTable.create();

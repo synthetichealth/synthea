@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 
 public class GeneratorTest {

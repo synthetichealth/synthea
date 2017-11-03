@@ -1,5 +1,8 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -14,9 +17,6 @@ import java.util.Set;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Provider;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 /**
  * HealthRecord contains all the coded entries in a person's health record. This class represents a
  * logical health record. Exporters will convert this health record into various standardized
@@ -29,9 +29,9 @@ public class HealthRecord {
   public static class Code {
     /** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
     public String system;
-    /** The code itself */
+    /** The code itself. */
     public String code;
-    /** The human-readable description of the code */
+    /** The human-readable description of the code. */
     public String display;
 
     /**
@@ -172,11 +172,10 @@ public class HealthRecord {
       // Encounter inpatient
       if (encounter.type.equalsIgnoreCase("inpatient")) {
         baseCost = 75.00;
-      }
-      // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for
-      // problem,
-      // patient initiated encounter, patient encounter procedure
-      else {
+      } else {
+        // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for
+        // problem,
+        // patient initiated encounter, patient encounter procedure
         baseCost = 125.00;
       }
       this.encounter = encounter;
@@ -228,7 +227,7 @@ public class HealthRecord {
 
   public enum EncounterType {
     WELLNESS, EMERGENCY, INPATIENT, AMBULATORY
-  };
+  }
 
   public class Encounter extends Entry {
     public List<Observation> observations;
@@ -261,7 +260,7 @@ public class HealthRecord {
 
   public List<Encounter> encounters;
   public Map<String, Entry> present;
-  /** recorded death date/time */
+  /** recorded death date/time. */
   public Long death;
 
   public HealthRecord() {
@@ -329,11 +328,11 @@ public class HealthRecord {
     return observation;
   }
 
-  public Observation multiObservation(long time, String type, int number_of_observations) {
+  public Observation multiObservation(long time, String type, int numberOfObservations) {
     Observation observation = new Observation(time, type, null);
     Encounter encounter = currentEncounter(time);
-    int count = number_of_observations;
-    if (encounter.observations.size() >= number_of_observations) {
+    int count = numberOfObservations;
+    if (encounter.observations.size() >= numberOfObservations) {
       while (count > 0) {
         observation.observations
             .add(encounter.observations.remove(encounter.observations.size() - 1));
@@ -460,7 +459,7 @@ public class HealthRecord {
   public void encounterEnd(long time, String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equals(type) && encounter.stop == 0l) {
+      if (encounter.type.equals(type) && encounter.stop == 0L) {
         encounter.stop = time;
         return;
       }
@@ -512,7 +511,7 @@ public class HealthRecord {
   }
 
   public boolean medicationActive(String type) {
-    return present.containsKey(type) && ((Medication) present.get(type)).stop == 0l;
+    return present.containsKey(type) && ((Medication) present.get(type)).stop == 0L;
   }
 
   public CarePlan careplanStart(long time, String type) {
@@ -554,6 +553,6 @@ public class HealthRecord {
   }
 
   public boolean careplanActive(String type) {
-    return present.containsKey(type) && ((CarePlan) present.get(type)).stop == 0l;
+    return present.containsKey(type) && ((CarePlan) present.get(type)).stop == 0L;
   }
 }

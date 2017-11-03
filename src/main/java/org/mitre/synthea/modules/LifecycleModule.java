@@ -1,5 +1,8 @@
 package org.mitre.synthea.modules;
 
+import com.github.javafaker.Faker;
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,12 +20,9 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
-
-import com.github.javafaker.Faker;
-import com.google.gson.Gson;
 
 public final class LifecycleModule extends Module {
   @SuppressWarnings("rawtypes")
@@ -81,6 +81,11 @@ public final class LifecycleModule extends Module {
     return false;
   }
 
+  /**
+   * For unto us a child is born.
+   * @param person The baby.
+   * @param time The time of birth.
+   */
   public static void birth(Person person, long time) {
     Map<String, Object> attributes = person.attributes;
 
@@ -113,7 +118,6 @@ public final class LifecycleModule extends Module {
     Location.assignPoint(person, (String) attributes.get(Person.CITY));
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
-
     attributes.put(Person.BIRTHPLACE, Location.randomCityName(person.random));
 
     double height_percentile = person.rand();
@@ -129,14 +133,16 @@ public final class LifecycleModule extends Module {
     boolean isRHNeg = person.rand() < 0.15;
     attributes.put("RH_NEG", isRHNeg);
 
-    double aherence_baseline = Double
+    double adherenceBaseline = Double
         .parseDouble(Config.get("lifecycle.adherence.baseline", ".05"));
-    person.attributes.put(ADHERENCE_PROBABILITY, aherence_baseline);
+    person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
   }
 
   /**
+   * Age the patient.
+   * 
    * @return whether or not the patient should grow
    */
   private static boolean age(Person person, long time) {
@@ -221,8 +227,8 @@ public final class LifecycleModule extends Module {
 
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
-    int adult_max_weight_age = Integer.parseInt(Config.get("lifecycle.adult_max_weight_age", "49"));
-    int geriatric_weight_loss_age = Integer
+    int adultMaxWeightAge = Integer.parseInt(Config.get("lifecycle.adult_max_weight_age", "49"));
+    int geriatricWeightLossAge = Integer
         .parseInt(Config.get("lifecycle.geriatric_weight_loss_age", "60"));
 
     double height = person.getVitalSign(VitalSign.HEIGHT);
@@ -236,18 +242,18 @@ public final class LifecycleModule extends Module {
           person.getVitalSign(VitalSign.HEIGHT_PERCENTILE));
       weight = lookupGrowthChart("weight", gender, ageInMonths,
           person.getVitalSign(VitalSign.WEIGHT_PERCENTILE));
-    } else if (age <= adult_max_weight_age) {
+    } else if (age <= adultMaxWeightAge) {
       // getting older and fatter
       double min = Double.parseDouble(Config.get("lifecycle.adult_weight_gain.min", "1.0"));
       double max = Double.parseDouble(Config.get("lifecycle.adult_weight_gain.max", "2.0"));
-      double adult_weight_gain = person.rand(min, max);
-      weight += adult_weight_gain;
-    } else if (age >= geriatric_weight_loss_age) {
+      double adultWeightGain = person.rand(min, max);
+      weight += adultWeightGain;
+    } else if (age >= geriatricWeightLossAge) {
       // getting older and wasting away
       double min = Double.parseDouble(Config.get("lifecycle.geriatric_weight_loss.min", "1.0"));
       double max = Double.parseDouble(Config.get("lifecycle.geriatric_weight_loss.max", "2.0"));
-      double geriatric_weight_loss = person.rand(min, max);
-      weight -= geriatric_weight_loss;
+      double geriatricWeightLoss = person.rand(min, max);
+      weight -= geriatricWeightLoss;
     }
 
     person.setVitalSign(VitalSign.HEIGHT, height);
@@ -258,20 +264,20 @@ public final class LifecycleModule extends Module {
   @SuppressWarnings("rawtypes")
   public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths,
       double percentile) {
-    String[] percentile_buckets = { "3", "5", "10", "25", "50", "75", "90", "95", "97" };
+    String[] percentileBuckets = { "3", "5", "10", "25", "50", "75", "90", "95", "97" };
 
     Map chart = (Map) growthChart.get(heightOrWeight);
     Map byGender = (Map) chart.get(gender);
     Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
     int bucket = 0;
-    for (int i = 0; i < percentile_buckets.length; i++) {
-      if ((Double.parseDouble(percentile_buckets[i]) / 100.0) <= percentile) {
+    for (int i = 0; i < percentileBuckets.length; i++) {
+      if ((Double.parseDouble(percentileBuckets[i]) / 100.0) <= percentile) {
         bucket = i;
       } else {
         break;
       }
     }
-    return Double.parseDouble((String) byAge.get(percentile_buckets[bucket]));
+    return Double.parseDouble((String) byAge.get(percentileBuckets[bucket]));
   }
 
   private static double bmi(double heightCM, double weightKG) {
@@ -309,12 +315,12 @@ public final class LifecycleModule extends Module {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
     }
 
-    double total_cholesterol = person.rand(CHOLESTEROL[index], CHOLESTEROL[index + 1]);
+    double totalCholesterol = person.rand(CHOLESTEROL[index], CHOLESTEROL[index + 1]);
     double triglycerides = person.rand(TRIGLYCERIDES[index], TRIGLYCERIDES[index + 1]);
     double hdl = person.rand(HDL[index], HDL[index + 1]);
-    double ldl = total_cholesterol - hdl - (0.2 * triglycerides);
+    double ldl = totalCholesterol - hdl - (0.2 * triglycerides);
 
-    person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, total_cholesterol);
+    person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, totalCholesterol);
     person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
     person.setVitalSign(VitalSign.HDL, hdl);
     person.setVitalSign(VitalSign.LDL, ldl);
@@ -373,9 +379,9 @@ public final class LifecycleModule extends Module {
       int year = Utilities.getYear(time);
       Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
       person.attributes.put(Person.SMOKER, smoker);
-      double quit_smoking_baseline = Double
+      double quitSmokingBaseline = Double
           .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
-      person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quit_smoking_baseline);
+      person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quitSmokingBaseline);
     }
   }
 
@@ -461,9 +467,9 @@ public final class LifecycleModule extends Module {
       // TODO assume about 8 mil alcoholics/320 mil gen pop
       Boolean alcoholic = person.rand() < 0.025;
       person.attributes.put(Person.ALCOHOLIC, alcoholic);
-      double quit_alcoholism_baseline = Double
+      double quitAlcoholismBaseline = Double
           .parseDouble(Config.get("lifecycle.quit_alcoholism.baseline", "0.05"));
-      person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quit_alcoholism_baseline);
+      person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quitAlcoholismBaseline);
     }
   }
 
@@ -478,13 +484,13 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.SMOKER, false);
           person.attributes.put(QUIT_SMOKING_AGE, age);
         } else {
-          double quit_smoking_baseline = Double
+          double quitSmokingBaseline = Double
               .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
-          double quit_smoking_timestep_delta = Double
+          double quitSmokingTimestepDelta = Double
               .parseDouble(Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
-          probability += quit_smoking_timestep_delta;
-          if (probability < quit_smoking_baseline) {
-            probability = quit_smoking_baseline;
+          probability += quitSmokingTimestepDelta;
+          if (probability < quitSmokingBaseline) {
+            probability = quitSmokingBaseline;
           }
           person.attributes.put(QUIT_SMOKING_PROBABILITY, probability);
         }
@@ -503,13 +509,13 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.ALCOHOLIC, false);
           person.attributes.put(QUIT_ALCOHOLISM_AGE, age);
         } else {
-          double quit_alcoholism_baseline = Double
+          double quitAlcoholismBaseline = Double
               .parseDouble(Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
-          double quit_alcoholism_timestep_delta = Double
+          double quitAlcoholismTimestepDelta = Double
               .parseDouble(Config.get("lifecycle.quit_alcoholism.timestep_delta", "-0.1"));
-          probability += quit_alcoholism_timestep_delta;
-          if (probability < quit_alcoholism_baseline) {
-            probability = quit_alcoholism_baseline;
+          probability += quitAlcoholismTimestepDelta;
+          if (probability < quitAlcoholismBaseline) {
+            probability = quitAlcoholismBaseline;
           }
           person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, probability);
         }
@@ -522,13 +528,13 @@ public final class LifecycleModule extends Module {
     if (person.attributes.containsKey(Person.ADHERENCE)) {
       double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
 
-      double aherence_baseline = Double
+      double aherenceBaseline = Double
           .parseDouble(Config.get("lifecycle.adherence.baseline", "0.05"));
-      double adherence_timestep_delta = Double
+      double adherenceTimestepDelta = Double
           .parseDouble(Config.get("lifecycle.aherence.timestep_delta", "-.01"));
-      probability += adherence_timestep_delta;
-      if (probability < aherence_baseline) {
-        probability = aherence_baseline;
+      probability += adherenceTimestepDelta;
+      if (probability < aherenceBaseline) {
+        probability = aherenceBaseline;
       }
       person.attributes.put(ADHERENCE_PROBABILITY, probability);
 
