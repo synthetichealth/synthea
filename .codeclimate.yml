@@ -1,0 +1,5 @@
+engines:
+  checkstyle:
+    enabled: true
+    config:
+      file: "config/checkstyle/checkstyle.xml"
