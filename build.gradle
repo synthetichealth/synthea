@@ -11,6 +11,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -52,6 +53,15 @@ dependencies {
 	testCompile 'com.phloc:phloc-schematron:2.7.1'
 	testCompile 'com.phloc:phloc-commons:4.4.11'
 }
+
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
+check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {
 	description 'Generate rule visualization'
