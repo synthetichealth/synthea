@@ -33,7 +33,6 @@ import org.mitre.synthea.world.geography.Location;
  * Generator creates a population by running the generic modules each timestep per Person.
  */
 public class Generator {
-
 	public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
 	public DataStore database;
 	public List<CommunityHealthWorker> chws;
