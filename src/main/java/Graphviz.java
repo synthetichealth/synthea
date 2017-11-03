@@ -1,3 +1,9 @@
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Records;
 import guru.nidi.graphviz.attribute.Style;
@@ -25,15 +31,14 @@ import java.util.regex.Matcher;
 
 import org.mitre.synthea.export.Exporter;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 public class Graphviz {
   private static final String NEWLINE = "\\l";
 
+  /**
+   * Generate the Graphviz-like graphs of the disease modules.
+   * @param args None.
+   */
   public static void main(String[] args) {
     File folder = Exporter.getOutputFolder("graphviz", null);
 
@@ -262,101 +267,105 @@ public class Graphviz {
     String type = state.get("type").getAsString();
 
     switch (type) {
-    case "Guard":
-      details.append("Allow if " + logicDetails(state.get("allow").getAsJsonObject()));
-      break;
-    case "Delay":
-    case "Death":
-      if (state.has("range")) {
-        JsonObject r = state.get("range").getAsJsonObject();
-        String low = r.get("low").getAsString();
-        String high = r.get("high").getAsString();
-        String unit = r.get("unit").getAsString();
-        details.append(low).append(" - ").append(high).append(" ").append(unit);
-      } else if (state.has("exact")) {
-        JsonObject e = state.get("exact").getAsJsonObject();
-        String quantity = e.get("quantity").getAsString();
-        String unit = e.get("unit").getAsString();
-        details.append(quantity).append(" ").append(unit);
-      }
-      break;
-    case "Encounter":
-      if (state.has("wellness")) {
-        details.append("Wait for regularly scheduled wellness encounter");
-      }
-      break;
-    case "EncounterEnd":
-      details.append("End the current encounter");
-      if (state.has("discharge_disposition")) {
-        JsonObject coding = state.get("discharge_disposition").getAsJsonObject();
-        String code = coding.get("code").getAsString();
-        String display = coding.get("display").getAsString();
-        details.append("\\lDischarge Disposition: [").append(code).append("] ").append(display);
-      }
-      break;
-    case "SetAttribute":
-      String v = state.has("value") ? state.get("value").getAsString() : null;
-      details.append("Set ").append(state.get("attribute").getAsString()).append(" = ").append(v);
-      break;
-    case "Symptom":
-      String s = state.get("symptom").getAsString();
+      case "Guard":
+        details.append("Allow if " + logicDetails(state.get("allow").getAsJsonObject()));
+        break;
+      case "Delay":
+      case "Death":
+        if (state.has("range")) {
+          JsonObject r = state.get("range").getAsJsonObject();
+          String low = r.get("low").getAsString();
+          String high = r.get("high").getAsString();
+          String unit = r.get("unit").getAsString();
+          details.append(low).append(" - ").append(high).append(" ").append(unit);
+        } else if (state.has("exact")) {
+          JsonObject e = state.get("exact").getAsJsonObject();
+          String quantity = e.get("quantity").getAsString();
+          String unit = e.get("unit").getAsString();
+          details.append(quantity).append(" ").append(unit);
+        }
+        break;
+      case "Encounter":
+        if (state.has("wellness")) {
+          details.append("Wait for regularly scheduled wellness encounter");
+        }
+        break;
+      case "EncounterEnd":
+        details.append("End the current encounter");
+        if (state.has("discharge_disposition")) {
+          JsonObject coding = state.get("discharge_disposition").getAsJsonObject();
+          String code = coding.get("code").getAsString();
+          String display = coding.get("display").getAsString();
+          details.append("\\lDischarge Disposition: [").append(code).append("] ").append(display);
+        }
+        break;
+      case "SetAttribute":
+        String v = state.has("value") ? state.get("value").getAsString() : null;
+        details.append("Set ").append(state.get("attribute").getAsString()).append(" = ").append(v);
+        break;
+      case "Symptom":
+        String s = state.get("symptom").getAsString();
 
-      if (state.has("range")) {
-        JsonObject r = state.get("range").getAsJsonObject();
-        String low = r.get("low").getAsString();
-        String high = r.get("high").getAsString();
-        details.append(s).append(": ").append(low).append(" - ").append(high);
-      } else if (state.has("exact")) {
-        JsonObject e = state.get("exact").getAsJsonObject();
-        String quantity = e.get("quantity").getAsString();
-        details.append(s).append(": ").append(quantity);
-      }
-      break;
-    case "Observation":
-      String unit = "";
-      if (state.has("unit")) {
-        unit = "in " + unit.replace('{', '(').replace('}', ')');
-        // replace curly braces with parens, braces can cause issues
-      }
+        if (state.has("range")) {
+          JsonObject r = state.get("range").getAsJsonObject();
+          String low = r.get("low").getAsString();
+          String high = r.get("high").getAsString();
+          details.append(s).append(": ").append(low).append(" - ").append(high);
+        } else if (state.has("exact")) {
+          JsonObject e = state.get("exact").getAsJsonObject();
+          String quantity = e.get("quantity").getAsString();
+          details.append(s).append(": ").append(quantity);
+        }
+        break;
+      case "Observation":
+        String unit = "";
+        if (state.has("unit")) {
+          unit = "in " + unit.replace('{', '(').replace('}', ')');
+          // replace curly braces with parens, braces can cause issues
+        }
 
-      if (state.has("vital_sign")) {
-        details.append("Record value from Vital Sign ")
-            .append(state.get("vital_sign").getAsString()).append(" ").append(unit).append(NEWLINE);
-      } else if (state.has("attribute")) {
-        details.append("Record value from Attribute ").append(state.get("attribute").getAsString())
-            .append(" ").append(unit).append(NEWLINE);
-      }
-      break;
-    case "Counter":
-      String action = state.get("action").getAsString();
-      String attribute = state.get("attribute").getAsString();
-      details.append(action).append(" value of attribute ").append(attribute).append(" by 1");
-      break;
-    case "VitalSign":
-      String vs = state.get("vital_sign").getAsString();
-      unit = state.get("unit").getAsString();
+        if (state.has("vital_sign")) {
+          details.append("Record value from Vital Sign ")
+              .append(state.get("vital_sign").getAsString()).append(" ").append(unit)
+              .append(NEWLINE);
+        } else if (state.has("attribute")) {
+          details.append("Record value from Attribute ")
+              .append(state.get("attribute").getAsString()).append(" ").append(unit)
+              .append(NEWLINE);
+        }
+        break;
+      case "Counter":
+        String action = state.get("action").getAsString();
+        String attribute = state.get("attribute").getAsString();
+        details.append(action).append(" value of attribute ").append(attribute).append(" by 1");
+        break;
+      case "VitalSign":
+        String vs = state.get("vital_sign").getAsString();
+        unit = state.get("unit").getAsString();
 
-      if (state.has("range")) {
-        JsonObject r = state.get("range").getAsJsonObject();
-        String low = r.get("low").getAsString();
-        String high = r.get("high").getAsString();
-        details.append("Set ").append(vs).append(": ").append(low).append(" - ").append(high)
-            .append(" ").append(unit);
-      } else if (state.has("exact")) {
-        JsonObject e = state.get("exact").getAsJsonObject();
-        String quantity = e.get("quantity").getAsString();
-        details.append("Set ").append(vs).append(": ").append(quantity).append(" ").append(unit);
-      }
+        if (state.has("range")) {
+          JsonObject r = state.get("range").getAsJsonObject();
+          String low = r.get("low").getAsString();
+          String high = r.get("high").getAsString();
+          details.append("Set ").append(vs).append(": ").append(low).append(" - ").append(high)
+              .append(" ").append(unit);
+        } else if (state.has("exact")) {
+          JsonObject e = state.get("exact").getAsJsonObject();
+          String quantity = e.get("quantity").getAsString();
+          details.append("Set ").append(vs).append(": ").append(quantity).append(" ").append(unit);
+        }
 
-      break;
-    case "CallSubmodule":
-      details.append("Call submodule ").append(state.get("submodule").getAsString());
-      break;
-    case "MultiObservation":
-    case "DiagnosticReport":
-      details.append("Group the last ").append(state.get("number_of_observations").getAsString())
-          .append(" Observations").append(NEWLINE);
-      break;
+        break;
+      case "CallSubmodule":
+        details.append("Call submodule ").append(state.get("submodule").getAsString());
+        break;
+      case "MultiObservation":
+      case "DiagnosticReport":
+        details.append("Group the last ").append(state.get("number_of_observations").getAsString())
+            .append(" Observations").append(NEWLINE);
+        break;
+      default:
+        // no special description
     }
 
     // things common to many state types
@@ -375,13 +384,15 @@ public class Graphviz {
     if (state.has("target_encounter")) {
       String verb = "Perform";
       switch (state.get("type").getAsString()) {
-      case "ConditionOnset":
-      case "AllergyOnset":
-        verb = "Diagnose";
-        break;
-      case "MedicationOrder":
-        verb = "Prescribe";
-        break;
+        case "ConditionOnset":
+        case "AllergyOnset":
+          verb = "Diagnose";
+          break;
+        case "MedicationOrder":
+          verb = "Prescribe";
+          break;
+        default:
+          // no special verb
       }
       details.append(verb).append(" at ").append(state.get("target_encounter").getAsString())
           .append(NEWLINE);
@@ -463,103 +474,104 @@ public class Graphviz {
     String conditionType = logic.get("condition_type").getAsString();
 
     switch (conditionType) {
-    case "And":
-    case "Or":
-      List<String> subs = new LinkedList<>();
-      logic.get("conditions").getAsJsonArray().forEach(c -> {
-        JsonObject cond = c.getAsJsonObject();
-        String innerConditionType = cond.get("condition_type").getAsString();
-        if (innerConditionType.equals("And") || innerConditionType.equals("Or")) {
-          subs.add(NEWLINE + logicDetails(cond) + NEWLINE);
+      case "And":
+      case "Or":
+        List<String> subs = new LinkedList<>();
+        logic.get("conditions").getAsJsonArray().forEach(c -> {
+          JsonObject cond = c.getAsJsonObject();
+          String innerConditionType = cond.get("condition_type").getAsString();
+          if (innerConditionType.equals("And") || innerConditionType.equals("Or")) {
+            subs.add(NEWLINE + logicDetails(cond) + NEWLINE);
+          } else {
+            subs.add(logicDetails(cond));
+          }
+        });
+
+        return String.join(conditionType.toLowerCase() + " ", subs);
+      case "At Least":
+      case "At Most":
+        String threshold;
+        if (logic.has("minimum")) {
+          threshold = logic.get("minimum").getAsString();
         } else {
-          subs.add(logicDetails(cond));
+          threshold = logic.get("maximum").getAsString();
         }
-      });
 
-      return String.join(conditionType.toLowerCase() + " ", subs);
-    case "At Least":
-    case "At Most":
-      String threshold;
-      if (logic.has("minimum")) {
-        threshold = logic.get("minimum").getAsString();
-      } else {
-        threshold = logic.get("maximum").getAsString();
-      }
+        subs = new LinkedList<>();
+        logic.get("conditions").getAsJsonArray().forEach(c -> {
+          JsonObject cond = c.getAsJsonObject();
+          String innerConditionType = cond.get("condition_type").getAsString();
+          if (innerConditionType.equals("And") || innerConditionType.equals("Or")) {
+            subs.add(NEWLINE + logicDetails(cond) + NEWLINE);
+          } else {
+            subs.add(logicDetails(cond));
+          }
+        });
 
-      subs = new LinkedList<>();
-      logic.get("conditions").getAsJsonArray().forEach(c -> {
-        JsonObject cond = c.getAsJsonObject();
-        String innerConditionType = cond.get("condition_type").getAsString();
+        return conditionType + " " + threshold + " of:" + NEWLINE + "- " + String.join("- ", subs);
+      case "Not":
+        JsonObject c = logic.get("condition").getAsJsonObject();
+        String innerConditionType = c.get("condition_type").getAsString();
         if (innerConditionType.equals("And") || innerConditionType.equals("Or")) {
-          subs.add(NEWLINE + logicDetails(cond) + NEWLINE);
+          return "not (" + NEWLINE + logicDetails(c) + ")" + NEWLINE;
         } else {
-          subs.add(logicDetails(cond));
+          return "not " + logicDetails(c);
         }
-      });
-
-      return conditionType + " " + threshold + " of:" + NEWLINE + "- " + String.join("- ", subs);
-    case "Not":
-      JsonObject c = logic.get("condition").getAsJsonObject();
-      String innerConditionType = c.get("condition_type").getAsString();
-      if (innerConditionType.equals("And") || innerConditionType.equals("Or")) {
-        return "not (" + NEWLINE + logicDetails(c) + ")" + NEWLINE;
-      } else {
-        return "not " + logicDetails(c);
-      }
-    case "Gender":
-      return "gender is " + logic.get("gender").getAsString() + NEWLINE;
-    case "Age":
-      return "age \\" + logic.get("operator").getAsString() + " "
-          + logic.get("quantity").getAsString() + " " + logic.get("unit").getAsString() + NEWLINE;
-    case "Socioeconomic Status":
-      return logic.get("category").getAsString() + " Socioeconomic Status" + NEWLINE;
-    case "Race":
-      return "race is " + logic.get("race").getAsString() + NEWLINE;
-    case "Date":
-      return "Year is \\" + logic.get("operator").getAsString() + " "
-          + logic.get("year").getAsString() + NEWLINE;
-    case "Symptom":
-      return "Symptom: " + logic.get("symptom").getAsString() + " \\"
-          + logic.get("operator").getAsString() + " " + logic.get("value").getAsString() + NEWLINE;
-    case "PriorState":
-      if (logic.has("within")) {
-        JsonObject within = logic.get("within").getAsJsonObject();
-        return "state '" + logic.get("name").getAsString() + "' has been processed within "
-            + within.get("quantity").getAsString() + " " + within.get("unit").getAsString()
+      case "Gender":
+        return "gender is " + logic.get("gender").getAsString() + NEWLINE;
+      case "Age":
+        return "age \\" + logic.get("operator").getAsString() + " "
+            + logic.get("quantity").getAsString() + " " + logic.get("unit").getAsString() + NEWLINE;
+      case "Socioeconomic Status":
+        return logic.get("category").getAsString() + " Socioeconomic Status" + NEWLINE;
+      case "Race":
+        return "race is " + logic.get("race").getAsString() + NEWLINE;
+      case "Date":
+        return "Year is \\" + logic.get("operator").getAsString() + " "
+            + logic.get("year").getAsString() + NEWLINE;
+      case "Symptom":
+        return "Symptom: " + logic.get("symptom").getAsString() + " \\"
+            + logic.get("operator").getAsString() + " " + logic.get("value").getAsString()
             + NEWLINE;
-      } else {
-        return "state '" + logic.get("name").getAsString() + "' has been processed" + NEWLINE;
-      }
-    case "Attribute":
-      String value = logic.has("value") ? logic.get("value").getAsString() : "";
-      return "Attribute: " + logic.get("attribute").getAsString() + " \\"
-          + logic.get("operator").getAsString() + " " + value + NEWLINE;
-    case "Observation":
-      String obs = findReferencedType(logic);
-      return "Observation " + obs + " \\" + logic.get("operator").getAsString() + " "
-          + logic.get("value").getAsString() + NEWLINE;
-    case "Vital Sign":
-      return "Vital Sign " + logic.get("vital_sign").getAsString() + " \\"
-          + logic.get("operator").getAsString() + " " + logic.get("value").getAsString() + "}"
-          + NEWLINE;
-    case "Active Condition":
-      String cond = findReferencedType(logic);
-      return "Condition " + cond + " is active" + NEWLINE;
-    case "Active CarePlan":
-      String plan = findReferencedType(logic);
-      return "CarePlan " + plan + " is active" + NEWLINE;
-    case "Active Medication":
-      String med = findReferencedType(logic);
-      return "Medication " + med + " is active" + NEWLINE;
-    case "Active Allergy":
-      String alg = findReferencedType(logic);
-      return "Allergy " + alg + " is active" + NEWLINE;
-    case "True":
-    case "False":
-      return conditionType;
+      case "PriorState":
+        if (logic.has("within")) {
+          JsonObject within = logic.get("within").getAsJsonObject();
+          return "state '" + logic.get("name").getAsString() + "' has been processed within "
+              + within.get("quantity").getAsString() + " " + within.get("unit").getAsString()
+              + NEWLINE;
+        } else {
+          return "state '" + logic.get("name").getAsString() + "' has been processed" + NEWLINE;
+        }
+      case "Attribute":
+        String value = logic.has("value") ? logic.get("value").getAsString() : "";
+        return "Attribute: " + logic.get("attribute").getAsString() + " \\"
+            + logic.get("operator").getAsString() + " " + value + NEWLINE;
+      case "Observation":
+        String obs = findReferencedType(logic);
+        return "Observation " + obs + " \\" + logic.get("operator").getAsString() + " "
+            + logic.get("value").getAsString() + NEWLINE;
+      case "Vital Sign":
+        return "Vital Sign " + logic.get("vital_sign").getAsString() + " \\"
+            + logic.get("operator").getAsString() + " " + logic.get("value").getAsString() + "}"
+            + NEWLINE;
+      case "Active Condition":
+        String cond = findReferencedType(logic);
+        return "Condition " + cond + " is active" + NEWLINE;
+      case "Active CarePlan":
+        String plan = findReferencedType(logic);
+        return "CarePlan " + plan + " is active" + NEWLINE;
+      case "Active Medication":
+        String med = findReferencedType(logic);
+        return "Medication " + med + " is active" + NEWLINE;
+      case "Active Allergy":
+        String alg = findReferencedType(logic);
+        return "Allergy " + alg + " is active" + NEWLINE;
+      case "True":
+      case "False":
+        return conditionType;
 
-    default:
-      throw new RuntimeException("Unsupported condition: " + conditionType);
+      default:
+        throw new RuntimeException("Unsupported condition: " + conditionType);
     }
   }
 

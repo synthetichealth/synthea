@@ -1,16 +1,16 @@
 package org.mitre.synthea.world.agents;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Provider {
 
@@ -25,21 +25,23 @@ public class Provider {
   // ArrayList of all providers imported
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
   // Hash of services to Providers that provide them
-  private static HashMap<String, ArrayList<Provider>> services = new HashMap<String, ArrayList<Provider>>();
+  private static HashMap<String, ArrayList<Provider>> services = 
+      new HashMap<String, ArrayList<Provider>>();
 
   public Map<String, Object> attributes;
   private Point coordinates;
-  private ArrayList<String> services_provided;
-  private Table<Integer, String, AtomicInteger> utilization; // row: year, column: type, value:
-                                                             // count
+  private ArrayList<String> servicesProvided;
+  // row: year, column: type, value: count
+  private Table<Integer, String, AtomicInteger> utilization;
 
   protected Provider() {
     // no-arg constructor provided for subclasses
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
-    services_provided = new ArrayList<String>();
+    servicesProvided = new ArrayList<String>();
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public Provider(LinkedTreeMap p) {
     this();
     attributes = (LinkedTreeMap) p.get("properties");
@@ -53,7 +55,7 @@ public class Provider {
 
     String[] servicesList = ((String) attributes.get("services_provided")).split(" ");
     for (String s : servicesList) {
-      services_provided.add(s);
+      servicesProvided.add(s);
       // add provider to hash of services
       if (services.containsKey(s)) {
         ArrayList<Provider> l = services.get(s);
@@ -84,7 +86,7 @@ public class Provider {
   }
 
   public boolean hasService(String service) {
-    return services_provided.contains(service);
+    return servicesProvided.contains(service);
   }
 
   public void incrementEncounters(String encounterType, int year) {
@@ -130,15 +132,16 @@ public class Provider {
       service = AMBULATORY;
     }
     switch (service) {
-    case AMBULATORY:
-      return person.getAmbulatoryProvider();
-    case INPATIENT:
-      return person.getInpatientProvider();
-    case EMERGENCY:
-      return person.getEmergencyProvider();
+      case AMBULATORY:
+        return person.getAmbulatoryProvider();
+      case INPATIENT:
+        return person.getInpatientProvider();
+      case EMERGENCY:
+        return person.getEmergencyProvider();
+      default:
+        // if service is null or not supported by simulation, patient goes to ambulatory hospital
+        return person.getAmbulatoryProvider();
     }
-    // if service is null or not supported by simulation, patient goes to ambulatory hospital
-    return person.getAmbulatoryProvider();
   }
 
   public static HashMap<String, ArrayList<Provider>> getServices() {

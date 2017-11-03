@@ -1,5 +1,9 @@
 package org.mitre.synthea.export;
 
+import ca.uhn.fhir.context.FhirContext;
+
+import com.vividsolutions.jts.geom.Point;
+
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -8,9 +12,10 @@ import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
-import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanStatus;
 import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
+import org.hl7.fhir.dstu3.model.Claim.ItemComponent;
+import org.hl7.fhir.dstu3.model.Claim.ProcedureComponent;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
@@ -24,7 +29,6 @@ import org.hl7.fhir.dstu3.model.DiagnosticReport.DiagnosticReportStatus;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.Immunization;
 import org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
@@ -55,10 +59,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
-
-import ca.uhn.fhir.context.FhirContext;
-
-import com.vividsolutions.jts.geom.Point;
 
 public class FhirStu3 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
@@ -234,11 +234,11 @@ public class FhirStu3 {
 
     encounterResource.setClass_(new Coding().setCode(encounter.type));
 
-    long encounter_end = encounter.stop > 0 ? encounter.stop
+    long encounterEnd = encounter.stop > 0 ? encounter.stop
         : encounter.stop + TimeUnit.MINUTES.toMillis(15);
 
     encounterResource.setPeriod(
-        new Period().setStart(new Date(encounter.start)).setEnd(new Date(encounter_end)));
+        new Period().setStart(new Date(encounter.start)).setEnd(new Date(encounterEnd)));
 
     // TODO: provider, reason, discharge
 
@@ -264,8 +264,8 @@ public class FhirStu3 {
       Bundle bundle, BundleEntryComponent encounterEntry, Claim claim,
       BundleEntryComponent medicationEntry) {
     org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
-    org.hl7.fhir.dstu3.model.Encounter encounterResource = (org.hl7.fhir.dstu3.model.Encounter) encounterEntry
-        .getResource();
+    org.hl7.fhir.dstu3.model.Encounter encounterResource = 
+        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
 
     claimResource.setStatus(ClaimStatus.ACTIVE);
     claimResource.setUse(org.hl7.fhir.dstu3.model.Claim.Use.COMPLETE);
@@ -291,7 +291,7 @@ public class FhirStu3 {
   }
 
   /**
-   * Create an entry for the given Claim, associated to an Encounter
+   * Create an entry for the given Claim, associated to an Encounter.
    * 
    * @param personEntry
    *          Entry for the person
@@ -306,8 +306,8 @@ public class FhirStu3 {
   private static BundleEntryComponent encounterClaim(BundleEntryComponent personEntry,
       Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
     org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
-    org.hl7.fhir.dstu3.model.Encounter encounterResource = (org.hl7.fhir.dstu3.model.Encounter) encounterEntry
-        .getResource();
+    org.hl7.fhir.dstu3.model.Encounter encounterResource = 
+        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
     claimResource.setStatus(ClaimStatus.ACTIVE);
     claimResource.setUse(org.hl7.fhir.dstu3.model.Claim.Use.COMPLETE);
 
@@ -318,22 +318,21 @@ public class FhirStu3 {
     claimResource.setOrganization(encounterResource.getServiceProvider());
 
     // add item for encounter
-    claimResource.addItem(new org.hl7.fhir.dstu3.model.Claim.ItemComponent()
-        .addEncounter(new Reference(encounterEntry.getFullUrl())));
+    claimResource
+        .addItem(new ItemComponent().addEncounter(new Reference(encounterEntry.getFullUrl())));
 
     int conditionSequence = 1;
     int procedureSequence = 1;
     for (ClaimItem item : claim.items) {
       if (item.entry instanceof Procedure) {
         Type procedureReference = new Reference(item.entry.fullUrl);
-        org.hl7.fhir.dstu3.model.Claim.ProcedureComponent claimProcedure = new org.hl7.fhir.dstu3.model.Claim.ProcedureComponent(
+        ProcedureComponent claimProcedure = new ProcedureComponent(
             new PositiveIntType(procedureSequence), procedureReference);
         claimResource.addProcedure(claimProcedure);
 
         // update claimItems list
-        org.hl7.fhir.dstu3.model.Claim.ItemComponent procedureItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
-        procedureItem.addProcedureLinkId(procedureSequence); // TODO ??? this field needs more
-                                                             // description
+        ItemComponent procedureItem = new ItemComponent();
+        procedureItem.addProcedureLinkId(procedureSequence);
 
         // calculate cost of procedure based on rvu values for a facility
         Money moneyResource = new Money();
@@ -347,12 +346,14 @@ public class FhirStu3 {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
         Reference diagnosisReference = new Reference(item.entry.fullUrl);
-        org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diagnosisComponent = new org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent(
-            new PositiveIntType(conditionSequence), diagnosisReference);
+        org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diagnosisComponent = 
+            new org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent(
+                new PositiveIntType(conditionSequence), diagnosisReference);
         claimResource.addDiagnosis(diagnosisComponent);
 
         // update claimItems with diagnosis
-        org.hl7.fhir.dstu3.model.Claim.ItemComponent diagnosisItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
+        org.hl7.fhir.dstu3.model.Claim.ItemComponent diagnosisItem = 
+            new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
         diagnosisItem.addDiagnosisLinkId(conditionSequence);
         claimResource.addItem(diagnosisItem);
 
@@ -422,7 +423,8 @@ public class FhirStu3 {
    */
   private static BundleEntryComponent observation(BundleEntryComponent personEntry, Bundle bundle,
       BundleEntryComponent encounterEntry, Observation observation) {
-    org.hl7.fhir.dstu3.model.Observation observationResource = new org.hl7.fhir.dstu3.model.Observation();
+    org.hl7.fhir.dstu3.model.Observation observationResource = 
+        new org.hl7.fhir.dstu3.model.Observation();
 
     observationResource.setSubject(new Reference(personEntry.getFullUrl()));
     observationResource.setContext(new Reference(encounterEntry.getFullUrl()));
@@ -610,20 +612,20 @@ public class FhirStu3 {
     Code code = carePlan.codes.get(0);
     careplanResource.addCategory(mapCodeToCodeableConcept(code, SNOMED_URI));
 
-    CarePlanActivityStatus activityStatus;
-    GoalStatus goalStatus;
+    //CarePlanActivityStatus activityStatus;
+    //GoalStatus goalStatus;
 
     Period period = new Period().setStart(new Date(carePlan.start));
     careplanResource.setPeriod(period);
     if (carePlan.stop > 0L) {
       period.setEnd(new Date(carePlan.stop));
       careplanResource.setStatus(CarePlanStatus.COMPLETED);
-      activityStatus = CarePlanActivityStatus.COMPLETED;
-      goalStatus = GoalStatus.ACHIEVED;
+      //activityStatus = CarePlanActivityStatus.COMPLETED;
+      //goalStatus = GoalStatus.ACHIEVED;
     } else {
       careplanResource.setStatus(CarePlanStatus.ACTIVE);
-      activityStatus = CarePlanActivityStatus.INPROGRESS;
-      goalStatus = GoalStatus.INPROGRESS;
+      //activityStatus = CarePlanActivityStatus.INPROGRESS;
+      //goalStatus = GoalStatus.INPROGRESS;
     }
 
     // TODO - goals, activities, reasons

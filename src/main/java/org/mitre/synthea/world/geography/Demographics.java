@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.geography;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +14,6 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.world.agents.Person;
-
-import com.google.gson.Gson;
 
 /**
  * Demographics class holds the information from the towns.json and associated county config files.
@@ -146,16 +146,16 @@ public class Demographics {
 
   public double educationLevel(String level, Person person) {
     switch (level) {
-    case "less_than_hs":
-      return person.rand(0.0, 0.5);
-    case "hs_degree":
-      return person.rand(0.1, 0.75);
-    case "some_college":
-      return person.rand(0.3, 0.85);
-    case "bs_degree":
-      return person.rand(0.5, 1.0);
-    default:
-      return 0.0;
+      case "less_than_hs":
+        return person.rand(0.0, 0.5);
+      case "hs_degree":
+        return person.rand(0.1, 0.75);
+      case "some_college":
+        return person.rand(0.3, 0.85);
+      case "bs_degree":
+        return person.rand(0.5, 1.0);
+      default:
+        return 0.0;
     }
   }
 

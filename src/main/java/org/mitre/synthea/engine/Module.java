@@ -1,5 +1,10 @@
 package org.mitre.synthea.engine;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
@@ -22,18 +27,13 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Person;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-
 /**
  * Module represents the entry point of a generic module.
  * 
- * The `modules` map is the static list of generic modules. It is loaded once per process, and the
- * list of modules is shared between the generated population. Because we share modules across the
- * population, it is important that States are cloned before they are executed. This keeps the
- * "master" copy of the module clean.
+ * <p>The `modules` map is the static list of generic modules. It is loaded once per process, 
+ * and the list of modules is shared between the generated population. Because we share modules 
+ * across the population, it is important that States are cloned before they are executed. 
+ * This keeps the "master" copy of the module clean.
  */
 public class Module {
 

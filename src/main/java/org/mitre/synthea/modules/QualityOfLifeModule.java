@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,8 +19,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
-import com.google.gson.Gson;
-
 public class QualityOfLifeModule extends Module {
 
   private static Map<String, Map<String, Object>> disabilityWeights = loadDisabilityWeights();
@@ -27,6 +27,7 @@ public class QualityOfLifeModule extends Module {
     this.name = "Quality of Life";
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public boolean process(Person person, long time) {
     if (!person.attributes.containsKey("QALY")) {

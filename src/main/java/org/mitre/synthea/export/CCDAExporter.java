@@ -1,19 +1,15 @@
 package org.mitre.synthea.export;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
+import java.io.StringWriter;
+import java.util.UUID;
+
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
-
-import freemarker.core.ParseException;
-import freemarker.template.Configuration;
-import freemarker.template.MalformedTemplateNameException;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.UUID;
 
 /**
  * Export C-CDA R2.1 files using Apache FreeMarker templates.
@@ -37,7 +33,8 @@ public class CCDAExporter {
     configuration.setLogTemplateExceptions(false);
     try {
       configuration.setSetting("object_wrapper",
-          "DefaultObjectWrapper(2.3.26, forceLegacyNonListCollections=false, iterableSupport=true, exposeFields=true)");
+          "DefaultObjectWrapper(2.3.26, forceLegacyNonListCollections=false, "
+              + "iterableSupport=true, exposeFields=true)");
     } catch (TemplateException e) {
       e.printStackTrace();
     }
@@ -56,10 +53,6 @@ public class CCDAExporter {
    *          Time the record should be generated. Any content in the record AFTER this time will
    *          not be included.
    * @return String of CCDA R2.1 XML.
-   * @throws IOException
-   * @throws ParseException
-   * @throws MalformedTemplateNameException
-   * @throws TemplateNotFoundException
    */
   public static String export(Person person, long time) {
     // create a super encounter... this makes it easier to access

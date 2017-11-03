@@ -1,14 +1,14 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
 public class GeographicalPracticeCostIndex {
 
@@ -25,7 +25,8 @@ public class GeographicalPracticeCostIndex {
   private float peGpci2018;
   private float mpGpci2018;
 
-  private static HashMap<String, GeographicalPracticeCostIndex> gpciHash = new HashMap<String, GeographicalPracticeCostIndex>();
+  private static HashMap<String, GeographicalPracticeCostIndex> gpciHash = 
+      new HashMap<String, GeographicalPracticeCostIndex>();
 
   public GeographicalPracticeCostIndex(LinkedTreeMap m) {
     carrier = (String) m.get("carrier");
@@ -50,6 +51,7 @@ public class GeographicalPracticeCostIndex {
     gpciHash.clear();
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void loadGpciData() {
 
     String filename = "/geographical_practice_cost_index.json";

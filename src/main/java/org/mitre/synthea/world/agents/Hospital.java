@@ -1,5 +1,9 @@
 package org.mitre.synthea.world.agents;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.vividsolutions.jts.geom.Point;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,10 +12,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.vividsolutions.jts.geom.Point;
 
 public class Hospital extends Provider {
 
@@ -26,6 +26,7 @@ public class Hospital extends Provider {
     hospitalList.clear();
   }
 
+  @SuppressWarnings("unchecked")
   public static void loadHospitals() {
     String filename = "/geography/healthcare_facilities.json";
 
@@ -114,18 +115,17 @@ public class Hospital extends Provider {
     return (Hospital) closestHospital;
   }
 
-  // Haversine Formula
-  // from https://rosettacode.org/wiki/Haversine_formula#Java
+  // Haversine Formula from https://rosettacode.org/wiki/Haversine_formula#Java
   public static final double R = 6372.8; // In kilometers
 
   public static double haversine(double lat1, double lon1, double lat2, double lon2) {
-    double dLat = Math.toRadians(lat2 - lat1);
-    double dLon = Math.toRadians(lon2 - lon1);
+    double rdLat = Math.toRadians(lat2 - lat1);
+    double rdLon = Math.toRadians(lon2 - lon1);
     lat1 = Math.toRadians(lat1);
     lat2 = Math.toRadians(lat2);
 
-    double a = Math.pow(Math.sin(dLat / 2), 2)
-        + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+    double a = Math.pow(Math.sin(rdLat / 2), 2)
+        + Math.pow(Math.sin(rdLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
     double c = 2 * Math.asin(Math.sqrt(a));
     return R * c;
   }

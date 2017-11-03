@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -20,6 +18,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public class CommunityHealthWorker extends Provider {
@@ -36,8 +35,10 @@ public class CommunityHealthWorker extends Provider {
 
   public static final String ASPIRIN_MEDICATION = "Aspirin Medication";
   public static final String PREECLAMPSIA_ASPIRIN = "Preeclampsia aspirin";
-  public static final String EXERCISE_PT_INJURY_SCREENING = "Fall prevention in older adults: Exercise or physical therapy";
-  public static final String VITAMIN_D_INJURY_SCREENING = "Fall prevention in older adults: Vitamin D";
+  public static final String EXERCISE_PT_INJURY_SCREENING = 
+      "Fall prevention in older adults: Exercise or physical therapy";
+  public static final String VITAMIN_D_INJURY_SCREENING = 
+      "Fall prevention in older adults: Vitamin D";
   public static final String DIET_PHYSICAL_ACTIVITY = "Diet and physical activity counseling";
   public static final String STATIN_MEDICATION = "Statin preventive medication";
 
@@ -104,7 +105,8 @@ public class CommunityHealthWorker extends Provider {
   }
 
   private static Map<String, List<CommunityHealthWorker>> generateWorkers() {
-    Map<String, List<CommunityHealthWorker>> workers = new HashMap<String, List<CommunityHealthWorker>>();
+    Map<String, List<CommunityHealthWorker>> workers = 
+        new HashMap<String, List<CommunityHealthWorker>>();
     int numWorkers = budget / cost;
     int numWorkersGenerated = 0;
     CommunityHealthWorker worker;
@@ -152,17 +154,19 @@ public class CommunityHealthWorker extends Provider {
 
     double probability = 0.0;
     switch (deploymentType) {
-    case DEPLOYMENT_COMMUNITY:
-      if (workers.containsKey(city)) {
-        probability = (double) (workers.get(city).size()) / (double) Location.getPopulation(city);
-      }
-      break;
-    case DEPLOYMENT_EMERGENCY:
-      probability = 0.9;
-      break;
-    case DEPLOYMENT_POSTDISCHARGE:
-      probability = 0.9;
-      break;
+      case DEPLOYMENT_COMMUNITY:
+        if (workers.containsKey(city)) {
+          probability = (double) (workers.get(city).size()) / (double) Location.getPopulation(city);
+        }
+        break;
+      case DEPLOYMENT_EMERGENCY:
+        probability = 0.9;
+        break;
+      case DEPLOYMENT_POSTDISCHARGE:
+        probability = 0.9;
+        break;
+      default:
+        // nothing
     }
     if (person.rand() < probability && workers.containsKey(city)) {
       List<CommunityHealthWorker> candidates = workers.get(city).stream()
@@ -197,9 +201,9 @@ public class CommunityHealthWorker extends Provider {
 
     this.incrementEncounters(deploymentType, Utilities.getYear(time));
 
-    int chw_interventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
-    chw_interventions++;
-    person.attributes.put(Person.CHW_INTERVENTION, chw_interventions);
+    int chwInterventions = (int) person.attributes.getOrDefault(Person.CHW_INTERVENTION, 0);
+    chwInterventions++;
+    person.attributes.put(Person.CHW_INTERVENTION, chwInterventions);
 
     tobaccoScreening(person, time);
     alcoholScreening(person, time);
@@ -214,10 +218,10 @@ public class CommunityHealthWorker extends Provider {
     fallsPreventionVitaminD(person, time);
     osteoporosisScreening(person, time);
 
-    double adherence_chw_delta = Double
+    double adherenceChwDelta = Double
         .parseDouble(Config.get("lifecycle.aherence.chw_delta", "0.3"));
     double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
-    probability += (adherence_chw_delta);
+    probability += (adherenceChwDelta);
     person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
 
     enc.stop = time + TimeUnit.MINUTES.toMillis(35); // encounter lasts 35 minutes on avg
@@ -241,41 +245,41 @@ public class CommunityHealthWorker extends Provider {
 
       ct.codes.add(new Code("SNOMED-CT", "171209009", "Tobacco usage screening (procedure)"));
 
-      double quit_smoking_chw_delta = Double
+      double quitSmokingChwDelta = Double
           .parseDouble(Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
-      double smoking_duration_factor_per_year = Double.parseDouble(
+      double smokingDurationFactorPerYear = Double.parseDouble(
           Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
       double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
       int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
-      probability += (quit_smoking_chw_delta
-          / (smoking_duration_factor_per_year * numberOfYearsSmoking));
+      probability += (quitSmokingChwDelta
+          / (smokingDurationFactorPerYear * numberOfYearsSmoking));
       person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, probability);
 
       if (person.attributes.containsKey("cardio_risk")) {
         double cardioRisk = (double) person.attributes.get("cardio_risk");
-        cardioRisk = cardioRisk / (4 + quit_smoking_chw_delta);
+        cardioRisk = cardioRisk / (4 + quitSmokingChwDelta);
         person.attributes.put("cardio_risk",
             Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("atrial_fibrillation_risk")) {
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + quit_smoking_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + quitSmokingChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")) {
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + quit_smoking_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + quitSmokingChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")) {
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
     }
   }
@@ -292,36 +296,36 @@ public class CommunityHealthWorker extends Provider {
 
       ct.codes.add(new Code("SNOMED-CT", "713107002", "Screening for alcohol abuse (procedure)"));
 
-      double quit_alcoholism_chw_delta = Double
+      double quitAlcoholismChwDelta = Double
           .parseDouble(Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
-      double alcoholism_duration_factor_per_year = Double.parseDouble(
+      double alcoholismDurationFactorPerYear = Double.parseDouble(
           Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
 
       if (person.attributes.containsKey("cardio_risk")) {
         double cardioRisk = (double) person.attributes.get("cardio_risk");
-        cardioRisk = cardioRisk / (4 + quit_alcoholism_chw_delta);
+        cardioRisk = cardioRisk / (4 + quitAlcoholismChwDelta);
         person.attributes.put("cardio_risk",
             Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("atrial_fibrillation_risk")) {
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + quit_alcoholism_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + quitAlcoholismChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")) {
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + quit_alcoholism_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + quitAlcoholismChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")) {
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
 
       if ((boolean) person.attributes.getOrDefault(Person.ALCOHOLIC, false)) {
@@ -332,8 +336,8 @@ public class CommunityHealthWorker extends Provider {
         double probability = (double) person.attributes
             .get(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY);
         int numberOfYearsAlcoholic = (int) person.ageInYears(time) - 25;
-        probability += (quit_alcoholism_chw_delta
-            / (alcoholism_duration_factor_per_year * numberOfYearsAlcoholic));
+        probability += (quitAlcoholismChwDelta
+            / (alcoholismDurationFactorPerYear * numberOfYearsAlcoholic));
         person.attributes.put(LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY, probability);
 
       }
@@ -362,9 +366,8 @@ public class CommunityHealthWorker extends Provider {
           new Code("SNOMED-CT", "16334891000119106", "Low dose computed tomography of thorax"));
 
       if ((boolean) person.attributes.getOrDefault("lung_cancer", false)) {
-        person.attributes.put("probability_of_lung_cancer_treatment", 1.0); // screening caught lung
-                                                                            // cancer, send them to
-                                                                            // treatment
+        // screening caught lung cancer, send them to treatment
+        person.attributes.put("probability_of_lung_cancer_treatment", 1.0);
       }
     }
   }
@@ -382,34 +385,34 @@ public class CommunityHealthWorker extends Provider {
       ct.codes.add(
           new Code("SNOMED-CT", "185665008", "Blood pressure screening - first call (procedure)"));
 
-      double blood_pressure_chw_delta = Double
+      double bloodPressureChwDelta = Double
           .parseDouble(Config.get("lifecycle.blood_pressure.chw_delta", "0.1"));
 
       if (person.attributes.containsKey("cardio_risk")) {
         double cardioRisk = (double) person.attributes.get("cardio_risk");
-        cardioRisk = cardioRisk / (4 + blood_pressure_chw_delta);
+        cardioRisk = cardioRisk / (4 + bloodPressureChwDelta);
         person.attributes.put("cardio_risk",
             Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("atrial_fibrillation_risk")) {
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + blood_pressure_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + bloodPressureChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")) {
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + blood_pressure_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + bloodPressureChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")) {
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
     }
   }
@@ -427,7 +430,7 @@ public class CommunityHealthWorker extends Provider {
       // only for adults who have CVD risk factors
       // the exact threshold for CVD risk factors can be determined later
 
-      double diet_physical_activity_chw_delta = Double
+      double dietPhysicalActivityChwDelta = Double
           .parseDouble(Config.get("lifecycle.diet_physical_activity.chw_delta", "0.1"));
 
       if (person.attributes.containsKey("cardio_risk")) {
@@ -442,7 +445,7 @@ public class CommunityHealthWorker extends Provider {
           ct2.codes.add(new Code("SNOMED-CT", "699849008", "Healthy eating education (procedure)"));
 
           double cardioRisk = (double) person.attributes.get("cardio_risk");
-          cardioRisk = cardioRisk / (4 + diet_physical_activity_chw_delta);
+          cardioRisk = cardioRisk / (4 + dietPhysicalActivityChwDelta);
           person.attributes.put("cardio_risk",
               Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
 
@@ -459,7 +462,7 @@ public class CommunityHealthWorker extends Provider {
           ct2.codes.add(new Code("SNOMED-CT", "699849008", "Healthy eating education (procedure)"));
 
           double cardioRisk = (double) person.attributes.get("cardio_risk");
-          cardioRisk = cardioRisk / (4 + diet_physical_activity_chw_delta);
+          cardioRisk = cardioRisk / (4 + dietPhysicalActivityChwDelta);
           person.attributes.put("cardio_risk",
               Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
 
@@ -476,10 +479,10 @@ public class CommunityHealthWorker extends Provider {
         Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
         ct2.codes.add(new Code("SNOMED-CT", "699849008", "Healthy eating education (procedure)"));
 
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + diet_physical_activity_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + dietPhysicalActivityChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")
@@ -492,10 +495,10 @@ public class CommunityHealthWorker extends Provider {
         Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
         ct2.codes.add(new Code("SNOMED-CT", "699849008", "Healthy eating education (procedure)"));
 
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + diet_physical_activity_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + dietPhysicalActivityChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")
@@ -508,9 +511,9 @@ public class CommunityHealthWorker extends Provider {
         Procedure ct2 = person.record.procedure(time, "Healthy eating education (procedure)");
         ct2.codes.add(new Code("SNOMED-CT", "699849008", "Healthy eating education (procedure)"));
 
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
     }
   }
@@ -528,34 +531,34 @@ public class CommunityHealthWorker extends Provider {
 
       ct.codes.add(new Code("SNOMED-CT", "268551005", "Obesity screening (procedure)"));
 
-      double obesity_chw_delta = Double
+      double obesityChwDelta = Double
           .parseDouble(Config.get("lifecycle.obesity_screening.chw_delta", "0.1"));
 
       if (person.attributes.containsKey("cardio_risk")) {
         double cardioRisk = (double) person.attributes.get("cardio_risk");
-        cardioRisk = cardioRisk / (4 + obesity_chw_delta);
+        cardioRisk = cardioRisk / (4 + obesityChwDelta);
         person.attributes.put("cardio_risk",
             Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("atrial_fibrillation_risk")) {
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + obesity_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + obesityChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")) {
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + obesity_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + obesityChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")) {
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
 
       if (person.getVitalSign(VitalSign.BMI) >= 30.0) {
@@ -593,34 +596,34 @@ public class CommunityHealthWorker extends Provider {
 
       ct.codes.add(new Code("SNOMED-CT", "431463004", "Administration of aspirin (procedure)"));
 
-      double aspirin_chw_delta = Double
+      double aspirinChwDelta = Double
           .parseDouble(Config.get("lifecycle.aspirin_medication.chw_delta", "0.1"));
 
       if (person.attributes.containsKey("cardio_risk")) {
         double cardioRisk = (double) person.attributes.get("cardio_risk");
-        cardioRisk = cardioRisk / (4 + aspirin_chw_delta);
+        cardioRisk = cardioRisk / (4 + aspirinChwDelta);
         person.attributes.put("cardio_risk",
             Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("atrial_fibrillation_risk")) {
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + aspirin_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + aspirinChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")) {
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + aspirin_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + aspirinChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")) {
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
     }
   }
@@ -639,17 +642,8 @@ public class CommunityHealthWorker extends Provider {
 
     double tenYearStrokeRisk = (double) person.attributes.getOrDefault("cardio_risk", 0.0) * 3650;
 
-    boolean riskFactors = false;
-
-    if ((boolean) person.attributes.getOrDefault(Person.SMOKER, false)
-        || ((boolean) person.attributes.getOrDefault("diabetes", false))
-        || ((boolean) person.attributes.getOrDefault("hypertension", false))) {
-      riskFactors = true;
-    }
-
     // TODO check for history of CVD
-    if (this.offers(STATIN_MEDICATION) && age >= 40 && age <= 75 && (riskFactors = true)
-        && tenYearStrokeRisk >= .1) {
+    if (this.offers(STATIN_MEDICATION) && age >= 40 && age <= 75 && tenYearStrokeRisk >= .1) {
 
       // TODO may need a better snomed code
       Procedure ct = person.record.procedure(time, "Over the counter statin therapy (procedure)");
@@ -657,34 +651,34 @@ public class CommunityHealthWorker extends Provider {
       ct.codes
           .add(new Code("SNOMED-CT", "414981001", "Over the counter statin therapy (procedure)"));
 
-      double statin_chw_delta = Double
+      double statinChwDelta = Double
           .parseDouble(Config.get("lifecycle.statin_medication.chw_delta", "0.1"));
 
       if (person.attributes.containsKey("cardio_risk")) {
         double cardioRisk = (double) person.attributes.get("cardio_risk");
-        cardioRisk = cardioRisk / (4 + statin_chw_delta);
+        cardioRisk = cardioRisk / (4 + statinChwDelta);
         person.attributes.put("cardio_risk",
             Utilities.convertRiskToTimestep(cardioRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("atrial_fibrillation_risk")) {
-        double af_risk = (double) person.attributes.get("atrial_fibrillation_risk");
-        af_risk = af_risk / (4 + statin_chw_delta);
+        double afRisk = (double) person.attributes.get("atrial_fibrillation_risk");
+        afRisk = afRisk / (4 + statinChwDelta);
         person.attributes.put("atrial_fibrillation_risk",
-            Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_risk")) {
-        double stroke_risk = (double) person.attributes.get("stroke_risk");
-        stroke_risk = stroke_risk / (4 + statin_chw_delta);
+        double strokeRisk = (double) person.attributes.get("stroke_risk");
+        strokeRisk = strokeRisk / (4 + statinChwDelta);
         person.attributes.put("stroke_risk",
-            Utilities.convertRiskToTimestep(stroke_risk, TimeUnit.DAYS.toMillis(3650)));
+            Utilities.convertRiskToTimestep(strokeRisk, TimeUnit.DAYS.toMillis(3650)));
       }
 
       if (person.attributes.containsKey("stroke_points")) {
-        int stroke_points = (int) person.attributes.get("stroke_points");
-        stroke_points = stroke_points - 2;
-        person.attributes.put("stroke_points", Math.max(0, stroke_points));
+        int strokePoints = (int) person.attributes.get("stroke_points");
+        strokePoints = strokePoints - 2;
+        person.attributes.put("stroke_points", Math.max(0, strokePoints));
       }
     }
   }

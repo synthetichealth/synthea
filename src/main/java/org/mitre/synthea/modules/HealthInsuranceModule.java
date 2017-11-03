@@ -17,22 +17,22 @@ public class HealthInsuranceModule extends Module {
   public static final String MEDICARE = "medicare";
   public static final String DUAL_ELIGIBLE = "dual_eligible";
 
-  public long mandate_time;
-  public double mandate_occupation;
-  public int private_income_threshold;
-  public double poverty_level;
-  public double medicaid_level;
+  public long mandateTime;
+  public double mandateOccupation;
+  public int privateIncomeThreshold;
+  public double povertyLevel;
+  public double medicaidLevel;
 
   public HealthInsuranceModule() {
-    int mandate_year = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
-    mandate_time = Utilities.convertCalendarYearsToTime(mandate_year);
-    mandate_occupation = Double
+    int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
+    mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
+    mandateOccupation = Double
         .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
-    private_income_threshold = Integer
+    privateIncomeThreshold = Integer
         .parseInt(Config.get("generate.insurance.private.minimum_income", "24000"));
-    poverty_level = Double
+    povertyLevel = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
-    medicaid_level = 1.33 * poverty_level;
+    medicaidLevel = 1.33 * povertyLevel;
   }
 
   @SuppressWarnings("unchecked")
@@ -64,19 +64,19 @@ public class HealthInsuranceModule extends Module {
         && (boolean) person.attributes.get("blindness"));
     boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
         && (boolean) person.attributes.get("end_stage_renal_disease"));
-    boolean sixty_five = (age >= 65);
+    boolean sixtyFive = (age >= 65);
     double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
     int income = (Integer) person.attributes.get(Person.INCOME);
-    boolean medicaid_income_eligible = (income <= medicaid_level);
+    boolean medicaidIncomeEligible = (income <= medicaidLevel);
 
     boolean medicare = false;
     boolean medicaid = false;
 
-    if (sixty_five || esrd) {
+    if (sixtyFive || esrd) {
       medicare = true;
     }
 
-    if ((female && pregnant) || blind || medicaid_income_eligible) {
+    if ((female && pregnant) || blind || medicaidIncomeEligible) {
       medicaid = true;
     }
 
@@ -87,10 +87,10 @@ public class HealthInsuranceModule extends Module {
     } else if (medicaid) {
       return MEDICAID;
     } else {
-      if (time >= mandate_time && occupation >= mandate_occupation) {
+      if (time >= mandateTime && occupation >= mandateOccupation) {
         return PRIVATE;
       }
-      if (income >= private_income_threshold) {
+      if (income >= privateIncomeThreshold) {
         return PRIVATE;
       }
     }

@@ -1,5 +1,8 @@
 package org.mitre.synthea.export;
 
+import ca.uhn.fhir.context.FhirContext;
+import com.google.common.collect.Table;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,10 +25,6 @@ import org.hl7.fhir.dstu3.model.Resource;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Provider;
-
-import ca.uhn.fhir.context.FhirContext;
-
-import com.google.common.collect.Table;
 
 public abstract class HospitalExporter {
 
@@ -73,15 +72,15 @@ public abstract class HospitalExporter {
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) h.getResourceID());
 
-    Map<String, Object> hAttributes = h.getAttributes();
+    Map<String, Object> hospitalAttributes = h.getAttributes();
 
-    organizationResource.setName(hAttributes.get("name").toString());
+    organizationResource.setName(hospitalAttributes.get("name").toString());
 
     Address address = new Address();
-    address.addLine(hAttributes.get("address").toString());
-    address.setCity(hAttributes.get("city").toString());
-    address.setPostalCode(hAttributes.get("city_zip").toString());
-    address.setState(hAttributes.get("state").toString());
+    address.addLine(hospitalAttributes.get("address").toString());
+    address.setCity(hospitalAttributes.get("city").toString());
+    address.setPostalCode(hospitalAttributes.get("city_zip").toString());
+    address.setState(hospitalAttributes.get("state").toString());
     organizationResource.addAddress(address);
 
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();

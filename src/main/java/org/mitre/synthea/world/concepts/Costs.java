@@ -28,8 +28,9 @@ public class Costs {
     double workRvu = rvu.getWorkRvu();
     double malpracticeRvu = rvu.getMalpracticeRvu();
     double pracExpenseRvu = rvu.getNonfacilityPeRvu();
-    if (isFacility)
+    if (isFacility) {
       pracExpenseRvu = rvu.getFacilityPeRvu();
+    }
 
     // TODO - get locality from config/properties
     String locality = "REST OF MASSACHUSETTS";

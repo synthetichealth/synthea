@@ -12,11 +12,11 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 public final class CardiovascularDiseaseModule extends Module {
   public CardiovascularDiseaseModule() {
@@ -125,6 +125,7 @@ public final class CardiovascularDiseaseModule extends Module {
   private static final Map<String, List<String>> EMERGENCY_MEDS;
   private static final Map<String, List<String>> EMERGENCY_PROCEDURES;
   private static final Map<String, List<String>> HISTORY_CONDITIONS;
+
   static {
     // framingham point scores gives a 10-year risk
     risk_chd_m = new HashMap<>();
@@ -287,54 +288,54 @@ public final class CardiovascularDiseaseModule extends Module {
     Double hdl = person.getVitalSign(VitalSign.HDL);
 
     // calculate which index in a lookup array a number corresponds to based on ranges in scoring
-    int short_age_range = bound((age - 20) / 5, 0, 11);
-    int long_age_range = bound((age - 20) / 10, 0, 5);
+    int shortAgeRange = bound((age - 20) / 5, 0, 11);
+    int longAgeRange = bound((age - 20) / 10, 0, 5);
 
     // 0: <160, 1: 160-199, 2: 200-239, 3: 240-279, 4: >280
-    int chol_range = bound((chol.intValue() - 160) / 40 + 1, 0, 4);
+    int cholRange = bound((chol.intValue() - 160) / 40 + 1, 0, 4);
 
     // 0: <120, 1: 120-129, 2: 130-139, 3: 140-149, 4: 150-159, 5: >=160
-    int bp_range = bound((sysBP.intValue() - 120) / 10 + 1, 0, 5);
-    int framingham_points = 0;
+    int bpRange = bound((sysBP.intValue() - 120) / 10 + 1, 0, 5);
+    int framinghamPoints = 0;
 
-    int[] age_chd;
-    int[][] age_chol_chd;
-    int[] age_smoke_chd;
-    int[][] sys_bp_chd;
+    int[] ageChd;
+    int[][] ageCholChd;
+    int[] ageSmokeChd;
+    int[][] sysBpChd;
 
     if (gender.equals("M")) {
-      age_chd = age_chd_m;
-      age_chol_chd = age_chol_chd_m;
-      age_smoke_chd = age_smoke_chd_m;
-      sys_bp_chd = sys_bp_chd_m;
+      ageChd = age_chd_m;
+      ageCholChd = age_chol_chd_m;
+      ageSmokeChd = age_smoke_chd_m;
+      sysBpChd = sys_bp_chd_m;
     } else {
-      age_chd = age_chd_f;
-      age_chol_chd = age_chol_chd_f;
-      age_smoke_chd = age_smoke_chd_f;
-      sys_bp_chd = sys_bp_chd_f;
+      ageChd = age_chd_f;
+      ageCholChd = age_chol_chd_f;
+      ageSmokeChd = age_smoke_chd_f;
+      sysBpChd = sys_bp_chd_f;
     }
 
-    framingham_points += age_chd[short_age_range];
-    framingham_points += age_chol_chd[long_age_range][chol_range];
+    framinghamPoints += ageChd[shortAgeRange];
+    framinghamPoints += ageCholChd[longAgeRange][cholRange];
 
     if ((Boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
-      framingham_points += age_smoke_chd[long_age_range];
+      framinghamPoints += ageSmokeChd[longAgeRange];
     }
 
     // 0: <40, 1: 40-49, 2: 50-59, 3: >60
-    int hdl_range = bound((hdl.intValue() - 40) / 10 + 1, 0, 3);
-    framingham_points += hdl_lookup_chd[hdl_range];
+    int hdlRange = bound((hdl.intValue() - 40) / 10 + 1, 0, 3);
+    framinghamPoints += hdl_lookup_chd[hdlRange];
 
-    int bp_treated = bpTreated ? 0 : 1;
-    framingham_points += sys_bp_chd[bp_range][bp_treated];
+    int treated = bpTreated ? 0 : 1;
+    framinghamPoints += sysBpChd[bpRange][treated];
     double risk;
     // restrict lower and upper bound of framingham score
     if (gender.equals("M")) {
-      framingham_points = bound(framingham_points, 0, 17);
-      risk = risk_chd_m.get(framingham_points);
+      framinghamPoints = bound(framinghamPoints, 0, 17);
+      risk = risk_chd_m.get(framinghamPoints);
     } else {
-      framingham_points = bound(framingham_points, 8, 25);
-      risk = risk_chd_f.get(framingham_points);
+      framinghamPoints = bound(framinghamPoints, 8, 25);
+      risk = risk_chd_f.get(framinghamPoints);
     }
 
     person.attributes.put("cardio_risk",
@@ -356,52 +357,52 @@ public final class CardiovascularDiseaseModule extends Module {
   private static void coronaryHeartDiseaseProgression(Person person, long time) {
     // numbers are from appendix:
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
-    boolean coronary_heart_disease = (Boolean) person.attributes
+    boolean coronaryHeartDisease = (Boolean) person.attributes
         .getOrDefault("coronary_heart_disease", false);
 
-    if (!coronary_heart_disease) {
+    if (!coronaryHeartDisease) {
       return;
     }
 
     String gender = (String) person.attributes.get(Person.GENDER);
 
-    double annual_risk;
+    double annualRisk;
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
     // annual probability of coronary attack given history of angina
     if (gender.equals("M")) {
-      annual_risk = 0.042;
+      annualRisk = 0.042;
     } else {
-      annual_risk = 0.015;
+      annualRisk = 0.015;
     }
 
-    double cardiac_event_chance = Utilities.convertRiskToTimestep(annual_risk,
+    double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
         TimeUnit.DAYS.toMillis(365));
 
-    if (person.rand() < cardiac_event_chance) {
-      String cardiac_event;
+    if (person.rand() < cardiacEventChance) {
+      String cardiacEvent;
 
-      if (person.rand() < 0.8) // Proportion of coronary attacks that are MI ,given history of CHD
-      {
-        cardiac_event = "myocardial_infarction";
+      // Proportion of coronary attacks that are MI ,given history of CHD
+      if (person.rand() < 0.8) {
+        cardiacEvent = "myocardial_infarction";
       } else {
-        cardiac_event = "cardiac_arrest";
+        cardiacEvent = "cardiac_arrest";
       }
 
-      person.events.create(time, cardiac_event, "coronaryHeartDiseaseProgression", false);
+      person.events.create(time, cardiacEvent, "coronaryHeartDiseaseProgression", false);
       // creates unprocessed emergency encounter. Will be processed at next time step.
       person.events.create(time, "emergency_encounter", "coronaryHeartDiseaseProgression", false);
 
       EncounterModule.emergencyVisit(person, time);
 
-      double survival_rate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
+      double survivalRate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
       // survival rate triples if a bystander is present
-      if (person.rand() < 0.46) // http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
-      {
-        survival_rate *= 3.0;
+      // http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
+      if (person.rand() < 0.46) {
+        survivalRate *= 3.0;
       }
 
-      if (person.rand() > survival_rate) {
-        person.recordDeath(time, LOOKUP.get(cardiac_event), "coronaryHeartDiseaseProgression");
+      if (person.rand() > survivalRate) {
+        person.recordDeath(time, LOOKUP.get(cardiacEvent), "coronaryHeartDiseaseProgression");
       }
     }
   }
@@ -413,22 +414,20 @@ public final class CardiovascularDiseaseModule extends Module {
       return;
     }
 
-    double annual_risk = 0.00076;
-    double cardiac_event_chance = Utilities.convertRiskToTimestep(annual_risk,
+    double annualRisk = 0.00076;
+    double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
         TimeUnit.DAYS.toMillis(365));
-    if (person.rand() < cardiac_event_chance) {
+    if (person.rand() < cardiacEventChance) {
       person.events.create(time, "cardiac_arrest", "noCoronaryHeartDisease", false);
       person.events.create(time, "emergency_encounter", "noCoronaryHeartDisease", false);
       EncounterModule.emergencyVisit(person, time);
-      double survival_rate = 1 - (0.00069);
+      double survivalRate = 1 - (0.00069);
       if (person.rand() < 0.46) {
-        survival_rate *= 3.0;
+        survivalRate *= 3.0;
       }
-      double annual_death_risk = 1 - survival_rate;
-      if (person.rand() < Utilities.convertRiskToTimestep(annual_death_risk,
-          TimeUnit.DAYS.toMillis(365)))
-        ;
-      {
+      double annualDeathRisk = 1 - survivalRate;
+      if (person.rand() < Utilities.convertRiskToTimestep(annualDeathRisk,
+          TimeUnit.DAYS.toMillis(365))) {
         person.recordDeath(time, LOOKUP.get("cardiac_arrest"), "noCoronaryHeartDisease");
       }
     }
@@ -442,27 +441,27 @@ public final class CardiovascularDiseaseModule extends Module {
       return;
     }
 
-    int af_score = 0;
-    int age_range = Math.min((age - 45) / 5, 8);
-    int gender_index = (person.attributes.get(Person.GENDER).equals("M")) ? 0 : 1;
-    af_score += age_af[gender_index][age_range];
+    int afScore = 0;
+    int ageRange = Math.min((age - 45) / 5, 8);
+    int genderIndex = (person.attributes.get(Person.GENDER).equals("M")) ? 0 : 1;
+    afScore += age_af[genderIndex][ageRange];
     if (person.getVitalSign(VitalSign.BMI) >= 30) {
-      af_score += 1;
+      afScore += 1;
     }
 
     if (person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE) >= 160) {
-      af_score += 1;
+      afScore += 1;
     }
 
     if ((Boolean) person.attributes.getOrDefault("bp_treated?", false)) {
-      af_score += 1;
+      afScore += 1;
     }
 
-    af_score = bound(af_score, 0, 10);
+    afScore = bound(afScore, 0, 10);
 
-    double af_risk = risk_af_table[af_score]; // 10-yr risk
+    double afRisk = risk_af_table[afScore]; // 10-yr risk
     person.attributes.put("atrial_fibrillation_risk",
-        Utilities.convertRiskToTimestep(af_risk, TimeUnit.DAYS.toMillis(3650)));
+        Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
   }
 
   private static void getAtrialFibrillation(Person person, long time) {
@@ -475,8 +474,8 @@ public final class CardiovascularDiseaseModule extends Module {
   }
 
   // https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
-  private static final double[] stroke_rate_20_39 = { 0.002, 0.007 }; // Prevalence of stroke by age
-                                                                      // and sex (Male, Female)
+  // Prevalence of stroke by age and sex (Male, Female)
+  private static final double[] stroke_rate_20_39 = { 0.002, 0.007 };
   private static final double[] stroke_rate_40_59 = { 0.019, 0.022 };
 
   private static final double[][] ten_year_stroke_risk = {
@@ -487,33 +486,9 @@ public final class CardiovascularDiseaseModule extends Module {
           0.08, 0.09, 0.11, 0.13, 0.16, 0.19, 0.23, 0.27, 0.32, 0.37, 0.43, 0.5, 0.57, 0.64, 0.71,
           0.78, 0.84 } };
 
-  /*
-   * Original ruby code here for comparison. Java doesn't have ranges so instead we'll just keep the
-   * lower bound, and check against arr[i] and arr[i+i]
-   * 
-   * # The index for each range corresponds to the number of points
-   * 
-   * # data for men is first array, women in second. age_stroke = [ [(54..56), (57..59), (60..62),
-   * (63..65), (66..68), (69..72), (73..75), (76..78), (79..81), (82..84), (85..999)],
-   * 
-   * [(54..56), (57..59), (60..62), (63..64), (65..67), (68..70), (71..73), (74..76), (77..78),
-   * (79..81), (82..999)] ]
-   * 
-   * untreated_sys_bp_stroke = [ [(0..105), (106..115), (116..125), (126..135), (136..145),
-   * (146..155), (156..165), (166..175), (176..185), (185..195), (196..205)],
-   * 
-   * [(0..95), (95..106), (107..118), (119..130), (131..143), (144..155), (156..167), (168..180),
-   * (181..192), (193..204), (205..216)] ]
-   * 
-   * treated_sys_bp_stroke = [ [(0..105), (106..112), (113..117), (118..123), (124..129),
-   * (130..135), (136..142), (143..150), (151..161), (162..176), (177..205)],
-   * 
-   * [(0..95), (95..106), (107..113), (114..119), (120..125), (126..131), (132..139), (140..148),
-   * (149..160), (161..204), (205..216)] ]
-   */
-
   // the index for each range corresponds to the number of points
-  private static final int[][] age_stroke = { { 54, 57, 60, 63, 66, 69, 73, 76, 79, 82, 85 }, // male
+  private static final int[][] age_stroke = { 
+      { 54, 57, 60, 63, 66, 69, 73, 76, 79, 82, 85 }, // male
       { 54, 57, 60, 63, 65, 68, 71, 74, 77, 79, 82 } // female
   };
 
@@ -575,50 +550,50 @@ public final class CardiovascularDiseaseModule extends Module {
       return;
     }
 
-    int stroke_points = 0;
+    int strokePoints = 0;
     if ((Boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
-      stroke_points += 3;
+      strokePoints += 3;
     }
     if ((Boolean) person.attributes.getOrDefault("left_ventricular_hypertrophy", false)) {
-      stroke_points += 5;
+      strokePoints += 5;
     }
 
-    stroke_points += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
+    strokePoints += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
 
     int bp = bloodPressure.intValue();
     // TODO treating blood pressure currently is not a feature. Modify this for when it is.
     if ((Boolean) person.attributes.getOrDefault("bp_treated?", false)) {
-      stroke_points += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
+      strokePoints += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
     } else {
-      stroke_points += getIndexForValueInRangelist(bp, untreated_sys_bp_stroke[genderIndex]);
+      strokePoints += getIndexForValueInRangelist(bp, untreated_sys_bp_stroke[genderIndex]);
     }
 
     if ((Boolean) person.attributes.getOrDefault("diabetes", false)) {
-      stroke_points += diabetes_stroke[genderIndex];
+      strokePoints += diabetes_stroke[genderIndex];
     }
 
     if ((Boolean) person.attributes.getOrDefault("coronary_heart_disease", false)) {
-      stroke_points += chd_stroke_points[genderIndex];
+      strokePoints += chd_stroke_points[genderIndex];
     }
 
     if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
-      stroke_points += atrial_fibrillation_stroke_points[genderIndex];
+      strokePoints += atrial_fibrillation_stroke_points[genderIndex];
     }
 
-    double ten_stroke_risk;
+    double tenStrokeRisk;
 
-    if (stroke_points >= ten_year_stroke_risk[genderIndex].length) {
+    if (strokePoints >= ten_year_stroke_risk[genderIndex].length) {
       // off the charts
-      int worst_case = ten_year_stroke_risk[genderIndex].length - 1;
-      ten_stroke_risk = ten_year_stroke_risk[genderIndex][worst_case];
+      int worstCase = ten_year_stroke_risk[genderIndex].length - 1;
+      tenStrokeRisk = ten_year_stroke_risk[genderIndex][worstCase];
     } else {
-      ten_stroke_risk = ten_year_stroke_risk[genderIndex][stroke_points];
+      tenStrokeRisk = ten_year_stroke_risk[genderIndex][strokePoints];
     }
 
     // divide 10 year risk by 365 * 10 to get daily risk.
     person.attributes.put("stroke_risk",
-        Utilities.convertRiskToTimestep(ten_stroke_risk, TimeUnit.DAYS.toMillis(3650)));
-    person.attributes.put("stroke_points", stroke_points);
+        Utilities.convertRiskToTimestep(tenStrokeRisk, TimeUnit.DAYS.toMillis(3650)));
+    person.attributes.put("stroke_points", strokePoints);
   }
 
   private static void getStroke(Person person, long time) {
@@ -629,9 +604,9 @@ public final class CardiovascularDiseaseModule extends Module {
       person.events.create(time + TimeUnit.MINUTES.toMillis(10), "emergency_encounter", "getStroke",
           false);
       EncounterModule.emergencyVisit(person, time);
-      if (person.rand() < 0.15) // Strokes are fatal 10-20 percent of cases
-                                // https://stroke.nih.gov/materials/strokechallenges.htm
-      {
+      // Strokes are fatal 10-20 percent of cases
+      // https://stroke.nih.gov/materials/strokechallenges.htm
+      if (person.rand() < 0.15) {
         person.recordDeath(time, LOOKUP.get("stroke"), "getStroke");
       }
     }
@@ -656,6 +631,7 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private static void atrialFibrillationTreatment(Person person, long time) {
     List<String> meds = filter_meds_by_year(Arrays.asList("warfarin", "verapamil", "digoxin"),
         time);
@@ -671,17 +647,16 @@ public final class CardiovascularDiseaseModule extends Module {
       // simulation of this,
       // we arbitrarily chose a 20% chance of getting catheter ablation and 80% of getting
       // cardioversion
-      String afib_procedure = person.rand() < 0.2 ? "catheter_ablation"
-          : "electrical_cardioversion";
+      String afibProcedure = person.rand() < 0.2 ? "catheter_ablation" : "electrical_cardioversion";
 
-      Map<String, List<String>> cardiovascular_procedures = (Map<String, List<String>>) person.attributes
-          .get("cardiovascular_procedures");
+      Map<String, List<String>> cardiovascularProcedures = 
+          (Map<String, List<String>>) person.attributes.get("cardiovascular_procedures");
 
-      if (cardiovascular_procedures == null) {
-        cardiovascular_procedures = new HashMap<String, List<String>>();
-        person.attributes.put("cardiovascular_procedures", cardiovascular_procedures);
+      if (cardiovascularProcedures == null) {
+        cardiovascularProcedures = new HashMap<String, List<String>>();
+        person.attributes.put("cardiovascular_procedures", cardiovascularProcedures);
       }
-      cardiovascular_procedures.put("atrial_fibrillation", Arrays.asList(afib_procedure));
+      cardiovascularProcedures.put("atrial_fibrillation", Arrays.asList(afibProcedure));
     } else {
       for (String med : meds) {
         stopMedication(med, person, time);
@@ -689,11 +664,12 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private static void prescribeMedication(String med, Person person, long time) {
     if (!person.record.medicationActive(med)) {
       // add med to med_changes
-      List<String> medChanges = (List<String>) person.attributes
-          .get("cardiovascular_disease_med_changes");
+      List<String> medChanges = 
+          (List<String>) person.attributes.get("cardiovascular_disease_med_changes");
 
       if (medChanges == null) {
         medChanges = new LinkedList<String>();
@@ -703,11 +679,12 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private static void stopMedication(String med, Person person, long time) {
     if (person.record.medicationActive(med)) {
       // add med to med_changes
-      List<String> medChanges = (List<String>) person.attributes
-          .get("cardiovascular_disease_med_changes");
+      List<String> medChanges = 
+          (List<String>) person.attributes.get("cardiovascular_disease_med_changes");
 
       if (medChanges == null) {
         medChanges = new LinkedList<String>();
@@ -717,6 +694,12 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
+  /**
+   * Perform Cardiovasular Disease Encounter.
+   * @param person The patient.
+   * @param time The time of the encounter.
+   */
+  @SuppressWarnings("unchecked")
   public static void performEncounter(Person person, long time) {
     int year = Utilities.getYear(time);
 
@@ -734,8 +717,8 @@ public final class CardiovascularDiseaseModule extends Module {
     // TODO - intentionally ignored at the moment
 
     // step 3 - medications
-    List<String> medChanges = (List<String>) person.attributes
-        .get("cardiovascular_disease_med_changes");
+    List<String> medChanges = 
+        (List<String>) person.attributes.get("cardiovascular_disease_med_changes");
 
     if (medChanges != null) {
       for (String med : medChanges) {
@@ -747,8 +730,8 @@ public final class CardiovascularDiseaseModule extends Module {
           entry.codes.add(LOOKUP.get(med));
           // increment number of prescriptions prescribed by respective hospital
           Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
-          if (provider == null) // no provider associated with encounter or procedure
-          {
+          // no provider associated with encounter or procedure
+          if (provider == null) {
             provider = person.getAmbulatoryProvider();
           }
           provider.incrementPrescriptions(year);
@@ -759,11 +742,11 @@ public final class CardiovascularDiseaseModule extends Module {
     }
 
     // step 4 - procedures
-    Map<String, List<String>> cardiovascular_procedures = (Map<String, List<String>>) person.attributes
-        .get("cardiovascular_procedures");
+    Map<String, List<String>> cardiovascularProcedures = 
+        (Map<String, List<String>>) person.attributes.get("cardiovascular_procedures");
 
-    if (cardiovascular_procedures != null) {
-      for (Map.Entry<String, List<String>> entry : cardiovascular_procedures.entrySet()) {
+    if (cardiovascularProcedures != null) {
+      for (Map.Entry<String, List<String>> entry : cardiovascularProcedures.entrySet()) {
         String reason = entry.getKey();
         List<String> procedures = entry.getValue();
 
@@ -778,8 +761,8 @@ public final class CardiovascularDiseaseModule extends Module {
 
             // increment number of procedures by respective hospital
             Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
-            if (provider == null) // no provider associated with encounter or procedure
-            {
+            // no provider associated with encounter or procedure
+            if (provider == null) {
               provider = person.getAmbulatoryProvider();
             }
             provider.incrementProcedures(year);
@@ -789,6 +772,12 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
+  /**
+   * Perform an emergency cardiovascular disease encounter.
+   * @param person The patient.
+   * @param time The time of the emergency.
+   * @param diagnosis The diagnosis to be made.
+   */
   public static void performEmergency(Person person, long time, String diagnosis) {
     Provider provider = person.getEmergencyProvider();
 

@@ -1,5 +1,8 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,12 +10,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-
 public class RelativeValueUnit {
 
-  private static HashMap<String, RelativeValueUnit> rvuHash = new HashMap<String, RelativeValueUnit>();
+  private static HashMap<String, RelativeValueUnit> rvuHash = 
+      new HashMap<String, RelativeValueUnit>();
 
   private String hcpcCode;
   private String mod;
@@ -57,6 +58,7 @@ public class RelativeValueUnit {
     rvuHash.clear();
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void loadRVUs() {
 
     String filename = "/relative_value_units.json";
