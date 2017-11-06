@@ -229,7 +229,7 @@ public class FhirStu3
 		case "native":
 			raceDisplay = "American Indian or Alaska Native";
 			break;
-		default: // Hispanic or Other
+		default: // Hispanic or Other (Put Hawaiian and Pacific Islander here for now)
 			raceDisplay = "Other";
 			break;
 		}
@@ -238,8 +238,11 @@ public class FhirStu3
 
 		if (race != "hispanic") {
 			Extension raceCodingExtension = new Extension("ombCategory");
-			Code raceCode = new Code("urn:oid:2.16.840.1.113883.6.238", raceNum, raceDisplay);
-			raceCodingExtension.setValue(mapCodeToCodeableConcept(raceCode, "urn:oid:2.16.840.1.113883.6.238"));
+			Coding raceCoding = new Coding();
+			raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
+			raceCoding.setCode(raceNum);
+			raceCoding.setDisplay(raceDisplay);
+			raceCodingExtension.setValue(raceCoding);
 			raceExtension.addExtension(raceCodingExtension);
 		}
 
@@ -249,7 +252,6 @@ public class FhirStu3
 		raceExtension.addExtension(raceTextExtension);
 
 		patientResource.addExtension(raceExtension);
-
 
 		// We do not yet account for mixed ethnicity
 		Extension ethnicityExtension = new Extension("http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity");
@@ -267,8 +269,11 @@ public class FhirStu3
 		String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);
 
 		Extension ethnicityCodingExtension = new Extension("ombCategory");
-		Code ethnicityCode = new Code("urn:oid:2.16.840.1.113883.6.238", ethnicityNum, ethnicityDisplay);
-		ethnicityCodingExtension.setValue(mapCodeToCodeableConcept(ethnicityCode, "urn:oid:2.16.840.1.113883.6.238"));
+		Coding ethnicityCoding = new Coding();
+		ethnicityCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
+		ethnicityCoding.setCode(ethnicityNum);
+		ethnicityCoding.setDisplay(ethnicityDisplay);
+		ethnicityCodingExtension.setValue(ethnicityCoding);
 
 		ethnicityExtension.addExtension(ethnicityCodingExtension);
 
