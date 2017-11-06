@@ -26,8 +26,8 @@ dependencies {
     // compile 'com.google.guava:guava:21.0'
     compile 'com.google.code.gson:gson:2.8.0'
 
-    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
-    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.0.0'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.0.0'
 
 	// C-CDA export uses Apache FreeMarker templates
 	compile 'org.freemarker:freemarker:2.3.26-incubating'
@@ -51,7 +51,7 @@ dependencies {
     testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
     testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 	testCompile 'org.mockito:mockito-core:2.7.22'
-	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:2.5'
+	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.0.0'
 	testCompile 'com.phloc:phloc-schematron:2.7.1'
 	testCompile 'com.phloc:phloc-commons:4.4.11'
 }

@@ -250,7 +250,7 @@ public class FhirStu3
 		
 		encounterResource.setClass_(new Coding().setCode(encounter.type));
 		
-		long encounter_end = encounter.stop > 0 ? encounter.stop : encounter.stop + TimeUnit.MINUTES.toMillis(15);
+		long encounter_end = encounter.stop > 0 ? encounter.stop : encounter.start + TimeUnit.MINUTES.toMillis(15);
 		
 		encounterResource.setPeriod( new Period().setStart(new Date(encounter.start)).setEnd( new Date(encounter_end)) );
 		
@@ -290,6 +290,8 @@ public class FhirStu3
 		
 		Money moneyResource = new Money();
 		moneyResource.setValue(claim.total());
+		moneyResource.setCode("USD");
+		moneyResource.setSystem("urn:iso:std:iso:4217");
 		claimResource.setTotal(moneyResource);
 
 		return newEntry(bundle, claimResource);
@@ -339,7 +341,8 @@ public class FhirStu3
 				
 				//calculate cost of procedure based on rvu values for a facility
 				Money moneyResource = new Money();
-
+		    moneyResource.setCode("USD");
+		    moneyResource.setSystem("urn:iso:std:iso:4217");
 				moneyResource.setValue(item.cost());
 				procedureItem.setNet(moneyResource);
 				claimResource.addItem(procedureItem);
@@ -366,7 +369,9 @@ public class FhirStu3
 		}
 		
 		Money moneyResource = new Money();
-		moneyResource.setValue(claim.total());
+    moneyResource.setCode("USD");
+    moneyResource.setSystem("urn:iso:std:iso:4217");
+    moneyResource.setValue(claim.total());
 		claimResource.setTotal(moneyResource);
 		
 		return newEntry(bundle, claimResource);
@@ -400,6 +405,7 @@ public class FhirStu3
 		if (condition.stop > 0)
 		{
 			conditionResource.setAbatement(convertFhirDateTime(condition.stop, true));
+			conditionResource.setClinicalStatus(ConditionClinicalStatus.RESOLVED);
 		}
 		
 		BundleEntryComponent conditionEntry = newEntry(bundle, conditionResource);
