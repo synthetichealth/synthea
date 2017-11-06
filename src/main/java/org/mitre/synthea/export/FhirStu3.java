@@ -69,7 +69,6 @@ public class FhirStu3
 	// HAPI FHIR warns that the context creation is expensive, and should be performed
 	// per-application, not per-record
 	private static final FhirContext FHIR_CTX = FhirContext.forDstu3();
-	private static final FhirValidator FHIR_VALIDATOR = FHIR_CTX.newValidator();
 	
 	private static final String SNOMED_URI = "http://snomed.info/sct";
 	private static final String LOINC_URI = "http://loinc.org";
