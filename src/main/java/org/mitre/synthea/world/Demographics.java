@@ -113,64 +113,42 @@ public class Demographics
 
 	public String ethnicityFromRace(String race, Person person) {
 		// https://en.wikipedia.org/wiki/Demographics_of_Massachusetts#Race.2C_ethnicity.2C_and_ancestry
-		if (race == "white") {
-			double num = person.rand(0.0, 86.8);
-			if (num < 22.8) {
-				return "irish";
-			} else if (num < 36.7) {
-				return "italian";
-			} else if (num < 47.4) {
-				return "english";
-			} else if (num < 55.2) {
-				return "french";
-			} else if (num < 61.6) {
-				return "german";
-			} else if (num < 66.6) {
-				return "polish";
-			} else if (num < 71.3) {
-				return "portuguese";
-			} else if (num < 75.7) {
-				return "american";
-			} else if (num < 79.5) {
-				return "french_canadian";
-			} else if (num < 81.9) {
-				return "scottish";
-			} else if (num < 83.8) {
-				return "russian";
-			} else if (num < 85.6) {
-				return "swedish";
-			} else {
-				return "greek";
-			}
-		} else if (race == "hispanic") {
-			double num = person.rand(0.0, 7.1);
-			if (num < 4.1) {
-				return "puerto_rican";
-			} else if (num < 5.1) {
-				return "mexican";
-			} else if (num < 6.1) {
-				return "central_american";
-			} else {
-				return "south_american";
-			}
-		} else if (race == "black") {
-			double num = person.rand(0.0, 5.4);
-			if (num < 1.8) {
-				return "african";
-			} else if (num < 1.8) {
-				return "dominican";
-			} else {
-				return "west_indian";
-			}
-		} else if (race == "asian") {
-			double num = person.rand(0.0, 3.1);
-			if (num < 2.0) {
-				return "chinese";
-			} else {
-				return "asian_indian";
-			}
+		if (race.equals("white")) {
+			RandomCollection<String> whiteEthnicities = new RandomCollection<>();
+			whiteEthnicities.add(22.8, "irish");
+			whiteEthnicities.add(13.9, "italian");
+			whiteEthnicities.add(10.7, "english");
+			whiteEthnicities.add(7.8, "french");
+			whiteEthnicities.add(6.4, "german");
+			whiteEthnicities.add(5.0, "polish");
+			whiteEthnicities.add(4.7, "portuguese");
+			whiteEthnicities.add(4.4, "american");
+			whiteEthnicities.add(3.8, "french_canadian");
+			whiteEthnicities.add(2.4, "scottish");
+			whiteEthnicities.add(1.9, "russian");
+			whiteEthnicities.add(1.8, "swedish");
+			whiteEthnicities.add(1.2, "greek");
+			return whiteEthnicities.next(person.random);
+		} else if (race.equals("hispanic")) {
+			RandomCollection<String> hispanicEthnicities = new RandomCollection<>();
+			hispanicEthnicities.add(4.1, "puerto_rican");
+			hispanicEthnicities.add(1, "mexican");
+			hispanicEthnicities.add(1, "central_american");
+			hispanicEthnicities.add(1, "south_american");
+			return hispanicEthnicities.next(person.random);
+		} else if (race.equals("black")) {
+			RandomCollection<String> blackEthnicities = new RandomCollection<>();
+			blackEthnicities.add(1.8, "african");
+			blackEthnicities.add(1.8, "dominican");
+			blackEthnicities.add(1.8, "west_indian");
+			return blackEthnicities.next(person.random);
+		} else if (race.equals("asian")) {
+			RandomCollection<String> asianEthnicities = new RandomCollection<>();
+			asianEthnicities.add(2.0, "chinese");
+			asianEthnicities.add(1.1, "asian_indian");
+			return asianEthnicities.next(person.random);
 		}
-		else if (race == "native") {
+		else if (race.equals("native")) {
 			return "american_indian";
 		}
 		else { // race == "other"
@@ -187,126 +165,107 @@ public class Demographics
 		// ex, only people of chinese ethnicity speak chinese
 		// these are "manufactured" #s and not based on real citations
 		double num = person.rand(0.0, 100.0);
-		if (ethnicity == "irish") {
+		if (ethnicity.equals("irish")) {
 			return "english";
-		} else if (ethnicity == "english") {
+		} else if (ethnicity.equals("english")) {
 			return "english";
-		} else if (ethnicity == "american") {
+		} else if (ethnicity.equals("american")) {
 			return "english";
-		} else if (ethnicity == "scottish") {
+		} else if (ethnicity.equals("scottish")) {
 			return "english";
-		} else if (ethnicity == "italian") {
-			if (num < 95.0) {
-				return "english";
-			} else {
-				return "italian";
-			}
-		} else if (ethnicity == "french") {
-			if (num < 99.0) {
-				return "english";
-			} else {
-				return "french";
-			}
-		} else if (ethnicity == "french_canadian") {
-			if (num < 99.0) {
-				return "english";
-			} else {
-				return "french";
-			}
-		} else if (ethnicity == "german") {
-			if (num < 96.0) {
-				return "english";
-			} else {
-				return "german";
-			}
-		} else if (ethnicity == "polish") {
+		} else if (ethnicity.equals("italian")) {
+			RandomCollection<String> italianLanguages = new RandomCollection<>();
+			italianLanguages.add(95.0, "english");
+			italianLanguages.add(5.0, "italian");
+			return italianLanguages.next(person.random);
+		} else if (ethnicity.equals("french")) {
+			RandomCollection<String> frenchLanguages = new RandomCollection<>();
+			frenchLanguages.add(99.0, "english");
+			frenchLanguages.add(1.0, "french");
+			return frenchLanguages.next(person.random);
+		} else if (ethnicity.equals("french_canadian")) {
+			RandomCollection<String> frenchCanadianLanguages = new RandomCollection<>();
+			frenchCanadianLanguages.add(99.0, "english");
+			frenchCanadianLanguages.add(1.0, "french");
+			return frenchCanadianLanguages.next(person.random);
+		} else if (ethnicity.equals("german")) {
+			RandomCollection<String> germanLanguages = new RandomCollection<>();
+			germanLanguages.add(96.0, "english");
+			germanLanguages.add(4.0, "german");
+			return germanLanguages.next(person.random);
+		} else if (ethnicity.equals("polish")) {
 			return "english";
-		} else if (ethnicity == "portuguese") {
-			if (num < 37.0) {
-				return "english";
-			} else {
-				return "portuguese";
-			}
-		} else if (ethnicity == "russian") {
-			if (num < 62.0) {
-				return "english";
-			} else {
-				return "russian";
-			}
-		} else if (ethnicity == "swedish") {
+		} else if (ethnicity.equals("portuguese")) {
+			RandomCollection<String> portugueseLanguages = new RandomCollection<>();
+			portugueseLanguages.add(37.0, "english");
+			portugueseLanguages.add(63.0, "portuguese");
+			return portugueseLanguages.next(person.random);
+		} else if (ethnicity.equals("russian")) {
+			RandomCollection<String> russianLanguages = new RandomCollection<>();
+			russianLanguages.add(62.0, "english");
+			russianLanguages.add(38.0, "russian");
+			return russianLanguages.next(person.random);
+		} else if (ethnicity.equals("swedish")) {
 			return "english";
-		} else if (ethnicity == "greek") {
-			if (num < 66.0) {
-				return "english";
-			} else {
-				return "greek";
-			}
-		} else if (ethnicity == "puerto_rican") {
-			if (num < 30.0) {
-				return "english";
-			} else {
-				return "spanish";
-			}
-		} else if (ethnicity == "mexican") {
-			if (num < 30.0) {
-				return "english";
-			} else {
-				return "spanish";
-			}
-		} else if (ethnicity == "central_american") {
-			if (num < 30.0) {
-				return "english";
-			} else {
-				return "spanish";
-			}
-		} else if (ethnicity == "south_american") {
-			if (num < 30.0) {
-				return "english";
-			} else if (num < 65.0) {
-				return "spanish";
-			} else {
-				return "portuguese";
-			}
-		} else if (ethnicity == "african") {
-			if (num < 95.0) {
-				return "english";
-			} else {
-				return "french";
-			}
-		} else if (ethnicity == "dominican") {
-			if (num < 30.0) {
-				return "english";
-			} else {
-				return "spanish";
-			}
-		} else if (ethnicity == "west_indian") {
-			if (num < 25.0) {
-				return "english";
-			} else if (num < 60.0) {
-				return "spanish";
-			} else {
-				return "french_creole";
-			}
-		} else if (ethnicity == "chinese") {
-			if (num < 25.0) {
-				return "english";
-			} else {
-				return "chinese";
-			}
-		} else if (ethnicity == "asian_indian") {
-			if (num < 75.0) {
-				return "english";
-			} else {
-				return "hindi";
-			}
-		} else if (ethnicity == "american_indian") {
+		} else if (ethnicity.equals("greek")) {
+			RandomCollection<String> greekLanguages = new RandomCollection<>();
+			greekLanguages.add(66.0, "english");
+			greekLanguages.add(34.0, "greek");
+			return greekLanguages.next(person.random);
+		} else if (ethnicity.equals("puerto_rican")) {
+			RandomCollection<String> puertoRicanLanguages = new RandomCollection<>();
+			puertoRicanLanguages.add(30.0, "english");
+			puertoRicanLanguages.add(70.0, "spanish");
+			return puertoRicanLanguages.next(person.random);
+		} else if (ethnicity.equals("mexican")) {
+			RandomCollection<String> mexicanLanguages = new RandomCollection<>();
+			mexicanLanguages.add(30.0, "english");
+			mexicanLanguages.add(70.0, "spanish");
+			return mexicanLanguages.next(person.random);
+		} else if (ethnicity.equals("central_american")) {
+			RandomCollection<String> centralAmericanLanguages = new RandomCollection<>();
+			centralAmericanLanguages.add(30.0, "english");
+			centralAmericanLanguages.add(70.0, "spanish");
+			return centralAmericanLanguages.next(person.random);
+		} else if (ethnicity.equals("south_american")) {
+			RandomCollection<String> southAmericanLanguages = new RandomCollection<>();
+			southAmericanLanguages.add(30.0, "english");
+			southAmericanLanguages.add(35.0, "spanish");
+			southAmericanLanguages.add(35.0, "portuguese");
+			return southAmericanLanguages.next(person.random);
+		} else if (ethnicity.equals("african")) {
+			RandomCollection<String> africanLanguages = new RandomCollection<>();
+			africanLanguages.add(95.0, "english");
+			africanLanguages.add(5.0, "french");
+			return africanLanguages.next(person.random);
+		} else if (ethnicity.equals("dominican")) {
+			RandomCollection<String> dominicanLanguages = new RandomCollection<>();
+			dominicanLanguages.add(30.0, "english");
+			dominicanLanguages.add(70.0, "spanish");
+			return dominicanLanguages.next(person.random);
+		} else if (ethnicity.equals("west_indian")) {
+			RandomCollection<String> westIndianLanguages = new RandomCollection<>();
+			westIndianLanguages.add(25.0, "english");
+			westIndianLanguages.add(35.0, "spanish");
+			westIndianLanguages.add(50.0, "french_creole");
+			return westIndianLanguages.next(person.random);
+		} else if (ethnicity.equals("chinese")) {
+			RandomCollection<String> chineseLanguages = new RandomCollection<>();
+			chineseLanguages.add(25.0, "english");
+			chineseLanguages.add(75.0, "chinese");
+			return chineseLanguages.next(person.random);
+		} else if (ethnicity.equals("asian_indian")) {
+			RandomCollection<String> asianIndianLanguages = new RandomCollection<>();
+			asianIndianLanguages.add(75.0, "english");
+			asianIndianLanguages.add(25.0, "hindi");
+			return asianIndianLanguages.next(person.random);
+		} else if (ethnicity.equals("american_indian")) {
 			return "english";
-		} else if (ethnicity == "arab") {
-			if (num < 63.0) {
-				return "english";
-			} else {
-				return "arabic";
-			}
+		} else if (ethnicity.equals("arab")) {
+			RandomCollection<String> arabLanguages = new RandomCollection<>();
+			arabLanguages.add(63.0, "english");
+			arabLanguages.add(37.0, "arabic");
+			return arabLanguages.next(person.random);
 		} else { // in case of invalid ethnicity
 			return "english";
 		}
