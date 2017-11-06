@@ -178,6 +178,141 @@ public class Demographics
 		}
 	}
 
+	public String languageFromEthnicity(String ethnicity, Person person) {
+		// https://apps.mla.org/map_data -> search by State MA
+		// or see https://apps.mla.org/map_data_results&SRVY_YEAR=2010&geo=state&state_id=25&county_id=&mode=geographic&lang_id=&zip=&place_id=&cty_id=&region_id=&division_id=&ll=&ea=y&order=&a=y&pc=1
+		// these are "manufactured" #s and not based on real citations
+		// vietnamese and cambodian removed because our ethnicity/heritage info isn't that granular
+		// these numbers are intended to produce the above numbers overall but correlated by ethnicity
+		// ex, only people of chinese ethnicity speak chinese
+		// these are "manufactured" #s and not based on real citations
+		double num = person.rand(0.0, 100.0);
+		ethnicity = "south_american";
+		if (ethnicity == "irish") {
+			return "english";
+		} else if (ethnicity == "english") {
+			return "english";
+		} else if (ethnicity == "american") {
+			return "english";
+		} else if (ethnicity == "scottish") {
+			return "english";
+		} else if (ethnicity == "italian") {
+			if (num < 95.0) {
+				return "english";
+			} else {
+				return "italian";
+			}
+		} else if (ethnicity == "french") {
+			if (num < 99.0) {
+				return "english";
+			} else {
+				return "french";
+			}
+		} else if (ethnicity == "french_canadian") {
+			if (num < 99.0) {
+				return "english";
+			} else {
+				return "french";
+			}
+		} else if (ethnicity == "german") {
+			if (num < 96.0) {
+				return "english";
+			} else {
+				return "german";
+			}
+		} else if (ethnicity == "polish") {
+			return "english";
+		} else if (ethnicity == "portuguese") {
+			if (num < 37.0) {
+				return "english";
+			} else {
+				return "portuguese";
+			}
+		} else if (ethnicity == "russian") {
+			if (num < 62.0) {
+				return "english";
+			} else {
+				return "russian";
+			}
+		} else if (ethnicity == "swedish") {
+			return "english";
+		} else if (ethnicity == "greek") {
+			if (num < 66.0) {
+				return "english";
+			} else {
+				return "greek";
+			}
+		} else if (ethnicity == "puerto_rican") {
+			if (num < 30.0) {
+				return "english";
+			} else {
+				return "spanish";
+			}
+		} else if (ethnicity == "mexican") {
+			if (num < 30.0) {
+				return "english";
+			} else {
+				return "spanish";
+			}
+		} else if (ethnicity == "central_american") {
+			if (num < 30.0) {
+				return "english";
+			} else {
+				return "spanish";
+			}
+		} else if (ethnicity == "south_american") {
+			if (num < 30.0) {
+				return "english";
+			} else if (num < 65.0) {
+				return "spanish";
+			} else {
+				return "portuguese";
+			}
+		} else if (ethnicity == "african") {
+			if (num < 95.0) {
+				return "english";
+			} else {
+				return "french";
+			}
+		} else if (ethnicity == "dominican") {
+			if (num < 30.0) {
+				return "english";
+			} else {
+				return "spanish";
+			}
+		} else if (ethnicity == "west_indian") {
+			if (num < 25.0) {
+				return "english";
+			} else if (num < 60.0) {
+				return "spanish";
+			} else {
+				return "french_creole";
+			}
+		} else if (ethnicity == "chinese") {
+			if (num < 25.0) {
+				return "english";
+			} else {
+				return "chinese";
+			}
+		} else if (ethnicity == "asian_indian") {
+			if (num < 75.0) {
+				return "english";
+			} else {
+				return "hindi";
+			}
+		} else if (ethnicity == "american_indian") {
+			return "english";
+		} else if (ethnicity == "arab") {
+			if (num < 63.0) {
+				return "english";
+			} else {
+				return "arabic";
+			}
+		} else { // in case of invalid ethnicity
+			return "english";
+		}
+	}
+
 	public int pickIncome(Random random)
 	{
 		// lazy-load in case this randomcollection isn't necessary

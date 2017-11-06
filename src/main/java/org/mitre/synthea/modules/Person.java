@@ -28,6 +28,7 @@ public class Person implements Serializable
 	public static final String NAME = "name";
 	public static final String RACE = "race";
 	public static final String ETHNICITY = "ethnicity";
+	public static final String FIRST_LANGUAGE = "first_language";
 	public static final String GENDER = "gender";
 	public static final String MULTIPLE_BIRTH_STATUS = "multiple_birth_status";
 	public static final String TELECOM = "telecom";
