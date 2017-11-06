@@ -109,6 +109,8 @@ public final class LifecycleModule extends Module
 		boolean hasStreetAddress2 = person.rand() < 0.5;
 		attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
 
+		attributes.put(Person.BIRTHPLACE, Location.randomCityName(person.random));
+
 		double height_percentile = person.rand();
 		double weight_percentile = person.rand();
 		person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, height_percentile);
@@ -140,7 +142,6 @@ public final class LifecycleModule extends Module
 
 		switch(newAge)
 		{
-		// TODO - none of these are critical so leaving them out for now
 		case 16:
 			// driver's license
 			if (person.attributes.get(Person.IDENTIFIER_DRIVERS) == null) {

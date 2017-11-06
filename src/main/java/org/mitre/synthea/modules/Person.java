@@ -37,6 +37,7 @@ public class Person implements Serializable
 	public static final String CITY = "city";
 	public static final String STATE = "state";
 	public static final String ZIP = "zip";
+	public static final String BIRTHPLACE = "birthplace";
 	public static final String COORDINATE = "coordinate";
 	public static final String NAME_MOTHER = "name_mother";
 	public static final String MARITAL_STATUS = "marital_status";

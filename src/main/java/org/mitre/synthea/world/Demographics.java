@@ -187,7 +187,6 @@ public class Demographics
 		// ex, only people of chinese ethnicity speak chinese
 		// these are "manufactured" #s and not based on real citations
 		double num = person.rand(0.0, 100.0);
-		ethnicity = "south_american";
 		if (ethnicity == "irish") {
 			return "english";
 		} else if (ethnicity == "english") {
