@@ -413,6 +413,11 @@ header {
         width: 100%;
         margin-left: auto;
         margin-right: auto;
+
+        .btn {
+            padding-left:10px;
+            padding-right:10px;
+        }
     }
     a:hover { 
         color: $clr-dark-primary;
@@ -872,8 +877,8 @@ footer {
             top: 85%;
             width: 80%;
             .btn { 
-                padding-left: 20px;
-                padding-right: 20px;
+                padding-left: 10px;
+                padding-right: 10px;
             }
         }
         .pane-heading { 
@@ -989,12 +994,12 @@ footer {
             }
         }
         .img-card.img-data {
-            min-height: 420px;
+            min-height: 550px;
             img  { 
-                top: 38%;   
+                top: 30%;   
             }
             .btn-group { 
-                top: 77%;
+                top: 75%;
             }
         }
         .img-card.img-rd { 
