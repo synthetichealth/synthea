@@ -100,7 +100,7 @@ public class TransitionMetrics {
 		        System.out.println(" Population that ever hit this state: " + stats.population + " (" +  decimal(stats.population, totalPopulation)  + "%)");
 		        System.out.println(" Average # of hits per total population: " + decimal(stats.entered, totalPopulation));
 		        System.out.println(" Average # of hits per person that ever hit state: " + decimal(stats.entered, stats.population));
-		        System.out.println(" Population currently in state: " + stats.current + " ( " +  decimal(stats.current, totalPopulation)  + ")");
+		        System.out.println(" Population currently in state: " + stats.current + " (" +  decimal(stats.current, totalPopulation)  + "%)");
 		        State state = m.getState(stateName);
 		        if (state instanceof State.Guard || state instanceof State.Delay) {
 		          System.out.println(" Total duration: " + duration(stats.duration));
