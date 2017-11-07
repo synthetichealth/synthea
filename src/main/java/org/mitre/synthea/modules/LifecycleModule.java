@@ -120,10 +120,10 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
     attributes.put(Person.BIRTHPLACE, Location.randomCityName(person.random));
 
-    double height_percentile = person.rand();
-    double weight_percentile = person.rand();
-    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, height_percentile);
-    person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weight_percentile);
+    double heightPercentile = person.rand();
+    double weightPercentile = person.rand();
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
+    person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
     person.setVitalSign(VitalSign.HEIGHT, 51.0); // cm
     person.setVitalSign(VitalSign.WEIGHT, 3.5); // kg
 

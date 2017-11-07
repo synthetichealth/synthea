@@ -33,11 +33,11 @@ import org.mitre.synthea.world.geography.Location;
  * Generator creates a population by running the generic modules each timestep per Person.
  */
 public class Generator {
-  public final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
+  public static final long ONE_HUNDRED_YEARS = 100l * TimeUnit.DAYS.toMillis(365);
+  public static final int MAX_TRIES = 10;
   public DataStore database;
   public List<CommunityHealthWorker> chws;
   public long numberOfPeople;
-  public final int MAX_TRIES = 10;
   public long seed;
   private Random random;
   public long timestep;
@@ -198,8 +198,8 @@ public class Generator {
         AtomicInteger count = stats.get(key);
         count.incrementAndGet();
       } while (!isAlive);
-    } catch (Throwable e) // lots of fhir things throw errors for some reason
-    {
+    } catch (Throwable e) {
+      // lots of fhir things throw errors for some reason
       e.printStackTrace();
       throw e;
     }
@@ -252,20 +252,20 @@ public class Generator {
     // Socioeconomic variables of education, income, and education are set.
     String education = city.pickEducation(person.random);
     person.attributes.put(Person.EDUCATION, education);
-    double education_level = city.educationLevel(education, person);
-    person.attributes.put(Person.EDUCATION_LEVEL, education_level);
+    double educationLevel = city.educationLevel(education, person);
+    person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
 
     int income = city.pickIncome(person.random);
     person.attributes.put(Person.INCOME, income);
-    double income_level = city.incomeLevel(income);
-    person.attributes.put(Person.INCOME_LEVEL, income_level);
+    double incomeLevel = city.incomeLevel(income);
+    person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
 
     double occupation = person.rand();
     person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
 
-    double ses_score = city.socioeconomicScore(income_level, education_level, occupation);
-    person.attributes.put(Person.SOCIOECONOMIC_SCORE, ses_score);
-    person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(ses_score));
+    double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
+    person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+    person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 
     long targetAge = city.pickAge(person.random);
 

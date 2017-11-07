@@ -307,32 +307,32 @@ public class Demographics {
   }
 
   public double educationLevel(String level, Person person) {
-    double less_than_hs_min = Double.parseDouble(
+    double lessThanHsMin = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.less_than_hs.min", "0.0"));
-    double less_than_hs_max = Double.parseDouble(
+    double lessThanHsMax = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.less_than_hs.max", "0.5"));
-    double hs_degree_min = Double.parseDouble(
+    double hsDegreeMin = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.hs_degree.min", "0.1"));
-    double hs_degree_max = Double.parseDouble(
+    double hsDegreeMax = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.hs_degree.max", "0.75"));
-    double some_college_min = Double.parseDouble(
+    double someCollegeMin = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.some_college.min", "0.3"));
-    double some_college_max = Double.parseDouble(
+    double someCollegeMax = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.some_college.max", "0.85"));
-    double bs_degree_min = Double.parseDouble(
+    double bsDegreeMin = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.bs_degree.min", "0.5"));
-    double bs_degree_max = Double.parseDouble(
+    double bsDegreeMax = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.bs_degree.max", "1.0"));
 
     switch (level) {
       case "less_than_hs":
-        return person.rand(less_than_hs_min, less_than_hs_max);
+        return person.rand(lessThanHsMin, lessThanHsMax);
       case "hs_degree":
-        return person.rand(hs_degree_min, hs_degree_max);
+        return person.rand(hsDegreeMin, hsDegreeMax);
       case "some_college":
-        return person.rand(some_college_min, some_college_max);
+        return person.rand(someCollegeMin, someCollegeMax);
       case "bs_degree":
-        return person.rand(bs_degree_min, bs_degree_max);
+        return person.rand(bsDegreeMin, bsDegreeMax);
       default:
         return 0.0;
     }
