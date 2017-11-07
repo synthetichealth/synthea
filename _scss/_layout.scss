@@ -228,8 +228,11 @@ header {
         width: 100%;
         .navbar-header a img {
             width: $logo-scrolled;
-            margin: 10px 20px;
+            margin: 10px 0 10px 15px;
             @include transition-param(all, 0.5s, ease-in-out);
+        }
+        .navbar-header sup {
+            color: #295677;
         }
         .navbar-header .logo-banner { 
             @include transition-param(all, 0.4s, ease-in-out);
@@ -784,6 +787,9 @@ footer {
             margin-right: auto;
             width: 110px;
             height: calc($logo-main-sm + 10px);
+        }
+        .navbar-header sup {
+            display: none;
         }
         .navbar-header a img {
             left: 0px;
