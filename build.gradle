@@ -18,11 +18,7 @@ apply plugin: 'eclipse'
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter {
-
-        url "http://jcenter.bintray.com/"
-
-    }
+    jcenter()
 }
 
 dependencies {
@@ -33,6 +29,8 @@ dependencies {
     compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
     compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
 
+	// C-CDA export uses Apache FreeMarker templates
+	compile 'org.freemarker:freemarker:2.3.26-incubating'
 
     // JTS for location processing
     compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
@@ -43,11 +41,36 @@ dependencies {
 
     compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
 
+
     // google guava for some data structures
     compile 'com.google.guava:guava:23.0'
 
+
+	compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
+
+
+
+	// CSV Stuff
+	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
+
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
+
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+    testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
+    testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
+	testCompile 'org.mockito:mockito-core:2.7.22'
+}
+
+task graphviz(type: JavaExec) {
+	description 'Generate rule visualization'
+
+	classpath sourceSets.main.runtimeClasspath
+	main = "Graphviz"
+}
+
+task cleanOutput {
+    delete fileTree(dir: 'output' , include: '**/*')
 }
 
 // Define the main class for the application

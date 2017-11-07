@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.modules.Generator;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -71,14 +71,16 @@ public class ReportExporter
 	
 	private static void processOutcomes(Connection connection, JsonWriter writer) throws IOException, SQLException
 	{
-		PreparedStatement stmt = connection.prepareStatement("select year, AVG(qol) average, STDDEV_POP(qol) stddev, COUNT(qol) num from quality_of_life group by year order by year asc");
+		PreparedStatement stmt = connection.prepareStatement("select year, MIN(qol) minimum, MAX(qol) maximum, AVG(qol) average, STDDEV_POP(qol) stddev, COUNT(qol) num from quality_of_life group by year order by year asc");
 		// ASSUMPTION - there should never be a gap in years
 		ResultSet rs = stmt.executeQuery();
 
 		int firstYear = 0;
 		
 		// initial capacity is 80 - think 50 past 30 future?
-		List<Double> averages = new ArrayList<Double>(80); 
+		List<Double> minimums = new ArrayList<Double>(80);
+		List<Double> maximums = new ArrayList<Double>(80);
+		List<Double> averages = new ArrayList<Double>(80);
 		List<Double> stddevs = new ArrayList<Double>(80);
 		List<Integer> counts = new ArrayList<Integer>(80);
 		
@@ -91,10 +93,14 @@ public class ReportExporter
 				firstYear = year;
 			}
 			
-			double average = rs.getDouble(2);
-			double stddev = rs.getDouble(3);
-			int count = rs.getInt(4);
+			double minimum = rs.getDouble(2);
+			double maximum = rs.getDouble(3);
+			double average = rs.getDouble(4);
+			double stddev = rs.getDouble(5);
+			int count = rs.getInt(6);
 			
+			minimums.add(minimum);
+			maximums.add(maximum);
 			averages.add(average);
 			stddevs.add(stddev);
 			counts.add(count);
@@ -104,6 +110,20 @@ public class ReportExporter
 		
 		writer.name("first_year").value(firstYear);
 		
+		writer.name("minimums").beginArray();
+		for(double min : minimums)
+		{
+			writer.value(min);
+		}
+		writer.endArray();
+
+		writer.name("maximums").beginArray();
+		for(double max : maximums)
+		{
+			writer.value(max);
+		}
+		writer.endArray();
+
 		writer.name("averages").beginArray();
 		for(double avg : averages)
 		{

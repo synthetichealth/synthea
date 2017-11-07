@@ -5,21 +5,24 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mitre.synthea.modules.CommunityHealthWorker;
-import org.mitre.synthea.modules.HealthRecord;
-import org.mitre.synthea.modules.HealthRecord.CarePlan;
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.Medication;
-import org.mitre.synthea.modules.HealthRecord.Observation;
-import org.mitre.synthea.modules.HealthRecord.Procedure;
-import org.mitre.synthea.modules.HealthRecord.Report;
-import org.mitre.synthea.modules.Person;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.CommunityHealthWorker;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import com.google.common.collect.Table;
 
@@ -60,9 +63,11 @@ public class DataStore
 			// in the long term I want more standardized schemas
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PERSON (id varchar, name varchar, date_of_birth bigint, date_of_death bigint, race varchar, gender varchar, socioeconomic_status varchar)").execute();
-			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_ID ON PERSON(ID);").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_RACE ON PERSON(RACE);").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PERSON_GENDER ON PERSON(GENDER);").execute();
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS ATTRIBUTE (person_id varchar, name varchar, value varchar)").execute();
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS ATTRIBUTE_KEY ON ATTRIBUTE(PERSON_ID, NAME);").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)").execute();
 			connection.prepareStatement("CREATE INDEX IF NOT EXISTS PROVIDER_ID ON PROVIDER(ID);").execute();
@@ -73,7 +78,8 @@ public class DataStore
 			connection.prepareStatement("CREATE INDEX IF NOT EXISTS ENCOUNTER_ID ON ENCOUNTER(ID);").execute();
 			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CONDITION (person_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
-
+			connection.prepareStatement("CREATE INDEX IF NOT EXISTS CONDITION_PERSON ON CONDITION(PERSON_ID, TYPE);").execute();
+			
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS MEDICATION (id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
 
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS PROCEDURE (person_id varchar, encounter_id varchar, name varchar, type varchar, start bigint, stop bigint, code varchar, display varchar, system varchar)").execute();
@@ -89,6 +95,8 @@ public class DataStore
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS CLAIM (id varchar, person_id varchar, encounter_id varchar, medication_id varchar, time bigint, cost decimal)").execute();
 			connection.prepareStatement("CREATE INDEX IF NOT EXISTS CLAIM_ID ON CLAIM(ID);").execute();
 			
+			connection.prepareStatement("CREATE TABLE IF NOT EXISTS COVERAGE (person_id varchar, year int, category varchar)").execute();
+
 			// TODO - special case here, would like to refactor. maybe make all attributes time-based?
 			connection.prepareStatement("CREATE TABLE IF NOT EXISTS QUALITY_OF_LIFE (person_id varchar, year int, qol double, qaly double, daly double)").execute();
 
@@ -145,6 +153,24 @@ public class DataStore
 				stmt.setString(2, attr.getKey() );
 				stmt.setString(3, String.valueOf(attr.getValue()) );
 				stmt.addBatch();
+			}
+			stmt.executeBatch();
+
+			// Add coverage to database
+			stmt = connection.prepareStatement("INSERT INTO COVERAGE (person_id, year, category) VALUES (?,?,?);");
+			List<String> coverage = (List<String>) p.attributes.get(HealthInsuranceModule.INSURANCE);
+			long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
+			int birthYear = Utilities.getYear(birthdate);
+			for (int i=0; i < coverage.size(); i++) {
+				String category = coverage.get(i);
+				if(category == null) {
+					break;
+				} else {
+					stmt.setString(1, personID);
+					stmt.setInt(2, (birthYear + i) );
+					stmt.setString(3, category );
+					stmt.addBatch();
+				}
 			}
 			stmt.executeBatch();
 			
@@ -529,6 +555,17 @@ public class DataStore
 						utilizationDetailTable.setInt(4, count);
 						utilizationDetailTable.addBatch();
 					}
+				}
+			}
+
+			String[] encounterTypes = {"encounters-wellness","encounters-ambulatory","encounters-outpatient","encounters-emergency","encounters-inpatient","encounters-postdischarge","encounters-community","encounters"};
+			for(int year = 1900; year <= Utilities.getYear(System.currentTimeMillis()); year++) {
+				for(int t=0; t < encounterTypes.length; t++) {
+					utilizationDetailTable.setString(1, "None");
+					utilizationDetailTable.setInt(2, year);
+					utilizationDetailTable.setString(3, encounterTypes[t]);
+					utilizationDetailTable.setInt(4, 0);
+					utilizationDetailTable.addBatch();
 				}
 			}
 

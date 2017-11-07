@@ -61,17 +61,17 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
-import org.mitre.synthea.modules.HealthRecord;
-import org.mitre.synthea.modules.HealthRecord.CarePlan;
-import org.mitre.synthea.modules.HealthRecord.Claim;
-import org.mitre.synthea.modules.HealthRecord.ClaimItem;
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.Medication;
-import org.mitre.synthea.modules.HealthRecord.Observation;
-import org.mitre.synthea.modules.HealthRecord.Procedure;
-import org.mitre.synthea.modules.HealthRecord.Report;
-import org.mitre.synthea.modules.Person;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Claim;
+import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import ca.uhn.fhir.context.FhirContext;
 
@@ -90,6 +90,7 @@ public class FhirStu3
 	private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
 	private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
 	private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/";
+	private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
 
 	private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
 	private static final Map languageLookup = loadLanguageLookup();
@@ -415,12 +416,12 @@ public class FhirStu3
 		Double qalyValue = (Double) person.attributes.get("most-recent-qaly");
 		if (dalyValue != null)
 		{
-			Extension dalyExtension = new Extension(SNOMED_URI + "/disability-adjusted-life-years");
+			Extension dalyExtension = new Extension(SYNTHEA_EXT + "disability-adjusted-life-years");
 			DecimalType daly = new DecimalType(dalyValue);
 			dalyExtension.setValue(daly);
 			patientResource.addExtension(dalyExtension);
 
-			Extension qalyExtension = new Extension(SNOMED_URI + "/quality-adjusted-life-years");
+			Extension qalyExtension = new Extension(SYNTHEA_EXT + "quality-adjusted-life-years");
 			DecimalType qaly = new DecimalType(qalyValue);
 			qalyExtension.setValue(qaly);
 			patientResource.addExtension(qalyExtension);
@@ -648,6 +649,9 @@ public class FhirStu3
 		{
 			Code conditionCode = ((HealthRecord.Entry)observation.value).codes.get(0);
 			value = mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
+		} else if (observation.value instanceof Code)
+		{
+			value = mapCodeToCodeableConcept((Code)observation.value, SNOMED_URI);
 		} else if (observation.value instanceof String)
 		{
 			value = new StringType((String)observation.value);

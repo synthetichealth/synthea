@@ -8,11 +8,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Entry;
-import org.mitre.synthea.modules.HealthRecord.Medication;
-import org.mitre.synthea.modules.HealthRecord.Procedure;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 
 public final class CardiovascularDiseaseModule extends Module 
@@ -220,6 +224,10 @@ public final class CardiovascularDiseaseModule extends Module
         LOOKUP.put( "amiodarone", new Code("RxNorm", "834357", "3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe")  );
         LOOKUP.put( "atropine", new Code("RxNorm", "1190795", "Atropine Sulfate 1 MG/ML Injectable Solution")  );
         LOOKUP.put( "alteplase", new Code("RxNorm", "308056", "Alteplase 1 MG/ML Injectable Solution")  );
+        
+        // reasons
+        LOOKUP.put( "stop_drug", new Code("SNOMED-CT", "182846007", "Dr stopped drug - medical aim achieved"));
+        LOOKUP.put( "cardiovascular_improved", new Code("SNOMED-CT", "413757005", "Cardiac status is consistent with or improved from preoperative baseline"));
         
         EMERGENCY_MEDS = new HashMap<>();
         EMERGENCY_MEDS.put("myocardial_infarction", Arrays.asList("nitroglycerin", "atorvastatin", "captopril", "clopidogrel"));
@@ -774,7 +782,7 @@ public final class CardiovascularDiseaseModule extends Module
 				if (person.record.medicationActive(med))
 				{
 					// This prescription can be stopped...
-		             person.record.medicationEnd(time, med, "cardiovascular_improved");
+		             person.record.medicationEnd(time, med, LOOKUP.get("cardiovascular_improved"));
 				}
 				else
 				{
@@ -810,8 +818,9 @@ public final class CardiovascularDiseaseModule extends Module
         				// TODO: assumes a procedure will only be performed once, might need to be revisited
         				Code code = LOOKUP.get(proc);
         				Procedure procedure = person.record.procedure(time, code.display);
+        				procedure.name = "CardiovascularDisease_Encounter";
         				procedure.codes.add(code);
-        				procedure.reasons.add(reason);
+        				procedure.reasons.add(LOOKUP.get(reason));
         				
         				// increment number of procedures by respective hospital
         				Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
@@ -829,11 +838,6 @@ public final class CardiovascularDiseaseModule extends Module
 	public static void performEmergency(Person person, long time, String diagnosis)
 	{
 		Provider provider = person.getEmergencyProvider();
-		if (provider == null)
-		{
-			person.setEmergencyProvider();
-			provider = person.getEmergencyProvider();
-		}
 		
 		int year = Utilities.getYear(time);
 		
@@ -847,14 +851,15 @@ public final class CardiovascularDiseaseModule extends Module
           // increment number of prescriptions prescribed by respective hospital
     
           provider.incrementPrescriptions(year);
-          person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med, "stop_drug");
+          person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med, LOOKUP.get("stop_drug"));
         }
 
         for (String proc : EMERGENCY_PROCEDURES.get(diagnosis))
         {
         	Procedure procedure = person.record.procedure(time, proc);
+        	procedure.name = "CardiovascularDisease_Emergency";
         	procedure.codes.add(LOOKUP.get(proc));
-        	procedure.reasons.add(diagnosis);
+        	procedure.reasons.add(LOOKUP.get(diagnosis));
           // increment number of procedures performed by respective hospital
           provider.incrementProcedures(year);
         }

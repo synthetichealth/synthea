@@ -2,16 +2,25 @@ package org.mitre.synthea.modules;
 
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.modules.HealthRecord.Code;
-import org.mitre.synthea.modules.HealthRecord.Encounter;
-import org.mitre.synthea.modules.HealthRecord.EncounterType;
-import org.mitre.synthea.world.Provider;
+import org.mitre.synthea.engine.Event;
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public final class EncounterModule extends Module {
 	
 	public final static String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
 	public final static int SYMPTOM_THRESHOLD = 200;
 	
+	public static final Code ENCOUNTER_CHECKUP = new Code("SNOMED-CT", "185349003", "Encounter for check up (procedure)");
+	public static final Code ENCOUNTER_EMERGENCY = new Code("SNOMED-CT", "50849002", "Emergency Encounter");
+	public static final Code WELL_CHILD_VISIT = new Code("SNOMED-CT", "410620009", "Well child visit (procedure)");
+	public static final Code GENERAL_EXAM = new Code("SNOMED-CT", "162673000", "General examination of patient (procedure)");
+
 	public EncounterModule() {
 		this.name = "Encounter";
 	}
@@ -25,6 +34,8 @@ public final class EncounterModule extends Module {
 		if(person.record.timeSinceLastWellnessEncounter(time) >= recommendedTimeBetweenWellnessVisits(person, time)) {
 			Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
 			encounter.name = "Encounter Module Scheduled Wellness";
+	        encounter.codes.add(ENCOUNTER_CHECKUP);
+	        encounter.codes.add(getWellnessVisitCode(person, time));
 			person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
 			startedEncounter = true;
 		} else if(person.symptomTotal() > SYMPTOM_THRESHOLD) {
@@ -32,6 +43,8 @@ public final class EncounterModule extends Module {
 			person.resetSymptoms();
 			Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
 			encounter.name = "Encounter Module Symptom Driven";
+	        encounter.codes.add(ENCOUNTER_CHECKUP);
+	        encounter.codes.add(getWellnessVisitCode(person, time));
 			person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
 			startedEncounter = true;
 		}
@@ -44,6 +57,15 @@ public final class EncounterModule extends Module {
 		
 		// java modules will never "finish"
 		return false;
+	}
+
+	public static Code getWellnessVisitCode(Person person, long time) {
+		int age = person.ageInYears(time);
+		if(age < 18) {
+			return WELL_CHILD_VISIT;
+		} else {
+			return GENERAL_EXAM;
+		}
 	}
 	
 	public static void emergencyVisit(Person person, long time)
@@ -84,7 +106,7 @@ public final class EncounterModule extends Module {
         provider.incrementEncounters("emergency", Utilities.getYear(time));
 
         Encounter encounter = person.record.encounterStart(time, "emergency");
-        encounter.codes.add(new Code("SNOMED-CT", "50849002", "Emergency Encounter"));
+        encounter.codes.add(ENCOUNTER_EMERGENCY);
         // TODO: emergency encounters need their duration to be defined by the activities performed
         // based on the emergencies given here (heart attack, stroke)
         // assume people will be in the hospital for observation for a few days
