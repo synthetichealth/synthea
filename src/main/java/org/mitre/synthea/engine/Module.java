@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -200,6 +201,16 @@ public class Module {
 	public State getState(String name)
 	{
 		return states.get(name);
+	}
+	
+	public Collection<String> getStateNames()
+	{
+		if (states == null)
+		{
+			// ex, if this is a non-GMF module
+			return Collections.emptySet();
+		}
+		return states.keySet();
 	}
 	
 }
