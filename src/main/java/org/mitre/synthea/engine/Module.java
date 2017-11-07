@@ -203,14 +203,16 @@ public class Module {
 		return states.get(name);
 	}
 	
-	public Collection<String> getStateNames()
-	{
-		if (states == null)
-		{
-			// ex, if this is a non-GMF module
-			return Collections.emptySet();
-		}
-		return states.keySet();
-	}
-	
+  /**
+   * Get a collection of the names of all the states this Module contains.
+   * 
+   * @return set of all state names, or empty set if this is a non-GMF module
+   */
+  public Collection<String> getStateNames() {
+    if (states == null) {
+      // ex, if this is a non-GMF module
+      return Collections.emptySet();
+    }
+    return states.keySet();
+  }
 }

@@ -99,10 +99,10 @@ public class Generator {
 		stats.put("alive", new AtomicInteger(0));
 		stats.put("dead", new AtomicInteger(0));
 		
-		if (Boolean.parseBoolean(Config.get("generate.track_detailed_transition_metrics","false")))
-		{
-			this.metrics = new TransitionMetrics();
-		}
+    if (Boolean.parseBoolean(
+        Config.get("generate.track_detailed_transition_metrics", "false"))  ) {
+      this.metrics = new TransitionMetrics();
+    }
 
 		// initialize hospitals
 		Hospital.loadHospitals();
