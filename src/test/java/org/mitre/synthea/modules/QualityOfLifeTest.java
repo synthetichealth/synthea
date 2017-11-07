@@ -21,6 +21,9 @@ public class QualityOfLifeTest {
 
   public static final long stopTime = ((long) (365.25 * 35)) + 1;
 
+  /**
+   * Setup for Quality calculation tests.
+   */
   @Before
   public void init() {
     person = new Person(0);

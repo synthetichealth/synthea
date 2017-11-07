@@ -34,6 +34,10 @@ public class LogicTest {
 
   private JsonObject tests;
 
+  /**
+   * Setup logic tests.
+   * @throws IOException On File IO errors.
+   */
   @Before
   public void setup() throws IOException {
     person = new Person(0L);

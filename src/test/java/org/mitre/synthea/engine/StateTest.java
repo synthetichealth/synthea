@@ -35,6 +35,10 @@ public class StateTest {
   private Person person;
   private long time;
 
+  /**
+   * Setup State tests.
+   * @throws IOException On File IO errors.
+   */
   @Before
   public void setup() throws IOException {
     person = new Person(0L);

@@ -10,12 +10,22 @@ import org.mitre.synthea.helpers.Config;
 
 public abstract class TestHelper {
 
+  /**
+   * Returns a test fixture Module by filename.
+   * @param filename The filename of the test fixture Module.
+   * @return A Module.
+   * @throws Exception On errors.
+   */
   public static Module getFixture(String filename) throws Exception {
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path module = modulesFolder.resolve(filename);
     return Module.loadFile(module, modulesFolder);
   }
 
+  /**
+   * Helper method to disable export of all data formats and database output.
+   * Ensures that unit tests do not pollute the output folders.
+   */
   public static void exportOff() {
     Config.set("generate.database_type", "none"); // ensure we don't write to a file-based DB
     Config.set("exporter.use_uuid_filenames", "false");

@@ -22,6 +22,10 @@ public class DeathModuleTest {
   private Person person;
   private long time;
 
+  /**
+   * Setup for Death Module tests.
+   * @throws IOException On IO errors.
+   */
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
