@@ -519,6 +519,7 @@ public final class LifecycleModule extends Module {
           }
           person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, probability);
         }
+
       }
     }
   }

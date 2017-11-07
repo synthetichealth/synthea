@@ -26,6 +26,7 @@ checkstyle {
 }
 
 dependencies {
+<<<<<<< HEAD
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.0.0'
@@ -40,14 +41,37 @@ dependencies {
   compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'
+=======
+    // This dependency is found on compile classpath of this component and consumers.
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:2.5'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:2.5'
+	// C-CDA export uses Apache FreeMarker templates
+	compile 'org.freemarker:freemarker:2.3.26-incubating'
+    // JTS for location processing
+    compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
+    // used to convert the ma_geo GeoJSON file to JTS
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.196'
+    compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
+    // google guava for some data structures
+    compile 'com.google.guava:guava:23.0'
+>>>>>>> a9613e22203b41887b5a20db29e26b123059d844
 	compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
 	// CSV Stuff
 	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
+<<<<<<< HEAD
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
   testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
   testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
+=======
+    // Use JUnit test framework
+    testCompile 'junit:junit:4.12'
+    testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
+    testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
+>>>>>>> a9613e22203b41887b5a20db29e26b123059d844
 	testCompile 'org.mockito:mockito-core:2.7.22'
 	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.0.0'
 	testCompile 'com.phloc:phloc-schematron:2.7.1'
@@ -61,6 +85,16 @@ jacocoTestReport {
   }
 }
 
+<<<<<<< HEAD
+=======
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
+>>>>>>> a9613e22203b41887b5a20db29e26b123059d844
 check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {

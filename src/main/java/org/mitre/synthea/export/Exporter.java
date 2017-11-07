@@ -26,7 +26,6 @@ public abstract class Exporter {
     // TODO: filter for export
     if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
       String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
-
       File outDirectory = getOutputFolder("fhir", person);
       Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
 
@@ -51,10 +50,11 @@ public abstract class Exporter {
   }
 
   /**
-   * Run any exporters that require the full dataset to be generated prior to exporting. 
-   * (Ex, an aggregate statistical exporter)
+   * Run any exporters that require the full dataset to be generated prior to exporting. (Ex, an
+   * aggregate statistical exporter)
    * 
-   * @param generator Generator that generated the patients
+   * @param generator
+   *          Generator that generated the patients
    */
   public static void runPostCompletionExports(Generator generator) {
     try {

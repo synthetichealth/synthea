@@ -24,7 +24,6 @@ public class CCDAExporterTest {
   @Test
   public void testCCDAExport() throws Exception {
     CDAUtil.loadPackages();
-
     List<String> validationErrors = new ArrayList<String>();
 
     int numberOfPeople = 10;

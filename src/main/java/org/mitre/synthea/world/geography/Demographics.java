@@ -367,7 +367,6 @@ public class Demographics {
 
   /**
    * Load a map of Demographics from the JSON file at the given location.
-   *
    * @param filename
    *          location of a file containing demographic info.
    * @return Map of City Name -> Demographics
