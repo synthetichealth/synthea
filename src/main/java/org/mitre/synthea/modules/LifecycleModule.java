@@ -323,6 +323,32 @@ public final class LifecycleModule extends Module
         person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
         person.setVitalSign(VitalSign.HDL, hdl);
         person.setVitalSign(VitalSign.LDL, ldl);
+        
+        double bmi = person.getVitalSign(VitalSign.BMI);
+        boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
+        boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
+        double hbA1c = blood_glucose(bmi, prediabetes, diabetes, person);
+        
+        person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
+	}
+	
+	private static double blood_glucose(double bmi, boolean prediabetes,
+			boolean diabetes, Person p) {
+		if (diabetes) {
+			if (bmi > 48.0) {
+				return 12.0;
+			} else if (bmi <= 27.0) {
+				return 6.6;
+			} else {
+				return bmi / 4.0;
+				// very simple BMI function so that BMI 40 --> blood glucose ~ 10,
+				// but with a bounded min at 6.6 and bounded max at 12.0
+			}
+		} else if (prediabetes) {
+			return p.rand(5.8, 6.4);
+		} else {
+			return p.rand(5.0, 5.7);
+		}
 	}
 
 	private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000", "Natural death with unknown cause");
