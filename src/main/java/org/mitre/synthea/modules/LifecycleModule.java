@@ -212,6 +212,8 @@ public final class LifecycleModule extends Module {
               suffixList.get(person.randInt(suffixList.size())));
         }
         break;
+      default:
+        break;
     }
 
     boolean shouldGrow;
