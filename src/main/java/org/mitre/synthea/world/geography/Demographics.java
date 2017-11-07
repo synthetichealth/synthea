@@ -127,7 +127,7 @@ public class Demographics {
       return asianEthnicities.next(person.random);
     } else if (race.equals("native")) {
       return "american_indian";
-    } else { // race == "other"
+    } else { // race.equals("other")
       return "arab";
     }
   }
