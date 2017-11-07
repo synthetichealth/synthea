@@ -24,8 +24,6 @@ public class CCDAExporterTest {
     @Test public void testCCDAExport() throws Exception
     {
         CDAUtil.loadPackages();
-    	TestHelper.exportOff();
-    	Config.set("exporter.ccda.export", "true");
     	
     	List<String> validationErrors = new ArrayList<String>();
     	
@@ -34,7 +32,9 @@ public class CCDAExporterTest {
         for(int i=0; i < numberOfPeople; i++)
         {
         	int x = validationErrors.size();
-            Person person = generator.generatePerson(i);    
+            TestHelper.exportOff();
+            Person person = generator.generatePerson(i);
+            Config.set("exporter.ccda.export", "true");
             String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
             InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
             try {

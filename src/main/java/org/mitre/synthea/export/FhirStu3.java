@@ -9,6 +9,7 @@ import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
+import org.hl7.fhir.dstu3.model.CarePlan.CarePlanIntent;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanStatus;
 import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -37,6 +38,7 @@ import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.PositiveIntType;
+import org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -57,6 +59,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.validation.FhirValidator;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -246,12 +249,11 @@ public class FhirStu3
 		
 		encounterResource.setClass_(new Coding().setCode(encounter.type));
 		
-		long encounter_end = encounter.stop > 0 ? encounter.stop : encounter.stop + TimeUnit.MINUTES.toMillis(15);
+		long encounter_end = encounter.stop > 0 ? encounter.stop : encounter.start + TimeUnit.MINUTES.toMillis(15);
 		
 		encounterResource.setPeriod( new Period().setStart(new Date(encounter.start)).setEnd( new Date(encounter_end)) );
 		
 		// TODO: provider, reason, discharge
-		
 		return newEntry(bundle, encounterResource);
 	}
 	
@@ -280,13 +282,15 @@ public class FhirStu3
 		claimResource.setOrganization(encounterResource.getServiceProvider());
 		
 		//add item for encounter
-		claimResource.addItem(new org.hl7.fhir.dstu3.model.Claim.ItemComponent().addEncounter(new Reference(encounterEntry.getFullUrl())));
+		claimResource.addItem(new org.hl7.fhir.dstu3.model.Claim.ItemComponent(new PositiveIntType(1)).addEncounter(new Reference(encounterEntry.getFullUrl())));
 		
 		//add prescription.
 		claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 		
 		Money moneyResource = new Money();
 		moneyResource.setValue(claim.total());
+		moneyResource.setCode("USD");
+		moneyResource.setSystem("urn:iso:std:iso:4217");
 		claimResource.setTotal(moneyResource);
 
 		return newEntry(bundle, claimResource);
@@ -316,8 +320,9 @@ public class FhirStu3
 		claimResource.setOrganization(encounterResource.getServiceProvider());
 		
 		//add item for encounter
-		claimResource.addItem(new org.hl7.fhir.dstu3.model.Claim.ItemComponent().addEncounter(new Reference(encounterEntry.getFullUrl())));
+		claimResource.addItem(new org.hl7.fhir.dstu3.model.Claim.ItemComponent(new PositiveIntType(1)).addEncounter(new Reference(encounterEntry.getFullUrl())));
 		
+		int itemSequence = 2;
 		int conditionSequence = 1;
 		int procedureSequence = 1;
 		for (ClaimItem item : claim.items)
@@ -330,12 +335,13 @@ public class FhirStu3
 				claimResource.addProcedure(claimProcedure);
 				
 				//update claimItems list
-				org.hl7.fhir.dstu3.model.Claim.ItemComponent procedureItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
+				org.hl7.fhir.dstu3.model.Claim.ItemComponent procedureItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent(new PositiveIntType(itemSequence));
 				procedureItem.addProcedureLinkId(procedureSequence); // TODO ??? this field needs more description
 				
 				//calculate cost of procedure based on rvu values for a facility
 				Money moneyResource = new Money();
-
+		    moneyResource.setCode("USD");
+		    moneyResource.setSystem("urn:iso:std:iso:4217");
 				moneyResource.setValue(item.cost());
 				procedureItem.setNet(moneyResource);
 				claimResource.addItem(procedureItem);
@@ -352,16 +358,19 @@ public class FhirStu3
 				claimResource.addDiagnosis(diagnosisComponent);
 				
 				//update claimItems with diagnosis
-				org.hl7.fhir.dstu3.model.Claim.ItemComponent diagnosisItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent();
+				org.hl7.fhir.dstu3.model.Claim.ItemComponent diagnosisItem = new org.hl7.fhir.dstu3.model.Claim.ItemComponent(new PositiveIntType(itemSequence));
 				diagnosisItem.addDiagnosisLinkId(conditionSequence); 
 				claimResource.addItem(diagnosisItem);
 				
 				conditionSequence++;
 			}
+			itemSequence++;
 		}
 		
 		Money moneyResource = new Money();
-		moneyResource.setValue(claim.total());
+    moneyResource.setCode("USD");
+    moneyResource.setSystem("urn:iso:std:iso:4217");
+    moneyResource.setValue(claim.total());
 		claimResource.setTotal(moneyResource);
 		
 		return newEntry(bundle, claimResource);
@@ -395,6 +404,7 @@ public class FhirStu3
 		if (condition.stop > 0)
 		{
 			conditionResource.setAbatement(convertFhirDateTime(condition.stop, true));
+			conditionResource.setClinicalStatus(ConditionClinicalStatus.RESOLVED);
 		}
 		
 		BundleEntryComponent conditionEntry = newEntry(bundle, conditionResource);
@@ -478,7 +488,7 @@ public class FhirStu3
 			BundleEntryComponent encounterEntry, Procedure procedure)
 	{
 		org.hl7.fhir.dstu3.model.Procedure procedureResource = new org.hl7.fhir.dstu3.model.Procedure();
-		
+		procedureResource.setStatus(ProcedureStatus.COMPLETED);
 		procedureResource.setSubject(new Reference(personEntry.getFullUrl()));
 		procedureResource.setContext(new Reference(encounterEntry.getFullUrl()));
 		
@@ -594,7 +604,7 @@ public class FhirStu3
 			BundleEntryComponent encounterEntry, CarePlan carePlan)
 	{
 		org.hl7.fhir.dstu3.model.CarePlan careplanResource = new org.hl7.fhir.dstu3.model.CarePlan();
-		
+		careplanResource.setIntent(CarePlanIntent.ORDER);
 		careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
 		careplanResource.setContext(new Reference(encounterEntry.getFullUrl()));
 		
