@@ -17,6 +17,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.geography.Location;
@@ -223,8 +224,8 @@ public final class LifecycleModule extends Module
 	private static void grow(Person person, long time)
 	{
 		int age = person.ageInYears(time);
-		int adult_max_weight_age = Integer.parseInt( Config.get("lifecycle.adult_max_weight_age", "49"));
-		int geriatric_weight_loss_age = Integer.parseInt( Config.get("lifecycle.geriatric_weight_loss_age", "60"));
+		int adult_max_weight_age = (int) BiometricsConfig.get("lifecycle.adult_max_weight_age", 49);
+		int geriatric_weight_loss_age = (int) BiometricsConfig.get("lifecycle.geriatric_weight_loss_age", 60);
 
 		double height = person.getVitalSign(VitalSign.HEIGHT);
 		double weight = person.getVitalSign(VitalSign.WEIGHT);
@@ -237,15 +238,13 @@ public final class LifecycleModule extends Module
 			weight = lookupGrowthChart("weight", gender, ageInMonths, person.getVitalSign(VitalSign.WEIGHT_PERCENTILE));
 		} else if(age <= adult_max_weight_age) {
 			// getting older and fatter
-			double min = Double.parseDouble( Config.get("lifecycle.adult_weight_gain.min","1.0"));
-			double max = Double.parseDouble( Config.get("lifecycle.adult_weight_gain.max","2.0"));
-			double adult_weight_gain = person.rand(min, max);
+		  double[] adultWeightGainRange = BiometricsConfig.doubles("lifecycle.adult_weight_gain");
+			double adult_weight_gain = person.rand(adultWeightGainRange);
 			weight += adult_weight_gain;
 		} else if(age >= geriatric_weight_loss_age) {
 			// getting older and wasting away
-			double min = Double.parseDouble( Config.get("lifecycle.geriatric_weight_loss.min","1.0"));
-			double max = Double.parseDouble( Config.get("lifecycle.geriatric_weight_loss.max","2.0"));
-			double geriatric_weight_loss = person.rand(min, max);
+		  double[] geriatricWeightLossRange = BiometricsConfig.doubles("lifecycle.geriatric_weight_loss");
+			double geriatric_weight_loss = person.rand(geriatricWeightLossRange);
 			weight -= geriatric_weight_loss;
 		}
 
@@ -278,58 +277,110 @@ public final class LifecycleModule extends Module
 		return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
 	}
 
-	// LIPID PANEL  https://www.nlm.nih.gov/medlineplus/magazine/issues/summer12/articles/summer12pg6-7.html
-    private static final int[] CHOLESTEROL = new int[] {160,200,239,259,279,300}; // # mg/dL
-    private static final int[] TRIGLYCERIDES = new int[] {100,150,199,499,550,600}; // mg/dL
-    private static final int[] HDL = new int[] { 80, 59, 40, 20, 10,  0}; // mg/dL
-
-
 	private static void diabeticVitalSigns(Person person, long time)
 	{
-		// TODO - most of the rest of the vital signs
 		boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
-		/*
-		    blood_pressure:
-		      normal:
-		        systolic: [100,139] # mmHg
-		        diastolic: [70,89]  # mmHg
-		      hypertensive:
-		        systolic: [140,200] # mmHg
-		        diastolic: [90,120] # mmHg
-		 */
-        if (hypertension)
-        {
-        	person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(140, 200));
-        	person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(90, 120));
-        }
-        else
-        {
-        	person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(100, 139));
-        	person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(70, 89));
-        }
 
-        int index = 0;
-        if (person.attributes.containsKey("diabetes_severity"))
-        {
-        	index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
-        }
+    String bpConfigLoc;
+    if (hypertension)
+    {
+      bpConfigLoc = "metabolic.blood_pressure.hypertensive";
+    }
+    else
+    {
+      bpConfigLoc = "metabolic.blood_pressure.normal";
+    }
+    int[] sysRange = BiometricsConfig.ints(bpConfigLoc + ".systolic");
+    int[] diaRange = BiometricsConfig.ints(bpConfigLoc + ".diastolic");
+    person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(sysRange));
+    person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(diaRange));
+    
+    int index = 0;
+    if (person.attributes.containsKey("diabetes_severity"))
+    {
+    	index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
+    }
+    
+    int[] cholRange = BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
+    int[] triglyceridesRange  = BiometricsConfig.ints("metabolic.lipid_panel.triglycerides");
+    int[] hdlRange  = BiometricsConfig.ints("metabolic.lipid_panel.hdl");
+    
+    double total_cholesterol = person.rand(cholRange[index], cholRange[index+1]);
+    double triglycerides = person.rand(triglyceridesRange[index], triglyceridesRange[index+1]);
+    double hdl = person.rand(hdlRange[index], hdlRange[index+1]);
+    double ldl = total_cholesterol - hdl - (0.2 * triglycerides);
+    
+    person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, total_cholesterol);
+    person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
+    person.setVitalSign(VitalSign.HDL, hdl);
+    person.setVitalSign(VitalSign.LDL, ldl);
+    
+    double bmi = person.getVitalSign(VitalSign.BMI);
+    boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
+    boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
+    double hbA1c = blood_glucose(bmi, prediabetes, diabetes, person);
+    
+    // TODO drugs reduce hbA1c
+    
+    person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
+    
+    int kidneyDamage = (Integer) person.attributes.getOrDefault("diabetic_kidney_damage", 0); 
+    int[] ccRange;
+    int[] mcrRange;
+    switch( kidneyDamage) {
+    case 1:
+      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
+      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
+      break;
+    case 2:
+      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage");
+      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_controlled");
+      break;
+    case 3:
+      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.severe_kidney_damage");
+      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_uncontrolled");
+      break;
+    case 4:
+      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.esrd");
+      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.proteinuria");
+      break;
+    default:
+      if("F".equals(person.attributes.get(Person.GENDER))) {
+        ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.female");
+      } else {
+        ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.male");
+      }
+      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
+    }
+    double creatinine_clearance = person.rand(ccRange);
+    person.setVitalSign(VitalSign.EGFR, creatinine_clearance);
+    
+    double microalbumin_creatinine_ratio = person.rand(mcrRange);
+    person.setVitalSign(VitalSign.MICROALBUMIN_CREATININE_RATIO, microalbumin_creatinine_ratio);
+    
+    double creatinine = reverse_calculate_creatinine(person, creatinine_clearance, time);
+    person.setVitalSign(VitalSign.CREATININE, creatinine);
+    
+    int[] unRange = BiometricsConfig.ints("metabolic.basic_panel.normal.urea_nitrogen");
+    person.setVitalSign(VitalSign.UREA_NITROGEN, person.rand(unRange));
+    double[] calcRange = BiometricsConfig.doubles("metabolic.basic_panel.normal.calcium");
+    person.setVitalSign(VitalSign.CALCIUM, person.rand(calcRange));
+    
+    index = Math.min(index, 2); // note this continues from the index logic above
+    
+    int[] glucoseRange = BiometricsConfig.ints("metabolic.basic_panel.glucose");
+    double glucose = person.rand(glucoseRange[index], glucoseRange[index+1]);
+    person.setVitalSign(VitalSign.GLUCOSE, glucose);
 
-        double total_cholesterol = person.rand(CHOLESTEROL[index], CHOLESTEROL[index+1]);
-        double triglycerides = person.rand(TRIGLYCERIDES[index], TRIGLYCERIDES[index+1]);
-        double hdl = person.rand(HDL[index], HDL[index+1]);
-        double ldl = total_cholesterol - hdl - (0.2 * triglycerides);
-
-        person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, total_cholesterol);
-        person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
-        person.setVitalSign(VitalSign.HDL, hdl);
-        person.setVitalSign(VitalSign.LDL, ldl);
-        
-        double bmi = person.getVitalSign(VitalSign.BMI);
-        boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
-        boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
-        double hbA1c = blood_glucose(bmi, prediabetes, diabetes, person);
-        
-        person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
+    // carbon dioxide in upper case so the enum can recognize it
+    for (String electrolyte : new String[] {"chloride", "potassium", "CARBON_DIOXIDE", "sodium"})
+    {
+      VitalSign electrolyteVS = VitalSign.fromString(electrolyte);
+      
+      double[] elecRange = BiometricsConfig.doubles("metabolic.basic_panel.normal." + electrolyte.toLowerCase());
+      
+      person.setVitalSign(electrolyteVS, person.rand(elecRange));
+    }
 	}
 	
 	private static double blood_glucose(double bmi, boolean prediabetes,
@@ -350,6 +401,23 @@ public final class LifecycleModule extends Module
 			return p.rand(5.0, 5.7);
 		}
 	}
+	
+  // http://www.mcw.edu/calculators/creatinine.htm
+  private static double reverse_calculate_creatinine(Person entity, double crcl, long time) {
+    try {
+      int age = entity.ageInYears(time);
+      boolean female = "F".equals(entity.attributes.get(Person.GENDER));
+      double weight = entity.getVitalSign(VitalSign.WEIGHT); // kg
+      crcl = Math.max(1, Math.min(crcl, 100)); // clamp between 1-100
+      double creatinine = ((140.0 - age) * weight) / (72.0 * crcl);
+      if (female) {
+        creatinine *= 0.85;
+      }
+      return creatinine;
+    } catch (Exception e) {
+      return 1.0;
+    }
+  }
 
 	private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000", "Natural death with unknown cause");
 	private static void death(Person person, long time)

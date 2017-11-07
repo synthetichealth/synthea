@@ -55,6 +55,8 @@ dependencies {
 
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
 
+  compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
+
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
     testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')

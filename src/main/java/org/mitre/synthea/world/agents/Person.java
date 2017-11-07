@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,30 @@ public class Person implements Serializable
 	public int randInt(int bound) {
 		return random.nextInt(bound);
 	}
+
+  public double rand(double[] range) {
+    if (range == null || range.length != 2) {
+      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+    }
+    
+    if (range[0] > range[1]) {
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+    }
+    
+    return rand(range[0], range[1]);
+  }
+  
+  public double rand(int[] range) {
+    if (range == null || range.length != 2) {
+      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+    }
+    
+    if (range[0] > range[1]) {
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+    }
+    
+    return rand(range[0], range[1]);
+  }
 
 	public Period age(long time)
 	{
