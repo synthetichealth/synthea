@@ -46,27 +46,27 @@ public class Generator {
 	public Map<String,AtomicInteger> stats;
 	public Map<String,Demographics> demographics;
 	private String logLevel;
-	
+
 	public Generator() throws IOException
 	{
 		int population = Integer.parseInt( Config.get("generate.default_population", "1") );
 		init(population, System.currentTimeMillis());
 	}
-	
+
 	public Generator(int population) throws IOException
 	{
 		init(population, System.currentTimeMillis());
 	}
-	
+
 	public Generator(int population, long seed) throws IOException
 	{
 		init(population, seed);
 	}
-	
+
 	private void init(int population, long seed) throws IOException
 	{
 		String dbType = Config.get("generate.database_type");
-		
+
 		switch(dbType)
 		{
 		case "in-memory":
@@ -81,7 +81,7 @@ public class Generator {
 		default:
 			throw new IllegalArgumentException("Unexpected value for config setting generate.database_type: '" + dbType + "' . Valid values are file, in-memory, or none.");
 		}
-		
+
 		this.numberOfPeople = population;
 		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
@@ -90,29 +90,29 @@ public class Generator {
 		this.stop = System.currentTimeMillis();
 		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
 		this.logLevel = Config.get("generate.log_patients.detail", "simple");
-		
+
 		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
 		stats.put("alive", new AtomicInteger(0));
 		stats.put("dead", new AtomicInteger(0));
-		
+
 		// initialize hospitals
 		Hospital.loadHospitals();
 		Module.getModules(); // ensure modules load early
 		CommunityHealthWorker.workers.size(); // ensure CHWs are set early
 		Costs.loadCostData();
 	}
-	
+
 	public void run()
-	{		
+	{
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
-		
+
 		for(int i=0; i < this.numberOfPeople; i++)
 		{
 			final int index = i;
 			threadPool.submit( () -> generatePerson(index) );
 		}
 
-		try 
+		try
 		{
 			threadPool.shutdown();
 			while (!threadPool.awaitTermination(30, TimeUnit.SECONDS))
@@ -123,29 +123,29 @@ public class Generator {
 		{
 			e.printStackTrace();
 		}
-		
+
 		// have to store providers at the end to correctly capture utilization #s
 		// TODO - de-dup hospitals if using a file-based database?
 		if (database != null)
 		{
 			database.store( Hospital.getHospitalList() );
-			
+
 			List<CommunityHealthWorker> chws = CommunityHealthWorker.workers
 					.values().stream().flatMap(List::stream)
 					.collect(Collectors.toList());
 			database.store(chws);
 		}
-		
+
 		Exporter.runPostCompletionExports(this);
-		
+
 		System.out.println(stats);
 	}
-	
-	
-	public Person generatePerson(int index)
+
+
+public Person generatePerson(int index)
 	{
 		Person person = null;
-		try 
+		try
 		{
 			boolean isAlive = true;
 			String cityName = Location.randomCityName(random);
@@ -155,24 +155,25 @@ public class Generator {
 				cityName = cityName.substring(0, cityName.length() - 5);
 				city = demographics.get(cityName);
 			}
-			
+
 			do
 			{
 				List<Module> modules = Module.getModules();
-				
+
 				// System.currentTimeMillis is not unique enough
 				long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+
 				person = new Person(personSeed);
-				
+
 				// TODO - this is quick & easy to implement,
 				// but we need to adapt the ruby method of pre-defining all the demographic buckets
 				// and then putting people into those
 				// -- but: how will that work with seeds?
 				long start = setDemographics(person, cityName, city);
-			
+
 				LifecycleModule.birth(person, start);
 				EncounterModule encounterModule = new EncounterModule();
-					
+
 				long time = start;
 				while(person.alive(time) && time < stop)
 				{
@@ -194,28 +195,28 @@ public class Generator {
 					// if true
 					// then add chw encounter to record
 					// and set chw variable(s) on person.attributes.put(KEY, VALUE)
-			
-					
+
+
 					time += timestep;
 				}
-				
+
 				DeathModule.process(person, time);
-				
+
 				Exporter.export(person, stop);
 				if (database != null)
 				{
 					database.store(person);
 				}
-				
+
 				isAlive = person.alive(time);
-				
+
 				if (!this.logLevel.equals("none"))
 				{
 					writeToConsole(person, index, time, isAlive);
 				}
-				
+
 				String key = isAlive ? "alive" : "dead";
-				
+
 				AtomicInteger count = stats.get(key);
 				count.incrementAndGet();
 			} while (!isAlive);
@@ -226,13 +227,13 @@ public class Generator {
 		}
 		return person;
 	}
-	
+
 	private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive)
 	{
 		// this is synchronized to ensure all lines for a single person are always printed consecutively
 		String deceased = isAlive ? "" : "DECEASED";
 		System.out.format("%d -- %s (%d y/o) %s %s\n", index+1, person.attributes.get(Person.NAME), person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
-		
+
 		if (this.logLevel.equals("detailed"))
 		{
 			System.out.println("ATTRIBUTES");
@@ -249,14 +250,18 @@ public class Generator {
 			System.out.println("-----");
 		}
 	}
-	
+
 	private long setDemographics(Person person, String cityName, Demographics city)
 	{
 		person.attributes.put(Person.CITY, cityName);
 
 		String race = city.pickRace(person.random);
 		person.attributes.put(Person.RACE, race);
-		
+		String ethnicity = city.ethnicityFromRace(Person.RACE, person);
+		person.attributes.put(Person.ETHNICITY, ethnicity);
+		String language = city.languageFromEthnicity(Person.ETHNICITY, person);
+		person.attributes.put(Person.FIRST_LANGUAGE, language);
+
 		String gender = city.pickGender(person.random);
 		if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M"))
 		{
@@ -284,15 +289,15 @@ public class Generator {
 		double ses_score = city.socioeconomicScore(income_level, education_level, occupation);
 		person.attributes.put(Person.SOCIOECONOMIC_SCORE, ses_score);
 		person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(ses_score));
-		
+
 		long targetAge = city.pickAge(person.random);
-		
+
 		// TODO this is terrible date handling, figure out how to use the java time library
         long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
         long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
 
         long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
-		
+
 		return birthdate;
 	}
 }
