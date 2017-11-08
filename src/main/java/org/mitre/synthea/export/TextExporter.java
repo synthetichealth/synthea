@@ -334,9 +334,11 @@ public class TextExporter {
 	/**
 	 * Get a date string in the format YYYY-MM-DD from the given time stamp.
 	 */
-	private static String dateFromTimestamp(long time)
-	{
-        return DATE_FORMAT.format( new Date(time) );
+	private static String dateFromTimestamp(long time) {
+	  synchronized (DATE_FORMAT) {
+	    // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
+      return DATE_FORMAT.format( new Date(time) );
+	  }
 	}
 	
 	// equivalent to '-' * 80 + '\n'

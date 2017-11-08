@@ -156,11 +156,9 @@ public class CSVExporter
 		String personID = (String) person.attributes.get(Person.ID);
 		// ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
 		StringBuilder s = new StringBuilder();
-
-		Map<String, Object> attr = person.attributes;
 		
 		s.append(personID).append(',');
-		s.append(dateFromTimestamp((long)attr.get(Person.BIRTHDATE))).append(',');
+		s.append(dateFromTimestamp((long)person.attributes.get(Person.BIRTHDATE))).append(',');
 		if (person.alive(time))
 		{
 			s.append(" ").append(',');
@@ -169,21 +167,25 @@ public class CSVExporter
 			s.append(dateFromTimestamp(person.record.death)).append(',');
 		}
 		
-		s.append(0).append(','); // TODO drivers person.attributes.get(Person.IDENTIFIER_DRIVERS)
-		s.append(0).append(','); // TODO passport person.attributes.get(Person.IDENTIFIER_PASSPORT)
-		s.append(0).append(','); // TODO prefix person.attributes.get(Person.NAME_PREFIX)
-		s.append(0).append(','); // TODO first person.attributes.get(Person.FIRST_NAME)
-		s.append(0).append(','); // TODO last person.attributes.get(Person.LAST_NAME)
-		s.append(0).append(','); // TODO suffix person.attributes.get(Person.NAME_SUFFIX)
-		s.append(0).append(','); // TODO maiden person.attributes.get(Person.MAIDEN_NAME)
-		s.append(0).append(','); // TODO marital person.attributes.get(Person.MARITAL_STATUS)
-		s.append(attr.get(Person.RACE)).append(',');
-		s.append(0).append(','); // TODO ethnicity person.attributes.get(Person.ETHNICITY)
-		s.append(attr.get(Person.GENDER)).append(',');
-		s.append(0).append(','); // TODO birthplace
-		
-		String address = (String)attr.get(Person.ADDRESS);
-		s.append(safeString(address)).append(',');
+		for (String attribute : new String[] {
+		    Person.IDENTIFIER_SSN,
+		    Person.IDENTIFIER_DRIVERS,
+		    Person.IDENTIFIER_PASSPORT,
+		    Person.NAME_PREFIX,
+		    Person.FIRST_NAME,
+		    Person.LAST_NAME,
+		    Person.NAME_SUFFIX,
+		    Person.MAIDEN_NAME,
+		    Person.MARITAL_STATUS,
+		    Person.RACE,
+		    Person.ETHNICITY,
+		    Person.GENDER,
+		    Person.BIRTHPLACE,
+		    Person.ADDRESS
+		}) {
+		  String value = (String) person.attributes.getOrDefault(attribute, "");
+		  s.append(clean(value)).append(',');
+		}
 
 		s.append(NEWLINE);
 		write(s.toString(), patients);
@@ -203,7 +205,7 @@ public class CSVExporter
 		
 		Code coding = encounter.codes.get(0);
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 		
 		if (encounter.reason == null)
 		{
@@ -211,7 +213,7 @@ public class CSVExporter
 		} else
 		{
 			s.append(encounter.reason.code).append(',');
-			s.append(safeString(encounter.reason.display)).append(',');
+			s.append(clean(encounter.reason.display)).append(',');
 		}
 
 		s.append(NEWLINE);
@@ -241,7 +243,7 @@ public class CSVExporter
 		Code coding = condition.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 
 		s.append(NEWLINE);
 		write(s.toString(), conditions);
@@ -267,7 +269,7 @@ public class CSVExporter
 		Code coding = allergy.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 		
 		s.append(NEWLINE);
 		write(s.toString(), allergies);
@@ -286,7 +288,7 @@ public class CSVExporter
 		Code coding = observation.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 		
 		s.append(observation.value).append(',');
 		s.append(observation.unit).append(',');
@@ -308,7 +310,7 @@ public class CSVExporter
 		Code coding = procedure.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 		
 		if (procedure.reasons.isEmpty())
 		{
@@ -317,7 +319,7 @@ public class CSVExporter
 		{
 			Code reason = procedure.reasons.get(0);
 			s.append(reason.code).append(',');
-			s.append(safeString(reason.display)).append(',');
+			s.append(clean(reason.display)).append(',');
 		}
 		
 		s.append(NEWLINE);
@@ -344,7 +346,7 @@ public class CSVExporter
 		Code coding = medication.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 		
 		if (medication.reasons.isEmpty())
 		{
@@ -353,7 +355,7 @@ public class CSVExporter
 		{
 			Code reason = medication.reasons.get(0);
 			s.append(reason.code).append(',');
-			s.append(safeString(reason.display)).append(',');
+			s.append(clean(reason.display)).append(',');
 		}
 		
 		s.append(NEWLINE);
@@ -373,7 +375,7 @@ public class CSVExporter
 		Code coding = immunization.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(safeString(coding.display)).append(',');
+		s.append(clean(coding.display)).append(',');
 		
 		s.append(NEWLINE);
 		write(s.toString(), immunizations);
@@ -415,8 +417,9 @@ public class CSVExporter
 		{
 			Code reason = careplan.reasons.get(0);
 			s.append(reason.code).append(',');
-			s.append(safeString(reason.display)).append(',');
+			s.append(clean(reason.display)).append(',');
 		}
+		s.append(NEWLINE);
 		
 		write(s.toString(), careplans);
 		
@@ -427,7 +430,7 @@ public class CSVExporter
 	 * Replaces commas and line breaks in the source string with a single space.
 	 * Null is replaced with the empty string.
 	 */
-	private static String safeString(String src)
+	private static String clean(String src)
 	{
 		if (src == null)
 		{
