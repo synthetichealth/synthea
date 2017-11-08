@@ -45,7 +45,7 @@ public class SimpleYML {
    * calling get("foo.qux.grault") will return Integer(-1)
    * 
    * @param path
-   * @return
+   * @return the object at path
    */
   public Object get(String path) {
     String[] pathSegments = path.split("\\.");
