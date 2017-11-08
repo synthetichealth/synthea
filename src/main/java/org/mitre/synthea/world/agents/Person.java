@@ -102,6 +102,13 @@ public class Person implements Serializable
 		return random.nextInt(bound);
 	}
 
+	/**
+	 * Helper function to get a random number based on an array of [min, max].
+	 * This should be used primarily when pulling ranges from YML.
+	 * 
+	 * @param range array [min, max]
+	 * @return random double between min and max
+	 */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
       throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
@@ -114,6 +121,15 @@ public class Person implements Serializable
     return rand(range[0], range[1]);
   }
   
+  // no good way to share code between the double[] and int[] version unfortunately....
+  
+  /**
+   * Helper function to get a random number based on an integer array of [min, max].
+   * This should be used primarily when pulling ranges from YML.
+   * 
+   * @param range array [min, max]
+   * @return random double between min and max
+   */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
       throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
