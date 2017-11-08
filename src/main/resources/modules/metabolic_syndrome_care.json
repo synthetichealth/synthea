@@ -615,7 +615,7 @@
       "type" : "MedicationOrder",
       "codes" : [{
         "system" : "RxNorm",
-        "code" : "106892",
+        "code" : "865098",
         "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
       }],
       "reason" : "Diagnose_Diabetes",
@@ -667,7 +667,7 @@
       "type" : "MedicationEnd",
       "codes" : [{
         "system" : "RxNorm",
-        "code" : "106892",
+        "code" : "865098",
         "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
       }],
       "direct_transition" : "Check_Complications"
