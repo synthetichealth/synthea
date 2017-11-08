@@ -1,22 +1,39 @@
 package org.mitre.synthea.helpers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.agents.Person;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 
-
+/**
+ * Class to track state and transition metrics from the modules.
+ * At the end of the simulation this class can print out debugging statistics
+ * for each module/state:
+ * - How many people hit that state
+ * - What states they transitioned to
+ * - How long they were in that state (ex, Guard, Delay)
+ */
 public class TransitionMetrics {
-  private Table<String, String, Metric> metrics = HashBasedTable.create();
+  /**
+   * Internal table of (Module,State) -> Metric. 
+   * Note that a table may not be the most appropriate data structure,
+   * but it's a lot cleaner than a Map of Module -> Map of State -> Metric.
+   */
+  private Table<String, String, Metric> metrics = Tables.synchronizedTable( HashBasedTable.create() );
 
+  /**
+   * List of all modules. This reference held here so we don't have to get it multiple times.
+   */
   private static final List<Module> ALL_MODULES = Module.getModules();
 
   /**
@@ -44,9 +61,9 @@ public class TransitionMetrics {
 
       // count this person only once for each distinct state they hit
       history.stream().map(s -> s.name).distinct()
-          .forEach(sName -> getMetric(m.name, sName).population += 1);
+          .forEach(sName -> getMetric(m.name, sName).population.incrementAndGet());
 
-      getMetric(m.name, history.get(0).name).current += 1;
+      getMetric(m.name, history.get(0).name).current.incrementAndGet();
 
       // loop over the states backward (0 = current, n = initial)
       // and track from->to stats in pair
@@ -63,19 +80,31 @@ public class TransitionMetrics {
     }
   }
 
-  private synchronized Metric getMetric(String moduleName, String stateName) {
+  /**
+   * Get the Metric object for the given State in the given Module.
+   * 
+   * @param moduleName Name of the module
+   * @param stateName Name of the state
+   * @return Metric object
+   */
+  private Metric getMetric(String moduleName, String stateName) {
     Metric metric = metrics.get(moduleName, stateName);
 
     if (metric == null) {
-      metric = new Metric();
-      metrics.put(moduleName, stateName, metric);
+      synchronized(metrics) {
+        metric = metrics.get(moduleName, stateName);
+        if (metric == null) {
+          metric = new Metric();
+          metrics.put(moduleName, stateName, metric);
+        }
+      }
     }
 
     return metric;
   }
 
   private void countStateStats(State state, Metric stateStats, long endDate) {
-    stateStats.entered += 1;
+    stateStats.entered.incrementAndGet();
     long exitTime = (state.exited == null) ? endDate : state.exited; 
     // if they were in the last state when they died or time expired
     long startTime = state.entered;
@@ -83,7 +112,7 @@ public class TransitionMetrics {
     // "when the lifecycle module kills people before the initial state"
     // but i dont think that will break anything here if it happens
 
-    stateStats.duration += (exitTime - startTime);
+    stateStats.duration.addAndGet(exitTime - startTime);
   }
 
   /**
@@ -104,33 +133,39 @@ public class TransitionMetrics {
 
       for (String stateName : moduleMetrics.keySet()) {
         Metric stats = getMetric(m.name, stateName);
+        int entered = stats.entered.get();
+        int population = stats.population.get();
+        long duration = stats.duration.get();
+        int current = stats.current.get();
+        
+        
         System.out.println(stateName + ":");
         System.out.println(" Total times entered: " + stats.entered);
         System.out.println(" Population that ever hit this state: " + stats.population + " ("
-            + decimal(stats.population, totalPopulation) + "%)");
+            + decimal(population, totalPopulation) + "%)");
         System.out.println(" Average # of hits per total population: "
-            + decimal(stats.entered, totalPopulation));
+            + decimal(entered, totalPopulation));
         System.out.println(" Average # of hits per person that ever hit state: "
-            + decimal(stats.entered, stats.population));
+            + decimal(entered, population));
         System.out.println(" Population currently in state: " + stats.current + " ("
-            + decimal(stats.current, totalPopulation) + "%)");
+            + decimal(current, totalPopulation) + "%)");
         State state = m.getState(stateName);
         if (state instanceof State.Guard || state instanceof State.Delay) {
-          System.out.println(" Total duration: " + duration(stats.duration));
+          System.out.println(" Total duration: " + durationOf(duration));
           System.out.println(" Average duration per time entered: "
-              + duration(stats.duration / stats.entered));
+              + durationOf(duration / entered));
           System.out.println(" Average duration per person that ever entered state: "
-              + duration(stats.duration / stats.population));
+              + durationOf(duration / population));
         } else if (state instanceof State.Encounter && ((State.Encounter) state).isWellness()) {
           System.out.println(" (duration metrics for wellness encounter omitted)");
         }
 
         if (!stats.destinations.isEmpty()) {
           System.out.println(" Transitioned to:");
-          long total = stats.destinations.values().stream().mapToLong(Integer::longValue).sum();
+          long total = stats.destinations.values().stream().mapToLong( ai -> ai.longValue() ).sum();
           stats.destinations.forEach((toState, count) -> 
                 System.out.println(" --> " + toState + " : " + count + " = " 
-                                    + decimal(count, total) + "%"));
+                                    + decimal(count.get(), total) + "%"));
         }
         System.out.println();
       }
@@ -155,7 +190,7 @@ public class TransitionMetrics {
    * @param time time duration in ms
    * @return Human readable description of the time
    */
-  private static String duration(double time) {
+  private static String durationOf(double time) {
     // augmented version of http://stackoverflow.com/a/1679963
     // note that anything less than days here is generally never going to be used
     double secs = time / 1000.0;
@@ -216,16 +251,51 @@ public class TransitionMetrics {
    * Helper class to track the metrics of a single State.
    */
   private static class Metric {
-    int entered; // number of times this state was entered
-    long duration; // total length of time people sat in this state
-    public int population; // number of people that ever his this state
-    int current; // number of people that are "currently" in that state
-    Map<String, Integer> destinations = new HashMap<>(); // key: state that this state transitioned
-                                                         // to, value: number of times
+    /**
+     * Number of times the state was entered.
+     */
+    AtomicInteger entered = new AtomicInteger(0); 
+    
+    /**
+     * Total length of time (ms) people were in this state.
+     */
+    AtomicLong duration = new AtomicLong(0L);
+    
+    /**
+     * Number of people that ever his this state.
+     */
+    AtomicInteger population = new AtomicInteger(0);
+    
+    /**
+     * Number of people that are "currently" in that state.
+     */
+    AtomicInteger current = new AtomicInteger(0);
+    
+    /**
+     * Tracker for what states this state transitions to.
+     * Key: state that this state transitioned to.
+     * Value: number of times
+     */
+    Map<String, AtomicInteger> destinations = new ConcurrentHashMap<>() ;
 
+    /**
+     * Helper function to increment the count for a destination state.
+     * 
+     * @param destination Target state that was transitioned to
+     */
     void incrementDestination(String destination) {
-      Integer count = destinations.getOrDefault(destination, 0);
-      destinations.put(destination, count + 1);
+      
+      AtomicInteger count = destinations.get(destination);
+      if (count == null) {
+        synchronized (destinations) {
+          count = destinations.get(destination);
+          if (count == null) {
+            count = new AtomicInteger(0);
+            destinations.put(destination, count);
+          }
+        }
+      }
+      count.incrementAndGet();
     }
   }
 }
