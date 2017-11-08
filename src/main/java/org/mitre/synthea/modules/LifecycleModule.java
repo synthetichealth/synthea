@@ -102,7 +102,7 @@ public final class LifecycleModule extends Module
 		String motherLastName = faker.name().lastName();
 		attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
 
-		double prevalenceOfTwins = Double.parseDouble( Config.get("lifecycle.prevalence_of_twins","0.02"));
+		double prevalenceOfTwins = (double) BiometricsConfig.get("lifecycle.prevalence_of_twins", 0.02);
 		if ((person.rand() < prevalenceOfTwins)) {
 			attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3)+1);
 		}
