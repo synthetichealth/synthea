@@ -19,6 +19,11 @@
     <property name="charset" value="UTF-8"/>
 
     <property name="severity" value="warning"/>
+    <module name="SuppressWarningsFilter"/>
+    <module name="SeverityMatchFilter">
+      <property name="severity" value="warning"/>
+      <property name="acceptOnMatch" value="false"/>
+    </module>
 
     <property name="fileExtensions" value="java, properties, xml"/>
     <!-- Checks for whitespace                               -->
