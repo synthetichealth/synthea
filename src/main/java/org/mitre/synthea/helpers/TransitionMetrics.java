@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.agents.Person;
@@ -190,45 +191,28 @@ public class TransitionMetrics {
    * @param time time duration in ms
    * @return Human readable description of the time
    */
-  private static String durationOf(double time) {
-    // augmented version of http://stackoverflow.com/a/1679963
-    // note that anything less than days here is generally never going to be used
-    double secs = time / 1000.0;
-    double mins = secs / 60.0;
-    double hours = mins / 60.0;
-    double days = hours / 24.0;
-    double weeks = days / 7.0;
-    double months = days / 30.0; // not intended to be exact here
-    double years = days / 365.25;
-
-    if (((long) years) > 0) {
-      return String.format("%.2f years (About %d years and %d months)", 
-          years, (long) years, ((long) months % 12));
+  public static String durationOf(long time) {
+    // this returns something like 15 days 15 hours 24 minutes 26 seconds
+    String result = DurationFormatUtils.formatDurationWords(time, true, true);
+    
+    // if it starts with a large number of days, we can do a little better
+    String[] parts = result.split(" ");
+    
+    if (parts.length > 1 && parts[1].equals("days")) {
+      long days = Long.parseLong(parts[0]);
       
-    } else if (((long) months) > 0) {
-      return String.format("%.2f months (About %d months and %d days)", 
-          months, (long) months, ((long) days % 30));
-      
-    } else if (((long) weeks) > 0) {
-      return String.format("%.2f weeks (About %d weeks and %d days)", 
-          weeks, (long) weeks, ((long) days % 7));
-      
-    } else if (((long) days) > 0) {
-      return String.format("%.2f days (About %d days and %d hours)", 
-          days, (long) days, ((long) hours % 24));
-      
-    } else if (((long) hours) > 0) {
-      return String.format("%.2f hours (About %d hours and %d mins)", 
-          hours, (long) hours, ((long) mins % 60));
-    } else if (((long) mins) > 0) {
-      return String.format("%.2f minutes (About %d minutes and %d seconds)", 
-          mins, (long) mins, ((long) secs % 60));
-      
-    } else if (((long) secs) > 0) {
-      return String.format("%.1f seconds", secs);
-    } else {
-      return "0";
+      if (days > 365) {
+        long years = days / 365;
+        long months = (days % 365) / 12;
+        return years + " years " + months + " months";
+      } else if (days > 30) {
+        long months = days / 30;
+        days = days % 30;
+        return months + " months " + days + " days";
+      }
     }
+    
+    return result;
   }
 
   /**
