@@ -203,7 +203,7 @@ public class TransitionMetrics {
       
       if (days > 365) {
         long years = days / 365;
-        long months = (days % 365) / 12;
+        long months = (days % 365) / 30;
         return years + " years " + months + " months";
       } else if (days > 30) {
         long months = days / 30;
