@@ -45,8 +45,8 @@ public abstract class BiometricsConfig {
   
   public static double[] doubles(String path)
   {
-    List<Double> doubles = (List<Double>)get(path);
-    double[] array = doubles.stream().mapToDouble(i->i).toArray();
+    List<Number> doubles = (List<Number>)get(path);
+    double[] array = doubles.stream().mapToDouble(i->i.doubleValue()).toArray();
     return array;
   }
 }

@@ -26,11 +26,11 @@ metabolic:
     # Comprehensive Metabolic Panel results: https://www.nlm.nih.gov/medlineplus/ency/article/003468.htm
     normal:
       urea_nitrogen: [7,20] # mg/dL
-      carbon_dioxide: [20.0,29.0] # mmol/L
+      carbon_dioxide: [20,29] # mmol/L
       creatinine: [0.8,1.2] # mg/dL
-      chloride: [101.0,111.0] # mmol/L
+      chloride: [101,111] # mmol/L
       potassium: [3.7,5.2] # mEq/L
-      sodium: [136.0, 144.0] # mEq/L
+      sodium: [136, 144] # mEq/L
       calcium: [8.5,10.2] # mg/dL
     # http://www.cdc.gov/diabetes/prevention/pdf/point-of-care-prediabetes-identification-algorithm_tag508.pdf
     glucose: [64,100,125,200] # mg/dL [normal minimum,prediabetic,diabetic,max]
