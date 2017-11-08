@@ -276,18 +276,48 @@ public final class LifecycleModule extends Module
 	{
 		return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
 	}
+	
+	/**
+	 * Map of RxNorm drug codes to the expected impact to HbA1c.
+	 * Impacts should be negative numbers.
+	 */
+	private static final Map<String, Double> DIABETES_DRUG_HBA1C_IMPACTS = createDrugImpactsMap();
 
-	private static void diabeticVitalSigns(Person person, long time)
-	{
+	/**
+	 * Populate the entries of the drug -> impacts map.
+	 * @return a map of drug code -> expected hba1c delta
+	 */
+  private static Map<String, Double> createDrugImpactsMap() {
+    // How much does A1C need to be lowered to get to goal?
+    // Metformin and sulfonylureas may lower A1C 1.5 to 2 percentage points,
+    // GLP-1 agonists and DPP-4 inhibitors 0.5 to 1 percentage point on average, and
+    // insulin as much as 6 points or more, depending on where you start.
+    // -- http://www.diabetesforecast.org/2013/mar/your-a1c-achieving-personal-blood-glucose-goals.html
+    // [:metformin, :glp1ra, :sglt2i, :basal_insulin, :prandial_insulin]
+    //     mono        bi      tri        insulin          insulin++
+    Map<String,Double> impacts = new HashMap<>();
+    // key is the RxNorm code
+    impacts.put("860975", -1.5); // metformin
+    impacts.put("897122", -0.5); // liraglutide
+    impacts.put("1373463", -0.5); // canagliflozin
+    impacts.put("106892", -3.0); // basal insulin
+    impacts.put("865098", -6.0); // prandial insulin
+    
+    return impacts;
+  }
+	
+  /**
+   * Calculate this person's vital signs, based on their conditions, medications, body composition, etc.
+   * @param person The person
+   * @param time Current simulation timestamp
+   */
+	private static void diabeticVitalSigns(Person person, long time) {
 		boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
 
     String bpConfigLoc;
-    if (hypertension)
-    {
+    if (hypertension) {
       bpConfigLoc = "metabolic.blood_pressure.hypertensive";
-    }
-    else
-    {
+    } else {
       bpConfigLoc = "metabolic.blood_pressure.normal";
     }
     int[] sysRange = BiometricsConfig.ints(bpConfigLoc + ".systolic");
@@ -296,9 +326,8 @@ public final class LifecycleModule extends Module
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(diaRange));
     
     int index = 0;
-    if (person.attributes.containsKey("diabetes_severity"))
-    {
-    	index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
+    if (person.attributes.containsKey("diabetes_severity")) {
+      index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
     }
     
     int[] cholRange = BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
@@ -318,10 +347,22 @@ public final class LifecycleModule extends Module
     double bmi = person.getVitalSign(VitalSign.BMI);
     boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
     boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
-    double hbA1c = blood_glucose(bmi, prediabetes, diabetes, person);
+    double hbA1c = estimateHbA1c(bmi, prediabetes, diabetes, person);
     
-    // TODO drugs reduce hbA1c
-    
+    if (prediabetes || diabetes)
+    {
+      // drugs reduce hbA1c.
+      // only do this for people that have pre/diabetes, because these drugs are only prescribed if they do
+      for(Map.Entry<String, Double> e : DIABETES_DRUG_HBA1C_IMPACTS.entrySet()) {
+        String medicationCode = e.getKey();
+        double impact = e.getValue();
+        if (person.record.medicationActive(medicationCode)) {
+          // impacts are negative, so add them
+          hbA1c += impact;
+        }
+      }
+    }
+
     person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
     
     int kidneyDamage = (Integer) person.attributes.getOrDefault("diabetic_kidney_damage", 0); 
@@ -358,7 +399,7 @@ public final class LifecycleModule extends Module
     double microalbumin_creatinine_ratio = person.rand(mcrRange);
     person.setVitalSign(VitalSign.MICROALBUMIN_CREATININE_RATIO, microalbumin_creatinine_ratio);
     
-    double creatinine = reverse_calculate_creatinine(person, creatinine_clearance, time);
+    double creatinine = reverseCalculateCreatinine(person, creatinine_clearance, time);
     person.setVitalSign(VitalSign.CREATININE, creatinine);
     
     int[] unRange = BiometricsConfig.ints("metabolic.basic_panel.normal.urea_nitrogen");
@@ -372,9 +413,8 @@ public final class LifecycleModule extends Module
     double glucose = person.rand(glucoseRange[index], glucoseRange[index+1]);
     person.setVitalSign(VitalSign.GLUCOSE, glucose);
 
-    // carbon dioxide in upper case so the enum can recognize it
-    for (String electrolyte : new String[] {"chloride", "potassium", "CARBON_DIOXIDE", "sodium"})
-    {
+    // these are upper case so the enum can recognize them (especially carbon dioxide)
+    for (String electrolyte : new String[] {"CHLORIDE", "POTASSIUM", "CARBON_DIOXIDE", "SODIUM"}) {
       VitalSign electrolyteVS = VitalSign.fromString(electrolyte);
       
       double[] elecRange = BiometricsConfig.doubles("metabolic.basic_panel.normal." + electrolyte.toLowerCase());
@@ -382,8 +422,18 @@ public final class LifecycleModule extends Module
       person.setVitalSign(electrolyteVS, person.rand(elecRange));
     }
 	}
-	
-	private static double blood_glucose(double bmi, boolean prediabetes,
+
+  /**
+	 * Estimate the person's HbA1c using BMI and whether or not they have diabetes or prediabetes
+	 *  as a rough guideline.
+	 * 
+	 * @param bmi The person's BMI.
+	 * @param prediabetes Whether or not the person is prediabetic. (Diagnosed or undiagnosed)
+	 * @param diabetes Whether or not the person is diabetic. (Diagnosed or undiagnosed)
+	 * @param p The person
+	 * @return A calculated HbA1c value.
+	 */
+	private static double estimateHbA1c(double bmi, boolean prediabetes,
 			boolean diabetes, Person p) {
 		if (diabetes) {
 			if (bmi > 48.0) {
@@ -402,12 +452,20 @@ public final class LifecycleModule extends Module
 		}
 	}
 	
-  // http://www.mcw.edu/calculators/creatinine.htm
-  private static double reverse_calculate_creatinine(Person entity, double crcl, long time) {
+  /**
+   * Calculate Creatinine from Creatinine Clearance.
+   * 
+   *  Source: http://www.mcw.edu/calculators/creatinine.htm
+   * @param person The person
+   * @param crcl Creatinine Clearance
+   * @param time Current Time
+   * @return Estimated Creatinine
+   */
+  private static double reverseCalculateCreatinine(Person person, double crcl, long time) {
     try {
-      int age = entity.ageInYears(time);
-      boolean female = "F".equals(entity.attributes.get(Person.GENDER));
-      double weight = entity.getVitalSign(VitalSign.WEIGHT); // kg
+      int age = person.ageInYears(time);
+      boolean female = "F".equals(person.attributes.get(Person.GENDER));
+      double weight = person.getVitalSign(VitalSign.WEIGHT); // kg
       crcl = Math.max(1, Math.min(crcl, 100)); // clamp between 1-100
       double creatinine = ((140.0 - age) * weight) / (72.0 * crcl);
       if (female) {
