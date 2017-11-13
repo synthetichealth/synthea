@@ -239,12 +239,10 @@ public class CSVExporter {
     String personID = (String) person.attributes.get(Person.ID);
 		s.append(personID).append(',');
 		s.append(dateFromTimestamp((long)person.attributes.get(Person.BIRTHDATE))).append(',');
-		if (person.alive(time)) {
-			s.append(" ").append(',');
-		} else {
-			s.append(dateFromTimestamp(person.record.death)).append(',');
+		if (!person.alive(time)) {
+			s.append(dateFromTimestamp(person.record.death));
 		}
-		
+
 		for (String attribute : new String[] {
 		    Person.IDENTIFIER_SSN,
 		    Person.IDENTIFIER_DRIVERS,
@@ -262,7 +260,7 @@ public class CSVExporter {
 		    Person.ADDRESS
 		}) {
 		  String value = (String) person.attributes.getOrDefault(attribute, "");
-		  s.append( clean(value) ).append(',');
+		  s.append(',').append( clean(value) );
 		}
 
 		s.append(NEWLINE);
@@ -293,10 +291,10 @@ public class CSVExporter {
 		s.append(clean(coding.display)).append(',');
 		
 		if (encounter.reason == null) {
-			s.append(" , ,"); // reason code & desc
+			s.append(','); // reason code & desc
 		} else {
 			s.append(encounter.reason.code).append(',');
-			s.append(clean(encounter.reason.display)).append(',');
+			s.append(clean(encounter.reason.display));
 		}
 
 		s.append(NEWLINE);
@@ -331,7 +329,7 @@ public class CSVExporter {
 		Code coding = condition.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(clean(coding.display)).append(',');
+		s.append(clean(coding.display));
 
 		s.append(NEWLINE);
 		write(s.toString(), conditions);
@@ -362,7 +360,7 @@ public class CSVExporter {
 		Code coding = allergy.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(clean(coding.display)).append(',');
+		s.append(clean(coding.display));
 		
 		s.append(NEWLINE);
 		write(s.toString(), allergies);
@@ -406,7 +404,7 @@ public class CSVExporter {
 		
 		String value = ExportHelper.getObservationValue(observation);
 		s.append(value).append(',');
-		s.append(observation.unit).append(',');
+		s.append(observation.unit);
 		
 		s.append(NEWLINE);
 		write(s.toString(), observations);
@@ -435,11 +433,11 @@ public class CSVExporter {
 		s.append(clean(coding.display)).append(',');
 		
 		if (procedure.reasons.isEmpty()) {
-			s.append(" , ,"); // reason code & desc
+			s.append(','); // reason code & desc
 		} else {
 			Code reason = procedure.reasons.get(0);
 			s.append(reason.code).append(',');
-			s.append(clean(reason.display)).append(',');
+			s.append(clean(reason.display));
 		}
 		
 		s.append(NEWLINE);
@@ -477,12 +475,12 @@ public class CSVExporter {
 		
 		if (medication.reasons.isEmpty())
 		{
-			s.append(" , ,"); // reason code & desc
+			s.append(','); // reason code & desc
 		} else
 		{
 			Code reason = medication.reasons.get(0);
 			s.append(reason.code).append(',');
-			s.append(clean(reason.display)).append(',');
+			s.append(clean(reason.display));
 		}
 		
 		s.append(NEWLINE);
@@ -509,7 +507,7 @@ public class CSVExporter {
 		Code coding = immunization.codes.get(0);
 
 		s.append(coding.code).append(',');
-		s.append(clean(coding.display)).append(',');
+		s.append(clean(coding.display));
 		
 		s.append(NEWLINE);
 		write(s.toString(), immunizations);
@@ -545,11 +543,11 @@ public class CSVExporter {
 		s.append(coding.display).append(',');
 
 		if (careplan.reasons.isEmpty()) {
-			s.append(" , ,"); // reason code & desc
+			s.append(','); // reason code & desc
 		} else {
 			Code reason = careplan.reasons.get(0);
 			s.append(reason.code).append(',');
-			s.append(clean(reason.display)).append(',');
+			s.append(clean(reason.display));
 		}
 		s.append(NEWLINE);
 		
@@ -570,7 +568,6 @@ public class CSVExporter {
 		}
 	}
 	
-
 	/**
 	 * Helper method to write a line to a File.
 	 * Extracted to a separate method here to make it a little easier to replace implementations.

@@ -124,8 +124,12 @@ public class TextExporter {
 		breakline(textRecord);
 		
 		textRecord.add("ALLERGIES:");
-		for (Entry allergy : allergies) {
-			condition(textRecord, allergy);
+		if (allergies.isEmpty()) {
+		  textRecord.add("No Known Allergies");
+		} else {
+      for (Entry allergy : allergies) {
+        condition(textRecord, allergy);
+      }
 		}
 		breakline(textRecord);
 		
