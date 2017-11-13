@@ -1,4 +1,4 @@
-# synthea_java [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java)
+# synthea_java [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java) [![codecov](https://codecov.io/gh/synthetichealth/synthea_java/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea_java)
 Java implementation of the Synthea engine.
 
 Partially implemented.
@@ -8,7 +8,7 @@ Partially implemented.
 
 ### Build and Test
 ```
-./gradlew build test
+./gradlew build check test
 ```
 
 ### Run
