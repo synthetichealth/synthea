@@ -558,7 +558,7 @@ public abstract class State implements Cloneable {
     }
 
     public boolean isWellness() {
-    	return wellness;
+      return wellness;
     }
   }
 

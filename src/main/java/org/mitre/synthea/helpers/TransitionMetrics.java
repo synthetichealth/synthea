@@ -30,7 +30,8 @@ public class TransitionMetrics {
    * Note that a table may not be the most appropriate data structure,
    * but it's a lot cleaner than a Map of Module -> Map of State -> Metric.
    */
-  private Table<String, String, Metric> metrics = Tables.synchronizedTable( HashBasedTable.create() );
+  private Table<String, String, Metric> metrics = 
+      Tables.synchronizedTable(HashBasedTable.create());
 
   /**
    * List of all modules. This reference held here so we don't have to get it multiple times.
@@ -163,7 +164,7 @@ public class TransitionMetrics {
 
         if (!stats.destinations.isEmpty()) {
           System.out.println(" Transitioned to:");
-          long total = stats.destinations.values().stream().mapToLong( ai -> ai.longValue() ).sum();
+          long total = stats.destinations.values().stream().mapToLong(ai -> ai.longValue()).sum();
           stats.destinations.forEach((toState, count) -> 
                 System.out.println(" --> " + toState + " : " + count + " = " 
                                     + decimal(count.get(), total) + "%"));
@@ -260,7 +261,7 @@ public class TransitionMetrics {
      * Key: state that this state transitioned to.
      * Value: number of times
      */
-    Map<String, AtomicInteger> destinations = new ConcurrentHashMap<>() ;
+    Map<String, AtomicInteger> destinations = new ConcurrentHashMap<>();
 
     /**
      * Helper function to increment the count for a destination state.

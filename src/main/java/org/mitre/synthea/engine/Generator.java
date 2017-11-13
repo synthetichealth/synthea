@@ -258,7 +258,8 @@ public class Generator {
     person.attributes.put(Person.RACE, race);
     String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
     person.attributes.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromEthnicity((String)person.attributes.get(Person.ETHNICITY), person);
+    String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),
+        person);
     person.attributes.put(Person.FIRST_LANGUAGE, language);
 
     String gender = city.pickGender(person.random);
