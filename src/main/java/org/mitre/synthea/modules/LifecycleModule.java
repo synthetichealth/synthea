@@ -21,8 +21,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
@@ -252,7 +252,8 @@ public final class LifecycleModule extends Module {
       weight += adultWeightGain;
     } else if (age >= geriatricWeightLossAge) {
       // getting older and wasting away
-      double[] geriatricWeightLossRange = BiometricsConfig.doubles("lifecycle.geriatric_weight_loss");
+      double[] geriatricWeightLossRange = 
+          BiometricsConfig.doubles("lifecycle.geriatric_weight_loss");
       double geriatricWeightLoss = person.rand(geriatricWeightLossRange);
       weight -= geriatricWeightLoss;
     }
@@ -315,7 +316,8 @@ public final class LifecycleModule extends Module {
   }
   
   /**
-   * Calculate this person's vital signs, based on their conditions, medications, body composition, etc.
+   * Calculate this person's vital signs, 
+   * based on their conditions, medications, body composition, etc.
    * @param person The person
    * @param time Current simulation timestamp
    */
@@ -342,12 +344,12 @@ public final class LifecycleModule extends Module {
     int[] triglyceridesRange  = BiometricsConfig.ints("metabolic.lipid_panel.triglycerides");
     int[] hdlRange  = BiometricsConfig.ints("metabolic.lipid_panel.hdl");
     
-    double total_cholesterol = person.rand(cholRange[index], cholRange[index+1]);
-    double triglycerides = person.rand(triglyceridesRange[index], triglyceridesRange[index+1]);
-    double hdl = person.rand(hdlRange[index], hdlRange[index+1]);
-    double ldl = total_cholesterol - hdl - (0.2 * triglycerides);
+    double totalCholesterol = person.rand(cholRange[index], cholRange[index + 1]);
+    double triglycerides = person.rand(triglyceridesRange[index], triglyceridesRange[index + 1]);
+    double hdl = person.rand(hdlRange[index], hdlRange[index + 1]);
+    double ldl = totalCholesterol - hdl - (0.2 * triglycerides);
     
-    person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, total_cholesterol);
+    person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, totalCholesterol);
     person.setVitalSign(VitalSign.TRIGLYCERIDES, triglycerides);
     person.setVitalSign(VitalSign.HDL, hdl);
     person.setVitalSign(VitalSign.LDL, ldl);
@@ -357,11 +359,11 @@ public final class LifecycleModule extends Module {
     boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
     double hbA1c = estimateHbA1c(bmi, prediabetes, diabetes, person);
     
-    if (prediabetes || diabetes)
-    {
+    if (prediabetes || diabetes) {
       // drugs reduce hbA1c.
-      // only do this for people that have pre/diabetes, because these drugs are only prescribed if they do
-      for(Map.Entry<String, Double> e : DIABETES_DRUG_HBA1C_IMPACTS.entrySet()) {
+      // only do this for people that have pre/diabetes, 
+      // because these drugs are only prescribed if they do
+      for (Map.Entry<String, Double> e : DIABETES_DRUG_HBA1C_IMPACTS.entrySet()) {
         String medicationCode = e.getKey();
         double impact = e.getValue();
         if (person.record.medicationActive(medicationCode)) {
@@ -376,38 +378,47 @@ public final class LifecycleModule extends Module {
     int kidneyDamage = (Integer) person.attributes.getOrDefault("diabetic_kidney_damage", 0); 
     int[] ccRange;
     int[] mcrRange;
-    switch( kidneyDamage) {
-    case 1:
-      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
-      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
-      break;
-    case 2:
-      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage");
-      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_controlled");
-      break;
-    case 3:
-      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.severe_kidney_damage");
-      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_uncontrolled");
-      break;
-    case 4:
-      ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.esrd");
-      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.proteinuria");
-      break;
-    default:
-      if("F".equals(person.attributes.get(Person.GENDER))) {
-        ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.female");
-      } else {
-        ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.male");
-      }
-      mcrRange = BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
+    switch (kidneyDamage) {
+      case 1:
+        ccRange = BiometricsConfig
+          .ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
+        mcrRange = BiometricsConfig
+          .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
+        break;
+      case 2:
+        ccRange = BiometricsConfig
+          .ints("metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage");
+        mcrRange = BiometricsConfig
+          .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_controlled");
+        break;
+      case 3:
+        ccRange = BiometricsConfig
+          .ints("metabolic.basic_panel.creatinine_clearance.severe_kidney_damage");
+        mcrRange = BiometricsConfig
+         .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_uncontrolled");
+        break;
+      case 4:
+        ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.esrd");
+        mcrRange = BiometricsConfig
+          .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.proteinuria");
+        break;
+      default:
+        if ("F".equals(person.attributes.get(Person.GENDER))) {
+          ccRange = 
+              BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.female");
+        } else {
+          ccRange = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.male");
+        }
+        mcrRange = BiometricsConfig
+          .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
     }
-    double creatinine_clearance = person.rand(ccRange);
-    person.setVitalSign(VitalSign.EGFR, creatinine_clearance);
+    double creatinineClearance = person.rand(ccRange);
+    person.setVitalSign(VitalSign.EGFR, creatinineClearance);
     
-    double microalbumin_creatinine_ratio = person.rand(mcrRange);
-    person.setVitalSign(VitalSign.MICROALBUMIN_CREATININE_RATIO, microalbumin_creatinine_ratio);
+    double microalbuminCreatinineRatio = person.rand(mcrRange);
+    person.setVitalSign(VitalSign.MICROALBUMIN_CREATININE_RATIO, microalbuminCreatinineRatio);
     
-    double creatinine = reverseCalculateCreatinine(person, creatinine_clearance, time);
+    double creatinine = reverseCalculateCreatinine(person, creatinineClearance, time);
     person.setVitalSign(VitalSign.CREATININE, creatinine);
     
     int[] unRange = BiometricsConfig.ints("metabolic.basic_panel.normal.urea_nitrogen");
@@ -418,48 +429,51 @@ public final class LifecycleModule extends Module {
     index = Math.min(index, 2); // note this continues from the index logic above
     
     int[] glucoseRange = BiometricsConfig.ints("metabolic.basic_panel.glucose");
-    double glucose = person.rand(glucoseRange[index], glucoseRange[index+1]);
+    double glucose = person.rand(glucoseRange[index], glucoseRange[index + 1]);
     person.setVitalSign(VitalSign.GLUCOSE, glucose);
 
     // these are upper case so the enum can recognize them (especially carbon dioxide)
     for (String electrolyte : new String[] {"CHLORIDE", "POTASSIUM", "CARBON_DIOXIDE", "SODIUM"}) {
       VitalSign electrolyteVS = VitalSign.fromString(electrolyte);
       
-      double[] elecRange = BiometricsConfig.doubles("metabolic.basic_panel.normal." + electrolyte.toLowerCase());
-      
+      double[] elecRange = 
+          BiometricsConfig.doubles("metabolic.basic_panel.normal." + electrolyte.toLowerCase());
       person.setVitalSign(electrolyteVS, person.rand(elecRange));
     }
-	}
+  }
 
   /**
-	 * Estimate the person's HbA1c using BMI and whether or not they have diabetes or prediabetes
-	 *  as a rough guideline.
-	 * 
-	 * @param bmi The person's BMI.
-	 * @param prediabetes Whether or not the person is prediabetic. (Diagnosed or undiagnosed)
-	 * @param diabetes Whether or not the person is diabetic. (Diagnosed or undiagnosed)
-	 * @param p The person
-	 * @return A calculated HbA1c value.
-	 */
-	private static double estimateHbA1c(double bmi, boolean prediabetes,
-			boolean diabetes, Person p) {
-		if (diabetes) {
-			if (bmi > 48.0) {
-				return 12.0;
-			} else if (bmi <= 27.0) {
-				return 6.6;
-			} else {
-				return bmi / 4.0;
-				// very simple BMI function so that BMI 40 --> blood glucose ~ 10,
-				// but with a bounded min at 6.6 and bounded max at 12.0
-			}
-		} else if (prediabetes) {
-			return p.rand(5.8, 6.4);
-		} else {
-			return p.rand(5.0, 5.7);
-		}
-	}
-	
+   * Estimate the person's HbA1c using BMI and whether or not they have diabetes or prediabetes as a
+   * rough guideline.
+   * 
+   * @param bmi
+   *          The person's BMI.
+   * @param prediabetes
+   *          Whether or not the person is prediabetic. (Diagnosed or undiagnosed)
+   * @param diabetes
+   *          Whether or not the person is diabetic. (Diagnosed or undiagnosed)
+   * @param p
+   *          The person
+   * @return A calculated HbA1c value.
+   */
+  private static double estimateHbA1c(double bmi, boolean prediabetes, boolean diabetes, Person p) {
+    if (diabetes) {
+      if (bmi > 48.0) {
+        return 12.0;
+      } else if (bmi <= 27.0) {
+        return 6.6;
+      } else {
+        return bmi / 4.0;
+        // very simple BMI function so that BMI 40 --> blood glucose ~ 10,
+        // but with a bounded min at 6.6 and bounded max at 12.0
+      }
+    } else if (prediabetes) {
+      return p.rand(5.8, 6.4);
+    } else {
+      return p.rand(5.0, 5.7);
+    }
+  }
+
   /**
    * Calculate Creatinine from Creatinine Clearance.
    *  Source: http://www.mcw.edu/calculators/creatinine.htm

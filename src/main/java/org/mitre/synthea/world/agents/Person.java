@@ -91,14 +91,6 @@ public class Person implements Serializable {
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
   }
-
-  public int randInt() {
-    return random.nextInt();
-  }
-
-  public int randInt(int bound) {
-    return random.nextInt(bound);
-  }
   
   /**
    * Helper function to get a random number based on an array of [min, max].
@@ -109,11 +101,13 @@ public class Person implements Serializable {
    */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("input range must be of length 2 -- got "
+          + Arrays.toString(range));
     }
     
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
+          + Arrays.toString(range));
     }
     
     return rand(range[0], range[1]);
@@ -130,14 +124,24 @@ public class Person implements Serializable {
    */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("input range must be of length 2 -- got "
+          + Arrays.toString(range));
     }
     
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
+          + Arrays.toString(range));
     }
     
     return rand(range[0], range[1]);
+  }
+
+  public int randInt() {
+    return random.nextInt();
+  }
+
+  public int randInt(int bound) {
+    return random.nextInt(bound);
   }
 
   public Period age(long time) {

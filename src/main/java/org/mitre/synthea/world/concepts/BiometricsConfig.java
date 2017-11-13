@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.SimpleYML;
 
 /**
- * Class exposing various configurable biometric settings, which are set in resources/biometrics.yml.
- * 
- * Unlike the standard "Config" and synthea.properties, it is unlikely that an end-user will want to tweak these often.
+ * Class exposing various configurable biometric settings, 
+ * which are set in resources/biometrics.yml.
+ * Unlike the standard "Config" and synthea.properties, 
+ * it is unlikely that an end-user will want to tweak these often.
  */
 public abstract class BiometricsConfig {
 
@@ -51,7 +52,6 @@ public abstract class BiometricsConfig {
    *      grault: -1
    *  plugh: 7
    * </pre>
-   * 
    * calling get("foo.qux.grault") will return Integer(-1)
    * 
    * @param path path to the desired object
@@ -81,10 +81,9 @@ public abstract class BiometricsConfig {
    * @param path path to the desired object
    * @return parsed integer array
    */
-  public static int[] ints(String path)
-  {
+  public static int[] ints(String path) {
     List<Integer> ints = (List<Integer>)get(path);
-    int[] array = ints.stream().mapToInt(i->i).toArray();
+    int[] array = ints.stream().mapToInt(i -> i).toArray();
     return array;
   }
   
@@ -96,10 +95,9 @@ public abstract class BiometricsConfig {
    * @param path path to the desired object
    * @return parsed double array
    */
-  public static double[] doubles(String path)
-  {
+  public static double[] doubles(String path) {
     List<Number> doubles = (List<Number>)get(path);
-    double[] array = doubles.stream().mapToDouble(i->i.doubleValue()).toArray();
+    double[] array = doubles.stream().mapToDouble(i -> i.doubleValue()).toArray();
     return array;
   }
 }

@@ -7,8 +7,8 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Helper class to parse a YAML file into a (hopefully) useable map format.
  * This is useful for arbitrary YAML which doesn't try to adhere to any schema.
- * (If it does adhere to a schema, there are other methods to parse YAML to objects which should be preferred)
- * 
+ * (If it does adhere to a schema, 
+ * there are other methods to parse YAML to objects which should be preferred)
  * Java doesn't have dynamic typing so this class exposes a "get" method which takes a path string,
  * and walks the map to find the desired item.
  */
@@ -24,8 +24,7 @@ public class SimpleYML {
    * 
    * @param rawContent YML file as a String
    */
-  public SimpleYML(String rawContent)
-  {
+  public SimpleYML(String rawContent)  {
     Yaml yaml = new Yaml();
     internalMap = (Map<String,?>)yaml.load(rawContent);
   }
@@ -41,10 +40,9 @@ public class SimpleYML {
    *      grault: -1
    *  plugh: 7
    * </pre>
-   * 
    * calling get("foo.qux.grault") will return Integer(-1)
    * 
-   * @param path
+   * @param path Path to desired object
    * @return the object at path
    */
   public Object get(String path) {
@@ -53,10 +51,10 @@ public class SimpleYML {
     Map<String,?> current = internalMap;
     
     // note: length-2 because we don't want to get the last piece as a map
-    for (int i = 0 ; i <= pathSegments.length - 2 ; i++) {
-      current = (Map<String,?>) current.get( pathSegments[i] );
+    for (int i = 0; i <= pathSegments.length - 2; i++) {
+      current = (Map<String,?>) current.get(pathSegments[i]);
     }
     
-    return current.get(  pathSegments[ pathSegments.length - 1 ]  );
+    return current.get(pathSegments[pathSegments.length - 1]);
   }
 }
