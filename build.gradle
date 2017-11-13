@@ -8,72 +8,69 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
-
-// Apply the application plugin to add support for building an application
 apply plugin: 'application'
-
 apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+  // Use jcenter for resolving your dependencies.
+  // You can declare any Maven/Ivy/file repository here.
+  jcenter()
+}
+
+checkstyle {
+	toolVersion '8.4'
+	//showViolations = true
 }
 
 dependencies {
-    // This dependency is found on compile classpath of this component and consumers.
-    // compile 'com.google.guava:guava:21.0'
-    compile 'com.google.code.gson:gson:2.8.0'
-
-    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.0.0'
-    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.0.0'
-
+  // This dependency is found on compile classpath of this component and consumers.
+  compile 'com.google.code.gson:gson:2.8.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.0.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.0.0'
 	// C-CDA export uses Apache FreeMarker templates
 	compile 'org.freemarker:freemarker:2.3.26-incubating'
-
-    // JTS for location processing
-    compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
-    // used to convert the ma_geo GeoJSON file to JTS
-    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
-
-    compile group: 'com.h2database', name: 'h2', version: '1.4.196'
-
-    compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
-
-
-    // google guava for some data structures
-    compile 'com.google.guava:guava:23.0'
-
-
+  // JTS for location processing
+  compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
+  // used to convert the ma_geo GeoJSON file to JTS
+  compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
+  compile group: 'com.h2database', name: 'h2', version: '1.4.196'
+  compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
+  // google guava for some data structures
+  compile 'com.google.guava:guava:23.0'
 	compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
-
-
-
 	// CSV Stuff
 	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
-
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
-
-    // Use JUnit test framework
-    testCompile 'junit:junit:4.12'
-    testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
-    testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
+  // Use JUnit test framework
+  testCompile 'junit:junit:4.12'
+  testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
+  testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 	testCompile 'org.mockito:mockito-core:2.7.22'
 	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.0.0'
 	testCompile 'com.phloc:phloc-schematron:2.7.1'
 	testCompile 'com.phloc:phloc-commons:4.4.11'
 }
 
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
+check.dependsOn jacocoTestReport
+
 task graphviz(type: JavaExec) {
 	description 'Generate rule visualization'
-
 	classpath sourceSets.main.runtimeClasspath
 	main = "Graphviz"
 }
 
 task cleanOutput {
-    delete fileTree(dir: 'output' , include: '**/*')
+  delete fileTree(dir: 'output' , include: '**/*')
 }
 
 // Define the main class for the application
