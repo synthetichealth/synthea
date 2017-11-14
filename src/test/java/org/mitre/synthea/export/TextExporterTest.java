@@ -49,6 +49,7 @@ public class TextExporterTest {
       count++;
     }
     
-    assertEquals("Expected " + numberOfPeople + " TXT files in the output directory, found " + count, numberOfPeople, count);
+    assertEquals("Expected " + numberOfPeople + " files in the output directory, found " + count, 
+        numberOfPeople, count);
   }
 }
