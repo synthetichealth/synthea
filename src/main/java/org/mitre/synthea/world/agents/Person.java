@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,50 @@ public class Person implements Serializable {
 
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
+  }
+  
+  /**
+   * Helper function to get a random number based on an array of [min, max].
+   * This should be used primarily when pulling ranges from YML.
+   * 
+   * @param range array [min, max]
+   * @return random double between min and max
+   */
+  public double rand(double[] range) {
+    if (range == null || range.length != 2) {
+      throw new IllegalArgumentException("input range must be of length 2 -- got "
+          + Arrays.toString(range));
+    }
+    
+    if (range[0] > range[1]) {
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
+          + Arrays.toString(range));
+    }
+    
+    return rand(range[0], range[1]);
+  }
+  
+  // no good way to share code between the double[] and int[] version unfortunately....
+  
+  /**
+   * Helper function to get a random number based on an integer array of [min, max].
+   * This should be used primarily when pulling ranges from YML.
+   * 
+   * @param range array [min, max]
+   * @return random double between min and max
+   */
+  public double rand(int[] range) {
+    if (range == null || range.length != 2) {
+      throw new IllegalArgumentException("input range must be of length 2 -- got "
+          + Arrays.toString(range));
+    }
+    
+    if (range[0] > range[1]) {
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
+          + Arrays.toString(range));
+    }
+    
+    return rand(range[0], range[1]);
   }
 
   public int randInt() {
