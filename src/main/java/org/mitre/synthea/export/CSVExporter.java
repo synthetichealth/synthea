@@ -319,12 +319,10 @@ public class CSVExporter {
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(condition.start)).append(',');
-    if (condition.stop == 0L) {
-      s.append(' ').append(',');
-    } else {
-      s.append(dateFromTimestamp(condition.stop)).append(',');
+    if (condition.stop != 0L) {
+      s.append(dateFromTimestamp(condition.stop));
     }
-    
+    s.append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -351,11 +349,10 @@ public class CSVExporter {
     StringBuilder s = new StringBuilder();
     
     s.append(dateFromTimestamp(allergy.start)).append(',');
-    if (allergy.stop == 0L) {
-      s.append(' ').append(',');
-    } else {
-      s.append(dateFromTimestamp(allergy.stop)).append(',');
+    if (allergy.stop != 0L) {
+      s.append(dateFromTimestamp(allergy.stop));
     }
+    s.append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -460,11 +457,10 @@ public class CSVExporter {
     StringBuilder s = new StringBuilder();
     
     s.append(dateFromTimestamp(medication.start)).append(',');
-    if (medication.stop == 0L) {
-      s.append(' ').append(',');
-    } else {
-      s.append(dateFromTimestamp(medication.stop)).append(',');
+    if (medication.stop != 0L) {
+      s.append(dateFromTimestamp(medication.stop));
     }
+    s.append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -527,11 +523,10 @@ public class CSVExporter {
     String careplanID = UUID.randomUUID().toString();
     s.append(careplanID).append(',');
     s.append(dateFromTimestamp(careplan.start)).append(',');
-    if (careplan.stop == 0L) {
-      s.append(' ').append(',');
-    } else {
-      s.append(dateFromTimestamp(careplan.stop)).append(',');
+    if (careplan.stop != 0L) {
+      s.append(dateFromTimestamp(careplan.stop));
     }
+    s.append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
