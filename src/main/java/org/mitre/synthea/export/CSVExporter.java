@@ -33,18 +33,18 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * Sample:  
  * - patients.csv <pre>
  * ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
- * 5e0d195e-1cd9-494d-8f9a-757c15da2aed,1946-12-14,2015-10-03,999-12-2377,S99962866,false,Mrs.,Miracle267,Ledner332,,Raynor597,M,white,irish,F,Millbury MA,2502 Fisher Manor Boston MA 02132
- * 52082709-06ce-4fde-9c93-cfb4e6542ae1,1968-05-23,,999-17-1808,S99941406,X41451685X,Mrs.,Alda869,Gorczany848,,Funk527,M,white,italian,F,Gardner MA,46973 Velda Gateway Franklin Town MA 02038
- * 8b4c62c8-b116-4b58-9259-466485b0345c,1967-06-22,1985-07-04,999-11-1173,S99955795,,Ms.,Moshe832,Zulauf396,,,,white,english,F,Boston MA,250 Reba Park Carver MA 02330
- * 965c5539-598b-4a9b-a670-e0259667deb8,1934-11-04,2015-06-19,999-63-2195,S99931866,X71888970X,Mr.,Verla554,Roberts329,,,S,white,irish,M,Fall River MA,321 Abdullah Bridge Needham MA 02492
- * 2b28d6c3-9e0c-48d4-99f9-292488133101,1964-08-13,,999-55-5054,S99990374,X68574707X,Ms.,Henderson277,Labadie810,,,S,black,dominican,F,North Attleborough MA,55825 Barrows Prairie Suite 144 Boston MA 02134
+ * 5e0d195e,1946-12-14,2015-10-03,999-12-2377,S99962866,false,Mrs.,Miracle267,Ledner332,,Raynor597,M,white,irish,F,Millbury MA,2502 Fisher Manor Boston MA 02132
+ * 52082709,1968-05-23,,999-17-1808,S99941406,X41451685X,Mrs.,Alda869,Gorczany848,,Funk527,M,white,italian,F,Gardner MA,46973 Velda Gateway Franklin Town MA 02038
+ * 8b4c62c8,1967-06-22,1985-07-04,999-11-1173,S99955795,,Ms.,Moshe832,Zulauf396,,,,white,english,F,Boston MA,250 Reba Park Carver MA 02330
+ * 965c5539,1934-11-04,2015-06-19,999-63-2195,S99931866,X71888970X,Mr.,Verla554,Roberts329,,,S,white,irish,M,Fall River MA,321 Abdullah Bridge Needham MA 02492
+ * 2b28d6c3,1964-08-13,,999-55-5054,S99990374,X68574707X,Ms.,Henderson277,Labadie810,,,S,black,dominican,F,North Attleborough MA,55825 Barrows Prairie Suite 144 Boston MA 02134
  * </pre>
  * - conditions.csv <pre>
  * START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
- * 1965-10-10,,5e0d195e-1cd9-494d-8f9a-757c15da2aed,918b17f4-e815-44ef-9eeb-41953bbcf7e9,38341003,Hypertension
- * 1966-09-09,,5e0d195e-1cd9-494d-8f9a-757c15da2aed,918b17f4-e815-44ef-9eeb-41953bbcf7e9,15777000,Prediabetes
- * 1988-09-25,,5e0d195e-1cd9-494d-8f9a-757c15da2aed,918b17f4-e815-44ef-9eeb-41953bbcf7e9,239872002,Osteoarthritis of hip
- * 1990-09-01,,5e0d195e-1cd9-494d-8f9a-757c15da2aed,918b17f4-e815-44ef-9eeb-41953bbcf7e9,410429000,Cardiac Arrest
+ * 1965-10-10,,5e0d195e,918b17f4,38341003,Hypertension
+ * 1966-09-09,,5e0d195e,918b17f4,15777000,Prediabetes
+ * 1988-09-25,,5e0d195e,918b17f4,239872002,Osteoarthritis of hip
+ * 1990-09-01,,5e0d195e,918b17f4,410429000,Cardiac Arrest
  * </pre>
  */
 public class CSVExporter {
@@ -132,7 +132,8 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void writeCSVHeaders() throws IOException {
-    patients.write("ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS");
+    patients.write("ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
+        + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
