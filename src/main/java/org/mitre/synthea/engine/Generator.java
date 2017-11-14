@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -33,6 +34,7 @@ import org.mitre.synthea.world.geography.Location;
  * Generator creates a population by running the generic modules each timestep per Person.
  */
 public class Generator {
+
   public static final long ONE_HUNDRED_YEARS = 100L * TimeUnit.DAYS.toMillis(365);
   public static final int MAX_TRIES = 10;
   public DataStore database;
@@ -44,7 +46,9 @@ public class Generator {
   public long stop;
   public Map<String, AtomicInteger> stats;
   public Map<String, Demographics> demographics;
+  private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
+  public TransitionMetrics metrics;
 
   public Generator() throws IOException {
     int population = Integer.parseInt(Config.get("generate.default_population", "1"));
@@ -87,9 +91,15 @@ public class Generator {
     this.demographics = Demographics.loadByName(Config.get("generate.demographics.default_file"));
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
 
+    this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
+
+    if (Boolean.parseBoolean(
+          Config.get("generate.track_detailed_transition_metrics", "false"))) {
+      this.metrics = new TransitionMetrics();
+    }
 
     // initialize hospitals
     Hospital.loadHospitals();
@@ -128,6 +138,10 @@ public class Generator {
     Exporter.runPostCompletionExports(this);
 
     System.out.println(stats);
+
+    if (this.metrics != null) {
+      metrics.printStats(totalGeneratedPopulation.get());
+    }
   }
 
   public Person generatePerson(int index) {
@@ -182,9 +196,13 @@ public class Generator {
 
         DeathModule.process(person, time);
 
-        Exporter.export(person, stop);
+        Exporter.export(person, time);
         if (database != null) {
           database.store(person);
+        }
+
+        if (this.metrics != null) {
+          metrics.recordStats(person, time);
         }
 
         isAlive = person.alive(time);
@@ -197,6 +215,8 @@ public class Generator {
 
         AtomicInteger count = stats.get(key);
         count.incrementAndGet();
+
+        totalGeneratedPopulation.incrementAndGet();
       } while (!isAlive);
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
@@ -238,7 +258,8 @@ public class Generator {
     person.attributes.put(Person.RACE, race);
     String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
     person.attributes.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromEthnicity((String)person.attributes.get(Person.ETHNICITY), person);
+    String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),
+        person);
     person.attributes.put(Person.FIRST_LANGUAGE, language);
 
     String gender = city.pickGender(person.random);
