@@ -1,6 +1,7 @@
 package org.mitre.synthea.helpers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +48,21 @@ public class TransitionMetrics {
    *          Date the simulation ended
    */
   public void recordStats(Person person, long simulationEnd) {
-    for (Module m : ALL_MODULES) {
+    recordStats(person, simulationEnd, ALL_MODULES);
+  }
+  
+  /**
+   * Record all appropriate state transition information from the given person.
+   * 
+   * @param person
+   *          Person that went through the modules
+   * @param simulationEnd
+   *          Date the simulation ended
+   * @param modules
+   *          The collection of modules to record stats for
+   */
+  public void recordStats(Person person, long simulationEnd, Collection<Module> modules) {
+    for (Module m : modules) {
       if (!m.getClass().equals(Module.class)) {
         // java module, not GMF. no states to show
         continue;
@@ -89,11 +104,11 @@ public class TransitionMetrics {
    * @param stateName Name of the state
    * @return Metric object
    */
-  private Metric getMetric(String moduleName, String stateName) {
+  public Metric getMetric(String moduleName, String stateName) {
     Metric metric = metrics.get(moduleName, stateName);
 
     if (metric == null) {
-      synchronized(metrics) {
+      synchronized (metrics) {
         metric = metrics.get(moduleName, stateName);
         if (metric == null) {
           metric = new Metric();
@@ -124,7 +139,19 @@ public class TransitionMetrics {
    *          The total population that was simulated.
    */
   public void printStats(int totalPopulation) {
-    for (Module m : ALL_MODULES) {
+    printStats(totalPopulation, ALL_MODULES);
+  }
+  
+  /**
+   * Print the statistics that have been gathered.
+   * 
+   * @param totalPopulation
+   *          The total population that was simulated.
+   * @param modules
+   *          The collection of modules to display stats for
+   */
+  public void printStats(int totalPopulation, Collection<Module> modules) {
+    for (Module m : modules) {
       if (!m.getClass().equals(Module.class)) {
         // java module, not GMF. no states to show
         continue;
@@ -235,33 +262,33 @@ public class TransitionMetrics {
   /**
    * Helper class to track the metrics of a single State.
    */
-  private static class Metric {
+  public static class Metric {
     /**
      * Number of times the state was entered.
      */
-    AtomicInteger entered = new AtomicInteger(0); 
+    public final AtomicInteger entered = new AtomicInteger(0); 
     
     /**
      * Total length of time (ms) people were in this state.
      */
-    AtomicLong duration = new AtomicLong(0L);
+    public final AtomicLong duration = new AtomicLong(0L);
     
     /**
      * Number of people that ever his this state.
      */
-    AtomicInteger population = new AtomicInteger(0);
+    public final AtomicInteger population = new AtomicInteger(0);
     
     /**
      * Number of people that are "currently" in that state.
      */
-    AtomicInteger current = new AtomicInteger(0);
+    public final AtomicInteger current = new AtomicInteger(0);
     
     /**
      * Tracker for what states this state transitions to.
      * Key: state that this state transitioned to.
      * Value: number of times
      */
-    Map<String, AtomicInteger> destinations = new ConcurrentHashMap<>();
+    public final Map<String, AtomicInteger> destinations = new ConcurrentHashMap<>();
 
     /**
      * Helper function to increment the count for a destination state.
