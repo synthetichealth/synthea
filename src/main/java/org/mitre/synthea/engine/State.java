@@ -337,7 +337,7 @@ public abstract class State implements Cloneable {
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       JsonObject logicDefinition = definition.get("allow").getAsJsonObject();
-      allow = new Logic(logicDefinition);
+      allow = Logic.build(logicDefinition);
     }
 
     public Guard clone() {

@@ -52,7 +52,7 @@ public class LogicTest {
 
   private boolean doTest(String testName) {
     JsonObject definition = tests.get(testName).getAsJsonObject();
-    Logic logic = new Logic(definition);
+    Logic logic = Logic.build(definition);
 
     return logic.test(person, time);
   }

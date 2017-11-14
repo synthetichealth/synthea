@@ -124,7 +124,7 @@ public class Transition {
           if (logicDefinition == null) {
             return transitions.get(i);
           } else {
-            Logic allow = new Logic(logicDefinition);
+            Logic allow = Logic.build(logicDefinition);
             if (allow.test(person, time)) {
               return transitions.get(i);
             }
@@ -137,7 +137,7 @@ public class Transition {
           if (logicDefinition == null) {
             return contained.get(i).follow(person, time);
           } else {
-            Logic allow = new Logic(logicDefinition);
+            Logic allow = Logic.build(logicDefinition);
             if (allow.test(person, time)) {
               return contained.get(i).follow(person, time);
             }
