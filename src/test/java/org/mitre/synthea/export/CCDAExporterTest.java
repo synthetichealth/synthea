@@ -10,7 +10,9 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.mdht.uml.cda.util.BasicValidationHandler;
 import org.eclipse.mdht.uml.cda.util.CDAUtil;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
@@ -21,8 +23,13 @@ import org.mitre.synthea.world.agents.Person;
  * https://github.com/mdht/mdht-models
  */
 public class CCDAExporterTest {
+  
+  @Rule
+  public TemporaryFolder tempFolder = new TemporaryFolder();
+  
   @Test
   public void testCCDAExport() throws Exception {
+    Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
     CDAUtil.loadPackages();
     List<String> validationErrors = new ArrayList<String>();
 

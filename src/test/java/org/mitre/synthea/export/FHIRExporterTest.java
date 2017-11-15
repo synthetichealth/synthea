@@ -18,7 +18,9 @@ import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
@@ -28,8 +30,16 @@ import org.mitre.synthea.world.agents.Person;
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRExporterTest {
+  /**
+   * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
+   */
+  @Rule
+  public TemporaryFolder tempFolder = new TemporaryFolder();
+  
   @Test
   public void testFHIRExport() throws Exception {
+    Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
+    
     FhirContext ctx = FhirContext.forDstu3();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
