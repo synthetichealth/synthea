@@ -258,12 +258,20 @@ public class CSVExporter {
         Person.RACE,
         Person.ETHNICITY,
         Person.GENDER,
-        Person.BIRTHPLACE,
-        Person.ADDRESS
+        Person.BIRTHPLACE
     }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
     }
+    
+    s.append(',');
+    
+    String address = (String) person.attributes.get(Person.ADDRESS) 
+            + " " + (String) person.attributes.get(Person.CITY)
+             + " " + (String) person.attributes.get(Person.STATE)
+              + " " + (String) person.attributes.get(Person.ZIP)
+               + " US";
+    s.append(clean(address));
 
     s.append(NEWLINE);
     write(s.toString(), patients);

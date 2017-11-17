@@ -57,7 +57,7 @@ public class TransitionMetricsTest {
     assertEquals(1, m.current.get()); // and is still there
     
     metrics = new TransitionMetrics();
-    for (long seed : new long[] {999L, 0L, 12345L}) {
+    for (long seed : new long[] {16L, 0L, 12345L}) {
       // seeds chosen by experimentation, to ensure we hit "Pre_Examplitis" at least once
       person = new Person(seed); 
       person.attributes.put(Person.GENDER, "M");

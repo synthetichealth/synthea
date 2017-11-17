@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.geography;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -11,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class Location {
   // cache the population by city name for performance
   private static final Map<String, Long> populationByCity;
   private static final Map<String, Feature> featuresByName;
+  private static final Map<String, List<String>> zipCodes;
 
   static {
     // load the GeoJSON once so we can use it for all patients
@@ -63,16 +67,59 @@ public class Location {
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
+
+    try {
+      filename = "/geography/ma_zip.json";
+      
+      InputStream stream = Location.class.getResourceAsStream(filename);
+      // read all text into a string
+      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
+          .collect(Collectors.joining("\n"));
+      
+      Gson g = new Gson();
+      zipCodes = g.fromJson(json, LinkedTreeMap.class);
+      
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load zips json: " + filename);
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(e);
+    }
   }
 
-  public static String getZipCode(String cityName) {
-    return "00000"; // TODO
+  /**
+   * Get the zip code for the given city name. 
+   * If a city has more than one zip code, this picks a random one.
+   * 
+   * @param cityName Name of the city
+   * @param random Source of randomness
+   * @return a zip code for the given city
+   */
+  public static String getZipCode(String cityName, Random random) {
+    List<String> zipsForCity = zipCodes.get(cityName);
+    
+    if (zipsForCity == null) {
+      zipsForCity = zipCodes.get(cityName + " Town");
+    }
+    
+    if (zipsForCity == null || zipsForCity.isEmpty()) {
+      return "00000"; // if we don't have the city, just use a dummy
+    } else if (zipsForCity.size() == 1) {
+      return zipsForCity.get(0);
+    } else {
+      // pick a random one
+      return zipsForCity.get(random.nextInt(zipsForCity.size()));
+    }
   }
 
   public static long getPopulation(String cityName) {
     return populationByCity.getOrDefault(cityName, 0L);
   }
 
+  /**
+   * Pick a random city name, weighted by population.
+   * @param random Source of randomness
+   * @return a city name
+   */
   public static String randomCityName(Random random) {
     long targetPop = (long) (random.nextDouble() * totalPopulation);
 
@@ -147,7 +194,7 @@ public class Location {
 
     person.attributes.put(Person.CITY, cityName);
     person.attributes.put(Person.STATE, "MA");
-    person.attributes.put(Person.ZIP, getZipCode(cityName));
+    person.attributes.put(Person.ZIP, getZipCode(cityName, person.random));
     person.attributes.put(Person.COORDINATE, selectedPoint);
   }
 
