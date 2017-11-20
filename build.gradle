@@ -57,6 +57,16 @@ dependencies {
 	testCompile 'com.phloc:phloc-commons:4.4.11'
 }
 
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "org.ajoberstar:grgit:2.1.0"
+  }
+}
+apply plugin: "org.ajoberstar.grgit"
+
 jacocoTestReport {
   reports {
     xml.enabled true
@@ -71,6 +81,22 @@ task graphviz(type: JavaExec) {
 	classpath sourceSets.main.runtimeClasspath
 	main = "Graphviz"
 }
+
+task versionTxt() {
+    doLast {
+      def git = org.ajoberstar.grgit.Grgit.open(dir: '.')
+      def file = new File("$projectDir/src/main/resources/version.txt")
+      file.createNewFile()
+      file.text = """
+Version: ${git.describe()}
+Revision: ${git.head().id}
+Buildtime: ${new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())}
+Application-name: Synthea
+"""
+    }
+}
+
+assemble.dependsOn versionTxt
 
 task cleanOutput {
   delete fileTree(dir: 'output' , include: '**/*')

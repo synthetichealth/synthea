@@ -11,6 +11,9 @@ bin/**
 
 /output/
 
+# don't commit the autobuilt version file
+src/main/resources/version.txt
+
 # H2 database files
 **/*.mv.db
 **/*.trace.db
