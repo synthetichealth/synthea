@@ -73,7 +73,9 @@ task graphviz(type: JavaExec) {
 }
 
 task cleanOutput {
-  delete fileTree(dir: 'output' , include: '**/*')
+  doLast {
+    delete fileTree(dir: 'output' , include: '**/*')
+  }
 }
 
 // Define the main class for the application
