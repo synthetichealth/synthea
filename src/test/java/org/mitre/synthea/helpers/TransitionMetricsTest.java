@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.TransitionMetrics.Metric;
 import org.mitre.synthea.modules.EncounterModule;
@@ -57,14 +58,15 @@ public class TransitionMetricsTest {
     assertEquals(1, m.current.get()); // and is still there
     
     metrics = new TransitionMetrics();
-    for (long seed : new long[] {16L, 0L, 12345L}) {
+    for (long seed : new long[] {31255L, 0L, 12345L}) {
       // seeds chosen by experimentation, to ensure we hit "Pre_Examplitis" at least once
       person = new Person(seed); 
       person.attributes.put(Person.GENDER, "M");
       person.setAmbulatoryProvider(Mockito.mock(Hospital.class));
       time = System.currentTimeMillis();
-      LifecycleModule.birth(person, time);
-      
+      person.attributes.put(Person.BIRTHDATE, time);
+      person.events.create(time, Event.BIRTH, "transition metrics test", true);
+
       time = run(person, example, time);
       metrics.recordStats(person, time, modules);
     }
