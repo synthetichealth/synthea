@@ -37,6 +37,9 @@ public final class LifecycleModule extends Module {
   public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
+  private static final boolean appendNumbersToNames =
+      Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
+
   public LifecycleModule() {
     this.name = "Lifecycle";
   }
@@ -96,12 +99,21 @@ public final class LifecycleModule extends Module {
 
     String firstName = faker.name().firstName();
     String lastName = faker.name().lastName();
+    if (appendNumbersToNames) {
+      // randInt(1000) produces 1-3 digits
+      firstName = addHash(firstName);
+      lastName = addHash(lastName);
+    }
     attributes.put(Person.FIRST_NAME, firstName);
     attributes.put(Person.LAST_NAME, lastName);
     attributes.put(Person.NAME, firstName + " " + lastName);
 
     String motherFirstName = faker.name().firstName();
     String motherLastName = faker.name().lastName();
+    if (appendNumbersToNames) {
+      motherFirstName = addHash(motherFirstName);
+      motherLastName = addHash(motherLastName);
+    }
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
 
     double prevalenceOfTwins = 
@@ -139,6 +151,15 @@ public final class LifecycleModule extends Module {
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
+  }
+  
+  /**
+   * Adds a 1- to 3-digit hashcode to the end of the name.
+   * @param name Person's name
+   * @return The name with a hash appended, ex "John123" or "Smith22"
+   */
+  private static String addHash(String name) {
+    return name + Integer.toString(Math.abs(name.hashCode() % 1000));
   }
 
   /**
@@ -196,6 +217,9 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
               String newLastName = faker.name().lastName();
+              if (appendNumbersToNames) {
+                newLastName = addHash(newLastName);
+              }
               person.attributes.put(Person.LAST_NAME, newLastName);
               person.attributes.put(Person.NAME, firstName + " " + newLastName);
             }
