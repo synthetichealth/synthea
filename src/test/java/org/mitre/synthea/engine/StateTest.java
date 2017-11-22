@@ -89,6 +89,11 @@ public class StateTest {
     assertFalse(terminal.process(person, time));
     assertFalse(terminal.process(person, time + TimeUnit.DAYS.toMillis(7)));
   }
+  
+  @Test(expected = RuntimeException.class)
+  public void stateMustHaveTransition() {
+    getModule("state_without_transition.json");
+  }
 
   @Test
   public void guard_passes_when_condition_is_met() {
@@ -315,7 +320,7 @@ public class StateTest {
 
     Module module = getModule("vitalsign_observation.json");
 
-    State vitalsign = module.getState("VitalSign");
+    State vitalsign = module.getState("VitalSign").clone();
     assertTrue(vitalsign.process(person, time));
 
     assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE), 0.0);
@@ -544,16 +549,16 @@ public class StateTest {
   @Test
   public void allergy_end_by_state_name() {
     Module module = getModule("allergies.json");
-    State allergyState = module.getState("Allergy_to_Eggs");
+    State allergyState = module.getState("Allergy_to_Eggs").clone();
     // Should pass through this state immediately without calling the record
     assertTrue(allergyState.process(person, time));
     person.history.add(allergyState);
 
-    State encounter = module.getState("Dr_Visit");
+    State encounter = module.getState("Dr_Visit").clone();
     assertTrue(encounter.process(person, time));
 
     // Now process the end of the prescription
-    State medEnd = module.getState("Allergy_Ends");
+    State medEnd = module.getState("Allergy_Ends").clone();
     assertTrue(medEnd.process(person, time));
 
     HealthRecord.Entry allergy = person.record.encounters.get(0).allergies.get(0);
