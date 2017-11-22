@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.Organization;
@@ -36,6 +37,7 @@ public abstract class HospitalExporter {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
 
       Bundle bundle = new Bundle();
+      bundle.setType(BundleType.COLLECTION);
       for (Hospital h : Hospital.getHospitalList()) {
         // filter - exports only those hospitals in use
 
