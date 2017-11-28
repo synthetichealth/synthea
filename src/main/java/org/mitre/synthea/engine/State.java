@@ -1232,8 +1232,8 @@ public abstract class State implements Cloneable {
       }
     }
 
-    public Observation clone() {
-      Observation clone = (Observation) super.clone();
+    public VitalSign clone() {
+      VitalSign clone = (VitalSign) super.clone();
       clone.quantity = quantity;
       clone.low = low;
       clone.high = high;
