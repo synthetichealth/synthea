@@ -38,7 +38,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Module {
 
-  private static Map<String, Module> modules = Collections.unmodifiableMap(loadModules());
+  private static final Map<String, Module> modules = loadModules();
 
   private static Map<String, Module> loadModules() {
     Map<String, Module> retVal = new ConcurrentHashMap<String, Module>();
