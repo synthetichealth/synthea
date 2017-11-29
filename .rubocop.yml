@@ -14,7 +14,29 @@ Documentation:
 Metrics:
   Enabled: false
 
+Style/ConditionalAssignment:
+  Enabled: false
 Style/GuardClause:
   Enabled: false
 Style/HashSyntax:
+  Enabled: false
+Style/IdenticalConditionalBranches:
+  Enabled: false
+Style/InverseMethods:
+  Enabled: false
+Style/MultilineIfModifier:
+  Enabled: false
+Style/MultipleComparison:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  Enabled: false
+Style/RedundantReturn:
+  Enabled: false
+Style/SymbolArray:
+  Enabled: false
+Style/YodaCondition:
+  Enabled: false
+Bundler/OrderedGems:
+  Enabled: false
+Security/YAMLLoad:
   Enabled: false

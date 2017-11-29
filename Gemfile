@@ -16,7 +16,7 @@ gem 'distribution', '~> 0.7.3'
 # gem 'byebug'
 
 group :test do
-  gem 'rubocop', '~> 0.43.0', require: false
+  gem 'rubocop', '~> 0.49.0', require: false
   gem 'cane', '~> 2.3.0'
   gem 'simplecov', require: false
   gem 'minitest', '~> 5.3'
