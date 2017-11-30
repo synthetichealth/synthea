@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Event;
@@ -24,6 +26,7 @@ public final class EncounterModule extends Module {
       "Well child visit (procedure)");
   public static final Code GENERAL_EXAM = new Code("SNOMED-CT", "162673000",
       "General examination of patient (procedure)");
+  // NOTE: if new codes are added, be sure to update getAllCodes below
 
   public EncounterModule() {
     this.name = "Encounter";
@@ -140,6 +143,16 @@ public final class EncounterModule extends Module {
   public void endWellnessEncounter(Person person, long time) {
     person.record.encounterEnd(time, EncounterType.WELLNESS.toString());
     person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
+  }
+
+  /**
+   * Get all of the Codes this module uses, for inventory purposes.
+   * 
+   * @return Collection of all codes and concepts this module uses
+   */
+  public static Collection<Code> getAllCodes() {
+    return Arrays.asList(ENCOUNTER_CHECKUP, ENCOUNTER_EMERGENCY, 
+                         WELL_CHILD_VISIT, GENERAL_EXAM);
   }
 
 }

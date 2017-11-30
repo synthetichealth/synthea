@@ -4,6 +4,8 @@ import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -764,4 +766,12 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * Get all of the Codes this module uses, for inventory purposes.
+   * 
+   * @return Collection of all codes and concepts this module uses
+   */
+  public static Collection<Code> getAllCodes() {
+    return Collections.singleton(NATURAL_CAUSES);
+  }
 }

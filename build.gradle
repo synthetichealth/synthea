@@ -86,6 +86,12 @@ task graphviz(type: JavaExec) {
 	main = "Graphviz"
 }
 
+task concepts(type: JavaExec) {
+  description 'Create a list of simulated conceptsn'
+  classpath sourceSets.main.runtimeClasspath
+  main = "Concepts"
+}
+
 task versionTxt() {
     doLast {
       // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
