@@ -81,10 +81,10 @@ class MetadataTest < Minitest::Test
     assert_equal '(gold and silver)', obj.to_string(and: [:gold, :silver])
     assert_equal '((salt and pepper) or (sugar and spice))', obj.to_string( or: [{ and: [:salt, :pepper] }, { and: [:sugar, :spice] }])
 
-    assert_raises { obj.to_string([:this, :that]) }
-    assert_raises { obj.to_string('string') }
-    assert_raises { obj.to_string({ or: [:this, :that], and: [:something_else] }) } # note this is 2 entries in 1 hash
-    assert_raises { obj.to_string({}) }
+    assert_raises (RuntimeError) { obj.to_string([:this, :that]) }
+    assert_raises (RuntimeError) { obj.to_string('string') }
+    assert_raises (RuntimeError) { obj.to_string({ or: [:this, :that], and: [:something_else] }) } # note this is 2 entries in 1 hash
+    assert_raises (RuntimeError) { obj.to_string({}) }
 
 
 

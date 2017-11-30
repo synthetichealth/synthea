@@ -19,7 +19,7 @@ group :test do
   gem 'rubocop', '~> 0.49.0', require: false
   gem 'cane', '~> 2.3.0'
   gem 'simplecov', require: false
-  gem 'minitest', '~> 5.3'
+  gem 'minitest'
   gem 'minitest-reporters'
   gem 'awesome_print', require: 'ap'
 end

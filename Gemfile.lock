@@ -116,7 +116,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.99.3)
     mini_portile2 (2.1.0)
-    minitest (5.10.2)
+    minitest (5.10.3)
     minitest-reporters (1.1.14)
       ansi
       builder
@@ -229,7 +229,7 @@ DEPENDENCIES
   faker
   georuby
   health-data-standards!
-  minitest (~> 5.3)
+  minitest
   minitest-reporters
   net-sftp
   pickup

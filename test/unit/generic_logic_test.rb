@@ -231,7 +231,7 @@ class GenericLogicTest < Minitest::Test
 
   def test_vital_signs
     @patient[:vital_signs] = {}
-    assert_raises { do_test('SystolicBloodPressureGt120') }
+    assert_raises (NoMethodError) { do_test('SystolicBloodPressureGt120') }
 
     @patient.set_vital_sign(:systolic_blood_pressure, 100, 'mmHg')
     refute(do_test('SystolicBloodPressureGt120'))
@@ -242,7 +242,7 @@ class GenericLogicTest < Minitest::Test
 
   def test_observations
     @patient.record_synthea.observations = []
-    assert_raises { do_test('mmseObservationGt22') }
+    assert_raises (RuntimeError) { do_test('mmseObservationGt22') }
 
     @patient.record_synthea.observation(:mini_mental_state_examination, @time, 12)
     refute(do_test('mmseObservationGt22'))
