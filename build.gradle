@@ -57,6 +57,18 @@ dependencies {
 	testCompile 'com.phloc:phloc-commons:4.4.11'
 }
 
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    // commons-io used in getting the version id below
+    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+    // note that commons-io is already a dependency 
+    // of commons-csv in the primary dependencies above
+  }
+}
+
 jacocoTestReport {
   reports {
     xml.enabled true
@@ -71,6 +83,23 @@ task graphviz(type: JavaExec) {
 	classpath sourceSets.main.runtimeClasspath
 	main = "Graphviz"
 }
+
+task versionTxt() {
+    doLast {
+      // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
+      // "git describe" can use tags or fallback to the commit hash if necessary.
+      // this assumes (as does the ruby version) that git will always be present when building
+      String[] cmd = [ "git", "describe", "--tags", "--always" ]
+      Process p = Runtime.getRuntime().exec(cmd)
+      p.waitFor()
+      def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
+      def file = new File("$projectDir/src/main/resources/version.txt")
+      file.createNewFile()
+      file.text = version
+    }
+}
+
+assemble.dependsOn versionTxt
 
 task cleanOutput {
   doLast {
