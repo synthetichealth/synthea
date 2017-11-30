@@ -1,42 +1,42 @@
 {
   "english": {
     "code": "en-US",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "English"
   },
   "spanish": {
     "code": "es",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "Spanish"
   },
   "portuguese": {
     "code": "pt",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "Portuguese"
   },
   "chinese": {
     "code": "zh",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "Chinese"
   },
   "french": {
     "code": "fr-FR",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "French (France)"
   },
   "french_creole": {
     "code": "fr",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "French"
   },
   "italian": {
     "code": "it",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "Italian"
   },
   "russian": {
     "code": "ru-RU",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "Russian (Russia)"
   },
   "vietnamese": {
@@ -46,7 +46,7 @@
   },
   "greek": {
     "code": "el",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "Greek"
   },
   "arabic": {
@@ -61,7 +61,7 @@
   },
   "german": {
     "code": "de-DE",
-    "system": "http://hl7.org/fhir/ValueSet/languages",
+    "system": "urn:ietf:bcp:47",
     "display": "German (Germany)"
   },
   "hindi": {
