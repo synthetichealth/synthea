@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
@@ -29,6 +30,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
+import org.powermock.reflect.Whitebox;
 
 public class StateTest {
 
@@ -1147,7 +1149,6 @@ public class StateTest {
     assertFalse(person.alive(time));
   }
 
-  // TODO uncomment this once attributes for undiagnosed conditions work
   @Test
   public void cause_of_death_attribute() {
     Module module = getModule("death_reason.json");
@@ -1162,5 +1163,85 @@ public class StateTest {
     assertTrue(death.process(person, time));
 
     assertFalse(person.alive(time));
+  }
+  
+  @Test
+  public void testSubmoduleHistory() {
+    Map<String, Module> modules = Whitebox.<Map<String, Module>> getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module subModule1 = getModule("submodules/encounter_submodule.json");
+    Module subModule2 = getModule("submodules/medication_submodule.json");
+    modules.put("submodules/encounter_submodule", subModule1);
+    modules.put("submodules/medication_submodule", subModule2);
+    
+    try {
+      Module module = getModule("recursively_calls_submodules.json");
+      while (!module.process(person, time)) {
+        time += Utilities.convertTime("years", 1);
+      }
+      
+      // main module has 5 states
+      // encounter_submodule has 6 states
+      // medication_submodule has 5 states
+      // total = 16
+      System.out.println(person.history);
+      assertEquals(16, person.history.size());
+      
+      assertEquals("Initial", person.history.get(15).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(15).module.name);
+  
+      assertEquals("Example_Condition", person.history.get(14).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(14).module.name);
+      
+      assertEquals("Call_Encounter_Submodule", person.history.get(13).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(13).module.name);
+      
+      
+      assertEquals("Initial", person.history.get(12).name);
+      assertEquals("Encounter Submodule Module", person.history.get(12).module.name);
+  
+      assertEquals("Delay", person.history.get(11).name);
+      assertEquals("Encounter Submodule Module", person.history.get(11).module.name);
+  
+      assertEquals("Encounter_In_Submodule", person.history.get(10).name);
+      assertEquals("Encounter Submodule Module", person.history.get(10).module.name);
+  
+      assertEquals("Call_MedicationOrder_Submodule", person.history.get(9).name);
+      assertEquals("Encounter Submodule Module", person.history.get(9).module.name);
+  
+      
+      assertEquals("Initial", person.history.get(8).name);
+      assertEquals("Medication Submodule Module", person.history.get(8).module.name);
+  
+      assertEquals("Examplitis_Medication", person.history.get(7).name);
+      assertEquals("Medication Submodule Module", person.history.get(7).module.name);
+  
+      assertEquals("Delay_Yet_Again", person.history.get(6).name);
+      assertEquals("Medication Submodule Module", person.history.get(6).module.name);
+  
+      assertEquals("End_Medication", person.history.get(5).name);
+      assertEquals("Medication Submodule Module", person.history.get(5).module.name);
+  
+      assertEquals("Med_Terminal", person.history.get(4).name);
+      assertEquals("Medication Submodule Module", person.history.get(4).module.name);
+
+  
+      assertEquals("Delay_Some_More", person.history.get(3).name);
+      assertEquals("Encounter Submodule Module", person.history.get(3).module.name);
+  
+      assertEquals("Encounter_Terminal", person.history.get(2).name);
+      assertEquals("Encounter Submodule Module", person.history.get(2).module.name);
+  
+      
+      assertEquals("End_Condition", person.history.get(1).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(1).module.name);
+      
+      assertEquals("Terminal", person.history.get(0).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(0).module.name);
+    } finally {
+      // always clean these up, to ensure they don't get seen by any other tests
+      modules.remove("submodules/encounter_submodule");
+      modules.remove("submodules/medication_submodule");
+    }
   }
 }

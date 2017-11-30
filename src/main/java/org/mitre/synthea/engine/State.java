@@ -201,13 +201,23 @@ public abstract class State implements Cloneable {
     @Override
     public boolean process(Person person, long time) {
       // e.g. "submodule": "medications/otc_antihistamine"
-      if (this.exited == null) {
-        Module submodule = Module.getModuleByPath(submodulePath);
-        submodule.process(person, time);
-        this.exited = time;
-        return false;
-      } else {
+      List<State> moduleHistory = person.history;
+      Module submodule = Module.getModuleByPath(submodulePath);
+      boolean completed = submodule.process(person, time);
+      
+      if (completed) {
+        // add the history from the submodule to this module's history, at the front
+        moduleHistory.addAll(0, person.history);
+        // clear the submodule history
+        person.attributes.remove(submodule.name);
+        // reset person.history to this module's history
+        person.history = moduleHistory;
+        
         return true;
+      } else {
+        // the submodule is still processing
+        // next time we call this state it should pick up where it left off
+        return false;
       }
     }
   }
