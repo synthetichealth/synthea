@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.vividsolutions.jts.geom.Point;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import org.mitre.synthea.helpers.Utilities;
 
 public class Hospital extends Provider {
 
@@ -28,13 +26,10 @@ public class Hospital extends Provider {
 
   @SuppressWarnings("unchecked")
   public static void loadHospitals() {
-    String filename = "/geography/healthcare_facilities.json";
+    String filename = "geography/healthcare_facilities.json";
 
     try {
-      InputStream stream = Hospital.class.getResourceAsStream(filename);
-      // read all text into a string
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       HashMap<String, LinkedTreeMap> gson = g.fromJson(json, HashMap.class);
       for (Entry<String, LinkedTreeMap> entry : gson.entrySet()) {

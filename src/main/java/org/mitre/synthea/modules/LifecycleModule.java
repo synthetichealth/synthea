@@ -3,16 +3,12 @@ package org.mitre.synthea.modules;
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
@@ -46,11 +42,9 @@ public final class LifecycleModule extends Module {
 
   @SuppressWarnings("rawtypes")
   private static Map loadGrowthChart() {
-    String filename = "/cdc_growth_charts.json";
+    String filename = "cdc_growth_charts.json";
     try {
-      InputStream stream = LifecycleModule.class.getResourceAsStream(filename);
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {

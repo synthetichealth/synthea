@@ -2,13 +2,11 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+
+import org.mitre.synthea.helpers.Utilities;
 
 public class BillingConcept {
   // HashMap of all codes in synthea
@@ -32,12 +30,9 @@ public class BillingConcept {
   @SuppressWarnings("unchecked")
   public static void loadConceptMappings() {
 
-    String filename = "/concept_mappings.json";
+    String filename = "concept_mappings.json";
     try {
-      InputStream stream = BillingConcept.class.getResourceAsStream(filename);
-      // read all text into a string
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       HashMap<String, Map<String, ?>> gson = g.fromJson(json, HashMap.class);
       for (Entry<String, ?> entry : gson.entrySet()) {

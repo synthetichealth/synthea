@@ -2,17 +2,14 @@ package org.mitre.synthea.world.geography;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -374,10 +371,7 @@ public class Demographics {
    *           if the file could not be found or read
    */
   public static Map<String, Demographics> loadByName(String filename) throws IOException {
-    InputStream stream = Location.class.getResourceAsStream(filename);
-    // read all text into a string
-    String json = new BufferedReader(new InputStreamReader(stream)).lines()
-        .collect(Collectors.joining("\n"));
+    String json = Utilities.readResource(filename);
     return loadByContent(json);
   }
 

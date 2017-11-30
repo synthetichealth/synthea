@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.JsonPrimitive;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -184,8 +185,7 @@ public class Utilities {
     
     try {
       // see build.gradle for version.txt format
-      URL url = Resources.getResource("version.txt");
-      String text = Resources.toString(url, Charsets.UTF_8);
+      String text = readResource("version.txt");
       if (text != null && text.length() > 0) {
         version = text;
       }
@@ -194,5 +194,16 @@ public class Utilities {
       e.printStackTrace();
     }
     return version;
+  }
+  
+  /**
+   * Read the entire contents of a file in resources into a String.
+   * @param filename Path to the file, relative to src/main/resources.
+   * @return The entire text contents of the file.
+   * @throws IOException if any error occurs reading the file
+   */
+  public static final String readResource(String filename) throws IOException {
+    URL url = Resources.getResource(filename);
+    return Resources.toString(url, Charsets.UTF_8);
   }
 }

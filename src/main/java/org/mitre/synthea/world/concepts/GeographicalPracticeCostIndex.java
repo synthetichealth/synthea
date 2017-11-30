@@ -3,12 +3,10 @@ package org.mitre.synthea.world.concepts;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+
+import org.mitre.synthea.helpers.Utilities;
 
 public class GeographicalPracticeCostIndex {
 
@@ -54,12 +52,9 @@ public class GeographicalPracticeCostIndex {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void loadGpciData() {
 
-    String filename = "/geographical_practice_cost_index.json";
+    String filename = "geographical_practice_cost_index.json";
     try {
-      InputStream stream = GeographicalPracticeCostIndex.class.getResourceAsStream(filename);
-      // read all text into a string
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
 
       LinkedTreeMap<String, LinkedTreeMap> gson = g.fromJson(json, LinkedTreeMap.class);

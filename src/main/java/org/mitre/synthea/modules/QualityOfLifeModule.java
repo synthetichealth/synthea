@@ -2,16 +2,12 @@ package org.mitre.synthea.modules;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
@@ -60,11 +56,9 @@ public class QualityOfLifeModule extends Module {
 
   @SuppressWarnings("unchecked")
   private static Map<String, Map<String, Object>> loadDisabilityWeights() {
-    String filename = "/gbd_disability_weights.json";
+    String filename = "gbd_disability_weights.json";
     try {
-      InputStream stream = QualityOfLifeModule.class.getResourceAsStream(filename);
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {
