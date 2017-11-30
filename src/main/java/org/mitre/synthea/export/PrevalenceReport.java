@@ -1,9 +1,6 @@
 package org.mitre.synthea.export;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -14,10 +11,10 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.Utilities;
 
 public class PrevalenceReport {
 
@@ -43,11 +40,7 @@ public class PrevalenceReport {
       return;
     }
 
-    InputStream stream = PrevalenceReport.class.getResourceAsStream("/prevalence_template.csv");
-    // read all text into a string
-    String csvData = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-        .collect(Collectors.joining("\n"));
-
+    String csvData = Utilities.readResource("prevalence_template.csv");
     List<LinkedHashMap<String, String>> data = SimpleCSV.parse(csvData);
 
     try (Connection connection = generator.database.getConnection()) {

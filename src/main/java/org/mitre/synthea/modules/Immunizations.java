@@ -2,15 +2,11 @@ package org.mitre.synthea.modules;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -34,11 +30,9 @@ public class Immunizations {
 
   @SuppressWarnings("rawtypes")
   private static Map loadImmunizationSchedule() {
-    String filename = "/immunization_schedule.json";
+    String filename = "immunization_schedule.json";
     try {
-      InputStream stream = LifecycleModule.class.getResourceAsStream(filename);
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {

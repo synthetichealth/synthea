@@ -8,16 +8,13 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
 import org.wololo.geojson.Feature;
@@ -37,18 +34,14 @@ public class Location {
 
   static {
     // load the GeoJSON once so we can use it for all patients
-    String filename = "/geography/ma_geo.json";
+    String filename = "geography/ma_geo.json";
 
     long runningPopulation = 0;
     populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
     featuresByName = new HashMap<>();
 
     try {
-      InputStream stream = Location.class.getResourceAsStream(filename);
-      // read all text into a string
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
-
+      String json = Utilities.readResource(filename);
       cities = (FeatureCollection) GeoJSONFactory.create(json);
 
       for (Feature f : cities.getFeatures()) {
@@ -69,13 +62,8 @@ public class Location {
     }
 
     try {
-      filename = "/geography/ma_zip.json";
-      
-      InputStream stream = Location.class.getResourceAsStream(filename);
-      // read all text into a string
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
-      
+      filename = "geography/ma_zip.json";
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       zipCodes = g.fromJson(json, LinkedTreeMap.class);
       

@@ -7,9 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.vividsolutions.jts.geom.Point;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.BooleanType;
@@ -109,11 +105,9 @@ public class FhirStu3 {
 
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
-    String filename = "/race_ethnicity_codes.json";
+    String filename = "race_ethnicity_codes.json";
     try {
-      InputStream stream = FhirStu3.class.getResourceAsStream(filename);
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {
@@ -125,11 +119,9 @@ public class FhirStu3 {
 
   @SuppressWarnings("rawtypes")
   private static Map loadLanguageLookup() {
-    String filename = "/language_lookup.json";
+    String filename = "language_lookup.json";
     try {
-      InputStream stream = FhirStu3.class.getResourceAsStream(filename);
-      String json = new BufferedReader(new InputStreamReader(stream)).lines().parallel()
-          .collect(Collectors.joining("\n"));
+      String json = Utilities.readResource(filename);
       Gson g = new Gson();
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {

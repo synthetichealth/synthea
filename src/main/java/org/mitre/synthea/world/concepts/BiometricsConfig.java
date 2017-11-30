@@ -1,12 +1,9 @@
 package org.mitre.synthea.world.concepts;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.SimpleYML;
+import org.mitre.synthea.helpers.Utilities;
 
 /**
  * Class exposing various configurable biometric settings, 
@@ -28,11 +25,7 @@ public abstract class BiometricsConfig {
    */
   private static final SimpleYML loadYML() {
     try {
-      InputStream stream = BiometricsConfig.class.getResourceAsStream("/biometrics.yml");
-      //read all text into a string
-      String yml = new BufferedReader(new InputStreamReader(stream)).lines()
-          .collect(Collectors.joining("\n"));
-
+      String yml = Utilities.readResource("biometrics.yml");
       return new SimpleYML(yml);
       
     } catch (Exception e) {
