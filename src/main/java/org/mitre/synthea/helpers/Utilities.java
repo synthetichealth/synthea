@@ -186,12 +186,8 @@ public class Utilities {
       // see build.gradle for version.txt format
       URL url = Resources.getResource("version.txt");
       String text = Resources.toString(url, Charsets.UTF_8);
-      String firstLine = text.split(System.lineSeparator())[0];
-
-      // "Version: " == 9 chars
-      String v = firstLine.substring(9);
-      if (!"null".equals(v)) {
-        version = v;
+      if (text != null && text.length() > 0) {
+        version = text;
       }
     } catch (Exception e) {
       // don't crash if the file isn't there, or for any other reason

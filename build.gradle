@@ -62,10 +62,12 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "org.ajoberstar:grgit:2.1.0"
+    // commons-io used in getting the version id below
+    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+    // note that commons-io is already a dependency 
+    // of commons-csv in the primary dependencies above
   }
 }
-apply plugin: "org.ajoberstar.grgit"
 
 jacocoTestReport {
   reports {
@@ -84,15 +86,16 @@ task graphviz(type: JavaExec) {
 
 task versionTxt() {
     doLast {
-      def git = org.ajoberstar.grgit.Grgit.open(dir: '.')
+      // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
+      // "git describe" can use tags or fallback to the commit hash if necessary.
+      // this assumes (as does the ruby version) that git will always be present when building
+      String[] cmd = [ "git", "describe", "--tags", "--always" ]
+      Process p = Runtime.getRuntime().exec(cmd)
+      p.waitFor()
+      def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
       def file = new File("$projectDir/src/main/resources/version.txt")
       file.createNewFile()
-      file.text = """
-Version: ${git.describe()}
-Revision: ${git.head().id}
-Buildtime: ${new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())}
-Application-name: Synthea
-"""
+      file.text = version
     }
 }
 
