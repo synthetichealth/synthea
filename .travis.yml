@@ -2,7 +2,7 @@ language: ruby
 rvm:
   - 2.1.10
   - 2.4.1
-  - jruby-9.1.5.0
+  - jruby-9.1.7.0
 script:
   - bundle exec rake test
 after_success:
