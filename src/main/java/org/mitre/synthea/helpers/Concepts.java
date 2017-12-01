@@ -1,8 +1,15 @@
 package org.mitre.synthea.helpers;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,13 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.DeathModule;
@@ -34,7 +34,13 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
  * Format is "system,code,display".
  */
 public class Concepts {
-  public static void main(String[] args) throws IOException, URISyntaxException {
+  /**
+   * Generate an output file containing all clinical concepts used in Synthea.
+   * 
+   * @param args unused
+   * @throws Exception if any error occurs in reading the module files
+   */
+  public static void main(String[] args) throws Exception {
     System.out.println("Performing an inventory of concepts into `output/concepts.csv`...");
     
     Table<String,String,String> concepts = HashBasedTable.create();
@@ -43,20 +49,20 @@ public class Concepts {
     Path path = Paths.get(modulesFolder.toURI());
     Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
         .filter(f -> f.toString().endsWith(".json")).forEach(modulePath -> {
-          try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))){
+          try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
             JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
             inventoryModule(concepts, module);
           } catch (IOException e) {
-            
+            throw new RuntimeException("Unable to read modules", e);
           }
         });
 
-    inventoryCodes(concepts, CardiovascularDiseaseModule.getAllCodes() );
-    inventoryCodes(concepts, DeathModule.getAllCodes() );
-    inventoryCodes(concepts, EncounterModule.getAllCodes() );
+    inventoryCodes(concepts, CardiovascularDiseaseModule.getAllCodes());
+    inventoryCodes(concepts, DeathModule.getAllCodes());
+    inventoryCodes(concepts, EncounterModule.getAllCodes());
     // HealthInsuranceModule has no codes
-    inventoryCodes(concepts, Immunizations.getAllCodes() );
-    inventoryCodes(concepts, LifecycleModule.getAllCodes() );
+    inventoryCodes(concepts, Immunizations.getAllCodes());
+    inventoryCodes(concepts, LifecycleModule.getAllCodes());
     // QualityOfLifeModule adds no new codes to patients
     
     int count = 0;
@@ -100,7 +106,7 @@ public class Concepts {
    * Catalog all concepts from the given state into the given Table.
    * 
    * @param concepts Table of concepts to add to
-   * @param module State to parse for concepts and codes
+   * @param state State to parse for concepts and codes
    */
   public static void inventoryState(Table<String, String, String> concepts, JsonObject state) {
     // TODO - how can we make this more generic
@@ -134,7 +140,8 @@ public class Concepts {
    * @param concepts Table of concepts to add to
    * @param codes Collection of codes to add
    */
-  public static void inventoryCodes(Table<String, String, String> concepts, Collection<Code> codes) {
-    codes.forEach( code -> concepts.put(code.system, code.code, code.display) );
+  public static void inventoryCodes(Table<String, String, String> concepts, 
+      Collection<Code> codes) {
+    codes.forEach(code -> concepts.put(code.system, code.code, code.display));
   }
 }
