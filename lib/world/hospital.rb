@@ -20,6 +20,7 @@ module Synthea
 
     # find closest hospital with ambulatory service
     def self.find_closest_ambulatory(person_location)
+      return @@services[:ambulatory].sample unless person_location
       person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
       closest_distance = 100_000_000
       closest_hospital = nil
@@ -37,6 +38,7 @@ module Synthea
 
     # find closest hospital with inpatient service
     def self.find_closest_inpatient(person_location)
+      return @@services[:inpatient].sample unless person_location
       person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
       closest_distance = 100_000_000
       closest_hospital = nil
@@ -54,6 +56,7 @@ module Synthea
 
     # find closest hopital with emergency service
     def self.find_closest_emergency(person_location)
+      return @@services[:emergency].sample unless person_location
       person_point = GeoRuby::SimpleFeatures::Point.from_x_y(person_location[0], person_location[1])
       closest_distance = 100_000_000
       closest_hospital = nil

@@ -204,7 +204,6 @@ module Synthea
         file.write("#{description},#{numerator},#{denominator},#{result},#{(100 * result).round(2)}\n")
       end
 
-      # Will only generate dead patients.
       def run_random
         i = 0
         # Depending on the only_dead_patients value which is set in the configuration file,
@@ -242,12 +241,12 @@ module Synthea
           run_task(@generate_workers) do
             @generate_count.increment
             log_thread_pool(@generate_workers, 'Generate Workers') if @enable_debug_logging && (@generate_count.value % @generate_log_interval).zero?
-            process_person(city_name, population, demographics, i)
+            process_person(city_name, city_stats['state'], population, demographics, i)
           end
         end
       end
 
-      def process_person(city_name, population, demographics, i)
+      def process_person(city_name, state_name, population, demographics, i)
         target_gender = demographics[:gender][i]
         target_race = demographics[:race][i]
         target_ethnicity = Synthea::World::Demographics::ETHNICITY[target_race].pick
@@ -257,7 +256,7 @@ module Synthea
         try_number = 1
         qol_calculator = Synthea::Output::QOL.new
         loop do
-          person = build_person(city: city_name, age: target_age, gender: target_gender,
+          person = build_person(city: city_name, city_state: state_name, age: target_age, gender: target_gender,
                                 race: target_race, ethnicity: target_ethnicity,
                                 income: target_income, education: target_education)
 
@@ -292,10 +291,36 @@ module Synthea
         gender_ratio = Pickup.new(stats['gender']) { |v| v * 100 }
         race_ratio = Pickup.new(stats['race']) { |v| v * 100 }
         age_ratio = Pickup.new(stats['ages']) { |v| v * 100 }
-        education_ratio = Pickup.new(stats['education']) { |v| v * 100 }
-        income_stats = stats['income']
-        income_stats.delete('median')
-        income_stats.delete('mean')
+        if stats['education']
+          education_ratio = Pickup.new(stats['education']) { |v| v * 100 }
+        else
+          default_ratio = {
+            'less_than_hs' => 0.125,
+            'hs_degree' => 0.625,
+            'some_college' => 0.125,
+            'bs_degree' => 0.125
+          }
+          education_ratio = Pickup.new(default_ratio) { |v| v * 100 }
+        end
+        if stats['income']
+          income_stats = stats['income']
+          income_stats.delete('median')
+          income_stats.delete('mean')
+        else
+          income_stats = {
+            '00..10' => 0.01,
+            '10..15' => 0.02,
+            '15..25' => 0.25,
+            '25..35' => 0.15,
+            '35..50' => 0.10,
+            '50..75' => 0.25,
+            '75..100' => 0.10,
+            '100..150' => 0.10,
+            '150..200' => 0.01,
+            '200..999' => 0.01
+          }
+        end
+        income_stats = Pickup.new(income_stats) { |v| v * 100 }
 
         demographics = Hash.new { |hsh, key| hsh[key] = Array.new(population) }
 
@@ -305,7 +330,8 @@ module Synthea
           age_group = age_ratio.pick # gives us a string, we need a range
           demographics[:age][i] = rand(Range.new(*age_group.split('..').map(&:to_i)))
           demographics[:education][i] = education_ratio.pick
-          demographics[:income][i] = rand(Range.new(*age_group.split('..').map(&:to_i))) * 1000
+          income_group = income_stats.pick # gives us a string, we need a range
+          demographics[:income][i] = rand(Range.new(*income_group.split('..').map(&:to_i))) * 1000
         end
 
         demographics

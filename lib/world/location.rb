@@ -6,27 +6,28 @@ module Synthea
       @running_total += feat.properties['pop']
     end
     @city_zipcode_hash = JSON.parse(File.read(File.expand_path('city_zip.json', File.dirname(File.absolute_path(__FILE__)))))
+    @town_list = JSON.parse(File.read(File.join(File.dirname(__FILE__), '..', '..', 'config', 'towns.json')))
 
-    def self.get_zipcode(city)
+    def self.get_zipcode(city, state = 'MA')
+      return 'XXXXX' unless city
       zipcode_list = @city_zipcode_hash[city] || @city_zipcode_hash[city + ' Town']
-      zipcode_list.sample
+      if zipcode_list && state == 'MA'
+        zipcode_list.sample
+      else
+        'XXXXX'
+      end
     end
 
-    def self.select_point(city_name = nil)
-      # randomly select a city if not provided
-      feat_index = nil
-      rand_num = rand(@running_total)
-      if city_name
-        feat_index = find_index_of_city(city_name)
-      else
-        @geom.features.each_with_index do |val, index|
-          rand_num -= val.properties['pop']
-          next unless rand_num < 0
-          feat_index = index
-          city_name = val.properties['cs_name']
-          break
-        end
-      end
+    def self.select_town
+      city = @town_list.keys.sample
+      state = @town_list[city]['state']
+      { city: city, state: state }
+    end
+
+    def self.select_point(city_name, state = 'MA')
+      feat_index = find_index_of_city(city_name) if state == 'MA'
+
+      return nil unless feat_index
 
       # determine rough boundaries of city
       city = @geom.features[feat_index].geometry.geometries[0]
@@ -51,6 +52,7 @@ module Synthea
     end
 
     def self.find_index_of_city(city_name)
+      return nil unless city_name
       @geom.features.each_with_index do |val, index|
         name = val.properties['cs_name']
         return index if (city_name == name) || (city_name + ' Town' == name)

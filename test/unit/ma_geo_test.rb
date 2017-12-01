@@ -35,7 +35,7 @@ class MA_Geo < Minitest::Test
   end
 
   def test_select_point
-    data = Synthea::Location.select_point
+    data = Synthea::Location.select_point('Bedford')
     city = @ma.features.find{|c| c.properties['cs_name']== data["city"] }.geometry.geometries[0]
     assert(city.contains_point?(data["point"]))
   end
