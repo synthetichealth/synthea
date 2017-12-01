@@ -26,7 +26,6 @@ import org.mitre.synthea.world.geography.Location;
 public final class LifecycleModule extends Module {
   @SuppressWarnings("rawtypes")
   private static final Map growthChart = loadGrowthChart();
-  private static final Faker faker = new Faker();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
@@ -92,7 +91,7 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
     person.events.create(time, Event.BIRTH, "Generator.run", true);
-
+    Faker faker = new Faker(person.random);
     String firstName = faker.name().firstName();
     String lastName = faker.name().lastName();
     if (appendNumbersToNames) {
@@ -212,6 +211,7 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
+              Faker faker = new Faker(person.random);
               String newLastName = faker.name().lastName();
               if (appendNumbersToNames) {
                 newLastName = addHash(newLastName);

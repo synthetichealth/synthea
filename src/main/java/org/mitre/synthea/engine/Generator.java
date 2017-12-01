@@ -115,7 +115,8 @@ public class Generator {
 
     for (int i = 0; i < this.numberOfPeople; i++) {
       final int index = i;
-      threadPool.submit(() -> generatePerson(index));
+      final long seed = this.random.nextLong();
+      threadPool.submit(() -> generatePerson(index, seed));
     }
 
     try {
@@ -145,8 +146,36 @@ public class Generator {
       metrics.printStats(totalGeneratedPopulation.get());
     }
   }
-
+  
+  /**
+   * Generate a completely random Person. The returned person will be alive at the end of the
+   * simulation. This means that if in the course of the simulation the person dies, a new person
+   * will be started to replace them. 
+   * The seed used to generate the person is randomized as well.
+   * 
+   * @param index Target index in the whole set of people to generate
+   * @return generated Person
+   */
   public Person generatePerson(int index) {
+    // System.currentTimeMillis is not unique enough
+    long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+    return generatePerson(index, personSeed);
+  }
+
+  /**
+   * Generate a random Person, from the given seed. The returned person will be alive at the end of
+   * the simulation. This means that if in the course of the simulation the person dies, a new
+   * person will be started to replace them. Note also that if the person dies, the seed to produce
+   * them can't be re-used (otherwise the new person would die as well) so a new seed is picked,
+   * based on the given seed.
+   * 
+   * @param index
+   *          Target index in the whole set of people to generate
+   * @param personSeed
+   *          Seed for the random person
+   * @return generated Person
+   */
+  public Person generatePerson(int index, long personSeed) {
     Person person = null;
     try {
       boolean isAlive = true;
@@ -159,9 +188,6 @@ public class Generator {
 
       do {
         List<Module> modules = Module.getModules();
-
-        // System.currentTimeMillis is not unique enough
-        long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
 
         person = new Person(personSeed);
 
@@ -225,6 +251,11 @@ public class Generator {
 
         totalGeneratedPopulation.incrementAndGet();
         
+        if (!isAlive) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+        }
+
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
