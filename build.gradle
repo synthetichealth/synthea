@@ -89,7 +89,7 @@ task graphviz(type: JavaExec) {
 task concepts(type: JavaExec) {
   description 'Create a list of simulated conceptsn'
   classpath sourceSets.main.runtimeClasspath
-  main = "Concepts"
+  main = "org.mitre.synthea.helpers.Concepts"
 }
 
 task versionTxt() {
