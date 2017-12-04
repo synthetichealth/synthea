@@ -64,7 +64,7 @@ public class Concepts {
 
     URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
     Path path = Paths.get(modulesFolder.toURI());
-    Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
+    Files.walk(path).filter(Files::isReadable).filter(Files::isRegularFile)
         .filter(f -> f.toString().endsWith(".json")).forEach(modulePath -> {
           try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
             JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
