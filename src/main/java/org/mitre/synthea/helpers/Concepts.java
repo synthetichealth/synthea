@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,22 @@ public class Concepts {
   public static void main(String[] args) throws Exception {
     System.out.println("Performing an inventory of concepts into `output/concepts.csv`...");
     
+    List<String> output = getConceptInventory();
+    
+    Path outFilePath = new File("./output/concepts.csv").toPath();
+    
+    Files.write(outFilePath, output, StandardOpenOption.CREATE);
+    
+    System.out.println("Cataloged " + output.size() + " concepts.");
+    System.out.println("Done.");
+  }
+  
+  /**
+   * Get the list of all concepts in Synthea, as a list of CSV strings.
+   * @return list of CSV strings
+   * @throws Exception if any exception occurs in reading the modules.
+   */
+  public static List<String> getConceptInventory() throws Exception {
     Table<String,String,String> concepts = HashBasedTable.create();
 
     URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
@@ -65,27 +82,24 @@ public class Concepts {
     inventoryCodes(concepts, LifecycleModule.getAllCodes());
     // QualityOfLifeModule adds no new codes to patients
     
-    int count = 0;
-    StringBuilder output = new StringBuilder();
+    List<String> conceptList = new ArrayList<>();
+    
     for (String system : concepts.rowKeySet()) {
       Map<String,String> codesInSystem = concepts.row(system);
       
       for (String code : codesInSystem.keySet()) {
         String display = codesInSystem.get(code);
         display = display.replaceAll("\\r\\n|\\r|\\n|,", " ").trim();
-        count++;
+        StringBuilder output = new StringBuilder();
         output.append(system).append(',')
               .append(code).append(',')
               .append(display).append(System.lineSeparator());
+        
+        conceptList.add(output.toString());
       }
     }
     
-    Path outFilePath = new File("./output/concepts.csv").toPath();
-    
-    Files.write(outFilePath, Collections.singleton(output.toString()), StandardOpenOption.CREATE);
-    
-    System.out.println("Cataloged " + count + " concepts.");
-    System.out.println("Done.");
+    return conceptList;
   }
   
   /**
