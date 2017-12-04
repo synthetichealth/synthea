@@ -3,14 +3,17 @@ package org.mitre.synthea.modules;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 /**
  * This is a complete, but fairly simplistic approach to synthesizing immunizations. It is encounter
@@ -127,5 +130,27 @@ public class Immunizations {
 
     // 3) see if there are any recommended doses remaining that this patient is old enough for
     return !atMonths.isEmpty() && ageInMonths >= (double) atMonths.get(0);
+  }
+
+  /**
+   * Get all of the Codes this module uses, for inventory purposes.
+   * 
+   * @return Collection of all codes and concepts this module uses
+   */
+  @SuppressWarnings( "rawtypes" )
+  public static Collection<Code> getAllCodes() {
+    List<Map> rawCodes = (List<Map>) immunizationSchedule.values().stream().map(m -> (Map)m.get("code")).collect(Collectors.toList());
+    
+    List<Code> convertedCodes = new ArrayList<Code>( rawCodes.size() );
+    
+    for (Map m : rawCodes) {
+      Code immCode = new Code(m.get("system").toString(),
+                              m.get("code").toString(), 
+                              m.get("display").toString());
+      
+      convertedCodes.add(immCode);
+    }
+
+    return convertedCodes;
   }
 }
