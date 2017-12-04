@@ -17,19 +17,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class ConceptsTest {
   private Table<String,String,String> concepts;
-  
-  /**
-   * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
-   */
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Before
   public void setup() {
