@@ -196,7 +196,6 @@ public class Generator {
 
         DeathModule.process(person, time);
 
-        Exporter.export(person, time);
         if (database != null) {
           database.store(person);
         }
@@ -217,6 +216,10 @@ public class Generator {
         count.incrementAndGet();
 
         totalGeneratedPopulation.incrementAndGet();
+        
+        // TODO - export is DESTRUCTIVE when it filters out data
+        // this means export must be the LAST THING done with the person
+        Exporter.export(person, time);
       } while (!isAlive);
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
