@@ -24,9 +24,18 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 public abstract class Logic {
   private List<String> remarks;
 
+  /**
+   * Construct a logic object from the given definitions.
+
+   * @param definition
+   *          The JSON definition of the logic
+   * @return The constructed Logic object. The returned object will be of the appropriate subclass
+   *         of Logic, based on the "condition_type" parameter in the JSON definition.
+   */
   public static Logic build(JsonObject definition) {
     try {
-      String className = Logic.class.getName() + "$" + definition.get("condition_type").getAsString().replaceAll("\\s", "");
+      String type = definition.get("condition_type").getAsString().replaceAll("\\s", "");
+      String className = Logic.class.getName() + "$" + type;
 
       Class<?> logicClass = Class.forName(className);
 
@@ -55,9 +64,20 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * Test whether the logic is true for the given person at the given time.
+   * 
+   * @param person Person to execute logic against
+   * @param time Timestamp to execute logic against
+   * @return boolean - whether or not the given condition is true or not
+   */
   public abstract boolean test(Person person, long time);
 
-  public static abstract class GroupedCondition extends Logic {
+  /**
+   * GroupedCondition is the parent class for Logic that aggregates multiple conditions.
+   * It should never be used directly in a JSON file.
+   */
+  private abstract static class GroupedCondition extends Logic {
     protected Collection<Logic> conditions;
 
     @Override
@@ -72,7 +92,12 @@ public abstract class Logic {
       }
     }
   }
-
+  
+  /**
+   * The And condition type tests that a set of sub-conditions are all true. 
+   * If all sub-conditions are true, it will return true, 
+   * but if any are false, it will return false.
+   */
   public static class And extends GroupedCondition {
     @Override
     public boolean test(Person person, long time) {
@@ -80,6 +105,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Or condition type tests that at least one of its sub-conditions is true. 
+   * If any sub-condition is true, it will return true, 
+   * but if all sub-conditions are false, it will return false.
+   */
   public static class Or extends GroupedCondition {
     @Override
     public boolean test(Person person, long time) {
@@ -87,6 +117,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Not condition type negates its sub-condition. 
+   * If the sub-condition is true, it will return false; 
+   * if the sub-condition is false, it will return true.
+   */
   public static class Not extends Logic {
     private Logic condition;
 
@@ -97,7 +132,6 @@ public abstract class Logic {
       if (definition.has("condition")) {
         this.condition = Logic.build(definition.get("condition").getAsJsonObject());
       }
-
     }
 
     @Override
@@ -106,6 +140,15 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The At Least condition type tests that a minimum number of conditions
+   * from a set of sub-conditions are true.
+   * If the minimum number or more sub-conditions are true, it will return true,
+   * but if less than the minimum are true, it will return false.
+   * (If the minimum is the same as the number of sub-conditions provided,
+   * this is equivalent to the And condition. 
+   * If the minimum is 1, this is equivalent to the Or condition.)
+   */
   public static class AtLeast extends GroupedCondition {
     private int minimum;
 
@@ -122,6 +165,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The At Most condition type tests that a maximum number of conditions
+   * from a set of sub-conditions are true. If the maximum number or fewer sub-conditions are true,
+   * it will return true, but if more than the maximum are true, it will return false.
+   */
   public static class AtMost extends GroupedCondition {
     private int maximum;
 
@@ -138,6 +186,9 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Gender condition type tests the patient's gender. (M or F)
+   */
   public static class Gender extends Logic {
     private String gender;
 
@@ -153,6 +204,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Socioeconomic Status condition type tests the patient's socioeconomic status. Socioeconomic
+   * status is based on income, education, and occupation, and is categorized in Synthea as "High",
+   * "Middle", or "Low".
+   */
   public static class SocioeconomicStatus extends Logic {
     private String category;
 
@@ -169,6 +225,10 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Race condition type tests a patient's race. Synthea supports the following races:
+   * "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other".
+   */
   public static class Race extends Logic {
     private String race;
 
@@ -185,6 +245,10 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Age condition type tests the patient's age, in a given unit. 
+   * (Ex, years for adults or months for young children)
+   */
   public static class Age extends Logic {
     private double quantity;
     private String unit;
@@ -212,13 +276,19 @@ public abstract class Logic {
           break;
         default:
           // TODO - add more unit types if we determine they are necessary
-          throw new UnsupportedOperationException("Units '" + unit + "' not currently supported in Age logic.");
+          throw new UnsupportedOperationException("Units '" + unit
+            + "' not currently supported in Age logic.");
       }
 
       return Utilities.compare(age, quantity, operator);
     }
   }
 
+  /**
+   * The Date condition type tests the current year being simulated. For example, this may be used
+   * to drive different logic depending on the suggested medications or procedures of different time
+   * periods, or model different frequency of conditions.
+   */
   public static class Date extends Logic {
     private int year;
     private String operator;
@@ -237,6 +307,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Symptom condition type tests a patient's current symptoms. Synthea tracks symptoms in order
+   * to drive a patient's encounters, on a scale of 1-100. A symptom may be tracked for multiple
+   * conditions, in these cases only the highest value is considered. See also the Symptom State.
+   */
   public static class Symptom extends Logic {
     private String symptom;
     private String operator;
@@ -257,6 +332,16 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Observation condition type tests the most recent observation of a given type against a
+   * given value. 
+   * Implementation Warnings:
+   * - Synthea does not support conversion between arbitrary units, so all observations of a given
+   *   type are expected to be made in the same units. 
+   * - The given observation must have been recorded prior to performing this logical check, 
+   *   unless the operator is is nil or is not nil. Otherwise, the GMF will raise an exception
+   *   that the observation value cannot be compared as there has been no observation made.
+   */
   public static class Observation extends Logic {
     private String operator;
     private List<Code> codes;
@@ -293,7 +378,8 @@ public abstract class Logic {
         }
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
-          observation = (HealthRecord.Observation) person.attributes.get(this.referencedByAttribute);
+          observation = 
+              (HealthRecord.Observation) person.attributes.get(this.referencedByAttribute);
         } else {
           return false;
         }
@@ -303,6 +389,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Vital Sign condition type tests a patient's current vital signs. Synthea tracks vital signs
+   * in order to drive a patient's physical condition, and are recorded in observations. See also
+   * the Symptom State.
+   */
   public static class VitalSign extends Logic {
     private org.mitre.synthea.world.concepts.VitalSign vs;
     private String operator;
@@ -325,6 +416,10 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * Parent class for logics that look up "active" things.
+   * This class should never be referenced directly.
+   */
   private abstract static class ActiveLogic extends Logic {
     protected List<Code> codes;
     protected String referencedByAttribute;
@@ -342,6 +437,15 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The Active Condition condition type tests whether a given condition is currently diagnosed and
+   * active on the patient.
+   * Future Implementation Considerations:
+   * Currently to check if a condition has been added but not diagnosed, it is possible to use the
+   * PriorState condition to check if the state has been processed. In the future it may be
+   * preferable to add a distinct "Present Condition" logical condition to clearly specify the
+   * intent of looking for a present but not diagnosed condition.
+   */
   public static class ActiveCondition extends ActiveLogic {
     @Override
     public boolean test(Person person, long time) {
@@ -361,12 +465,15 @@ public abstract class Logic {
         }
       }
 
-      throw new RuntimeException("Active Condition condition must be specified by code or attribute");
+      throw new RuntimeException("Active Condition logic must be specified by code or attribute");
     }
   }
 
+  /**
+   * The Active Medication condition type tests whether a given medication is currently prescribed
+   * and active for the patient.
+   */
   public static class ActiveMedication extends ActiveLogic {
-
     @Override
     public boolean test(Person person, long time) {
       if (this.codes != null) {
@@ -385,10 +492,14 @@ public abstract class Logic {
         }
       }
 
-      throw new RuntimeException("Active Medication condition must be specified by code or attribute");
+      throw new RuntimeException("Active Medication logic must be specified by code or attribute");
     }
   }
 
+  /**
+   * The Active CarePlan condition type tests whether a given care plan is currently prescribed and
+   * active for the patient.
+   */
   public static class ActiveCarePlan extends ActiveLogic {
     @Override
     public boolean test(Person person, long time) {
@@ -408,10 +519,13 @@ public abstract class Logic {
         }
       }
 
-      throw new RuntimeException("Active CarePlan condition must be specified by code or attribute");
+      throw new RuntimeException("Active CarePlan logic must be specified by code or attribute");
     }
   }
 
+  /**
+   * The Attribute condition type tests a named attribute on the patient entity.
+   */
   public static class Attribute extends Logic {
     private String attribute;
     private String operator;
@@ -438,6 +552,12 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The PriorState condition type tests the progression of the patient through the module, and
+   * checks if a specific state has already been processed (in other words, the state is in the
+   * module's state history). The search for the state may be limited by time or the name of another
+   * state.
+   */
   public static class PriorState extends Logic {
     private String name;
     private String since;
@@ -468,6 +588,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The True condition always returns true. 
+   * This condition is mainly used for testing purposes
+   * and is not expected to be used in any real module.
+   */
   public static class True extends Logic {
     @Override
     public boolean test(Person person, long time) {
@@ -475,6 +600,11 @@ public abstract class Logic {
     }
   }
 
+  /**
+   * The False condition always returns false.
+   * This condition is mainly used for testing purposes
+   * and is not expected to be used in any real module.
+   */
   public static class False extends Logic {
     @Override
     public boolean test(Person person, long time) {
