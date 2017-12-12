@@ -140,7 +140,13 @@ public abstract class State implements Cloneable {
     boolean exit = process(person, time);
 
     if (exit) {
-      this.exited = time;
+      // Delay state returns a special value for exited,
+      // to indicate when the delay actually completed.
+      if (this instanceof Delay) {
+        this.exited = ((Delay)this).next;
+      } else {
+        this.exited = time;
+      }
     }
 
     return exit;
@@ -212,9 +218,13 @@ public abstract class State implements Cloneable {
         person.attributes.remove(submodule.name);
         // reset person.history to this module's history
         person.history = moduleHistory;
+        // add this state to history to indicate we returned to this module
+        person.history.add(0, this);
         
         return true;
       } else {
+        // reset person.history to this module's history
+        person.history = moduleHistory;
         // the submodule is still processing
         // next time we call this state it should pick up where it left off
         return false;
@@ -277,7 +287,8 @@ public abstract class State implements Cloneable {
         quantity = exact.get("quantity").getAsDouble();
       }
     }
-
+    
+    @Override
     public Delay clone() {
       Delay clone = (Delay) super.clone();
       clone.unit = unit;
