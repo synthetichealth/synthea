@@ -1,6 +1,68 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.api.ExtensionDt;
+import ca.uhn.fhir.model.api.IDatatype;
+import ca.uhn.fhir.model.dstu2.composite.AddressDt;
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
+import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
+import ca.uhn.fhir.model.dstu2.composite.MoneyDt;
+import ca.uhn.fhir.model.dstu2.composite.NarrativeDt;
+import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
+import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
+import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
+import ca.uhn.fhir.model.dstu2.composite.TimingDt;
+import ca.uhn.fhir.model.dstu2.resource.BaseResource;
+import ca.uhn.fhir.model.dstu2.resource.Bundle;
+import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+import ca.uhn.fhir.model.dstu2.resource.CarePlan.Activity;
+import ca.uhn.fhir.model.dstu2.resource.CarePlan.ActivityDetail;
+import ca.uhn.fhir.model.dstu2.resource.Condition;
+import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
+import ca.uhn.fhir.model.dstu2.resource.Encounter.Hospitalization;
+import ca.uhn.fhir.model.dstu2.resource.Immunization;
+import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
+import ca.uhn.fhir.model.dstu2.resource.MedicationOrder.DosageInstruction;
+import ca.uhn.fhir.model.dstu2.resource.Patient;
+import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
+import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
+import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
+import ca.uhn.fhir.model.dstu2.valueset.CarePlanActivityStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.CarePlanStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ClaimTypeEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ConditionClinicalStatusCodesEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
+import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
+import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
+import ca.uhn.fhir.model.dstu2.valueset.GoalStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.IdentifierTypeCodesEnum;
+import ca.uhn.fhir.model.dstu2.valueset.MaritalStatusCodesEnum;
+import ca.uhn.fhir.model.dstu2.valueset.MedicationOrderStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.NameUseEnum;
+import ca.uhn.fhir.model.dstu2.valueset.NarrativeStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ProcedureStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
+import ca.uhn.fhir.model.dstu2.valueset.UseEnum;
+import ca.uhn.fhir.model.primitive.BooleanDt;
+import ca.uhn.fhir.model.primitive.CodeDt;
+import ca.uhn.fhir.model.primitive.DateDt;
+import ca.uhn.fhir.model.primitive.DateTimeDt;
+import ca.uhn.fhir.model.primitive.DecimalDt;
+import ca.uhn.fhir.model.primitive.IdDt;
+import ca.uhn.fhir.model.primitive.InstantDt;
+import ca.uhn.fhir.model.primitive.IntegerDt;
+import ca.uhn.fhir.model.primitive.PositiveIntDt;
+import ca.uhn.fhir.model.primitive.StringDt;
+import ca.uhn.fhir.model.primitive.XhtmlDt;
+import ca.uhn.fhir.util.XmlUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -15,62 +77,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.dstu3.model.Address;
-import org.hl7.fhir.dstu3.model.BooleanType;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.dstu3.model.Bundle.BundleType;
-import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityComponent;
-import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityDetailComponent;
-import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
-import org.hl7.fhir.dstu3.model.CarePlan.CarePlanIntent;
-import org.hl7.fhir.dstu3.model.CarePlan.CarePlanStatus;
-import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
-import org.hl7.fhir.dstu3.model.Claim.ItemComponent;
-import org.hl7.fhir.dstu3.model.Claim.ProcedureComponent;
-import org.hl7.fhir.dstu3.model.CodeType;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Condition;
-import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
-import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
-import org.hl7.fhir.dstu3.model.ContactPoint;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.DateType;
-import org.hl7.fhir.dstu3.model.DecimalType;
-import org.hl7.fhir.dstu3.model.DiagnosticReport;
-import org.hl7.fhir.dstu3.model.DiagnosticReport.DiagnosticReportStatus;
-import org.hl7.fhir.dstu3.model.Dosage;
-import org.hl7.fhir.dstu3.model.Encounter.EncounterHospitalizationComponent;
-import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
-import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
-import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
-import org.hl7.fhir.dstu3.model.HumanName;
-import org.hl7.fhir.dstu3.model.Immunization;
-import org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus;
-import org.hl7.fhir.dstu3.model.IntegerType;
-import org.hl7.fhir.dstu3.model.MedicationRequest;
-import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent;
-import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus;
-import org.hl7.fhir.dstu3.model.Money;
 import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
-import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.PositiveIntType;
-import org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus;
-import org.hl7.fhir.dstu3.model.Quantity;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Resource;
-import org.hl7.fhir.dstu3.model.SimpleQuantity;
-import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
-import org.hl7.fhir.dstu3.model.Timing;
-import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
-import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Utilities;
@@ -87,17 +95,16 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
-public class FhirStu3 {
+public class FhirDstu2 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
   // per-application, not per-record
-  private static final FhirContext FHIR_CTX = FhirContext.forDstu3();
+  private static final FhirContext FHIR_CTX = FhirContext.forDstu2();
 
   private static final String SNOMED_URI = "http://snomed.info/sct";
   private static final String LOINC_URI = "http://loinc.org";
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
-  private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/";
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
 
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -144,12 +151,12 @@ public class FhirStu3 {
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
-    bundle.setType(BundleType.COLLECTION);
+    bundle.setType(BundleTypeEnum.COLLECTION);
 
-    BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
+    Entry personEntry = basicInfo(person, bundle, stopTime);
 
     for (Encounter encounter : person.record.encounters) {
-      BundleEntryComponent encounterEntry = encounter(personEntry, bundle, encounter);
+      Entry encounterEntry = encounter(personEntry, bundle, encounter);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personEntry, bundle, encounterEntry, condition);
@@ -200,43 +207,32 @@ public class FhirStu3 {
    *          Time the simulation ended
    * @return The created Entry
    */
-  private static BundleEntryComponent basicInfo(Person person, Bundle bundle, long stopTime) {
+  private static Entry basicInfo(Person person, Bundle bundle, long stopTime) {
     Patient patientResource = new Patient();
 
     patientResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) person.attributes.get(Person.ID));
 
-    Code mrnCode = new Code("http://hl7.org/fhir/v2/0203", "MR", "Medical Record Number");
     patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(mrnCode, "http://hl7.org/fhir/v2/0203"))
+        .setType(IdentifierTypeCodesEnum.MR)
         .setSystem("http://hospital.smarthealthit.org")
         .setValue((String) person.attributes.get(Person.ID));
 
-    Code ssnCode = new Code("http://hl7.org/fhir/identifier-type", "SB", "Social Security Number");
     patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(ssnCode, "http://hl7.org/fhir/identifier-type"))
+        .setType(IdentifierTypeCodesEnum.SOCIAL_BENEFICIARY_IDENTIFIER)
         .setSystem("http://hl7.org/fhir/sid/us-ssn")
         .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
 
     if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://hl7.org/fhir/v2/0203", "DL", "Driver's License");
       patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(driversCode, "http://hl7.org/fhir/v2/0203"))
+          .setType(IdentifierTypeCodesEnum.DL)
           .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
     }
 
-    if (person.attributes.get(Person.IDENTIFIER_PASSPORT) != null) {
-      Code passportCode = new Code("http://hl7.org/fhir/v2/0203", "PPN", "Passport Number");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(passportCode, "http://hl7.org/fhir/v2/0203"))
-          .setSystem(SHR_EXT + "passportNumber")
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
-    }
-
     // We do not yet account for mixed race
-    Extension raceExtension = new Extension(
-        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race");
+    ExtensionDt raceExtension = new ExtensionDt();
+    raceExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-race");
     String race = (String) person.attributes.get(Person.RACE);
 
     String raceDisplay;
@@ -261,25 +257,27 @@ public class FhirStu3 {
     String raceNum = (String) raceEthnicityCodes.get(race);
 
     if (race != "hispanic") {
-      Extension raceCodingExtension = new Extension("ombCategory");
-      Coding raceCoding = new Coding();
+      ExtensionDt raceCodingExtension = new ExtensionDt();
+      raceCodingExtension.setUrl("ombCategory");
+      CodingDt raceCoding = new CodingDt();
       raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
       raceCoding.setCode(raceNum);
       raceCoding.setDisplay(raceDisplay);
       raceCodingExtension.setValue(raceCoding);
-      raceExtension.addExtension(raceCodingExtension);
+      raceExtension.addUndeclaredExtension(raceCodingExtension);
     }
 
-    Extension raceTextExtension = new Extension("text");
-    raceTextExtension.setValue(new StringType(raceDisplay));
+    ExtensionDt raceTextExtension = new ExtensionDt();
+    raceTextExtension.setUrl("text");
+    raceTextExtension.setValue(new StringDt(raceDisplay));
 
-    raceExtension.addExtension(raceTextExtension);
+    raceExtension.addUndeclaredExtension(raceTextExtension);
 
-    patientResource.addExtension(raceExtension);
+    patientResource.addUndeclaredExtension(raceExtension);
 
     // We do not yet account for mixed ethnicity
-    Extension ethnicityExtension = new Extension(
-        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity");
+    ExtensionDt ethnicityExtension = new ExtensionDt();
+    ethnicityExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity");
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
     String ethnicityDisplay;
@@ -293,36 +291,41 @@ public class FhirStu3 {
 
     String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);
 
-    Extension ethnicityCodingExtension = new Extension("ombCategory");
-    Coding ethnicityCoding = new Coding();
+    ExtensionDt ethnicityCodingExtension = new ExtensionDt();
+    ethnicityCodingExtension.setUrl("ombCategory");
+    CodingDt ethnicityCoding = new CodingDt();
     ethnicityCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
     ethnicityCoding.setCode(ethnicityNum);
     ethnicityCoding.setDisplay(ethnicityDisplay);
     ethnicityCodingExtension.setValue(ethnicityCoding);
 
-    ethnicityExtension.addExtension(ethnicityCodingExtension);
+    ethnicityExtension.addUndeclaredExtension(ethnicityCodingExtension);
 
-    Extension ethnicityTextExtension = new Extension("text");
-    ethnicityTextExtension.setValue(new StringType(ethnicityDisplay));
+    ExtensionDt ethnicityTextExtension = new ExtensionDt();
+    ethnicityTextExtension.setUrl("text");
+    ethnicityTextExtension.setValue(new StringDt(ethnicityDisplay));
 
-    ethnicityExtension.addExtension(ethnicityTextExtension);
+    ethnicityExtension.addUndeclaredExtension(ethnicityTextExtension);
 
-    patientResource.addExtension(ethnicityExtension);
+    patientResource.addUndeclaredExtension(ethnicityExtension);
 
     String firstLanguage = (String) person.attributes.get(Person.FIRST_LANGUAGE);
     Map languageMap = (Map) languageLookup.get(firstLanguage);
     Code languageCode = new Code((String) languageMap.get("system"),
         (String) languageMap.get("code"), (String) languageMap.get("display"));
-    List<PatientCommunicationComponent> communication = 
-        new ArrayList<PatientCommunicationComponent>();
-    communication.add(new PatientCommunicationComponent(
-        mapCodeToCodeableConcept(languageCode, (String) languageMap.get("system"))));
+    List<Communication> communication = new ArrayList<Communication>();
+    Communication language = new Communication();
+    language
+        .setLanguage(mapCodeToCodeableConcept(languageCode, (String) languageMap.get("system")));
+    communication.add(language);
     patientResource.setCommunication(communication);
 
-    HumanName name = patientResource.addName();
-    name.setUse(HumanName.NameUse.OFFICIAL);
+    HumanNameDt name = patientResource.addName();
+    name.setUse(NameUseEnum.OFFICIAL);
     name.addGiven((String) person.attributes.get(Person.FIRST_NAME));
-    name.setFamily((String) person.attributes.get(Person.LAST_NAME));
+    List<StringDt> officialFamilyNames = new ArrayList<StringDt>();
+    officialFamilyNames.add(new StringDt((String) person.attributes.get(Person.LAST_NAME)));
+    name.setFamily(officialFamilyNames);
     if (person.attributes.get(Person.NAME_PREFIX) != null) {
       name.addPrefix((String) person.attributes.get(Person.NAME_PREFIX));
     }
@@ -330,10 +333,12 @@ public class FhirStu3 {
       name.addSuffix((String) person.attributes.get(Person.NAME_SUFFIX));
     }
     if (person.attributes.get(Person.MAIDEN_NAME) != null) {
-      HumanName maidenName = patientResource.addName();
-      maidenName.setUse(HumanName.NameUse.MAIDEN);
+      HumanNameDt maidenName = patientResource.addName();
+      maidenName.setUse(NameUseEnum.MAIDEN);
       maidenName.addGiven((String) person.attributes.get(Person.FIRST_NAME));
-      maidenName.setFamily((String) person.attributes.get(Person.MAIDEN_NAME));
+      List<StringDt> maidenFamilyNames = new ArrayList<StringDt>();
+      maidenFamilyNames.add(new StringDt((String) person.attributes.get(Person.MAIDEN_NAME)));
+      maidenName.setFamily(maidenFamilyNames);
       if (person.attributes.get(Person.NAME_PREFIX) != null) {
         maidenName.addPrefix((String) person.attributes.get(Person.NAME_PREFIX));
       }
@@ -342,70 +347,71 @@ public class FhirStu3 {
       }
     }
 
-    Extension birthSexExtension = new Extension(
-        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
+    ExtensionDt birthSexExtension = new ExtensionDt();
+    birthSexExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
     if (person.attributes.get(Person.GENDER).equals("M")) {
-      patientResource.setGender(AdministrativeGender.MALE);
-      birthSexExtension.setValue(new CodeType("M"));
+      patientResource.setGender(AdministrativeGenderEnum.MALE);
+      birthSexExtension.setValue(new CodeDt("M"));
     } else if (person.attributes.get(Person.GENDER).equals("F")) {
-      patientResource.setGender(AdministrativeGender.FEMALE);
-      birthSexExtension.setValue(new CodeType("F"));
+      patientResource.setGender(AdministrativeGenderEnum.FEMALE);
+      birthSexExtension.setValue(new CodeDt("F"));
     }
-    patientResource.addExtension(birthSexExtension);
+    patientResource.addUndeclaredExtension(birthSexExtension);
 
-    Extension mothersMaidenNameExtension = new Extension(
-        "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
+    ExtensionDt mothersMaidenNameExtension = new ExtensionDt();
+    mothersMaidenNameExtension
+        .setUrl("http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
     String mothersMaidenName = (String) person.attributes.get(Person.NAME_MOTHER);
-    mothersMaidenNameExtension.setValue(new StringType(mothersMaidenName));
-    patientResource.addExtension(mothersMaidenNameExtension);
+    mothersMaidenNameExtension.setValue(new StringDt(mothersMaidenName));
+    patientResource.addUndeclaredExtension(mothersMaidenNameExtension);
 
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    patientResource.setBirthDate(new Date(birthdate));
+    patientResource.setBirthDate(new DateDt(new Date(birthdate)));
 
     Point coord = (Point) person.attributes.get(Person.COORDINATE);
 
-    Address addrResource = patientResource.addAddress();
+    AddressDt addrResource = patientResource.addAddress();
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
         .setState((String) person.attributes.get(Person.STATE)).setCountry("US");
 
-    Address birthplace = new Address();
+    ExtensionDt geolocationExtension = new ExtensionDt();
+    geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+    ExtensionDt latitudeExtension = new ExtensionDt();
+    ExtensionDt longitudeExtension = new ExtensionDt();
+    latitudeExtension.setUrl("latitude");
+    longitudeExtension.setUrl("longitude");
+    latitudeExtension.setValue(new DecimalDt(coord.getY()));
+    longitudeExtension.setValue(new DecimalDt(coord.getX()));
+    geolocationExtension.addUndeclaredExtension(latitudeExtension);
+    geolocationExtension.addUndeclaredExtension(longitudeExtension);
+    addrResource.addUndeclaredExtension(geolocationExtension);
+
+    AddressDt birthplace = new AddressDt();
     birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState("MA")
         .setCountry("US");
-    Extension birthplaceExtension = new Extension(
-        "http://hl7.org/fhir/StructureDefinition/birthPlace");
+    ExtensionDt birthplaceExtension = new ExtensionDt();
+    birthplaceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
-    patientResource.addExtension(birthplaceExtension);
+    patientResource.addUndeclaredExtension(birthplaceExtension);
 
     if (person.attributes.get(Person.MULTIPLE_BIRTH_STATUS) != null) {
       patientResource.setMultipleBirth(
-          new IntegerType((int) person.attributes.get(Person.MULTIPLE_BIRTH_STATUS)));
+          new IntegerDt((int) person.attributes.get(Person.MULTIPLE_BIRTH_STATUS)));
     } else {
-      patientResource.setMultipleBirth(new BooleanType(false));
+      patientResource.setMultipleBirth(new BooleanDt(false));
     }
 
-    patientResource.addTelecom().setSystem(ContactPoint.ContactPointSystem.PHONE)
-        .setUse(ContactPoint.ContactPointUse.HOME)
-        .setValue((String) person.attributes.get(Person.TELECOM));
+    patientResource.addTelecom().setSystem(ContactPointSystemEnum.PHONE)
+        .setUse(ContactPointUseEnum.HOME).setValue((String) person.attributes.get(Person.TELECOM));
 
     String maritalStatus = ((String) person.attributes.get(Person.MARITAL_STATUS));
     if (maritalStatus != null) {
-      Code maritalStatusCode = new Code("http://hl7.org/fhir/v3/MaritalStatus", maritalStatus,
-          maritalStatus);
-      patientResource.setMaritalStatus(
-          mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
+      patientResource.setMaritalStatus(MaritalStatusCodesEnum.forCode(maritalStatus.toUpperCase()));
     } else {
-      Code maritalStatusCode = new Code("http://hl7.org/fhir/v3/MaritalStatus", "S",
-          "Never Married");
-      patientResource.setMaritalStatus(
-          mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
+      patientResource.setMaritalStatus(MaritalStatusCodesEnum.S);
     }
-
-    Extension geolocation = addrResource.addExtension();
-    geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
-    geolocation.addExtension("latitude", new DecimalType(coord.getY()));
-    geolocation.addExtension("longitude", new DecimalType(coord.getX()));
 
     if (!person.alive(stopTime)) {
       patientResource.setDeceased(convertFhirDateTime(person.record.death, true));
@@ -415,23 +421,25 @@ public class FhirStu3 {
         + "Version identifier: " + Utilities.SYNTHEA_VERSION
         + " . " + "Person seed: " + person.seed; // TODO
 
-    patientResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
-        .setDiv(new XhtmlNode(NodeType.Element).setValue(generatedBySynthea)));
+    patientResource.setText(new NarrativeDt(
+        new XhtmlDt(generatedBySynthea), NarrativeStatusEnum.GENERATED));
 
     // DALY and QALY values
     // we only write the last(current) one to the patient record
     Double dalyValue = (Double) person.attributes.get("most-recent-daly");
     Double qalyValue = (Double) person.attributes.get("most-recent-qaly");
     if (dalyValue != null) {
-      Extension dalyExtension = new Extension(SYNTHEA_EXT + "disability-adjusted-life-years");
-      DecimalType daly = new DecimalType(dalyValue);
+      ExtensionDt dalyExtension = new ExtensionDt();
+      dalyExtension.setUrl(SYNTHEA_EXT + "disability-adjusted-life-years");
+      DecimalDt daly = new DecimalDt(dalyValue);
       dalyExtension.setValue(daly);
-      patientResource.addExtension(dalyExtension);
+      patientResource.addUndeclaredExtension(dalyExtension);
 
-      Extension qalyExtension = new Extension(SYNTHEA_EXT + "quality-adjusted-life-years");
-      DecimalType qaly = new DecimalType(qalyValue);
+      ExtensionDt qalyExtension = new ExtensionDt();
+      qalyExtension.setUrl(SYNTHEA_EXT + "quality-adjusted-life-years");
+      DecimalDt qaly = new DecimalDt(qalyValue);
       qalyExtension.setValue(qaly);
-      patientResource.addExtension(qalyExtension);
+      patientResource.addUndeclaredExtension(qalyExtension);
     }
 
     return newEntry(bundle, patientResource);
@@ -448,28 +456,26 @@ public class FhirStu3 {
    *          The current Encounter
    * @return The added Entry
    */
-  private static BundleEntryComponent encounter(BundleEntryComponent personEntry, Bundle bundle,
-      Encounter encounter) {
-    org.hl7.fhir.dstu3.model.Encounter encounterResource = new org.hl7.fhir.dstu3.model.Encounter();
+  private static Entry encounter(Entry personEntry, Bundle bundle, Encounter encounter) {
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
+        new ca.uhn.fhir.model.dstu2.resource.Encounter();
 
-    encounterResource.setSubject(new Reference(personEntry.getFullUrl()));
-    encounterResource.setStatus(EncounterStatus.FINISHED);
+    encounterResource.setStatus(EncounterStateEnum.FINISHED);
     if (encounter.codes.isEmpty()) {
       // wellness encounter
       encounterResource.addType().addCoding().setCode("185349003")
           .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
-
     } else {
       Code code = encounter.codes.get(0);
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
 
-    encounterResource.setClass_(new Coding().setCode(encounter.type));
+    encounterResource.setClassElement(EncounterClassEnum.forCode(encounter.type));
     long encounterEnd = encounter.stop > 0 ? encounter.stop
         : encounter.start + TimeUnit.MINUTES.toMillis(15);
 
-    encounterResource
-        .setPeriod(new Period().setStart(new Date(encounter.start)).setEnd(new Date(encounterEnd)));
+    encounterResource.setPeriod(new PeriodDt().setStart(new DateTimeDt(new Date(encounter.start)))
+        .setEnd(new DateTimeDt(new Date(encounterEnd))));
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
@@ -479,8 +485,8 @@ public class FhirStu3 {
     if (encounter.provider != null) {
       String providerFullUrl = null;
 
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if ((entry.getResource().fhirType().equals("Organization"))
+      for (Entry entry : bundle.getEntry()) {
+        if ((entry.getResource().getResourceName().equals("Organization"))
             && (entry.getResource().getId().equals(encounter.provider.getResourceID()))) {
           providerFullUrl = entry.getFullUrl();
           break;
@@ -488,37 +494,38 @@ public class FhirStu3 {
       }
 
       if (providerFullUrl != null) {
-        encounterResource.setServiceProvider(new Reference(providerFullUrl));
+        encounterResource.setServiceProvider(new ResourceReferenceDt(providerFullUrl));
       } else {
-        BundleEntryComponent providerOrganization = provider(bundle, encounter.provider);
-        encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
+        Entry providerOrganization = provider(bundle, encounter.provider);
+        encounterResource
+            .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
       Patient patient = (Patient) personEntry.getResource();
-      List<Reference> generalPractitioner = patient.getGeneralPractitioner();
+      List<ResourceReferenceDt> careProvider = patient.getCareProvider();
 
-      if (generalPractitioner.size() > 0) {
-        String generalPractitionerReference = (String) patient.getGeneralPractitioner().get(0)
-            .getReference();
+      if (careProvider.size() > 0) {
+        IdDt generalPractitionerReference = patient.getCareProvider().get(0).getReference();
 
-        for (BundleEntryComponent entry : bundle.getEntry()) {
-          if ((entry.getResource().fhirType().equals("Organization"))
+        for (Entry entry : bundle.getEntry()) {
+          if ((entry.getResource().getResourceName().equals("Organization"))
               && generalPractitionerReference.equals("urn:uuid:" + entry.getResource().getId())) {
-            encounterResource.setServiceProvider(new Reference(generalPractitionerReference));
+            encounterResource
+                .setServiceProvider(new ResourceReferenceDt(generalPractitionerReference));
           }
         }
       }
     }
 
     if (encounter.discharge != null) {
-      EncounterHospitalizationComponent hospitalization = new EncounterHospitalizationComponent();
+      Hospitalization hospitalization = new Hospitalization();
       Code dischargeDisposition = new Code(DISCHARGE_URI, encounter.discharge.code,
           encounter.discharge.display);
       hospitalization
           .setDischargeDisposition(mapCodeToCodeableConcept(dischargeDisposition, DISCHARGE_URI));
       encounterResource.setHospitalization(hospitalization);
     }
-  
+
     return newEntry(bundle, encounterResource);
   }
 
@@ -537,34 +544,24 @@ public class FhirStu3 {
    *          The Entry for the Medication object, previously created
    * @return the added Entry
    */
-  private static BundleEntryComponent medicationClaim(BundleEntryComponent personEntry,
-      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim,
-      BundleEntryComponent medicationEntry) {
-    org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
-    org.hl7.fhir.dstu3.model.Encounter encounterResource = 
-        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
+  private static Entry medicationClaim(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Claim claim, Entry medicationEntry) {
+    ca.uhn.fhir.model.dstu2.resource.Claim claimResource =
+        new ca.uhn.fhir.model.dstu2.resource.Claim();
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
+        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry
+        .getResource();
 
-    claimResource.setStatus(ClaimStatus.ACTIVE);
-    claimResource.setUse(org.hl7.fhir.dstu3.model.Claim.Use.COMPLETE);
+    // assume institutional claim
+    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL);
+    
+    claimResource.setUse(UseEnum.COMPLETE);
 
-    // duration of encounter
-    claimResource.setBillablePeriod(encounterResource.getPeriod());
-
-    claimResource.setPatient(new Reference(personEntry.getFullUrl()));
+    claimResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     claimResource.setOrganization(encounterResource.getServiceProvider());
 
-    // add item for encounter
-    claimResource.addItem(new org.hl7.fhir.dstu3.model.Claim.ItemComponent(new PositiveIntType(1))
-        .addEncounter(new Reference(encounterEntry.getFullUrl())));
-
     // add prescription.
-    claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
-
-    Money moneyResource = new Money();
-    moneyResource.setValue(claim.total());
-    moneyResource.setCode("USD");
-    moneyResource.setSystem("urn:iso:std:iso:4217");
-    claimResource.setTotal(moneyResource);
+    claimResource.setPrescription(new ResourceReferenceDt(medicationEntry.getFullUrl()));
 
     return newEntry(bundle, claimResource);
   }
@@ -582,72 +579,94 @@ public class FhirStu3 {
    *          the Claim object
    * @return the added Entry
    */
-  private static BundleEntryComponent encounterClaim(BundleEntryComponent personEntry,
-      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
-    org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
-    org.hl7.fhir.dstu3.model.Encounter encounterResource = 
-        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
-    claimResource.setStatus(ClaimStatus.ACTIVE);
-    claimResource.setUse(org.hl7.fhir.dstu3.model.Claim.Use.COMPLETE);
+  private static Entry encounterClaim(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Claim claim) {
+    ca.uhn.fhir.model.dstu2.resource.Claim claimResource =
+        new ca.uhn.fhir.model.dstu2.resource.Claim();
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
+        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry
+        .getResource();
 
-    // duration of encounter
-    claimResource.setBillablePeriod(encounterResource.getPeriod());
+    // assume institutional claim
+    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL);
 
-    claimResource.setPatient(new Reference(personEntry.getFullUrl()));
+    claimResource.setUse(UseEnum.COMPLETE);
+
+    claimResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     claimResource.setOrganization(encounterResource.getServiceProvider());
-
-    // add item for encounter
-    claimResource.addItem(new ItemComponent(new PositiveIntType(1))
-        .addEncounter(new Reference(encounterEntry.getFullUrl())));
 
     int itemSequence = 2;
     int conditionSequence = 1;
-    int procedureSequence = 1;
     for (ClaimItem item : claim.items) {
       if (item.entry instanceof Procedure) {
-        Type procedureReference = new Reference(item.entry.fullUrl);
-        ProcedureComponent claimProcedure = new ProcedureComponent(
-            new PositiveIntType(procedureSequence), procedureReference);
-        claimResource.addProcedure(claimProcedure);
-
         // update claimItems list
-        ItemComponent procedureItem = new ItemComponent(new PositiveIntType(itemSequence));
-        procedureItem.addProcedureLinkId(procedureSequence);
+        ca.uhn.fhir.model.dstu2.resource.Claim.Item procedureItem =
+            new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
+        procedureItem.setSequence(new PositiveIntDt(itemSequence));
 
         // calculate cost of procedure based on rvu values for a facility
-        Money moneyResource = new Money();
+        MoneyDt moneyResource = new MoneyDt();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
         moneyResource.setValue(item.cost());
         procedureItem.setNet(moneyResource);
+        
+        // assume item type is clinical service invoice
+        CodingDt itemType = new CodingDt();
+        itemType.setSystem("http://hl7.org/fhir/v3/ActCode")
+            .setCode("CSINV")
+            .setDisplay("clinical service invoice");
+        procedureItem.setType(itemType);
+        
+        // assume item service is expense
+        CodingDt itemService = new CodingDt();
+        itemService.setSystem("http://hl7.org/fhir/ex-USCLS")
+            .setCode("99555")
+            .setDisplay("Expense");
+        procedureItem.setService(itemService);
+        
         claimResource.addItem(procedureItem);
 
-        procedureSequence++;
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
-        Reference diagnosisReference = new Reference(item.entry.fullUrl);
-        org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diagnosisComponent = 
-            new org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent(
-                new PositiveIntType(conditionSequence), diagnosisReference);
+        ca.uhn.fhir.model.dstu2.resource.Claim.Diagnosis diagnosisComponent =
+            new ca.uhn.fhir.model.dstu2.resource.Claim.Diagnosis();
+        diagnosisComponent.setSequence(new PositiveIntDt(conditionSequence));
+        if (item.entry.codes.size() > 0) {
+          // use first code
+          diagnosisComponent.setDiagnosis(
+              new CodingDt(item.entry.codes.get(0).system, item.entry.codes.get(0).code));
+        }
         claimResource.addDiagnosis(diagnosisComponent);
 
         // update claimItems with diagnosis
-        ItemComponent diagnosisItem = new ItemComponent(new PositiveIntType(itemSequence));
+        ca.uhn.fhir.model.dstu2.resource.Claim.Item diagnosisItem =
+            new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
+        diagnosisItem.setSequence(new PositiveIntDt(itemSequence));
         diagnosisItem.addDiagnosisLinkId(conditionSequence);
+        
+        // assume item type is clinical service invoice
+        CodingDt itemType = new CodingDt();
+        itemType.setSystem("http://hl7.org/fhir/v3/ActCode")
+            .setCode("CSINV")
+            .setDisplay("clinical service invoice");
+        diagnosisItem.setType(itemType);
+        
+        // assume item service is expense
+        CodingDt itemService = new CodingDt();
+        itemService.setSystem("http://hl7.org/fhir/ex-USCLS")
+            .setCode("99555")
+            .setDisplay("Expense");
+        diagnosisItem.setService(itemService);
+        
         claimResource.addItem(diagnosisItem);
 
         conditionSequence++;
       }
       itemSequence++;
     }
-
-    Money moneyResource = new Money();
-    moneyResource.setCode("USD");
-    moneyResource.setSystem("urn:iso:std:iso:4217");
-    moneyResource.setValue(claim.total());
-    claimResource.setTotal(moneyResource);
-
+    
     return newEntry(bundle, claimResource);
   }
 
@@ -664,28 +683,28 @@ public class FhirStu3 {
    *          The Condition
    * @return The added Entry
    */
-  private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, HealthRecord.Entry condition) {
+  private static Entry condition(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
 
-    conditionResource.setSubject(new Reference(personEntry.getFullUrl()));
-    conditionResource.setContext(new Reference(encounterEntry.getFullUrl()));
+    conditionResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+    conditionResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
 
     Code code = condition.codes.get(0);
     conditionResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
-    conditionResource.setVerificationStatus(ConditionVerificationStatus.CONFIRMED);
-    conditionResource.setClinicalStatus(ConditionClinicalStatus.ACTIVE);
+    conditionResource.setVerificationStatus(ConditionVerificationStatusEnum.CONFIRMED);
+    conditionResource.setClinicalStatus(ConditionClinicalStatusCodesEnum.ACTIVE);
 
     conditionResource.setOnset(convertFhirDateTime(condition.start, true));
-    conditionResource.setAssertedDate(new Date(condition.start));
+    conditionResource.setDateRecorded(new DateDt(new Date(condition.start)));
 
     if (condition.stop > 0) {
       conditionResource.setAbatement(convertFhirDateTime(condition.stop, true));
-      conditionResource.setClinicalStatus(ConditionClinicalStatus.RESOLVED);
+      conditionResource.setClinicalStatus(ConditionClinicalStatusCodesEnum.RESOLVED);
     }
 
-    BundleEntryComponent conditionEntry = newEntry(bundle, conditionResource);
+    Entry conditionEntry = newEntry(bundle, conditionResource);
 
     condition.fullUrl = conditionEntry.getFullUrl();
 
@@ -705,32 +724,34 @@ public class FhirStu3 {
    *          The Observation
    * @return The added Entry
    */
-  private static BundleEntryComponent observation(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, Observation observation) {
-    org.hl7.fhir.dstu3.model.Observation observationResource = 
-        new org.hl7.fhir.dstu3.model.Observation();
+  private static Entry observation(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Observation observation) {
+    ca.uhn.fhir.model.dstu2.resource.Observation observationResource =
+        new ca.uhn.fhir.model.dstu2.resource.Observation();
 
-    observationResource.setSubject(new Reference(personEntry.getFullUrl()));
-    observationResource.setContext(new Reference(encounterEntry.getFullUrl()));
+    observationResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
+    observationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
 
-    observationResource.setStatus(ObservationStatus.FINAL);
+    observationResource.setStatus(ObservationStatusEnum.FINAL);
 
     Code code = observation.codes.get(0);
     observationResource.setCode(mapCodeToCodeableConcept(code, LOINC_URI));
 
-    observationResource.addCategory().addCoding().setCode(observation.category)
-        .setSystem("http://hl7.org/fhir/observation-category").setDisplay(observation.category);
+    Code category = new Code("http://hl7.org/fhir/observation-category", observation.category,
+        observation.category);
+    observationResource.setCategory(
+        mapCodeToCodeableConcept(category, "http://hl7.org/fhir/observation-category"));
 
-    Type value = null;
+    IDatatype value = null;
     if (observation.value instanceof Condition) {
       Code conditionCode = ((HealthRecord.Entry) observation.value).codes.get(0);
       value = mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
     } else if (observation.value instanceof Code) {
       value = mapCodeToCodeableConcept((Code) observation.value, SNOMED_URI);
     } else if (observation.value instanceof String) {
-      value = new StringType((String) observation.value);
+      value = new StringDt((String) observation.value);
     } else if (observation.value instanceof Number) {
-      value = new Quantity().setValue(((Number) observation.value).doubleValue())
+      value = new QuantityDt().setValue(((Number) observation.value).doubleValue())
           .setCode(observation.unit).setSystem("http://unitsofmeasure.org/")
           .setUnit(observation.unit);
     } else if (observation.value != null) {
@@ -743,9 +764,9 @@ public class FhirStu3 {
     }
 
     observationResource.setEffective(convertFhirDateTime(observation.start, true));
-    observationResource.setIssued(new Date(observation.start));
+    observationResource.setIssued(new InstantDt(new Date(observation.start)));
 
-    BundleEntryComponent entry = newEntry(bundle, observationResource);
+    Entry entry = newEntry(bundle, observationResource);
     observation.fullUrl = entry.getFullUrl();
     return entry;
   }
@@ -763,13 +784,14 @@ public class FhirStu3 {
    *          The Procedure
    * @return The added Entry
    */
-  private static BundleEntryComponent procedure(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, Procedure procedure) {
-    org.hl7.fhir.dstu3.model.Procedure procedureResource = new org.hl7.fhir.dstu3.model.Procedure();
+  private static Entry procedure(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Procedure procedure) {
+    ca.uhn.fhir.model.dstu2.resource.Procedure procedureResource =
+        new ca.uhn.fhir.model.dstu2.resource.Procedure();
 
-    procedureResource.setStatus(ProcedureStatus.COMPLETED);
-    procedureResource.setSubject(new Reference(personEntry.getFullUrl()));
-    procedureResource.setContext(new Reference(encounterEntry.getFullUrl()));
+    procedureResource.setStatus(ProcedureStatusEnum.COMPLETED);
+    procedureResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
+    procedureResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
 
     Code code = procedure.codes.get(0);
     procedureResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
@@ -777,42 +799,42 @@ public class FhirStu3 {
     if (procedure.stop > 0L) {
       Date startDate = new Date(procedure.start);
       Date endDate = new Date(procedure.stop);
-      procedureResource.setPerformed(new Period().setStart(startDate).setEnd(endDate));
+      procedureResource.setPerformed(
+          new PeriodDt().setStart(new DateTimeDt(startDate)).setEnd(new DateTimeDt(endDate)));
     } else {
       procedureResource.setPerformed(convertFhirDateTime(procedure.start, true));
     }
-    
+
     if (!procedure.reasons.isEmpty()) {
       Code reason = procedure.reasons.get(0); // Only one element in list
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
+      for (Entry entry : bundle.getEntry()) {
+        if (entry.getResource().getResourceName().equals("Condition")) {
           Condition condition = (Condition) entry.getResource();
-          Coding coding = condition.getCode().getCoding().get(0); // Only one element in list
+          CodingDt coding = condition.getCode().getCoding().get(0); // Only one element in list
           if (reason.code.equals(coding.getCode())) {
-            procedureResource.addReasonReference().setReference(entry.getFullUrl())
-                .setDisplay(reason.display);
+            procedureResource.setReason(new ResourceReferenceDt(entry.getFullUrl()));
           }
         }
       }
     }
 
-    BundleEntryComponent procedureEntry = newEntry(bundle, procedureResource);
+    Entry procedureEntry = newEntry(bundle, procedureResource);
 
     procedure.fullUrl = procedureEntry.getFullUrl();
 
     return procedureEntry;
   }
 
-  private static BundleEntryComponent immunization(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, HealthRecord.Entry immunization) {
+  private static Entry immunization(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      HealthRecord.Entry immunization) {
     Immunization immResource = new Immunization();
-    immResource.setStatus(ImmunizationStatus.COMPLETED);
-    immResource.setDate(new Date(immunization.start));
+    immResource.setStatus("completed");
+    immResource.setDate(new DateTimeDt(new Date(immunization.start)));
     immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0), CVX_URI));
-    immResource.setNotGiven(false);
-    immResource.setPrimarySource(true);
-    immResource.setPatient(new Reference(personEntry.getFullUrl()));
-    immResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    immResource.setReported(new BooleanDt(false));
+    immResource.setWasNotGiven(false);
+    immResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+    immResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
     return newEntry(bundle, immResource);
   }
 
@@ -829,85 +851,79 @@ public class FhirStu3 {
    *          The Medication
    * @return The added Entry
    */
-  private static BundleEntryComponent medication(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, Medication medication) {
-    MedicationRequest medicationResource = new MedicationRequest();
+  private static Entry medication(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Medication medication) {
+    MedicationOrder medicationResource = new MedicationOrder();
 
-    medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
-    medicationResource.setContext(new Reference(encounterEntry.getFullUrl()));
+    medicationResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+    medicationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
 
     medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
 
-    medicationResource.setAuthoredOn(new Date(medication.start));
-    medicationResource.setIntent(MedicationRequestIntent.ORDER);
+    medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
 
     if (medication.stop > 0L) {
-      medicationResource.setStatus(MedicationRequestStatus.STOPPED);
+      medicationResource.setStatus(MedicationOrderStatusEnum.STOPPED);
     } else {
-      medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
+      medicationResource.setStatus(MedicationOrderStatusEnum.ACTIVE);
     }
-    
+
     if (!medication.reasons.isEmpty()) {
       // Only one element in list
       Code reason = medication.reasons.get(0);
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
+      for (Entry entry : bundle.getEntry()) {
+        if (entry.getResource().getResourceName().equals("Condition")) {
           Condition condition = (Condition) entry.getResource();
           // Only one element in list
-          Coding coding = condition.getCode().getCoding().get(0);
+          CodingDt coding = condition.getCode().getCoding().get(0);
           if (reason.code.equals(coding.getCode())) {
-            medicationResource.addReasonReference()
-                .setReference(entry.getFullUrl());
+            medicationResource.setReason(new ResourceReferenceDt(entry.getFullUrl()));
           }
         }
       }
     }
-    
+
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;
-      Dosage dosage = new Dosage();
-    
-      dosage.setSequence(1);
+      DosageInstruction dosage = new DosageInstruction();
+
       // as_needed is true if present
-      dosage.setAsNeeded(new BooleanType(rxInfo.has("as_needed")));
-    
+      dosage.setAsNeeded(new BooleanDt(rxInfo.has("as_needed")));
+
       // as_needed is true if present
       if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {
-        Timing timing = new Timing();
-        TimingRepeatComponent timingRepeatComponent = new TimingRepeatComponent();
-        timingRepeatComponent.setFrequency(
-            rxInfo.get("dosage").getAsJsonObject().get("frequency").getAsInt());
-        timingRepeatComponent.setPeriod(
-            rxInfo.get("dosage").getAsJsonObject().get("period").getAsDouble());
-        timingRepeatComponent.setPeriodUnit(
+        TimingDt timing = new TimingDt();
+        Repeat timingRepeatComponent = new Repeat();
+        timingRepeatComponent
+            .setFrequency(rxInfo.get("dosage").getAsJsonObject().get("frequency").getAsInt());
+        timingRepeatComponent
+            .setPeriod(rxInfo.get("dosage").getAsJsonObject().get("period").getAsDouble());
+        timingRepeatComponent.setPeriodUnits(
             convertUcumCode(rxInfo.get("dosage").getAsJsonObject().get("unit").getAsString()));
         timing.setRepeat(timingRepeatComponent);
         dosage.setTiming(timing);
-    
-        Quantity dose = new SimpleQuantity().setValue(
-            rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
+
+        QuantityDt dose = new SimpleQuantityDt()
+            .setValue(rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
         dosage.setDose(dose);
-    
+
         if (rxInfo.has("instructions")) {
           for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
             JsonObject instruction = instructionElement.getAsJsonObject();
-            Code instructionCode = new Code(
-                SNOMED_URI,
-                instruction.get("code").getAsString(),
-                instruction.get("display").getAsString()
-            );
-    
-            dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
+            Code instructionCode = new Code(SNOMED_URI, instruction.get("code").getAsString(),
+                instruction.get("display").getAsString());
+
+            dosage.setAdditionalInstructions(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
           }
         }
       }
-    
-      List<Dosage> dosageInstruction = new ArrayList<Dosage>();
+
+      List<DosageInstruction> dosageInstruction = new ArrayList<DosageInstruction>();
       dosageInstruction.add(dosage);
       medicationResource.setDosageInstruction(dosageInstruction);
     }
 
-    BundleEntryComponent medicationEntry = newEntry(bundle, medicationResource);
+    Entry medicationEntry = newEntry(bundle, medicationResource);
     // create new claim for medication
     medicationClaim(personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
 
@@ -927,19 +943,26 @@ public class FhirStu3 {
    *          The Report
    * @return The added Entry
    */
-  private static BundleEntryComponent report(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, Report report) {
+  private static Entry report(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
-    reportResource.setStatus(DiagnosticReportStatus.FINAL);
+    reportResource.setStatus(DiagnosticReportStatusEnum.FINAL);
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
-    reportResource.setSubject(new Reference(personEntry.getFullUrl()));
-    reportResource.setContext(new Reference(encounterEntry.getFullUrl()));
+    reportResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
+    reportResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
     reportResource.setEffective(convertFhirDateTime(report.start, true));
-    reportResource.setIssued(new Date(report.start));
+    reportResource.setIssued(new InstantDt(new Date(report.start)));
+    
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
+        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
+    reportResource.setPerformer(encounter.getServiceProvider());
+    
     for (Observation observation : report.observations) {
-      Reference reference = new Reference(observation.fullUrl);
+      ResourceReferenceDt reference = new ResourceReferenceDt(observation.fullUrl);
       reference.setDisplay(observation.codes.get(0).display);
-      reportResource.addResult(reference);
+      List<ResourceReferenceDt> result = new ArrayList<ResourceReferenceDt>();
+      result.add(reference);
+      reportResource.setResult(result);
     }
 
     return newEntry(bundle, reportResource);
@@ -958,41 +981,41 @@ public class FhirStu3 {
    *          The CarePlan to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent careplan(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, CarePlan carePlan) {
-    org.hl7.fhir.dstu3.model.CarePlan careplanResource = new org.hl7.fhir.dstu3.model.CarePlan();
-    careplanResource.setIntent(CarePlanIntent.ORDER);
-    careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
-    careplanResource.setContext(new Reference(encounterEntry.getFullUrl()));
-  
+  private static Entry careplan(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      CarePlan carePlan) {
+    ca.uhn.fhir.model.dstu2.resource.CarePlan careplanResource =
+        new ca.uhn.fhir.model.dstu2.resource.CarePlan();
+    careplanResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
+    careplanResource.setContext(new ResourceReferenceDt(encounterEntry.getFullUrl()));
+
     Code code = carePlan.codes.get(0);
     careplanResource.addCategory(mapCodeToCodeableConcept(code, SNOMED_URI));
-  
-    CarePlanActivityStatus activityStatus;
-    GoalStatus goalStatus;
-  
-    Period period = new Period().setStart(new Date(carePlan.start));
+
+    CarePlanActivityStatusEnum activityStatus;
+    GoalStatusEnum goalStatus;
+
+    PeriodDt period = new PeriodDt().setStart(new DateTimeDt(new Date(carePlan.start)));
     careplanResource.setPeriod(period);
     if (carePlan.stop > 0L) {
-      period.setEnd(new Date(carePlan.stop));
-      careplanResource.setStatus(CarePlanStatus.COMPLETED);
-      activityStatus = CarePlanActivityStatus.COMPLETED;
-      goalStatus = GoalStatus.ACHIEVED;
+      period.setEnd(new DateTimeDt(new Date(carePlan.stop)));
+      careplanResource.setStatus(CarePlanStatusEnum.COMPLETED);
+      activityStatus = CarePlanActivityStatusEnum.COMPLETED;
+      goalStatus = GoalStatusEnum.ACHIEVED;
     } else {
-      careplanResource.setStatus(CarePlanStatus.ACTIVE);
-      activityStatus = CarePlanActivityStatus.INPROGRESS;
-      goalStatus = GoalStatus.INPROGRESS;
+      careplanResource.setStatus(CarePlanStatusEnum.ACTIVE);
+      activityStatus = CarePlanActivityStatusEnum.IN_PROGRESS;
+      goalStatus = GoalStatusEnum.IN_PROGRESS;
     }
-  
+
     if (!carePlan.activities.isEmpty()) {
       for (Code activity : carePlan.activities) {
-        CarePlanActivityComponent activityComponent = new CarePlanActivityComponent();
-        CarePlanActivityDetailComponent activityDetailComponent =
-            new CarePlanActivityDetailComponent();
+        Activity activityComponent = new Activity();
+        ActivityDetail activityDetailComponent = new ActivityDetail();
 
         activityDetailComponent.setStatus(activityStatus);
 
         activityDetailComponent.setCode(mapCodeToCodeableConcept(activity, SNOMED_URI));
+        activityDetailComponent.setProhibited(new BooleanDt(false));
         activityComponent.setDetail(activityDetailComponent);
 
         careplanResource.addActivity(activityComponent);
@@ -1002,11 +1025,11 @@ public class FhirStu3 {
     if (!carePlan.reasons.isEmpty()) {
       // Only one element in list
       Code reason = carePlan.reasons.get(0);
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
+      for (Entry entry : bundle.getEntry()) {
+        if (entry.getResource().getResourceName().equals("Condition")) {
           Condition condition = (Condition) entry.getResource();
           // Only one element in list
-          Coding coding = condition.getCode().getCoding().get(0);
+          CodingDt coding = condition.getCode().getCoding().get(0);
           if (reason.code.equals(coding.getCode())) {
             careplanResource.addAddresses().setReference(entry.getFullUrl());
           }
@@ -1015,7 +1038,7 @@ public class FhirStu3 {
     }
 
     for (JsonObject goal : carePlan.goals) {
-      BundleEntryComponent goalEntry = caregoal(bundle, goalStatus, goal);
+      Entry goalEntry = caregoal(bundle, goalStatus, goal);
       careplanResource.addGoal().setReference(goalEntry.getFullUrl());
     }
 
@@ -1024,160 +1047,139 @@ public class FhirStu3 {
 
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
-   * @param bundle The Bundle to add to
-   * @param provider The Provider
+   * 
+   * @param bundle
+   *          The Bundle to add to
+   * @param provider
+   *          The Provider
    * @return The added Entry
    */
-  private static BundleEntryComponent provider(Bundle bundle, Provider provider) {
-    org.hl7.fhir.dstu3.model.Organization organizationResource =
-        new org.hl7.fhir.dstu3.model.Organization();
-  
-    List<CodeableConcept> organizationType = new ArrayList<CodeableConcept>();
-    organizationType.add(
-        mapCodeToCodeableConcept(
-            new Code(
-                "http://hl7.org/fhir/ValueSet/organization-type",
-                "prov",
-                "Healthcare Provider"),
-            "Healthcare Provider"));
-  
+  private static Entry provider(Bundle bundle, Provider provider) {
+    ca.uhn.fhir.model.dstu2.resource.Organization organizationResource =
+        new ca.uhn.fhir.model.dstu2.resource.Organization();
+
+    CodeableConceptDt organizationType = mapCodeToCodeableConcept(
+        new Code("http://hl7.org/fhir/ValueSet/organization-type", "prov", "Healthcare Provider"),
+        "Healthcare Provider");
+
     organizationResource.setId(provider.getResourceID());
-    organizationResource.setName((String)provider.getAttributes().get("name"));
+    organizationResource.setName((String) provider.getAttributes().get("name"));
     organizationResource.setType(organizationType);
-  
+
     return newEntry(bundle, organizationResource);
   }
-   
+
   /*
    * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
+   * 
    * @param bundle The Bundle to add to
+   * 
    * @param goalStatus The GoalStatus
+   * 
    * @param goal The JsonObject
+   * 
    * @return The added Entry
    */
-  private static BundleEntryComponent caregoal(
-      Bundle bundle, GoalStatus goalStatus, JsonObject goal) {
+  private static Entry caregoal(Bundle bundle, GoalStatusEnum goalStatus, JsonObject goal) {
     String resourceID = UUID.randomUUID().toString();
-  
-    org.hl7.fhir.dstu3.model.Goal goalResource =
-        new org.hl7.fhir.dstu3.model.Goal();
+
+    ca.uhn.fhir.model.dstu2.resource.Goal goalResource =
+        new ca.uhn.fhir.model.dstu2.resource.Goal();
     goalResource.setStatus(goalStatus);
     goalResource.setId(resourceID);
-  
+
     if (goal.has("text")) {
-      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
-  
-      descriptionCodeableConcept.setText(goal.get("text").getAsString());
-      goalResource.setDescription(descriptionCodeableConcept);
+      goalResource.setDescription(goal.get("text").getAsString());
     } else if (goal.has("codes")) {
-      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
-  
-      JsonObject code =
-          goal.get("codes").getAsJsonArray().get(0).getAsJsonObject();
-      descriptionCodeableConcept.addCoding()
-        .setSystem(LOINC_URI)
-        .setCode(code.get("code").getAsString())
-        .setDisplay(code.get("display").getAsString());
-  
-      descriptionCodeableConcept.setText(code.get("display").getAsString());
-      goalResource.setDescription(descriptionCodeableConcept);
+      JsonObject code = goal.get("codes").getAsJsonArray().get(0).getAsJsonObject();
+
+      goalResource.setDescription(code.get("display").getAsString());
     } else if (goal.has("observation")) {
-      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
-  
       // build up our own text from the observation condition, similar to the graphviz logic
       JsonObject logic = goal.get("observation").getAsJsonObject();
-  
+
       String[] text = {
-        logic.get("codes").getAsJsonArray().get(0)
-            .getAsJsonObject().get("display").getAsString(),
-        logic.get("operator").getAsString(),
-        logic.get("value").getAsString()
-      };
-  
-      descriptionCodeableConcept.setText(String.join(" ", text));
-      goalResource.setDescription(descriptionCodeableConcept);
+          logic.get("codes").getAsJsonArray().get(0).getAsJsonObject().get("display").getAsString(),
+          logic.get("operator").getAsString(), logic.get("value").getAsString() };
+
+      goalResource.setDescription(String.join(" ", text));
     }
-  
+
     if (goal.has("addresses")) {
       for (JsonElement reasonElement : goal.get("addresses").getAsJsonArray()) {
         if (reasonElement instanceof JsonObject) {
           JsonObject reasonObject = reasonElement.getAsJsonObject();
-          String reasonCode =
-              reasonObject.get("codes")
-                  .getAsJsonObject()
-                  .get("SNOMED-CT")
-                  .getAsJsonArray()
-                  .get(0)
-                  .getAsString();
-  
-          for (BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.getResource().fhirType().equals("Condition")) {
+          String reasonCode = reasonObject.get("codes").getAsJsonObject().get("SNOMED-CT")
+              .getAsJsonArray().get(0).getAsString();
+
+          for (Entry entry : bundle.getEntry()) {
+            if (entry.getResource().getResourceName().equals("Condition")) {
               Condition condition = (Condition) entry.getResource();
               // Only one element in list
-              Coding coding = condition.getCode().getCoding().get(0);
+              CodingDt coding = condition.getCode().getCoding().get(0);
               if (reasonCode.equals(coding.getCode())) {
-                goalResource.addAddresses()
-                    .setReference(entry.getFullUrl());
+                goalResource.addAddresses().setReference(entry.getFullUrl());
               }
             }
           }
         }
       }
     }
-  
+
     return newEntry(bundle, goalResource);
   }
-   
+
   /**
    * Convert the unit into a UnitsOfTime.
    *
-   * @param unit unit String
+   * @param unit
+   *          unit String
    * @return a UnitsOfTime representing the given unit
    */
-  private static UnitsOfTime convertUcumCode(String unit) {
+  private static UnitsOfTimeEnum convertUcumCode(String unit) {
     // From: http://hl7.org/fhir/ValueSet/units-of-time
     switch (unit) {
       case "seconds":
-        return UnitsOfTime.S;
+        return UnitsOfTimeEnum.S;
       case "minutes":
-        return UnitsOfTime.MIN;
+        return UnitsOfTimeEnum.MIN;
       case "hours":
-        return UnitsOfTime.H;
+        return UnitsOfTimeEnum.H;
       case "days":
-        return UnitsOfTime.D;
+        return UnitsOfTimeEnum.D;
       case "weeks":
-        return UnitsOfTime.WK;
+        return UnitsOfTimeEnum.WK;
       case "months":
-        return UnitsOfTime.MO;
+        return UnitsOfTimeEnum.MO;
       case "years":
-        return UnitsOfTime.A;
+        return UnitsOfTimeEnum.A;
       default:
         return null;
     }
   }
-    
+
   /**
    * Convert the timestamp into a FHIR DateType or DateTimeType.
    * 
    * @param datetime
    *          Timestamp
    * @param time
-   *          If true, return a DateTime; if false, return a Date.
-   * @return a DateType or DateTimeType representing the given timestamp
+   *          If true, return a DateTimeDt; if false, return a DateDt.
+   * @return a DateDt or DateTimeDt representing the given timestamp
    */
-  private static Type convertFhirDateTime(long datetime, boolean time) {
+  private static IDatatype convertFhirDateTime(long datetime, boolean time) {
     Date date = new Date(datetime);
 
     if (time) {
-      return new DateTimeType(date);
+      return new DateTimeDt(date);
     } else {
-      return new DateType(date);
+      return new DateDt(date);
     }
   }
 
   /**
-   * Helper function to convert a Code into a CodeableConcept. Takes an optional system, which
-   * replaces the Code.system in the resulting CodeableConcept if not null.
+   * Helper function to convert a Code into a CodeableConceptDt. Takes an optional system, which
+   * replaces the Code.system in the resulting CodeableConceptDt if not null.
    * 
    * @param from
    *          The Code to create a CodeableConcept from.
@@ -1185,14 +1187,14 @@ public class FhirStu3 {
    *          The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
    */
-  private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
-    CodeableConcept to = new CodeableConcept();
+  private static CodeableConceptDt mapCodeToCodeableConcept(Code from, String system) {
+    CodeableConceptDt to = new CodeableConceptDt();
 
     if (from.display != null) {
       to.setText(from.display);
     }
 
-    Coding coding = new Coding();
+    CodingDt coding = new CodingDt();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
     if (system == null) {
@@ -1217,8 +1219,8 @@ public class FhirStu3 {
    *          Resource the new Entry should contain
    * @return the created Entry
    */
-  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
-    BundleEntryComponent entry = bundle.addEntry();
+  private static Entry newEntry(Bundle bundle, BaseResource resource) {
+    Entry entry = bundle.addEntry();
 
     String resourceID = UUID.randomUUID().toString();
     resource.setId(resourceID);
