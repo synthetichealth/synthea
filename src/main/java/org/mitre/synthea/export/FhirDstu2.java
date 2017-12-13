@@ -553,7 +553,7 @@ public class FhirDstu2 {
         .getResource();
 
     // assume institutional claim
-    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL);
+    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL); // TODO review claim type
     
     claimResource.setUse(UseEnum.COMPLETE);
 
@@ -588,7 +588,7 @@ public class FhirDstu2 {
         .getResource();
 
     // assume institutional claim
-    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL);
+    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL); // TODO review claim type
 
     claimResource.setUse(UseEnum.COMPLETE);
 
@@ -616,14 +616,14 @@ public class FhirDstu2 {
         itemType.setSystem("http://hl7.org/fhir/v3/ActCode")
             .setCode("CSINV")
             .setDisplay("clinical service invoice");
-        procedureItem.setType(itemType);
+        procedureItem.setType(itemType); // TODO review claim item type
         
         // assume item service is expense
         CodingDt itemService = new CodingDt();
         itemService.setSystem("http://hl7.org/fhir/ex-USCLS")
             .setCode("99555")
             .setDisplay("Expense");
-        procedureItem.setService(itemService);
+        procedureItem.setService(itemService); // TODO review claim item service
         
         claimResource.addItem(procedureItem);
 
