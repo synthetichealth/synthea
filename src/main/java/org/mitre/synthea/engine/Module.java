@@ -182,10 +182,16 @@ public class Module {
     // probably more than one state
     String nextStateName = null;
     while (current.run(person, time)) {
+      Long exited = current.exited;      
       nextStateName = current.transition(person, time);
       // System.out.println(" Transitioning to " + nextStateName);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
+      if (exited != null && exited < time) {
+        // This must be a delay state that expired between cycles, so temporarily rewind time
+        process(person, exited);
+        current = person.history.get(0);
+      }
     }
     person.attributes.remove(activeKey);
     return (current instanceof State.Terminal);

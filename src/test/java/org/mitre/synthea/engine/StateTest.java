@@ -1166,8 +1166,63 @@ public class StateTest {
   }
   
   @Test
+  public void testDelayRewindTime() {
+    // Synthea is currently run in 7-day increments. If a delay falls between increments, then the
+    // delay and subsequent states must be run at the delay expiration time -- not at the current
+    // cycle time.
+
+    // Setup the context
+    Module module = getModule("delay_time_travel.json");
+
+    // Run number one should stop at the delay
+    module.process(person, time);
+    assertEquals("2_Day_Delay", person.history.get(0).name);
+
+    // Run number two should go all the way to Terminal, but should process Encounter and Death
+    // along the way
+    // Run number 2: 7 days after run number 1
+    module.process(person, time + days(7));
+
+    
+    assertEquals(6, person.history.size());
+    assertEquals("Initial", person.history.get(5).name);
+    assertEquals(time, (long)person.history.get(5).entered);
+    assertEquals(time, (long) person.history.get(5).exited);
+
+    assertEquals("2_Day_Delay", person.history.get(4).name);
+    assertEquals(time, (long) person.history.get(4).entered);
+    assertEquals(time + days(2), (long) person.history.get(4).exited);
+
+    assertEquals("ED_Visit", person.history.get(3).name);
+    assertEquals(time + days(2), (long) person.history.get(3).entered);
+    assertEquals(time + days(2), (long) person.history.get(3).exited);
+
+    assertEquals("3_Day_Delay", person.history.get(2).name);
+    assertEquals(time + days(2), (long) person.history.get(2).entered);
+    assertEquals(time + days(5), (long) person.history.get(2).exited);
+
+    assertEquals("Death", person.history.get(1).name);
+    assertEquals(time + days(5), (long) person.history.get(1).entered);
+    assertEquals(time + days(5), (long) person.history.get(1).exited);
+
+    assertEquals("Terminal", person.history.get(0).name);
+    assertEquals(time + days(5), (long) person.history.get(0).entered);
+    assertEquals(null, person.history.get(0).exited);
+  }
+  
+  /**
+   * Readability helper for the above test case. Turn days into time.
+   * @param numDays Number of days
+   * @return Amount to add to timestamp
+   */
+  private static long days(long numDays) {
+    return Utilities.convertTime("days", numDays);
+  }
+  
+  @Test
   public void testSubmoduleHistory() {
-    Map<String, Module> modules = Whitebox.<Map<String, Module>> getInternalState(Module.class, "modules");
+    Map<String, Module> modules = 
+        Whitebox.<Map<String, Module>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
     Module subModule1 = getModule("submodules/encounter_submodule.json");
     Module subModule2 = getModule("submodules/medication_submodule.json");
@@ -1180,58 +1235,64 @@ public class StateTest {
         time += Utilities.convertTime("years", 1);
       }
       
-      // main module has 5 states
-      // encounter_submodule has 6 states
+      // main module has 5 states, with the callsubmodule counted 2x
+      // encounter_submodule has 6 states, with the callsubmodule counted 2x
       // medication_submodule has 5 states
-      // total = 16
+      // total = 18
       System.out.println(person.history);
-      assertEquals(16, person.history.size());
+      assertEquals(18, person.history.size());
       
-      assertEquals("Initial", person.history.get(15).name);
-      assertEquals("Recursive Calls Submodules Module", person.history.get(15).module.name);
+      assertEquals("Initial", person.history.get(17).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(17).module.name);
   
-      assertEquals("Example_Condition", person.history.get(14).name);
-      assertEquals("Recursive Calls Submodules Module", person.history.get(14).module.name);
+      assertEquals("Example_Condition", person.history.get(16).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(16).module.name);
       
-      assertEquals("Call_Encounter_Submodule", person.history.get(13).name);
-      assertEquals("Recursive Calls Submodules Module", person.history.get(13).module.name);
+      assertEquals("Call_Encounter_Submodule", person.history.get(15).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(15).module.name);
       
       
-      assertEquals("Initial", person.history.get(12).name);
+      assertEquals("Initial", person.history.get(14).name);
+      assertEquals("Encounter Submodule Module", person.history.get(14).module.name);
+  
+      assertEquals("Delay", person.history.get(13).name);
+      assertEquals("Encounter Submodule Module", person.history.get(13).module.name);
+  
+      assertEquals("Encounter_In_Submodule", person.history.get(12).name);
       assertEquals("Encounter Submodule Module", person.history.get(12).module.name);
   
-      assertEquals("Delay", person.history.get(11).name);
+      assertEquals("Call_MedicationOrder_Submodule", person.history.get(11).name);
       assertEquals("Encounter Submodule Module", person.history.get(11).module.name);
   
-      assertEquals("Encounter_In_Submodule", person.history.get(10).name);
-      assertEquals("Encounter Submodule Module", person.history.get(10).module.name);
-  
-      assertEquals("Call_MedicationOrder_Submodule", person.history.get(9).name);
-      assertEquals("Encounter Submodule Module", person.history.get(9).module.name);
-  
       
-      assertEquals("Initial", person.history.get(8).name);
+      assertEquals("Initial", person.history.get(10).name);
+      assertEquals("Medication Submodule Module", person.history.get(10).module.name);
+  
+      assertEquals("Examplitis_Medication", person.history.get(9).name);
+      assertEquals("Medication Submodule Module", person.history.get(9).module.name);
+  
+      assertEquals("Delay_Yet_Again", person.history.get(8).name);
       assertEquals("Medication Submodule Module", person.history.get(8).module.name);
   
-      assertEquals("Examplitis_Medication", person.history.get(7).name);
+      assertEquals("End_Medication", person.history.get(7).name);
       assertEquals("Medication Submodule Module", person.history.get(7).module.name);
   
-      assertEquals("Delay_Yet_Again", person.history.get(6).name);
+      assertEquals("Med_Terminal", person.history.get(6).name);
       assertEquals("Medication Submodule Module", person.history.get(6).module.name);
-  
-      assertEquals("End_Medication", person.history.get(5).name);
-      assertEquals("Medication Submodule Module", person.history.get(5).module.name);
-  
-      assertEquals("Med_Terminal", person.history.get(4).name);
-      assertEquals("Medication Submodule Module", person.history.get(4).module.name);
 
+      
+      assertEquals("Call_MedicationOrder_Submodule", person.history.get(5).name);
+      assertEquals("Encounter Submodule Module", person.history.get(5).module.name);
+      
+      assertEquals("Delay_Some_More", person.history.get(4).name);
+      assertEquals("Encounter Submodule Module", person.history.get(4).module.name);
   
-      assertEquals("Delay_Some_More", person.history.get(3).name);
+      assertEquals("Encounter_Terminal", person.history.get(3).name);
       assertEquals("Encounter Submodule Module", person.history.get(3).module.name);
-  
-      assertEquals("Encounter_Terminal", person.history.get(2).name);
-      assertEquals("Encounter Submodule Module", person.history.get(2).module.name);
-  
+      
+      
+      assertEquals("Call_Encounter_Submodule", person.history.get(2).name);
+      assertEquals("Recursive Calls Submodules Module", person.history.get(2).module.name);
       
       assertEquals("End_Condition", person.history.get(1).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(1).module.name);
