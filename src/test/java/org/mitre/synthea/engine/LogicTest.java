@@ -51,8 +51,8 @@ public class LogicTest {
   }
 
   private boolean doTest(String testName) {
-    JsonObject definition = tests.get(testName).getAsJsonObject();
-    Logic logic = Logic.build(definition);
+    JsonObject definition = tests.getAsJsonObject(testName);
+    Logic logic = Utilities.getGson().fromJson(definition, Logic.class);
 
     return logic.test(person, time);
   }

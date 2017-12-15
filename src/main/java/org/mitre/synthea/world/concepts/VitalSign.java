@@ -1,27 +1,36 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum VitalSign {
 
-  HEIGHT("Height"), WEIGHT("Weight"), HEIGHT_PERCENTILE("Height Percentile"), WEIGHT_PERCENTILE(
-      "Weight Percentile"), BMI("BMI"), SYSTOLIC_BLOOD_PRESSURE(
-          "Systolic Blood Pressure"), DIASTOLIC_BLOOD_PRESSURE(
-              "Diastolic Blood Pressure"), BLOOD_GLUCOSE("Blood Glucose"), GLUCOSE(
-                  "Glucose"), UREA_NITROGEN("Urea Nitrogen"), CREATININE("Creatinine"), CALCIUM(
-                      "Calcium"), SODIUM("Sodium"), POTASSIUM("Potassium"), CHLORIDE(
-                          "Chloride"), CARBON_DIOXIDE("Carbon Dioxide"), TOTAL_CHOLESTEROL(
-                              "Total Cholesterol"), TRIGLYCERIDES("Triglycerides"), LDL("LDL"), HDL(
-                                  "HDL"), MICROALBUMIN_CREATININE_RATIO(
-                                      "Microalbumin Creatinine Ratio"), EGFR("EGFR");
-
-  private String text;
-
-  VitalSign(String text) {
-    this.text = text;
-  }
+  @SerializedName("Height") HEIGHT,
+  @SerializedName("Weight") WEIGHT, 
+  @SerializedName("Height Percentile") HEIGHT_PERCENTILE, 
+  @SerializedName("Weight Percentile") WEIGHT_PERCENTILE, 
+  @SerializedName("BMI") BMI, 
+  @SerializedName("Systolic Blood Pressure") SYSTOLIC_BLOOD_PRESSURE, 
+  @SerializedName("Diastolic Blood Pressure") DIASTOLIC_BLOOD_PRESSURE, 
+  @SerializedName("Blood Glucose") BLOOD_GLUCOSE, 
+  @SerializedName("Glucose") GLUCOSE, 
+  @SerializedName("Urea Nitrogen") UREA_NITROGEN, 
+  @SerializedName("Creatinine") CREATININE, 
+  @SerializedName("Calcium") CALCIUM, 
+  @SerializedName("Sodium") SODIUM, 
+  @SerializedName("Potassium") POTASSIUM, 
+  @SerializedName("Chloride") CHLORIDE, 
+  @SerializedName("Carbon Dioxide") CARBON_DIOXIDE, 
+  @SerializedName("Total Cholesterol") TOTAL_CHOLESTEROL, 
+  @SerializedName("Triglycerides") TRIGLYCERIDES, 
+  @SerializedName("LDL") LDL,
+  @SerializedName("HDL") HDL, 
+  @SerializedName("Microalbumin Creatinine Ratio") MICROALBUMIN_CREATININE_RATIO, 
+  @SerializedName("EGFR") EGFR;
 
   public static VitalSign fromString(String text) {
     for (VitalSign type : VitalSign.values()) {
-      if (type.text.equalsIgnoreCase(text)) {
+      String typeText = type.toString();
+      if (text.equalsIgnoreCase(typeText)) {
         return type;
       }
     }
@@ -29,6 +38,10 @@ public enum VitalSign {
   }
 
   public String toString() {
-    return text;
+    try {
+      return getClass().getField(this.name()).getAnnotation(SerializedName.class).value();
+    } catch (Exception e) {
+      return this.name();
+    }
   }
 }

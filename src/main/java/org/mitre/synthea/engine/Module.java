@@ -134,13 +134,8 @@ public class Module {
     remarks = new ArrayList<String>();
     if (definition.has("remarks")) {
       JsonElement jsonRemarks = definition.get("remarks");
-      if (jsonRemarks.isJsonArray()) {
-        for (JsonElement value : jsonRemarks.getAsJsonArray()) {
-          remarks.add(value.getAsString());
-        }
-      } else {
-        // must be a single string
-        remarks.add(jsonRemarks.getAsString());
+      for (JsonElement value : jsonRemarks.getAsJsonArray()) {
+        remarks.add(value.getAsString());
       }
     }
 

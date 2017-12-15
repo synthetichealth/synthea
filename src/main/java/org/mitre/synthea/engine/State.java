@@ -1,11 +1,14 @@
 package org.mitre.synthea.engine;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.engine.Components.Exact;
+import org.mitre.synthea.engine.Components.ExactWithUnit;
+import org.mitre.synthea.engine.Components.Range;
+import org.mitre.synthea.engine.Components.RangeWithUnit;
 import org.mitre.synthea.engine.Transition.TransitionType;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
@@ -46,19 +49,6 @@ public abstract class State implements Cloneable {
     } else if (!(this instanceof Terminal)) {
       throw new RuntimeException("State `" + name + "` has no transition.\n");
     }
-
-    remarks = new ArrayList<String>();
-    if (definition.has("remarks")) {
-      JsonElement jsonRemarks = definition.get("remarks");
-      if (jsonRemarks.isJsonArray()) {
-        for (JsonElement value : jsonRemarks.getAsJsonArray()) {
-          remarks.add(value.getAsString());
-        }
-      } else {
-        // must be a single string
-        remarks.add(jsonRemarks.getAsString());
-      }
-    }
   }
 
   /**
@@ -79,8 +69,9 @@ public abstract class State implements Cloneable {
     String className = State.class.getName() + "$" + definition.get("type").getAsString();
 
     Class<?> stateClass = Class.forName(className);
-
-    State state = (State) stateClass.newInstance();
+    
+    Gson gson = Utilities.getGson();
+    State state = (State) gson.fromJson(definition, stateClass);
 
     state.initialize(module, name, definition);
 
@@ -189,18 +180,12 @@ public abstract class State implements Cloneable {
    * resumes.
    */
   public static class CallSubmodule extends State {
-    private String submodulePath;
-
-    @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      submodulePath = definition.get("submodule").getAsString();
-    }
+    private String submodule;
 
     @Override
     public CallSubmodule clone() {
       CallSubmodule clone = (CallSubmodule) super.clone();
-      clone.submodulePath = submodulePath;
+      clone.submodule = submodule;
       return clone;
     }
 
@@ -208,14 +193,14 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       // e.g. "submodule": "medications/otc_antihistamine"
       List<State> moduleHistory = person.history;
-      Module submodule = Module.getModuleByPath(submodulePath);
-      boolean completed = submodule.process(person, time);
+      Module submod = Module.getModuleByPath(submodule);
+      boolean completed = submod.process(person, time);
       
       if (completed) {
         // add the history from the submodule to this module's history, at the front
         moduleHistory.addAll(0, person.history);
         // clear the submodule history
-        person.attributes.remove(submodule.name);
+        person.attributes.remove(submod.name);
         // reset person.history to this module's history
         person.history = moduleHistory;
         // add this state to history to indicate we returned to this module
@@ -266,47 +251,28 @@ public abstract class State implements Cloneable {
     // hence it is not set in clone()
     public Long next;
 
-    private String unit;
-    private Double quantity;
-    private Double low;
-    private Double high;
+    private RangeWithUnit<Long> range;
+    private ExactWithUnit<Long> exact;
 
-    @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-
-      JsonObject range = (JsonObject) definition.get("range");
-      JsonObject exact = (JsonObject) definition.get("exact");
-
-      if (range != null) {
-        unit = range.get("unit").getAsString();
-        low = range.get("low").getAsDouble();
-        high = range.get("high").getAsDouble();
-      } else if (exact != null) {
-        unit = exact.get("unit").getAsString();
-        quantity = exact.get("quantity").getAsDouble();
-      }
-    }
     
     @Override
     public Delay clone() {
       Delay clone = (Delay) super.clone();
-      clone.unit = unit;
-      clone.quantity = quantity;
-      clone.low = low;
-      clone.high = high;
+      clone.exact = exact;
+      clone.range = range;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
       if (this.next == null) {
-        if (quantity != null) {
+        if (exact != null) {
           // use an exact quantity
-          this.next = time + Utilities.convertTime(unit, quantity.longValue());
-        } else if (low != null && high != null) {
+          this.next = time + Utilities.convertTime(exact.unit, exact.quantity);
+        } else if (range != null) {
           // use a range
-          this.next = time + Utilities.convertTime(unit, (long) person.rand(low, high));
+          this.next = 
+              time + Utilities.convertTime(range.unit, (long) person.rand(range.low, range.high));
         } else {
           throw new RuntimeException("Delay state has no exact or range: " + this);
         }
@@ -332,14 +298,8 @@ public abstract class State implements Cloneable {
    */
   public static class Guard extends State {
     private Logic allow;
-
+    
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      JsonObject logicDefinition = definition.get("allow").getAsJsonObject();
-      allow = Logic.build(logicDefinition);
-    }
-
     public Guard clone() {
       Guard clone = (Guard) super.clone();
       clone.allow = allow;
@@ -369,14 +329,18 @@ public abstract class State implements Cloneable {
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
-
-      attribute = definition.get("attribute").getAsString();
-
-      if (definition.has("value")) {
-        value = Utilities.primitive(definition.get("value").getAsJsonPrimitive());
+      
+      // special handling for integers
+      if (value instanceof Double) {
+        double doubleVal = (double)value;
+        
+        if (doubleVal == Math.rint(doubleVal)) {
+          value = (int) doubleVal;
+        }
       }
     }
 
+    @Override
     public SetAttribute clone() {
       SetAttribute clone = (SetAttribute) super.clone();
       clone.attribute = attribute;
@@ -405,19 +369,16 @@ public abstract class State implements Cloneable {
    */
   public static class Counter extends State {
     private String attribute;
+    private String action;
     private boolean increment;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
-
-      attribute = definition.get("attribute").getAsString();
-
-      String action = definition.get("action").getAsString();
-
       increment = action.equals("increment");
     }
 
+    @Override
     public Counter clone() {
       Counter clone = (Counter) super.clone();
       clone.attribute = attribute;
@@ -479,20 +440,6 @@ public abstract class State implements Cloneable {
     private String reason;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      wellness = definition.has("wellness") && definition.get("wellness").getAsBoolean();
-      if (definition.has("encounter_class")) {
-        encounterClass = definition.get("encounter_class").getAsString();
-      }
-      if (definition.has("reason")) {
-        reason = definition.get("reason").getAsString();
-      }
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-    }
-
     public Encounter clone() {
       Encounter clone = (Encounter) super.clone();
       clone.wellness = wellness;
@@ -599,13 +546,6 @@ public abstract class State implements Cloneable {
     private Code dischargeDisposition;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("discharge_disposition")) {
-        dischargeDisposition = new Code((JsonObject) definition.get("discharge_disposition"));
-      }
-    }
-
     public EncounterEnd clone() {
       EncounterEnd clone = (EncounterEnd) super.clone();
       clone.dischargeDisposition = dischargeDisposition;
@@ -644,21 +584,6 @@ public abstract class State implements Cloneable {
     protected List<Code> codes;
     protected String assignToAttribute;
     protected String targetEncounter;
-
-    @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("assign_to_attribute")) {
-        assignToAttribute = definition.get("assign_to_attribute").getAsString();
-      }
-
-      if (definition.has("target_encounter")) {
-        targetEncounter = definition.get("target_encounter").getAsString();
-      }
-    }
 
     public OnsetState clone() {
       OnsetState clone = (OnsetState) super.clone();
@@ -732,19 +657,6 @@ public abstract class State implements Cloneable {
     private String referencedByAttribute;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("condition_onset")) {
-        conditionOnset = definition.get("condition_onset").getAsString();
-      }
-      if (definition.has("referenced_by_attribute")) {
-        referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
-      }
-    }
-
     public ConditionEnd clone() {
       ConditionEnd clone = (ConditionEnd) super.clone();
       clone.codes = codes;
@@ -809,20 +721,6 @@ public abstract class State implements Cloneable {
     private String referencedByAttribute;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("allergy_onset")) {
-        allergyOnset = definition.get("allergy_onset").getAsString();
-      }
-      if (definition.has("referenced_by_attribute")) {
-        referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
-      }
-    }
-
     public AllergyEnd clone() {
       AllergyEnd clone = (AllergyEnd) super.clone();
       clone.codes = codes;
@@ -856,26 +754,10 @@ public abstract class State implements Cloneable {
   public static class MedicationOrder extends State {
     private List<Code> codes;
     private String reason;
-    private JsonObject prescription;
+    private JsonObject prescription; // TODO make this a Component
     private String assignToAttribute;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("reason")) {
-        reason = definition.get("reason").getAsString();
-      }
-      if (definition.has("prescription")) {
-        prescription = definition.get("prescription").getAsJsonObject();
-      }
-      if (definition.has("assign_to_attribute")) {
-        assignToAttribute = definition.get("assign_to_attribute").getAsString();
-      }
-    }
-
     public MedicationOrder clone() {
       MedicationOrder clone = (MedicationOrder) super.clone();
       clone.codes = codes;
@@ -947,19 +829,6 @@ public abstract class State implements Cloneable {
         "Drug treatment stopped - medical advice");
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("medication_order")) {
-        medicationOrder = definition.get("medication_order").getAsString();
-      }
-      if (definition.has("referenced_by_attribute")) {
-        referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
-      }
-    }
-
     public MedicationEnd clone() {
       MedicationEnd clone = (MedicationEnd) super.clone();
       clone.codes = codes;
@@ -991,38 +860,13 @@ public abstract class State implements Cloneable {
    * what the care plan entails.
    */
   public static class CarePlanStart extends State {
-
     private List<Code> codes;
     private List<Code> activities;
-    private List<JsonObject> goals;
+    private List<JsonObject> goals; // TODO: make this a Component
     private String reason;
     private String assignToAttribute;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("activities")) {
-        activities = Code.fromJson(definition.get("activities").getAsJsonArray());
-      }
-      if (definition.has("goals")) {
-        goals = new ArrayList<>();
-        definition.get("goals").getAsJsonArray().forEach(item -> {
-          goals.add(item.getAsJsonObject());
-        });
-      }
-      if (definition.has("reason")) {
-        // "reason" is an attribute or stateName referencing a previous conditionOnset state
-        reason = definition.get("reason").getAsString();
-      }
-      if (definition.has("assign_to_attribute")) {
-        assignToAttribute = definition.get("assign_to_attribute").getAsString();
-      }
-    }
-
     public CarePlanStart clone() {
       CarePlanStart clone = (CarePlanStart) super.clone();
       clone.codes = codes;
@@ -1084,19 +928,6 @@ public abstract class State implements Cloneable {
     private static final Code FINISHED = new Code("SNOMED-CT", "385658003", "Done");
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("careplan")) {
-        careplan = definition.get("careplan").getAsString();
-      }
-      if (definition.has("referenced_by_attribute")) {
-        referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
-      }
-    }
-
     public CarePlanEnd clone() {
       CarePlanEnd clone = (CarePlanEnd) super.clone();
       clone.codes = codes;
@@ -1130,39 +961,15 @@ public abstract class State implements Cloneable {
   public static class Procedure extends State {
     private List<Code> codes;
     private String reason;
-    private Double durationLow;
-    private Double durationHigh;
-    private String durationUnit;
+    private RangeWithUnit<Long> duration;
     private String assignToAttribute;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("reason")) {
-        // "reason" is an attribute or stateName referencing a previous conditionOnset state
-        reason = definition.get("reason").getAsString();
-      }
-      if (definition.has("duration")) {
-        JsonObject duration = definition.get("duration").getAsJsonObject();
-        durationLow = duration.get("low").getAsDouble();
-        durationHigh = duration.get("high").getAsDouble();
-        durationUnit = duration.get("unit").getAsString();
-      }
-      if (definition.has("assign_to_attribute")) {
-        assignToAttribute = definition.get("assign_to_attribute").getAsString();
-      }
-    }
-
     public Procedure clone() {
       Procedure clone = (Procedure) super.clone();
       clone.codes = codes;
       clone.reason = reason;
-      clone.durationLow = durationLow;
-      clone.durationHigh = durationHigh;
-      clone.durationUnit = durationUnit;
+      clone.duration = duration;
       clone.assignToAttribute = assignToAttribute;
       return clone;
     }
@@ -1189,9 +996,9 @@ public abstract class State implements Cloneable {
           }
         }
       }
-      if (durationLow != null) {
-        double duration = person.rand(durationLow, durationHigh);
-        procedure.stop = procedure.start + Utilities.convertTime(durationUnit, (long) duration);
+      if (duration != null) {
+        double durationVal = person.rand(duration.low, duration.high);
+        procedure.stop = procedure.start + Utilities.convertTime(duration.unit, (long) durationVal);
       }
       // increment number of procedures by respective hospital
       Provider provider;
@@ -1226,38 +1033,15 @@ public abstract class State implements Cloneable {
    */
   public static class VitalSign extends State {
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
-
-    private Double quantity;
-    private Double low;
-    private Double high;
     private String unit;
+    private Range<Double> range;
+    private Exact<Double> exact;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-
-      String vsName = definition.get("vital_sign").getAsString();
-      vitalSign = org.mitre.synthea.world.concepts.VitalSign.fromString(vsName);
-
-      if (definition.has("exact")) {
-        quantity = definition.get("exact").getAsJsonObject().get("quantity").getAsDouble();
-      }
-
-      if (definition.has("range")) {
-        low = definition.get("range").getAsJsonObject().get("low").getAsDouble();
-        high = definition.get("range").getAsJsonObject().get("high").getAsDouble();
-      }
-
-      if (definition.has("unit")) {
-        unit = definition.get("unit").getAsString();
-      }
-    }
-
     public VitalSign clone() {
       VitalSign clone = (VitalSign) super.clone();
-      clone.quantity = quantity;
-      clone.low = low;
-      clone.high = high;
+      clone.range = range;
+      clone.exact = exact;
       clone.vitalSign = vitalSign;
       clone.unit = unit;
       return clone;
@@ -1265,10 +1049,10 @@ public abstract class State implements Cloneable {
 
     @Override
     public boolean process(Person person, long time) {
-      if (quantity != null) {
-        person.setVitalSign(vitalSign, quantity);
-      } else if (low != null && high != null) {
-        double value = person.rand(low, high);
+      if (exact != null) {
+        person.setVitalSign(vitalSign, exact.quantity);
+      } else if (range != null) {
+        double value = person.rand(range.low, range.high);
         person.setVitalSign(vitalSign, value);
       } else {
         throw new RuntimeException(
@@ -1313,50 +1097,19 @@ public abstract class State implements Cloneable {
    */
   public static class Observation extends State {
     private List<Code> codes;
-    private Object quantity;
-    private Double low;
-    private Double high;
+    private Range<Double> range;
+    private Exact<Object> exact;
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
     private String unit;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("exact")) {
-        quantity = Utilities.primitive(
-            definition.get("exact").getAsJsonObject().get("quantity").getAsJsonPrimitive());
-      }
-      if (definition.has("range")) {
-        low = definition.get("range").getAsJsonObject().get("low").getAsDouble();
-        high = definition.get("range").getAsJsonObject().get("high").getAsDouble();
-      }
-      if (definition.has("attribute")) {
-        attribute = definition.get("attribute").getAsString();
-      }
-      if (definition.has("vital_sign")) {
-        String vsName = definition.get("vital_sign").getAsString();
-        vitalSign = org.mitre.synthea.world.concepts.VitalSign.fromString(vsName);
-      }
-
-      if (definition.has("category")) {
-        category = definition.get("category").getAsString();
-      }
-      if (definition.has("unit")) {
-        unit = definition.get("unit").getAsString();
-      }
-    }
-
     public Observation clone() {
       Observation clone = (Observation) super.clone();
       clone.codes = codes;
-      clone.quantity = quantity;
-      clone.low = low;
-      clone.high = high;
+      clone.range = range;
+      clone.exact = exact;
       clone.attribute = attribute;
       clone.vitalSign = vitalSign;
       clone.category = category;
@@ -1368,10 +1121,10 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
       Object value = null;
-      if (quantity != null) {
-        value = quantity;
-      } else if (low != null && high != null) {
-        value = person.rand(low, high);
+      if (exact != null) {
+        value = exact.quantity;
+      } else if (range != null) {
+        value = person.rand(range.low, range.high);
       } else if (attribute != null) {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
@@ -1431,13 +1184,6 @@ public abstract class State implements Cloneable {
     private String category;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("category")) {
-        category = definition.get("category").getAsString();
-      }
-    }
-
     public MultiObservation clone() {
       MultiObservation clone = (MultiObservation) super.clone();
       clone.category = category;
@@ -1485,46 +1231,33 @@ public abstract class State implements Cloneable {
   public static class Symptom extends State {
     private String symptom;
     private String cause;
-    private Integer quantity;
-    private Integer low;
-    private Integer high;
+    private Range<Integer> range;
+    private Exact<Integer> exact;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
-      symptom = definition.get("symptom").getAsString();
-      if (definition.has("cause")) {
-        cause = definition.get("cause").getAsString();
-      } else {
-        cause = this.module.name;
-      }
-
-      JsonObject range = (JsonObject) definition.get("range");
-      JsonObject exact = (JsonObject) definition.get("exact");
-      if (range != null) {
-        low = range.get("low").getAsInt();
-        high = range.get("high").getAsInt();
-      } else if (exact != null) {
-        quantity = exact.get("quantity").getAsInt();
+      if (cause == null) {
+        cause = module.name;
       }
     }
 
+    @Override
     public Symptom clone() {
       Symptom clone = (Symptom) super.clone();
       clone.symptom = symptom;
       clone.cause = cause;
-      clone.quantity = quantity;
-      clone.low = low;
-      clone.high = high;
+      clone.range = range;
+      clone.exact = exact;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
-      if (quantity != null) {
-        person.setSymptom(cause, symptom, quantity);
-      } else if (low != null && high != null) {
-        person.setSymptom(cause, symptom, (int) person.rand(low, high));
+      if (exact != null) {
+        person.setSymptom(cause, symptom, exact.quantity);
+      } else if (range != null) {
+        person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high));
       } else {
         person.setSymptom(cause, symptom, 0);
       }
@@ -1556,45 +1289,17 @@ public abstract class State implements Cloneable {
     private List<Code> codes;
     private String conditionOnset;
     private String referencedByAttribute;
-    private String unit;
-    private Integer quantity;
-    private Integer low;
-    private Integer high;
+    private RangeWithUnit<Integer> range;
+    private ExactWithUnit<Integer> exact;
 
     @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      if (definition.has("condition_onset")) {
-        conditionOnset = definition.get("condition_onset").getAsString();
-      }
-      if (definition.has("referenced_by_attribute")) {
-        referencedByAttribute = definition.get("referenced_by_attribute").getAsString();
-      }
-
-      JsonObject range = (JsonObject) definition.get("range");
-      JsonObject exact = (JsonObject) definition.get("exact");
-      if (range != null) {
-        low = range.get("low").getAsInt();
-        high = range.get("high").getAsInt();
-        unit = range.get("unit").getAsString();
-      } else if (exact != null) {
-        quantity = exact.get("quantity").getAsInt();
-        unit = exact.get("unit").getAsString();
-      }
-    }
-
     public Death clone() {
       Death clone = (Death) super.clone();
       clone.codes = codes;
       clone.conditionOnset = conditionOnset;
       clone.referencedByAttribute = referencedByAttribute;
-      clone.unit = unit;
-      clone.quantity = quantity;
-      clone.low = low;
-      clone.high = high;
+      clone.range = range;
+      clone.exact = exact;
       return clone;
     }
 
@@ -1626,13 +1331,13 @@ public abstract class State implements Cloneable {
       if (reason != null) {
         rule = String.format("%s %s", rule, reason.display);
       }
-      if (quantity != null) {
-        long timeOfDeath = time + Utilities.convertTime(unit, (long) quantity);
+      if (exact != null) {
+        long timeOfDeath = time + Utilities.convertTime(exact.unit, exact.quantity);
         person.recordDeath(timeOfDeath, reason, rule);
         return true;
-      } else if (low != null && high != null) {
-        double duration = person.rand(low, high);
-        long timeOfDeath = time + Utilities.convertTime(unit, (long) duration);
+      } else if (range != null) {
+        double duration = person.rand(range.low, range.high);
+        long timeOfDeath = time + Utilities.convertTime(range.unit, (long) duration);
         person.recordDeath(timeOfDeath, reason, rule);
         return true;
       } else {
