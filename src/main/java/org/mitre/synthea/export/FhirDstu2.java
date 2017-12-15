@@ -230,12 +230,22 @@ public class FhirDstu2 {
           .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
     }
 
-    // We do not yet account for mixed race
     ExtensionDt raceExtension = new ExtensionDt();
-    raceExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-race");
+    raceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/us-core-race");
     String race = (String) person.attributes.get(Person.RACE);
-
-    String raceDisplay;
+    
+    ExtensionDt ethnicityExtension = new ExtensionDt();
+    ethnicityExtension.setUrl("http://hl7.org/fhir/StructureDefinition/us-core-ethnicity");
+    String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
+    
+    if (race.equals("hispanic")) {
+      race = "other";
+      ethnicity = "hispanic";
+    } else {
+      ethnicity = "nonhispanic";
+    }
+    
+    String raceDisplay;    
     switch (race) {
       case "white":
         raceDisplay = "White";
@@ -253,60 +263,28 @@ public class FhirDstu2 {
         raceDisplay = "Other";
         break;
     }
-
-    String raceNum = (String) raceEthnicityCodes.get(race);
-
-    if (race != "hispanic") {
-      ExtensionDt raceCodingExtension = new ExtensionDt();
-      raceCodingExtension.setUrl("ombCategory");
-      CodingDt raceCoding = new CodingDt();
-      raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
-      raceCoding.setCode(raceNum);
-      raceCoding.setDisplay(raceDisplay);
-      raceCodingExtension.setValue(raceCoding);
-      raceExtension.addUndeclaredExtension(raceCodingExtension);
-    }
-
-    ExtensionDt raceTextExtension = new ExtensionDt();
-    raceTextExtension.setUrl("text");
-    raceTextExtension.setValue(new StringDt(raceDisplay));
-
-    raceExtension.addUndeclaredExtension(raceTextExtension);
-
-    patientResource.addUndeclaredExtension(raceExtension);
-
-    // We do not yet account for mixed ethnicity
-    ExtensionDt ethnicityExtension = new ExtensionDt();
-    ethnicityExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity");
-    String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
-
+    
     String ethnicityDisplay;
-    if (race == "hispanic") {
-      ethnicity = "hispanic";
+    if (ethnicity.equals("hispanic")) {
       ethnicityDisplay = "Hispanic or Latino";
     } else {
-      ethnicity = "nonhispanic";
       ethnicityDisplay = "Not Hispanic or Latino";
     }
+    
+    Code raceCode = new Code(
+        "http://hl7.org/fhir/v3/Race",
+        (String) raceEthnicityCodes.get(race),
+        raceDisplay);
+    
+    Code ethnicityCode = new Code(
+        "http://hl7.org/fhir/v3/Ethnicity",
+        (String) raceEthnicityCodes.get(ethnicity),
+        ethnicityDisplay);
+    
+    raceExtension.setValue(mapCodeToCodeableConcept(raceCode, "http://hl7.org/fhir/v3/Race"));
+    ethnicityExtension.setValue(mapCodeToCodeableConcept(ethnicityCode, "http://hl7.org/fhir/v3/Ethnicity"));
 
-    String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);
-
-    ExtensionDt ethnicityCodingExtension = new ExtensionDt();
-    ethnicityCodingExtension.setUrl("ombCategory");
-    CodingDt ethnicityCoding = new CodingDt();
-    ethnicityCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
-    ethnicityCoding.setCode(ethnicityNum);
-    ethnicityCoding.setDisplay(ethnicityDisplay);
-    ethnicityCodingExtension.setValue(ethnicityCoding);
-
-    ethnicityExtension.addUndeclaredExtension(ethnicityCodingExtension);
-
-    ExtensionDt ethnicityTextExtension = new ExtensionDt();
-    ethnicityTextExtension.setUrl("text");
-    ethnicityTextExtension.setValue(new StringDt(ethnicityDisplay));
-
-    ethnicityExtension.addUndeclaredExtension(ethnicityTextExtension);
-
+    patientResource.addUndeclaredExtension(raceExtension);
     patientResource.addUndeclaredExtension(ethnicityExtension);
 
     String firstLanguage = (String) person.attributes.get(Person.FIRST_LANGUAGE);
@@ -346,17 +324,6 @@ public class FhirDstu2 {
         maidenName.addSuffix((String) person.attributes.get(Person.NAME_SUFFIX));
       }
     }
-
-    ExtensionDt birthSexExtension = new ExtensionDt();
-    birthSexExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
-    if (person.attributes.get(Person.GENDER).equals("M")) {
-      patientResource.setGender(AdministrativeGenderEnum.MALE);
-      birthSexExtension.setValue(new CodeDt("M"));
-    } else if (person.attributes.get(Person.GENDER).equals("F")) {
-      patientResource.setGender(AdministrativeGenderEnum.FEMALE);
-      birthSexExtension.setValue(new CodeDt("F"));
-    }
-    patientResource.addUndeclaredExtension(birthSexExtension);
 
     ExtensionDt mothersMaidenNameExtension = new ExtensionDt();
     mothersMaidenNameExtension
