@@ -51,12 +51,11 @@ public interface Validation {
           }
         }
         
-      } else if (value != null && value.getClass().isArray()) {
-        Object[] valueArray = (Object[]) value;
-        for (Object object : valueArray) {
-          if (object instanceof Validation) {
-            messages.addAll(((Validation) object).validate(context, path));
-          }
+      } else if (value != null && value.getClass().isArray() 
+          && Validation.class.isAssignableFrom(value.getClass().getComponentType())) {
+        Validation[] valueArray = (Validation[]) value;
+        for (Validation object : valueArray) {
+          messages.addAll(object.validate(context, path));
         }
       }
       

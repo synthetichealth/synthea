@@ -226,7 +226,7 @@ public abstract class Transition implements Validation {
     
     public NamedDistribution(LinkedTreeMap<String,?> definition) {
       this.attribute = (String) definition.get("attribute");
-      this.defaultDistribution = (double) definition.get("default");
+      this.defaultDistribution = (Double) definition.get("default");
     }
   }
 }
