@@ -227,9 +227,13 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
-      } while (isAlive == onlyDeadPatients);
-      // IOW, continue if the patient is alive and we only want dead ones, 
-      // or if the patient is dead and we want live ones
+      } while (!isAlive && !onlyDeadPatients);
+      // if the patient is alive and we want only dead ones => loop & try again
+      //  (and dont even export, handled above)
+      // if the patient is dead and we only want dead ones => done
+      // if the patient is dead and we want live ones => loop & try again
+      //  (but do export the record anyway)
+      // if the patient is alive and we want live ones => done
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
