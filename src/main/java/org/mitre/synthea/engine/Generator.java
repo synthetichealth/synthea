@@ -203,6 +203,7 @@ public class Generator {
         if (isAlive && onlyDeadPatients) {
           continue;
           // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
         if (database != null) {
@@ -227,9 +228,9 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
-      } while (!isAlive && !onlyDeadPatients);
+      } while ((!isAlive && !onlyDeadPatients) || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
-      //  (and dont even export, handled above)
+      //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
       // if the patient is dead and we want live ones => loop & try again
       //  (but do export the record anyway)
