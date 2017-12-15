@@ -5,11 +5,18 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import org.mitre.synthea.engine.Annotations.NoValidation;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.engine.Components.RangeWithUnit;
-import org.mitre.synthea.engine.Transition.TransitionType;
+import org.mitre.synthea.engine.Transition.ComplexTransition;
+import org.mitre.synthea.engine.Transition.ComplexTransitionOption;
+import org.mitre.synthea.engine.Transition.ConditionalTransition;
+import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
+import org.mitre.synthea.engine.Transition.DirectTransition;
+import org.mitre.synthea.engine.Transition.DistributedTransition;
+import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
@@ -23,29 +30,41 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
-public abstract class State implements Cloneable {
+public abstract class State implements Validation, Cloneable {
+  @NoValidation
   public Module module;
+  @NoValidation
   public String name;
+  @NoValidation
   public Long entered;
+  @NoValidation
   public Long exited;
+  
   private Transition transition;
+  // note that these are not Transition objects, because they are JSON lists
+  @NoValidation
+  private String directTransition; // or in this case just a String
+  @NoValidation
+  private List<ConditionalTransitionOption> conditionalTransition;
+  @NoValidation
+  private List<DistributedTransitionOption> distributedTransition;
+  @NoValidation
+  private List<ComplexTransitionOption> complexTransition;
+  @NoValidation
   public List<String> remarks;
 
   protected void initialize(Module module, String name, JsonObject definition) {
     this.module = module;
     this.name = name;
 
-    if (definition.has("direct_transition")) {
-      this.transition = new Transition(TransitionType.DIRECT, definition.get("direct_transition"));
-    } else if (definition.has("distributed_transition")) {
-      this.transition = new Transition(TransitionType.DISTRIBUTED,
-          definition.get("distributed_transition"));
-    } else if (definition.has("conditional_transition")) {
-      this.transition = new Transition(TransitionType.CONDITIONAL,
-          definition.get("conditional_transition"));
-    } else if (definition.has("complex_transition")) {
-      this.transition = new Transition(TransitionType.COMPLEX,
-          definition.get("complex_transition"));
+    if (directTransition != null) {
+      this.transition = new DirectTransition(directTransition);
+    } else if (distributedTransition != null) {
+      this.transition = new DistributedTransition(distributedTransition);
+    } else if (conditionalTransition != null) {
+      this.transition = new ConditionalTransition(conditionalTransition);
+    } else if (complexTransition != null) {
+      this.transition = new ComplexTransition(complexTransition);
     } else if (!(this instanceof Terminal)) {
       throw new RuntimeException("State `" + name + "` has no transition.\n");
     }
@@ -99,6 +118,10 @@ public abstract class State implements Cloneable {
 
   public String transition(Person person, long time) {
     return transition.follow(person, time);
+  }
+  
+  public Transition getTransition() {
+    return transition;
   }
 
   /**

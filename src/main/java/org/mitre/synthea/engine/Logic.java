@@ -21,34 +21,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  * must not modify state as instances of Logic within Modules are shared
  * across the population.
  */
-public abstract class Logic {
+public abstract class Logic implements Validation {
   public List<String> remarks;
-
-  /**
-   * Construct a logic object from the given definitions.
-
-   * @param definition
-   *          The JSON definition of the logic
-   * @return The constructed Logic object. The returned object will be of the appropriate subclass
-   *         of Logic, based on the "condition_type" parameter in the JSON definition.
-   *         
-   * @deprecated This is still used by Transitions, but those will be OOified soon. Do not use this.
-   */
-  @Deprecated
-  public static Logic build(JsonObject definition) {
-    try {
-      String type = definition.get("condition_type").getAsString().replaceAll("\\s", "");
-      String className = Logic.class.getName() + "$" + type;
-
-      Class<?> logicClass = Class.forName(className);
-
-      Logic logic = (Logic) Utilities.getGson().fromJson(definition, logicClass);
-
-      return logic;
-    } catch (Exception e) {
-      throw new Error("Unable to instantiate logic", e);
-    }
-  }
 
   /**
    * Test whether the logic is true for the given person at the given time.

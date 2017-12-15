@@ -1,10 +1,13 @@
 package org.mitre.synthea.engine;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.world.agents.Person;
 
@@ -13,76 +16,10 @@ import org.mitre.synthea.world.agents.Person;
  * stateless, and calling 'follow' on an instance must not modify state as instances of Transition
  * within States and Modules are shared across the population.
  */
-public class Transition {
+public abstract class Transition implements Validation {
 
-  public enum TransitionType {
-    DIRECT, DISTRIBUTED, CONDITIONAL, COMPLEX
-  }
-
-  public TransitionType type;
-  public List<String> transitions;
-  public List<Object> distributions;
-  public List<JsonObject> conditions;
-  public List<Transition> contained;
-
-  public Transition(TransitionType type, JsonElement jsonElement) {
-    // TODO - make Transitions OO like States.
-    // don't forget about remarks.
-    this.type = type;
-    this.transitions = new ArrayList<String>();
-    switch (type) {
-      case DIRECT:
-        transitions.add(jsonElement.getAsString());
-        break;
-      case DISTRIBUTED:
-        distributions = new ArrayList<Object>();
-        jsonElement.getAsJsonArray().forEach(item -> {
-          JsonObject transition = item.getAsJsonObject();
-          transitions.add(transition.get("transition").getAsString());
-
-          JsonElement distribution = transition.get("distribution");
-          if (distribution.isJsonPrimitive()) {
-            distributions.add(distribution.getAsDouble());
-          } else {
-            distributions.add(new NamedDistribution(distribution.getAsJsonObject()));
-          }
-        });
-        break;
-      case CONDITIONAL:
-        conditions = new ArrayList<JsonObject>();
-        jsonElement.getAsJsonArray().forEach(item -> {
-          JsonObject transition = item.getAsJsonObject();
-          transitions.add(transition.get("transition").getAsString());
-          if (transition.has("condition")) {
-            conditions.add(transition.get("condition").getAsJsonObject());
-          } else {
-            conditions.add(null);
-          }
-        });
-        break;
-      case COMPLEX:
-        conditions = new ArrayList<JsonObject>();
-        contained = new ArrayList<Transition>();
-        jsonElement.getAsJsonArray().forEach(item -> {
-          JsonObject transition = item.getAsJsonObject();
-          if (transition.has("transition")) {
-            contained.add(new Transition(TransitionType.DIRECT, transition.get("transition")));
-          } else if (transition.has("distributions")) {
-            contained
-                .add(new Transition(TransitionType.DISTRIBUTED, transition.get("distributions")));
-          } else {
-            System.err.format("Complex Transition malformed: %s\n", jsonElement.toString());
-          }
-          if (transition.has("condition")) {
-            conditions.add(transition.get("condition").getAsJsonObject());
-          }
-        });
-        break;
-      default:
-        // not possible
-    }
-  }
-
+  protected List<String> remarks;
+  
   /**
    * Get the name of the next state.
    * 
@@ -92,63 +29,188 @@ public class Transition {
    *          : time of this transition
    * @return name : name of the next state
    */
-  public String follow(Person person, long time) {
-    switch (type) {
-      case DIRECT:
-        return transitions.get(0);
-      case DISTRIBUTED:
-        double p = person.rand();
-        double high = 0.0;
-        for (int i = 0; i < distributions.size(); i++) {
-          Object d = distributions.get(i);
-          if (d instanceof Double) {
-            high += (Double) d;
-          } else {
-            NamedDistribution nd = (NamedDistribution) d;
-            double dist = nd.defaultDistribution;
-            if (person.attributes.containsKey(nd.attribute)) {
-              dist = (Double) person.attributes.get(nd.attribute);
-            }
+  public abstract String follow(Person person, long time);
+  
+  public abstract Set<String> getAllTransitions();
+  
+  
+  public static class DirectTransition extends Transition {
+    private String transition;
+    
+    public DirectTransition(String transition) {
+      this.transition = transition;
+    }
 
-            high += dist;
-          }
+    @Override
+    public Set<String> getAllTransitions() {
+      return Collections.singleton(transition);
+    }
 
-          if (p < high) {
-            return transitions.get(i);
-          }
-        }
-        return transitions.get(transitions.size() - 1);
-      case CONDITIONAL:
-        for (int i = 0; i < conditions.size(); i++) {
-          JsonObject logicDefinition = conditions.get(i);
-          if (logicDefinition == null) {
-            return transitions.get(i);
-          } else {
-            Logic allow = Logic.build(logicDefinition);
-            if (allow.test(person, time)) {
-              return transitions.get(i);
-            }
-          }
-        }
-        return transitions.get(transitions.size() - 1);
-      case COMPLEX:
-        for (int i = 0; i < conditions.size(); i++) {
-          JsonObject logicDefinition = conditions.get(i);
-          if (logicDefinition == null) {
-            return contained.get(i).follow(person, time);
-          } else {
-            Logic allow = Logic.build(logicDefinition);
-            if (allow.test(person, time)) {
-              return contained.get(i).follow(person, time);
-            }
-          }
-        }
-        return contained.get(contained.size() - 1).follow(person, time);
-      default:
-        return transitions.get(0);
+    @Override
+    public String follow(Person person, long time) {
+      return transition;
     }
   }
+  
+  private abstract static class TransitionOption implements Validation {
+    protected String transition;
+  }
+  
+  public static final class DistributedTransitionOption extends TransitionOption {
+    private Object distribution;
+    private Double numericDistribution;
+    private NamedDistribution namedDistribution;
+  }
+  
+  public static final class DistributedTransition extends Transition {
+    private List<DistributedTransitionOption> transitions;
+    
+    public DistributedTransition(List<DistributedTransitionOption> transitions) {
+      this.transitions = transitions;
+    }
+    
+    @Override
+    public Set<String> getAllTransitions() {
+      return transitions.stream().map(dto -> dto.transition).collect(Collectors.toSet());
+    }
 
+    @Override
+    public String follow(Person person, long time) {
+      return pickDistributedTransition(transitions, person);
+    }
+  }
+  
+  public static final class ConditionalTransitionOption extends TransitionOption {
+    private Logic condition;
+  }
+  
+  public static class ConditionalTransition extends Transition {
+    private List<ConditionalTransitionOption> transitions;
+    
+    public ConditionalTransition(List<ConditionalTransitionOption> transitions) {
+      this.transitions = transitions;
+    }
+    
+    @Override
+    public Set<String> getAllTransitions() {
+      return transitions.stream().map(cto -> cto.transition).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String follow(Person person, long time) {
+      for (ConditionalTransitionOption option : transitions) {
+        if (option.condition == null 
+            || option.condition.test(person, time)) {
+          return option.transition;
+        }
+      }
+      
+      // fallback, just return the last transition
+      TransitionOption last = transitions.get(transitions.size() - 1);
+      return last.transition;
+    }
+    
+  }
+  
+  public static final class ComplexTransitionOption extends TransitionOption {
+    private Logic condition;
+    private List<DistributedTransitionOption> distributions;
+    
+  }
+  
+  public static class ComplexTransition extends Transition {
+    private List<ComplexTransitionOption> transitions;
+    
+    public ComplexTransition(List<ComplexTransitionOption> transitions) {
+      this.transitions = transitions;
+    }
+    
+    @Override
+    public Set<String> getAllTransitions() {
+      Set<String> allTransitions = new HashSet<String>();
+      
+      for (ComplexTransitionOption cto : transitions) {
+        if (cto.transition != null) {
+          allTransitions.add(cto.transition);
+        } else if (cto.distributions != null) {
+          
+          Set<String> subDists = cto.distributions
+              .stream()
+              .map(dto -> dto.transition)
+              .collect(Collectors.toSet());
+          allTransitions.addAll(subDists);
+        }
+      }
+      
+      return allTransitions;
+    }
+
+    @Override
+    public String follow(Person person, long time) {
+      for (ComplexTransitionOption option : transitions) {
+        if (option.condition == null 
+            || option.condition.test(person, time)) {
+          return follow(option, person);
+        }
+      }
+      
+      // fallback, just return the last transition
+      ComplexTransitionOption last = transitions.get(transitions.size() - 1);
+      return follow(last, person);
+    }
+    
+    private String follow(ComplexTransitionOption option, Person person) {
+      if (option.transition != null) {
+        return option.transition;
+      } else if (option.distributions != null) {
+        return pickDistributedTransition(option.distributions, person);
+      }
+      throw new IllegalArgumentException(
+          "Complex Transition must have either transition or distributions");
+    }
+  }
+  
+  private static String pickDistributedTransition(
+      List<DistributedTransitionOption> transitions, Person person) {
+    double p = person.rand();
+    double high = 0.0;
+    for (DistributedTransitionOption option : transitions) {
+      processDistributedTransition(option);
+      if (option.numericDistribution != null) {
+        high += option.numericDistribution;
+      } else {
+        NamedDistribution nd = option.namedDistribution;
+        double dist = nd.defaultDistribution;
+        if (person.attributes.containsKey(nd.attribute)) {
+          dist = (Double) person.attributes.get(nd.attribute);
+        }
+
+        high += dist;
+      }
+
+      if (p < high) {
+        return option.transition;
+      }
+    }
+    // fallback, just return the last transition
+    TransitionOption last = transitions.get(transitions.size() - 1);
+    return last.transition;
+  }
+
+  private static void processDistributedTransition(DistributedTransitionOption option) {
+    if (option.numericDistribution != null || option.namedDistribution != null) {
+      return;
+    }
+    
+    if (option.distribution instanceof Double) {
+      option.numericDistribution = (Double)option.distribution;
+    } else {
+      @SuppressWarnings("unchecked")
+      LinkedTreeMap<String,Object> map = (LinkedTreeMap<String,Object>)option.distribution;
+      option.namedDistribution = new NamedDistribution(map);
+    }
+  }
+  
   /**
    * Helper class for distributions, which may either be a double, or a NamedDistribution with an
    * attribute to fetch the desired probability from and a default.
@@ -160,6 +222,11 @@ public class Transition {
     public NamedDistribution(JsonObject definition) {
       this.attribute = definition.get("attribute").getAsString();
       this.defaultDistribution = definition.get("default").getAsDouble();
+    }
+    
+    public NamedDistribution(LinkedTreeMap<String,?> definition) {
+      this.attribute = (String) definition.get("attribute");
+      this.defaultDistribution = (double) definition.get("default");
     }
   }
 }

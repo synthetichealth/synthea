@@ -14,13 +14,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
+import org.mitre.synthea.engine.State.Terminal;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -211,5 +214,39 @@ public class Module {
       return Collections.emptySet();
     }
     return states.keySet();
+  }
+  
+  public List<String> validate() {
+    if (states == null) {
+      // ex, if this is a non-GMF module
+      return Collections.emptyList();
+    }
+    
+    List<String> messages = new LinkedList<>();
+    
+    Set<String> reachable = new HashSet<>();
+    reachable.add("Initial");
+    
+    states.forEach((stName, state) -> {
+      
+      messages.addAll(state.validate(this, Collections.emptyList()));
+      
+      
+      Transition transition = state.getTransition();
+      if (transition == null) {
+        if (!(state instanceof Terminal)) {
+          messages.add(this.name + ": State `" + state + "` has no transition.\n");
+        }
+      } else {
+        reachable.addAll(transition.getAllTransitions());
+      }
+    });
+    
+    Set<String> unreachable = new HashSet<String>(states.keySet());
+    unreachable.removeAll(reachable);
+    
+    unreachable.forEach(st -> messages.add(this.name + ": State " + st + " is unreachable"));
+    
+    return messages;
   }
 }
