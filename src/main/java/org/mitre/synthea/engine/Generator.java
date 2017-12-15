@@ -48,6 +48,7 @@ public class Generator {
   public Map<String, Demographics> demographics;
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
+  private boolean onlyDeadPatients;
   public TransitionMetrics metrics;
 
   public Generator() throws IOException {
@@ -90,6 +91,7 @@ public class Generator {
     this.stop = System.currentTimeMillis();
     this.demographics = Demographics.loadByName(Config.get("generate.demographics.default_file"));
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
+    this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
 
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
@@ -196,6 +198,14 @@ public class Generator {
 
         DeathModule.process(person, time);
 
+        isAlive = person.alive(time);
+
+        if (isAlive && onlyDeadPatients) {
+          continue;
+          // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
         if (database != null) {
           database.store(person);
         }
@@ -203,8 +213,6 @@ public class Generator {
         if (this.metrics != null) {
           metrics.recordStats(person, time);
         }
-
-        isAlive = person.alive(time);
 
         if (!this.logLevel.equals("none")) {
           writeToConsole(person, index, time, isAlive);
@@ -220,7 +228,13 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
-      } while (!isAlive);
+      } while ((!isAlive && !onlyDeadPatients) || (isAlive && onlyDeadPatients));
+      // if the patient is alive and we want only dead ones => loop & try again
+      //  (and dont even export, see above)
+      // if the patient is dead and we only want dead ones => done
+      // if the patient is dead and we want live ones => loop & try again
+      //  (but do export the record anyway)
+      // if the patient is alive and we want live ones => done
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
