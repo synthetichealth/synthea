@@ -28,8 +28,9 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.0.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.0.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0'
 	// C-CDA export uses Apache FreeMarker templates
 	compile 'org.freemarker:freemarker:2.3.26-incubating'
   // JTS for location processing
@@ -54,9 +55,17 @@ dependencies {
 	testCompile 'org.mockito:mockito-core:2.7.22'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
-	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.0.0'
+	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.1.0'
+	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.1.0'
 	testCompile 'com.phloc:phloc-schematron:2.7.1'
 	testCompile 'com.phloc:phloc-commons:4.4.11'
+}
+
+// Provide more descriptive test failure output
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
 }
 
 buildscript {

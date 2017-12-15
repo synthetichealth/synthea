@@ -46,6 +46,17 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Boolean.parseBoolean(Config.get("exporter.fhir_dstu2.export"))) {
+      String bundleJson = FhirDstu2.convertToFHIR(person, stopTime);
+      File outDirectory = getOutputFolder("fhir_dstu2", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
+
+      try {
+        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
 
@@ -85,6 +96,12 @@ public abstract class Exporter {
   public static void runPostCompletionExports(Generator generator) {
     try {
       HospitalExporter.export(generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+    try {
+      HospitalDSTU2Exporter.export(generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
