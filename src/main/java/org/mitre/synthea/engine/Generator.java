@@ -179,7 +179,7 @@ public class Generator {
     Person person = null;
     try {
       boolean isAlive = true;
-      String cityName = Location.randomCityName(random);
+      String cityName = Location.randomCityName(new Random(personSeed));
       Demographics city = demographics.get(cityName);
       if (city == null && cityName.endsWith(" Town")) {
         cityName = cityName.substring(0, cityName.length() - 5);
