@@ -66,6 +66,7 @@ public class Person implements Serializable {
 
   public final Random random;
   public final long seed;
+  public long populationSeed;
   public Map<String, Object> attributes;
   public Map<VitalSign, Double> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;

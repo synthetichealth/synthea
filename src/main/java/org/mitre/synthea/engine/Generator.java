@@ -190,6 +190,7 @@ public class Generator {
         List<Module> modules = Module.getModules();
 
         person = new Person(personSeed);
+        person.populationSeed = this.seed;
 
         // TODO - this is quick & easy to implement,
         // but we need to adapt the ruby method of pre-defining all the demographic buckets
@@ -227,6 +228,8 @@ public class Generator {
         isAlive = person.alive(time);
 
         if (isAlive && onlyDeadPatients) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
           continue;
           // skip the other stuff if the patient is alive and we only want dead patients
           // note that this skips ahead to the while check and doesn't automatically re-loop
