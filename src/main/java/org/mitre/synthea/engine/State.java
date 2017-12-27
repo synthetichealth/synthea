@@ -1,11 +1,14 @@
 package org.mitre.synthea.engine;
 
+import static org.mitre.synthea.helpers.ValidationHelper.allOf;
+import static org.mitre.synthea.helpers.ValidationHelper.buildMessage;
+import static org.mitre.synthea.helpers.ValidationHelper.exactlyOneOf;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import org.mitre.synthea.engine.Annotations.NoValidation;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
@@ -31,26 +34,17 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public abstract class State implements Validation, Cloneable {
-  @NoValidation
   public Module module;
-  @NoValidation
   public String name;
-  @NoValidation
   public Long entered;
-  @NoValidation
   public Long exited;
   
   private Transition transition;
   // note that these are not Transition objects, because they are JSON lists
-  @NoValidation
   private String directTransition; // or in this case just a String
-  @NoValidation
   private List<ConditionalTransitionOption> conditionalTransition;
-  @NoValidation
   private List<DistributedTransitionOption> distributedTransition;
-  @NoValidation
   private List<ComplexTransitionOption> complexTransition;
-  @NoValidation
   public List<String> remarks;
 
   protected void initialize(Module module, String name, JsonObject definition) {
@@ -203,6 +197,7 @@ public abstract class State implements Validation, Cloneable {
    * resumes.
    */
   public static class CallSubmodule extends State {
+    @Metadata(required = true)
     private String submodule;
 
     @Override
@@ -285,6 +280,14 @@ public abstract class State implements Validation, Cloneable {
       clone.range = range;
       return clone;
     }
+    
+    @Override
+    public void validateSpecial(Module context, List<String> path, List<String> messages) {
+      if (!exactlyOneOf(range, exact)) {
+        String message = "Either range or exact is required";
+        messages.add(buildMessage(message, path));
+      }
+    }
 
     @Override
     public boolean process(Person person, long time) {
@@ -320,6 +323,7 @@ public abstract class State implements Validation, Cloneable {
    * point it progresses to the next state.
    */
   public static class Guard extends State {
+    @Metadata(required = true)
     private Logic allow;
     
     @Override
@@ -346,6 +350,7 @@ public abstract class State implements Validation, Cloneable {
    * reset.
    */
   public static class SetAttribute extends State {
+    @Metadata(required = true)
     private String attribute;
     private Object value;
 
@@ -391,7 +396,9 @@ public abstract class State implements Validation, Cloneable {
    * <p>Note: The attribute is initialized with a default value of 0 if not previously set.
    */
   public static class Counter extends State {
+    @Metadata(required = true)
     private String attribute;
+    @Metadata(required = true, validValues = {"increment", "decrement"})
     private String action;
     private boolean increment;
 
@@ -459,6 +466,7 @@ public abstract class State implements Validation, Cloneable {
   public static class Encounter extends State {
     private boolean wellness;
     private String encounterClass;
+    @Metadata(min = 1)
     private List<Code> codes;
     private String reason;
 
@@ -470,6 +478,14 @@ public abstract class State implements Validation, Cloneable {
       clone.reason = reason;
       clone.codes = codes;
       return clone;
+    }
+    
+    @Override
+    public void validateSpecial(Module context, List<String> path, List<String> messages) {
+      if (!(wellness || allOf(codes, encounterClass))) {
+        String message = "Either wellness or all of (codes and encounter_class) is required.";
+        messages.add(buildMessage(message, path));
+      }
     }
 
     @Override
@@ -604,8 +620,11 @@ public abstract class State implements Validation, Cloneable {
   private abstract static class OnsetState extends State {
     public boolean diagnosed;
 
+    @Metadata(min = 1)
     protected List<Code> codes;
     protected String assignToAttribute;
+    
+    @Metadata(referenceToStateType = Encounter.class)
     protected String targetEncounter;
 
     public OnsetState clone() {
@@ -675,7 +694,9 @@ public abstract class State implements Validation, Cloneable {
    * ConditionOnset state assigned a condition
    */
   public static class ConditionEnd extends State {
+    @Metadata(min = 1)
     private List<Code> codes;
+    @Metadata(referenceToStateType = ConditionOnset.class)
     private String conditionOnset;
     private String referencedByAttribute;
 
@@ -686,6 +707,15 @@ public abstract class State implements Validation, Cloneable {
       clone.conditionOnset = conditionOnset;
       clone.referencedByAttribute = referencedByAttribute;
       return clone;
+    }
+    
+    @Override
+    public void validateSpecial(Module context, List<String> path, List<String> messages) {
+      if (!exactlyOneOf(codes, conditionOnset, referencedByAttribute)) {
+        String msg = 
+            "Exactly one of codes, condition_onset, or referenced_by_attribute is required";
+        messages.add(buildMessage(msg, path));
+      }
     }
 
     @Override
@@ -739,10 +769,13 @@ public abstract class State implements Validation, Cloneable {
    * 
    */
   public static class AllergyEnd extends State {
+    @Metadata(min = 1)
     private List<Code> codes;
+    
+    @Metadata(referenceToStateType = AllergyOnset.class)
     private String allergyOnset;
     private String referencedByAttribute;
-
+    
     @Override
     public AllergyEnd clone() {
       AllergyEnd clone = (AllergyEnd) super.clone();
@@ -750,6 +783,15 @@ public abstract class State implements Validation, Cloneable {
       clone.allergyOnset = allergyOnset;
       clone.referencedByAttribute = referencedByAttribute;
       return clone;
+    }
+    
+    @Override
+    public void validateSpecial(Module context, List<String> path, List<String> messages) {
+      if (!exactlyOneOf(codes, allergyOnset, referencedByAttribute)) {
+        String msg = 
+            "Exactly one of codes, allergy_onset, or referenced_by_attribute is required";
+        messages.add(buildMessage(msg, path));
+      }
     }
 
     @Override
@@ -775,6 +817,7 @@ public abstract class State implements Validation, Cloneable {
    * the name of an attribute as the reason for the prescription.
    */
   public static class MedicationOrder extends State {
+    @Metadata(required = true, min = 1)
     private List<Code> codes;
     private String reason;
     private JsonObject prescription; // TODO make this a Component
@@ -842,7 +885,9 @@ public abstract class State implements Validation, Cloneable {
    * previous MedicationOrder state assigned a medication
    */
   public static class MedicationEnd extends State {
+    @Metadata(min = 1)
     private List<Code> codes;
+    @Metadata(referenceToStateType = MedicationOrder.class)
     private String medicationOrder;
     private String referencedByAttribute;
 
@@ -883,6 +928,7 @@ public abstract class State implements Validation, Cloneable {
    * what the care plan entails.
    */
   public static class CarePlanStart extends State {
+    @Metadata(required = true, min = 1)
     private List<Code> codes;
     private List<Code> activities;
     private List<JsonObject> goals; // TODO: make this a Component
@@ -944,7 +990,9 @@ public abstract class State implements Validation, Cloneable {
    * previous CarePlanStart state assigned a care plan
    */
   public static class CarePlanEnd extends State {
+    @Metadata(min = 1)
     private List<Code> codes;
+    @Metadata(referenceToStateType = CarePlanStart.class)
     private String careplan;
     private String referencedByAttribute;
 
@@ -982,6 +1030,7 @@ public abstract class State implements Validation, Cloneable {
    * supports identifying a previous ConditionOnset or an attribute as the reason for the procedure.
    */
   public static class Procedure extends State {
+    @Metadata(required = true, min = 1)
     private List<Code> codes;
     private String reason;
     private RangeWithUnit<Long> duration;
@@ -1055,7 +1104,9 @@ public abstract class State implements Validation, Cloneable {
    * not a physical metric, so it should not be stored in a VitalSign.
    */
   public static class VitalSign extends State {
+    @Metadata(required = true)
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    @Metadata(required = true)
     private String unit;
     private Range<Double> range;
     private Exact<Double> exact;
@@ -1068,6 +1119,14 @@ public abstract class State implements Validation, Cloneable {
       clone.vitalSign = vitalSign;
       clone.unit = unit;
       return clone;
+    }
+    
+    @Override
+    public void validateSpecial(Module context, List<String> path, List<String> messages) {
+      if (!exactlyOneOf(range, exact)) {
+        String message = "Either range or exact is required";
+        messages.add(buildMessage(message, path));
+      }
     }
 
     @Override
@@ -1119,6 +1178,7 @@ public abstract class State implements Validation, Cloneable {
    * as administrative data such as marital status, race, ethnicity and religious affiliation.
    */
   public static class Observation extends State {
+    @Metadata(required = true, min = 1)
     private List<Code> codes;
     private Range<Double> range;
     private Exact<Object> exact;
@@ -1138,6 +1198,20 @@ public abstract class State implements Validation, Cloneable {
       clone.category = category;
       clone.unit = unit;
       return clone;
+    }
+    
+    @Override
+    public void validateSpecial(Module context, List<String> path, List<String> messages) {
+      // ruby version is         
+      // required_field or: [:vital_sign, and: [:unit, or: [:attribute, :range, :exact]]]
+      // try to translate that in a way that's readable
+      
+      if (vitalSign == null 
+          && (unit == null || !exactlyOneOf(attribute, range, exact))) {
+        String msg = 
+            "Either vital_sign, or unit and one of (attribute, range, or exact) is required.";  
+        messages.add(buildMessage(msg, path));
+      }
     }
 
     @Override
@@ -1168,29 +1242,18 @@ public abstract class State implements Validation, Cloneable {
    * package multiple observations into a single entity. It is an implementation detail and should
    * not be referenced by JSON modules directly.
    */
-  private static class ObservationGroup extends State {
+  private abstract static class ObservationGroup extends State {
+    @Metadata(required = true, min = 1)
     protected List<Code> codes;
+    
+    @Metadata(required = true)
     protected int numberOfObservations;
-
-    @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      if (definition.has("codes")) {
-        codes = Code.fromJson(definition.get("codes").getAsJsonArray());
-      }
-      numberOfObservations = definition.get("number_of_observations").getAsInt();
-    }
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();
       clone.codes = codes;
       clone.numberOfObservations = numberOfObservations;
       return clone;
-    }
-
-    @Override
-    public boolean process(Person person, long time) {
-      return true;
     }
   }
 
@@ -1204,6 +1267,7 @@ public abstract class State implements Validation, Cloneable {
    * EncounterEnd. See the Encounter section above for more details.
    */
   public static class MultiObservation extends ObservationGroup {
+    @Metadata(required = true)
     private String category;
 
     @Override
@@ -1252,6 +1316,7 @@ public abstract class State implements Validation, Cloneable {
    * condition type.
    */
   public static class Symptom extends State {
+    @Metadata(required = true)
     private String symptom;
     private String cause;
     private Range<Integer> range;
@@ -1309,7 +1374,9 @@ public abstract class State implements Validation, Cloneable {
    * created events and records with a timestamp after the patient's death.
    */
   public static class Death extends State {
+    @Metadata(min = 1)
     private List<Code> codes;
+    @Metadata(referenceToStateType = ConditionOnset.class)
     private String conditionOnset;
     private String referencedByAttribute;
     private RangeWithUnit<Integer> range;

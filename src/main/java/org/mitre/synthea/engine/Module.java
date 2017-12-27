@@ -229,7 +229,7 @@ public class Module {
     
     states.forEach((stName, state) -> {
       
-      messages.addAll(state.validate(this, Collections.emptyList()));
+      messages.addAll(state.validate(this, Collections.singletonList(this.name)));
       
       
       Transition transition = state.getTransition();
