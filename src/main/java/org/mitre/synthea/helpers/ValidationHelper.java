@@ -1,6 +1,7 @@
 package org.mitre.synthea.helpers;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,6 +74,11 @@ public final class ValidationHelper {
       return;
     }
     
+    boolean isTransient = Modifier.isTransient(field.getModifiers());
+    if (isTransient) {
+      return;
+    }
+    
     Object value;
     try {
       value = FieldUtils.readField(field, object, true); //field.get(this);
@@ -98,9 +104,8 @@ public final class ValidationHelper {
     } else if (value instanceof Collection<?>) {
       validateCollection(value, metadata, field, messages);
       
-    } else if (value.getClass().isArray()) {
-      validateArray(value, metadata, field, messages);
     }
+    // NOTE: this assumes no arrays, which we currently do not use
     
     if (metadata != null) {
       if (metadata.validValues() != null && metadata.validValues().length > 0) {
@@ -109,8 +114,8 @@ public final class ValidationHelper {
         String[] validValues = metadata.validValues();
         
         if (!Arrays.asList(validValues).contains(strVal)) {
-          String message = field.getName() + " has an invalid value: '" + strVal + "' . Valid values are: "
-              + String.join(",", validValues);
+          String message = field.getName() + " has an invalid value: '" + strVal
+              + "'. Valid values are: " + String.join(",", validValues);
           
           messages.add(buildMessage(message, path));
         }
@@ -149,22 +154,6 @@ public final class ValidationHelper {
           field.getName(), messages);
     }
   }
-  
-  private void validateArray(Object value, Metadata metadata, Field field, List<String> messages) {
-    Object[] valueObjArray = (Object[]) value;
-    if (Validation.class.isAssignableFrom(value.getClass().getComponentType())) {
-      Validation[] valueArray = (Validation[]) valueObjArray;
-      for (Validation object : valueArray) {
-        messages.addAll(object.validate(context, path));
-      }
-    }
-    
-    if (metadata != null) {
-      validateCollectionSize(valueObjArray.length, metadata.min(), metadata.max(),
-          field.getName(), messages);
-    }
-  }
- 
   
   private void validateCollectionSize(int size, int min, int max,
       String fieldName, List<String> messages) {
