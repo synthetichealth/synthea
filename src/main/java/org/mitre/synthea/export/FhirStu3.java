@@ -53,6 +53,7 @@ import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus;
+import org.hl7.fhir.dstu3.model.Meta;
 import org.hl7.fhir.dstu3.model.Money;
 import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
@@ -73,6 +74,7 @@ import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -103,6 +105,8 @@ public class FhirStu3 {
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   private static final Map languageLookup = loadLanguageLookup();
 
+  private static final boolean useSHRExtensions = Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
+  
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
     String filename = "race_ethnicity_codes.json";
@@ -352,6 +356,11 @@ public class FhirStu3 {
       birthSexExtension.setValue(new CodeType("F"));
     }
     patientResource.addExtension(birthSexExtension);
+    
+    Extension interpreterRequired = new Extension(
+        "http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired", new BooleanType(
+            false));
+    patientResource.addExtension(interpreterRequired);
 
     Extension mothersMaidenNameExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
@@ -418,6 +427,29 @@ public class FhirStu3 {
     patientResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
         .setDiv(new XhtmlNode(NodeType.Element).setValue(generatedBySynthea)));
 
+    if (useSHRExtensions) {
+      
+      patientResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-demographics-PersonOfRecord"));
+
+      // PersonOfRecord profile requires telecom, gender, birthDate, address, maritalStatus, 
+      // multipleBirth, communication, birthPlace, interpreterRequired
+
+      patientResource.addExtension()
+        .setUrl(SHR_EXT + "shr-actor-FictionalPerson-extension")
+        .setValue(new BooleanType(true));
+      
+      String fathersName = (String) person.attributes.get(Person.NAME_FATHER);
+      Extension fathersNameExtension = new Extension(
+          SHR_EXT + "shr-demographics-FathersName-extension", new HumanName().setText(fathersName));
+      patientResource.addExtension(fathersNameExtension);
+
+      String ssn = (String) person.attributes.get(Person.IDENTIFIER_SSN);
+      Extension ssnExtension = new Extension(
+          SHR_EXT + "shr-demographics-SocialSecurityNumber-extension",
+          new StringType(ssn));
+      patientResource.addExtension(ssnExtension);
+    }
+    
     // DALY and QALY values
     // we only write the last(current) one to the patient record
     Double dalyValue = (Double) person.attributes.get("most-recent-daly");

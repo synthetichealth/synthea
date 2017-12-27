@@ -96,7 +96,6 @@ public final class LifecycleModule extends Module {
     String firstName = faker.name().firstName();
     String lastName = faker.name().lastName();
     if (appendNumbersToNames) {
-      // randInt(1000) produces 1-3 digits
       firstName = addHash(firstName);
       lastName = addHash(lastName);
     }
@@ -111,6 +110,13 @@ public final class LifecycleModule extends Module {
       motherLastName = addHash(motherLastName);
     }
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
+    
+    String fatherFirstName = faker.name().firstName();
+    if (appendNumbersToNames) {
+      fatherFirstName = addHash(fatherFirstName);
+    }
+    // this is anglocentric where the baby gets the father's last name
+    attributes.put(Person.NAME_FATHER, fatherFirstName + " " + lastName);
 
     double prevalenceOfTwins = 
         (double) BiometricsConfig.get("lifecycle.prevalence_of_twins", 0.02);
@@ -155,6 +161,13 @@ public final class LifecycleModule extends Module {
    * @return The name with a hash appended, ex "John123" or "Smith22"
    */
   private static String addHash(String name) {
+    // note that this value should be deterministic
+    // It cannot be a random number. It needs to be a hash value or something deterministic.
+    // We do not want John10 and John52 -- we want all the Johns to have the SAME numbers. e.g. All
+    // people named John become John52
+    // Why? Because we do not know how using systems will index names. Say a user of an system
+    // loaded with Synthea data wants to find all the people named John Smith. This will be easier
+    // if John Smith always resolves to John52 Smith32 and not [John52 Smith32, John10 Smith22, ...]
     return name + Integer.toString(Math.abs(name.hashCode() % 1000));
   }
 
