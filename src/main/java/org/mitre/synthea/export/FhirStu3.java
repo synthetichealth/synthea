@@ -110,7 +110,7 @@ public class FhirStu3 {
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
-  private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/";
+  private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/"; 
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
 
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -401,11 +401,6 @@ public class FhirStu3 {
       birthSexExtension.setValue(new CodeType("F"));
     }
     patientResource.addExtension(birthSexExtension);
-    
-    Extension interpreterRequired = new Extension(
-        "http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired", new BooleanType(
-            false));
-    patientResource.addExtension(interpreterRequired);
 
     Extension mothersMaidenNameExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
@@ -474,10 +469,10 @@ public class FhirStu3 {
 
     if (USE_SHR_EXTENSIONS) {
       
-      patientResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-demographics-PersonOfRecord"));
+      patientResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Patient"));
 
-      // PersonOfRecord profile requires telecom, gender, birthDate, address, maritalStatus, 
-      // multipleBirth, communication, birthPlace, interpreterRequired
+      // Patient profile requires race, ethnicity, birthsex,
+      // MothersMaidenName, FathersName, Person-extension
 
       patientResource.addExtension()
         .setUrl(SHR_EXT + "shr-actor-FictionalPerson-extension")
@@ -770,7 +765,7 @@ public class FhirStu3 {
     if (USE_SHR_EXTENSIONS) {
       // TODO: could potentially use Injury profile here, 
       // but it's not obvious how to map codes that indicate "injury"
-      conditionResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-problem-Problem"));
+      conditionResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-condition-Condition"));
       // required fields for this profile are clinicalStatus and assertedDate
     }
 
@@ -823,16 +818,16 @@ public class FhirStu3 {
       // the allergy did occur, so nonoccurrence = false
       
       Meta meta = new Meta();
-      meta.addProfile("#{SHR_EXT}shr-allergy-AllergyIntolerance");
+      meta.addProfile(SHR_EXT + "shr-allergy-AllergyIntolerance");
       // required fields for AllergyIntolerance profile are assertedDate
 
       switch (category) {
         case FOOD:
-          meta.addProfile("#{SHR_EXT}shr-allergy-FoodAllergy");
+          meta.addProfile(SHR_EXT + "shr-allergy-FoodAllergy");
           // required fields for FoodAllergy profile are category(must be 'food')
           break;
         case MEDICATION:
-          meta.addProfile("#{SHR_EXT}shr-allergy-DrugAllergy");
+          meta.addProfile(SHR_EXT + "shr-allergy-DrugAllergy");
           // required fields for DrugAllergy profile are category(must be 'drug')
           break;
         default:
@@ -902,20 +897,20 @@ public class FhirStu3 {
     
     if (USE_SHR_EXTENSIONS) {
       Meta meta = new Meta();
-      meta.addProfile(SHR_EXT + "shr-observation-Observation"); // all Observations are Observations
+      meta.addProfile(SHR_EXT + "shr-finding-Observation"); // all Observations are Observations
   
       // add the sub-profile based on observation category
       switch (observation.category) {
         case "vital-signs":
           meta.addProfile(SHR_EXT + "shr-vital-VitalSign");
           break;
-        case "social-history":
-          meta.addProfile(SHR_EXT + "shr-observation-SocialHistory");
-          
-          observationResource.getCategory().add(
-              new CodeableConcept().addCoding(
-                  new Coding("http://ncimeta.nci.nih.gov", "C2004062",null)));
-          break;
+//        case "social-history":
+//          meta.addProfile(SHR_EXT + "shr-observation-SocialHistory");
+//          
+//          observationResource.getCategory().add(
+//              new CodeableConcept().addCoding(
+//                  new Coding("http://ncimeta.nci.nih.gov", "C2004062",null)));
+//          break;
         default:
           break;
       }
@@ -982,7 +977,7 @@ public class FhirStu3 {
     }
     
     if (USE_SHR_EXTENSIONS) {
-      procedureResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-procedure-Procedure"));
+      procedureResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-procedure-ProcedurePerformed"));
 
       procedureResource.addExtension()
         .setUrl(SHR_EXT + "shr-core-CodeableConcept-extension")
@@ -1008,7 +1003,7 @@ public class FhirStu3 {
     immResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
     
     if (USE_SHR_EXTENSIONS) {
-      immResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-immunization-Immunization"));
+      immResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-immunization-ImmunizationGiven"));
       // Immunization profile turns vaccineCode into a SHR codeableConcept => requires text
     }
     
@@ -1113,7 +1108,7 @@ public class FhirStu3 {
         .setValue(PRESCRIPTION_OF_DRUG_CC);
 
       medicationResource.setMeta(new Meta()
-          .addProfile(SHR_EXT + "shr-medication-MedicationPrescription"));
+          .addProfile(SHR_EXT + "shr-medication-MedicationRequested"));
       // required fields for this profile are status and shr-base-ActionCode-extension
     }
     
@@ -1158,12 +1153,9 @@ public class FhirStu3 {
       reference.setDisplay(observation.codes.get(0).display);
       reportResource.addResult(reference);
     }
-    
-    if (USE_SHR_EXTENSIONS) {
-      reportResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-observation-Panel"));
-      // required fields for this profile are subject and issued
-    }
 
+    // no SHR profile for DiagnosticReport
+    
     return newEntry(bundle, reportResource);
   }
 
@@ -1268,8 +1260,8 @@ public class FhirStu3 {
     organizationResource.setType(organizationType);
     
     if (USE_SHR_EXTENSIONS) {
-      organizationResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-actor-Organization"));
-      // required fields for this profile are name and type
+      organizationResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Organization"));
+      // required fields for this profile are identifier, type, and contact
     }
   
     return newEntry(bundle, organizationResource);

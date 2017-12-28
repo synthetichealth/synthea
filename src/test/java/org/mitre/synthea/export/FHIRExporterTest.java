@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
@@ -9,21 +8,37 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 
+import java.io.FileReader;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
+import org.hl7.fhir.dstu3.hapi.validation.DefaultProfileValidationSupport;
+import org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator;
+import org.hl7.fhir.dstu3.hapi.validation.ValidationSupportChain;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.CodeSystem;
 import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.ValueSet;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Observation;
+import org.hl7.fhir.dstu3.model.StructureDefinition;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -138,4 +153,113 @@ public class FHIRExporterTest {
     return (con.hasAbatement() && con.getClinicalStatus() != ConditionClinicalStatus.ACTIVE)
         || !con.hasAbatement();
   }
+  
+  @Test
+  public void testSHRProfiles() throws Exception {
+    FhirContext ctx = FhirContext.forDstu3();
+    
+    IParser jsonParser = ctx.newJsonParser();
+    
+    final Map<String, StructureDefinition> profiles = new HashMap<>();
+    
+    for (String folder : new String[]{ "fhir/shr_profiles", "fhir/us_core_profiles"} ) {
+      URL profilesFolder = ClassLoader.getSystemClassLoader().getResource(folder);
+      Path path = Paths.get(profilesFolder.toURI());
+      Files.walk(path)
+        .filter(Files::isReadable)
+        .filter(Files::isRegularFile)
+        .filter(p -> {
+          String filename = p.getFileName().toString();
+          return filename.startsWith("StructureDefinition") && filename.endsWith(".json");
+        })
+        .forEach(p -> {
+          try {
+            StructureDefinition profile = (StructureDefinition)jsonParser.parseResource( new FileReader(p.toFile()) );
+            profiles.put(profile.getUrl(), profile);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        });
+    }
+    
+    
+    String extensions = Utilities.readResource("fhir/extension-definitions.json");
+    Bundle extensionsBundle = (Bundle)jsonParser.parseResource(extensions);
+    
+    for (BundleEntryComponent bec : extensionsBundle.getEntry()) {
+      StructureDefinition profile = (StructureDefinition) bec.getResource();
+      profiles.put(profile.getUrl(), profile);
+    }
+    
+
+    // Create a FhirInstanceValidator and register it to a validator
+    FhirValidator validator = ctx.newValidator();
+    FhirInstanceValidator instanceValidator = new FhirInstanceValidator();
+    validator.registerValidatorModule(instanceValidator);
+
+    IValidationSupport valSupport = new IValidationSupport() {
+       @Override
+       public org.hl7.fhir.dstu3.model.ValueSet.ValueSetExpansionComponent expandValueSet(FhirContext theContext, org.hl7.fhir.dstu3.model.ValueSet.ConceptSetComponent theInclude) {
+           // TODO: implement
+           return null;
+       }
+  
+       @Override
+       public List<IBaseResource> fetchAllConformanceResources(FhirContext theContext) {
+           // TODO: implement
+           return null;
+       }
+  
+       @Override
+       public List<StructureDefinition> fetchAllStructureDefinitions(FhirContext theContext) {
+         return new ArrayList<>(profiles.values());
+       }
+  
+       @Override
+       public CodeSystem fetchCodeSystem(FhirContext theContext, String theSystem) {
+           // TODO: implement
+           return null;
+       }
+  
+       @Override
+       public <T extends IBaseResource> T fetchResource(FhirContext theContext, Class<T> theClass, String theUri) {
+         if (theClass.equals(StructureDefinition.class)) {
+           return (T) fetchStructureDefinition(theContext, theUri);
+         }
+         return null;
+       }
+  
+       @Override
+       public StructureDefinition fetchStructureDefinition(FhirContext theCtx, String theUrl) {
+           // TODO: implement
+           return profiles.get(theUrl);
+       }
+  
+       @Override
+       public boolean isCodeSystemSupported(FhirContext theContext, String theSystem) {
+           // TODO: implement
+           return false;
+       }
+  
+       @Override
+       public CodeValidationResult validateCode(FhirContext theContext, String theCodeSystem, String theCode, String theDisplay) {
+           // TODO: implement
+           return null;
+       }
+     };
+      
+    ValidationSupportChain support = new ValidationSupportChain(new DefaultProfileValidationSupport(), valSupport);
+    instanceValidator.setValidationSupport(support);
+    
+    Generator generator = new Generator(2);
+    
+    Person person = generator.generatePerson(1);
+    
+    String fhirJson = FhirStu3.convertToFHIR(person, System.currentTimeMillis());
+    IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
+    ValidationResult result = validator.validateWithResult(resource);
+
+    System.out.println(result);
+  }
+  
 }
