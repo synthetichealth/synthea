@@ -803,7 +803,7 @@ public class FhirDstu2 {
     Code code = procedure.codes.get(0);
     procedureResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
-    if (procedure.stop > 0L) {
+    if (procedure.stop != 0L) {
       Date startDate = new Date(procedure.start);
       Date endDate = new Date(procedure.stop);
       procedureResource.setPerformed(
@@ -869,7 +869,7 @@ public class FhirDstu2 {
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
 
-    if (medication.stop > 0L) {
+    if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationOrderStatusEnum.STOPPED);
     } else {
       medicationResource.setStatus(MedicationOrderStatusEnum.ACTIVE);
@@ -1003,7 +1003,7 @@ public class FhirDstu2 {
 
     PeriodDt period = new PeriodDt().setStart(new DateTimeDt(new Date(carePlan.start)));
     careplanResource.setPeriod(period);
-    if (carePlan.stop > 0L) {
+    if (carePlan.stop != 0L) {
       period.setEnd(new DateTimeDt(new Date(carePlan.stop)));
       careplanResource.setStatus(CarePlanStatusEnum.COMPLETED);
       activityStatus = CarePlanActivityStatusEnum.COMPLETED;
