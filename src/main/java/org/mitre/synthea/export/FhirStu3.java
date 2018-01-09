@@ -592,7 +592,7 @@ public class FhirStu3 {
     }
     
     if (USE_SHR_EXTENSIONS) {
-      encounterResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-encounter-Encounter"));
+      encounterResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-encounter-EncounterPerformed"));
       // required fields for this profile are patient and serviceProvider
     }
   
