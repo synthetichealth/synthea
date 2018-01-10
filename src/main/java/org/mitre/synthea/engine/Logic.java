@@ -18,7 +18,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  * must not modify state as instances of Logic within Modules are shared
  * across the population.
  */
-public abstract class Logic implements Validation {
+public abstract class Logic {
   public List<String> remarks;
 
   /**
@@ -34,7 +34,6 @@ public abstract class Logic implements Validation {
    * The Gender condition type tests the patient's gender. (M or F)
    */
   public static class Gender extends Logic {
-    @Metadata(required = true, validValues = {"M", "F"})
     private String gender;
 
     @Override
@@ -48,13 +47,8 @@ public abstract class Logic implements Validation {
    * (Ex, years for adults or months for young children)
    */
   public static class Age extends Logic {
-    @Metadata(required = true)
     private Double quantity;
-    
-    @Metadata(required = true, validValues = {"years", "months"})
     private String unit;
-    
-    @Metadata(required = true, validValues = {"==", "!=", "<", ">", "<=", ">="})
     private String operator;
 
     @Override
@@ -85,7 +79,6 @@ public abstract class Logic implements Validation {
    */
   public static class Date extends Logic {
     private int year;
-    @Metadata(required = true, validValues = {"==", "!=", "<", ">", "<=", ">="})
     private String operator;
 
     @Override
@@ -101,7 +94,6 @@ public abstract class Logic implements Validation {
    * "Middle", or "Low".
    */
   public static class SocioeconomicStatus extends Logic {
-    @Metadata(required = true, validValues = {"High", "Middle", "Low"})
     private String category;
 
     @Override
@@ -115,8 +107,6 @@ public abstract class Logic implements Validation {
    * "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other".
    */
   public static class Race extends Logic {
-    @Metadata(required = true, 
-        validValues = {"White", "Native", "Hispanic", "Black", "Asian", "Other"})
     private String race;
 
     @Override
@@ -132,7 +122,6 @@ public abstract class Logic implements Validation {
    */
   public static class Symptom extends Logic {
     private String symptom;
-    @Metadata(required = true, validValues = {"==", "!=", "<", ">", "<=", ">="})
     private String operator;
     private double value;
 
@@ -153,8 +142,6 @@ public abstract class Logic implements Validation {
    *   that the observation value cannot be compared as there has been no observation made.
    */
   public static class Observation extends Logic {
-    @Metadata(required = true, 
-        validValues = {"==", "!=", "<", ">", "<=", ">=", "is nil", "is not nil"})
     private String operator;
     private List<Code> codes;
     private String referencedByAttribute;
@@ -188,11 +175,7 @@ public abstract class Logic implements Validation {
    * The Attribute condition type tests a named attribute on the patient entity.
    */
   public static class Attribute extends Logic {
-    @Metadata(required = true)
     private String attribute;
-    
-    @Metadata(required = true, 
-        validValues = {"==", "!=", "<", ">", "<=", ">=", "is nil", "is not nil"})
     private String operator;
     
     private Object value;
@@ -212,7 +195,6 @@ public abstract class Logic implements Validation {
    * It should never be used directly in a JSON file.
    */
   private abstract static class GroupedCondition extends Logic {
-    @Metadata(required = true, min = 1)
     protected Collection<Logic> conditions;
   }
   
@@ -246,7 +228,6 @@ public abstract class Logic implements Validation {
    * if the sub-condition is false, it will return true.
    */
   public static class Not extends Logic {
-    @Metadata(required = true)
     private Logic condition;
 
     @Override
@@ -265,7 +246,6 @@ public abstract class Logic implements Validation {
    * If the minimum is 1, this is equivalent to the Or condition.)
    */
   public static class AtLeast extends GroupedCondition {
-    @Metadata(required = true)
     private Integer minimum;
 
     @Override
@@ -280,7 +260,6 @@ public abstract class Logic implements Validation {
    * it will return true, but if more than the maximum are true, it will return false.
    */
   public static class AtMost extends GroupedCondition {
-    @Metadata(required = true)
     private Integer maximum;
 
     @Override
@@ -321,7 +300,6 @@ public abstract class Logic implements Validation {
    * state.
    */
   public static class PriorState extends Logic {
-    @Metadata(required = true)
     private String name;
     private String since;
     private ExactWithUnit<Long> within;
@@ -444,12 +422,8 @@ public abstract class Logic implements Validation {
    * the Symptom State.
    */
   public static class VitalSign extends Logic {
-    @Metadata(required = true)
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
-    
-    @Metadata(required = true, validValues = {"==", "!=", "<", ">", "<=", ">="})
     private String operator;
-    
     private double value;
 
     @Override
