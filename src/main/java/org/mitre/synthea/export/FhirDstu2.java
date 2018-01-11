@@ -6,7 +6,6 @@ import ca.uhn.fhir.model.api.IDatatype;
 import ca.uhn.fhir.model.dstu2.composite.AddressDt;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
 import ca.uhn.fhir.model.dstu2.composite.MoneyDt;
 import ca.uhn.fhir.model.dstu2.composite.NarrativeDt;
@@ -16,6 +15,7 @@ import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt;
+import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
@@ -29,7 +29,10 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder.DosageInstruction;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
-import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
+import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
+import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCriticalityEnum;
+import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceTypeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.CarePlanActivityStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.CarePlanStatusEnum;
@@ -52,7 +55,6 @@ import ca.uhn.fhir.model.dstu2.valueset.ProcedureStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UseEnum;
 import ca.uhn.fhir.model.primitive.BooleanDt;
-import ca.uhn.fhir.model.primitive.CodeDt;
 import ca.uhn.fhir.model.primitive.DateDt;
 import ca.uhn.fhir.model.primitive.DateTimeDt;
 import ca.uhn.fhir.model.primitive.DecimalDt;
@@ -62,7 +64,6 @@ import ca.uhn.fhir.model.primitive.IntegerDt;
 import ca.uhn.fhir.model.primitive.PositiveIntDt;
 import ca.uhn.fhir.model.primitive.StringDt;
 import ca.uhn.fhir.model.primitive.XhtmlDt;
-import ca.uhn.fhir.util.XmlUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -77,10 +78,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.dstu3.model.Narrative;
-import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
-import org.hl7.fhir.utilities.xhtml.NodeType;
-import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -160,6 +157,10 @@ public class FhirDstu2 {
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personEntry, bundle, encounterEntry, condition);
+      }
+      
+      for (HealthRecord.Entry allergy : encounter.allergies) {
+        allergy(personEntry, bundle, encounterEntry, allergy);
       }
 
       for (Observation observation : encounter.observations) {
@@ -666,7 +667,7 @@ public class FhirDstu2 {
     conditionResource.setOnset(convertFhirDateTime(condition.start, true));
     conditionResource.setDateRecorded(new DateDt(new Date(condition.start)));
 
-    if (condition.stop > 0) {
+    if (condition.stop != 0) {
       conditionResource.setAbatement(convertFhirDateTime(condition.stop, true));
       conditionResource.setClinicalStatus(ConditionClinicalStatusCodesEnum.RESOLVED);
     }
@@ -676,6 +677,45 @@ public class FhirDstu2 {
     condition.fullUrl = conditionEntry.getFullUrl();
 
     return conditionEntry;
+  }
+  
+  /**
+   * Map the Condition into a FHIR AllergyIntolerance resource, and add it to the given Bundle.
+   * 
+   * @param personEntry
+   *          The Entry for the Person
+   * @param bundle
+   *          The Bundle to add to
+   * @param encounterEntry
+   *          The current Encounter entry
+   * @param allergy
+   *          The Allergy Entry
+   * @return The added Entry
+   */
+  private static Entry allergy(Entry personEntry, Bundle bundle,
+      Entry encounterEntry, HealthRecord.Entry allergy) {
+    
+    AllergyIntolerance allergyResource = new AllergyIntolerance();
+    
+    allergyResource.setOnset((DateTimeDt)convertFhirDateTime(allergy.start, true));
+    
+    if (allergy.stop == 0) {
+      allergyResource.setStatus(AllergyIntoleranceStatusEnum.ACTIVE);
+    } else {
+      allergyResource.setStatus(AllergyIntoleranceStatusEnum.INACTIVE);
+    }
+    
+    allergyResource.setType(AllergyIntoleranceTypeEnum.ALLERGY);
+    AllergyIntoleranceCategoryEnum category = AllergyIntoleranceCategoryEnum.FOOD;
+    allergyResource.setCategory(category); // TODO: allergy categories in GMF
+    allergyResource.setCriticality(AllergyIntoleranceCriticalityEnum.LOW_RISK);
+    allergyResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+    Code code = allergy.codes.get(0);
+    allergyResource.setSubstance(mapCodeToCodeableConcept(code, SNOMED_URI));
+
+    Entry allergyEntry = newEntry(bundle, allergyResource);
+    allergy.fullUrl = allergyEntry.getFullUrl();
+    return allergyEntry;
   }
 
   /**
@@ -763,7 +803,7 @@ public class FhirDstu2 {
     Code code = procedure.codes.get(0);
     procedureResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
-    if (procedure.stop > 0L) {
+    if (procedure.stop != 0L) {
       Date startDate = new Date(procedure.start);
       Date endDate = new Date(procedure.stop);
       procedureResource.setPerformed(
@@ -829,7 +869,7 @@ public class FhirDstu2 {
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
 
-    if (medication.stop > 0L) {
+    if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationOrderStatusEnum.STOPPED);
     } else {
       medicationResource.setStatus(MedicationOrderStatusEnum.ACTIVE);
@@ -963,7 +1003,7 @@ public class FhirDstu2 {
 
     PeriodDt period = new PeriodDt().setStart(new DateTimeDt(new Date(carePlan.start)));
     careplanResource.setPeriod(period);
-    if (carePlan.stop > 0L) {
+    if (carePlan.stop != 0L) {
       period.setEnd(new DateTimeDt(new Date(carePlan.stop)));
       careplanResource.setStatus(CarePlanStatusEnum.COMPLETED);
       activityStatus = CarePlanActivityStatusEnum.COMPLETED;

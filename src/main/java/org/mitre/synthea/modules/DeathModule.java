@@ -29,6 +29,7 @@ public class DeathModule {
 
       Observation codObs = person.record.observation(time, CAUSE_OF_DEATH_CODE.code, causeOfDeath);
       codObs.codes.add(CAUSE_OF_DEATH_CODE);
+      codObs.category = "exam";
 
       Report deathCert = person.record.report(time, DEATH_CERTIFICATE.code, 1);
       deathCert.codes.add(DEATH_CERTIFICATE);

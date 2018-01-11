@@ -2,20 +2,31 @@ package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.vividsolutions.jts.geom.Point;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.hl7.fhir.dstu3.model.Address;
+import org.hl7.fhir.dstu3.model.AllergyIntolerance;
+import org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceCategory;
+import org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceClinicalStatus;
+import org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceCriticality;
+import org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceType;
+import org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceVerificationStatus;
+import org.hl7.fhir.dstu3.model.Basic;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
@@ -53,6 +64,7 @@ import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus;
+import org.hl7.fhir.dstu3.model.Meta;
 import org.hl7.fhir.dstu3.model.Money;
 import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
@@ -73,6 +85,8 @@ import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -97,12 +111,18 @@ public class FhirStu3 {
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
-  private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/";
+  private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/"; 
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
+  private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
 
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   private static final Map languageLookup = loadLanguageLookup();
 
+  private static final boolean USE_SHR_EXTENSIONS =
+      Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
+  
+  private static final Table<String,String,String> SHR_MAPPING = loadSHRMapping();
+  
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
     String filename = "race_ethnicity_codes.json";
@@ -130,6 +150,33 @@ public class FhirStu3 {
       throw new ExceptionInInitializerError(e);
     }
   }
+  
+
+  private static Table<String, String, String> loadSHRMapping() {
+    if (!USE_SHR_EXTENSIONS) {
+      // don't bother creating the table unless we need it
+      return null;
+    }
+    Table<String,String,String> mappingTable = HashBasedTable.create();
+    
+    List<LinkedHashMap<String,String>> csvData;
+    try {
+      csvData = SimpleCSV.parse(Utilities.readResource("shr_mapping.csv"));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+    
+    for (LinkedHashMap<String,String> line : csvData) {
+      String system = line.get("SYSTEM");
+      String code = line.get("CODE");
+      String url = line.get("URL");
+      
+      mappingTable.put(system, code, url);
+    }
+    
+    return mappingTable;
+  }
 
   /**
    * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
@@ -153,6 +200,10 @@ public class FhirStu3 {
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personEntry, bundle, encounterEntry, condition);
+      }
+      
+      for (HealthRecord.Entry allergy : encounter.allergies) {
+        allergy(personEntry, bundle, encounterEntry, allergy);
       }
 
       for (Observation observation : encounter.observations) {
@@ -418,6 +469,46 @@ public class FhirStu3 {
     patientResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
         .setDiv(new XhtmlNode(NodeType.Element).setValue(generatedBySynthea)));
 
+    if (USE_SHR_EXTENSIONS) {
+      
+      patientResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Patient"));
+
+      // Patient profile requires race, ethnicity, birthsex,
+      // MothersMaidenName, FathersName, Person-extension
+
+      patientResource.addExtension()
+        .setUrl(SHR_EXT + "shr-actor-FictionalPerson-extension")
+        .setValue(new BooleanType(true));
+      
+      String fathersName = (String) person.attributes.get(Person.NAME_FATHER);
+      Extension fathersNameExtension = new Extension(
+          SHR_EXT + "shr-entity-FathersName-extension", new HumanName().setText(fathersName));
+      patientResource.addExtension(fathersNameExtension);
+
+      String ssn = (String) person.attributes.get(Person.IDENTIFIER_SSN);
+      Extension ssnExtension = new Extension(
+          SHR_EXT + "shr-demographics-SocialSecurityNumber-extension",
+          new StringType(ssn));
+      patientResource.addExtension(ssnExtension);
+      
+      Basic personResource = new Basic();
+      // the only required field on this patient resource is code
+      
+      Coding fixedCode = new Coding(
+          "http://standardhealthrecord.org/fhir/basic-resource-type",
+          "shr-entity-Person", "shr-entity-Person");
+      personResource.setCode(new CodeableConcept().addCoding(fixedCode));
+
+      Meta personMeta = new Meta();
+      personMeta.addProfile(SHR_EXT + "shr-entity-Person");
+      personResource.setMeta(personMeta);
+      
+      BundleEntryComponent personEntry = newEntry(bundle, personResource);
+      patientResource.addExtension()
+          .setUrl(SHR_EXT + "shr-entity-Person-extension")
+          .setValue(new Reference(personEntry.getFullUrl()));
+    }
+    
     // DALY and QALY values
     // we only write the last(current) one to the patient record
     Double dalyValue = (Double) person.attributes.get("most-recent-daly");
@@ -517,6 +608,20 @@ public class FhirStu3 {
       hospitalization
           .setDischargeDisposition(mapCodeToCodeableConcept(dischargeDisposition, DISCHARGE_URI));
       encounterResource.setHospitalization(hospitalization);
+    }
+    
+    if (USE_SHR_EXTENSIONS) {
+      encounterResource.setMeta(
+          new Meta().addProfile(SHR_EXT + "shr-encounter-EncounterPerformed"));
+      // required fields for this profile are status & action-PerformedContext-extension
+      
+      Extension performedContext = new Extension();
+      performedContext.setUrl(SHR_EXT + "shr-action-PerformedContext-extension");
+      performedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension", 
+          new CodeType("finished"));
+      
+      encounterResource.addExtension(performedContext);
     }
   
     return newEntry(bundle, encounterResource);
@@ -680,9 +785,21 @@ public class FhirStu3 {
     conditionResource.setOnset(convertFhirDateTime(condition.start, true));
     conditionResource.setAssertedDate(new Date(condition.start));
 
-    if (condition.stop > 0) {
+    if (condition.stop != 0) {
       conditionResource.setAbatement(convertFhirDateTime(condition.stop, true));
       conditionResource.setClinicalStatus(ConditionClinicalStatus.RESOLVED);
+    }
+    
+    if (USE_SHR_EXTENSIONS) {
+      // TODO: use different categories. would need to add a "category" to GMF Condition state
+      // also potentially use Injury profile here, 
+      // once different codes map to different categories
+      
+      conditionResource.addCategory(new CodeableConcept().addCoding(new Coding(
+          "http://standardhealthrecord.org/shr/condition/vs/ConditionCategoryVS", "disease",
+          "Disease")));
+      conditionResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-condition-Condition"));
+      // required fields for this profile are clinicalStatus, assertedDate, category
     }
 
     BundleEntryComponent conditionEntry = newEntry(bundle, conditionResource);
@@ -691,6 +808,54 @@ public class FhirStu3 {
 
     return conditionEntry;
   }
+  
+  /**
+   * Map the Condition into a FHIR AllergyIntolerance resource, and add it to the given Bundle.
+   * 
+   * @param personEntry
+   *          The Entry for the Person
+   * @param bundle
+   *          The Bundle to add to
+   * @param encounterEntry
+   *          The current Encounter entry
+   * @param allergy
+   *          The Allergy Entry
+   * @return The added Entry
+   */
+  private static BundleEntryComponent allergy(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, HealthRecord.Entry allergy) {
+    
+    AllergyIntolerance allergyResource = new AllergyIntolerance();
+    
+    allergyResource.setAssertedDate(new Date(allergy.start));
+    
+    if (allergy.stop == 0) {
+      allergyResource.setClinicalStatus(AllergyIntoleranceClinicalStatus.ACTIVE);
+    } else {
+      allergyResource.setClinicalStatus(AllergyIntoleranceClinicalStatus.INACTIVE);
+    }
+    
+    allergyResource.setType(AllergyIntoleranceType.ALLERGY);
+    AllergyIntoleranceCategory category = AllergyIntoleranceCategory.FOOD;
+    allergyResource.addCategory(category); // TODO: allergy categories in GMF
+    allergyResource.setCriticality(AllergyIntoleranceCriticality.LOW);
+    allergyResource.setVerificationStatus(AllergyIntoleranceVerificationStatus.CONFIRMED);
+    allergyResource.setPatient(new Reference(personEntry.getFullUrl()));
+    Code code = allergy.codes.get(0);
+    allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+    
+    if (USE_SHR_EXTENSIONS) {
+      Meta meta = new Meta();
+      meta.addProfile(SHR_EXT + "shr-allergy-AllergyIntolerance");
+      // required fields for AllergyIntolerance profile are:
+      // verificationStatus, code, patient, assertedDate
+      allergyResource.setMeta(meta);
+    }
+    BundleEntryComponent allergyEntry = newEntry(bundle, allergyResource);
+    allergy.fullUrl = allergyEntry.getFullUrl();
+    return allergyEntry;
+  }
+  
 
   /**
    * Map the given Observation into a FHIR Observation resource, and add it to the given Bundle.
@@ -731,7 +896,7 @@ public class FhirStu3 {
       value = new StringType((String) observation.value);
     } else if (observation.value instanceof Number) {
       value = new Quantity().setValue(((Number) observation.value).doubleValue())
-          .setCode(observation.unit).setSystem("http://unitsofmeasure.org/")
+          .setCode(observation.unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(observation.unit);
     } else if (observation.value != null) {
       throw new IllegalArgumentException("unexpected observation value class: "
@@ -744,6 +909,21 @@ public class FhirStu3 {
 
     observationResource.setEffective(convertFhirDateTime(observation.start, true));
     observationResource.setIssued(new Date(observation.start));
+    
+    if (USE_SHR_EXTENSIONS) {
+      Meta meta = new Meta();
+      meta.addProfile(SHR_EXT + "shr-finding-Observation"); // all Observations are Observations
+      if ("vital-signs".equals(observation.category)) {
+        meta.addProfile(SHR_EXT + "shr-vital-VitalSign");
+      }
+      // add the specific profile based on code
+      String codeMappingUri = SHR_MAPPING.get(LOINC_URI, code.code);
+      if (codeMappingUri != null) {
+        meta.addProfile(codeMappingUri);
+      }
+      
+      observationResource.setMeta(meta);
+    }
 
     BundleEntryComponent entry = newEntry(bundle, observationResource);
     observation.fullUrl = entry.getFullUrl();
@@ -772,9 +952,10 @@ public class FhirStu3 {
     procedureResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     Code code = procedure.codes.get(0);
-    procedureResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+    CodeableConcept procCode = mapCodeToCodeableConcept(code, SNOMED_URI);
+    procedureResource.setCode(procCode);
 
-    if (procedure.stop > 0L) {
+    if (procedure.stop != 0L) {
       Date startDate = new Date(procedure.start);
       Date endDate = new Date(procedure.stop);
       procedureResource.setPerformed(new Period().setStart(startDate).setEnd(endDate));
@@ -795,6 +976,21 @@ public class FhirStu3 {
         }
       }
     }
+    
+    if (USE_SHR_EXTENSIONS) {
+      procedureResource.setMeta(
+          new Meta().addProfile(SHR_EXT + "shr-procedure-ProcedurePerformed"));
+      // required fields for this profile are action-PerformedContext-extension,
+      // status, code, subject, performed[x]
+      
+      Extension performedContext = new Extension();
+      performedContext.setUrl(SHR_EXT + "shr-action-PerformedContext-extension");
+      performedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension", 
+          new CodeType("completed"));
+      
+      procedureResource.addExtension(performedContext);
+    }
 
     BundleEntryComponent procedureEntry = newEntry(bundle, procedureResource);
 
@@ -813,6 +1009,21 @@ public class FhirStu3 {
     immResource.setPrimarySource(true);
     immResource.setPatient(new Reference(personEntry.getFullUrl()));
     immResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    
+    if (USE_SHR_EXTENSIONS) {
+      immResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-immunization-ImmunizationGiven"));
+      // profile requires action-PerformedContext-extension, status, notGiven, vaccineCode, patient,
+      // date, primarySource
+      
+      Extension performedContext = new Extension();
+      performedContext.setUrl(SHR_EXT + "shr-action-PerformedContext-extension");
+      performedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension", 
+          new CodeType("completed"));
+      
+      immResource.addExtension(performedContext);
+    }
+    
     return newEntry(bundle, immResource);
   }
 
@@ -841,7 +1052,7 @@ public class FhirStu3 {
     medicationResource.setAuthoredOn(new Date(medication.start));
     medicationResource.setIntent(MedicationRequestIntent.ORDER);
 
-    if (medication.stop > 0L) {
+    if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationRequestStatus.STOPPED);
     } else {
       medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
@@ -906,6 +1117,30 @@ public class FhirStu3 {
       dosageInstruction.add(dosage);
       medicationResource.setDosageInstruction(dosageInstruction);
     }
+    
+    if (USE_SHR_EXTENSIONS) {
+      
+      medicationResource.addExtension()
+        .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
+        .setValue(PRESCRIPTION_OF_DRUG_CC);
+
+      medicationResource.setMeta(new Meta()
+          .addProfile(SHR_EXT + "shr-medication-MedicationRequested"));
+      // required fields for this profile are status, action-RequestedContext-extension,
+      // medication[x]subject, authoredOn, requester
+      
+      Extension requestedContext = new Extension();
+      requestedContext.setUrl(SHR_EXT + "shr-action-RequestedContext-extension");
+      requestedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension", 
+          new CodeType("completed"));
+      requestedContext.addExtension(
+          SHR_EXT + "shr-action-RequestIntent-extension",
+          new CodeType("original-order"));
+      
+      medicationResource.addExtension(requestedContext);
+    }
+    
 
     BundleEntryComponent medicationEntry = newEntry(bundle, medicationResource);
     // create new claim for medication
@@ -913,6 +1148,12 @@ public class FhirStu3 {
 
     return medicationEntry;
   }
+  
+  private static final Code PRESCRIPTION_OF_DRUG_CODE =
+      new Code("SNOMED-CT","33633005","Prescription of drug (procedure)");
+  private static final CodeableConcept PRESCRIPTION_OF_DRUG_CC =
+      mapCodeToCodeableConcept(PRESCRIPTION_OF_DRUG_CODE, SNOMED_URI);
+  
 
   /**
    * Map the given Report to a FHIR DiagnosticReport resource, and add it to the given Bundle.
@@ -942,6 +1183,8 @@ public class FhirStu3 {
       reportResource.addResult(reference);
     }
 
+    // no SHR profile for DiagnosticReport
+    
     return newEntry(bundle, reportResource);
   }
 
@@ -973,7 +1216,7 @@ public class FhirStu3 {
   
     Period period = new Period().setStart(new Date(carePlan.start));
     careplanResource.setPeriod(period);
-    if (carePlan.stop > 0L) {
+    if (carePlan.stop != 0L) {
       period.setEnd(new Date(carePlan.stop));
       careplanResource.setStatus(CarePlanStatus.COMPLETED);
       activityStatus = CarePlanActivityStatus.COMPLETED;
@@ -1041,9 +1284,29 @@ public class FhirStu3 {
                 "Healthcare Provider"),
             "Healthcare Provider"));
   
+    Map<String,?> attr = provider.getAttributes();
+    
     organizationResource.setId(provider.getResourceID());
-    organizationResource.setName((String)provider.getAttributes().get("name"));
+    organizationResource.setName((String)attr.get("name"));
     organizationResource.setType(organizationType);
+    
+    Address address = new Address()
+        .addLine(attr.get("address").toString())
+        .setCity(attr.get("city").toString())
+        .setPostalCode(attr.get("city_zip").toString())
+        .setState(attr.get("state").toString())
+        .setCountry("US");
+    organizationResource.addAddress(address);
+    
+    if (USE_SHR_EXTENSIONS) {
+      organizationResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Organization"));
+      // required fields for this profile are identifier, type, address, and contact
+      
+      organizationResource.addIdentifier()
+          .setSystem("urn:ietf:rfc:3986")
+          .setValue(provider.getResourceID());
+      organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
+    }
   
     return newEntry(bundle, organizationResource);
   }
