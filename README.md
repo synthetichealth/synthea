@@ -1,24 +1,56 @@
-# synthea_java [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java) [![codecov](https://codecov.io/gh/synthetichealth/synthea_java/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea_java)
-Java implementation of the Synthea engine.
+# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java) [![codecov](https://codecov.io/gh/synthetichealth/synthea_java/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea_java)
 
-Partially implemented.
+Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
-- FHIR STU3 Export.
-- C-CDA R2.1 Export.
+Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
 
-### Build and Test
+Currently, Synthea<sup>TM</sup> features:
+- Birth to Death Lifecycle
+- Configuration-based statistics and demographics (defaults with Massachusetts Census data)
+- Modular Rule System
+  - Drop in [Generic Modules](https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework)
+  - Custom Java rules modules for additional capabilities
+- Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
+- Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
+- Formats
+  - FHIR (STU3 v3.0.1 and DSTU2 v1.0.2)
+  - C-CDA
+  - CSV
+- Rendering Rules and Disease Modules with Graphviz
+
+## Quick Start
+
+### Installation
+
+**System Requirements:**
+Synthea<sup>TM</sup> requires Java 1.8 or above.
+
+To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```
+git clone https://github.com/synthetichealth/synthea_java.git
+cd synthea_java
 ./gradlew build check test
 ```
 
-### Run
+### Generate Synthetic Patients
+Generating the population one at a time...
 ```
 ./gradlew run
 ```
 
+Some settings can be changed in `./src/main/resources/synthea.properties`.
+
+Synthea<sup>TM</sup> will output patient records in C-CDA and FHIR formats in `./output`.
+
+### Synthea<sup>TM</sup> GraphViz
+Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
+```
+./gradlew graphviz
+```
+
 # License
 
-Copyright 2017 The MITRE Corporation
+Copyright 2017-2018 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
