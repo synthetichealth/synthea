@@ -68,6 +68,7 @@ import org.hl7.fhir.dstu3.model.Meta;
 import org.hl7.fhir.dstu3.model.Money;
 import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
+import org.hl7.fhir.dstu3.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
@@ -887,25 +888,18 @@ public class FhirStu3 {
     observationResource.addCategory().addCoding().setCode(observation.category)
         .setSystem("http://hl7.org/fhir/observation-category").setDisplay(observation.category);
 
-    Type value = null;
-    if (observation.value instanceof Condition) {
-      Code conditionCode = ((HealthRecord.Entry) observation.value).codes.get(0);
-      value = mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
-    } else if (observation.value instanceof Code) {
-      value = mapCodeToCodeableConcept((Code) observation.value, SNOMED_URI);
-    } else if (observation.value instanceof String) {
-      value = new StringType((String) observation.value);
-    } else if (observation.value instanceof Number) {
-      value = new Quantity().setValue(((Number) observation.value).doubleValue())
-          .setCode(observation.unit).setSystem(UNITSOFMEASURE_URI)
-          .setUnit(observation.unit);
-    } else if (observation.value != null) {
-      throw new IllegalArgumentException("unexpected observation value class: "
-          + observation.value.getClass().toString() + "; " + observation.value);
-    }
-
-    if (value != null) {
+    if (observation.value != null) {
+      Type value = mapValueToFHIRType(observation.value, observation.unit);
       observationResource.setValue(value);
+    } else if (observation.observations != null && !observation.observations.isEmpty()) {
+      // multi-observation (ex blood pressure)
+      for (Observation subObs : observation.observations) {
+        ObservationComponentComponent comp = new ObservationComponentComponent();
+        comp.setCode(mapCodeToCodeableConcept(subObs.codes.get(0), LOINC_URI));
+        Type value = mapValueToFHIRType(subObs.value, subObs.unit);
+        comp.setValue(value);
+        observationResource.addComponent(comp);
+      }
     }
 
     observationResource.setEffective(convertFhirDateTime(observation.start, true));
@@ -929,6 +923,31 @@ public class FhirStu3 {
     BundleEntryComponent entry = newEntry(bundle, observationResource);
     observation.fullUrl = entry.getFullUrl();
     return entry;
+  }
+  
+  private static Type mapValueToFHIRType(Object value, String unit) {
+    if (value == null) {
+      return null;
+      
+    } else if (value instanceof Condition) {
+      Code conditionCode = ((HealthRecord.Entry) value).codes.get(0);
+      return mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
+      
+    } else if (value instanceof Code) {
+      return mapCodeToCodeableConcept((Code) value, SNOMED_URI);
+      
+    } else if (value instanceof String) {
+      return new StringType((String) value);
+      
+    } else if (value instanceof Number) {
+      return new Quantity().setValue(((Number) value).doubleValue())
+          .setCode(unit).setSystem(UNITSOFMEASURE_URI)
+          .setUnit(unit);
+      
+    } else {
+      throw new IllegalArgumentException("unexpected observation value class: "
+          + value.getClass().toString() + "; " + value);
+    }
   }
 
   /**

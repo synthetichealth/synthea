@@ -27,6 +27,7 @@ import ca.uhn.fhir.model.dstu2.resource.Encounter.Hospitalization;
 import ca.uhn.fhir.model.dstu2.resource.Immunization;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder.DosageInstruction;
+import ca.uhn.fhir.model.dstu2.resource.Observation.Component;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
@@ -749,26 +750,19 @@ public class FhirDstu2 {
         observation.category);
     observationResource.setCategory(
         mapCodeToCodeableConcept(category, "http://hl7.org/fhir/observation-category"));
-
-    IDatatype value = null;
-    if (observation.value instanceof Condition) {
-      Code conditionCode = ((HealthRecord.Entry) observation.value).codes.get(0);
-      value = mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
-    } else if (observation.value instanceof Code) {
-      value = mapCodeToCodeableConcept((Code) observation.value, SNOMED_URI);
-    } else if (observation.value instanceof String) {
-      value = new StringDt((String) observation.value);
-    } else if (observation.value instanceof Number) {
-      value = new QuantityDt().setValue(((Number) observation.value).doubleValue())
-          .setCode(observation.unit).setSystem("http://unitsofmeasure.org/")
-          .setUnit(observation.unit);
-    } else if (observation.value != null) {
-      throw new IllegalArgumentException("unexpected observation value class: "
-          + observation.value.getClass().toString() + "; " + observation.value);
-    }
-
-    if (value != null) {
+    
+    if (observation.value != null) {
+      IDatatype value = mapValueToFHIRType(observation.value, observation.unit);
       observationResource.setValue(value);
+    } else if (observation.observations != null && !observation.observations.isEmpty()) {
+      // multi-observation (ex blood pressure)
+      for (Observation subObs : observation.observations) {
+        Component comp = new Component();
+        comp.setCode(mapCodeToCodeableConcept(subObs.codes.get(0), LOINC_URI));
+        IDatatype value = mapValueToFHIRType(subObs.value, subObs.unit);
+        comp.setValue(value);
+        observationResource.addComponent(comp);
+      }
     }
 
     observationResource.setEffective(convertFhirDateTime(observation.start, true));
@@ -779,6 +773,31 @@ public class FhirDstu2 {
     return entry;
   }
 
+  private static IDatatype mapValueToFHIRType(Object value, String unit) {
+    if (value == null) {
+      return null;
+      
+    } else if (value instanceof Condition) {
+      Code conditionCode = ((HealthRecord.Entry) value).codes.get(0);
+      return mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
+      
+    } else if (value instanceof Code) {
+      return mapCodeToCodeableConcept((Code) value, SNOMED_URI);
+      
+    } else if (value instanceof String) {
+      return new StringDt((String) value);
+      
+    } else if (value instanceof Number) {
+      return new QuantityDt().setValue(((Number) value).doubleValue())
+          .setCode(unit).setSystem("http://unitsofmeasure.org/")
+          .setUnit(unit);
+      
+    } else {
+      throw new IllegalArgumentException("unexpected observation value class: "
+          + value.getClass().toString() + "; " + value);
+    }
+  }
+  
   /**
    * Map the given Procedure into a FHIR Procedure resource, and add it to the given Bundle.
    * 
