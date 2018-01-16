@@ -20,7 +20,7 @@
           <td ID="${section}-desc-${entry?counter}">${entry.codes[0].display}</td>
           <td ID="${section}-code-${entry?counter}">${entry.codes[0].system} ${entry.codes[0].code}</td>
           <#if entry.value??>
-          <td>${entry.value} ${entry.unit}</td>
+          <td>${entry.value} ${(entry.unit)!""}</td>
           <#elseif entry.category?? && entry.observations?? && entry.observations?has_content>
           <td>
           <#list entry.observations as obs>
