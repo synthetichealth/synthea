@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
@@ -36,6 +37,8 @@ public final class LifecycleModule extends Module {
 
   private static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
+  
+  private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
   public LifecycleModule() {
     this.name = "Lifecycle";
@@ -53,6 +56,16 @@ public final class LifecycleModule extends Module {
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
+  }
+  
+  private static RandomCollection<String> loadSexualOrientationData() {
+    RandomCollection<String> soDistribution = new RandomCollection<String>();
+    double[] soPercentages = BiometricsConfig.doubles("lifecycle.sexual_orientation"); 
+    // [heterosexual, homosexual, bisexual]
+    soDistribution.add(soPercentages[0], "heterosexual");
+    soDistribution.add(soPercentages[1], "homosexual");
+    soDistribution.add(soPercentages[2], "bisexual");
+    return soDistribution;
   }
 
   @Override
@@ -152,6 +165,9 @@ public final class LifecycleModule extends Module {
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
+
+    String orientation = sexualOrientationData.next(person.random);
+    attributes.put(Person.SEXUAL_ORIENTATION, orientation);
   }
   
   /**
