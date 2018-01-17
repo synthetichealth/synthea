@@ -47,6 +47,66 @@ namespace :synthea do
     run_synthea_sequential(args.datafile)
   end
 
+  task :generate_state, [:state] do |_t, args|
+    args.with_defaults(state: nil)
+    json = process_demographics_file(nil, args.state)
+    run_synthea_sequential('config/temp.json')
+  end
+
+  task :generate_city, [:city, :state] do |_t, args|
+    args.with_defaults(state: nil)
+    json = process_demographics_file(args.city, args.state)
+    run_synthea_sequential('config/temp.json')
+  end
+
+  def process_demographics_file(city, state)
+    hash = {}
+    file = File.open('resources/demographics.csv', 'r:UTF-8')
+    # CSV.foreach(file, headers: true, return_headers: false, header_converters: :symbol) do |row|
+    CSV.foreach(file, headers: true, return_headers: false) do |row|
+      state_match = state.nil? || row['STNAME'] == state
+      city_match = city.nil? || row['NAME'] == city
+      next unless state_match && city_match
+      hash[row['NAME']] = convert_row_to_hash(row)
+    end
+    file.close
+    file = File.open('config/temp.json','w:UTF-8')
+    file.write(JSON.pretty_unparse(hash))
+    file.close
+  end
+
+  def convert_row_to_hash(row)
+    hash = {}
+    hash['population'] = row['POPESTIMATE2015'].to_i
+    hash['state'] = row['STNAME']
+    hash['county'] = row['CTYNAME']
+    hash['ages'] = {}
+    ageGroups = ['Total', (0..4), (5..9), (10..14), (15..19), (20..24), (25..29), (30..34), (35..39), (40..44), (45..49), (50..54), (55..59), (60..64), (65..69), (70..74), (75..79), (80..84), (85..110)]
+    ageGroups.each_with_index do |group, index|
+      next if index==0
+      hash['ages'][group.to_s] = row[index.to_s].to_f / row['TOT_POP'].to_f
+    end
+    hash['gender'] = {}
+    hash['gender']['male'] = row['TOT_MALE'].to_f
+    hash['gender']['female'] = row['TOT_FEMALE'].to_f
+    hash['race'] = {}
+    raceGroups = ['white','hispanic','black','asian','native','other']
+    raceGroups.each do |group|
+      hash['race'][group] = row[group.upcase].to_f
+    end
+    hash['income'] = {}
+    incomeGroups = ['00..10','10..15','15..25','25..35','35..50','50..75','75..100','100..150','150..200','200..999']
+    incomeGroups.each do |group|
+      hash['income'][group] = row[group.upcase].to_f
+    end
+    hash['education'] = {}
+    educationGroups = ['less_than_hs','hs_degree','some_college','bs_degree']
+    educationGroups.each do |group|
+      hash['education'][group] = row[group.upcase].to_f
+    end
+    hash
+  end
+
   def run_synthea_sequential(datafile)
     if datafile
       raise "File not found: #{datafile}" unless File.file?(datafile)

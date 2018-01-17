@@ -66,7 +66,11 @@ module Synthea
           end
         end
 
-        @scaling_factor = @population_count.to_f / Synthea::Config.sequential.real_world_population.to_f
+        if Synthea::Config.sequential.population_scaling
+          @scaling_factor = Synthea::Config.sequential.population_scaling_rate
+        else
+          @scaling_factor = 1.0
+        end
         # if you want to generate a population smaller than 7M but still with accurate ratios,
         #  you can scale the populations of individual cities down by this amount.
 
@@ -85,7 +89,7 @@ module Synthea
       end
 
       def run
-        puts "Generating #{@population_count} patients..."
+        puts 'Generating patients...'
 
         if Synthea::Config.sequential.multithreading
           pool_size = Synthea::Config.sequential.thread_pool_size
@@ -291,7 +295,7 @@ module Synthea
         gender_ratio = Pickup.new(stats['gender']) { |v| v * 100 }
         race_ratio = Pickup.new(stats['race']) { |v| v * 100 }
         age_ratio = Pickup.new(stats['ages']) { |v| v * 100 }
-        if stats['education']
+        if stats['education'] && stats['education'].values.sum != 0
           education_ratio = Pickup.new(stats['education']) { |v| v * 100 }
         else
           default_ratio = {
@@ -302,7 +306,7 @@ module Synthea
           }
           education_ratio = Pickup.new(default_ratio) { |v| v * 100 }
         end
-        if stats['income']
+        if stats['income'] && stats['income'].values.sum != 0
           income_stats = stats['income']
           income_stats.delete('median')
           income_stats.delete('mean')

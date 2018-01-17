@@ -6,7 +6,7 @@ module Synthea
       @running_total += feat.properties['pop']
     end
     @city_zipcode_hash = JSON.parse(File.read(File.expand_path('city_zip.json', File.dirname(File.absolute_path(__FILE__)))))
-    @town_list = JSON.parse(File.read(File.join(File.dirname(__FILE__), '..', '..', 'config', 'towns.json')))
+    @town_list = CSV.read(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'demographics.csv'))
 
     def self.get_zipcode(city, state = 'MA')
       return 'XXXXX' unless city
@@ -19,8 +19,9 @@ module Synthea
     end
 
     def self.select_town
-      city = @town_list.keys.sample
-      state = @town_list[city]['state']
+      row = @town_list.drop(1).sample
+      city = row[2]
+      state = row[3]
       { city: city, state: state }
     end
 

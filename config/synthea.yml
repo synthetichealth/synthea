@@ -38,7 +38,8 @@ synthea:
     # population is scaled to accurately represent MA (using a "true" population of 6,794,422)
     only_dead_patients: false
     population: 100
-    real_world_population: 6794422 #sum of the jsons in the config folder
+    population_scaling: true
+    population_scaling_rate: 0.001
     track_detailed_prevalence: true
     multithreading: false
     thread_pool_size:

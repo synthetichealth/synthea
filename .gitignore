@@ -6,3 +6,5 @@ output
 coverage
 *.log*
 concepts.csv
+config/temp.json
+
