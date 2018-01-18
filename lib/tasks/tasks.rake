@@ -84,7 +84,7 @@ namespace :synthea do
     ageGroups = ['Total', (0..4), (5..9), (10..14), (15..19), (20..24), (25..29), (30..34), (35..39), (40..44), (45..49), (50..54), (55..59), (60..64), (65..69), (70..74), (75..79), (80..84), (85..110)]
     ageGroups.each_with_index do |group, index|
       next if index==0
-      hash['ages'][group.to_s] = row[index.to_s].to_f / row['TOT_POP'].to_f
+      hash['ages'][group.to_s] = row[index.to_s].to_f
     end
     hash['gender'] = {}
     hash['gender']['male'] = row['TOT_MALE'].to_f
