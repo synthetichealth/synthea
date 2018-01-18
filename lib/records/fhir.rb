@@ -328,7 +328,8 @@ module Synthea
                                      'billablePeriod' => { 'start' => period.start, 'end' => period.end },
                                      # 'enterer' => { 'reference' => 'practitioner'},
                                      # 'insurer' => { 'reference' => curr_encounter.resource.insurer},
-                                     'organization' => { 'reference' => curr_encounter.resource.serviceProvider },
+                                     # use the same reference as the encounter.serviceProvider
+                                     'organization' => { 'reference' => curr_encounter.resource.serviceProvider.reference },
                                      # 'payee'
                                      # 'insurance'
                                      'encounter' => { 'reference' => curr_encounter.fullUrl.to_s },

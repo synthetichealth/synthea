@@ -248,11 +248,11 @@ module Synthea
                                                     'period' => { 'start' => convert_fhir_date_time(encounter['time'], 'time'), 'end' => convert_fhir_date_time(end_time, 'time') })
 
         if reason_data
-          fhir_encounter.reason = FHIR::DSTU2::CodeableConcept.new('coding' => [{
-                                                                     'code' => reason_data[:codes]['SNOMED-CT'][0],
-                                                                     'display' => reason_data[:description],
-                                                                     'system' => 'http://snomed.info/sct'
-                                                                   }])
+          fhir_encounter.reason = [FHIR::DSTU2::CodeableConcept.new('coding' => [{
+                                                                      'code' => reason_data[:codes]['SNOMED-CT'][0],
+                                                                      'display' => reason_data[:description],
+                                                                      'system' => 'http://snomed.info/sct'
+                                                                    }])]
         end
 
         if encounter['discharge']
