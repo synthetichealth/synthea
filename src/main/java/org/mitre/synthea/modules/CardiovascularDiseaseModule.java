@@ -3,9 +3,10 @@ package org.mitre.synthea.modules;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -669,11 +670,11 @@ public final class CardiovascularDiseaseModule extends Module {
   private static void prescribeMedication(String med, Person person, long time) {
     if (!person.record.medicationActive(med)) {
       // add med to med_changes
-      List<String> medChanges = 
-          (List<String>) person.attributes.get("cardiovascular_disease_med_changes");
+      Set<String> medChanges = 
+          (Set<String>) person.attributes.get("cardiovascular_disease_med_changes");
 
       if (medChanges == null) {
-        medChanges = new LinkedList<String>();
+        medChanges = new HashSet<String>();
         person.attributes.put("cardiovascular_disease_med_changes", medChanges);
       }
       medChanges.add(med);
@@ -684,11 +685,11 @@ public final class CardiovascularDiseaseModule extends Module {
   private static void stopMedication(String med, Person person, long time) {
     if (person.record.medicationActive(med)) {
       // add med to med_changes
-      List<String> medChanges = 
-          (List<String>) person.attributes.get("cardiovascular_disease_med_changes");
+      Set<String> medChanges = 
+          (Set<String>) person.attributes.get("cardiovascular_disease_med_changes");
 
       if (medChanges == null) {
-        medChanges = new LinkedList<String>();
+        medChanges = new HashSet<String>();
         person.attributes.put("cardiovascular_disease_med_changes", medChanges);
       }
       medChanges.add(med);
@@ -718,8 +719,8 @@ public final class CardiovascularDiseaseModule extends Module {
     // TODO - intentionally ignored at the moment
 
     // step 3 - medications
-    List<String> medChanges = 
-        (List<String>) person.attributes.get("cardiovascular_disease_med_changes");
+    Set<String> medChanges = 
+        (Set<String>) person.attributes.get("cardiovascular_disease_med_changes");
 
     if (medChanges != null) {
       for (String med : medChanges) {

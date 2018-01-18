@@ -64,6 +64,7 @@ public class Person implements Serializable {
   public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
+  public static final String SEXUAL_ORIENTATION = "sexual_orientation";
 
   public final Random random;
   public final long seed;

@@ -257,7 +257,7 @@ public class Graphviz {
 
     File outputFile = outputFolder.toPath().resolve(relativePath + ".png").toFile();
     outputFile.mkdirs();
-    guru.nidi.graphviz.engine.Graphviz.fromGraph(g).rasterizer(Rasterizer.SALAMANDER)
+    guru.nidi.graphviz.engine.Graphviz.fromGraph(g).rasterizer(Rasterizer.BATIK)
         .render(Format.PNG).toFile(outputFile);
   }
 
