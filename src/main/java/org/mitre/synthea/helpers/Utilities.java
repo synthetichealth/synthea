@@ -2,6 +2,9 @@ package org.mitre.synthea.helpers;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 
 import java.io.IOException;
@@ -9,6 +12,9 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+
+import org.mitre.synthea.engine.Logic;
+import org.mitre.synthea.engine.State;
 
 public class Utilities {
   /**
@@ -205,5 +211,18 @@ public class Utilities {
   public static final String readResource(String filename) throws IOException {
     URL url = Resources.getResource(filename);
     return Resources.toString(url, Charsets.UTF_8);
+  }
+
+  /**
+   * Get a Gson object, preconfigured to load the GMF modules into classes.
+   * 
+   * @return Gson object to unmarshal GMF JSON into objects
+   */
+  public static Gson getGson() {
+    return new GsonBuilder()
+      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+      .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(Logic.class,"condition_type"))
+      .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(State.class, "type"))
+      .create();
   }
 }

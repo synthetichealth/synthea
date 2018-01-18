@@ -5,7 +5,7 @@
 
     "Initial" : {
       "type" : "Initial",
-      "remarks" : "Initial impl == direct translation of ruby module",
+      "remarks" : ["Initial impl == direct translation of ruby module"],
       "direct_transition" : "Wellness_Encounter"
     },
 
@@ -108,7 +108,7 @@
             "operator": "<=",
             "value": 5.7
           },
-          "remarks" : "Normal level",
+          "remarks" : ["Normal level"],
           "transition" : "Wellness_Encounter"
         },
         {
@@ -122,7 +122,7 @@
             "operator": "<=",
             "value": 6.5
           },
-          "remarks" : "Prediabetic level",
+          "remarks" : ["Prediabetic level"],
           "transition" : "Set_Severity_0"
         },
         {
@@ -136,7 +136,7 @@
             "operator": "<=",
             "value": 7.5
           },
-          "remarks" : "Diabetic level",
+          "remarks" : ["Diabetic level"],
           "transition" : "Set_Severity_1"
         },
         {
@@ -150,7 +150,7 @@
             "operator": "<=",
             "value": 9.0
           },
-          "remarks" : "Severe level",
+          "remarks" : ["Severe level"],
           "transition" : "Set_Severity_2"
         },
         {
@@ -179,7 +179,7 @@
           "transition" : "Set_Severity_4"
         },
         {
-          "remarks" : "> severe level",
+          "remarks" : ["> severe level"],
           "transition" : "Set_Severity_3"
         }
       ]
@@ -189,7 +189,7 @@
       "type" : "SetAttribute",
       "attribute" : "diabetes_severity",
       "value" : 0,
-      "remarks" : "setting prediabetes as severity 0 makes some things easier",
+      "remarks" : ["setting prediabetes as severity 0 makes some things easier"],
       "direct_transition" : "Diagnose_Prediabetes"
     },
 
@@ -568,7 +568,7 @@
               "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
             }]
           },
-          "remarks" : "they have basal so stop it and change towards prandial",
+          "remarks" : ["they have basal so stop it and change towards prandial"],
           "transition" : "End_Basal_Insulin_Towards_Prandial"
         },
         {
@@ -580,11 +580,11 @@
               "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
             }]
           },
-          "remarks" : "they have prandial so do nothing",
+          "remarks" : ["they have prandial so do nothing"],
           "transition" : "Check_Complications"
         },
         {
-          "remarks" : "prescribe basal the first time around",
+          "remarks" : ["prescribe basal the first time around"],
           "transition" : "Prescribe_Basal_Insulin"
         }
       ]
