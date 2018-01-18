@@ -47,6 +47,66 @@ namespace :synthea do
     run_synthea_sequential(args.datafile)
   end
 
+  task :generate_state, [:state] do |_t, args|
+    args.with_defaults(state: nil)
+    json = process_demographics_file(nil, args.state)
+    run_synthea_sequential('config/temp.json')
+  end
+
+  task :generate_city, [:city, :state] do |_t, args|
+    args.with_defaults(state: nil)
+    json = process_demographics_file(args.city, args.state)
+    run_synthea_sequential('config/temp.json')
+  end
+
+  def process_demographics_file(city, state)
+    hash = {}
+    file = File.open('resources/demographics.csv', 'r:UTF-8')
+    # CSV.foreach(file, headers: true, return_headers: false, header_converters: :symbol) do |row|
+    CSV.foreach(file, headers: true, return_headers: false) do |row|
+      state_match = state.nil? || row['STNAME'] == state
+      city_match = city.nil? || row['NAME'] == city
+      next unless state_match && city_match
+      hash[row['NAME']] = convert_row_to_hash(row)
+    end
+    file.close
+    file = File.open('config/temp.json','w:UTF-8')
+    file.write(JSON.pretty_unparse(hash))
+    file.close
+  end
+
+  def convert_row_to_hash(row)
+    hash = {}
+    hash['population'] = row['POPESTIMATE2015'].to_i
+    hash['state'] = row['STNAME']
+    hash['county'] = row['CTYNAME']
+    hash['ages'] = {}
+    ageGroups = ['Total', (0..4), (5..9), (10..14), (15..19), (20..24), (25..29), (30..34), (35..39), (40..44), (45..49), (50..54), (55..59), (60..64), (65..69), (70..74), (75..79), (80..84), (85..110)]
+    ageGroups.each_with_index do |group, index|
+      next if index==0
+      hash['ages'][group.to_s] = row[index.to_s].to_f
+    end
+    hash['gender'] = {}
+    hash['gender']['male'] = row['TOT_MALE'].to_f
+    hash['gender']['female'] = row['TOT_FEMALE'].to_f
+    hash['race'] = {}
+    raceGroups = ['white','hispanic','black','asian','native','other']
+    raceGroups.each do |group|
+      hash['race'][group] = row[group.upcase].to_f
+    end
+    hash['income'] = {}
+    incomeGroups = ['00..10','10..15','15..25','25..35','35..50','50..75','75..100','100..150','150..200','200..999']
+    incomeGroups.each do |group|
+      hash['income'][group] = row[group.upcase].to_f
+    end
+    hash['education'] = {}
+    educationGroups = ['less_than_hs','hs_degree','some_college','bs_degree']
+    educationGroups.each do |group|
+      hash['education'][group] = row[group.upcase].to_f
+    end
+    hash
+  end
+
   def run_synthea_sequential(datafile)
     if datafile
       raise "File not found: #{datafile}" unless File.file?(datafile)
@@ -271,11 +331,15 @@ namespace :synthea do
     options = { :headers => true, :header_converters => :symbol }
     towns = {}
     counties = {}
-    townfile = File.open('./resources/SUB-EST2015_25.csv', 'r:UTF-8')
+    townfile = File.open('./resources/SUB-EST2015_18.csv', 'r:UTF-8')
     CSV.foreach(townfile, options) do |row|
-      if row[:primgeo_flag].to_i == 1
-        town_name = row[:name].split.keep_if { |x| !%w(town city).include?(x.downcase) }.join(' ')
-        towns[town_name] = { population: row[:popestimate2015].to_i, state: row[:stname], county: row[:county] }
+      if row[:primgeo_flag].to_i == 1 && row[:funcstat] == 'A'
+        town_name = row[:name].split.keep_if { |x| !%w(town township city CDP (balance) (pt.)).include?(x.downcase) }.join(' ')
+        if towns[town_name]
+          towns[town_name][:population] += row[:popestimate2015].to_i
+        else
+          towns[town_name] = { population: row[:popestimate2015].to_i, state: row[:stname], county: row[:county] }
+        end
       end
       counties[row[:county]] = row[:name] if row[:sumlev].to_i == 50 # county
     end
@@ -286,7 +350,7 @@ namespace :synthea do
     end
     townfile.close
     ageGroups = ['Total', (0..4), (5..9), (10..14), (15..19), (20..24), (25..29), (30..34), (35..39), (40..44), (45..49), (50..54), (55..59), (60..64), (65..69), (70..74), (75..79), (80..84), (85..110)]
-    countyfile = File.open('./resources/CC-EST2015-ALLDATA-25.csv', 'r:UTF-8')
+    countyfile = File.open('./resources/CC-EST2015-ALLDATA-18.csv', 'r:UTF-8')
     CSV.foreach(countyfile, options) do |row|
       # if (2015 estimate) && (total overall demographics)
       if row[:year].to_i == 8 && row[:agegrp].to_i.zero?
@@ -318,12 +382,13 @@ namespace :synthea do
     end
     countyfile.close
 
-    incomefile = File.open('./resources/ACS_14_5YR_S1901_with_ann.csv', 'r:UTF-8')
+    incomefile = File.open('./resources/ACS_14_5YR_S1901_ann.csv', 'r:UTF-8')
     CSV.foreach(incomefile, options) do |row|
       next if row[:geoid] == 'Id' # this CSV has 2 header rows
       next if row[:geodisplaylabel].include?('not defined')
 
-      town_name = row[:geodisplaylabel].split(',')[0].split.keep_if { |x| !%w(town city).include?(x.downcase) }.join(' ')
+      town_name = row[:geodisplaylabel].split(',')[0].split.keep_if { |x| !%w(town township city CDP (balance) (pt.)).include?(x.downcase) }.join(' ')
+      next unless towns[town_name]
 
       # these numbers are given at the household level
       # the keys represent 10s of thousands, ie 50..75 means 50,000 to 75,000
@@ -342,12 +407,13 @@ namespace :synthea do
     end
     incomefile.close
 
-    educationfile = File.open('./resources/ACS_14_5YR_S1501_with_ann.csv', 'r:UTF-8')
+    educationfile = File.open('./resources/ACS_14_5YR_S1501_ann.csv', 'r:UTF-8')
     CSV.foreach(educationfile, options) do |row|
       next if row[:geoid] == 'Id' # this CSV has 2 header rows
       next if row[:geodisplaylabel].include?('not defined')
 
-      town_name = row[:geodisplaylabel].split(',')[0].split.keep_if { |x| !%w(town city).include?(x.downcase) }.join(' ')
+      town_name = row[:geodisplaylabel].split(',')[0].split.keep_if { |x| !%w(town township city CDP (balance) (pt.)).include?(x.downcase) }.join(' ')
+      next unless towns[town_name]
 
       # the data allows for more granular categories (like 24-35 graduate degree) but these overall %s are good enough for our purposes
       towns[town_name][:education] = { less_than_hs: row[:hc01_est_vc02].to_f / 100,

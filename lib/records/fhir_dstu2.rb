@@ -138,7 +138,7 @@ module Synthea
                                                                                    'url' => 'longitude',
                                                                                    'valueDecimal' => entity[:coordinates_address].x
                                                                                  }
-                                                                               ])]
+                                                                               ])] if entity[:coordinates_address]
         # add marital status if present
         if entity[:marital_status]
           patient_resource.maritalStatus = FHIR::DSTU2::CodeableConcept.new('coding' => [{ 'system' => 'http://hl7.org/fhir/v3/MaritalStatus', 'code' => entity[:marital_status] }],

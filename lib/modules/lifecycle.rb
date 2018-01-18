@@ -60,25 +60,27 @@ module Synthea
 
           # determine lat/long coordinates of address within MA
           location_data = Synthea::Location.select_point(entity[:city])
-          entity[:coordinates_address] = location_data['point']
-          zip_code = Synthea::Location.get_zipcode(location_data['city'])
+          entity[:coordinates_address] = location_data['point'] if location_data
+          zip_code = Synthea::Location.get_zipcode(entity[:city], entity[:city_state])
           entity[:address] = {
             'line' => [Faker::Address.street_address],
-            'city' => location_data['city'],
-            'state' => 'MA',
+            'city' => entity[:city],
+            'state' => entity[:city_state],
             'postalCode' => zip_code,
             'country' => 'US'
           }
           entity[:address]['line'] << Faker::Address.secondary_address if rand < 0.5
-          entity[:city] = location_data['city']
 
           # telephone
           entity[:telephone] = Faker::PhoneNumber.phone_number
 
           # birthplace
+          birthplace = Synthea::Location.select_town
+          zip_code = Synthea::Location.get_zipcode(birthplace[:city], birthplace[:state])
           entity[:birth_place] = {
-            'city' => Synthea::Location.select_point['city'],
-            'state' => 'MA',
+            'city' => birthplace[:city],
+            'state' => birthplace[:state],
+            'postalCode' => zip_code,
             'country' => 'US'
           }
 

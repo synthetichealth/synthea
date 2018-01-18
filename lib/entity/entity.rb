@@ -61,7 +61,7 @@ module Synthea
 
     def assign_ambulatory_provider(provider = nil)
       if provider.nil?
-        location = attributes[:coordinates_address].to_coordinates
+        location = attributes[:coordinates_address].to_coordinates if attributes[:coordinates_address]
         provider = Synthea::Hospital.find_closest_ambulatory(location)
       end
       @attributes[:preferred_provider][:ambulatory] = provider
@@ -73,7 +73,7 @@ module Synthea
 
     def assign_inpatient_provider(provider = nil)
       if provider.nil?
-        location = attributes[:coordinates_address].to_coordinates
+        location = attributes[:coordinates_address].to_coordinates if attributes[:coordinates_address]
         provider = Synthea::Hospital.find_closest_inpatient(location)
       end
       @attributes[:preferred_provider][:inpatient] = provider
@@ -85,7 +85,7 @@ module Synthea
 
     def assign_emergency_provider(provider = nil)
       if provider.nil?
-        location = attributes[:coordinates_address].to_coordinates
+        location = attributes[:coordinates_address].to_coordinates if attributes[:coordinates_address]
         provider = Synthea::Hospital.find_closest_emergency(location)
       end
       @attributes[:preferred_provider][:emergency] = provider

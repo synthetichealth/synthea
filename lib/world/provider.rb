@@ -49,7 +49,10 @@ module Synthea
       end
 
       # if service is nil or not supproted by simulation, patient goes to default hospital
-      return entity.ambulatory_provider if service.nil?
+      if service.nil?
+        entity.assign_ambulatory_provider if entity.ambulatory_provider.nil?
+        return entity.ambulatory_provider
+      end
 
       case service.to_sym
       when :ambulatory
