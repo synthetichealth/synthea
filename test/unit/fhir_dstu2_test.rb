@@ -29,7 +29,7 @@ class FhirDstu2Test < Minitest::Test
     @time = Time.now
     @patient.events.create(@time, :birth, :birth)
     @patient_entry = Synthea::Output::FhirDstu2Record.basic_info(@patient, @fhir_record)
-    @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour }
+    @encounter = {'type' => :age_lt_11, 'time' => @time, 'end_time' => @time + 1.hour, 'reason' => :diabetes }
     @encounter_entry = Synthea::Output::FhirDstu2Record.encounter(@encounter, @fhir_record, @patient_entry)
     # fhir_record.entry[0] is the provider, [1] is the patient, [2] is the encounter
     @providerID = @fhir_record.entry[0].fullUrl
@@ -151,6 +151,9 @@ class FhirDstu2Test < Minitest::Test
     period = FHIR::DSTU2::Period.new({'start'=>startTime, 'end' => endTime})
     assert_equal(period.start,encounter.period.start)
     assert_equal(period.end, encounter.period.end)
+    code = encounter.reason[0].coding[0]
+    assert_equal('Diabetes', code.display)
+    assert_equal('44054006', code.code)
     assert_empty @fhir_record.validate
   end
 

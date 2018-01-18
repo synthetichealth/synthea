@@ -474,4 +474,9 @@ class FhirTest < Minitest::Test
     assert_equal('Wellness > 100', goal.description.text)
     assert_empty @fhir_record.validate
   end
+
+  def test_claim
+    assert_empty @claim_entry.validate
+    assert_empty @fhir_record.validate
+  end
 end
