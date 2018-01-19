@@ -7,7 +7,7 @@ class MA_Geo < Minitest::Test
 
   def test_all_valid_cities
     @ma.features.each do |city|
-      zipcode = Synthea::Location.get_zipcode(city.properties['cs_name'])
+      zipcode = Synthea::Location.get_zipcode(city.properties['cs_name'],'Massachusetts')
       assert(zipcode)
     end
   end
@@ -29,7 +29,7 @@ class MA_Geo < Minitest::Test
 
   def test_get_zipcode
     (1..10).each do |i|
-      zip = Synthea::Location.get_zipcode("Bedford")
+      zip = Synthea::Location.get_zipcode('Bedford','Massachusetts')
       assert([ "01730", "01731"].include?(zip))
     end
   end

@@ -10,7 +10,7 @@ module Synthea
 
     def self.get_zipcode(city, state)
       return 'XXXXX' unless city
-      zipcode_list = @zip_list.drop(1).select{|r| r[2]==city && r[1]==state}
+      zipcode_list = @zip_list.drop(1).select { |r| r[2] == city && r[1] == state }
       if zipcode_list && !zipcode_list.empty?
         zipcode_list.sample[3]
       else
