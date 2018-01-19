@@ -5,14 +5,14 @@ module Synthea
     @geom.features.each do |feat|
       @running_total += feat.properties['pop']
     end
-    @city_zipcode_hash = JSON.parse(File.read(File.expand_path('city_zip.json', File.dirname(File.absolute_path(__FILE__)))))
+    @zip_list = CSV.read(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'zipcodes.csv'))
     @town_list = CSV.read(File.join(File.dirname(__FILE__), '..', '..', 'resources', 'demographics.csv'))
 
-    def self.get_zipcode(city, state = 'MA')
+    def self.get_zipcode(city, state)
       return 'XXXXX' unless city
-      zipcode_list = @city_zipcode_hash[city] || @city_zipcode_hash[city + ' Town']
-      if zipcode_list && state == 'MA'
-        zipcode_list.sample
+      zipcode_list = @zip_list.drop(1).select { |r| r[2] == city && r[1] == state }
+      if zipcode_list && !zipcode_list.empty?
+        zipcode_list.sample[3]
       else
         'XXXXX'
       end
