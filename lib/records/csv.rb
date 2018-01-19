@@ -157,13 +157,14 @@ module Synthea
 
         claim_id = @@claim_hash['claim_id']
         billable_period = @@claim_hash['billable_period']
-        claim_organization = 'temp organization' # claim_hash['claim_organization']
+        claim_organization = 'Not Provided'
+        claim_organization = encounter[:provider].attributes['name'] if encounter[:provider]
         claim_total = 100 # claim_hash['total']
         blank = ''
         if @@claim_hash['patient_id']
           @@claims.write("#{claim_id},#{patient_id},#{billable_period},#{claim_organization},#{patient_id},#{blank},#{claim_total}\n")
         end
-        @@claim_hash = { 'billable_period' => encounter['time'].strftime('%Y-%m-%d'), 'claim_organization' => 'temp_organization' }
+        @@claim_hash = { 'billable_period' => encounter['time'].strftime('%Y-%m-%d'), 'claim_organization' => claim_organization }
         encounter_id
       end
 
