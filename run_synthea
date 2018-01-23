@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+##############################################################################
+##
+##  Synthea launcher for UN*X
+##
+##############################################################################
+
+if [ $# -eq 0 ]; then
+  # run synthea with no args
+  ./gradlew run
+
+else
+  # Running Synthea with arguments
+  # For simplicity, do nothing and just pass the args to gradle
+  SYNTHEA_ARGS=
+
+  for arg in "$@"
+  do
+      SYNTHEA_ARGS=$SYNTHEA_ARGS\'$arg\',
+      # Trailing comma ok, don't need to remove it
+  done
+
+  ./gradlew run -PappArgs="[$SYNTHEA_ARGS]"
+fi
+
