@@ -1,3 +1,7 @@
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.world.agents.CommunityHealthWorker;
 
@@ -12,7 +16,49 @@ public class App {
    */
   public static void main(String[] args) throws Exception {
 
-    Generator generator = new Generator();
+    // Usage: synthea [-s seed] [-p populationSize] [stateName [cityName]]
+    // examples:
+    //   synthea Massachusetts
+    //   synthea Alaska Juneau
+    //   synthea -s 12345
+    //   synthea -p 1000
+
+    Generator.GeneratorOptions options = new Generator.GeneratorOptions();
+    
+    if (args != null && args.length > 0) {
+      try {
+        Queue<String> argsQ = new LinkedList<String>(Arrays.asList(args));
+        
+        while (!argsQ.isEmpty()) {
+          String currArg = argsQ.poll();
+          
+          if (currArg.equalsIgnoreCase("-s")) {
+            String value = argsQ.poll();
+            options.seed = Long.parseLong(value);
+          } else if (currArg.equalsIgnoreCase("-p")) {
+            String value = argsQ.poll();
+            options.population = Integer.parseInt(value);
+          } else if (options.state == null) {
+            options.state = currArg;
+          } else {
+            // assume it must be the city
+            options.city = currArg;
+          }
+        } 
+      } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("Usage: synthea [-s seed] [-p populationSize] [stateName [cityName]]");
+        System.out.println("Examples:");
+        System.out.println("synthea Massachusetts");
+        System.out.println("synthea Alaska Juneau");
+        System.out.println("synthea -s 12345");
+        System.out.println("synthea -p 1000)");
+      }
+    }
+    
+    System.out.println("Running with options:\n" + options);
+    
+    Generator generator = new Generator(options);
     generator.run();
 
     System.out.format("Number of Towns: %d\n", CommunityHealthWorker.workers.size());

@@ -51,20 +51,50 @@ public class Generator {
   private boolean onlyDeadPatients;
   public TransitionMetrics metrics;
 
+  public static class GeneratorOptions {
+    public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
+    public long seed = System.currentTimeMillis();
+    public String city;
+    public String state;
+    
+    @Override
+    public String toString() {
+      String location;
+      if (state == null) {
+        location = "*";
+      } else if (city == null) {
+        location = state;
+      } else {
+        location = city + ", " + state;
+      }
+      return String.format("Population: %d\nSeed: %d\nLocation: %s\n", 
+          population, seed, location);
+    }
+  }
+  
   public Generator() throws IOException {
     int population = Integer.parseInt(Config.get("generate.default_population", "1"));
-    init(population, System.currentTimeMillis());
+    init(population, System.currentTimeMillis(), null, null);
   }
 
   public Generator(int population) throws IOException {
-    init(population, System.currentTimeMillis());
+    init(population, System.currentTimeMillis(), null, null);
   }
-
+  
   public Generator(int population, long seed) throws IOException {
-    init(population, seed);
+    init(population, seed, null, null);
   }
 
-  private void init(int population, long seed) throws IOException {
+  public Generator(GeneratorOptions o) throws IOException {
+    init(o.population, o.seed, o.state, o.city);
+  }
+  
+  public Generator(String state, String city) throws IOException {
+    int population = Integer.parseInt(Config.get("generate.default_population", "1"));
+    init(population, System.currentTimeMillis(), state, city);
+  }
+
+  private void init(int population, long seed, String state, String city) throws IOException {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -89,6 +119,14 @@ public class Generator {
     this.random = new Random(seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
     this.stop = System.currentTimeMillis();
+    
+    if (state == null) {
+      // use pure random
+    } else if (city == null) {
+      // use entire state
+    } else {
+      // specific city given
+    }
     this.demographics = Demographics.loadByName(Config.get("generate.demographics.default_file"));
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));

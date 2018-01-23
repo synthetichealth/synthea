@@ -127,3 +127,11 @@ task cleanOutput {
 
 // Define the main class for the application
 mainClassName = 'App'
+
+run {
+    // ex. gradle run -PappArgs="['arg1', 'args2']"
+    // see https://stackoverflow.com/questions/27604283/gradle-task-pass-arguments-to-java-application
+    if (project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+    }
+}
