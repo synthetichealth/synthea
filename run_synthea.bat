@@ -13,13 +13,11 @@ IF "%~1" == "" (
 ) ELSE (
   @rem Running Synthea with arguments
   @rem For simplicity, do nothing and just pass the args to gradle
-  SET syntheaArgs=^[
-  echo step1
+  SET syntheaArgs= 
   for %%x in (%*) do (
-    echo loop %%x
     SET syntheaArgs=!syntheaArgs!'%%~x',
+    @rem Trailing comma ok, don't need to remove it
   ) 
-  SET syntheaArgs=!syntheaArgs!^]
-  @rem Trailing comma ok, don't need to remove it
-  gradlew.bat run -PappArgs="!syntheaArgs!"
+  
+  gradlew.bat run -PappArgs="[!syntheaArgs!]"
 )
