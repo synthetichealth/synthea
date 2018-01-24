@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -57,9 +58,14 @@ public class CommunityHealthWorker extends Provider {
 
   public static int yearIntroduced = Integer.parseInt(Config.get("generate.chw.year_introduced"));
 
-  public static Map<String, List<CommunityHealthWorker>> workers = generateWorkers();
+  public static Map<String, List<CommunityHealthWorker>> workers;
 
-  private CommunityHealthWorker(String deploymentType) {
+
+  public static void initalize(Location location) {
+    workers = generateWorkers(location);
+  }
+  
+  private CommunityHealthWorker(String deploymentType, Location location) {
     // don't allow anyone else to instantiate this
 
     attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING,
@@ -93,8 +99,9 @@ public class CommunityHealthWorker extends Provider {
     attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING,
         Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
 
-    Location.assignCity(this);
-
+    String city = location.randomCityName(new Random());
+    attributes.put(CITY, city);
+    
     attributes.put(DEPLOYMENT, deploymentType);
 
     // resourceID so that it's the same as Provider.
@@ -104,14 +111,14 @@ public class CommunityHealthWorker extends Provider {
         "CHW providing " + deploymentType + " services in " + attributes.get(CITY));
   }
 
-  private static Map<String, List<CommunityHealthWorker>> generateWorkers() {
+  private static Map<String, List<CommunityHealthWorker>> generateWorkers(Location location) {
     Map<String, List<CommunityHealthWorker>> workers = 
         new HashMap<String, List<CommunityHealthWorker>>();
     int numWorkers = budget / cost;
     int numWorkersGenerated = 0;
     CommunityHealthWorker worker;
     for (int i = 0; i < Math.round(numWorkers * community); i++) {
-      worker = new CommunityHealthWorker(DEPLOYMENT_COMMUNITY);
+      worker = new CommunityHealthWorker(DEPLOYMENT_COMMUNITY, location);
       String city = (String) worker.attributes.get(CITY);
       if (!workers.containsKey(city)) {
         workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -120,7 +127,7 @@ public class CommunityHealthWorker extends Provider {
       numWorkersGenerated++;
     }
     for (int i = 0; i < Math.round(numWorkers * emergency); i++) {
-      worker = new CommunityHealthWorker(DEPLOYMENT_EMERGENCY);
+      worker = new CommunityHealthWorker(DEPLOYMENT_EMERGENCY, location);
       String city = (String) worker.attributes.get(CITY);
       if (!workers.containsKey(city)) {
         workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -129,7 +136,7 @@ public class CommunityHealthWorker extends Provider {
       numWorkersGenerated++;
     }
     for (int i = numWorkersGenerated; i < numWorkers; i++) {
-      worker = new CommunityHealthWorker(DEPLOYMENT_POSTDISCHARGE);
+      worker = new CommunityHealthWorker(DEPLOYMENT_POSTDISCHARGE, location);
       String city = (String) worker.attributes.get(CITY);
       if (!workers.containsKey(city)) {
         workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -141,7 +148,7 @@ public class CommunityHealthWorker extends Provider {
   }
 
   public static CommunityHealthWorker findNearbyCHW(Person person, long time,
-      String deploymentType) {
+      String deploymentType, Location location) {
     int year = Utilities.getYear(time);
 
     if (year < yearIntroduced) {
@@ -156,7 +163,7 @@ public class CommunityHealthWorker extends Provider {
     switch (deploymentType) {
       case DEPLOYMENT_COMMUNITY:
         if (workers.containsKey(city)) {
-          probability = (double) (workers.get(city).size()) / (double) Location.getPopulation(city);
+          probability = (double) (workers.get(city).size()) / (double) location.getPopulation(city);
         }
         break;
       case DEPLOYMENT_EMERGENCY:

@@ -414,16 +414,16 @@ public class FhirStu3 {
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     patientResource.setBirthDate(new Date(birthdate));
 
-    Point coord = (Point) person.attributes.get(Person.COORDINATE);
-
+    String state = (String) person.attributes.get(Person.STATE);
+    
     Address addrResource = patientResource.addAddress();
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState((String) person.attributes.get(Person.STATE)).setCountry("US");
+        .setState(state).setCountry("US");
 
     Address birthplace = new Address();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState("MA")
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
         .setCountry("US");
     Extension birthplaceExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/birthPlace");
@@ -454,10 +454,13 @@ public class FhirStu3 {
           mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
     }
 
-    Extension geolocation = addrResource.addExtension();
-    geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
-    geolocation.addExtension("latitude", new DecimalType(coord.getY()));
-    geolocation.addExtension("longitude", new DecimalType(coord.getX()));
+    Point coord = (Point) person.attributes.get(Person.COORDINATE);
+    if (coord != null) {
+      Extension geolocation = addrResource.addExtension();
+      geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+      geolocation.addExtension("latitude", new DecimalType(coord.getY()));
+      geolocation.addExtension("longitude", new DecimalType(coord.getX()));
+    }
 
     if (!person.alive(stopTime)) {
       patientResource.setDeceased(convertFhirDateTime(person.record.death, true));

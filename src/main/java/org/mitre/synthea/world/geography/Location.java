@@ -1,21 +1,21 @@
 package org.mitre.synthea.world.geography;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.common.collect.Table;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -23,21 +23,47 @@ import org.wololo.geojson.GeoJSONFactory;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 public class Location {
-
-  private static final FeatureCollection cities;
-  private static final long totalPopulation;
+  private FeatureCollection cities;
+  private long totalPopulation;
 
   // cache the population by city name for performance
-  private static final Map<String, Long> populationByCity;
-  private static final Map<String, Feature> featuresByName;
-  private static final Map<String, List<String>> zipCodes;
+  private Map<String, Long> populationByCity;
+  private Map<String, Feature> featuresByName;
+  private Map<String, List<String>> zipCodes;
+  
+  private String city;
+  private String state;
+  private Map<String, Demographics> demographics;
 
-  static {
+  public Location(String state, String city) {
+    try {
+      this.state = state;
+      this.city = city;
+      
+      Table<String,String,Demographics> allDemographics = Demographics.load(state, city);
+      
+      // this still works even if only 1 city given,
+      // because allDemographics will only contain that 1 city
+      this.demographics = allDemographics.row(state);
+
+      long runningPopulation = 0;
+      populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
+      for (Demographics d : this.demographics.values()) {
+        long pop = d.population;
+        runningPopulation += pop;
+        populationByCity.put(d.city, pop);
+      }
+      
+      totalPopulation = runningPopulation;
+      
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load demographics");
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(e);
+    }
+    
     // load the GeoJSON once so we can use it for all patients
     String filename = "geography/ma_geo.json";
-
-    long runningPopulation = 0;
-    populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
     featuresByName = new HashMap<>();
 
     try {
@@ -45,16 +71,9 @@ public class Location {
       cities = (FeatureCollection) GeoJSONFactory.create(json);
 
       for (Feature f : cities.getFeatures()) {
-        long pop = ((Double) f.getProperties().get("pop")).longValue();
-        runningPopulation += pop;
-
         String cityName = (String) f.getProperties().get("cs_name");
-        populationByCity.put(cityName, pop);
         featuresByName.put(cityName, f);
       }
-
-      totalPopulation = runningPopulation;
-
     } catch (Exception e) {
       System.err.println("ERROR: unable to load geojson: " + filename);
       e.printStackTrace();
@@ -62,18 +81,37 @@ public class Location {
     }
 
     try {
-      filename = "geography/ma_zip.json";
-      String json = Utilities.readResource(filename);
-      Gson g = new Gson();
-      zipCodes = g.fromJson(json, LinkedTreeMap.class);
-      
+      filename = "geography/zipcodes.csv";
+      String csv = Utilities.readResource(filename);
+      List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
+
+      zipCodes = new HashMap<>();
+      for (Map<String,String> line : ziplist) {
+        String lineState = line.get("USPS");
+        
+        if (!lineState.equals(state)) {
+          continue;
+        }
+        
+        String lineCity = line.get("NAME");
+        String zip = line.get("ZCTA5");
+        
+        List<String> zipsForCity = zipCodes.get(lineCity);
+        if (zipsForCity == null) {
+          zipsForCity = new ArrayList<>();
+          zipCodes.put(lineCity, zipsForCity);
+        }
+        
+        zipsForCity.add(zip);
+      }
     } catch (Exception e) {
-      System.err.println("ERROR: unable to load zips json: " + filename);
+      System.err.println("ERROR: unable to load zips csv: " + filename);
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
   }
-
+  
+  
   /**
    * Get the zip code for the given city name. 
    * If a city has more than one zip code, this picks a random one.
@@ -82,7 +120,7 @@ public class Location {
    * @param random Source of randomness
    * @return a zip code for the given city
    */
-  public static String getZipCode(String cityName, Random random) {
+  public String getZipCode(String cityName, Random random) {
     List<String> zipsForCity = zipCodes.get(cityName);
     
     if (zipsForCity == null) {
@@ -99,16 +137,24 @@ public class Location {
     }
   }
 
-  public static long getPopulation(String cityName) {
+  public long getPopulation(String cityName) {
     return populationByCity.getOrDefault(cityName, 0L);
   }
 
+  public Demographics randomCity(Random random) {
+    if (city != null) {
+      // if we're only generating one city at a time, just use that one city
+      return demographics.get(city);
+    }
+    return demographics.get(randomCityName(random));
+  }
+  
   /**
    * Pick a random city name, weighted by population.
    * @param random Source of randomness
    * @return a city name
    */
-  public static String randomCityName(Random random) {
+  public String randomCityName(Random random) {
     long targetPop = (long) (random.nextDouble() * totalPopulation);
 
     for (Map.Entry<String, Long> city : populationByCity.entrySet()) {
@@ -133,30 +179,20 @@ public class Location {
    * @param cityName
    *          Name of the city, or null to choose one randomly
    */
-  public static void assignPoint(Person person, String cityName) {
+  public void assignPoint(Person person, String cityName) {
     Feature cityFeature = null;
 
-    // randomly select a city if not provided
-    if (cityName == null) {
-      long targetPop = (long) (person.rand() * totalPopulation);
+    cityFeature = featuresByName.get(cityName);
 
-      for (Map.Entry<String, Long> city : populationByCity.entrySet()) {
-        targetPop -= city.getValue();
-
-        if (targetPop < 0) {
-          cityName = city.getKey();
-          cityFeature = featuresByName.get(cityName);
-          break;
-        }
-      }
-    } else {
-      cityFeature = featuresByName.get(cityName);
-
-      if (cityFeature == null) {
-        cityFeature = featuresByName.get(cityName + " Town");
-      }
+    if (cityFeature == null) {
+      cityFeature = featuresByName.get(cityName + " Town");
     }
-
+    
+    if (cityFeature == null) {
+      // TODO - warning? 
+      return;
+    }
+    
     GeoJSONReader reader = new GeoJSONReader();
     MultiPolygon geom = (MultiPolygon) reader.read(cityFeature.getGeometry());
 
@@ -180,16 +216,6 @@ public class Location {
       selectedPoint = new GeometryFactory().createPoint(new Coordinate(x, y));
     } while (!geom.contains(selectedPoint));
 
-    person.attributes.put(Person.CITY, cityName);
-    person.attributes.put(Person.STATE, "MA");
-    person.attributes.put(Person.ZIP, getZipCode(cityName, person.random));
     person.attributes.put(Person.COORDINATE, selectedPoint);
-  }
-
-  public static void assignCity(CommunityHealthWorker chw) {
-
-    Random random = new Random();
-    String city = Location.randomCityName(random);
-    chw.attributes.put(CommunityHealthWorker.CITY, city);
   }
 }

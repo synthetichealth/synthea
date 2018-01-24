@@ -6,7 +6,9 @@ import com.vividsolutions.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
 import org.mitre.synthea.helpers.Utilities;
@@ -50,54 +52,75 @@ public class Hospital extends Provider {
     return hospitalList;
   }
 
-  // find closest hospital with ambulatory service
-  public static Hospital findClosestAmbulatory(Point personLocation) {
-    double personLat = personLocation.getY();
-    double personLong = personLocation.getX();
-
-    double closestDistance = Double.MAX_VALUE;
-    Provider closestHospital = null;
-    for (Provider p : Provider.getServices().get(Provider.AMBULATORY)) {
-      Point hospitalLocation = p.getCoordinates();
-      double hospitalLat = hospitalLocation.getY();
-      double hospitalLong = hospitalLocation.getX();
-      double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
-      if (sphericalDistance < closestDistance) {
-        closestDistance = sphericalDistance;
-        closestHospital = p;
-      }
+  /**
+   * Find closest hospital with ambulatory service. Will fall back to random selection if the person
+   * doesn't have geographic location information.
+   * 
+   * @param person
+   *          The person seeking ambulatory care.
+   * @return The closest hospital, or a random hospital if the person lacks a geographical
+   *         coordinate.
+   */
+  public static Hospital findClosestAmbulatory(Person person) {
+    Point personLocation = (Point) person.attributes.get(Person.COORDINATE);
+    List<Provider> emergencyHospitals = Provider.getServices().get(Provider.AMBULATORY);
+    if (personLocation == null) {
+      return randomHospital(emergencyHospitals, person.random);
+    } else {
+      return findClosestHospital(personLocation, emergencyHospitals);
     }
-    return (Hospital) closestHospital;
   }
 
-  // find closest hospital with inpatient service
-  public static Hospital findClosestInpatient(Point personLocation) {
-    double personLat = personLocation.getY();
-    double personLong = personLocation.getX();
-
-    double closestDistance = Double.MAX_VALUE;
-    Provider closestHospital = null;
-    for (Provider p : Provider.getServices().get(Provider.INPATIENT)) {
-      Point hospitalLocation = p.getCoordinates();
-      double hospitalLat = hospitalLocation.getY();
-      double hospitalLong = hospitalLocation.getX();
-      double sphericalDistance = haversine(personLat, personLong, hospitalLat, hospitalLong);
-      if (sphericalDistance < closestDistance) {
-        closestDistance = sphericalDistance;
-        closestHospital = p;
-      }
+  /**
+   * Find closest hospital with inpatient service. Will fall back to random selection if the person
+   * doesn't have geographic location information.
+   * 
+   * @param person
+   *          The person seeking inpatient care.
+   * @return The closest hospital, or a random hospital if the person lacks a geographical
+   *         coordinate.
+   */
+  public static Hospital findClosestInpatient(Person person) {
+    Point personLocation = (Point) person.attributes.get(Person.COORDINATE);
+    List<Provider> emergencyHospitals = Provider.getServices().get(Provider.INPATIENT);
+    if (personLocation == null) {
+      return randomHospital(emergencyHospitals, person.random);
+    } else {
+      return findClosestHospital(personLocation, emergencyHospitals);
     }
-    return (Hospital) closestHospital;
   }
 
-  // find closest hospital with emergency service
-  public static Hospital findClosestEmergency(Point personLocation) {
+  /**
+   * Find closest hospital with emergency service. Will fall back to random selection if the person
+   * doesn't have geographic location information.
+   * 
+   * @param person
+   *          The person seeking emergency care.
+   * @return The closest hospital, or a random hospital if the person lacks a geographical
+   *         coordinate.
+   */
+  public static Hospital findClosestEmergency(Person person) {
+    Point personLocation = (Point) person.attributes.get(Person.COORDINATE);
+    List<Provider> emergencyHospitals = Provider.getServices().get(Provider.EMERGENCY);
+    if (personLocation == null) {
+      return randomHospital(emergencyHospitals, person.random);
+    } else {
+      return findClosestHospital(personLocation, emergencyHospitals);
+    }
+  }
+  
+  private static Hospital randomHospital(List<Provider> providers, Random random) {
+    int index = random.nextInt(providers.size());
+    return (Hospital)providers.get(index);
+  }
+  
+  private static Hospital findClosestHospital(Point personLocation, List<Provider> providers) {
     double personLat = personLocation.getY();
     double personLong = personLocation.getX();
 
     double closestDistance = Double.MAX_VALUE;
     Provider closestHospital = null;
-    for (Provider p : Provider.getServices().get(Provider.EMERGENCY)) {
+    for (Provider p : providers) {
       Point hospitalLocation = p.getCoordinates();
       double hospitalLat = hospitalLocation.getY();
       double hospitalLong = hospitalLocation.getX();

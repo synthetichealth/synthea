@@ -45,11 +45,12 @@ public class Generator {
   public long timestep;
   public long stop;
   public Map<String, AtomicInteger> stats;
-  public Map<String, Demographics> demographics;
+  public Location location;
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyDeadPatients;
   public TransitionMetrics metrics;
+  public static final String DEFAULT_STATE = "Massachusetts";
 
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
@@ -61,7 +62,7 @@ public class Generator {
     public String toString() {
       String location;
       if (state == null) {
-        location = "*";
+        location = DEFAULT_STATE;
       } else if (city == null) {
         location = state;
       } else {
@@ -74,19 +75,20 @@ public class Generator {
   
   public Generator() throws IOException {
     int population = Integer.parseInt(Config.get("generate.default_population", "1"));
-    init(population, System.currentTimeMillis(), null, null);
+    init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
   }
 
   public Generator(int population) throws IOException {
-    init(population, System.currentTimeMillis(), null, null);
+    init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
   }
   
   public Generator(int population, long seed) throws IOException {
-    init(population, seed, null, null);
+    init(population, seed, DEFAULT_STATE, null);
   }
 
   public Generator(GeneratorOptions o) throws IOException {
-    init(o.population, o.seed, o.state, o.city);
+    String state = o.state == null ? DEFAULT_STATE : o.state;
+    init(o.population, o.seed, state, o.city);
   }
   
   public Generator(String state, String city) throws IOException {
@@ -119,15 +121,9 @@ public class Generator {
     this.random = new Random(seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
     this.stop = System.currentTimeMillis();
-    
-    if (state == null) {
-      // use pure random
-    } else if (city == null) {
-      // use entire state
-    } else {
-      // specific city given
-    }
-    this.demographics = Demographics.loadByName(Config.get("generate.demographics.default_file"));
+
+    this.location = new Location(state, city);
+
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
 
@@ -144,7 +140,7 @@ public class Generator {
     // initialize hospitals
     Hospital.loadHospitals();
     Module.getModules(); // ensure modules load early
-    CommunityHealthWorker.workers.size(); // ensure CHWs are set early
+    CommunityHealthWorker.initalize(location); // ensure CHWs are set early
     Costs.loadCostData();
   }
 
@@ -217,12 +213,8 @@ public class Generator {
     Person person = null;
     try {
       boolean isAlive = true;
-      String cityName = Location.randomCityName(new Random(personSeed));
-      Demographics city = demographics.get(cityName);
-      if (city == null && cityName.endsWith(" Town")) {
-        cityName = cityName.substring(0, cityName.length() - 5);
-        city = demographics.get(cityName);
-      }
+
+      Demographics city = location.randomCity(new Random(personSeed));
 
       do {
         List<Module> modules = Module.getModules();
@@ -234,7 +226,8 @@ public class Generator {
         // but we need to adapt the ruby method of pre-defining all the demographic buckets
         // and then putting people into those
         // -- but: how will that work with seeds?
-        long start = setDemographics(person, cityName, city);
+        long start = setDemographics(person, city);
+        person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
         EncounterModule encounterModule = new EncounterModule();
@@ -319,8 +312,10 @@ public class Generator {
     // this is synchronized to ensure all lines for a single person are always printed 
     // consecutively
     String deceased = isAlive ? "" : "DECEASED";
-    System.out.format("%d -- %s (%d y/o) %s %s\n", index + 1, person.attributes.get(Person.NAME),
-        person.ageInYears(time), person.attributes.get(Person.CITY), deceased);
+    System.out.format("%d -- %s (%d y/o) %s, %s %s\n", index + 1, 
+        person.attributes.get(Person.NAME), person.ageInYears(time), 
+        person.attributes.get(Person.CITY), person.attributes.get(Person.STATE),
+        deceased);
 
     if (this.logLevel.equals("detailed")) {
       System.out.println("ATTRIBUTES");
@@ -340,9 +335,10 @@ public class Generator {
     }
   }
 
-  private long setDemographics(Person person, String cityName, Demographics city) {
-    person.attributes.put(Person.CITY, cityName);
-
+  private long setDemographics(Person person, Demographics city) {
+    person.attributes.put(Person.CITY, city.city);
+    person.attributes.put(Person.STATE, city.state);
+    
     String race = city.pickRace(person.random);
     person.attributes.put(Person.RACE, race);
     String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
