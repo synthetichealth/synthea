@@ -21,6 +21,6 @@ else
       # Trailing comma ok, don't need to remove it
   done
 
-  ./gradlew run -PappArgs="[$SYNTHEA_ARGS]"
+  ./gradlew run -Params="[$SYNTHEA_ARGS]"
 fi
 

@@ -57,20 +57,6 @@ public class Generator {
     public long seed = System.currentTimeMillis();
     public String city;
     public String state;
-    
-    @Override
-    public String toString() {
-      String location;
-      if (state == null) {
-        location = DEFAULT_STATE;
-      } else if (city == null) {
-        location = state;
-      } else {
-        location = city + ", " + state;
-      }
-      return String.format("Population: %d\nSeed: %d\nLocation: %s\n", 
-          population, seed, location);
-    }
   }
   
   public Generator() throws IOException {
@@ -140,8 +126,18 @@ public class Generator {
     // initialize hospitals
     Hospital.loadHospitals();
     Module.getModules(); // ensure modules load early
-    CommunityHealthWorker.initalize(location); // ensure CHWs are set early
+    CommunityHealthWorker.initalize(this.location, this.random); // ensure CHWs are set early
     Costs.loadCostData();
+    
+    String locationName;
+    if (city == null) {
+      locationName = state;
+    } else {
+      locationName = city + ", " + state;
+    }
+    System.out.println("Running with options:");
+    System.out.println(String.format("Population: %d\nSeed: %d\nLocation: %s\n", 
+        this.numberOfPeople, this.seed, locationName));
   }
 
   public void run() {

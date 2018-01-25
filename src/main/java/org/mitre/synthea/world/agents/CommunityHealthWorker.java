@@ -61,11 +61,11 @@ public class CommunityHealthWorker extends Provider {
   public static Map<String, List<CommunityHealthWorker>> workers;
 
 
-  public static void initalize(Location location) {
-    workers = generateWorkers(location);
+  public static void initalize(Location location, Random random) {
+    workers = generateWorkers(location, random);
   }
   
-  private CommunityHealthWorker(String deploymentType, Location location) {
+  private CommunityHealthWorker(String deploymentType, Location location, Random random) {
     // don't allow anyone else to instantiate this
 
     attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING,
@@ -99,7 +99,7 @@ public class CommunityHealthWorker extends Provider {
     attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING,
         Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
 
-    String city = location.randomCityName(new Random());
+    String city = location.randomCityName(random);
     attributes.put(CITY, city);
     
     attributes.put(DEPLOYMENT, deploymentType);
@@ -111,14 +111,14 @@ public class CommunityHealthWorker extends Provider {
         "CHW providing " + deploymentType + " services in " + attributes.get(CITY));
   }
 
-  private static Map<String, List<CommunityHealthWorker>> generateWorkers(Location location) {
+  private static Map<String, List<CommunityHealthWorker>> generateWorkers(Location location, Random random) {
     Map<String, List<CommunityHealthWorker>> workers = 
         new HashMap<String, List<CommunityHealthWorker>>();
     int numWorkers = budget / cost;
     int numWorkersGenerated = 0;
     CommunityHealthWorker worker;
     for (int i = 0; i < Math.round(numWorkers * community); i++) {
-      worker = new CommunityHealthWorker(DEPLOYMENT_COMMUNITY, location);
+      worker = new CommunityHealthWorker(DEPLOYMENT_COMMUNITY, location, random);
       String city = (String) worker.attributes.get(CITY);
       if (!workers.containsKey(city)) {
         workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -127,7 +127,7 @@ public class CommunityHealthWorker extends Provider {
       numWorkersGenerated++;
     }
     for (int i = 0; i < Math.round(numWorkers * emergency); i++) {
-      worker = new CommunityHealthWorker(DEPLOYMENT_EMERGENCY, location);
+      worker = new CommunityHealthWorker(DEPLOYMENT_EMERGENCY, location, random);
       String city = (String) worker.attributes.get(CITY);
       if (!workers.containsKey(city)) {
         workers.put(city, new ArrayList<CommunityHealthWorker>());
@@ -136,7 +136,7 @@ public class CommunityHealthWorker extends Provider {
       numWorkersGenerated++;
     }
     for (int i = numWorkersGenerated; i < numWorkers; i++) {
-      worker = new CommunityHealthWorker(DEPLOYMENT_POSTDISCHARGE, location);
+      worker = new CommunityHealthWorker(DEPLOYMENT_POSTDISCHARGE, location, random);
       String city = (String) worker.attributes.get(CITY);
       if (!workers.containsKey(city)) {
         workers.put(city, new ArrayList<CommunityHealthWorker>());

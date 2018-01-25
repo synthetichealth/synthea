@@ -19,5 +19,5 @@ IF "%~1" == "" (
     @rem Trailing comma ok, don't need to remove it
   ) 
   
-  gradlew.bat run -PappArgs="[!syntheaArgs!]"
+  gradlew.bat run -Params="[!syntheaArgs!]"
 )
