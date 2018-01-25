@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -38,7 +39,7 @@ public class Location {
     try {
       this.city = city;
       
-      Table<String,String,Demographics> allDemographics = Demographics.load(state, city);
+      Table<String,String,Demographics> allDemographics = Demographics.load(state);
       
       // this still works even if only 1 city given,
       // because allDemographics will only contain that 1 city
@@ -61,7 +62,7 @@ public class Location {
     }
     
     // load the GeoJSON once so we can use it for all patients
-    String filename = "geography/ma_geo.json";
+    String filename = Config.get("generate.geography.borders.default_file");
     featuresByName = new HashMap<>();
 
     try {
@@ -79,7 +80,7 @@ public class Location {
     }
 
     try {
-      filename = "geography/zipcodes.csv";
+      filename = Config.get("generate.geography.zipcodes.default_file");
       String csv = Utilities.readResource(filename);
       List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
 
@@ -139,6 +140,13 @@ public class Location {
     return populationByCity.getOrDefault(cityName, 0L);
   }
 
+  /**
+   * Pick the name of a random city
+   * @param random Source of randomness
+   * @param overrideSingleCity If we only have one city being generated,
+   * do we want to select from other cities 
+   * @return
+   */
   public Demographics randomCity(Random random) {
     if (city != null) {
       // if we're only generating one city at a time, just use that one city

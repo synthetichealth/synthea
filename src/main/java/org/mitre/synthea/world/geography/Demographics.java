@@ -2,7 +2,6 @@ package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -367,40 +366,20 @@ public class Demographics {
       return "Low";
     }
   }
-
-  /**
-   * Load a map of Demographics from the JSON file at the given location.
-   * @param filename
-   *          location of a file containing demographic info.
-   * @return Map of City Name -> Demographics
-   * @throws IOException
-   *           if the file could not be found or read
-   */
-  public static Map<String, Demographics> loadByName(String filename) throws IOException {
-    String json = Utilities.readResource(filename);
-    return loadByContent(json);
-  }
-
-  /**
-   * Load a map of Demographics from the given JSON string.
-   * 
-   * @param json
-   *          String containing JSON content.
-   * @return Map of City Name -> Demographics
-   */
-  public static Map<String, Demographics> loadByContent(String json) {
-    // wrap the json in a "demographicsFile" property so gson can parse it
-    json = "{ \"demographicsFile\" : " + json + " }";
-    Gson gson = new Gson();
-
-    DemographicsFile parsed = gson.fromJson(json, DemographicsFile.class);
-
-    return parsed.demographicsFile;
-  }
   
-  public static Table<String, String, Demographics> load(String state, String city) throws IOException {
-    
-    String csv = Utilities.readResource("geography/demographics.csv");
+  /**
+   * Get a Table of (State, City, Demographics), with the given restrictions on state and city.
+   * 
+   * @param state
+   *          The state that is desired. Other states will be excluded from the results.
+   * @return Table of (State, City, Demographics)
+   * @throws IOException
+   *           if any exception occurs in reading the demographics file
+   */
+  public static Table<String, String, Demographics> load(String state) 
+      throws IOException {
+    String filename = Config.get("generate.demographics.default_file");
+    String csv = Utilities.readResource(filename);
     
     List<? extends Map<String,String>> demographicsCsv = SimpleCSV.parse(csv);
     
@@ -412,15 +391,9 @@ public class Demographics {
       
       // for now, only allow one state at a time
       if (state != null && state.equalsIgnoreCase(currState)) {
+        Demographics parsed = csvLineToDemographics(demographicsLine);
         
-        // but allow one or all cities in the given state
-        if (city == null || city.equalsIgnoreCase(currCity)) {
-          // either we want the current city specifically, or didn't name a city
-          
-          Demographics parsed = csvLineToDemographics(demographicsLine);
-          
-          table.put(currState, currCity, parsed);
-        }
+        table.put(currState, currCity, parsed);
       }
     }
     
@@ -446,6 +419,12 @@ public class Demographics {
   private static final List<String> CSV_EDUCATIONS = Arrays.asList(
       "LESS_THAN_HS", "HS_DEGREE", "SOME_COLLEGE", "BS_DEGREE");
   
+  /**
+   * Map a single line of the demographics CSV file into a Demographics object.
+   * 
+   * @param line Line representing one city, parsed via SimpleCSV
+   * @return the Demographics for that city
+   */
   public static Demographics csvLineToDemographics(Map<String,String> line) {
     Demographics d = new Demographics();
     
@@ -509,13 +488,5 @@ public class Demographics {
       distribution.add(e.getValue(), e.getKey());
     }
     return distribution;
-  }
-
-  /**
-   * Helper class only used to make it easier to parse the towns.json and county .json files via
-   * Gson.
-   */
-  private static class DemographicsFile {
-    private Map<String, Demographics> demographicsFile;
   }
 }
