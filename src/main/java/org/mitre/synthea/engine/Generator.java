@@ -1,6 +1,5 @@
 package org.mitre.synthea.engine;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +51,10 @@ public class Generator {
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
 
+  /**
+   * Helper class following the "Parameter Object" pattern.
+   * This class provides the default values for Generator, or alternatives may be set.
+   */
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
@@ -59,30 +62,44 @@ public class Generator {
     public String state;
   }
   
-  public Generator() throws IOException {
-    int population = Integer.parseInt(Config.get("generate.default_population", "1"));
-    init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
+  /**
+   * Create a Generator, using all default settings.
+   */
+  public Generator() {
+    this(new GeneratorOptions());
   }
 
-  public Generator(int population) throws IOException {
+  /**
+   * Create a Generator, with the given population size.
+   * All other settings are left as defaults.
+   * 
+   * @param population Target population size
+   */
+  public Generator(int population) {
     init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
   }
   
-  public Generator(int population, long seed) throws IOException {
+  /**
+   * Create a Generator, with the given population size and seed.
+   * All other settings are left as defaults.
+   * 
+   * @param population Target population size
+   * @param seed Seed used for randomness
+   */
+  public Generator(int population, long seed) {
     init(population, seed, DEFAULT_STATE, null);
   }
 
-  public Generator(GeneratorOptions o) throws IOException {
+  /**
+   * Create a Generator, with the given options.
+   * @param o Desired configuration options
+   */
+  public Generator(GeneratorOptions o) {
     String state = o.state == null ? DEFAULT_STATE : o.state;
     init(o.population, o.seed, state, o.city);
   }
-  
-  public Generator(String state, String city) throws IOException {
-    int population = Integer.parseInt(Config.get("generate.default_population", "1"));
-    init(population, System.currentTimeMillis(), state, city);
-  }
 
-  private void init(int population, long seed, String state, String city) throws IOException {
+  private void init(int population, long seed, String state, String city) {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -140,6 +157,9 @@ public class Generator {
         this.numberOfPeople, this.seed, locationName));
   }
 
+  /**
+   * Generate the population, using the currently set configuration settings.
+   */
   public void run() {
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 

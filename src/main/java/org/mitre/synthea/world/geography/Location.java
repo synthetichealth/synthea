@@ -32,12 +32,10 @@ public class Location {
   private Map<String, List<String>> zipCodes;
   
   private String city;
-  private String state;
   private Map<String, Demographics> demographics;
 
   public Location(String state, String city) {
     try {
-      this.state = state;
       this.city = city;
       
       Table<String,String,Demographics> allDemographics = Demographics.load(state, city);

@@ -111,7 +111,8 @@ public class CommunityHealthWorker extends Provider {
         "CHW providing " + deploymentType + " services in " + attributes.get(CITY));
   }
 
-  private static Map<String, List<CommunityHealthWorker>> generateWorkers(Location location, Random random) {
+  private static Map<String, List<CommunityHealthWorker>> generateWorkers(
+      Location location, Random random) {
     Map<String, List<CommunityHealthWorker>> workers = 
         new HashMap<String, List<CommunityHealthWorker>>();
     int numWorkers = budget / cost;
