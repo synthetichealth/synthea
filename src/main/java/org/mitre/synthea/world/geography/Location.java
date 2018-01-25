@@ -141,11 +141,11 @@ public class Location {
   }
 
   /**
-   * Pick the name of a random city
+   * Pick the name of a random city from the current "world".
+   * If only one city was selected, this will return that one city.
+   * 
    * @param random Source of randomness
-   * @param overrideSingleCity If we only have one city being generated,
-   * do we want to select from other cities 
-   * @return
+   * @return Demographics of a random city.
    */
   public Demographics randomCity(Random random) {
     if (city != null) {
