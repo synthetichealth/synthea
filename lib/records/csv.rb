@@ -159,7 +159,7 @@ module Synthea
         billable_period = @@claim_hash['billable_period']
         claim_organization = 'Not Provided'
         claim_organization = encounter[:provider].attributes['name'] if encounter[:provider]
-        claim_organization.tr(',','')
+        claim_organization.tr(',', '')
         claim_total = 100 # claim_hash['total']
         blank = ''
         if @@claim_hash['patient_id']
