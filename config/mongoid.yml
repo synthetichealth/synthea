@@ -3,4 +3,4 @@ ccda:
     default:
       database: synthea
       hosts:
-        - localhost:27017
+        - 127.0.0.1:27017

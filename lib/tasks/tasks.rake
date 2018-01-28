@@ -118,6 +118,8 @@ namespace :synthea do
     else
       Mongoid.load!("config/mongoid.yml", :ccda)
     end
+    Mongoid.logger.level = Logger::FATAL
+    Mongo::Logger.logger.level = Logger::FATAL
     clear_output
     Synthea::Output::CsvRecord.open_csv_files if Synthea::Config.exporter.csv.export
     start = Time.now
