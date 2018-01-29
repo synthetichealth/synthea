@@ -60,7 +60,6 @@ public class CommunityHealthWorker extends Provider {
 
   public static Map<String, List<CommunityHealthWorker>> workers;
 
-
   public static void initalize(Location location, Random random) {
     workers = generateWorkers(location, random);
   }
@@ -152,7 +151,7 @@ public class CommunityHealthWorker extends Provider {
       String deploymentType, Location location) {
     int year = Utilities.getYear(time);
 
-    if (year < yearIntroduced) {
+    if (year < yearIntroduced || workers == null) {
       // CHWs not introduced to the system yet
       return null;
     }
