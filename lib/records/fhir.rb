@@ -354,7 +354,7 @@ module Synthea
         entry.resource.item << FHIR::Claim::Item.new(
           'sequence' => 1,
           'net' => { 'value' => encounter_cost, 'system' => 'urn:iso:std:iso:4217', 'code' => 'USD' },
-          'encounter' => { 'reference' => curr_encounter }
+          'encounter' => { 'reference' => curr_encounter.fullUrl.to_s }
         )
 
         # update total cost of claim
