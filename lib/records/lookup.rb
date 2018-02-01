@@ -180,20 +180,20 @@ module Synthea
   }
 
   LANGUAGE_LOOKUP = {
-    english: { 'code' => 'en-US', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'English (United States)' },
-    spanish: { 'code' => 'es', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Spanish' },
-    portuguese: { 'code' => 'pt', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Portuguese' },
-    chinese: { 'code' => 'zh', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Chinese' },
-    french: { 'code' => 'fr-FR', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'French (France)' },
-    french_creole: { 'code' => 'fr', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'French' },
-    italian: { 'code' => 'it', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Italian' },
-    russian: { 'code' => 'ru-RU', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Russian (Russia)' },
-    vietnamese: { 'code' => 'vi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Vietnamese' },
-    greek: { 'code' => 'el', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'Greek' },
-    arabic: { 'code' => 'ar', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Arabic' },
-    cambodian: { 'code' => 'km', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Khmer (aka Cambodian)' },
-    german: { 'code' => 'de-DE', 'system' => 'http://hl7.org/fhir/ValueSet/languages', 'display' => 'German (Germany)' },
-    hindi: { 'code' => 'hi', 'system' => 'http://id.loc.gov/vocabulary/iso639-1', 'display' => 'Hindi' },
+    english: { 'code' => 'en-US', 'system' => 'urn:ietf:bcp:47', 'display' => 'English (United States)' },
+    spanish: { 'code' => 'es', 'system' => 'urn:ietf:bcp:47', 'display' => 'Spanish' },
+    portuguese: { 'code' => 'pt', 'system' => 'urn:ietf:bcp:47', 'display' => 'Portuguese' },
+    chinese: { 'code' => 'zh', 'system' => 'urn:ietf:bcp:47', 'display' => 'Chinese' },
+    french: { 'code' => 'fr-FR', 'system' => 'urn:ietf:bcp:47', 'display' => 'French (France)' },
+    french_creole: { 'code' => 'fr', 'system' => 'urn:ietf:bcp:47', 'display' => 'French' },
+    italian: { 'code' => 'it', 'system' => 'urn:ietf:bcp:47', 'display' => 'Italian' },
+    russian: { 'code' => 'ru-RU', 'system' => 'urn:ietf:bcp:47', 'display' => 'Russian (Russia)' },
+    vietnamese: { 'code' => 'vi', 'system' => 'urn:ietf:bcp:47', 'display' => 'Vietnamese' },
+    greek: { 'code' => 'el', 'system' => 'urn:ietf:bcp:47', 'display' => 'Greek' },
+    arabic: { 'code' => 'ar', 'system' => 'urn:ietf:bcp:47', 'display' => 'Arabic' },
+    cambodian: { 'code' => 'km', 'system' => 'urn:ietf:bcp:47', 'display' => 'Khmer (aka Cambodian)' },
+    german: { 'code' => 'de-DE', 'system' => 'urn:ietf:bcp:47', 'display' => 'German (Germany)' },
+    hindi: { 'code' => 'hi', 'system' => 'urn:ietf:bcp:47', 'display' => 'Hindi' },
     undetermined: { 'code' => 'und', 'system' => 'http://id.loc.gov/vocabulary/iso639-2', 'display' => 'Undetermined'}
   }
 
