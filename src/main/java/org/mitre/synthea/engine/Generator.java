@@ -429,14 +429,20 @@ public class Generator {
 	  if(person.attributes.get(race) == null && !hisp.equals("1")){
 		  person.attributes.put(Person.RACE, "hispanic");
 		  person.attributes.put(Person.HISPANIC, true);
+		  
+		  for(int i = 1;i<=hispanic_codes.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("HISP").equals(hispanic_codes.get(i).get("Code"))) {
+				  person.attributes.put(Person.ETHNICITY, hispanic_codes.get(i).get("Ethnicity"));
+			  }
+		  }
 	  }
 	
 	  if(hisp.equals("1")){
 		  person.attributes.put(Person.HISPANIC, false);
+		  String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
+		  person.attributes.put(Person.ETHNICITY, ethnicity);
 	  }
-    
-	  String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
-	  person.attributes.put(Person.ETHNICITY, ethnicity);
+ 	  
 	  String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),person);
 	  person.attributes.put(Person.FIRST_LANGUAGE, language);
 
@@ -567,6 +573,7 @@ public class Generator {
 	  person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
 
 	  //everyone under 15 has blank income
+	  //use household income, otherwise use personal income
 
 
 	  //TODO: there are some negative incomes in the SPEW data
@@ -574,25 +581,19 @@ public class Generator {
 
 	  long targetAge = Long.valueOf(spewPerson.get(rand_spew).get("AGEP")).longValue();
 
-	  if(targetAge <= 15 || spewPerson.get(rand_spew).get("PINCP").equals("")) {
-		  person.attributes.put(Person.INCOME, household_income);
-		  int hincp = Integer.parseInt(spewPerson.get(rand_spew).get("HINCP"));
-		  double incomeLevel = city.incomeLevel(hincp);
-		  person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
-	  }
-
-	  if(!spewPerson.get(rand_spew).get("PINCP").equals("")) {
-		  int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
-		  person.attributes.put(Person.INCOME, income);
-	  }
-
-	  int person_income = (int) person.attributes.get("income");
-
-	  double incomeLevel = city.incomeLevel(person_income);
+	  int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
+	  person.attributes.put(Person.INCOME, income);
+	  
+	  double incomeLevel = city.incomeLevel(Integer.parseInt(spewPerson.get(rand_spew).get("HINCP")));
 	  person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
-
+	  
 	  double occupation = person.rand();
 	  person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
+	  
+	  double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
+	  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+	  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+	  
 
 	  String spew_occupation = spewPerson.get(rand_spew).get("OCCP");
 	  //0010 - 3540  Management, Business, Science, and Arts Occupations
@@ -622,11 +623,6 @@ public class Generator {
 	  } else if(employment_status.equals("")) {
 		  person.attributes.put(Person.EMPLOYMENT_STATUS, "not_in_labor_force");
 	  }
-
-	  double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-	  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-	  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
-
 
 	  // TODO this is terrible date handling, figure out how to use the java time library
 	  long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
