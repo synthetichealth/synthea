@@ -180,12 +180,6 @@ public class Generator {
    * @return generated Person
    */
   
-  //modify this to generate people based on SPEW
-  	//concern: birthdates?
-  //add function to generate households
-  	//something like, generate the people, then place them in households
-  	//actually, just use the ID and connect person to household, append that data to their attributes
-  
   public Person generatePerson(int index, long personSeed) {
     Person person = null;
 
