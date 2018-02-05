@@ -44,7 +44,10 @@ public class Person implements Serializable {
   public static final String CITY = "city";
   public static final String STATE = "state";
   public static final String ZIP = "zip";
+  public static final String LONGITUDE = "longitude";
+  public static final String LATITUDE = "latitude";
   public static final String BIRTHPLACE = "birthplace";
+  public static final String NATIVITY = "nativity";
   public static final String COORDINATE = "coordinate";
   public static final String NAME_MOTHER = "name_mother";
   public static final String NAME_FATHER = "name_father";
@@ -55,7 +58,13 @@ public class Person implements Serializable {
   public static final String INCOME_LEVEL = "income_level";
   public static final String EDUCATION = "education";
   public static final String EDUCATION_LEVEL = "education_level";
+  public static final String SCHOOL_ENROLLMENT = "school_enrollment";
+  public static final String GRADE_LEVEL = "grade_level";
+  public static final String SCHOOL_ID = "school_id";
+  public static final String EMPLOYMENT_STATUS = "employment_status";
   public static final String OCCUPATION_LEVEL = "occupation_level";
+  public static final String OCCUPATION = "occupation";
+  public static final String WORKPLACE_ID = "workplace_id";
   public static final String CHW_INTERVENTION = "CHW Intervention";
   public static final String SMOKER = "smoker";
   public static final String ALCOHOLIC = "alcoholic";
@@ -65,6 +74,12 @@ public class Person implements Serializable {
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
+  public static final String SPEW_SERIAL_NO = "spew_serial_no";
+  public static final String HOUSEHOLD_INCOME = "household_income";
+  public static final String HOUSEHOLD_SIZE = "household_size";
+  public static final String RELATIONSHIP = "relationship";
+  public static final String HISPANIC = "hispanic";
+
 
   public final Random random;
   public final long seed;
