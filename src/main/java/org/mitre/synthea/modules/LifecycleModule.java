@@ -142,10 +142,17 @@ public final class LifecycleModule extends Module {
         + ((person.randInt(9999 - 1000 + 1) + 1000));
     attributes.put(Person.IDENTIFIER_SSN, ssn);
 
-    Location.assignPoint(person, (String) attributes.get(Person.CITY));
+    String city = (String) attributes.get(Person.CITY);
+    Location location = (Location) attributes.get(Person.LOCATION);
+    if (location != null) {
+      // should never happen in practice, but can happen in unit tests
+      location.assignPoint(person, city);
+      person.attributes.put(Person.ZIP, location.getZipCode(city, person.random));
+      attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
+    }
+    
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
-    attributes.put(Person.BIRTHPLACE, Location.randomCityName(person.random));
 
     double heightPercentile = person.rand();
     double weightPercentile = person.rand();

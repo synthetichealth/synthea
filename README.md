@@ -35,8 +35,23 @@ cd synthea_java
 ### Generate Synthetic Patients
 Generating the population one at a time...
 ```
-./gradlew run
+./run_synthea
 ```
+
+Command-line arguments may be provided to specify a state, city, population size, or seed for randomization.
+
+Usage is 
+```
+run_synthea [-s seed] [-p populationSize] [state [city]]
+```
+For example:
+
+ - `run_synthea Massachusetts`
+ - `run_synthea Alaska Juneau`
+ - `run_synthea -s 12345`
+ - `run_synthea -p 1000`
+ - `run_synthea -s 987 Washington Seattle`
+ - `run_synthea -s 21 -p 100 Utah "Salt Lake City"`
 
 Some settings can be changed in `./src/main/resources/synthea.properties`.
 

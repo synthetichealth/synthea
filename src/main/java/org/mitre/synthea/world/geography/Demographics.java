@@ -1,14 +1,18 @@
 package org.mitre.synthea.world.geography;
 
-import com.google.gson.Gson;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
@@ -22,6 +26,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Demographics {
   public long population;
+  public String city;
   public String state;
   public String county;
   public Map<String, Double> ages;
@@ -361,35 +366,117 @@ public class Demographics {
       return "Low";
     }
   }
-
+  
   /**
-   * Load a map of Demographics from the JSON file at the given location.
-   * @param filename
-   *          location of a file containing demographic info.
-   * @return Map of City Name -> Demographics
-   * @throws IOException
-   *           if the file could not be found or read
-   */
-  public static Map<String, Demographics> loadByName(String filename) throws IOException {
-    String json = Utilities.readResource(filename);
-    return loadByContent(json);
-  }
-
-  /**
-   * Load a map of Demographics from the given JSON string.
+   * Get a Table of (State, City, Demographics), with the given restrictions on state and city.
    * 
-   * @param json
-   *          String containing JSON content.
-   * @return Map of City Name -> Demographics
+   * @param state
+   *          The state that is desired. Other states will be excluded from the results.
+   * @return Table of (State, City, Demographics)
+   * @throws IOException
+   *           if any exception occurs in reading the demographics file
    */
-  public static Map<String, Demographics> loadByContent(String json) {
-    // wrap the json in a "demographicsFile" property so gson can parse it
-    json = "{ \"demographicsFile\" : " + json + " }";
-    Gson gson = new Gson();
-
-    DemographicsFile parsed = gson.fromJson(json, DemographicsFile.class);
-
-    return parsed.demographicsFile;
+  public static Table<String, String, Demographics> load(String state) 
+      throws IOException {
+    String filename = Config.get("generate.demographics.default_file");
+    String csv = Utilities.readResource(filename);
+    
+    List<? extends Map<String,String>> demographicsCsv = SimpleCSV.parse(csv);
+    
+    Table<String, String, Demographics> table = HashBasedTable.create();
+    
+    for (Map<String,String> demographicsLine : demographicsCsv) {
+      String currCity = demographicsLine.get("NAME");
+      String currState = demographicsLine.get("STNAME");
+      
+      // for now, only allow one state at a time
+      if (state != null && state.equalsIgnoreCase(currState)) {
+        Demographics parsed = csvLineToDemographics(demographicsLine);
+        
+        table.put(currState, currCity, parsed);
+      }
+    }
+    
+    return table;
+  }
+  
+  /**
+   * The index of the entry in this list + 1 == the column header in the CSV for that age group.
+   * For example, age range 0-4 is stored in the CSV with column header "1".
+   */
+  private static final List<String> CSV_AGE_GROUPS = Arrays.asList(
+          "0..4", "5..9", "10..14", "15..19", "20..24", "25..29", 
+          "30..34", "35..39", "40..44", "45..49", "50..54", 
+          "55..59", "60..64", "65..69", "70..74", "75..79", "80..84", "85..110");
+  
+  private static final List<String> CSV_RACES = Arrays.asList(
+      "WHITE", "HISPANIC", "BLACK", "ASIAN", "NATIVE", "OTHER");
+  
+  private static final List<String> CSV_INCOMES = Arrays.asList(
+      "00..10", "10..15", "15..25", "25..35", "35..50",
+      "50..75", "75..100", "100..150", "150..200", "200..999");
+  
+  private static final List<String> CSV_EDUCATIONS = Arrays.asList(
+      "LESS_THAN_HS", "HS_DEGREE", "SOME_COLLEGE", "BS_DEGREE");
+  
+  /**
+   * Map a single line of the demographics CSV file into a Demographics object.
+   * 
+   * @param line Line representing one city, parsed via SimpleCSV
+   * @return the Demographics for that city
+   */
+  public static Demographics csvLineToDemographics(Map<String,String> line) {
+    Demographics d = new Demographics();
+    
+    d.population = Double.valueOf(line.get("POPESTIMATE2015")).longValue(); 
+    // some .0's seem to sneak in there and break Long.valueOf
+    
+    d.city = line.get("NAME");
+    d.state = line.get("STNAME");
+    d.county = line.get("CTYNAME");
+    
+    d.ages = new HashMap<String, Double>();
+    
+    int i = 1;
+    for (String ageGroup : CSV_AGE_GROUPS) {
+      String csvHeader = Integer.toString(i++);
+      double percentage = Double.parseDouble(line.get(csvHeader));
+      d.ages.put(ageGroup, percentage);
+    }
+    
+    d.gender = new HashMap<String, Double>();
+    d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
+    d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
+    
+    d.race = new HashMap<String, Double>();
+    for (String race : CSV_RACES) {
+      double percentage = Double.parseDouble(line.get(race));
+      d.race.put(race.toLowerCase(), percentage);
+    }
+    
+    d.income = new HashMap<String, Double>();
+    for (String income : CSV_INCOMES) {
+      String incomeString = line.get(income);
+      if (incomeString.isEmpty()) {
+        d.income.put(income, 0.01); // dummy value, has to be non-zero
+      } else {
+        double percentage = Double.parseDouble(incomeString);
+        d.income.put(income, percentage);
+      }
+    }
+    
+    d.education = new HashMap<String, Double>();
+    for (String education : CSV_EDUCATIONS) {
+      String educationString = line.get(education);
+      if (educationString.isEmpty()) {
+        d.education.put(education.toLowerCase(), 0.01); // dummy value, has to be non-zero
+      } else {
+        double percentage = Double.parseDouble(educationString);
+        d.education.put(education.toLowerCase(), percentage);
+      }
+    }
+    
+    return d;
   }
 
   /**
@@ -401,13 +488,5 @@ public class Demographics {
       distribution.add(e.getValue(), e.getKey());
     }
     return distribution;
-  }
-
-  /**
-   * Helper class only used to make it easier to parse the towns.json and county .json files via
-   * Gson.
-   */
-  private static class DemographicsFile {
-    private Map<String, Demographics> demographicsFile;
   }
 }

@@ -127,3 +127,12 @@ task cleanOutput {
 
 // Define the main class for the application
 mainClassName = 'App'
+
+run {
+    // args are called "arams" because they are called with -P,
+    // ex. gradle run -Params="['arg1', 'args2']"
+    // see https://stackoverflow.com/questions/27604283/gradle-task-pass-arguments-to-java-application
+    if (project.hasProperty("arams")) {
+        args Eval.me(arams)
+    }
+}

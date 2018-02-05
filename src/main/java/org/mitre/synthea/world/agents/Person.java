@@ -1,7 +1,5 @@
 package org.mitre.synthea.world.agents;
 
-import com.vividsolutions.jts.geom.Point;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -22,6 +20,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Location;
 
 public class Person implements Serializable {
   private static final long serialVersionUID = 4322116644425686379L;
@@ -65,6 +64,7 @@ public class Person implements Serializable {
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
+  public static final String LOCATION = "location";
 
   public final Random random;
   public final long seed;
@@ -252,7 +252,9 @@ public class Person implements Serializable {
   }
 
   public void chwEncounter(long time, String deploymentType) {
-    CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(this, time, deploymentType);
+    Location location = (Location) attributes.get(LOCATION);
+    CommunityHealthWorker chw =
+        CommunityHealthWorker.findNearbyCHW(this, time, deploymentType, location);
     if (chw != null) {
       chw.performEncounter(this, time, deploymentType);
     }
@@ -304,8 +306,7 @@ public class Person implements Serializable {
   }
 
   private void setAmbulatoryProvider() {
-    Point personLocation = (Point) attributes.get(Person.COORDINATE);
-    Provider provider = Hospital.findClosestAmbulatory(personLocation);
+    Provider provider = Hospital.findClosestAmbulatory(this);
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
@@ -314,7 +315,6 @@ public class Person implements Serializable {
   }
 
   public Provider getInpatientProvider() {
-
     if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER)) {
       setInpatientProvider();
     }
@@ -322,8 +322,7 @@ public class Person implements Serializable {
   }
 
   private void setInpatientProvider() {
-    Point personLocation = (Point) attributes.get(Person.COORDINATE);
-    Provider provider = Hospital.findClosestInpatient(personLocation);
+    Provider provider = Hospital.findClosestInpatient(this);
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
@@ -332,7 +331,6 @@ public class Person implements Serializable {
   }
 
   public Provider getEmergencyProvider() {
-
     if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER)) {
       setEmergencyProvider();
     }
@@ -340,15 +338,13 @@ public class Person implements Serializable {
   }
 
   private void setEmergencyProvider() {
-    Point personLocation = (Point) attributes.get(Person.COORDINATE);
-    Provider provider = Hospital.findClosestEmergency(personLocation);
+    Provider provider = Hospital.findClosestEmergency(this);
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
   public void setEmergencyProvider(Provider provider) {
     if (provider == null) {
-      Point personLocation = (Point) attributes.get(Person.COORDINATE);
-      provider = Hospital.findClosestEmergency(personLocation);
+      provider = Hospital.findClosestEmergency(this);
     }
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }

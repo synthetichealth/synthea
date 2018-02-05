@@ -337,28 +337,31 @@ public class FhirDstu2 {
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     patientResource.setBirthDate(new DateDt(new Date(birthdate)));
 
-    Point coord = (Point) person.attributes.get(Person.COORDINATE);
-
+    String state = (String) person.attributes.get(Person.STATE);
+    
     AddressDt addrResource = patientResource.addAddress();
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState((String) person.attributes.get(Person.STATE)).setCountry("US");
-
-    ExtensionDt geolocationExtension = new ExtensionDt();
-    geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
-    ExtensionDt latitudeExtension = new ExtensionDt();
-    ExtensionDt longitudeExtension = new ExtensionDt();
-    latitudeExtension.setUrl("latitude");
-    longitudeExtension.setUrl("longitude");
-    latitudeExtension.setValue(new DecimalDt(coord.getY()));
-    longitudeExtension.setValue(new DecimalDt(coord.getX()));
-    geolocationExtension.addUndeclaredExtension(latitudeExtension);
-    geolocationExtension.addUndeclaredExtension(longitudeExtension);
-    addrResource.addUndeclaredExtension(geolocationExtension);
+        .setState(state).setCountry("US");
+    
+    Point coord = (Point) person.attributes.get(Person.COORDINATE);
+    if (coord != null) {
+      ExtensionDt geolocationExtension = new ExtensionDt();
+      geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+      ExtensionDt latitudeExtension = new ExtensionDt();
+      ExtensionDt longitudeExtension = new ExtensionDt();
+      latitudeExtension.setUrl("latitude");
+      longitudeExtension.setUrl("longitude");
+      latitudeExtension.setValue(new DecimalDt(coord.getY()));
+      longitudeExtension.setValue(new DecimalDt(coord.getX()));
+      geolocationExtension.addUndeclaredExtension(latitudeExtension);
+      geolocationExtension.addUndeclaredExtension(longitudeExtension);
+      addrResource.addUndeclaredExtension(geolocationExtension);
+    }
 
     AddressDt birthplace = new AddressDt();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState("MA")
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
         .setCountry("US");
     ExtensionDt birthplaceExtension = new ExtensionDt();
     birthplaceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/birthPlace");
