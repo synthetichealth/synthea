@@ -49,7 +49,7 @@ module Synthea
               'coding' => [{
                 'code' => 'prov',
                 'display' => 'Healthcare Provider',
-                'system' => 'http://hl7.org/fhir/ValueSet/organization-type'
+                'system' => 'http://hl7.org/fhir/organization-type'
               }],
               'text' => 'Healthcare Provider',
               'extension' => []
@@ -89,7 +89,7 @@ module Synthea
               'coding' => [{
                 'code' => 'prov',
                 'display' => 'Healthcare Provider',
-                'system' => 'http://hl7.org/fhir/ValueSet/organization-type'
+                'system' => 'http://hl7.org/fhir/organization-type'
               }],
               'text' => 'Healthcare Provider',
               'extension' => []
