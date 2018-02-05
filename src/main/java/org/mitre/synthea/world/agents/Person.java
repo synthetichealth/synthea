@@ -1,7 +1,5 @@
 package org.mitre.synthea.world.agents;
 
-import com.vividsolutions.jts.geom.Point;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -22,6 +20,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Location;
 
 public class Person implements Serializable {
   private static final long serialVersionUID = 4322116644425686379L;
@@ -44,10 +43,7 @@ public class Person implements Serializable {
   public static final String CITY = "city";
   public static final String STATE = "state";
   public static final String ZIP = "zip";
-  public static final String LONGITUDE = "longitude";
-  public static final String LATITUDE = "latitude";
   public static final String BIRTHPLACE = "birthplace";
-  public static final String NATIVITY = "nativity";
   public static final String COORDINATE = "coordinate";
   public static final String NAME_MOTHER = "name_mother";
   public static final String NAME_FATHER = "name_father";
@@ -58,13 +54,7 @@ public class Person implements Serializable {
   public static final String INCOME_LEVEL = "income_level";
   public static final String EDUCATION = "education";
   public static final String EDUCATION_LEVEL = "education_level";
-  public static final String SCHOOL_ENROLLMENT = "school_enrollment";
-  public static final String GRADE_LEVEL = "grade_level";
-  public static final String SCHOOL_ID = "school_id";
-  public static final String EMPLOYMENT_STATUS = "employment_status";
   public static final String OCCUPATION_LEVEL = "occupation_level";
-  public static final String OCCUPATION = "occupation";
-  public static final String WORKPLACE_ID = "workplace_id";
   public static final String CHW_INTERVENTION = "CHW Intervention";
   public static final String SMOKER = "smoker";
   public static final String ALCOHOLIC = "alcoholic";
@@ -74,12 +64,7 @@ public class Person implements Serializable {
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
-  public static final String SPEW_SERIAL_NO = "spew_serial_no";
-  public static final String HOUSEHOLD_INCOME = "household_income";
-  public static final String HOUSEHOLD_SIZE = "household_size";
-  public static final String RELATIONSHIP = "relationship";
-  public static final String HISPANIC = "hispanic";
-
+  public static final String LOCATION = "location";
 
   public final Random random;
   public final long seed;
@@ -267,7 +252,9 @@ public class Person implements Serializable {
   }
 
   public void chwEncounter(long time, String deploymentType) {
-    CommunityHealthWorker chw = CommunityHealthWorker.findNearbyCHW(this, time, deploymentType);
+    Location location = (Location) attributes.get(LOCATION);
+    CommunityHealthWorker chw =
+        CommunityHealthWorker.findNearbyCHW(this, time, deploymentType, location);
     if (chw != null) {
       chw.performEncounter(this, time, deploymentType);
     }
@@ -319,8 +306,7 @@ public class Person implements Serializable {
   }
 
   private void setAmbulatoryProvider() {
-    Point personLocation = (Point) attributes.get(Person.COORDINATE);
-    Provider provider = Hospital.findClosestAmbulatory(personLocation);
+    Provider provider = Hospital.findClosestAmbulatory(this);
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
@@ -329,7 +315,6 @@ public class Person implements Serializable {
   }
 
   public Provider getInpatientProvider() {
-
     if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER)) {
       setInpatientProvider();
     }
@@ -337,8 +322,7 @@ public class Person implements Serializable {
   }
 
   private void setInpatientProvider() {
-    Point personLocation = (Point) attributes.get(Person.COORDINATE);
-    Provider provider = Hospital.findClosestInpatient(personLocation);
+    Provider provider = Hospital.findClosestInpatient(this);
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
@@ -347,7 +331,6 @@ public class Person implements Serializable {
   }
 
   public Provider getEmergencyProvider() {
-
     if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER)) {
       setEmergencyProvider();
     }
@@ -355,15 +338,13 @@ public class Person implements Serializable {
   }
 
   private void setEmergencyProvider() {
-    Point personLocation = (Point) attributes.get(Person.COORDINATE);
-    Provider provider = Hospital.findClosestEmergency(personLocation);
+    Provider provider = Hospital.findClosestEmergency(this);
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
   public void setEmergencyProvider(Provider provider) {
     if (provider == null) {
-      Point personLocation = (Point) attributes.get(Person.COORDINATE);
-      provider = Hospital.findClosestEmergency(personLocation);
+      provider = Hospital.findClosestEmergency(this);
     }
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
