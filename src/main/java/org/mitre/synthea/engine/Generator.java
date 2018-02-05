@@ -565,24 +565,29 @@ public class Generator {
     double educationLevel = city.educationLevel(education, person);
     person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
 
-	//TODO problem with reading "NA" (or blank) incomes from SPEW
-	//everyone under 18 has blank income
-	//need to resolve this error: try catch?
-	//java.lang.NumberFormatException: For input string: ""
+	//everyone under 15 has blank income
+
 
 	//TODO: there are some negative incomes in the SPEW data
 	//probably a SPEW error. resolve in R?
     
     long targetAge = Long.valueOf(spewPerson.get(rand_spew).get("AGEP")).longValue();
 
-	if(targetAge <= 18) {
+	if(targetAge <= 15 || spewPerson.get(rand_spew).get("PINCP").equals("")) {
 		person.attributes.put(Person.INCOME, household_income);
+		int hincp = Integer.parseInt(spewPerson.get(rand_spew).get("HINCP"));
+	    double incomeLevel = city.incomeLevel(hincp);
+	    person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
 	}
-    
-	int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
-	person.attributes.put(Person.INCOME, income);
+
+	if(!spewPerson.get(rand_spew).get("PINCP").equals("")) {
+		int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
+		person.attributes.put(Person.INCOME, income);
+	}
 	
-    double incomeLevel = city.incomeLevel(income);
+	int person_income = (int) person.attributes.get("income");
+	
+    double incomeLevel = city.incomeLevel(person_income);
     person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
 
     double occupation = person.rand();
