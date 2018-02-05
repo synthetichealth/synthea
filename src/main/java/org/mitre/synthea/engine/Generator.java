@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,10 +14,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
+
+
 
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
@@ -352,6 +358,34 @@ public class Generator {
   }
 
   private long setDemographics(Person person, Demographics city) {
+	
+	// Create map and read in the sampled SPEW csv file for Massachusetts 
+	  
+	List<LinkedHashMap<String, String>> spewPerson;
+
+	try {
+		spewPerson = SimpleCSV.parse(Utilities.readResource("people25.csv"));
+	} catch (IOException e) {
+		e.printStackTrace();
+		return (Long) null;
+	}
+
+	// get a random spew person
+	
+	int[] range = new int[] {1,spewPerson.size() + 1};
+		
+	int rand_spew = (int) person.rand(range);
+		
+	String spew_serial = spewPerson.get(rand_spew).get("SERIALNO");
+	person.attributes.put(Person.SPEW_SERIAL_NO, spew_serial);
+	
+	String household_income = spewPerson.get(rand_spew).get("HINCP");
+	person.attributes.put(Person.HOUSEHOLD_INCOME, household_income);
+		
+	String household_size = spewPerson.get(rand_spew).get("NP");
+	person.attributes.put(Person.HOUSEHOLD_SIZE, household_size);
+		
+	  
     person.attributes.put(Person.CITY, city.city);
     person.attributes.put(Person.STATE, city.state);
     
@@ -396,6 +430,10 @@ public class Generator {
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
 
     long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
+    
+    //SPEW additions
+    
+    
 
     return birthdate;
   }
