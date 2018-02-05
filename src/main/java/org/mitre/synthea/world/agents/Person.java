@@ -72,6 +72,14 @@ public class Person implements Serializable {
   public static final String HISPANIC = "hispanic";
   public static final String LONGITUDE = "longitude";
   public static final String LATITUDE = "latitude";
+  public static final String NATIVITY = "nativity";
+  public static final String SCHOOL_ENROLLMENT = "school_enrollment";
+  public static final String GRADE_LEVEL = "grade_level";
+  public static final String SCHOOL_ID = "school_id";
+  public static final String EMPLOYMENT_STATUS = "employment_status";
+  public static final String OCCUPATION = "occupation";
+  public static final String WORKPLACE_ID = "workplace_id";
+
   
   
 
