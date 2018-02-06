@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.email = 'jwalonoski@mitre.org'
   s.homepage = 'https://github.com/synthetichealth/synthea'
   s.authors = ['Andre Quina', 'Jason Walonoski', 'Peter Krautscheid', 'Joey Nichols', 'Dylan Hall', 'Carlton Duffett']
-  s.version = '1.3.0'
+  s.version = '1.3.1'
 
   s.files = s.files = `git ls-files`.split("\n")
 
