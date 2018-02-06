@@ -1,0 +1,287 @@
+{
+  "name": "Allergic Rhinitis",
+  "remarks": [
+    "Better known as 'hay fever' or 'seasonal allergies'.",
+    "Statistics are from the American College of Allergy, Asthma, & Immunology (ACAAI):",
+    "http://acaai.org/news/facts-statistics/allergies",
+    "or the Allergy and Asthma Foundation of America (AAFA):",
+    "http://www.aafa.org/page/allergy-facts.aspx"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_For_Atopy"
+    },
+
+    "Delay_For_Atopy": {
+      "type": "Delay",
+      "remarks": [
+        "The Atopy module must be processed before any of the allergy modules so ",
+        "atopy can appropriately influence allergies. Delaying the smallest possible ",
+        "time step to ensure this happens."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "transition": "Atopic"
+        },
+        {
+          "transition": "Not_Atopic"
+        }
+      ]
+    },
+
+    "Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "85% of all atopic patients develop allergic rhinitis. See the Atopy model for more info."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Delay_Until_Early_Mid_Childhood"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Not_Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "Estimated 50 million Americans affected by nasal allergies (ACAAI). 50M / 318.9M => 15.7%.",
+        "It makes more sense to wait until early-mid childhood (2-6 years old) for these ",
+        "symptoms to appear and to be diagnosed by a doctor."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.029,
+          "transition": "Delay_Until_Early_Mid_Childhood"
+        },
+        {
+          "distribution": 0.971,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_Until_Early_Mid_Childhood": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "years"
+      },
+      "direct_transition": "Has_Allergic_Rhinitis"
+    },
+
+    "Has_Allergic_Rhinitis": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Has_Seasonal_Allergic_Rhinitis",
+          "remarks": [
+            "Seasonal allergies occur only at a specific time of year. They can be more actue but ",
+            "are easily treated. 20% of Americans have just seasonal allergies.",
+            "source: http://www.neilmed.com/neilmedblog/2014/08/seasonal-and-perennial-allergic-rhinitis/"
+          ]
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Has_Perennial_Allergic_Rhinitis",
+          "remarks": [
+            "Perennial allergies are not influenced by the seasons. They are typically tied to other ",
+            "allergens like pet dander, mold, and dust mites."
+          ]
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Has_Perennial_And_Seasonal_Allergic_Rhinitis",
+          "remarks": [
+            "Perennial allergies flare up in the spring with additional allergies, like grass and ",
+            "tree pollens."
+          ]
+        }
+      ]
+    },
+
+    "Has_Seasonal_Allergic_Rhinitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "allergic_rhinitis",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "367498001",
+          "display": "Seasonal allergic rhinitis"
+        }
+      ],
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+    },
+
+    "Has_Perennial_Allergic_Rhinitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "allergic_rhinitis",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "446096008",
+          "display": "Perennial allergic rhinitis"
+        }
+      ],
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+    },
+
+    "Has_Perennial_And_Seasonal_Allergic_Rhinitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "allergic_rhinitis",
+      "target_encounter": "Allergic_Rhinitis_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232353008",
+          "display": "Perennial allergic rhinitis with seasonal variation"
+        }
+      ],
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+    },
+
+    "Allergic_Rhinitis_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "allergic_rhinitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Prescribe_OTC_Antihistamine"
+    },
+
+    "Prescribe_OTC_Antihistamine": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule will only prescribe an antihistamine if one is ",
+        "not already prescribed."
+      ],
+      "submodule": "medications/otc_antihistamine",
+      "direct_transition": "Advise_To_Visit_Allergist"
+    },
+
+    "Advise_To_Visit_Allergist": {
+      "type": "SetAttribute",
+      "attribute": "visit_allergist",
+      "value": true,
+      "direct_transition": "End_Allergic_Rhinitis_Diagnosis"
+    },
+
+    "End_Allergic_Rhinitis_Diagnosis": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_With_Allergic_Rhinitis"
+    },
+
+    "Living_With_Allergic_Rhinitis": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Outgrow_Allergic_Rhinitis?"
+    },
+
+    "Outgrow_Allergic_Rhinitis?": {
+      "type": "Guard",
+      "remarks": [
+        "It's very uncommon for a person to 'outgrow' allergic rhinitis, ",
+        "but symptoms can lessen or disappear as a child ages or if they ",
+        "are given immunotherapy (85%)."
+      ],
+      "allow": {
+        "condition_type": "Not",
+        "condition": {
+          "condition_type": "Or",
+          "conditions": [
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "419263009",
+                  "display": "Allergy to tree pollen"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "418689008",
+                  "display": "Allergy to grass pollen"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "232347008",
+                  "display": "Dander (animal) allergy"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "232350006",
+                  "display": "House dust mite allergy"
+                }
+              ]
+            },
+            {
+              "condition_type": "Active Condition",
+              "codes": [
+                {
+                  "system": "SNOMED-CT",
+                  "code": "419474003",
+                  "display": "Allergy to mould"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "direct_transition": "Allergic_Rhinitis_Subsides"
+    },
+
+    "Allergic_Rhinitis_Subsides": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "allergic_rhinitis",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

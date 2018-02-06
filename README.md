@@ -1,4 +1,4 @@
-# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea)
+# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea) [![codecov](https://codecov.io/gh/synthetichealth/synthea/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea)
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
@@ -9,7 +9,7 @@ Currently, Synthea<sup>TM</sup> features:
 - Configuration-based statistics and demographics (defaults with Massachusetts Census data)
 - Modular Rule System
   - Drop in [Generic Modules](https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework)
-  - Custom Ruby rules modules for additional capabilities
+  - Custom Java rules modules for additional capabilities
 - Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
 - Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
@@ -23,50 +23,49 @@ Currently, Synthea<sup>TM</sup> features:
 ### Installation
 
 **System Requirements:**
-Synthea<sup>TM</sup> requires Ruby 2.1.0 or above.
+Synthea<sup>TM</sup> requires Java 1.8 or above.
 
-To clone the Synthea<sup>TM</sup> repo and install the necessary gems:
+To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```
 git clone https://github.com/synthetichealth/synthea.git
 cd synthea
-gem install bundler
-bundle install
+./gradlew build check test
 ```
 
 ### Generate Synthetic Patients
 Generating the population one at a time...
-
 ```
-bundle exec rake synthea:generate
-```
-
-Or generating the population for a county and time based on census statistics...
-
-```
-bundle exec rake synthea:generate['./config/Suffolk_County.json']
+./run_synthea
 ```
 
-Some settings can be changed in `./config/synthea.yml`.
+Command-line arguments may be provided to specify a state, city, population size, or seed for randomization.
 
-Synthea<sup>TM</sup> will output patient records in C-CDA (requires running instance of Mongo DB) and FHIR STU3 formats in `./output`.
+Usage is 
+```
+run_synthea [-s seed] [-p populationSize] [state [city]]
+```
+For example:
 
-### Upload to FHIR Server
-After generating data, upload it to a STU3 FHIR server:
-```
-bundle exec rake synthea:fhirupload[http://server/fhir/baseDstu3]
-```
+ - `run_synthea Massachusetts`
+ - `run_synthea Alaska Juneau`
+ - `run_synthea -s 12345`
+ - `run_synthea -p 1000`
+ - `run_synthea -s 987 Washington Seattle`
+ - `run_synthea -s 21 -p 100 Utah "Salt Lake City"`
+
+Some settings can be changed in `./src/main/resources/synthea.properties`.
+
+Synthea<sup>TM</sup> will output patient records in C-CDA and FHIR formats in `./output`.
 
 ### Synthea<sup>TM</sup> GraphViz
-Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules. Requires GraphViz to be installed.
-
+Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
 ```
-brew install graphviz
-bundle exec rake synthea:graphviz
+./gradlew graphviz
 ```
 
 # License
 
-Copyright 2016-2017 The MITRE Corporation
+Copyright 2017-2018 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

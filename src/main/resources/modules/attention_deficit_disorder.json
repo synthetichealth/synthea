@@ -1,0 +1,396 @@
+{
+  "name": "Attention Deficit Disorder",
+  "remarks": [
+    "The CDC estimates that 11% of children are diagnosed with ADHD. Althought ADHD ",
+    "is possible in adults we only model this in children. ",
+    "Source: http://www.cdc.gov/ncbddd/adhd/data.html"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "The CDC found that 13.2% of boys and 5.6% of girls were diagnosed with ADHD."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.132,
+              "transition": "Delay_Until_ADHD"
+            },
+            {
+              "distribution": 0.868,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.056,
+              "transition": "Delay_Until_ADHD"
+            },
+            {
+              "distribution": 0.944,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Delay_Until_ADHD": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 15,
+        "unit": "years"
+      },
+      "direct_transition": "ADHD"
+    },
+
+    "ADHD": {
+      "type": "ConditionOnset",
+      "target_encounter": "ADHD_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "192127007",
+          "display": "Child attention deficit disorder"
+        }
+      ],
+      "direct_transition": "ADHD_Diagnosis"
+    },
+
+    "ADHD_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "ADHD_CarePlan"
+    },
+
+    "ADHD_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "ADHD_Diagnosis",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "386522008",
+          "display": "Overactivity/inattention behavior management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "409063005",
+          "display": "Counseling"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "405783006",
+          "display": "Psychological assessment"
+        }
+      ],
+      "remarks": [
+        "The CDC found that as many as 17.5% of children were not receiving any form of treatment ",
+        "for their ADHD. Setting this at a round 15%."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.15,
+          "transition": "End_Diagnosis_Encounter_without_BT",
+          "remarks": [
+            "This will just wait until adulthood before ending the ADHD and terminating the module."
+          ]
+        },
+        {
+          "distribution": 0.35,
+          "transition": "End_Diagnosis_Encounter_with_BT",
+          "remarks": [
+            "Additionally 50% of those treated with medication will also receive behavioral ",
+            "therapy, for about 55% in total."
+          ]
+        },
+        {
+          "distribution": 0.5,
+          "transition": "ADHD_Medication_Selection"
+        }
+      ]
+    },
+
+    "Behavior_Therapy": {
+      "type": "Delay",
+      "remarks": [
+        "Behavior therapy is favored over medication. We give behavior therapy for ",
+        "awhile, until the patient reaches adulthood or the condition subsides."
+      ],
+      "range": {
+        "low": 4,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Behavior_Treatment_Encounter"
+    },
+
+    "Behavior_Treatment_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Behavior_Treatment_Procedure"
+    },
+
+    "Behavior_Treatment_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Behavior_Treatment_Encounter",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "228557008",
+          "display": "Cognitive and behavioral therapy"
+        }
+      ],
+      "duration" : { "low" : 1, "high" : 1, "unit" : "hours" },
+      "direct_transition" : "End_Behavior_Treatment_Encounter"
+    },
+
+    "End_Behavior_Treatment_Encounter" : {
+      "type" : "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.05,
+              "transition": "ADHD_Ends",
+              "remarks": [
+                "We give the ADHD a chance to subside (meaning the behavioral treatment ",
+                "has worked) during childhood. ADHD will eventually subside anyway once ",
+                "the patient reaches adulthood. "
+              ]
+            },
+            {
+              "distribution": 0.95,
+              "transition": "Behavior_Therapy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "ADHD_Ends"
+            }
+          ]
+        }
+      ]
+    },
+
+    "ADHD_Medication_Selection": {
+      "type": "Simple",
+      "remarks": [
+        "Ritalin was introduced in 1955. Strattera wasn't approved by the FDA for ",
+        "treating ADHD until 2006."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1955
+          },
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "End_Diagnosis_Encounter_with_BT",
+              "remarks": [
+                "If no medication is available we defer additional patients to behavioral therapy. ",
+                "The rest get no form of treatment at all."
+              ]
+            },
+            {
+              "distribution": 0.6,
+              "transition": "End_Diagnosis_Encounter_without_BT"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2006
+          },
+          "distributions": [
+            {
+              "distribution": 0.6,
+              "transition": "Ritalin",
+              "remarks": [
+                "Even with Ritalin available not all patients are ideal candidates. ADHD medication ",
+                "was also prescribed at much lower rates historically. Deferring some of the remaining ",
+                "patients to behavioral therapy, the rest to no form of treatment."
+              ]
+            },
+            {
+              "distribution": 0.15,
+              "transition": "End_Diagnosis_Encounter_with_BT"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "End_Diagnosis_Encounter_without_BT"
+            }
+          ]
+        },
+        {
+          "remarks": [
+            "With both Ritalin and Strattera available, and ADHD medication prescribed at the higher ",
+            "rates of the 2000's all patients that reach this state are now directed to some form of ",
+            "medication."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Ritalin"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Strattera"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Ritalin": {
+      "type": "MedicationOrder",
+      "target_encounter": "ADHD_Diagnosis",
+      "assign_to_attribute": "adhd_medication",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1091166",
+          "display": "Methylphenidate Hydrochloride 20 MG [Ritalin]"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "End_Diagnosis_Encounter_with_BT"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "End_Diagnosis_Encounter_without_BT"
+        }
+      ]
+    },
+
+    "Strattera": {
+      "type": "MedicationOrder",
+      "target_encounter": "ADHD_Diagnosis",
+      "assign_to_attribute": "adhd_medication",
+      "reason": "ADHD",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "617944",
+          "display": "Atomoxetine 100 MG [Strattera]"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "End_Diagnosis_Encounter_with_BT"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "End_Diagnosis_Encounter_without_BT"
+        }
+      ]
+    },
+
+    "End_Diagnosis_Encounter_without_BT" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Age_Guard"
+    },
+
+    "End_Diagnosis_Encounter_with_BT" : 
+    {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Behavior_Therapy"
+    },
+
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "ADHD_Ends"
+    },
+
+    "ADHD_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "ADHD",
+      "direct_transition": "ADHD_CarePlan_Ends"
+    },
+
+    "ADHD_CarePlan_Ends": {
+      "type": "CarePlanEnd",
+      "careplan": "ADHD_CarePlan",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "adhd_medication",
+            "operator": "is not nil"
+          },
+          "transition": "End_ADHD_Medication"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "End_ADHD_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "adhd_medication",
+      "direct_transition": "Terminal"
+    },
+    
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -14,6 +14,7 @@ fi
 
 rev=$(git rev-parse --short HEAD)
 
+./gradlew graphviz
 cd output
 
 git init

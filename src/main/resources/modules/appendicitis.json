@@ -1,0 +1,255 @@
+{
+  "name": "Appendicitis",
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "transition": "Male"
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "transition": "Female"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.086,
+          "transition": "Pre_appendicitis"
+        },
+        {
+          "distribution": 0.914,
+          "transition": "Terminal"
+        }
+      ],
+      "remarks": [
+        "Men have an approx lifetime risk of appendicitis of 8.6%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
+      ]
+    },
+
+    "Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.067,
+          "transition": "Pre_appendicitis"
+        },
+        {
+          "distribution": 0.933,
+          "transition": "Terminal"
+        }
+      ],
+      "remarks": [
+        "Women have an approx lifetime risk of appendicitis of 6.7%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
+      ]
+    },
+
+    "Pre_appendicitis": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.263,
+          "transition": "Ages_1_17"
+        },
+        {
+          "distribution": 0.423,
+          "transition": "Ages_18_44"
+        },
+        {
+          "distribution": 0.221,
+          "transition": "Ages_45_64"
+        },
+        {
+          "distribution": 0.093,
+          "transition": "Ages_65_Plus"
+        }
+      ],
+      "remarks": [
+        "Age distribution of appendicitis from https://www.ncbi.nlm.nih.gov/books/NBK169006/ , Table 1"
+      ]
+    },
+
+    "Ages_1_17": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 17,
+        "unit": "years"
+      },
+      "direct_transition": "Appendicitis"
+    },
+
+    "Ages_18_44": {
+      "type": "Delay",
+      "range": {
+        "low": 18,
+        "high": 44,
+        "unit": "years"
+      },
+      "direct_transition": "Appendicitis"
+    },
+
+    "Ages_45_64": {
+      "type": "Delay",
+      "range": {
+        "low": 45,
+        "high": 64,
+        "unit": "years"
+      },
+      "direct_transition": "Appendicitis"
+    },
+
+    "Ages_65_Plus": {
+      "type": "Delay",
+      "range": {
+        "low": 65,
+        "high": 99,
+        "unit": "years"
+      },
+      "direct_transition": "Appendicitis"
+    },
+
+    "Appendicitis": {
+      "type": "ConditionOnset",
+      "target_encounter": "Appendicitis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "74400008",
+          "display": "Appendicitis"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "Appendicitis_Encounter"
+        },
+        {
+          "distribution": 0.3,
+          "transition": "Rupture"
+        }
+      ],
+      "remarks": [
+        "The rate of perforation varies from 16% to 40%, with a higher frequency occurring in younger age groups (40-57%)",
+        "and in patients older than 50 years (55-70%), in whom misdiagnosis and delayed diagnosis are common.",
+        "(ref: http://emedicine.medscape.com/article/773895-overview#a7 )",
+        "From table 1 here: https://www.ncbi.nlm.nih.gov/books/NBK169006/ it's about 30%",
+        "For simplicity here I just round to 30% for all age groups."
+      ]
+    },
+
+    "Rupture": {
+      "type": "ConditionOnset",
+      "target_encounter": "Appendicitis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "47693006",
+          "display": "Rupture of appendix"
+        }
+      ],
+      "direct_transition": "Appendicitis_Encounter"
+    },
+
+    "Appendicitis_Encounter": {
+      "type": "Encounter",
+      "wellness": false,
+      "encounter_class": "emergency",
+      "reason": "Appendicitis",
+      "remarks": [
+        "Currently the GMF does not include Vital Signs, if we decide to add that then there are some lab tests we could add at this Encounter."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency Room Admission"
+        }
+      ],
+      "direct_transition": "History_of_Appendectomy"
+    },
+
+    "History_of_Appendectomy": {
+      "type": "ConditionOnset",
+      "target_encounter": "Appendectomy_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "428251008",
+          "display": "History of appendectomy"
+        }
+      ],
+      "direct_transition": "Appendectomy_Encounter"
+    },
+
+    "Appendectomy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Appendicitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183452005",
+          "display": "Encounter Inpatient"
+        }
+      ],
+      "direct_transition": "Appendectomy"
+    },
+
+    "Appendectomy": {
+      "type": "Procedure",
+      "target_encounter": "Appendectomy_Encounter",
+      "reason": "Appendicitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "80146002",
+          "display": "Appendectomy"
+        }
+      ],
+      "duration" : { "low" : 40, "high" : 70, "unit" : "minutes" },
+      "remarks" : ["Avg operative time is ~55 minutes",
+                   "https://www.ncbi.nlm.nih.gov/pubmed/17658102"],
+      "direct_transition": "Recovery"
+    },
+
+    "Recovery" : {
+      "type" : "Delay",
+      "range" : { "low" : 1, "high" : 5, "unit" : "days" },
+      "remarks" : ["Traditionally, patients are hospitalized for 24 hours after laparoscopic appendectomy. ",
+                   "A retrospective review of 119 patients [...] ",
+                   "Forty-two patients were dismissed on the day of surgery and 77 were admitted for 1 to 5 days postoperatively.",
+                   "https://www.ncbi.nlm.nih.gov/pubmed/22369831"],
+      "direct_transition" : "End_Appendectomy_Encounter"
+    },
+
+    "End_Appendectomy_Encounter" : {
+      "type" : "EncounterEnd",
+      "discharge_disposition" : {
+        "system" : "NUBC",
+        "code" : "01",
+        "display" : "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition" : "Terminal"
+    },
+    
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

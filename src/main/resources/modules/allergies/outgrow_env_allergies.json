@@ -1,0 +1,284 @@
+{
+  "name": "Outgrow Environmental Allergies",
+  "remarks": [
+    "When children reach adolescence or early adulthood, especially if they've ",
+    "undergone immunotherapy, the potential to outgrow environmental allergies ",
+    "is pretty high. Using the same general 'outgrow' percentage of 75%."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Tree_Allergy"
+    },
+
+    "Tree_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW TREE ALLERGY                                                 ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "419263009",
+                "display": "Allergy to tree pollen"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Tree_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Grass_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Grass_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Tree_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "419263009",
+          "display": "Allergy to tree pollen"
+        }
+      ],
+      "direct_transition": "Grass_Allergy"
+    },
+
+    "Grass_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW GRASS ALLERGY                                                ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "418689008",
+                "display": "Allergy to grass pollen"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Grass_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Mold_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Mold_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Grass_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "418689008",
+          "display": "Allergy to grass pollen"
+        }
+      ],
+      "direct_transition": "Mold_Allergy"
+    },
+
+    "Mold_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW MOLD ALLERGY                                                 ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "419474003",
+                "display": "Allergy to mould"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Mold_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Pet_Dander_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Pet_Dander_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Mold_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "419474003",
+          "display": "Allergy to mould"
+        }
+      ],
+      "direct_transition": "Pet_Dander_Allergy"
+    },
+
+    "Pet_Dander_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW PET DANDER ALLERGY                                           ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "232347008",
+                "display": "Dander (animal) allergy"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Pet_Dander_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Mite_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Mite_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Pet_Dander_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232347008",
+          "display": "Dander (animal) allergy"
+        }
+      ],
+      "direct_transition": "Mite_Allergy"
+    },
+
+    "Mite_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW DUST MITE ALLERGY                                            ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "232350006",
+                "display": "House dust mite allergy"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Mite_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Mite_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232350006",
+          "display": "House dust mite allergy"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

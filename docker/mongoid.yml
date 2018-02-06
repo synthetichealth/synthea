@@ -1,6 +1,0 @@
-ccda:
-  sessions:
-    default:
-      database: synthea
-      hosts:
-        - mongo:27017

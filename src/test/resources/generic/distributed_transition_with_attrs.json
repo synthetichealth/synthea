@@ -1,0 +1,31 @@
+{
+    "name": "Distributed With Attributes",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "distributed_transition": [
+                {
+                    "distribution": { "attribute" : "probability1", "default" : 0.15 },
+                    "transition": "Terminal1"
+                },
+                {
+                    "distribution": { "attribute" : "probability2", "default" : 0.55 },
+                    "transition": "Terminal2"
+                },
+                {
+                    "distribution": { "attribute" : "probability3", "default" : 0.30 },
+                    "transition": "Terminal3"
+                }
+            ]
+        },
+        "Terminal1": {
+            "type": "Terminal"
+        },
+        "Terminal2": {
+            "type": "Terminal"
+        },
+        "Terminal3": {
+            "type": "Terminal"
+        }
+    }
+}

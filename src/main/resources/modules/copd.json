@@ -1,0 +1,982 @@
+{
+  "name": "COPD",
+  "remarks": [
+    "COPD stands for Chronic Obstructive Pulmonary Disease",
+    "COPD is a blanket term for 2 types of lung diseases: ",
+    "Chronic Bronchitis (inflammation of bronchi) and Emphysema (damage to alveoli)",
+    "2011 prevalence stats: http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6146a2.htm?s_cid=mm6146a2_w",
+
+    "Some #s that stand out: MA overall % = 5.4%,",
+    "By age (US overall) 18-44 = 3.2%, 45-54 = 6.6%, 55-64 = 9.2%, 65-74 = 12.1%, 75+ = 11.6%",
+    "By education (US) some HS or less = 9.5%, HS = 6.8%, some college or more = 4.6%",
+    "By income (US) <25k = 9.9%, <50k = 5.7%, <75k = 4.2%, >75k = 2.8%",
+    "By whether they ever had asthma: Yes = 20.3%, No = 3.8%",
+
+    "The National Health Interview Survey reports the prevalence of emphysema",
+    "at 18 cases per 1000 persons and chronic bronchitis at 34 cases per 1000 persons",
+    "The term COPD was first used in the 1960s https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2706597/ ",
+    "the terms bronchitis and emphysema have been around longer"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_Guard"
+    },
+
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Potential_COPD_Smoker"
+        },
+        {
+          "transition": "Potential_COPD_Nonsmoker"
+        }
+      ]
+    },
+
+    "Potential_COPD_Nonsmoker": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "remarks": [
+        "the key cause of both variants of COPD is smoking; prevalence of COPD among nonsmokers is not well-defined",
+        "per https://www.ncbi.nlm.nih.gov/pubmed/22498109 we use 3.5% prevalence (lifetime) among non-smokers",
+        "assuming a 60 yr lifespan (starting at age 18), we take the yearly incidence to be .05% split between emphysema and bronchitis"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Potential_COPD_Smoker"
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.0003,
+              "transition": "Emphysema"
+            },
+            {
+              "distribution": 0.0002,
+              "transition": "Chronic_Bronchitis"
+            },
+            {
+              "distribution": 0.9995,
+              "transition": "Potential_COPD_Nonsmoker"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Potential_COPD_Smoker": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "remarks": [
+        "the key cause of both variants of COPD is smoking. ",
+        "15-20% of 1pack/day smokers develop COPD, 25% of 2 pack/day",
+        "http://emedicine.medscape.com/article/298283-overview",
+        "we assume that roughly 20% of smokers will get COPD in their lifetime",
+        "we break this down further by Socioeconomic status"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Socioeconomic Status",
+            "category": "Low"
+          },
+          "distributions": [
+            {
+              "distribution": 0.008,
+              "transition": "Emphysema"
+            },
+            {
+              "distribution": 0.004,
+              "transition": "Chronic_Bronchitis"
+            },
+            {
+              "distribution": 0.987,
+              "transition": "Potential_COPD_Smoker"
+            }
+          ],
+          "remarks": [
+            "people of low SES are the most likely to get COPD",
+            "by education or income, ~10% of all people of low SES get COPD",
+            "this is ~2x the rate of the general population, so we assume that ~40% of low SES smokers will get COPD",
+            "assuming a reduced 40 yr lifespan (starting at age 18), we take the yearly incidence to be 1.2%",
+            "leaning toward emphysema because emphysema can be worsened by poor air quality (occupational hazards)"
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Socioeconomic Status",
+            "category": "Middle"
+          },
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "Emphysema"
+            },
+            {
+              "distribution": 0.004,
+              "transition": "Chronic_Bronchitis"
+            },
+            {
+              "distribution": 0.992,
+              "transition": "Potential_COPD_Smoker"
+            }
+          ],
+          "remarks": [
+            "people of middle SES are representative of the population as a whole",
+            "~5.5% of people overall get COPD, so we assume 20% of middle SES smokers will get COPD",
+            "assuming a reduced 40 yr lifespan (starting at age 18), we take the yearly incidence to be .8%"
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Socioeconomic Status",
+            "category": "High"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0018,
+              "transition": "Emphysema"
+            },
+            {
+              "distribution": 0.0022,
+              "transition": "Chronic_Bronchitis"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Potential_COPD_Smoker"
+            }
+          ],
+          "remarks": [
+            "people of high SES are the least likely to get COPD",
+            "by income, < 3% of people of high SES get COPD, which is about 1/2 the rate of the general pop",
+            "we assume that 10% of high SES smokers will get COPD",
+            "assuming a reduced 40 yr lifespan (starting at age 18), we take the yearly incidence to be .4%",
+            "leaning toward bronchitis (to offset the high emphysema of low SES)"
+          ]
+        }
+      ]
+    },
+
+    "Emphysema": {
+      "type": "ConditionOnset",
+      "target_encounter": "DiagnosisEncounter",
+      "assign_to_attribute": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "87433001",
+          "display": "Pulmonary emphysema (disorder)"
+        }
+      ],
+      "direct_transition": "Emphysema_Symptom1"
+    },
+
+    "Chronic_Bronchitis": {
+      "type": "ConditionOnset",
+      "target_encounter": "DiagnosisEncounter",
+      "assign_to_attribute": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185086009",
+          "display": "Chronic obstructive bronchitis (disorder)"
+        }
+      ],
+      "direct_transition": "Bronchitis_Symptom1"
+    },
+
+    "Emphysema_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Shortness of Breath",
+      "range": {
+        "low": 70,
+        "high": 100
+      },
+      "direct_transition": "Emphysema_Symptom2"
+    },
+
+    "Emphysema_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 10,
+        "high": 60
+      },
+      "direct_transition": "DiagnosisEncounter"
+    },
+
+    "Bronchitis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Shortness of Breath",
+      "range": {
+        "low": 0,
+        "high": 40
+      },
+      "direct_transition": "Bronchitis_Symptom2"
+    },
+
+    "Bronchitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 70,
+        "high": 100
+      },
+      "direct_transition": "DiagnosisEncounter"
+    },
+
+    "DiagnosisEncounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Initial_FEV_Test"
+    },
+
+    "Initial_FEV_Test": {
+      "type": "Procedure",
+      "target_encounter": "DiagnosisEncounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "127783003",
+          "display": "Spirometry (procedure)"
+        }
+      ],
+      "direct_transition": "Initial_FEV_Result"
+    },
+
+    "Initial_FEV_Result": {
+      "type": "Observation",
+      "category" : "procedure",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19926-5",
+          "display": "FEV1/​FVC"
+        }
+      ],
+      "range": {
+        "low": 45,
+        "high": 81
+      },
+      "remarks": [
+        "early diagnosis for COPD is the exception not the rule. assume that most people will be stage 2 at diagnosis"
+      ],
+      "unit": "%",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Smoker_CarePlan"
+        },
+        {
+          "transition": "Nonsmoker_CarePlan"
+        }
+      ]
+    },
+
+    "Nonsmoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "DiagnosisEncounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "412776001",
+          "display": "Chronic obstructive pulmonary disease clinical management plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229065009",
+          "display": "Exercise therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "15081005",
+          "display": "Pulmonary rehabilitation (regime/therapy)"
+        }
+      ],
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "Smoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "DiagnosisEncounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "412776001",
+          "display": "Chronic obstructive pulmonary disease clinical management plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710081004",
+          "display": "Smoking cessation therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "426990007",
+          "display": "Home oxygen therapy (procedure)"
+        }
+      ],
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Living_with_COPD"
+    },
+
+    "Living_with_COPD": {
+      "type": "Simple",
+      "remarks": [
+        "Stopping smoking, even after a COPD diagnosis, will increase expected lifespan",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2672796/",
+        "note that these states do not use a delay and instead use the inherent delay of wellness encounters"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Living_with_COPD_Active_Smoker"
+        },
+        {
+          "transition": "Living_with_COPD_Nonsmoker"
+        }
+      ]
+    },
+
+    "Living_with_COPD_Active_Smoker": {
+      "type": "Simple",
+      "remarks": [
+        "transition %s are based on data from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2672796/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2672796/table/t4-copd-4-137/"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 80
+          },
+          "remarks": [
+            "people with an FEV1 of >= 80% are in the 'Mild' or 'At Risk' stage of COPD",
+            "Life expectancy of someone with stage 1 copd can be as high as 18 years",
+            "we'll assume that people will transition to later stages before dying"
+          ],
+          "transition": "COPD_Followup_Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 50
+          },
+          "distributions": [
+            {
+              "distribution": 0.9576,
+              "transition": "COPD_Followup_Encounter"
+            },
+            {
+              "distribution": 0.0424,
+              "transition": "Death"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 30
+          },
+          "remarks": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2672796/table/t4-copd-4-137/ doesn't distinguish between stages 3 + 4",
+            "assume stage 3 has lower mortality and stage 4 has higher"
+          ],
+          "distributions": [
+            {
+              "distribution": 0.94,
+              "transition": "COPD_Followup_Encounter"
+            },
+            {
+              "distribution": 0.06,
+              "transition": "Death"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": "<",
+            "value": 30
+          },
+          "distributions": [
+            {
+              "distribution": 0.92,
+              "transition": "COPD_Followup_Encounter"
+            },
+            {
+              "distribution": 0.08,
+              "transition": "Death"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Living_with_COPD_Nonsmoker": {
+      "type": "Simple",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2672796/table/t4-copd-4-137/",
+        "using the #s for never smokers"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 80
+          },
+          "transition": "COPD_Followup_Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 50
+          },
+          "distributions": [
+            {
+              "distribution": 0.99,
+              "transition": "COPD_Followup_Encounter"
+            },
+            {
+              "distribution": 0.01,
+              "transition": "Death"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 30
+          },
+          "distributions": [
+            {
+              "distribution": 0.98,
+              "transition": "COPD_Followup_Encounter"
+            },
+            {
+              "distribution": 0.02,
+              "transition": "Death"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": "<",
+            "value": 30
+          },
+          "distributions": [
+            {
+              "distribution": 0.98,
+              "transition": "COPD_Followup_Encounter"
+            },
+            {
+              "distribution": 0.02,
+              "transition": "Death"
+            }
+          ]
+        }
+      ]
+    },
+
+    "COPD_Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Followup_FEV_Test"
+    },
+    "Followup_FEV_Test": {
+      "type": "Procedure",
+      "target_encounter": "COPD_Followup_Encounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "127783003",
+          "display": "Spirometry (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 80
+          },
+          "remarks": [
+            "people with an FEV1 of >= 80% are in the 'Mild' or 'At Risk' stage of COPD"
+          ],
+          "transition": "Stage1_FEV_Result"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 50
+          },
+          "remarks": [
+            "people with 80% > FEV1 >= 50% are in the 'Moderate' stage of COPD"
+          ],
+          "transition": "Stage2_FEV_Result"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">=",
+            "value": 30
+          },
+          "remarks": [
+            "people with 50% > FEV1 >= 30% are in the 'Severe' stage of COPD"
+          ],
+          "transition": "Stage3_FEV_Result"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": "<",
+            "value": 30
+          },
+          "remarks": [
+            "people with an FEV1 of < 80% are in the 'Very Severe' or end stage of COPD"
+          ],
+          "transition": "Stage4_FEV_Result"
+        }
+      ]
+    },
+
+    "Stage1_FEV_Result": {
+      "type": "Observation",
+      "category" : "procedure",
+      "range": {
+        "low": 75,
+        "high": 90
+      },
+      "remarks": [
+        "currently in stage 1 so they can stay in 1 or drop to 2"
+      ],
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19926-5",
+          "display": "FEV1/​FVC"
+        }
+      ],
+      "direct_transition": "Loop_back_to_Living_with_COPD"
+    },
+
+    "Stage2_FEV_Result": {
+      "type": "Observation",
+      "category" : "procedure",
+      "range": {
+        "low": 48,
+        "high": 79
+      },
+      "remarks": [
+        "currently in stage 2 so they can stay in 2 or drop to 3"
+      ],
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19926-5",
+          "display": "FEV1/​FVC"
+        }
+      ],
+      "direct_transition": "Check_Medication"
+    },
+
+    "Stage3_FEV_Result": {
+      "type": "Observation",
+      "category" : "procedure",
+      "range": {
+        "low": 26,
+        "high": 49
+      },
+      "remarks": [
+        "currently in stage 3 so they can stay in 3 or drop to 4"
+      ],
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19926-5",
+          "display": "FEV1/​FVC"
+        }
+      ],
+      "direct_transition": "Check_Medication"
+    },
+
+    "Stage4_FEV_Result": {
+      "type": "Observation",
+      "category" : "procedure",
+      "range": {
+        "low": 10,
+        "high": 29
+      },
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19926-5",
+          "display": "FEV1/​FVC"
+        }
+      ],
+      "direct_transition": "Pulmonary_Rehab"
+    },
+
+    "Check_Medication": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "896188",
+                "display": "Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT [Advair]"
+              }
+            ]
+          },
+          "transition": "Consider_Surgery"
+        },
+        {
+          "transition": "Prescribe_Medication"
+        }
+      ]
+    },
+
+    "Prescribe_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "COPD_Followup_Encounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "896188",
+          "display": "Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT [Advair]"
+        }
+      ],
+      "direct_transition": "Consider_Surgery"
+    },
+
+    "Consider_Surgery": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Surgery_Encounter",
+                "remarks": [
+                  "only allow people to have surgery once"
+                ]
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "19926-5",
+                    "display": "FEV1/​FVC"
+                  }
+                ],
+                "operator": ">",
+                "value": 30,
+                "remarks": [
+                  "surgery is only considered for severe COPD - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4608618/"
+                ]
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 65,
+                "unit": "years",
+                "remarks": [
+                  "surgery in older patients is not recommended due to the risk to the patient"
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true,
+                "remarks": [
+                  "patients must quit smoking to be considered"
+                ]
+              }
+            ]
+          },
+          "transition": "Loop_back_to_Living_with_COPD"
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Wait_for_Surgery"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Loop_back_to_Living_with_COPD"
+            }
+          ],
+          "remarks": [
+            "there is little data about what % of eligible patients actually have surgery - these #s are guesses"
+          ]
+        }
+      ]
+    },
+
+    "Wait_for_Surgery": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 12,
+        "unit": "weeks"
+      },
+      "direct_transition": "Surgery_Encounter"
+    },
+
+    "Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305411003",
+          "display": "Admission to thoracic surgery department"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "19926-5",
+                "display": "FEV1/​FVC"
+              }
+            ],
+            "operator": ">",
+            "value": 20,
+            "remarks": [
+              "LVRS is more common for patients with FEV1 > 20% - http://www.medscape.com/viewarticle/502203_7"
+            ]
+          },
+          "transition": "Lung_Volume_Reduction"
+        },
+        {
+          "transition": "Lung_Transplant"
+        }
+      ]
+    },
+
+    "Lung_Transplant": {
+      "type": "Procedure",
+      "target_encounter": "Surgery_Encounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "88039007",
+          "display": "Transplant of lung (procedure)"
+        }
+      ],
+      "duration" : { "low" : 5, "high" : 7, "unit" : "hours" },
+      "direct_transition": "End_Surgery_Encounter"
+    },
+
+    "Lung_Volume_Reduction": {
+      "type": "Procedure",
+      "target_encounter": "Surgery_Encounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "429609002",
+          "display": "Lung volume reduction surgery (procedure)"
+        }
+      ],
+      "direct_transition": "End_Surgery_Encounter"
+    },
+
+    "End_Surgery_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Loop_back_to_Living_with_COPD"
+    },
+
+    "Pulmonary_Rehab": {
+      "type": "Procedure",
+      "target_encounter": "COPD_Followup_Encounter",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "15081005",
+          "display": "Pulmonary rehabilitation (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Check_Medication"
+    },
+
+    "Loop_back_to_Living_with_COPD": {
+      "type": "Simple",
+      "remarks": [
+        "this state only exists to make the graphviz look cleaner"
+      ],
+      "direct_transition": "Living_with_COPD"
+    },
+
+    "Death": {
+      "type": "Death",
+      "referenced_by_attribute": "copd_variant",
+      "direct_transition": "Terminal"
+    },
+    
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

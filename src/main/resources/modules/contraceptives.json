@@ -1,0 +1,598 @@
+{
+  "name": "Contraceptives",
+  "remarks": [
+    "This module prescribes many types of contraceptives to all potentially reproductive ",
+    "age groups. The availablility of different medicines and methods is historically ",
+    "accurate by year, based on these articles: ",
+    "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
+    "http://www.pbs.org/wnet/need-to-know/health/a-brief-history-of-the-birth-control-pill/480/",
+
+    "Hormonal contraceptives cause a slightly elevated risk of blood clots, heart attack, and ",
+    "stroke (1.6x) in females, especially in heavy smokers over the age of 35. No change was ",
+    "made to the existing cardiovascular disease module.",
+
+    "While male sterilization is used as a contraceptive method (8%), it's not modeled here. ",
+    "Instead, the 8% is folded into the female sterilization incidence. However, 6% of males ",
+    "age 30 - 55 are selected for sterilization to create accurate male patient records.",
+
+    "The use of a diaphragm and emergency contraceptives (e.g. Plan B) is not modeled here. ",
+    "Diaphragms are not modeled due to a lack of usage data and popularity, and emergency ",
+    "contraceptives are out-of-scope."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "transition": "Delay_Until_Reproductive_Age"
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "transition": "Select_For_Male_Sterilization"
+        }
+      ]
+    },
+
+    "Delay_Until_Reproductive_Age": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 14,
+        "unit": "years"
+      },
+      "direct_transition": "Female_Contraceptive_Use"
+    },
+
+    "Select_For_Male_Sterilization": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MALE STERLIZATION                                                    ",
+        "======================================================================",
+        "Male sterilization accounts for 8% of all contraceptive use, predominantly ",
+        "in older males. However, this does not mean 8% of all males are sterilized. ",
+        "According to the NIH, 6% of males have had a vasectomy. Source: ",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784091/",
+
+        "The percentage of males seeking vasectomies has remained approximately the ",
+        "same for the last 40 years. Vasectomies were first used as a form of ",
+        "contraceptive starting around WWII."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.06,
+          "transition": "Delay_For_Male_Sterilization"
+        },
+        {
+          "distribution": 0.94,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_For_Male_Sterilization": {
+      "type": "Delay",
+      "range": {
+        "low": 30,
+        "high": 55,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1945
+          },
+          "transition": "Male_Sterilization_Procedure"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Male_Sterilization_Procedure": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/male_sterilization",
+      "direct_transition": "Terminal"
+    },
+
+    "Female_Contraceptive_Use": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FEMALE CONTRACEPTIVE USE                                             ",
+        "======================================================================",
+        "Female use of contraceptives is recomputed 3 times in a patient's life, ",
+        "once for each major reproductive age bracket: ",
+
+        "1. Young (teen/20's) contraceptive users, age 14 - 24 ",
+        "2. Mid-age contraceptive users, age 25 - 34 ",
+        "3. Mature contraceptive users, age 35+ (limited by menopause at age 50) ",
+
+        "Combined with sexual_activity, this yields a full range of contraceptive ",
+        "users and outcomes, from those who never use contraceptives (and who likely ",
+        "have several children as a result), to lifetime contraceptive users with ",
+        "no children.",
+
+        "Whenever a woman becomes pregnancy her current contraceptive method is stopped. ",
+        "After the pregnancy terminates, she is re-routed here to re-up her contraceptive ",
+        "(or not)."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 25,
+            "unit": "years"
+          },
+          "transition": "Young_Contraceptive_Use"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 35,
+            "unit": "years"
+          },
+          "transition": "Mid_Contraceptive_Use"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Mature_Contraceptive_Use"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Young_Contraceptive_Use": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " TEEN/20'S CONTRACEPTIVE USE                                          ",
+        "======================================================================",
+        "18% of teens do not use any contraceptive method. The majority use a ",
+        "short-term solution such as withdrawal, condoms, or the pill. A select ",
+        "few use an IUD or long-acting contraceptive like an implant. A statistically ",
+        "insignificant number use sterilization, so it's omitted for this age group. ",
+        "Source: https://www.guttmacher.org/fact-sheet/contraceptive-use-united-states",
+
+        "There is significant overlap between those using a condom and those ",
+        "using a hormonal method (e.g. pill, patch, ring). The incidence of ",
+        "condom use below therefore represents those using ONLY a condom."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.35,
+          "transition": "Using_Oral_Contraceptive"
+        },
+        {
+          "distribution": 0.20,
+          "transition": "Using_Withdrawal"
+        },
+        {
+          "distribution": 0.18,
+          "transition": "Using_No_Contraceptive"
+        },
+        {
+          "distribution": 0.18,
+          "transition": "Using_Condom_Only"
+        },
+        {
+          "distribution": 0.03,
+          "transition": "Using_Injectable"
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Using_Ring"
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Using_IUD"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Using_Implant"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Using_Patch"
+        }
+      ]
+    },
+
+    "Mid_Contraceptive_Use": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MID-LIFE CONTRACEPTIVE USE                                           ",
+        "======================================================================",
+        "In the 25 - 35 age bracket, more women are intentionally trying to get ",
+        "pregnant as they start families. For those not trying to become pregnant, ",
+        "long-acting contraceptives or sterilization are favored. Source: ",
+        "https://www.cdc.gov/nchs/data/databriefs/db173.pdf"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.283,
+          "transition": "Using_No_Contraceptive"
+        },
+        {
+          "distribution": 0.169,
+          "transition": "Using_Oral_Contraceptive"
+        },
+        {
+          "distribution": 0.146,
+          "transition": "Using_Sterilization"
+        },
+        {
+          "distribution": 0.115,
+          "transition": "Using_Condom_Only"
+        },
+        {
+          "distribution": 0.099,
+          "transition": "Using_Withdrawal"
+        },
+        {
+          "distribution": 0.07,
+          "transition": "Using_IUD"
+        },
+        {
+          "distribution": 0.047,
+          "transition": "Using_Implant"
+        },
+        {
+          "distribution": 0.045,
+          "transition": "Using_Injectable"
+        },
+        {
+          "distribution": 0.016,
+          "transition": "Using_Ring"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Using_Patch"
+        }
+      ]
+    },
+
+    "Mature_Contraceptive_Use": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MATURE CONTRACEPTIVE USE                                             ",
+        "======================================================================",
+        "Most women in this age bracket are done having children and are seeking ",
+        "a long-term or permanent solution. The highest percentage of sterilization ",
+        "is in this category. (Again, note that 8% of the sterilization incidence ",
+        "in this category is male sterilization folded into female)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.39,
+          "transition": "Using_Sterilization"
+        },
+        {
+          "distribution": 0.209,
+          "transition": "Using_Oral_Contraceptive"
+        },
+        {
+          "distribution": 0.113,
+          "transition": "Using_Condom_Only"
+        },
+        {
+          "distribution": 0.052,
+          "transition": "Using_No_Contraceptive"
+        },
+        {
+          "distribution": 0.048,
+          "transition": "Using_Withdrawal"
+        },
+        {
+          "distribution": 0.07,
+          "transition": "Using_IUD"
+        },
+        {
+          "distribution": 0.047,
+          "transition": "Using_Implant"
+        },
+        {
+          "distribution": 0.045,
+          "transition": "Using_Injectable"
+        },
+        {
+          "distribution": 0.016,
+          "transition": "Using_Ring"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Using_Patch"
+        }
+      ]
+    },
+
+    "Using_No_Contraceptive": {
+      "type": "SetAttribute",
+      "remarks": [
+        "======================================================================",
+        " CONTRACEPTIVE PRESCRIPTIONS                                          ",
+        "======================================================================",
+        "These contraceptive prescriptions do not require maintenance. Fire and forget."
+      ],
+      "attribute": "contraceptive_type",
+      "value": "none",
+      "direct_transition": "Route_To_Guard"
+    },
+
+    "Using_Withdrawal": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive_type",
+      "value": "withdrawal",
+      "direct_transition": "Route_To_Guard"
+    },
+
+    "Using_Condom_Only": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive_type",
+      "value": "condom",
+      "direct_transition": "Route_To_Guard"
+    },
+
+    "Using_Oral_Contraceptive": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/oral_contraceptive",
+      "direct_transition": "Contraceptive_Prescribed?"
+    },
+
+    "Using_Sterilization": {
+      "type": "Simple",
+      "remarks": [
+        "This is the combination male-female sterilization incidence.",
+        "While only female patients are routed to this state, a portion ",
+        "are identified as using sterilization as a contraceptive method ",
+        "even though they are not given the sterilization procedure.",
+        "The ratio of female:male sterilization is 3:1.",
+        "NOTE: Only do this if age is at a transition year to avoid resampling after pregnancy.",
+        "  Otherwise, go back to Female_Contraceptive_Use and sample again."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": "==",
+                "quantity": 25.0,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "==",
+                "quantity": 35.0,
+                "unit": "years"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Using_Female_Sterilization"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Using_Male_Sterilization"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1.0,
+              "transition": "Female_Contraceptive_Use"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Using_Male_Sterilization": {
+      "type": "SetAttribute",
+      "remarks": [
+        "No female sterilization procedure is performed in this case."
+      ],
+      "attribute": "contraceptive_type",
+      "value": "sterilization",
+      "direct_transition": "Route_To_Guard"
+    },
+
+    "Using_Female_Sterilization": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/female_sterilization",
+      "direct_transition": "Terminal"
+    },
+
+    "Using_Ring": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/ring_contraceptive",
+      "direct_transition": "Contraceptive_Prescribed?"
+    },
+
+    "Using_Patch": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/patch_contraceptive",
+      "direct_transition": "Contraceptive_Prescribed?"
+    },
+
+    "Using_IUD": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "======================================================================",
+        " CONTRACEPTIVES REQUIRING MAINTENANCE                                 ",
+        "======================================================================",
+        "IUDs, implants, and injectables require periodic maintenance during a ",
+        "given age bracket. IUDs must be replaced every 5-10 years, implants every ",
+        "3 years, and injectables every 3 months. Maintenance is handled internally ",
+        "within the submodules.",
+
+        "These submodules are also 'self guarded', meaning they do not need the ",
+        "regular age guards to ensure the correct timing for the next age bracket ",
+        "(since they do so internally)."
+      ],
+      "submodule": "contraceptives/intrauterine_device",
+      "direct_transition": "Contraceptive_Prescribed?"
+    },
+
+    "Using_Implant": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/implant_contraceptive",
+      "direct_transition": "Contraceptive_Prescribed?"
+    },
+
+    "Using_Injectable": {
+      "type": "CallSubmodule",
+      "submodule": "contraceptives/injectable_contraceptive",
+      "direct_transition": "Contraceptive_Prescribed?"
+    },
+
+    "Contraceptive_Prescribed?": {
+      "type": "Simple",
+      "remarks": [
+        "If a contraceptive wasn't prescribed by the submodule (for example, because ",
+        "none was available for the current year of the simulation) both contraceptive ",
+        "attributes will be nill. ",
+
+        "Since no contraceptive was prescribed, default to the historically avaialable ",
+        "set of contraceptives."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "contraceptive_type",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Historical_Contraceptive_Use"
+        },
+        {
+          "transition": "Route_To_Guard"
+        }
+      ]
+    },
+
+    "Historical_Contraceptive_Use": {
+      "type": "Simple",
+      "remarks": [
+        "These were available methods prior to the 1960's."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Using_No_Contraceptive"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Using_Withdrawal"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Using_Condom_Only"
+        }
+      ]
+    },
+
+    "Route_To_Guard": {
+      "exact": {
+        "quantity": 12,
+        "unit": "months"
+      },
+      "type": "Delay",
+      "direct_transition": "Reset_Contraceptive_Use",
+      "remarks": [
+        "Using an annual delay causes resampling of contraception more frequently",
+        "and distributes the babies more evenly across the female population"
+      ]
+    },
+    
+    "Reset_Contraceptive_Use": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "Prior to setting a new contraceptive, the previous contraceptive ",
+        "method is cleared."
+      ],
+      "submodule": "contraceptives/clear_contraceptive",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Pregnant_Guard"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Menopause_Reached"
+        },
+        {
+          "transition": "Female_Contraceptive_Use"
+        }
+      ]
+    },
+
+    "Pregnant_Guard": {
+      "type": "Guard",
+      "remarks": [
+        "Once a female is no longer pregnant, she will re-select a contraceptive type."
+      ],
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "pregnant",
+        "operator": "==",
+        "value": false
+      },
+      "direct_transition": "Female_Contraceptive_Use"
+    },
+
+    "Menopause_Reached": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

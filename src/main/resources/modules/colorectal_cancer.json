@@ -1,0 +1,1510 @@
+{
+  "name": "Colorectal Cancer",
+  "remarks": [
+    "Colorectal cancer typically starts as benign polyps on the lining of the colon ",
+    "or rectum that slowly become cancerous over a period of 10-15 years. Annually ",
+    "136,000 new cases are diagnosed and 51,300 people die from colorectal cancer in the U.S.",
+    "The lifetime risk of developing colorectal cancer is 4.7% for men, 4.4% for women.",
+    "source: http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-key-statistics",
+
+    "Some things not modeled in this module: ",
+    "1. Colorectal cancer in children. Although possible it's highly unlikely. ",
+    "2. Diabetes, obesity, and poor diet as risk factors. I could not find any ",
+    "   conclusive statistics or reports linking these to an increased incidence ",
+    "   of colorectal cancer. ",
+    "3. The progression of cancer from one stage to another. Whatever stage the patient ",
+    "   is initially diagnosed at they remain at."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_For_Smoking_History"
+    },
+
+    "Delay_For_Smoking_History": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+        "About 1/3 of people over age 50 still do not get regular colonoscopies. ",
+        "These people develop more advanced colorectal cancer before it's detected.",
+        "Smoking increases your risk of colorectal cancer by 1.5x.",
+        "Wait for smoking history (possibly none) to accumulate."
+      ],
+      "exact": {
+        "quantity": 30,
+        "unit": "years"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.7,
+              "transition": "Routine_Colonoscopy_Guard"
+            },
+            {
+              "distribution": 0.285,
+              "transition": "Terminal"
+            },
+            {
+              "distribution": 0.015,
+              "transition": "Delay_Until_Symptoms_Start"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.7,
+              "transition": "Routine_Colonoscopy_Guard"
+            },
+            {
+              "distribution": 0.29,
+              "transition": "Terminal"
+            },
+            {
+              "distribution": 0.01,
+              "transition": "Delay_Until_Symptoms_Start"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Delay_Until_Symptoms_Start": {
+      "type": "Delay",
+      "remarks": [
+        "These patients do not get regular colonscopies or get colorectal cancer ",
+        "before they reach age 50. The median age for early-onset colorectal cancer ",
+        "is 44. See the 'Colorectal Cancer Symptoms' section."
+      ],
+      "range": {
+        "low": 5,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_1"
+    },
+
+    "Routine_Colonoscopy_Guard": {
+      "type": "Guard",
+      "remarks": [
+        "======================================================================",
+        " ROUTINE COLONOSCOPY                                                  ",
+        "======================================================================"
+      ],
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Routine_Colonoscopy_Encounter"
+    },
+
+    "Routine_Colonoscopy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "Routine_Colonoscopy_Procedure"
+    },
+
+    "Routine_Colonoscopy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "remarks": [
+        "NIH study on the epidemiology of colorectal adenomas (polyps): ",
+        "https://www.ncbi.nlm.nih.gov/pubmed/15666099 ",
+        "10-20% of sigmoidoscopy and colonoscopy patients are found to have adenomas.",
+        "To make this more realistic I slowly increase the rate that adenomas are found ",
+        "as patients age. Colonoscopies are generally not recommended for those over 75-80."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "73761001",
+          "display": "Colonoscopy"
+        }
+      ],
+      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 60,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.9,
+              "transition": "End_Routine_Colonoscopy_Encounter"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Detect_Adenoma"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 70,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "End_Routine_Colonoscopy_Encounter"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Detect_Adenoma"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 80,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "End_Routine_Colonoscopy_Encounter"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Detect_Adenoma"
+            }
+          ]
+        }
+      ]
+    },
+
+    "End_Routine_Colonoscopy_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Next_Routine_Colonoscopy"
+    },
+
+    "Wait_For_Next_Routine_Colonoscopy": {
+      "type": "Delay",
+      "remarks": [
+        "If no anomalies are detected at age 50 colonoscopies are scheduled at ",
+        "5-year intervals from here on out. Based on these CDC guidelines: ",
+        "http://www.cdc.gov/cancer/colorectal/basic_info/screening/guidelines.htm"
+      ],
+      "exact": {
+        "quantity": 5,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 80,
+            "unit": "years"
+          },
+          "transition": "Terminal"
+        },
+        {
+          "transition": "Routine_Colonoscopy_Encounter"
+        }
+      ]
+    },
+
+    "Detect_Adenoma": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "======================================================================",
+        " COLORECTAL ADENOMA DIAGNOSIS                                         ",
+        "======================================================================",
+        "Although the incidence of colorectal polyps is 10-20% only about 10% of these polyps become cancerous. Source: ",
+        "http://www.hopkinscoloncancercenter.org/CMS/CMS_Page.aspx?CurrentUDV=59&CMS_Page_ID=0B34E9BE-5DE6-4CB4-B387-4158CC924084"
+      ],
+      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "assign_to_attribute": "colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "68496003",
+          "display": "Polyp of colon"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.9,
+          "transition": "Benign_Adenoma"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Malignant_Adenoma"
+        }
+      ]
+    },
+
+    "Benign_Adenoma": {
+      "type": "Observation",
+      "category" : "procedure",
+      "range": {
+        "low": 2,
+        "high": 7
+      },
+      "unit": "mm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33756-8",
+          "display": "Polyp size greatest dimension by CAP cancer protocols"
+        }
+      ],
+      "direct_transition": "Fecal_Test"
+    },
+
+    "Malignant_Adenoma": {
+      "type": "Observation",
+      "category" : "procedure",
+      "range": {
+        "low": 10,
+        "high": 25
+      },
+      "unit": "mm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33756-8",
+          "display": "Polyp size greatest dimension by CAP cancer protocols"
+        }
+      ],
+      "direct_transition": "Fecal_Test"
+    },
+
+    "Fecal_Test": {
+      "type": "Procedure",
+      "remarks": [
+        "======================================================================",
+        " FECAL IMMUNOCHEMICAL TEST                                            ",
+        "======================================================================",
+        "This test is used to detect trace amounts of blood in the stool that ",
+        "is indicative of colorectal cancer. The estimated cutoff level for this ",
+        "test is 100 ng/mL. Source: http://cebp.aacrjournals.org/content/20/2/272",
+
+        "Interestingly, if the patient previously had a positive test result (from ",
+        "a malignant adenoma) the 'Malignant_Adenoma' PriorState will remain true. ",
+        "If the patient is then later diagnosed with a benign adenoma the fecal test ",
+        "will still return postive. This aligns with the likelihood of recurrent ",
+        "adenomas being cancerous."
+      ],
+      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "reason": "colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1015401000000102",
+          "display": "Fecal occult blood test"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Malignant_Adenoma"
+          },
+          "transition": "Fecal_Test_Positive_Result"
+        },
+        {
+          "transition": "Fecal_Test_Negative_Result"
+        }
+      ]
+    },
+
+    "Fecal_Test_Positive_Result": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "range": {
+        "low": 150,
+        "high": 500
+      },
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57905-2",
+          "display": "Hemoglobin.gastrointestinal [Presence] in Stool by Immunologic method"
+        }
+      ],
+      "direct_transition": "Adenoma_Removal"
+    },
+
+    "Fecal_Test_Negative_Result": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57905-2",
+          "display": "Hemoglobin.gastrointestinal [Presence] in Stool by Immunologic method"
+        }
+      ],
+      "direct_transition": "Adenoma_Removal"
+    },
+
+    "Adenoma_Removal": {
+      "type": "Procedure",
+      "remarks": [
+        "======================================================================",
+        " COLORECTAL ADENOMA TREATMENT                                         ",
+        "======================================================================",
+        "When found these polyps are almost always removed. If the polyps are ",
+        "large and potentially cancerous a biopsy is then performed. For simplicity ",
+        "all large colorectal adenomas found in this module are also cancerous."
+      ],
+      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "reason": "colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "274031008",
+          "display": "Rectal polypectomy"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Malignant_Adenoma"
+          },
+          "transition": "Adenoma_Biopsy"
+        },
+        {
+          "transition": "End_Routine_Colonoscopy_with_Benign_Adenoma"
+        }
+      ]
+    },
+
+    "End_Routine_Colonoscopy_with_Benign_Adenoma" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Followup_Colonoscopy"
+    },
+
+    "Adenoma_Biopsy": {
+      "type": "Procedure",
+      "target_encounter": "Routine_Colonoscopy_Encounter",
+      "reason": "colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "76164006",
+          "display": "Biopsy of colon"
+        }
+      ],
+      "direct_transition": "End_Routine_Colonoscopy_with_Malignant_Adenoma"
+    },
+
+    "End_Routine_Colonoscopy_with_Malignant_Adenoma" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Biopsy_Followup"
+    },
+
+    "Wait_For_Biopsy_Followup": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Biopsy_Followup"
+    },
+
+    "Biopsy_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition" : "End_Biopsy_Followup"
+    },
+
+    "End_Biopsy_Followup" : {
+      "type" : "EncounterEnd",
+      "distributed_transition": [
+        {
+          "distribution": 0.4,
+          "transition": "Colorectal_Cancer_Diagnose_Stage_I"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Colorectal_Cancer_Diagnose_Stage_II"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Wait_For_Followup_Colonoscopy"
+        }
+      ]
+    },
+
+    "Wait_For_Followup_Colonoscopy": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " FOLLOWUP COLONOSCOPY                                                 ",
+        "======================================================================",
+        "If colorectal adenomas are found a followup colonoscopy is scheduled ",
+        "for one year later. If the adenomas recur there's a good chance the ",
+        "patient will get cancer."
+      ],
+      "range": {
+        "low": 12,
+        "high": 18,
+        "unit": "months"
+      },
+      "direct_transition": "Followup_Colonoscopy_Encounter"
+    },
+
+    "Followup_Colonoscopy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "Followup_Colonoscopy_Procedure"
+    },
+
+    "Followup_Colonoscopy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Followup_Colonoscopy_Encounter",
+      "remarks": [
+        "Colorectal polyps recur at about 20-30% over a lifetime.",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2780113/"
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "73761001",
+          "display": "Colonoscopy"
+        }
+      ],
+      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "713197008",
+                "display": "Recurrent rectal polyp"
+              }
+            ],
+            "remarks": [
+              "For variety, if the patient was referred to a followup and not ",
+              "immediately diagnosed with colorectal cancer that means his/her ",
+              "recurrent adenomas were on the fence. We give these patients a ",
+              "break and return them back to the general pool."
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "End_Recurrent_Adenoma"
+            }
+          ]
+        },
+        {
+          "distributions": [
+
+            {
+              "distribution": 0.75,
+              "transition": "End_Colorectal_Adenoma"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Recurrent_Colorectal_Adenoma"
+            }
+          ]
+        }
+      ]
+    },
+
+    "End_Colorectal_Adenoma": {
+      "type": "ConditionEnd",
+      "remarks": [
+        "If the patient's colorectal adenoma does not return after a year ",
+        "we return them to the regular 5-year pattern. However, they will ",
+        "still have the option for their adenoma to recur later in the future."
+      ],
+      "referenced_by_attribute": "colorectal_adenoma",
+      "direct_transition": "End_Followup_Encounter_Clean"
+    },
+
+    "End_Followup_Encounter_Clean" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Wait_For_Next_Routine_Colonoscopy"
+    },
+
+    "Recurrent_Colorectal_Adenoma": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "======================================================================",
+        " RECURRENT COLORECTAL ADENOMA                                         ",
+        "======================================================================",
+        "Survival after recurrent colorectal adenoma is much lower, anywhere ",
+        "in the range of 15-40%. If we detect recurent colorectal adenoma ",
+        "we move the patient along to stage III cancer. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2780113/"
+      ],
+      "target_encounter": "Followup_Colonoscopy_Encounter",
+      "assign_to_attribute": "recurrent_colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "713197008",
+          "display": "Recurrent rectal polyp"
+        }
+      ],
+      "direct_transition": "Recurrent_Adenoma_Removal"
+    },
+
+    "Recurrent_Adenoma_Removal": {
+      "type": "Procedure",
+      "target_encounter": "Followup_Colonoscopy_Encounter",
+      "reason": "recurrent_colorectal_adenoma",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "274031008",
+          "display": "Rectal polypectomy"
+        }
+      ],
+      "direct_transition" : "End_Followup_Encounter_After_Adenoma_Removal"
+    },
+
+    "End_Followup_Encounter_After_Adenoma_Removal" : {
+      "type" : "EncounterEnd",
+      "distributed_transition": [
+        {
+          "distribution": 0.3,
+          "transition": "Colorectal_Cancer_Diagnose_Stage_II"
+        },
+        {
+          "distribution": 0.3,
+          "transition": "Colorectal_Cancer_Diagnose_Stage_III"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Wait_For_Followup_Colonoscopy"
+        }
+      ]
+    },
+
+    "End_Recurrent_Adenoma": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "recurrent_colorectal_adenoma",
+      "direct_transition": "End_Colorectal_Adenoma"
+    },
+
+    "Colorectal_Cancer_Symptom_1": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "======================================================================",
+        " COLORECTAL CANCER SYMPTOMS                                           ",
+        "======================================================================",
+        "If the patient begins experiencing the symptoms of colorectal cancer ",
+        "before ever having a colonoscopy usually the cancer is further along."
+      ],
+      "target_encounter": "Symptom_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "236077008",
+          "display": "Protracted diarrhea"
+        }
+      ],
+      "direct_transition": "Colorectal_Cancer_Symptom_2"
+    },
+
+    "Colorectal_Cancer_Symptom_2": {
+      "type": "ConditionOnset",
+      "target_encounter": "Symptom_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "6072007",
+          "display": "Bleeding from anus"
+        }
+      ],
+      "direct_transition": "Symptom_Encounter"
+    },
+
+    "Symptom_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Colorectal_Cancer_Symptom_2",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "End_Symptom_Encounter"
+    },
+
+    "End_Symptom_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Diagnostic_Colonoscopy"
+    },
+
+    "Wait_For_Diagnostic_Colonoscopy": {
+      "type": "Delay",
+      "remarks": [
+        "The patient needs to wait for a couple of days for his/her colon ",
+        "to clear out before the colonoscopy can be performed."
+      ],
+      "range": {
+        "low": 3,
+        "high": 5,
+        "unit": "days"
+      },
+      "direct_transition": "Diagnostic_Colonoscopy_Encounter"
+    },
+
+    "Diagnostic_Colonoscopy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "Diagnostic_Colonoscopy_Procedure"
+    },
+
+    "Diagnostic_Colonoscopy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Diagnostic_Colonoscopy_Encounter",
+      "remarks": [
+        "The patient is showing all signs of advanced colorectal cancer. ",
+        "The prognosis will not be good."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "73761001",
+          "display": "Colonoscopy"
+        }
+      ],
+      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
+      "direct_transition" : "End_Diagnostic_Colonoscopy_Encounter"
+    },
+
+    "End_Diagnostic_Colonoscopy_Encounter" : {
+      "type" : "EncounterEnd",
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "Colorectal_Cancer_Diagnose_Stage_III"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Colorectal_Cancer_Diagnose_Stage_IV"
+        }
+      ]
+    },
+
+    "Colorectal_Cancer_Diagnose_Stage_I": {
+      "type": "SetAttribute",
+      "attribute": "colorectal_cancer_stage",
+      "value": 1,
+      "direct_transition": "Colorectal_Cancer"
+    },
+
+    "Colorectal_Cancer_Diagnose_Stage_II": {
+      "type": "SetAttribute",
+      "attribute": "colorectal_cancer_stage",
+      "value": 2,
+      "direct_transition": "Colorectal_Cancer"
+    },
+
+    "Colorectal_Cancer_Diagnose_Stage_III": {
+      "type": "SetAttribute",
+      "attribute": "colorectal_cancer_stage",
+      "value": 3,
+      "direct_transition": "Colorectal_Cancer"
+    },
+
+    "Colorectal_Cancer_Diagnose_Stage_IV": {
+      "type": "SetAttribute",
+      "attribute": "colorectal_cancer_stage",
+      "value": 4,
+      "direct_transition": "Colorectal_Cancer"
+    },
+
+    "Colorectal_Cancer": {
+      "type": "Simple",
+      "remarks": [
+        "This state mainly exists to isolate the colonoscopy and diagnosis ",
+        "portion of the module from the portion devoted to cancer treatment.",
+
+        "======================================================================",
+        " COLORECTAL CANCER                                                    ",
+        "======================================================================",
+        "| Stage | Survival Rate | Treatments                                 |",
+        "----------------------------------------------------------------------",
+        "|    I  |      92%      | Polypectomy, Parial colectomy              |",
+        "|   II  |      75%      | Partial colectomy, colectomy, chemo        |",
+        "|  III  |      65%      | Colectomy, chemo                           |",
+        "|   IV  |      11%      | Chemo, radiotherapy                        |",
+        "----------------------------------------------------------------------"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 1
+          },
+          "transition": "Colorectal_Cancer_Stage_I"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          },
+          "transition": "Colorectal_Cancer_Stage_II"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          },
+          "transition": "Colorectal_Cancer_Stage_III"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 4
+          },
+          "transition": "Colorectal_Cancer_Stage_IV"
+        }
+      ]
+    },
+
+    "Colorectal_Cancer_Stage_I": {
+      "type": "ConditionOnset",
+      "target_encounter": "Oncologist_Encounter",
+      "assign_to_attribute": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "93761005",
+          "display": "Primary malignant neoplasm of colon"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.08,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.92,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
+    },
+
+    "Colorectal_Cancer_Stage_II": {
+      "type": "ConditionOnset",
+      "target_encounter": "Oncologist_Encounter",
+      "assign_to_attribute": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "109838007",
+          "display": "Overlapping malignant neoplasm of colon"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.25,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.75,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
+    },
+
+    "Colorectal_Cancer_Stage_III": {
+      "type": "ConditionOnset",
+      "target_encounter": "Oncologist_Encounter",
+      "assign_to_attribute": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "363406005",
+          "display": "Malignant tumor of colon"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.35,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.65,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
+    },
+
+    "Colorectal_Cancer_Stage_IV": {
+      "type": "ConditionOnset",
+      "target_encounter": "Oncologist_Encounter",
+      "assign_to_attribute": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "94260004",
+          "display": "Secondary malignant neoplasm of colon"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.89,
+          "transition": "Eventual_Death"
+        },
+        {
+          "distribution": 0.11,
+          "transition": "Wait_For_Oncologist_Encounter"
+        }
+      ]
+    },
+
+    "Eventual_Death": {
+      "type": "Death",
+      "referenced_by_attribute": "colorectal_cancer",
+      "remarks": [
+        "These patients will eventually die from their colorectal cancer."
+      ],
+      "range": {
+        "low": 2,
+        "high": 5,
+        "unit": "years"
+      },
+      "direct_transition": "Wait_For_Oncologist_Encounter"
+    },
+
+    "Wait_For_Oncologist_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Oncologist_Encounter"
+    },
+
+    "Oncologist_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "colorectal_cancer",
+      "remarks": [
+        "Annual incidence of progression: ",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2095643/"
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Colorectal_Cancer_CarePlan"
+    },
+
+    "Colorectal_Cancer_CarePlan": {
+      "type": "CarePlanStart",
+      "remarks": [
+        "======================================================================",
+        " COLORECTAL CANCER TREATMENTS                                         ",
+        "======================================================================",
+        "Caring for colorectal cancer differs by stage. Source for all treatment information: ",
+        "http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-treating-by-stage-colon"
+      ],
+      "target_encounter": "Oncologist_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395082007",
+          "display": "Cancer care plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226234005",
+          "display": "Healthy diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "703993001",
+          "display": "Colonoscopy planned"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "243072006",
+          "display": "Cancer education"
+        }
+      ],
+      "direct_transition" : "End_Oncologist_Encounter"
+    },
+
+    "End_Oncologist_Encounter" : {
+      "type" : "EncounterEnd",
+       "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 1
+          },
+          "remarks": [
+            "The treatment for stage 1 typically requires only a polypectomy (already performed ",
+            "as part of the last colonoscopy) or occasionally a partial colectomy of the affected ",
+            "portion of the colon."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Wait_For_Partial_Colectomy"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Remission_Period"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          },
+          "remarks": [
+            "The treatment for stage 2 typically requires a partial colectomy. Additional ",
+            "chemotherapy treatment is sometimes used post-surgery if the cancer is likely ",
+            "to recur."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Wait_For_Partial_Colectomy"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          },
+          "remarks": [
+            "The treatment for stage 3 is a partial colectomy followed by chemo. Additional ",
+            "radiation therapy is sometimes used, especially for patients that are not healthy ",
+            "enough for surgery."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Wait_For_Partial_Colectomy"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 4
+          },
+          "remarks": [
+            "The treatment for stage 4 is chemo an occasionally surgery. However, surgery is ",
+            "only recommended to relieve symptoms or in rare cases where chemo has shrunk the ",
+            "tumors enough to make surgery viable. Survival from stage 4 is unlikely."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Wait_For_Diverting_Colostomy"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Wait_For_Initial_Chemotherapy_Treatment"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wait_For_Partial_Colectomy": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " PARTIAL COLECTOMY                                                    ",
+        "======================================================================",
+        "Surgical removal of the affected portion of the colon."
+      ],
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Partial_Colectomy_Encounter"
+    },
+
+    "Partial_Colectomy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Partial_Colectomy_Procedure"
+    },
+
+    "Partial_Colectomy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Partial_Colectomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "43075005",
+          "display": "Partial resection of colon"
+        }
+      ],
+      "direct_transition": "Partial_Colectomy_CarePlan"
+    },
+
+    "Partial_Colectomy_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Partial_Colectomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "781831000000109",
+          "display": "Major surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "10888001",
+          "display": "Liquid diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "103744005",
+          "display": "Administration of intravenous fluids"
+        }
+      ],
+      "direct_transition": "End_Partial_Colectomy_Encounter"
+    },
+
+    "End_Partial_Colectomy_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Delay_For_Partial_Colectomy_Recovery"
+    },
+
+    "Delay_For_Partial_Colectomy_Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "End_Partial_Colectomy_CarePlan"
+    },
+
+    "End_Partial_Colectomy_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Partial_Colectomy_CarePlan",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Wait_For_Initial_Chemotherapy_Treatment"
+            },
+            {
+              "distribution": 0.67,
+              "transition": "Remission_Period"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Wait_For_Initial_Chemotherapy_Treatment"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Remission_Period"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Wait_For_Diverting_Colostomy": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " DIVERTING COLECTOMY                                                  ",
+        "======================================================================",
+        "Used to treat advanced colorectal cancer. Bypasses blockage of the colon ",
+        "to an external bag that collects waste. This is mainly a treatment of ",
+        "symptoms rather than a treatment of the cancer itself."
+      ],
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Diverting_Colostomy_Encounter"
+    },
+
+    "Diverting_Colostomy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Diverting_Colostomy_Procedure"
+    },
+
+    "Diverting_Colostomy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Diverting_Colostomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387607004",
+          "display": "Construction of diverting colostomy"
+        }
+      ],
+      "direct_transition": "Diverting_Colostomy_CarePlan"
+    },
+
+    "Diverting_Colostomy_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Diverting_Colostomy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "781831000000109",
+          "display": "Major surgery care management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "10888001",
+          "display": "Liquid diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "103744005",
+          "display": "Administration of intravenous fluids"
+        }
+      ],
+      "direct_transition": "End_Diverting_Colostomy_Encounter"
+    },
+
+    "End_Diverting_Colostomy_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Delay_For_Diverting_Colostomy_Recovery"
+    },
+
+    "Delay_For_Diverting_Colostomy_Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "End_Diverting_Colostomy_CarePlan"
+    },
+
+    "End_Diverting_Colostomy_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Diverting_Colostomy_CarePlan",
+      "remarks": [
+        "TODO: Chemo for stage II"
+      ],
+      "direct_transition": "Wait_For_Initial_Chemotherapy_Treatment"
+    },
+
+    "Wait_For_Initial_Chemotherapy_Treatment": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Initialize_Chemo_Counter"
+    },
+
+    "Initialize_Chemo_Counter": {
+      "type": "SetAttribute",
+      "attribute": "cr_chemo_count",
+      "value": 0,
+      "direct_transition": "Chemotherapy_Treatment_Path"
+    },
+
+    "Chemotherapy_Treatment_Path": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " CHEMOTHERAPY                                                         ",
+        "======================================================================",
+        "Chemotherapy of the affected areas using one of: ",
+        "FOLFOX: leucovorin, 5-FU, and oxaliplatin (Eloxatin) ",
+        "FOLFIRI: leucovorin, 5-FU, and irinotecan (Camptosar) ",
+        "CapeOX: capecitabine (Xeloda) and oxaliplatin",
+
+        "Chemotherapy treatment is typically given for about 6 months. This ",
+        "equates to 6 chemo treatments."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cr_chemo_count",
+            "operator": ">=",
+            "value": 6
+          },
+          "transition": "Remission_Period"
+        },
+        {
+          "transition": "Chemotherapy_Encounter"
+        }
+      ]
+    },
+
+    "Chemotherapy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Drugs_I"
+    },
+
+    "Chemotherapy_Drugs_I": {
+      "type": "MedicationOrder",
+      "target_encounter": "Chemotherapy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1803932",
+          "display": "Leucovorin 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Drugs_II"
+    },
+
+    "Chemotherapy_Drugs_II": {
+      "type": "MedicationOrder",
+      "target_encounter": "Chemotherapy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "575971",
+          "display": "oxaliplatin 5 MG/ML [Eloxatin]"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Procedure"
+    },
+
+    "Chemotherapy_Procedure": {
+      "type": "Procedure",
+      "target_encounter": "Chemotherapy_Encounter",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "703423002",
+          "display": "Combined chemotherapy and radiation therapy (procedure)"
+        }
+      ],
+      "direct_transition": "End_Chemotherapy_Encounter"
+    },
+
+    "End_Chemotherapy_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Count_A_Chemo_Treatment"
+    },
+
+    "Count_A_Chemo_Treatment": {
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "cr_chemo_count",
+      "direct_transition": "Chemotherapy_Treatment_Delay"
+    },
+
+    "Chemotherapy_Treatment_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 28,
+        "high": 35,
+        "unit": "days"
+      },
+      "direct_transition": "Chemotherapy_Treatment_Path"
+    },
+
+    "Remission_Period": {
+      "type": "Delay",
+      "remarks": [
+        "If the patient isn't going to die at a later date we give them some time to ",
+        "go into remission following treatment. For those that achieve remission they ",
+        "are returned back to the general pool of candidates for colorectal cancer."
+      ],
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Eventual_Death"
+          },
+          "transition": "Terminal"
+        },
+        {
+          "transition": "Remission_Encounter"
+        }
+      ]
+    },
+
+    "Remission_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "colorectal_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Colorectal_Cancer_CarePlan"
+    },
+
+    "End_Colorectal_Cancer_CarePlan": {
+      "type": "CarePlanEnd",
+      "careplan": "Colorectal_Cancer_CarePlan",
+      "direct_transition": "End_Colorectal_Cancer"
+    },
+
+    "End_Colorectal_Cancer": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "colorectal_cancer",
+      "direct_transition": "End_Remission_Encounter"
+    },
+
+    "End_Remission_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

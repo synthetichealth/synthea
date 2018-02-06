@@ -1,0 +1,126 @@
+{
+    "name": "CarePlanEnd",
+    "states": {
+
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "The_Condition"
+        },
+
+        "The_Condition": {
+          "type": "ConditionOnset",
+          "target_encounter": "Wellness_Encounter",
+          "codes": [
+            {
+              "system": "SNOMED-CT",
+              "code": "228380004",
+              "display": "Chases the dragon"
+            }
+          ],
+          "direct_transition": "Wellness_Encounter"
+        },
+
+        "Wellness_Encounter" : {
+          "type" : "Encounter",
+          "wellness" : true,
+          "direct_transition" : "CarePlan1_Start"
+        },
+
+        "CarePlan1_Start": {
+          "type": "CarePlanStart",
+          "target_encounter": "Wellness_Encounter",
+          "codes": [
+            {
+              "system": "SNOMED-CT",
+              "code": "698360004",
+              "display": "Diabetes self management plan"
+            }
+          ],
+          "activities": [
+            {
+              "system": "SNOMED-CT",
+              "code": "160670007",
+              "display": "Diabetic diet"
+            }
+          ],
+          "assign_to_attribute": "Diabetes_CarePlan",
+          "direct_transition": "CarePlan2_Start"
+        },
+
+        "CarePlan2_Start": {
+          "type": "CarePlanStart",
+          "target_encounter": "Wellness_Encounter",
+          "codes": [
+            {
+              "system": "SNOMED-CT",
+              "code": "698358001",
+              "display": "Angina self management plan"
+            }
+          ],
+          "activities": [
+            {
+              "system": "SNOMED-CT",
+              "code": "229065009",
+              "display": "Exercise therapy"
+            },
+            {
+              "system": "SNOMED-CT",
+              "code": "226234005",
+              "display": "Healthy diet"
+            }
+          ],
+          "direct_transition": "CarePlan3_Start"
+        },
+
+        "CarePlan3_Start": {
+          "type": "CarePlanStart",
+          "target_encounter": "Wellness_Encounter",
+          "codes": [
+            {
+              "system": "SNOMED-CT",
+              "code": "408907000",
+              "display": "Immunological care management"
+            }
+          ],
+          "activities": [
+            {
+              "system": "SNOMED-CT",
+              "code": "764101000000108",
+              "display": "Allergen immunotherapy drugs band 1"
+            }
+          ],
+          "direct_transition": "CarePlan1_End"
+        },
+
+        "CarePlan1_End": {
+          "remarks": ["Ends a careplan by attribute"],
+          "type": "CarePlanEnd",
+          "referenced_by_attribute": "Diabetes_CarePlan",
+          "direct_transition": "CarePlan2_End"
+        },
+
+        "CarePlan2_End": {
+          "remarks": ["Ends a careplan by code"],
+          "type": "CarePlanEnd",
+          "codes": [
+            {
+              "system": "SNOMED-CT",
+              "code": "698358001",
+              "display": "Angina self management plan"
+            }
+          ],
+          "direct_transition": "CarePlan3_End"
+        },
+
+        "CarePlan3_End": {
+          "remarks": ["Ends a careplan by direct reference to that state"],
+          "type": "CarePlanEnd",
+          "careplan": "CarePlan3_Start",
+          "direct_transition": "Terminal"
+        },
+
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}
