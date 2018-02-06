@@ -1,0 +1,2644 @@
+
+{
+  "name": "Injuries",
+  "remarks": [
+    "This module waits for an injury to occur then plays out that injury's typical ",
+    "progress in a patient's medical record. Some injuries may be both fatal or ",
+    "non-fatal.",
+
+    "Incidence is complicated. There are a lot of variables that play into incidence including ",
+    "age, gender, race, socioeconomic status, etc. I made some simplifications for now that we can ",
+    "adjust later if the prevalence is glaringly inaccurate. For now, I assume:",
+    "1. Men and women get injured at the same rates (not true in all cases...) ",
+    "2. Race and socioeconomic status don't significantly affect injury rates (they probably do...) ",
+    "3. A person can't have multiple injuries at the same time (in reality, they can...) ",
+
+    "Supported injury types are: ",
+    "1.  'spinal'       - injuries to the spinal cord or fractures of the spine ",
+    "2.  'gunshot'      - gunshot wounds ",
+    "3.  'concussion'   - common concussion from accidents, falls, and sports ",
+    "4.  'whiplash'     - common injury in automobile accidents, falls, and sports ",
+    "5.  'broken_bone'  - randomly selects between collarbone, arm, wrist, hip, and ankle (top 5)",
+    "6.  'burn'         - 1st, 2nd, or 3rd degree burns ",
+    "7.  'laceration'   - randomly selects between hand, foot, face, arm, and leg ",
+    "8.  'sprain'       - a sprained ankle or wrist ",
+    "9.  'knee'         - a torn ligament (ACL, MCL, meniscus) ",
+    "10. 'shoulder'     - a torn rotator cuff ",
+
+    "Sources are included throughout the module where supplemental information was needed.",
+    "Every injury pathway in this module assigns a care plan for the patient. This care ",
+    "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
+    "of the injury.",
+
+    "Injury pathways may also prescribe a medication and assign it to one of these attributes: ",
+    "1. 'opioid_prescription' ",
+    "2. 'otc_pain_reliever' ",
+    "3. 'antibiotic_prescription' ",
+
+    "Any medication order with one of these attributes will be automatically ended at the ",
+    "conclusion of the injury. Be sure to only assign one medication to each of these ",
+    "attributes in a given injury pathway to avoid conflict. Opioid prescriptions will be handled ",
+    "and ended by the Opioid Addiction module."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_For_Injury"
+    },
+
+    "Wait_For_Injury": {
+      "type": "Delay",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+        "We give patients the opportunity to get injured about once per year. The range ",
+        "here is inteded to introduce some randomness to the data so patients aren't all ",
+        "getting injured on the same day each year.",
+
+        "Distributions of injuries are initially based on the 2015 U.S. resident population (308.75M) and the ",
+        "following incidence rates: ",
+        "Spinal:        0.000153   http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures",
+        "Gunshots:      0.000318   http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
+        "Concussions:   0.005100   https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
+        "Whiplash:      0.004780   http://www.srisd.com/consumer_site/epidemiology.htm (This may be an overestimate)",
+        "Broken bones:  0.058300   http://www.boneandjointburden.org/docs/By%20The%20Numbers%20-%20MSK%20Injuries.pdf",
+        "Burns:         0.003980   http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6",
+        "Lacerations:   0.026100   (see broken bones, above)",
+        "Sprains:       0.054400   https://www.ncbi.nlm.nih.gov/pubmed/20926721",
+        "Knees:         0.002290   https://www.ncbi.nlm.nih.gov/pubmed/22506941",
+        "Shoulders:     0.001470   http://rheumatology.oxfordjournals.org/content/45/2/215.full",
+
+        "From these estimates the incidences may be adjusted slightly (see notes when a rate is adjusted) ",
+        "to yield reasonable prevalences."
+      ],
+      "range": {
+        "low": 10,
+        "high": 14,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "transition": "Child_Incidence_Rates"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 65,
+            "unit": "years"
+          },
+          "transition": "Adult_Incidence_Rates"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 65,
+            "unit": "years"
+          },
+          "transition": "Elderly_Incidence_Rates"
+        }
+      ]
+    },
+
+    "Child_Incidence_Rates": {
+      "type": "Simple",
+      "remarks": [
+        "The incidence rates for children (0 - 17)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.000153,
+          "transition": "Spinal_Injury"
+        },
+        {
+          "distribution": 0.000318,
+          "transition": "Gunshot_Injury"
+        },
+        {
+          "distribution": 0.0101,
+          "transition": "Concussion_Injury",
+          "remarks": [
+            "Our initial estimate for concussions seem too low. Since most concussion injuries ",
+            "happen in sports and children are more likely to get concussions (for this reason) ",
+            "doubling the concussion rate for children from 0.0051 --> 0.0101."
+          ]
+        },
+        {
+          "distribution": 0.00478,
+          "transition": "Whiplash_Injury"
+        },
+        {
+          "distribution": 0.025,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Children get broken bones far more often than adults. To make a patient's record ",
+            "realistic I still cut the original probability in half from 0.0583 --> 0.025 "
+          ]
+        },
+        {
+          "distribution": 0.00398,
+          "transition": "Burn_Injury"
+        },
+        {
+          "distribution": 0.015,
+          "transition": "Laceration_Injury"
+        },
+        {
+          "distribution": 0.025,
+          "remarks": [
+            "Sprains are slightly more likely in kids."
+          ],
+          "transition": "Sprain_Injury"
+        },
+        {
+          "distribution": 0.00229,
+          "transition": "Knee_Injury"
+        },
+        {
+          "distribution": 0.00147,
+          "transition": "Shoulder_Injury"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Wait_For_Injury",
+          "remarks": [
+            "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
+            "out of 1.0 if none of the other transitions are taken, see: ",
+            "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+          ]
+        }
+      ]
+    },
+
+    "Adult_Incidence_Rates": {
+      "type": "Simple",
+      "remarks": [
+        "The incidence rates for adults (18 - 65)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.000153,
+          "transition": "Spinal_Injury"
+        },
+        {
+          "distribution": 0.000318,
+          "transition": "Gunshot_Injury"
+        },
+        {
+          "distribution": 0.00765,
+          "transition": "Concussion_Injury",
+          "remarks": [
+            "Adults are likely to get concussions from sports, work-related accidents, and ",
+            "motor vehicle accidents. Increasing the incidence in adults by 1.5 from ",
+            "0.0051 --> 0.00765"
+          ]
+        },
+        {
+          "distribution": 0.00478,
+          "transition": "Whiplash_Injury"
+        },
+        {
+          "distribution": 0.007,
+          "transition": "Broken_Bone_Injury",
+          "remarks": [
+            "Adults break fewer bones than children or the elderly. Shifting incidence away ",
+            "from adults towards children. Reducing this incidence by a factor of 8 from ",
+            "0.0583 --> 0.007 "
+          ]
+        },
+        {
+          "distribution": 0.00398,
+          "transition": "Burn_Injury"
+        },
+        {
+          "distribution": 0.015,
+          "transition": "Laceration_Injury"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Sprain_Injury"
+        },
+        {
+          "distribution": 0.00229,
+          "transition": "Knee_Injury"
+        },
+        {
+          "distribution": 0.00147,
+          "transition": "Shoulder_Injury"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Wait_For_Injury",
+          "remarks": [
+            "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
+            "out of 1.0 if none of the other transitions are taken, see: ",
+            "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+          ]
+        }
+      ]
+    },
+
+    "Elderly_Incidence_Rates": {
+      "type": "Simple",
+      "remarks": [
+        "The incidence rates for elderly (65+)."
+      ],
+      "complex_transition": [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "osteoporosis",
+            "operator" : "==",
+            "value" : true
+          },
+          "distributions" : [
+            {
+              "distribution": 0.000153,
+              "transition": "Spinal_Injury"
+            },
+            {
+              "distribution": 0.000318,
+              "transition": "Gunshot_Injury"
+            },
+            {
+              "distribution": 0.0051,
+              "transition": "Concussion_Injury"
+            },
+            {
+              "distribution": 0.00478,
+              "transition": "Whiplash_Injury"
+            },
+            {
+              "distribution": { "attribute" : "probability_of_fall_injury", "default" : 0.06 },
+              "remarks": [
+                "Highest probability for elderly with osteoporosis.",
+                "see also http://www.shef.ac.uk/FRAX/charts.aspx",
+                "10-yr probability of major fracture varies significantly based on age & bone density",
+                "assume a medium risk of 40% chance over 10 years ~~> 6% chance per yr"
+              ],
+              "transition": "Broken_Bone_Injury"
+            },
+            {
+              "distribution": 0.00398,
+              "transition": "Burn_Injury"
+            },
+            {
+              "distribution": 0.015,
+              "transition": "Laceration_Injury"
+            },
+            {
+              "distribution": 0.0125,
+              "transition": "Sprain_Injury"
+            },
+            {
+              "distribution": 0.00229,
+              "transition": "Knee_Injury"
+            },
+            {
+              "distribution": 0.00147,
+              "transition": "Shoulder_Injury"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Wait_For_Injury",
+              "remarks": [
+                "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
+                "out of 1.0 if none of the other transitions are taken, see: ",
+                "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+              ]
+            }
+          ]
+        },
+        {
+          "remarks" : ["elderly patients who do not have osteoporosis"],
+          "distributions" : [
+            {
+              "distribution": 0.000153,
+              "transition": "Spinal_Injury"
+            },
+            {
+              "distribution": 0.000318,
+              "transition": "Gunshot_Injury"
+            },
+            {
+              "distribution": 0.0051,
+              "transition": "Concussion_Injury"
+            },
+            {
+              "distribution": 0.00478,
+              "transition": "Whiplash_Injury"
+            },
+            {
+              "distribution": { "attribute" : "probability_of_fall_injury", "default" : 0.035 },
+              "remarks": [
+                "Retain high probability for elderly - reduced somewhat here since these are the patients without osteoporosis"
+              ],
+              "transition": "Broken_Bone_Injury"
+            },
+            {
+              "distribution": 0.00398,
+              "transition": "Burn_Injury"
+            },
+            {
+              "distribution": 0.015,
+              "transition": "Laceration_Injury"
+            },
+            {
+              "distribution": 0.0125,
+              "transition": "Sprain_Injury"
+            },
+            {
+              "distribution": 0.00229,
+              "transition": "Knee_Injury"
+            },
+            {
+              "distribution": 0.00147,
+              "transition": "Shoulder_Injury"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Wait_For_Injury",
+              "remarks": [
+                "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
+                "out of 1.0 if none of the other transitions are taken, see: ",
+                "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
+              ]
+            }
+          ]
+        }
+
+
+      ]
+    },
+
+    "Spinal_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SPINAL INJURY                                                        ",
+        "======================================================================",
+        "Further supported by the following incidence statistics (from 2010): ",
+        "http://www.boneandjointburden.org/2014-report/iiia12/traumatic-spine-fractures ",
+        "16 - 25% of spinal fractures result in neurological damage. This aligns with ",
+        "The incidence of spinal cord injury folowing a spinal fracture. For simplicity ",
+        "All spinal fractures with spinal cord damage also result in neurological damage."
+      ],
+      "direct_transition": "ED_Visit_For_Spinal_Injury"
+    },
+
+    "ED_Visit_For_Spinal_Injury": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Spinal_Injury_CarePlan"
+    },
+
+    "Spinal_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "75162002",
+          "display": "Spinal cord injury rehabilitation"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "231181000000100",
+          "display": "Delivery of rehabilitation for spinal cord injury"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "77476009",
+          "display": "Application of back brace"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.25,
+          "transition": "Spinal_Cord_Damage"
+        },
+        {
+          "distribution": 0.75,
+          "transition": "No_Spinal_Cord_Damage"
+        }
+      ]
+    },
+
+    "Spinal_Cord_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "assign_to_attribute": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1734006",
+          "display": "Fracture of the vertebral column with spinal cord injury"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.49,
+          "remarks": [
+            "Nearly half of all patients die from traumatic spinal cord injury. ",
+            "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3831332/"
+          ],
+          "transition": "Death_Spinal_Cord"
+        },
+        {
+          "distribution": 0.51,
+          "transition": "Neurological_Damage"
+        }
+      ]
+    },
+
+    "Neurological_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698754002",
+          "display": "Chronic paralysis due to lesion of spinal cord"
+        }
+      ],
+      "direct_transition": "Spinal_Surgery"
+    },
+
+    "No_Spinal_Cord_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "assign_to_attribute": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "15724005",
+          "display": "Fracture of vertebral column without spinal cord injury"
+        }
+      ],
+      "direct_transition": "Spinal_Injury_Treatment_Encounter"
+    },
+
+    "Spinal_Surgery": {
+      "type": "Procedure",
+      "reason": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305425002",
+          "display": "Admission to neurosurgical department"
+        }
+      ],
+      "direct_transition": "Delay_After_Spinal_Surgery"
+    },
+
+    "Delay_After_Spinal_Surgery": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Spinal_Injury_Treatment_Encounter"
+    },
+
+    "Spinal_Injury_Treatment_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Spinal_Injury_Prescribe_Opioid"
+    },
+
+    "Spinal_Injury_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "End_Spinal_Injury_Encounter"
+    },
+
+    "End_Spinal_Injury_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Spinal_Treatment_Period"
+    },
+
+    "Spinal_Treatment_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Spinal_Injury_Followup"
+    },
+
+    "Spinal_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "spinal_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Spinal_Injury"
+    },
+
+    "End_Spinal_Injury": {
+      "type": "ConditionEnd",
+      "remarks": [
+        "This only ends the initial, acute spinal injury. If the patient had spinal ",
+        "cord damage and survived, his/her chronic paralysis will persist for life."
+      ],
+      "referenced_by_attribute": "spinal_injury",
+      "direct_transition": "End_Spinal_Injury_Followup"
+    },
+
+    "End_Spinal_Injury_Followup" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Gunshot_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " GUNSHOT INJURY                                                       ",
+        "======================================================================",
+        "Further supported by the following statistics (2010): ",
+        "http://smartgunlaws.org/gun-deaths-and-injuries-statistics/",
+        "Gunshot deaths:                  31,076  => 29.8%",
+        "Non-fatal hospital discharges:   73,505  => 70.2%",
+        "Total gunshot injuries:         104,581"
+      ],
+      "direct_transition": "ED_Visit_For_Gunshot_Injury"
+    },
+
+    "ED_Visit_For_Gunshot_Injury": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound"
+    },
+
+    "Gunshot_Wound": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "gunshot_wound",
+      "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "262574004",
+          "display": "Bullet wound"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.298,
+          "transition": "Death_Gunshot_Wound"
+        },
+        {
+          "distribution": 0.702,
+          "transition": "Gunshot_Injury_Treatment"
+        }
+      ]
+    },
+
+    "Gunshot_Injury_Treatment": {
+      "type": "Simple",
+      "remarks": [
+        "This is an aribitrary distribution between wounds requiring surgery ",
+        "and wounds that do not (just grazed by the bullet). Assuming that most ",
+        "gunshot wounds will require surgery."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Gunshot_Wound_Surgery"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Gunshot_Wound_CarePlan"
+        }
+      ]
+    },
+
+    "Gunshot_Wound_Surgery": {
+      "type": "Procedure",
+      "reason": "Gunshot_Wound",
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305433001",
+          "display": "Admission to trauma surgery department"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound_Prescribe_Pain_Medication"
+    },
+
+    "Gunshot_Wound_Prescribe_Pain_Medication": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "Gunshot_Wound_Prescribe_Opioid"
+        },
+        {
+          "distribution": 0.3,
+          "transition": "Gunshot_Wound_Prescribe_Non_Opioid"
+        }
+      ]
+    },
+
+    "Gunshot_Wound_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Gunshot_Wound_Prescribe_Non_Opioid"
+    },
+
+    "Gunshot_Wound_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "Gunshot_Wound_CarePlan"
+    },
+
+    "Gunshot_Wound_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "Gunshot_Wound",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225358003",
+          "display": "Wound care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
+      "direct_transition": "End_Gunshot_Encounter"
+    },
+
+    "End_Gunshot_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Gunshot_Wound_Healing_Period"
+    },
+
+    "Gunshot_Wound_Healing_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "months"
+      },
+      "direct_transition": "Gunshot_Injury_Followup"
+    },
+
+    "Gunshot_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Gunshot_Wound",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "Gunshot_Wound_Ends"
+    },
+
+    "Gunshot_Wound_Ends": {
+      "type": "ConditionEnd",
+      "condition_onset": "Gunshot_Wound",
+      "direct_transition": "End_Gunshot_Followup"
+    },
+
+    "End_Gunshot_Followup" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Concussion_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " CONCUSSION                                                           ",
+        "======================================================================",
+        "Further supported by the following CDC reports: ",
+        "http://www.cdc.gov/traumaticbraininjury/data/rates.html",
+        "https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
+        "http://www.cdc.gov/traumaticbraininjury/pdf/bluebook_factsheet-a.pdf"
+      ],
+      "direct_transition": "ED_Visit_For_Concussion"
+    },
+
+    "ED_Visit_For_Concussion": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Mild_Concussion"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Moderate_Concussion"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Severe_Concussion"
+        }
+      ]
+    },
+
+    "Mild_Concussion": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "62106007",
+          "display": "Concussion with no loss of consciousness"
+        }
+      ],
+      "direct_transition": "Concussion_CarePlan"
+    },
+
+    "Moderate_Concussion": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "62564004",
+          "display": "Concussion with loss of consciousness"
+        }
+      ],
+      "direct_transition": "Concussion_CarePlan"
+    },
+
+    "Severe_Concussion": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "assign_to_attribute": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "110030002",
+          "display": "Concussion injury of brain"
+        }
+      ],
+      "remarks": [
+        "Distributions based on this article: ",
+        "http://www.cdc.gov/traumaticbraininjury/severe.html"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.57,
+          "transition": "Concussion_CarePlan"
+        },
+        {
+          "distribution": 0.33,
+          "transition": "Permanent_Brain_Damage"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Death_Severe_Concussion"
+        }
+      ]
+    },
+
+    "Permanent_Brain_Damage": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "remarks": [
+        "There will never be a ConditionEnd for this state - this brain damage is permanent."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "275272006",
+          "display": "Brain damage - traumatic"
+        }
+      ],
+      "direct_transition": "Concussion_CarePlan"
+    },
+
+    "Concussion_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "47387005",
+          "display": "Head injury rehabilitation"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "226138001",
+          "display": "Alcohol-free diet"
+        }
+      ],
+      "direct_transition": "End_Concussion_Encounter"
+    },
+
+    "End_Concussion_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Concussion_Recovery_Period"
+    },
+
+    "Concussion_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Concussion_Injury_Followup"
+    },
+
+    "Concussion_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "concussion_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Concussion_Injury"
+    },
+
+    "End_Concussion_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "concussion_injury",
+      "direct_transition": "End_Concussion_Followup"
+    },
+
+    "End_Concussion_Followup" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Whiplash_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " WHIPLASH                                                             ",
+        "======================================================================",
+        "Further supported by the following sources: ",
+        "http://www.srisd.com/consumer_site/epidemiology.htm",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2564031/",
+        "Many whiplash injuries do not present themselves immediately and are not ",
+        "treated by an emergency department. If they're ever addressed at all they ",
+        "are treated in an ambulatory setting by a PCP. For simplicity however, all ",
+        "of the whiplash injuries seen in this module are treated by an ED department."
+      ],
+      "direct_transition": "ED_Visit_For_Whiplash"
+    },
+
+    "ED_Visit_For_Whiplash": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Whiplash"
+    },
+
+    "Whiplash": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Whiplash",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "39848009",
+          "display": "Whiplash injury to neck"
+        }
+      ],
+      "direct_transition": "Whiplash_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Whiplash_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "Whiplash_CarePlan"
+    },
+
+    "Whiplash_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "Whiplash",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "266694003",
+          "display": "Heat therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest"
+        }
+      ],
+      "direct_transition": "End_Whiplash_Encounter"
+    },
+
+    "End_Whiplash_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Whiplash_Recovery_Period"
+    },
+
+    "Whiplash_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Whiplash_Injury"
+    },
+
+    "End_Whiplash_Injury": {
+      "type": "ConditionEnd",
+      "condition_onset": "Whiplash",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Broken_Bone_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " BROKEN BONE                                                          ",
+        "======================================================================",
+        "Further supported by the following sources: ",
+        "Most commonly broken bones: https://askabiologist.asu.edu/how-bone-breaks"
+      ],
+      "direct_transition": "ED_Visit_For_Broken_Bone"
+    },
+
+    "ED_Visit_For_Broken_Bone": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Broken_Bone"
+    },
+
+    "Broken_Bone": {
+      "type": "Simple",
+      "remarks": [
+        "A reasonable distribution of broken bones. Based on a Top 5 list: ",
+        "1. Clavicle ",
+        "2. Arm ",
+        "3. Wrist ",
+        "4. Hip (but this occurs mostly in older women with osteoporosis) ",
+        "5. Ankle "
+      ],
+      "complex_transition": [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "osteoporosis",
+            "operator" : "==",
+            "value" : true
+          },
+          "remarks" : ["For the year 2000, there were an estimated 9 million new osteoporotic fractures, ",
+                       "of which 1.6 million were at the hip, 1.7 million were at the forearm ",
+                       "and 1.4 million were clinical vertebral fractures. ",
+                       "-- https://www.iofbonehealth.org/facts-statistics",
+                       "1.6 / 9 == 18%, 1.7/9 == 19%. ",
+                       "4.7 million not included in that stat, so we assume the distribution of the rest"],
+          "distributions" : [
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Clavicle"
+            },
+            {
+              "distribution": 0.415,
+              "transition": "Broken_Arm",
+              "remarks" : [".225 normally + .19 new"]
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Wrist"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Ankle"
+            },
+            {
+              "distribution": 0.05,
+              "transition": "Broken_Rib"
+            },
+            {
+              "distribution": 0.23,
+              "transition": "Broken_Hip",
+              "remarks" : [".05 below + .18 new"]
+            }
+          ]
+        },
+        {
+          "distributions" : [
+            {
+              "distribution": 0.225,
+              "transition": "Broken_Clavicle"
+            },
+            {
+              "distribution": 0.225,
+              "transition": "Broken_Arm"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Broken_Wrist"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Broken_Ankle"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Broken_Rib"
+            },
+            {
+              "distribution": 0.05,
+              "transition": "Broken_Hip"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Broken_Clavicle": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "58150001",
+          "display": "Fracture of clavicle"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Surgery"
+    },
+
+    "Broken_Arm": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65966004",
+          "display": "Fracture of forearm"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Wrist": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "263102004",
+          "display": "Fracture subluxation of wrist"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Ankle": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "16114001",
+          "display": "Fracture of ankle"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Rib": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "33737001",
+          "display": "Fracture of rib"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+
+    "Broken_Hip": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "assign_to_attribute": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "359817006",
+          "display": "Closed fracture of hip"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Surgery"
+    },
+
+    "Broken_Bone_Immobilization": {
+      "type": "Procedure",
+      "reason": "broken_bone",
+      "duration": {
+        "low": 20,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "274474001",
+          "display": "Bone immobilization"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Injury_Prescribe_Pain_Medication"
+    },
+
+    "Broken_Bone_Surgery": {
+      "type": "Procedure",
+      "reason": "broken_bone",
+      "duration": {
+        "low": 1,
+        "high": 2,
+        "unit": "hours"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305428000",
+          "display": "Admission to orthopedic department"
+        }
+      ],
+      "direct_transition": "Broken_Bone_Injury_Prescribe_Pain_Medication"
+    },
+
+    "Broken_Bone_Injury_Prescribe_Pain_Medication": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Broken_Bone_Surgery"
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "Broken_Bone_Injury_Prescribe_Opioid"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Broken_Bone_Injury_Prescribe_Opioid"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Broken_Bone_Injury_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Broken_Bone_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Broken_Bone_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "Broken_Bone_CarePlan"
+    },
+
+    "Broken_Bone_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385691007",
+          "display": "Fracture care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest",
+          "remarks": [
+            "Until the broken bone heals"
+          ]
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "408580007",
+          "display": "Physical activity target light exercise",
+          "remarks": [
+            "After the broken bone heals"
+          ]
+        }
+      ],
+      "direct_transition": "Consider_Osteoporosis"
+    },
+
+    "Consider_Osteoporosis" : {
+      "type" : "Simple",
+      "complex_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "64859006",
+              "display" : "Osteoporosis (disorder)"
+            }]
+          },
+          "transition" : "Diagnose_Fracture_Due_to_Osteoporosis"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition" : "Osteoporosis_Workup"
+        },
+        {
+          "distributions" : [
+            { "distribution" : 0.02, "transition" : "Osteoporosis_Workup"},
+            { "distribution" : 0.98, "transition" : "End_Broken_Bone_Encounter"}
+          ],
+          "remarks" : ["Give all people a small chance to check for osteoporosis",
+                       "Frequent checks are not valuable -- ",
+                       "https://www.nih.gov/news-events/nih-research-matters/how-often-should-women-have-bone-tests"]
+        }
+      ]
+    },
+
+    "Osteoporosis_Workup" : {
+      "type" : "Procedure",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "312681000",
+        "display" : "Bone density scan (procedure)"
+      }],
+      "reason" : "broken_bone",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Attribute",
+            "attribute" : "osteoporosis",
+            "operator" : "==",
+            "value" : true
+          },
+          "transition" : "Low_Bone_Density"
+        },
+        {
+          "transition" : "High_Bone_Density"
+        }
+      ]
+    },
+
+    "High_Bone_Density" : {
+      "type" : "Observation",
+      "category" : "procedure",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "38265-5",
+        "display" : "DXA [T-score] Bone density"
+      }],
+      "remarks" : ["TODO - This code is specifically for radius/ulna.",
+                   "Future impl may want to use a different code depending on what bone was broken"],
+      "range" : { "low" :  -0.5, "high" : 0.5 },
+      "unit" : "{T-score}",
+      "direct_transition" : "End_Broken_Bone_Encounter"
+    },
+
+    "Low_Bone_Density" : {
+      "type" : "Observation",
+      "category" : "procedure",
+      "codes" : [{
+        "system" : "LOINC",
+        "code" : "38265-5",
+        "display" : "DXA [T-score] Bone density"
+      }],
+      "range" : { "low" :  -3.8, "high" : -2.5 },
+      "unit" : "{T-score}",
+      "remarks" : ["WHO definition of osteoporosis is a T-score < 2.5",
+                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1963365/"],
+      "direct_transition" : "Diagnose_Osteoporosis"
+    },
+
+
+    "Diagnose_Osteoporosis" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "64859006",
+        "display" : "Osteoporosis (disorder)"
+      }],
+      "direct_transition" : "Diagnose_Fracture_Due_to_Osteoporosis"
+    },
+
+    "Diagnose_Fracture_Due_to_Osteoporosis" : {
+      "type" : "ConditionOnset",
+      "codes" : [{
+        "system" : "SNOMED-CT",
+        "code" : "443165006",
+        "display" : "Pathological fracture due to osteoporosis (disorder)"
+      }],
+      "direct_transition" : "End_Broken_Bone_Encounter"
+    },
+
+
+    "End_Broken_Bone_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Broken_Bone_Recovery_Period"
+    },
+
+    "Broken_Bone_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "months"
+      },
+      "direct_transition": "Broken_Bone_Injury_Followup"
+    },
+
+    "Broken_Bone_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "broken_bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Broken_Bone_Injury"
+    },
+
+    "End_Broken_Bone_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "broken_bone",
+      "conditional_transition" : [
+        {
+          "condition" : {
+            "condition_type" : "Active Condition",
+            "codes" : [{
+              "system" : "SNOMED-CT",
+              "code" : "443165006",
+              "display" : "Pathological fracture due to osteoporosis (disorder)"
+            }]
+          },
+          "transition" : "End_Osteoporosis_Fracture"
+        },
+        {
+          "transition" : "End_Broken_Bone_Followup"
+        }
+      ]
+    },
+
+    "End_Osteoporosis_Fracture" : {
+      "type" : "ConditionEnd",
+      "condition_onset" : "Diagnose_Fracture_Due_to_Osteoporosis",
+      "direct_transition": "End_Broken_Bone_Followup"
+    },
+
+    "End_Broken_Bone_Followup" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Burn_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " BURN                                                                 ",
+        "======================================================================",
+        "Further supported by the following sources: ",
+        "http://www.ameriburn.org/resources_factsheet.php",
+        "http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6 (1999 incidence)",
+        "Since the early 1990's the burn rates in the U.S. have declined almost 50%;",
+        "however, the relative proportions of severity has stayed the same."
+      ],
+      "direct_transition": "ED_Visit_For_Burn"
+    },
+
+    "ED_Visit_For_Burn": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Burn"
+    },
+
+    "Burn": {
+      "type": "Simple",
+      "remarks": [
+        "Used the 1990 incidence rates to determine the relative proportions of burns only.",
+        "ED Visits:      1.25M",
+        "Hospital Stays:   51k  => 0.0408",
+        "Deaths:          5500  => 0.0044",
+        "Distributed the burns that don't result in death or a hospital stay between first ",
+        "and second degree burns. (60% first degree, 40% second degree of the 0.9548 remaining)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.57288,
+          "transition": "First_Degree_Burn"
+        },
+        {
+          "distribution": 0.38192,
+          "transition": "Second_Degree_Burn"
+        },
+        {
+          "distribution": 0.0408,
+          "transition": "Third_Degree_Burn"
+        },
+        {
+          "distribution": 0.0044,
+          "transition": "Deadly_Burn"
+        }
+      ]
+    },
+
+    "First_Degree_Burn": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "403190006",
+          "display": "First degree burn"
+        }
+      ],
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Second_Degree_Burn": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "403191005",
+          "display": "Second degree burn"
+        }
+      ],
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Third_Degree_Burn": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "403192003",
+          "display": "Third degree burn"
+        }
+      ],
+      "direct_transition": "Burn_CarePlan"
+    },
+
+    "Burn_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "133901003",
+          "display": "Burn care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "440381005",
+          "display": "Behavior to prevent sun exposure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "403190006",
+                "display": "First degree burn"
+              }
+            ]
+          },
+          "transition": "Burn_Injury_Prescribe_Non_Opioid"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "403191005",
+                "display": "Second degree burn"
+              }
+            ]
+          },
+          "transition": "Burn_Injury_Prescribe_Antibiotic"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "403192003",
+                "display": "Third degree burn"
+              }
+            ]
+          },
+          "transition": "Severe_Burn_Care"
+        }
+      ]
+    },
+
+    "Severe_Burn_Care": {
+      "type": "Procedure",
+      "reason": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183450002",
+          "display": "Admission to burn unit"
+        }
+      ],
+      "direct_transition": "Severe_Burn_Hospitalization"
+    },
+
+    "Severe_Burn_Hospitalization": {
+      "type": "Procedure",
+      "reason": "burn_injury",
+      "duration": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305340004",
+          "display": "Admission to long stay hospital"
+        }
+      ],
+      "direct_transition": "Burn_Injury_Prescribe_Antibiotic"
+    },
+
+    "Burn_Injury_Prescribe_Antibiotic": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "Antibiotics that can be used to treat ear infections are equally ",
+        "suitable for treating bacterial tissue infections."
+      ],
+      "submodule": "medications/ear_infection_antibiotic",
+      "direct_transition": "Burn_Injury_Prescribe_Opioid"
+    },
+
+    "Burn_Injury_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Burn_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Burn_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "End_Burn_Encounter"
+    },
+
+    "End_Burn_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Burn_Recovery_Period"
+    },
+
+    "Burn_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Burn_Injury_Followup"
+    },
+
+    "Burn_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Burn_Injury"
+    },
+
+    "End_Burn_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "burn_injury",
+      "direct_transition": "End_Burn_Followup"
+    },
+
+    "End_Burn_Followup" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Laceration_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " LACERATION                                                           ",
+        "======================================================================",
+        "Added a mix of lacerations for variety. It seems like most common ",
+        "lacerations are equally likely.",
+        "TODO: In the future, lacerations that are poorly treated by the patient may ",
+        "develop an infection. Could be interesting to add this into the mix."
+      ],
+      "direct_transition": "ED_Visit_For_Laceration"
+    },
+
+    "ED_Visit_For_Laceration": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Laceration"
+    },
+
+    "Laceration": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Hand"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Arm"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Leg"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Face"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Of_Foot"
+        }
+      ]
+    },
+
+    "Laceration_Of_Hand": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "284549007",
+          "display": "Laceration of hand"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Arm": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "283371005",
+          "display": "Laceration of forearm"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Leg": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "283385000",
+          "display": "Laceration of thigh"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Face": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "370247008",
+          "display": "Facial laceration"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_Of_Foot": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "assign_to_attribute": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "284551006",
+          "display": "Laceration of foot"
+        }
+      ],
+      "direct_transition": "Laceration_CarePlan"
+    },
+
+    "Laceration_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "laceration_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225358003",
+          "display": "Wound care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385949008",
+          "display": "Dressing change management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439830001",
+          "display": "Behavior to prevent infection"
+        }
+      ],
+      "direct_transition": "Suture_Laceration"
+    },
+
+    "Suture_Laceration": {
+      "type": "Procedure",
+      "reason": "laceration_injury",
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "288086009",
+          "display": "Suture open wound"
+        }
+      ],
+      "remarks": [
+        "For some of the lacerations it's prudent to give a tetanus booster. ",
+        "For now this distribution is arbitrary but we assume not every wound ",
+        "involves rusty or dirty metal and that most people are up-to-date ",
+        "with their tetanus shots."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Laceration_Tetanus_Shot"
+        },
+        {
+          "distribution": 0.8,
+          "transition": "Laceration_Injury_Prescribe_Non_Opioid"
+        }
+      ]
+    },
+
+    "Laceration_Tetanus_Shot": {
+      "type": "Procedure",
+      "reason": "laceration_injury",
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "384700001",
+          "display": "Injection of tetanus antitoxin"
+        }
+      ],
+      "direct_transition": "Laceration_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Laceration_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "End_Laceration_Encounter"
+    },
+
+    "End_Laceration_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Laceration_Recovery_Period"
+    },
+
+    "Laceration_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Laceration_Injury"
+    },
+
+    "End_Laceration_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "laceration_injury",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Sprain_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SPRAIN                                                               ",
+        "======================================================================",
+        "Arbitrary distribution of sprained ankles and wrists for variety."
+      ],
+      "direct_transition": "ED_Visit_For_Sprain"
+    },
+
+    "ED_Visit_For_Sprain": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "Sprained_Ankle"
+        },
+        {
+          "distribution": 0.3,
+          "transition": "Sprained_Wrist"
+        }
+      ]
+    },
+
+    "Sprained_Ankle": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Sprain",
+      "assign_to_attribute": "sprain_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44465007",
+          "display": "Sprain of ankle"
+        }
+      ],
+      "direct_transition": "Sprain_CarePlan"
+    },
+
+    "Sprained_Wrist": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Sprain",
+      "assign_to_attribute": "sprain_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "70704007",
+          "display": "Sprain of wrist"
+        }
+      ],
+      "direct_transition": "Sprain_CarePlan"
+    },
+
+    "Sprain_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "sprain_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition": "Sprain_Prescribe_Non_Opioid"
+    },
+
+    "Sprain_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "End_Sprain_Encounter"
+    },
+
+    "End_Sprain_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Sprain_Recovery_Period"
+    },
+
+    "Sprain_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Sprain_Injury"
+    },
+
+    "End_Sprain_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "sprain_injury",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Knee_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " KNEE                                                                 ",
+        "======================================================================",
+        "Tears of the following structures: ",
+        "1. ACL      (25.4%)",
+        "2. MCL      (36.1%)",
+        "3. Meniscus (23.0%)",
+        "4. Patella  (29.5%)",
+        "These percentages add up to >100 since multiple tears could occur from one knee ",
+        "injury. To simplify I normalized these percentages out of 100 but maintained ",
+        "the relative proportions. Only one of the above occurs at any given time.",
+        "Sources: ",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3768257/"
+      ],
+      "direct_transition": "ED_Visit_For_Knee_Injury"
+    },
+
+    "ED_Visit_For_Knee_Injury": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Knee_Injury_CarePlan"
+    },
+
+    "Knee_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2235,
+          "transition": "Torn_ACL"
+        },
+        {
+          "distribution": 0.3177,
+          "transition": "Torn_MCL"
+        },
+        {
+          "distribution": 0.2024,
+          "transition": "Torn_Meniscus"
+        },
+        {
+          "distribution": 0.2564,
+          "transition": "Torn_Patellar_Tendon"
+        }
+      ]
+    },
+
+    "Torn_ACL": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "444470001",
+          "display": "Injury of anterior cruciate ligament"
+        }
+      ],
+      "direct_transition": "End_Knee_Injury_Encounter_I"
+    },
+
+    "Torn_MCL": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "444448004",
+          "display": "Injury of medial collateral ligament of knee"
+        }
+      ],
+      "direct_transition": "End_Knee_Injury_Encounter_I"
+    },
+
+    "Torn_Meniscus": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "remarks": [
+        "These typically don't require surgery, so go straight to therapy."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "239720000",
+          "display": "Tear of meniscus of knee"
+        }
+      ],
+      "direct_transition": "Knee_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Torn_Patellar_Tendon": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "assign_to_attribute": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "30832001",
+          "display": "Rupture of patellar tendon"
+        }
+      ],
+      "direct_transition": "End_Knee_Injury_Encounter_I"
+    },
+
+    "End_Knee_Injury_Encounter_I" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Wait_For_Knee_Surgery"
+    },
+
+    "Wait_For_Knee_Surgery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Knee_Surgery_Encounter"
+    },
+
+    "Knee_Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "knee_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183495009",
+          "display": "Non-urgent orthopedic admission"
+        }
+      ],
+      "direct_transition": "Knee_Surgery_Procedure"
+    },
+
+    "Knee_Surgery_Procedure": {
+      "type": "Procedure",
+      "reason": "knee_injury",
+      "duration": {
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "699253003",
+          "display": "Surgical manipulation of joint of knee"
+        }
+      ],
+      "direct_transition": "Knee_Injury_Prescribe_Opioid"
+    },
+
+    "Knee_Injury_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Knee_Injury_Prescribe_Non_Opioid"
+    },
+
+    "Knee_Injury_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "End_Knee_Injury_Encounter_II"
+    },
+
+    "End_Knee_Injury_Encounter_II" :
+    {
+      "type" : "EncounterEnd",
+      "direct_transition": "Knee_Injury_Recovery_Period"
+    },
+
+    "Knee_Injury_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "End_Knee_Injury"
+    },
+
+    "End_Knee_Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "knee_injury",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Shoulder_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SHOULDER                                                             ",
+        "======================================================================",
+        "Tears of the rotator cuff. Typically this doesn't require an immediate trip ",
+        "to the emergency department. An ambulatory encounter and PT (or in some cases,",
+        "surgery) will do. Interestingly enough, in most cases surgery won't help a ",
+        "torn rotator cuff any more than physical therapy. The percentages are arbitraty ",
+        "but I directed most patients directly to PT instead of surgery."
+      ],
+      "direct_transition": "Torn_Rotator_Cuff"
+    },
+
+    "Torn_Rotator_Cuff": {
+      "type": "ConditionOnset",
+      "target_encounter": "Encounter_For_Shoulder_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "307731004",
+          "display": "Injury of tendon of the rotator cuff of shoulder"
+        }
+      ],
+      "direct_transition": "Encounter_For_Shoulder_Injury"
+    },
+
+    "Encounter_For_Shoulder_Injury": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Torn_Rotator_Cuff",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Shoulder_Injury_CarePlan"
+    },
+
+    "Shoulder_Injury_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "Torn_Rotator_Cuff",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229586001",
+          "display": "Rest, ice, compression and elevation treatment programme"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229070002",
+          "display": "Stretching exercises"
+        }
+      ],
+      "direct_transition" : "End_Shoulder_Injury_Encounter"
+    },
+
+    "End_Shoulder_Injury_Encounter" : {
+      "type" : "EncounterEnd",
+      "distributed_transition": [
+        {
+          "distribution": 0.9,
+          "transition": "Shoulder_Injury_Recovery_Period"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Wait_For_Shoulder_Surgery"
+        }
+      ]
+    },
+
+    "Wait_For_Shoulder_Surgery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Shoulder_Surgery_Encounter"
+    },
+
+    "Shoulder_Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Torn_Rotator_Cuff",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183495009",
+          "display": "Non-urgent orthopedic admission"
+        }
+      ],
+      "direct_transition": "Shoulder_Surgery_Procedure"
+    },
+
+    "Shoulder_Surgery_Procedure": {
+      "type": "Procedure",
+      "reason": "Torn_Rotator_Cuff",
+      "duration": {
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387685009",
+          "display": "Surgical manipulation of shoulder joint"
+        }
+      ],
+      "direct_transition": "Shoulder_Surgery_Prescribe_Opioid"
+    },
+
+    "Shoulder_Surgery_Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Shoulder_Surgery_Prescribe_Non_Opioid"
+    },
+
+    "Shoulder_Surgery_Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "direct_transition": "End_Shoulder_Surgery_Encounter"
+    },
+
+    "End_Shoulder_Surgery_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Shoulder_Injury_Recovery_Period"
+    },
+
+    "Shoulder_Injury_Recovery_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Shoulder_Injury_Followup"
+    },
+
+    "Shoulder_Injury_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Torn_Rotator_Cuff",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Shoulder_Injury"
+    },
+
+    "End_Shoulder_Injury": {
+      "type": "ConditionEnd",
+      "condition_onset": "Torn_Rotator_Cuff",
+      "direct_transition": "End_Shoulder_Followup"
+    },
+
+    "End_Shoulder_Followup" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Conclude_Injury"
+    },
+
+    "Conclude_Injury": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " INJURY CONCLUSION                                                    ",
+        "======================================================================",
+        "This section is not resposible for ending conditions, only resetting ",
+        "attributes and ending care plans and medications. This allows chronic ",
+        "injuries to continue while short-term injuries should be ended earlier ",
+        "in this module."
+      ],
+      "direct_transition": "End_Injury_CarePlan"
+    },
+
+    "End_Injury_CarePlan": {
+      "type": "CarePlanEnd",
+      "referenced_by_attribute": "injury_careplan",
+      "direct_transition": "End_Injury_Medications"
+    },
+
+    "End_Injury_Medications": {
+      "type": "Simple",
+      "remarks": [
+        "For any of the possible medications that could be prescribed in this module ",
+        "this state cycles through the attributes and ends the medications until no ",
+        "more prescriptions are remaining.",
+
+        "The attributes that this state looks for are: ",
+        "1. otc_pain_reliever ",
+        "2. antibiotic_prescription ",
+
+        "Any other medications prescribed in this module and not assigned to one of those ",
+        "three attributes must be ended manually elsewhere in the module, the special ",
+        "exception being 'opioid_prescription' (handled by the Opioid Addiction module)."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "antibiotic_prescription",
+            "operator": "is not nil"
+          },
+          "transition": "End_Antibiotic_Prescription"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "otc_pain_reliever",
+            "operator": "is not nil"
+          },
+          "transition": "End_Non_Opioid_Prescription"
+        },
+        {
+          "remarks": [
+            "Fallback transition after all medications are ended"
+          ],
+          "transition": "Wait_For_Injury"
+        }
+      ]
+    },
+
+    "End_Antibiotic_Prescription": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "antibiotic_prescription",
+      "direct_transition": "Unset_Antibiotic_Prescription_Attribute"
+    },
+
+    "Unset_Antibiotic_Prescription_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "antibiotic_prescription",
+      "direct_transition": "End_Injury_Medications"
+    },
+
+    "End_Non_Opioid_Prescription": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "otc_pain_reliever",
+      "direct_transition": "Unset_Non_Opioid_Prescription_Attribute"
+    },
+
+    "Unset_Non_Opioid_Prescription_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "otc_pain_reliever",
+      "direct_transition": "End_Injury_Medications"
+    },
+
+    "Deadly_Burn": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "burn_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "48333001",
+          "display": "Burn injury(morphologic abnormality)"
+        }
+      ],
+      "direct_transition": "Death_Severe_Burn"
+    },
+
+    "Death_Spinal_Cord": {
+      "type": "Death",
+      "referenced_by_attribute": "spinal_injury",
+      "direct_transition": "Terminal"
+    },
+
+    "Death_Gunshot_Wound": {
+      "type": "Death",
+      "referenced_by_attribute": "gunshot_wound",
+      "direct_transition": "Terminal"
+    },
+
+    "Death_Severe_Concussion": {
+      "type": "Death",
+      "referenced_by_attribute": "concussion_injury",
+      "direct_transition": "Terminal"
+    },
+
+    "Death_Severe_Burn": {
+      "type": "Death",
+      "referenced_by_attribute": "burn_injury",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

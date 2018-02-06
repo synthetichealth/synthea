@@ -1,0 +1,45 @@
+{
+  "name": "Medication Reconciliation",
+  "remarks": [
+    "This module will generate a documentation of current medications procedure at 45% of",
+    "wellness encounters. Through the Meaningful Use program, ONC is striving for",
+    "medication reconciliation at 50% of encounters. This assumes that we are not",
+    "at the goal level yet.",
+    "Source: https://www.healthit.gov/providers-professionals/achieve-meaningful-use/core-measures-2/medication-reconciliation"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wellness_Encounter"
+    },
+
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "distributed_transition": [
+        {
+          "distribution": 0.45,
+          "transition": "Med_Rec"
+        },
+        {
+          "distribution": 0.55,
+          "transition": "Initial"
+        }
+      ]
+    },
+    
+    "Med_Rec": {
+      "type": "Procedure",
+      "target_encounter": "Wellness_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "428191000124101",
+          "display": "Documentation of current medications"
+        }
+      ],
+      "direct_transition": "Initial"
+    }
+  }
+}

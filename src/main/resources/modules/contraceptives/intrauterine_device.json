@@ -1,0 +1,353 @@
+{
+  "name": "Intrauterine Device",
+  "remarks": [
+    "This submodule prescribes an intrauterine device (IUD) for contraception.",
+    "FDA approval of IUDs in the U.S. was in 1968. Early designs were flexible ",
+    "thermoplastic. Copper IUDs were introduced in the 1970's. One IUD in particular ",
+    "was problematic - the Dalkon Shield caused infections in 200k women and 10 ",
+    "deaths. It was discontinued in 1974. This caused widespread abandonment and ",
+    "distrust of IUDs in the 1980's.",
+
+    "Modern IUDs are again becoming popular. They are copper or combine low-dose ",
+    "hormones with plastic.",
+
+    "IUDs must be removed or replaced every 5-10 years. This is handled by the ",
+    "Contraceptive Maintenance module.",
+
+    "Sources for availability: ",
+    "https://www.wired.com/2011/07/ff_iud/",
+    "http://kff.org/womens-health-policy/fact-sheet/intrauterine-devices-iuds-access-for-women-in-the-u-s/"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Males, pregnant females, and those arriving here before the year 1968 ",
+        "do not get IUDs."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "transition": "Terminal"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Terminal"
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1968
+          },
+          "transition": "Terminal"
+        },
+        {
+          "transition": "Set_Contraceptive_Type"
+        }
+      ]
+    },
+
+    "Set_Contraceptive_Type": {
+      "type": "SetAttribute",
+      "attribute": "contraceptive_type",
+      "value": "iud",
+      "direct_transition": "IUD_Consultation_Encounter"
+    },
+
+    "IUD_Consultation_Encounter": {
+      "type": "Encounter",
+      "remarks": [
+        "======================================================================",
+        " NEW PRESCRIPTION                                                     ",
+        "======================================================================"
+      ],
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698314001",
+          "display": "Consultation for treatment"
+        }
+      ],
+      "direct_transition": "Prescribe_IUD"
+    },
+
+    "Prescribe_IUD": {
+      "type": "Simple",
+      "remarks": [
+        "Unfortunately, RxNorm codes are not available for: ",
+        "Lippes Lopp, Safe-T-Coil, Copper 7, Dalkon Shield, or Paragard ",
+
+        "However, the contraceptive_type attribute remains set and the ",
+        "incidence of pregnancy will reflect that the woman is using an IUD."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1971
+          },
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Lippes_Loop"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Prescribe_Safe_T_Coil"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1975
+          },
+          "distributions": [
+            {
+              "distribution": 0.34,
+              "transition": "Prescribe_Lippes_Loop"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Safe_T_Coil"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "Prescribe_Dalkon_Shield"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 1986
+          },
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Lippes_Loop"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Safe_T_Coil"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Copper_7"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2001
+          },
+          "remarks": [
+            "Because of the Dalkon Shield scare, all IUDs but one (Paragard) ",
+            "were taken off the market by 1986."
+          ],
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Prescribe_Paragard"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2015
+          },
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Paragard"
+            },
+            {
+              "distribution": 0.6,
+              "transition": "Prescribe_Mirena"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2016
+          },
+          "remarks": [
+            "Hormonal, plastic IUDs were introduced in 2001."
+          ],
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Paragard"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Mirena"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "Prescribe_Liletta"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Prescribe_Paragard"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Prescribe_Mirena"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Prescribe_Liletta"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Prescribe_Kyleena"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prescribe_Lippes_Loop": {
+      "type": "Simple",
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Safe_T_Coil": {
+      "type": "Simple",
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Dalkon_Shield": {
+      "type": "Simple",
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Copper_7": {
+      "type": "Simple",
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Paragard": {
+      "type": "Simple",
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Mirena": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "807283",
+          "display": "Mirena 52 MG Intrauterine System"
+        }
+      ],
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Liletta": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1605257",
+          "display": "Liletta 52 MG Intrauterine System"
+        }
+      ],
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "Prescribe_Kyleena": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "contraceptive",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1856546",
+          "display": "Kyleena 19.5 MG Intrauterine System"
+        }
+      ],
+      "direct_transition": "End_Consultation_Encounter"
+    },
+
+    "End_Consultation_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_For_IUD_Insertion"
+    },
+
+    "Delay_For_IUD_Insertion": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 5,
+        "unit": "days"
+      },
+      "direct_transition": "Initial_IUD_Insertion_Encounter"
+    },
+
+    "Initial_IUD_Insertion_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "direct_transition": "IUD_Insertion"
+    },
+
+    "IUD_Insertion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65200003",
+          "display": "Insertion of intrauterine contraceptive device"
+        }
+      ],
+      "duration": {
+        "low": 40,
+        "high": 70,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_IUD_Insertion_Encounter"
+    },
+
+    "End_IUD_Insertion_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "name": "Outgrow Food Allergies",
+  "remarks": [
+    "75% of children with food allergies outgrow their sensitivity to ",
+    "milk, soy, eggs, and wheat. However, allergies to peanuts, tree ",
+    "nuts, fish, and shellfish are rarely outgrown."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wheat_Allergy"
+    },
+
+    "Wheat_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW WHEAT ALLERGY                                                ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "420174000",
+                "display": "Allergy to wheat"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Wheat_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Dairy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Dairy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Wheat_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "420174000",
+          "display": "Allergy to wheat"
+        }
+      ],
+      "direct_transition": "Dairy_Allergy"
+    },
+
+    "Dairy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW DAIRY ALLERGY                                                ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "425525006",
+                "display": "Allergy to dairy product"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Dairy_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Eggs_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Eggs_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Dairy_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "425525006",
+          "display": "Allergy to dairy product"
+        }
+      ],
+      "direct_transition": "Eggs_Allergy"
+    },
+
+    "Eggs_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW EGGS ALLERGY                                                 ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91930004",
+                "display": "Allergy to eggs"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Eggs_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Soy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Soy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Eggs_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91930004",
+          "display": "Allergy to eggs"
+        }
+      ],
+      "direct_transition": "Soy_Allergy"
+    },
+
+    "Soy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW SOY ALLERGY                                                  ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "714035009",
+                "display": "Allergy to soya"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Soy_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Latex_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Latex_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Soy_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "714035009",
+          "display": "Allergy to soya"
+        }
+      ],
+      "direct_transition": "Latex_Allergy"
+    },
+
+    "Latex_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OUTGROW LATEX ALLERGY                                                ",
+        "======================================================================"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "300916003",
+                "display": "Latex allergy"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.75,
+              "transition": "Outgrow_Latex_Allergy"
+            },
+            {
+              "distribution": 0.25,
+              "transition": "Check_For_Other_Food_Allergies"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Check_For_Other_Food_Allergies"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Outgrow_Latex_Allergy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "300916003",
+          "display": "Latex allergy"
+        }
+      ],
+      "direct_transition": "Check_For_Other_Food_Allergies"
+    },
+
+    "Check_For_Other_Food_Allergies": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "91935009",
+                    "display": "Allergy to peanuts"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "91934008",
+                    "display": "Allergy to nut"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "417532002",
+                    "display": "Allergy to fish"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "300913006",
+                    "display": "Shellfish allergy"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Still_Has_Some_Food_Allergies"
+        },
+        {
+          "transition": "No_Food_Allergies_Here"
+        }
+      ]
+    },
+
+    "Still_Has_Some_Food_Allergies": {
+      "type": "SetAttribute",
+      "attribute": "outgrew_food_allergies",
+      "value": "false",
+      "direct_transition": "Terminal"
+    },
+
+    "No_Food_Allergies_Here": {
+      "type": "SetAttribute",
+      "attribute": "outgrew_food_allergies",
+      "value": "true",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

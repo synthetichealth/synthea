@@ -1,0 +1,701 @@
+{
+  "name": "Self Harm",
+  "remarks": [
+    "In the U.S., suicides occur at a rate of 12.93/100k people. However, suicide attempts occur ",
+    "at approximately 12x this rate. The incidence of attempts and completed suicides varies ",
+    "greatly depending on race, age, and gender. The following factors influence the likelihood ",
+    "of suicide in this module: ",
+    "Race   - White males (esp. middle age or older) account for 7/10 suicides ",
+    "Gender - Females attempt suicide 3x as often as males, but males complete 3.5x as often ",
+    "Age    - In general, the older you get the more likely you are to commit suicide ",
+    "source: https://afsp.org/about-suicide/suicide-statistics/",
+    "A Harvard University study on attempted suicides shed additional light on the incidence, ",
+    "recurrence, and outcomes of suicide attempts. See: ",
+    "https://www.hsph.harvard.edu/means-matter/means-matter/survival/"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+        "Initial breakdown by gender and race. For simplicity, grouping race into only 3 categories: ",
+        "white, hispanic, and the rest. For the rest, I averaged the incidence rates: (6.3 + 5.9 + 5.5) / 3 = 5.9 ",
+        "The assumption here is that all races have the same relative ratios of attempts to completions (12:1).",
+        "Females ATTEMPT suicide 3x as often as males, but males complete 3.5x as often. If the death rate ",
+        "is 12.93/100k and attempt rates are estimated at 12x that number, then the average ATTEMPT rates ",
+        "for males and females, by race, are: ",
+        "| Race   | Completion Rate | Attempt Rates (12x) | Female Incidence (75%) | Male Incidence (25%) | ",
+        "-------------------------------------------------------------------------------------------------- ",
+        "| White  |     0.000147    |       0.001764      |        0.001323        |       0.000441       | ",
+        "| Native |     0.000109    |       0.001308      |        0.000981        |       0.000327       | ",
+        "| Rest   |     0.000059    |       0.000708      |        0.000531        |       0.000177       | ",
+        "-------------------------------------------------------------------------------------------------- "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Race",
+                "race": "White"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.000441,
+              "transition": "Attempted_Suicide_Incidence_By_Age"
+            },
+            {
+              "distribution": 0.999559,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Race",
+                "race": "Native"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.000327,
+              "transition": "Attempted_Suicide_Incidence_By_Age"
+            },
+            {
+              "distribution": 0.999673,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M",
+            "remarks": [
+              "This catches males of any other race."
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.000177,
+              "transition": "Attempted_Suicide_Incidence_By_Age"
+            },
+            {
+              "distribution": 0.999823,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              },
+              {
+                "condition_type": "Race",
+                "race": "White"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.001323,
+              "transition": "Attempted_Suicide_Incidence_By_Age"
+            },
+            {
+              "distribution": 0.998677,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              },
+              {
+                "condition_type": "Race",
+                "race": "Native"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.000981,
+              "transition": "Attempted_Suicide_Incidence_By_Age"
+            },
+            {
+              "distribution": 0.999019,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F",
+            "remarks": [
+              "This catches females of any other race."
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.000531,
+              "transition": "Attempted_Suicide_Incidence_By_Age"
+            },
+            {
+              "distribution": 0.999469,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Attempted_Suicide_Incidence_By_Age": {
+      "type": "Simple",
+      "remarks": [
+        "Instead of using the incidence rates out of 100k, using the relative proportions ",
+        "of the age-adjusted incidence rates. Adjusted these to the following values: ",
+        "<20      3.2 / 89.3  => 0.036 ",
+        "20-34   14.8 / 89.3  => 0.166 ",
+        "35-44   16.6 / 89.3  => 0.186 ",
+        "45-64   19.2 / 89.3  => 0.215 ",
+        "65-84   16.2 / 89.3  => 0.181 ",
+        "85+     19.3 / 89.3  => 0.216 ",
+        "----------------------------- ",
+        "Total:  89.3 / 89.3  => 1.000 "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.036,
+          "transition": "Delay_Until_Teens"
+        },
+        {
+          "distribution": 0.166,
+          "transition": "Delay_Until_20_34"
+        },
+        {
+          "distribution": 0.186,
+          "transition": "Delay_Until_35_44"
+        },
+        {
+          "distribution": 0.215,
+          "transition": "Delay_Until_45_64"
+        },
+        {
+          "distribution": 0.181,
+          "transition": "Delay_Until_65_84"
+        },
+        {
+          "distribution": 0.216,
+          "transition": "Delay_Until_85_Plus"
+        }
+      ]
+    },
+
+    "Delay_Until_Teens": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 19,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Delay_Until_20_34": {
+      "type": "Delay",
+      "range": {
+        "low": 20,
+        "high": 34,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Delay_Until_35_44": {
+      "type": "Delay",
+      "range": {
+        "low": 35,
+        "high": 44,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Delay_Until_45_64": {
+      "type": "Delay",
+      "range": {
+        "low": 45,
+        "high": 64,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Delay_Until_65_84": {
+      "type": "Delay",
+      "range": {
+        "low": 64,
+        "high": 84,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Delay_Until_85_Plus": {
+      "type": "Delay",
+      "range": {
+        "low": 85,
+        "high": 90,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Attempts_Suicide": {
+      "type": "Simple",
+      "remarks": [
+        "It's difficult to find accurate statistics for how many people actually attempt suicide since ",
+        "those who attempt suicide often don't seek medical attention afterwards. Therefore, the attempts ",
+        "modeled in this module are considered severe enough to merit medical attention.",
+        "Males COMPLETE suicide 3.5x as often as females do. Suicides have a 7% completion rate overall."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0546,
+              "transition": "Fatal_Attempt"
+            },
+            {
+              "distribution": 0.9454,
+              "transition": "Non_Fatal_Attempt"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0156,
+              "transition": "Fatal_Attempt"
+            },
+            {
+              "distribution": 0.9844,
+              "transition": "Non_Fatal_Attempt"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Non_Fatal_Attempt": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " NON-FATAL                                                            ",
+        "======================================================================",
+        "Most commonly this is from poisoning (overdose), suffocation, or cutting. Less than 1% of all ",
+        "non-fatal attempts involve firearms, so omitting that option altogether. The distributions here ",
+        "are based on the Harvard University study, see: ",
+        "https://www.hsph.harvard.edu/means-matter/basic-suicide-facts/how/"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.64,
+          "transition": "Attempt_By_Poisoning"
+        },
+        {
+          "distribution": 0.19,
+          "transition": "Attempt_By_Cutting"
+        },
+        {
+          "distribution": 0.17,
+          "transition": "Attempt_By_Suffocation"
+        }
+      ]
+    },
+
+    "Attempt_By_Poisoning": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86849004",
+          "display": "Suicidal deliberate poisoning"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+
+    "Attempt_By_Cutting": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287185009",
+          "display": "Attempted suicide - cut/stab"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+
+    "Attempt_By_Suffocation": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287182007",
+          "display": "Attempted suicide - suffocation"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+
+    "ED_Visit_For_Attempted_Suicide": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Psychiatric_Evaluation"
+    },
+
+    "Psychiatric_Evaluation": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90407005",
+          "display": "Evaluation of psychiatric state of patient"
+        }
+      ],
+      "direct_transition": "Short_Hospital_Stay"
+    },
+
+    "Short_Hospital_Stay": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "74857009",
+          "display": "Hospital admission, short-term, 24 hours"
+        }
+      ],
+      "duration" : { "low" : 24, "high" : 72, "unit": "hours" },
+      "direct_transition": "End_Attempted_Suicide_Observation_Period"
+    },
+
+    "End_Attempted_Suicide_Observation_Period": {
+      "type": "EncounterEnd",
+      "direct_transition": "End_Suicide_Attempt"
+    },
+
+    "End_Suicide_Attempt": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "suicide_attempt",
+      "direct_transition": "Delay_Until_Outpatient_Followup"
+    },
+
+    "Delay_Until_Outpatient_Followup": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Attempted_Suicide_Followup"
+    },
+
+    "Attempted_Suicide_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Suicide_CarePlan_Selector"
+    },
+
+    "Suicide_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "suicide_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Suicide_CarePlan"
+        },
+        {
+          "transition": "Followup_Psychiatric_Evaluation"
+        }
+      ]
+    },
+
+    "Suicide_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Attempted_Suicide_Followup",
+      "assign_to_attribute": "suicide_careplan",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183401008",
+          "display": "Anti-suicide psychotherapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "784051000000106",
+          "display": "Depression care management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "415665002",
+          "display": "Suicide prevention"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "10029008",
+          "display": "Suicide precautions"
+        }
+      ],
+      "direct_transition": "Followup_Psychiatric_Evaluation"
+    },
+
+    "Followup_Psychiatric_Evaluation": {
+      "type": "Procedure",
+      "target_encounter": "Attempted_Suicide_Followup",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "88848003",
+          "display": "Psychiatric follow-up"
+        }
+      ],
+      "direct_transition" : "End_Followup_Encounter"
+    },
+
+    "End_Followup_Encounter" : {
+      "type" : "EncounterEnd",
+      "remarks": [
+        "From the Harvard University study on suicide attempts: ",
+        " 7% are fatal ",
+        "70% do not attempt suicide again ",
+        "23% reattempt at some point "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.753,
+          "transition": "Terminal"
+        },
+        {
+          "distribution": 0.247,
+          "transition": "Delay_Until_Next_Attempt"
+        }
+      ]
+    },
+
+    "Delay_Until_Next_Attempt": {
+      "type": "Delay",
+      "remarks": [
+        "It's unclear what a typical amount of time is between suicide attempts. Leaving  this as ",
+        "a broad range from 0.5 - 3 years."
+      ],
+      "range": {
+        "low": 6,
+        "high": 36,
+        "unit": "months"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+
+    "Fatal_Attempt": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FATAL                                                                ",
+        "======================================================================",
+        "The most common methods of fatal suicide are: ",
+        "49.9% by firearms ",
+        "26.7% by suffocation or hanging (includes CO from motor vehicles)",
+        "15.9% by poisoning ",
+        " 7.5% by other means (vehicular, drowning, falls, etc.)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.499,
+          "transition": "Suicide_By_Firearm"
+        },
+        {
+          "distribution": 0.267,
+          "transition": "Suicide_By_Suffocation"
+        },
+        {
+          "distribution": 0.159,
+          "transition": "Suicide_By_Poisoning"
+        },
+        {
+          "distribution": 0.075,
+          "transition": "Suicide_By_Other_Means"
+        }
+      ]
+    },
+
+    "Suicide_By_Firearm": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287193009",
+          "display": "Suicide - firearms"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+
+    "Suicide_By_Suffocation": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287191006",
+          "display": "Suicide - suffocation"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+
+    "Suicide_By_Poisoning": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86849004",
+          "display": "Suicidal deliberate poisoning"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+
+    "Suicide_By_Other_Means": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44301001",
+          "display": "Suicide"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+
+    "Death": {
+      "type": "Death",
+      "referenced_by_attribute": "suicide",
+      "direct_transition": "Autopsy_Encounter"
+    },
+
+    "Autopsy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Autopsy_Examination"
+    },
+
+    "Autopsy_Examination": {
+      "type": "Procedure",
+      "target_encounter": "Autopsy_Encounter",
+      "reason": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "29240004",
+          "display": "Autopsy examination"
+        }
+      ],
+      "direct_transition": "End_Suicide"
+    },
+
+    "End_Suicide": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "suicide",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

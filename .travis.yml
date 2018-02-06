@@ -1,0 +1,29 @@
+language: java
+jdk:
+  - oraclejdk8
+
+# gradle projects have "gradle assemble" and "gradle check" run automatically
+# so a script setting is not required to verify the code compiles or run tests
+# script:
+
+# from: https://docs.travis-ci.com/user/languages/java/#Caching
+# A peculiarity of dependency caching in Gradle means that
+#  to avoid uploading the cache after every build
+#  you need to add the following lines to your .travis.yml:
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+script:
+  - ./gradlew check
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+notifications:
+  slack: mitrecorp:HNikOgsZALD9WxBZh5oSJve9
+  webhooks:
+    urls:
+      - https://synthea.zulipchat.com/api/v1/external/travis?stream=development&topic=build-status&api_key=XQ5SyfiEkfgjoT9uelJboOTQQOsKYCV2
+

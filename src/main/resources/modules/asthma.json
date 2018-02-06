@@ -1,0 +1,542 @@
+{
+  "name": "Asthma",
+  "remarks": [
+    "This module is mostly based on statistics from the AAAAI and CDC. See:",
+    "http://www.aaaai.org/about-aaaai/newsroom/asthma-statistics",
+    "http://www.cdc.gov/nchs/fastats/asthma.htm",
+    "http://www.cdc.gov/nchs/products/databriefs/db94.htm"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_For_Atopy"
+    },
+
+    "Delay_For_Atopy": {
+      "type": "Delay",
+      "remarks": [
+        "The Atopy module must be processed before any of the allergy modules so ",
+        "atopy can appropriately influence allergies. Delaying the smallest possible ",
+        "time step to ensure this happens."
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "transition": "Atopic"
+        },
+        {
+          "transition": "Not_Atopic"
+        }
+      ]
+    },
+
+    "Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "45% of all atopic patients develop asthma. See the Atopy model for more info."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.45,
+          "transition": "Asthma_Incidence"
+        },
+        {
+          "distribution": 0.55,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Not_Atopic": {
+      "type": "Simple",
+      "remarks": [
+        "There is a possibility that non-atopic patients develop asthma. However, ",
+        "this asthma is likely more environmental and more likely to develop in ",
+        "adulthood. Overall, 8-9% of the population gets asthma. In this model 6.8% ",
+        "of those patients are atopic. The remaining 1.2-2% are not."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.023,
+          "transition": "Asthma_Incidence"
+        },
+        {
+          "distribution": 0.977,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Asthma_Incidence": {
+      "type": "Simple",
+      "remarks": [
+        "8.6% of children have asthma, 7.4% of adults. To model childhood-only, lifetime, and adult-onset",
+        "asthma I try to distribute the patients in a reasonable (but slightly arbitrary) manner:",
+        "       ,-> 1.6% childhood-only                              ",
+        " birth --> 7.0% lifetime             = 8.6% childhood asthma",
+        "       `-> 0.4% adult-onset          = 7.4% adult asthma    ",
+        "Collectively this sums to 9% of people getting asthma in their lifetime, which is consistent with",
+        "my extrapolation based on the AAAAI's estimates: (1/14 had asthma in 2001, 1/12 in 2009, so I extrapolate",
+        "1/11 for 2016)."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.95,
+          "transition": "Delay_For_Childhood_Asthma"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Delay_Until_Adulthood"
+        }
+      ]
+    },
+
+    "Delay_For_Childhood_Asthma": {
+      "type": "Delay",
+      "remarks": [
+        "Typically asthma symptoms don't appear until the child is at least 3."
+      ],
+      "range": {
+        "low": 2,
+        "high": 5,
+        "unit": "years"
+      },
+      "direct_transition": "Childhood_Asthma_Begins"
+    },
+
+    "Delay_Until_Adulthood": {
+      "type": "Delay",
+      "range": {
+        "low": 18,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "Adult_Asthma_Begins"
+    },
+
+    "Childhood_Asthma_Begins": {
+      "type": "ConditionOnset",
+      "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233678006",
+          "display": "Childhood asthma"
+        }
+      ],
+      "direct_transition": "Set_Childhood_Asthma"
+    },
+
+    "Set_Childhood_Asthma": {
+      "type": "SetAttribute",
+      "attribute": "asthma_type",
+      "value": "childhood",
+      "direct_transition": "Asthma_Diagnosis"
+    },
+
+    "Adult_Asthma_Begins": {
+      "type": "ConditionOnset",
+      "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "195967001",
+          "display": "Asthma"
+        }
+      ],
+      "direct_transition": "Set_Adult_Asthma"
+    },
+
+    "Set_Adult_Asthma": {
+      "type": "SetAttribute",
+      "attribute": "asthma_type",
+      "value": "lifelong",
+      "direct_transition": "Asthma_Diagnosis"
+    },
+
+    "Asthma_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Asthma_Screening"
+    },
+
+    "Asthma_Screening": {
+      "type": "Procedure",
+      "target_encounter": "Asthma_Diagnosis",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "171231001",
+          "display": "Asthma screening"
+        }
+      ],
+      "direct_transition": "Prescribe_Maintenance_Inhaler"
+    },
+
+    "Prescribe_Maintenance_Inhaler": {
+      "type": "MedicationOrder",
+      "target_encounter": "Asthma_Diagnosis",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "895994",
+          "display": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Prescribe_Emergency_Inhaler"
+    },
+
+    "Prescribe_Emergency_Inhaler": {
+      "type": "MedicationOrder",
+      "target_encounter": "Asthma_Diagnosis",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "745679",
+          "display": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Asthma_CarePlan_Selector"
+    },
+
+    "Asthma_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "transition": "Smoker_CarePlan"
+        },
+        {
+          "transition": "Nonsmoker_CarePlan"
+        }
+      ]
+    },
+
+    "Smoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute": "asthma_careplan",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "699728000",
+          "display": "Asthma self management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710081004",
+          "display": "Smoking cessation therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "710818004",
+          "display": "Inhaled steroid therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "708409001",
+          "display": "Home nebulizer therapy"
+        }
+      ],
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "Nonsmoker_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Asthma_Diagnosis",
+      "assign_to_attribute": "asthma_careplan",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "699728000",
+          "display": "Asthma self management"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710818004",
+          "display": "Inhaled steroid therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "708409001",
+          "display": "Home nebulizer therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229298005",
+          "display": "Breathing control"
+        }
+      ],
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Maintaining_Asthma"
+    },
+
+    "Maintaining_Asthma": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "remarks": [
+              "Childhood-only asthma ends"
+            ],
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 18,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "asthma_type",
+                "operator": "==",
+                "value": "childhood"
+              }
+            ]
+          },
+          "transition": "Childhood_Asthma_May_Subside"
+        },
+        {
+          "transition": "Potential_Asthma_Attack"
+        }
+      ]
+    },
+
+    "Childhood_Asthma_May_Subside": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.83,
+          "transition": "Childhood_Asthma_Becomes_Lifelong_Asthma"
+        },
+        {
+          "distribution": 0.17,
+          "transition": "Next_Wellness_Encounter"
+        }
+      ],
+      "remarks": [
+        "After a validation study, 248 children were identified as having asthma; these children were reassessed annually until age 19 years when 205 (83%) remained.",
+        "\"Remission and persistence of asthma followed from 7 to 19 years of age.\" Andersson M, Hedman L, Bjerg A, Forsberg B, Lundbäck B, Rönmark E. Pediatrics. 2013 Aug;132(2):e435-42. doi: 10.1542/peds.2013-0741.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/23897917"
+      ]
+    },
+
+    "Childhood_Asthma_Becomes_Lifelong_Asthma": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "asthma_condition",
+      "direct_transition": "Lifelong_Asthma"
+    },
+
+    "Lifelong_Asthma": {
+      "type": "SetAttribute",
+      "attribute": "asthma_type",
+      "value": "lifelong",
+      "direct_transition": "Next_Adult_Welness_Encounter"
+    },
+
+    "Next_Adult_Welness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Lifelong_Asthma_Begins"
+    },
+
+    "Lifelong_Asthma_Begins": {
+      "type": "ConditionOnset",
+      "target_encounter": "Next_Adult_Welness_Encounter",
+      "assign_to_attribute": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "195967001",
+          "display": "Asthma"
+        }
+      ],
+      "direct_transition": "Maintaining_Asthma"
+    },
+
+    "Potential_Asthma_Attack": {
+      "type": "Simple",
+      "remarks": [
+        "Once every 6 months we simulate whether or not the patient has an asthma attack",
+        "53% have an attack each year (57% children, 51% adults), source: AAAAI.",
+        "This means a 26.5% rate of attack per 6 month period."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.735,
+          "transition": "Maintaining_Asthma",
+          "remarks": [
+            "No asthma attack occured"
+          ]
+        },
+        {
+          "distribution": 0.265,
+          "transition": "Asthma_Attack"
+        }
+      ]
+    },
+
+    "Asthma_Attack": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.1885,
+          "transition": "Asthma_ED_Visit",
+          "remarks": [
+            "The CDC documented 10 ED visits per 100 people with asthma each year.",
+            "http://www.cdc.gov/nchs/products/databriefs/db94.htm",
+            "Assuming hospitalization always comes from an attack, for those that have attacks each 6-month period (26.5%)",
+            "5/26.5 people (per 100) --> 18.85% rate of hospitalization from attack."
+          ]
+        },
+        {
+          "distribution": 0.8115,
+          "transition": "Asthma_Attack_Followup",
+          "remarks": [
+            "If the attack did not result in an ED visit the patient still visited his/her physician for a followup"
+          ]
+        }
+      ]
+    },
+
+    "Asthma_ED_Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183478001",
+          "display": "Emergency hospital admission for asthma"
+        }
+      ],
+      "direct_transition": "End_Asthma_ED_Visit"
+    },
+
+    "End_Asthma_ED_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_For_Followup"
+    },
+
+    "Delay_For_Followup": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Asthma_Attack_Followup"
+    },
+
+    "Asthma_Attack_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "394701000",
+          "display": "Asthma follow-up"
+        }
+      ],
+      "direct_transition": "Followup_End"
+    },
+
+    "Followup_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Maintaining_Asthma"
+    },
+
+    "Next_Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": "true",
+      "direct_transition": "Maintenance_Medication_End"
+    },
+
+    "Maintenance_Medication_End": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_Maintenance_Inhaler",
+      "direct_transition": "Emergency_Medication_End"
+    },
+
+    "Emergency_Medication_End": {
+      "type": "MedicationEnd",
+      "medication_order": "Prescribe_Emergency_Inhaler",
+      "direct_transition": "Childhood_Asthma_Subsides"
+    },
+
+    "Childhood_Asthma_Subsides": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "asthma_condition",
+      "direct_transition": "End_Asthma_CarePlan"
+    },
+
+    "End_Asthma_CarePlan": {
+      "type": "CarePlanEnd",
+      "referenced_by_attribute": "asthma_careplan",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

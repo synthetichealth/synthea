@@ -1,0 +1,978 @@
+{
+  "name": "Allergy Panel",
+  "remarks": [
+    "This submodule explicity references states in the 'Allergies and Treatment' module. ",
+    "In the future an Active Condition test should be favored instead of PriorState once ",
+    "there's a distinction between an 'Active' and 'Diagnosed' condition.",
+
+    "Most of these tests measure the amount of IgE Ab antibody in serum. ",
+    "http://www.mayomedicallaboratories.com/interpretive-guide/?alpha=S&unit_code=82716",
+
+    "IgE Ab < 0.35 kU/L == Negative Result ",
+    "IgE Ab > 0.70 kU/L == Positive ",
+    "IgE Ab > 17.5 kU/L == Strongly Positive ",
+
+    "The following allergens are tested here, and expected to be onset in allergies.json: ",
+    "Peanut, Treenut, Fish, Shellfish, Wheat, Egg, Dairy, Tree Pollen, Grass Pollen, ",
+    "Pet Dander, Dust Mite, Mold, Bee, Latex"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Peanut_Test"
+    },
+
+    "Peanut_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " PEANUT ALLERGY TEST                                                  ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91935009",
+                "display": "Allergy to peanuts"
+              }
+            ]
+          },
+          "transition": "Peanut_Test_Positive"
+        },
+        {
+          "transition": "Peanut_Test_Negative"
+        }
+      ]
+    },
+
+    "Peanut_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6206-7",
+          "display": "Peanut IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Nut_Test"
+    },
+
+    "Peanut_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6206-7",
+          "display": "Peanut IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Nut_Test"
+    },
+
+    "Nut_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " NUT ALLERGY TEST                                                     ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91934008",
+                "display": "Allergy to nut"
+              }
+            ]
+          },
+          "transition": "Nut_Test_Positive"
+        },
+        {
+          "transition": "Nut_Test_Negative"
+        }
+      ]
+    },
+
+    "Nut_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6273-7",
+          "display": "Walnut IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Fish_Test"
+    },
+
+    "Nut_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6273-7",
+          "display": "Walnut IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Fish_Test"
+    },
+
+    "Fish_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FISH ALLERGY TEST                                                    ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "417532002",
+                "display": "Allergy to fish"
+              }
+            ]
+          },
+          "transition": "Fish_Test_Positive"
+        },
+        {
+          "transition": "Fish_Test_Negative"
+        }
+      ]
+    },
+
+    "Fish_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6082-2",
+          "display": "Codfish IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Shellfish_Test"
+    },
+
+    "Fish_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6082-2",
+          "display": "Codfish IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Shellfish_Test"
+    },
+
+    "Shellfish_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SHELLFISH ALLERGY TEST                                               ",
+        "======================================================================",
+        "There were LOINC codes available for shrimp, scallops, and clam. ",
+        "I chose to include only the shrimp test at this time."
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "300913006",
+                "display": "Shellfish allergy"
+              }
+            ]
+          },
+          "transition": "Shellfish_Test_Positive"
+        },
+        {
+          "transition": "Shellfish_Test_Negative"
+        }
+      ]
+    },
+
+    "Shellfish_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6246-3",
+          "display": "Shrimp IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Wheat_Test"
+    },
+
+    "Shellfish_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6246-3",
+          "display": "Shrimp IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Wheat_Test"
+    },
+
+    "Wheat_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " WHEAT ALLERGY TEST                                                   ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "420174000",
+                "display": "Allergy to wheat"
+              }
+            ]
+          },
+          "transition": "Wheat_Test_Positive"
+        },
+        {
+          "transition": "Wheat_Test_Negative"
+        }
+      ]
+    },
+
+    "Wheat_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6276-0",
+          "display": "Wheat IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Egg_Test"
+    },
+
+    "Wheat_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6276-0",
+          "display": "Wheat IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Egg_Test"
+    },
+
+    "Egg_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " EGG ALLERGY TEST                                                     ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "91930004",
+                "display": "Allergy to eggs"
+              }
+            ]
+          },
+          "transition": "Egg_Test_Positive"
+        },
+        {
+          "transition": "Egg_Test_Negative"
+        }
+      ]
+    },
+
+    "Egg_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6106-9",
+          "display": "Egg white IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Soy_Test"
+    },
+
+    "Egg_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6106-9",
+          "display": "Egg white IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Soy_Test"
+    },
+
+    "Soy_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SOY ALLERGY TEST                                                     ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "714035009",
+                "display": "Allergy to soya"
+              }
+            ]
+          },
+          "transition": "Soy_Test_Positive"
+        },
+        {
+          "transition": "Soy_Test_Negative"
+        }
+      ]
+    },
+
+    "Soy_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6248-9",
+          "display": "Soybean IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Milk_Test"
+    },
+
+    "Soy_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6248-9",
+          "display": "Soybean IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Milk_Test"
+    },
+
+    "Milk_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " DAIRY ALLERGY TEST                                                   ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "425525006",
+                "display": "Allergy to dairy product"
+              }
+            ]
+          },
+          "transition": "Milk_Test_Positive"
+        },
+        {
+          "transition": "Milk_Test_Negative"
+        }
+      ]
+    },
+
+    "Milk_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "7258-7",
+          "display": "Cow milk IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Tree_Test"
+    },
+
+    "Milk_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "7258-7",
+          "display": "Cow milk IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Tree_Test"
+    },
+
+    "Tree_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " TREE ALLERGY TEST                                                    ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "419263009",
+                "display": "Allergy to tree pollen"
+              }
+            ]
+          },
+          "transition": "Tree_Test_Positive"
+        },
+        {
+          "transition": "Tree_Test_Negative"
+        }
+      ]
+    },
+
+    "Tree_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6189-5",
+          "display": "White oak IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Grass_Test"
+    },
+
+    "Tree_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6189-5",
+          "display": "White oak IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Grass_Test"
+    },
+
+    "Grass_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " GRASS ALLERGY TEST                                                   ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "418689008",
+                "display": "Allergy to grass pollen"
+              }
+            ]
+          },
+          "transition": "Grass_Test_Positive"
+        },
+        {
+          "transition": "Grass_Test_Negative"
+        }
+      ]
+    },
+
+    "Grass_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6085-5",
+          "display": "Common Ragweed IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Dander_Test"
+    },
+
+    "Grass_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6085-5",
+          "display": "Common Ragweed IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Dander_Test"
+    },
+
+    "Dander_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " PET DANDER ALLERGY TEST                                              ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "232347008",
+                "display": "Dander (animal) allergy"
+              }
+            ]
+          },
+          "transition": "Dander_Test_Positive"
+        },
+        {
+          "transition": "Dander_Test_Negative"
+        }
+      ]
+    },
+
+    "Dander_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6833-8",
+          "display": "Cat dander IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Mite_Test"
+    },
+
+    "Dander_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6833-8",
+          "display": "Cat dander IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Mite_Test"
+    },
+
+    "Mite_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MITE ALLERGY TEST                                                    ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "232350006",
+                "display": "House dust mite allergy"
+              }
+            ]
+          },
+          "transition": "Mite_Test_Positive"
+        },
+        {
+          "transition": "Mite_Test_Negative"
+        }
+      ]
+    },
+
+    "Mite_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6095-4",
+          "display": "American house dust mite IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Mold_Test"
+    },
+
+    "Mite_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6095-4",
+          "display": "American house dust mite IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Mold_Test"
+    },
+
+    "Mold_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MOLD ALLERGY TEST                                                    ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "419474003",
+                "display": "Allergy to mould"
+              }
+            ]
+          },
+          "transition": "Mold_Test_Positive"
+        },
+        {
+          "transition": "Mold_Test_Negative"
+        }
+      ]
+    },
+
+    "Mold_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6075-6",
+          "display": "Cladosporium herbarum IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Bee_Test"
+    },
+
+    "Mold_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6075-6",
+          "display": "Cladosporium herbarum IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Bee_Test"
+    },
+
+    "Bee_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " BEE ALLERGY TEST                                                     ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "424213003",
+                "display": "Allergy to bee venom"
+              }
+            ]
+          },
+          "transition": "Bee_Test_Positive"
+        },
+        {
+          "transition": "Bee_Test_Negative"
+        }
+      ]
+    },
+
+    "Bee_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6844-5",
+          "display": "Honey bee IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Latex_Test"
+    },
+
+    "Bee_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6844-5",
+          "display": "Honey bee IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Latex_Test"
+    },
+
+    "Latex_Test": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " LATEX ALLERGY TEST                                                   ",
+        "======================================================================"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "300916003",
+                "display": "Latex allergy"
+              }
+            ]
+          },
+          "transition": "Latex_Test_Positive"
+        },
+        {
+          "transition": "Latex_Test_Negative"
+        }
+      ]
+    },
+
+    "Latex_Test_Positive": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6158-0",
+          "display": "Latex IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0.7,
+        "high": 100
+      },
+      "direct_transition": "Allergy_Test_Terminal"
+    },
+
+    "Latex_Test_Negative": {
+      "type": "Observation",
+      "category" : "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6158-0",
+          "display": "Latex IgE Ab in Serum"
+        }
+      ],
+      "unit": "kU/L",
+      "range": {
+        "low": 0,
+        "high": 0.35
+      },
+      "direct_transition": "Allergy_Test_Terminal"
+    },
+
+
+    "Allergy_Test_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Guard",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Gender_Guard"
+        },
+        "Gender_Guard": {
+            "type": "Guard",
+            "allow": {
+                "condition_type": "Gender",
+                "gender": "F" 
+            },
+            "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

@@ -1,0 +1,270 @@
+{
+  "name": "Osteoarthritis",
+  "remarks": [
+    "Osteoarthritis (OA) is a breakdown of cartilage in the joints. It is a chronic condition ",
+    "that only worsens with time. OA is more likely in females (2:1) and the risk of OA increases ",
+    "with age. OA also accounts for most of the total joint replacements (knees and hips) in the U.S.",
+    "Joint replacements are handled by the total_joint_replacement module and triggered by the ",
+    "'joint_replacement' attribute.",
+    "Information on treatment, prevalence, and incidence of specific arthritis types from the CDC: ",
+    "http://www.cdc.gov/arthritis/basics/types.html",
+    "Overall prevalence of arthritis: ",
+    "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "======================================================================",
+        " INCIDENCE                                                            ",
+        "======================================================================",
+        " | Arthritis Type | Prevalence | Ratio F:M | ",
+        " ------------------------------------------- ",
+        " | Osteoarthritis |   0.34000  |    2:1    | ",
+        " ------------------------------------------- "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.113,
+              "transition": "Delay_Until_Arthritis"
+            },
+            {
+              "distribution": 0.887,
+              "transition": "Terminal"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.2267,
+              "transition": "Delay_Until_Arthritis"
+            },
+            {
+              "distribution": 0.7733,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Delay_Until_Arthritis": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 80,
+        "unit": "years"
+      },
+      "direct_transition": "Osteoarthritis"
+    },
+
+    "Osteoarthritis": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " OSTEOARTHRITIS                                                       ",
+        "======================================================================",
+        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.234,
+          "transition": "OA_Of_The_Hand"
+        },
+        {
+          "distribution": 0.561,
+          "transition": "OA_Of_The_Knee"
+        },
+        {
+          "distribution": 0.205,
+          "transition": "OA_Of_The_Hip"
+        }
+      ]
+    },
+
+    "OA_Of_The_Hand": {
+      "type": "ConditionOnset",
+      "target_encounter": "OA_Diagnosis",
+      "assign_to_attribute": "osteoarthritis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "201834006",
+          "display": "Localized, primary osteoarthritis of the hand"
+        }
+      ],
+      "direct_transition": "OA_Diagnosis"
+    },
+
+    "OA_Of_The_Knee": {
+      "type": "ConditionOnset",
+      "target_encounter": "OA_Diagnosis",
+      "assign_to_attribute": "osteoarthritis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "239873007",
+          "display": "Osteoarthritis of knee"
+        }
+      ],
+      "direct_transition": "OA_Diagnosis"
+    },
+
+    "OA_Of_The_Hip": {
+      "type": "ConditionOnset",
+      "target_encounter": "OA_Diagnosis",
+      "assign_to_attribute": "osteoarthritis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "239872002",
+          "display": "Osteoarthritis of hip"
+        }
+      ],
+      "direct_transition": "OA_Diagnosis"
+    },
+
+    "OA_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "osteoarthritis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "OA_CarePlan"
+    },
+
+    "OA_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "OA_Diagnosis",
+      "assign_to_attribute": "arthritis_careplan",
+      "reason": "osteoarthritis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Musculoskeletal care"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "872781000000100",
+          "display": "Joint mobility exercises"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "266694003",
+          "display": "Heat therapy"
+        }
+      ],
+      "direct_transition": "OA_Pain_Medication"
+    },
+
+    "OA_Pain_Medication": {
+      "type": "MedicationOrder",
+      "target_encounter": "OA_Diagnosis",
+      "reason": "osteoarthritis",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "849727",
+          "display": "Naproxen sodium 220 MG [Aleve]"
+        }
+      ],
+      "remarks": [
+        "For knees or hips we can consider joint replacement surgery. However this is not a ",
+        "treatment option for arthritis of the hand. The total_joint_replacement module will ",
+        "not process a joint replacement surgery until the patient is over 50 years of age.",
+        "Source for hip and knee replacement prevalence: ",
+        "http://www.cdc.gov/arthritis/data_statistics/arthritis-related-stats.htm ",
+        "Estimated prevalence of Osteoarthritis is 34%. ",
+        "Estimated prevalence of hip replacements is 0.165% (80% are for OA => 0.132%).",
+        "Therefore (0.00132 / (0.34 * 0.205)) => 0.0189 of all hip OA leads to hip replacement.",
+        "Estimated prevalence of knee replacements is 0.243% (95% are for OA => 0.231%).",
+        "Therefore (0.00231 / (0.34 * 0.561)) => 0.0121 of all knee OA leads to knee replacement."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "OA_Of_The_Knee"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0121,
+              "transition": "Setup_Knee_Replacement"
+            },
+            {
+              "distribution": 0.9879,
+              "transition": "End_Encounter"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "OA_Of_The_Hip"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0189,
+              "transition": "Setup_Hip_Replacement"
+            },
+            {
+              "distribution": 0.9811,
+              "transition": "End_Encounter"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "End_Encounter"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Setup_Knee_Replacement": {
+      "type": "SetAttribute",
+      "attribute": "joint_replacement",
+      "value": "knee",
+      "direct_transition": "End_Encounter"
+    },
+
+    "Setup_Hip_Replacement": {
+      "type": "SetAttribute",
+      "attribute": "joint_replacement",
+      "value": "hip",
+      "direct_transition": "End_Encounter"
+    },
+
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Terminal"
+    },
+    
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
