@@ -1,4 +1,4 @@
-# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java) [![codecov](https://codecov.io/gh/synthetichealth/synthea_java/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea_java)
+# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea) [![codecov](https://codecov.io/gh/synthetichealth/synthea/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea)
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
@@ -27,8 +27,8 @@ Synthea<sup>TM</sup> requires Java 1.8 or above.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```
-git clone https://github.com/synthetichealth/synthea_java.git
-cd synthea_java
+git clone https://github.com/synthetichealth/synthea.git
+cd synthea
 ./gradlew build check test
 ```
 
