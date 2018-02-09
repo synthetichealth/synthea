@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Provider;
 
 /**
@@ -242,7 +241,6 @@ public class HealthRecord {
     public Code reason;
     public Code discharge;
     public Provider provider;
-    public CommunityHealthWorker chw;
 
     public Encounter(long time, String type) {
       super(time, type);

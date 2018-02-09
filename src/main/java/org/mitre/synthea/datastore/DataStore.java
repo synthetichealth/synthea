@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -79,7 +78,7 @@ public class DataStore {
 
       connection
           .prepareStatement(
-              "CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)")
+              "CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar)")
           .execute();
       connection.prepareStatement("CREATE INDEX IF NOT EXISTS PROVIDER_ID ON PROVIDER(ID);")
           .execute();
@@ -264,8 +263,6 @@ public class DataStore {
 
         if (encounter.provider != null) {
           providerID = encounter.provider.getResourceID();
-        } else if (encounter.chw != null) {
-          providerID = (String) encounter.chw.attributes.get("resourceID");
         }
 
         // CREATE TABLE IF NOT EXISTS ENCOUNTER (id varchar, person_id varchar, provider_id varchar,
@@ -523,12 +520,10 @@ public class DataStore {
               + "VALUES (?,?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, UUID.randomUUID().toString());
           stmt.setString(2, personID);
-          if (encounter.provider == null && encounter.chw == null) {
+          if (encounter.provider == null) {
             stmt.setString(3, null);
-          } else if (encounter.provider != null) {
+          } else {
             stmt.setString(3, encounter.provider.getResourceID());
-          } else if (encounter.chw != null) {
-            stmt.setString(3, (String) encounter.chw.attributes.get("resourceID"));
           }
           stmt.setString(4, careplan.name);
           stmt.setString(5, careplan.type);
@@ -592,9 +587,9 @@ public class DataStore {
 
   public boolean store(Collection<? extends Provider> providers) {
     try (Connection connection = getConnection()) {
-      // CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar, is_chw boolean)
+      // CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar)
       PreparedStatement providerTable = connection
-          .prepareStatement("INSERT INTO PROVIDER (id, name, is_chw) VALUES (?,?,?);");
+          .prepareStatement("INSERT INTO PROVIDER (id, name) VALUES (?,?);");
 
       // create table provider_attribute (provider_id varchar, name varchar, value varchar)
       PreparedStatement attributeTable = connection.prepareStatement(
@@ -617,7 +612,6 @@ public class DataStore {
 
         providerTable.setString(1, providerID);
         providerTable.setString(2, (String) attributes.get("name"));
-        providerTable.setBoolean(3, p instanceof CommunityHealthWorker);
         providerTable.addBatch();
 
         for (Object key : attributes.keySet()) {
@@ -660,7 +654,7 @@ public class DataStore {
 
       String[] encounterTypes = { "encounters-wellness", "encounters-ambulatory",
           "encounters-outpatient", "encounters-emergency", "encounters-inpatient",
-          "encounters-postdischarge", "encounters-community", "encounters" };
+          "encounters-postdischarge", "encounters" };
       for (int year = 1900; year <= Utilities.getYear(System.currentTimeMillis()); year++) {
         for (int t = 0; t < encounterTypes.length; t++) {
           utilizationDetailTable.setString(1, "None");
