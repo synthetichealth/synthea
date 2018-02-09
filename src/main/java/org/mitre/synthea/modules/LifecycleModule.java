@@ -17,7 +17,6 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -78,7 +77,6 @@ public final class LifecycleModule extends Module {
     if (age(person, time)) {
       grow(person, time);
     }
-    person.chwEncounter(time, CommunityHealthWorker.DEPLOYMENT_COMMUNITY);
     startSmoking(person, time);
     chanceOfLungCancer(person, time);
     startAlcoholism(person, time);

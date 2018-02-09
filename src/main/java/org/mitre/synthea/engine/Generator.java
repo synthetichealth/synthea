@@ -1,8 +1,11 @@
 package org.mitre.synthea.engine;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+=======
+>>>>>>> 1dff601f6fed57a206d9c82b31dc7407d9e44d71
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 
 
@@ -27,7 +29,6 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Costs;
@@ -43,7 +44,6 @@ public class Generator {
   public static final long ONE_HUNDRED_YEARS = 100L * TimeUnit.DAYS.toMillis(365);
   public static final int MAX_TRIES = 10;
   public DataStore database;
-  public List<CommunityHealthWorker> chws;
   public long numberOfPeople;
   public long seed;
   private Random random;
@@ -125,7 +125,6 @@ public class Generator {
     }
 
     this.numberOfPeople = population;
-    this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
     this.seed = seed;
     this.random = new Random(seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
@@ -149,7 +148,6 @@ public class Generator {
     // initialize hospitals
     Hospital.loadHospitals();
     Module.getModules(); // ensure modules load early
-    CommunityHealthWorker.initalize(this.location, this.random); // ensure CHWs are set early
     Costs.loadCostData();
     
     String locationName;
@@ -188,10 +186,6 @@ public class Generator {
     // TODO - de-dup hospitals if using a file-based database?
     if (database != null) {
       database.store(Hospital.getHospitalList());
-
-      List<CommunityHealthWorker> chws = CommunityHealthWorker.workers.values().stream()
-          .flatMap(List::stream).collect(Collectors.toList());
-      database.store(chws);
     }
 
     Exporter.runPostCompletionExports(this);
@@ -267,11 +261,6 @@ public class Generator {
             }
           }
           encounterModule.endWellnessEncounter(person, time);
-
-          // TODO: if CHW policy is enabled for community, possibly add CHW interventions
-          // if true
-          // then add chw encounter to record
-          // and set chw variable(s) on person.attributes.put(KEY, VALUE)
 
           time += timestep;
         }
@@ -355,8 +344,6 @@ public class Generator {
         System.out.format("  * %25s = %6.2f\n", vitalSign,
             person.getVitalSign(vitalSign).doubleValue());
       }
-      System.out.format("Number of CHW Interventions: %d\n",
-          person.attributes.get(Person.CHW_INTERVENTION));
       System.out.println("-----");
     }
   }
