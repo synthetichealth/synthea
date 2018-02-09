@@ -1,11 +1,10 @@
 package org.mitre.synthea.engine;
 
-<<<<<<< HEAD
+
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-=======
->>>>>>> 1dff601f6fed57a206d9c82b31dc7407d9e44d71
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
