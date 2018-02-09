@@ -327,6 +327,10 @@ public class Generator {
       e.printStackTrace();
       throw e;
     }
+    System.out.println("PERSON BIRTHPLACE IS: " + person.attributes.get("birthplace"));
+
+    System.out.println("PERSON OCCUPATION IS: " + person.attributes.get("occupation"));
+
     return person;
   }
 
@@ -416,10 +420,10 @@ public class Generator {
 
 	  //TODO hispanic ethnicities that are in SPEW but not in synthea
 
-	  //hispanic codes CSV for lookup
 	  List<LinkedHashMap<String, String>> hispanic_codes;
 
 	  try {
+		  
 		  hispanic_codes = SimpleCSV.parse(Utilities.readResource("hispanic.csv"));
 	  } catch (IOException e) {
 		  e.printStackTrace();
@@ -430,10 +434,10 @@ public class Generator {
 		  person.attributes.put(Person.RACE, "hispanic");
 		  person.attributes.put(Person.HISPANIC, true);
 		  
-		  for(int i = 1;i<=hispanic_codes.size()-1;i++) {
+		  for(int i = 0;i<=hispanic_codes.size()-1;i++) {
 			  if(spewPerson.get(rand_spew).get("HISP").equals(hispanic_codes.get(i).get("Code"))) {
 				  person.attributes.put(Person.ETHNICITY, hispanic_codes.get(i).get("Ethnicity"));
-			  }
+			  } 
 		  }
 	  }
 	
@@ -475,17 +479,21 @@ public class Generator {
 	  List<LinkedHashMap<String, String>> birthplaces;
 	  
 	  try {
-		  birthplaces = SimpleCSV.parse(Utilities.readResource("hispanic.csv"));
+		  birthplaces = SimpleCSV.parse(Utilities.readResource("birthplaces.csv"));
 	  } catch (IOException e) {
 		  e.printStackTrace();
 		  return (Long) null;
 	  }
-	  
-	  for(int i = 1;i<=birthplaces.size()-1;i++) {
-		  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("pums_code"))) {
-			  person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("pob"));
-		  }
+	    
+	  for(int i = 0;i<=birthplaces.size()-1;i++) {
+		  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
+			  person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
+		  } 
 	  }
+	  
+	  System.out.println("SPEW ETHNICITY IS: " + spewPerson.get(rand_spew).get("HISP"));
+	  System.out.println("SPEW BIRTHPLACE IS: " + spewPerson.get(rand_spew).get("POBP"));
+	  System.out.println("SPEW OCCP IS: " + spewPerson.get(rand_spew).get("OCCP"));
 
 	  String school_enrollment = spewPerson.get(rand_spew).get("SCH");
 
@@ -606,17 +614,20 @@ public class Generator {
 	  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
 	  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 	  
-
-	  String spew_occupation = spewPerson.get(rand_spew).get("OCCP");
-	  //0010 - 3540  Management, Business, Science, and Arts Occupations
-	  //3600 - 4650  Service Occupations
-	  //4700 - 5940  Sales and Office Occupations
-	  //6000 - 7630  Natural Resources, Construction, and Maintenance Occupations
-	  //7700 - 9750  Production, Transportation, and Material Moving Occupations
-
-
-	  //everyone under 15 has blank occupation
-	  //TODO lookup table for occupation
+	  List<LinkedHashMap<String, String>> occupations;
+	  
+	  try {
+		  occupations = SimpleCSV.parse(Utilities.readResource("occupations.csv"));
+	  } catch (IOException e) {
+		  e.printStackTrace();
+		  return (Long) null;
+	  }
+	  
+	  for(int i = 0;i<=occupations.size()-1;i++) {
+		  if(spewPerson.get(rand_spew).get("OCCP").equals(occupations.get(i).get("Code"))) {
+			  person.attributes.put(Person.OCCUPATION, occupations.get(i).get("Occupation"));
+		  }
+	  }
 
 	  String employment_status = spewPerson.get(rand_spew).get("ESR");
 
