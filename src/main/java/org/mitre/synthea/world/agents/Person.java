@@ -20,7 +20,6 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.Location;
 
 public class Person implements Serializable {
   private static final long serialVersionUID = 4322116644425686379L;
@@ -55,7 +54,6 @@ public class Person implements Serializable {
   public static final String EDUCATION = "education";
   public static final String EDUCATION_LEVEL = "education_level";
   public static final String OCCUPATION_LEVEL = "occupation_level";
-  public static final String CHW_INTERVENTION = "CHW Intervention";
   public static final String SMOKER = "smoker";
   public static final String ALCOHOLIC = "alcoholic";
   public static final String ADHERENCE = "adherence";
@@ -249,15 +247,6 @@ public class Person implements Serializable {
       }
     }
     return false;
-  }
-
-  public void chwEncounter(long time, String deploymentType) {
-    Location location = (Location) attributes.get(LOCATION);
-    CommunityHealthWorker chw =
-        CommunityHealthWorker.findNearbyCHW(this, time, deploymentType, location);
-    if (chw != null) {
-      chw.performEncounter(this, time, deploymentType);
-    }
   }
 
   public static final String CURRENT_ENCOUNTERS = "current-encounters";

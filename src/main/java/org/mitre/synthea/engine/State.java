@@ -18,7 +18,6 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
-import org.mitre.synthea.world.agents.CommunityHealthWorker;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -493,11 +492,6 @@ public abstract class State implements Cloneable {
           encounter.codes.addAll(codes);
         }
         person.setCurrentEncounter(module, encounter);
-        if (encounterClass.equals("emergency")) {
-          // if emergency room encounter and CHW policy is enabled for emergency rooms, add CHW
-          // interventions
-          person.chwEncounter(time, CommunityHealthWorker.DEPLOYMENT_EMERGENCY);
-        }
 
         // find closest provider and increment encounters count
         Provider provider = Provider.findClosestService(person, encounterClass);
@@ -570,9 +564,6 @@ public abstract class State implements Cloneable {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
       if (encounter.type != EncounterType.WELLNESS.toString()) {
         encounter.stop = time;
-        // if CHW policy is enabled for discharge follow up, add CHW interventions for all
-        // non-wellness encounters
-        person.chwEncounter(time, CommunityHealthWorker.DEPLOYMENT_POSTDISCHARGE);
       }
 
       encounter.discharge = dischargeDisposition;
