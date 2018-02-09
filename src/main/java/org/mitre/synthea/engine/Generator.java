@@ -472,8 +472,20 @@ public class Generator {
 		  person.attributes.put(Person.NATIVITY, "foreign_born");
 	  }
 	
-	  //TODO lookup table for birthplace
-	  String birthplace = spewPerson.get(rand_spew).get("POBP");
+	  List<LinkedHashMap<String, String>> birthplaces;
+	  
+	  try {
+		  birthplaces = SimpleCSV.parse(Utilities.readResource("hispanic.csv"));
+	  } catch (IOException e) {
+		  e.printStackTrace();
+		  return (Long) null;
+	  }
+	  
+	  for(int i = 1;i<=birthplaces.size()-1;i++) {
+		  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("pums_code"))) {
+			  person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("pob"));
+		  }
+	  }
 
 	  String school_enrollment = spewPerson.get(rand_spew).get("SCH");
 
