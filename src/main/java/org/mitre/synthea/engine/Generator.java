@@ -315,10 +315,6 @@ public class Generator {
       e.printStackTrace();
       throw e;
     }
-    System.out.println("PERSON BIRTHPLACE IS: " + person.attributes.get("birthplace"));
-
-    System.out.println("PERSON OCCUPATION IS: " + person.attributes.get("occupation"));
-
     return person;
   }
 
@@ -477,10 +473,6 @@ public class Generator {
 		  } 
 	  }
 	  
-	  System.out.println("SPEW ETHNICITY IS: " + spewPerson.get(rand_spew).get("HISP"));
-	  System.out.println("SPEW BIRTHPLACE IS: " + spewPerson.get(rand_spew).get("POBP"));
-	  System.out.println("SPEW OCCP IS: " + spewPerson.get(rand_spew).get("OCCP"));
-
 	  String school_enrollment = spewPerson.get(rand_spew).get("SCH");
 
 	  if(school_enrollment.equals("NA")){
