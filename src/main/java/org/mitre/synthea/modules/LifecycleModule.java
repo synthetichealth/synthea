@@ -1,6 +1,5 @@
 package org.mitre.synthea.modules;
 
-import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 
 import java.util.Arrays;
@@ -9,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +16,7 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
+import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
@@ -39,6 +40,8 @@ public final class LifecycleModule extends Module {
   
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
+  private static SimpleYML names = loadNames();
+  
   public LifecycleModule() {
     this.name = "Lifecycle";
   }
@@ -52,6 +55,18 @@ public final class LifecycleModule extends Module {
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {
       System.err.println("ERROR: unable to load json: " + filename);
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+  
+  private static SimpleYML loadNames() {
+    String filename = "names.yml";
+    try {
+      String namesData = Utilities.readResource(filename);
+      return new SimpleYML(namesData);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load yml: " + filename);
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
@@ -102,9 +117,8 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
     person.events.create(time, Event.BIRTH, "Generator.run", true);
-    Faker faker = new Faker(person.random);
-    String firstName = faker.name().firstName();
-    String lastName = faker.name().lastName();
+    String firstName = fakeFirstName((String) attributes.get(Person.GENDER), person.random);
+    String lastName = fakeLastName(person.random);
     if (appendNumbersToNames) {
       firstName = addHash(firstName);
       lastName = addHash(lastName);
@@ -113,15 +127,15 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.LAST_NAME, lastName);
     attributes.put(Person.NAME, firstName + " " + lastName);
 
-    String motherFirstName = faker.name().firstName();
-    String motherLastName = faker.name().lastName();
+    String motherFirstName = fakeFirstName("F", person.random);
+    String motherLastName = fakeLastName(person.random);
     if (appendNumbersToNames) {
       motherFirstName = addHash(motherFirstName);
       motherLastName = addHash(motherLastName);
     }
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
     
-    String fatherFirstName = faker.name().firstName();
+    String fatherFirstName = fakeFirstName("M", person.random);
     if (appendNumbersToNames) {
       fatherFirstName = addHash(fatherFirstName);
     }
@@ -134,7 +148,9 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
 
-    attributes.put(Person.TELECOM, faker.phoneNumber().phoneNumber());
+    String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
+        + ((person.randInt(9999 - 1000 + 1) + 1000));
+    attributes.put(Person.TELECOM, phoneNumber);
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
         + ((person.randInt(9999 - 1000 + 1) + 1000));
@@ -150,7 +166,7 @@ public final class LifecycleModule extends Module {
     }
     
     boolean hasStreetAddress2 = person.rand() < 0.5;
-    attributes.put(Person.ADDRESS, faker.address().streetAddress(hasStreetAddress2));
+    attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person.random));
 
     double heightPercentile = person.rand();
     double weightPercentile = person.rand();
@@ -173,6 +189,36 @@ public final class LifecycleModule extends Module {
 
     String orientation = sexualOrientationData.next(person.random);
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
+  }
+  
+  private static String fakeFirstName(String gender, Random random) {
+    @SuppressWarnings("unchecked")
+    List<String> n = (List<String>)names.get("english." + gender);
+    // pick a random item from the list
+    return n.get(random.nextInt(n.size()));
+  }
+  
+  private static String fakeLastName(Random random) {
+    @SuppressWarnings("unchecked")
+    List<String> n = (List<String>)names.get("english.family");
+    // pick a random item from the list
+    return n.get(random.nextInt(n.size()));
+  }
+  
+  @SuppressWarnings("unchecked")
+  private static String fakeAddress(boolean includeLine2, Random random) {
+    int number = random.nextInt(1000) + 100;
+    List<String> a = (List<String>)names.get("street.type");
+    String streetType = a.get(random.nextInt(a.size()));
+    
+    if (includeLine2) {
+      int addtlNum = random.nextInt(100);
+      List<String> s = (List<String>)names.get("street.secondary");
+      String addtlType = s.get(random.nextInt(s.size()));
+      return number + " " + streetType + " " + addtlType + " " + addtlNum;
+    } else {
+      return number + " " + streetType;
+    }
   }
   
   /**
@@ -245,8 +291,7 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
-              Faker faker = new Faker(person.random);
-              String newLastName = faker.name().lastName();
+              String newLastName = fakeLastName(person.random);
               if (appendNumbersToNames) {
                 newLastName = addHash(newLastName);
               }
