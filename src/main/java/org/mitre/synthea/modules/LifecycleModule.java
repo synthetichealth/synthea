@@ -196,7 +196,7 @@ public final class LifecycleModule extends Module {
   @SuppressWarnings("unchecked")
   private static String fakeFirstName(String gender, String language, Random random) {
     List<String> choices;
-    if (language.equalsIgnoreCase("spanish")) {
+    if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish." + gender);
     } else {
       choices = (List<String>) names.get("english." + gender);
@@ -208,7 +208,7 @@ public final class LifecycleModule extends Module {
   @SuppressWarnings("unchecked")
   private static String fakeLastName(String language, Random random) {
     List<String> choices;
-    if (language.equalsIgnoreCase("spanish")) {
+    if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish.family");
     } else {
       choices = (List<String>) names.get("english.family");
