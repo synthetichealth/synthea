@@ -208,6 +208,10 @@ public final class LifecycleModule extends Module {
   @SuppressWarnings("unchecked")
   private static String fakeAddress(boolean includeLine2, Random random) {
     int number = random.nextInt(1000) + 100;
+    List<String> n = (List<String>)names.get("english.family");
+    // for now just use family names as the street name. 
+    // could expand with a few more but probably not worth it
+    String streetName = n.get(random.nextInt(n.size()));
     List<String> a = (List<String>)names.get("street.type");
     String streetType = a.get(random.nextInt(a.size()));
     
@@ -215,9 +219,9 @@ public final class LifecycleModule extends Module {
       int addtlNum = random.nextInt(100);
       List<String> s = (List<String>)names.get("street.secondary");
       String addtlType = s.get(random.nextInt(s.size()));
-      return number + " " + streetType + " " + addtlType + " " + addtlNum;
+      return number + " " + streetName + " " + streetType + " " + addtlType + " " + addtlNum;
     } else {
-      return number + " " + streetType;
+      return number + " " + streetName + " " + streetType;
     }
   }
   
