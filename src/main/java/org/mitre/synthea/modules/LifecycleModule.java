@@ -117,8 +117,10 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
     person.events.create(time, Event.BIRTH, "Generator.run", true);
-    String firstName = fakeFirstName((String) attributes.get(Person.GENDER), person.random);
-    String lastName = fakeLastName(person.random);
+    String gender = (String) attributes.get(Person.GENDER);
+    String language = (String) attributes.get(Person.FIRST_LANGUAGE);
+    String firstName = fakeFirstName(gender, language, person.random);
+    String lastName = fakeLastName(language, person.random);
     if (appendNumbersToNames) {
       firstName = addHash(firstName);
       lastName = addHash(lastName);
@@ -127,15 +129,15 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.LAST_NAME, lastName);
     attributes.put(Person.NAME, firstName + " " + lastName);
 
-    String motherFirstName = fakeFirstName("F", person.random);
-    String motherLastName = fakeLastName(person.random);
+    String motherFirstName = fakeFirstName("F", language, person.random);
+    String motherLastName = fakeLastName(language, person.random);
     if (appendNumbersToNames) {
       motherFirstName = addHash(motherFirstName);
       motherLastName = addHash(motherLastName);
     }
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
     
-    String fatherFirstName = fakeFirstName("M", person.random);
+    String fatherFirstName = fakeFirstName("M", language, person.random);
     if (appendNumbersToNames) {
       fatherFirstName = addHash(fatherFirstName);
     }
@@ -191,18 +193,28 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
   }
   
-  private static String fakeFirstName(String gender, Random random) {
-    @SuppressWarnings("unchecked")
-    List<String> n = (List<String>)names.get("english." + gender);
+  @SuppressWarnings("unchecked")
+  private static String fakeFirstName(String gender, String language, Random random) {
+    List<String> choices;
+    if (language.equalsIgnoreCase("spanish")) {
+      choices = (List<String>) names.get("spanish." + gender);
+    } else {
+      choices = (List<String>) names.get("english." + gender);
+    }
     // pick a random item from the list
-    return n.get(random.nextInt(n.size()));
+    return choices.get(random.nextInt(choices.size()));
   }
   
-  private static String fakeLastName(Random random) {
-    @SuppressWarnings("unchecked")
-    List<String> n = (List<String>)names.get("english.family");
+  @SuppressWarnings("unchecked")
+  private static String fakeLastName(String language, Random random) {
+    List<String> choices;
+    if (language.equalsIgnoreCase("spanish")) {
+      choices = (List<String>) names.get("spanish.family");
+    } else {
+      choices = (List<String>) names.get("english.family");
+    }
     // pick a random item from the list
-    return n.get(random.nextInt(n.size()));
+    return choices.get(random.nextInt(choices.size()));
   }
   
   @SuppressWarnings("unchecked")
@@ -295,7 +307,8 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
-              String newLastName = fakeLastName(person.random);
+              String language = (String) person.attributes.get(Person.FIRST_LANGUAGE);
+              String newLastName = fakeLastName(language, person.random);
               if (appendNumbersToNames) {
                 newLastName = addHash(newLastName);
               }
