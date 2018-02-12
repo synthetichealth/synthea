@@ -349,7 +349,7 @@ public class Generator {
 	  List<LinkedHashMap<String, String>> spewPerson;
 
 	  try {
-		  spewPerson = SimpleCSV.parse(Utilities.readResource("people25.csv"));
+		  spewPerson = SimpleCSV.parse(Utilities.readResource("people_25.csv"));
 	  } catch (IOException e) {
 		  e.printStackTrace();
 		  return (Long) null;
@@ -484,85 +484,36 @@ public class Generator {
 	  } else if (school_enrollment.equals("3")){
 		  person.attributes.put(Person.SCHOOL_ENROLLMENT, "private_school_or_college_or_home_school");
 	  } 
-
-	  String grade_level = spewPerson.get(rand_spew).get("SCHG");
-
-	  if(grade_level.equals("NA")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "not_attending_school");
-	  } else if(grade_level.equals("1")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "nursery_school_or_preschool");
-	  } else if(grade_level.equals("2")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "kindergarten");
-	  } else if(grade_level.equals("3")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_1");
-	  } else if(grade_level.equals("4")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_2");
-	  } else if(grade_level.equals("5")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_3");
-	  } else if(grade_level.equals("6")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_4");
-	  } else if(grade_level.equals("7")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_5");
-	  } else if(grade_level.equals("8")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_6");
-	  } else if(grade_level.equals("9")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_7");
-	  } else if(grade_level.equals("10")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_8");
-	  } else if(grade_level.equals("11")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_9");
-	  } else if(grade_level.equals("12")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_10");
-	  } else if(grade_level.equals("13")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_11");
-	  } else if(grade_level.equals("14")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "grade_12");
-	  } else if(grade_level.equals("15")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "college_undergraduate");
-	  } else if(grade_level.equals("1")) {
-		  person.attributes.put(Person.GRADE_LEVEL, "graduate_or_professional_school");
+	  
+	  List<LinkedHashMap<String, String>> grade_level;
+	  
+	  try {
+		  grade_level = SimpleCSV.parse(Utilities.readResource("grade_level.csv"));
+	  } catch (IOException e) {
+		  e.printStackTrace();
+		  return (Long) null;
 	  }
-
-	  String relationship = spewPerson.get(rand_spew).get("RELP");
-
-	  if(relationship.equals("0")) {
-		  person.attributes.put(Person.RELATIONSHIP, "reference_person");
-	  } else if(relationship.equals("1")) {
-		  person.attributes.put(Person.RELATIONSHIP, "husband_or_wife");
-	  } else if(relationship.equals("2")) {
-		  person.attributes.put(Person.RELATIONSHIP, "biological_son_or_dsughter");
-	  } else if(relationship.equals("3")) {
-		  person.attributes.put(Person.RELATIONSHIP, "adopted_son_or_daughter");
-	  } else if(relationship.equals("4")) {
-		  person.attributes.put(Person.RELATIONSHIP, "stepson_or_stepdaughter");
-	  } else if(relationship.equals("5")) {
-		  person.attributes.put(Person.RELATIONSHIP, "brother_or_sister");
-	  } else if(relationship.equals("6")) {
-		  person.attributes.put(Person.RELATIONSHIP, "father_or_mother");
-	  } else if(relationship.equals("7")) {
-		  person.attributes.put(Person.RELATIONSHIP, "grandchild");
-	  } else if(relationship.equals("8")) {
-		  person.attributes.put(Person.RELATIONSHIP, "parent_in_law");
-	  } else if(relationship.equals("9")) {
-		  person.attributes.put(Person.RELATIONSHIP, "son_in_law_or_daughter_in_law");
-	  } else if(relationship.equals("10")) {
-		  person.attributes.put(Person.RELATIONSHIP, "other_relative");
-	  } else if(relationship.equals("11")) {
-		  person.attributes.put(Person.RELATIONSHIP, "roomer_or_boarder");
-	  } else if(relationship.equals("12")) {
-		  person.attributes.put(Person.RELATIONSHIP, "housemate_or_roommate");
-	  } else if(relationship.equals("13")) {
-		  person.attributes.put(Person.RELATIONSHIP, "unmarried_partner");
-	  } else if(relationship.equals("14")) {
-		  person.attributes.put(Person.RELATIONSHIP, "foster_child");
-	  } else if(relationship.equals("15")) {
-		  person.attributes.put(Person.RELATIONSHIP, "other_nonrelative");
-	  } else if(relationship.equals("16")) {
-		  person.attributes.put(Person.RELATIONSHIP, "institutionalized_group_quarters_population");
-	  } else if(relationship.equals("17")) {
-		  person.attributes.put(Person.RELATIONSHIP, "noninstitutionalized_group_quarters_population");
+	    
+	  for(int i = 0;i<=grade_level.size()-1;i++) {
+		  if(spewPerson.get(rand_spew).get("SCHG").equals(grade_level.get(i).get("Code"))) {
+			  person.attributes.put(Person.GRADE_LEVEL, grade_level.get(i).get("grade"));
+		  } 
 	  }
-
+	  
+	  List<LinkedHashMap<String, String>> relationship;
+	  
+	  try {
+		  relationship = SimpleCSV.parse(Utilities.readResource("relationship.csv"));
+	  } catch (IOException e) {
+		  e.printStackTrace();
+		  return (Long) null;
+	  }
+	    
+	  for(int i = 0;i<=grade_level.size()-1;i++) {
+		  if(spewPerson.get(rand_spew).get("RELP").equals(relationship.get(i).get("Code"))) {
+			  person.attributes.put(Person.RELATIONSHIP, relationship.get(i).get("Relationship"));
+		  } 
+	  }
 
 	  // Socioeconomic variables of education, income, and education are set.
 	  String education = city.pickEducation(person.random);
@@ -609,7 +560,7 @@ public class Generator {
 
 	  String employment_status = spewPerson.get(rand_spew).get("ESR");
 
-	  if(employment_status.equals("")) {
+	  if(employment_status.equals("NA")) {
 		  person.attributes.put(Person.EMPLOYMENT_STATUS, "na_under_16");
 	  } else if(employment_status.equals("")) {
 		  person.attributes.put(Person.EMPLOYMENT_STATUS, "civilian_employed_at_work");
