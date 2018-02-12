@@ -27,9 +27,32 @@ public enum VitalSign {
   @SerializedName("Microalbumin Creatinine Ratio") MICROALBUMIN_CREATININE_RATIO, 
   @SerializedName("EGFR") EGFR;
 
+  /**
+   * Name of the VitalSign. Cached as a string for better lookup performance.
+   */
+  private final String name;
+  
+  private VitalSign() {
+    String n;
+    try {
+      n = getClass().getField(this.name())
+          .getAnnotation(SerializedName.class).value();
+
+    } catch (Exception e) {
+      // should never happen
+      n = this.name();
+    }
+    this.name = n;
+  }
+  
+  /**
+   * Get the VitalSign enum matching the given string.
+   * @param text Name of a Vital Sign, ex "Systolic Blood Pressure"
+   * @return VitalSign with the given name
+   */
   public static VitalSign fromString(String text) {
     for (VitalSign type : VitalSign.values()) {
-      String typeText = type.toString();
+      String typeText = type.name;
       if (text.equalsIgnoreCase(typeText)) {
         return type;
       }
@@ -38,10 +61,6 @@ public enum VitalSign {
   }
 
   public String toString() {
-    try {
-      return getClass().getField(this.name()).getAnnotation(SerializedName.class).value();
-    } catch (Exception e) {
-      return this.name();
-    }
+    return this.name;
   }
 }

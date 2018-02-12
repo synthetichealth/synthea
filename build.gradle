@@ -38,7 +38,6 @@ dependencies {
   // used to convert the ma_geo GeoJSON file to JTS
   compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
   compile group: 'com.h2database', name: 'h2', version: '1.4.196'
-  compile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'
 	compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
