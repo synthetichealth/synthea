@@ -45,6 +45,10 @@ public class Location {
       // because allDemographics will only contain that 1 city
       this.demographics = allDemographics.row(state);
 
+      if (city != null && !demographics.containsKey(city)) {
+        throw new Exception("The city " + city + " was not found in the demographics file.");
+      }
+
       long runningPopulation = 0;
       populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
       for (Demographics d : this.demographics.values()) {
