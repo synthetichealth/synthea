@@ -40,8 +40,8 @@ public class Graphviz {
   /**
    * Generate the Graphviz-like graphs of the disease modules.
    * @param args Optional path of modules to render. If not provided,
-   * the default modules will be loaded using the ClassLoader.
-   * @throws URISyntaxException
+   *   the default modules will be loaded using the ClassLoader.
+   * @throws URISyntaxException on failure to load modules.
    */
   public static void main(String[] args) throws URISyntaxException {
     File folder = Exporter.getOutputFolder("graphviz", null);
@@ -66,7 +66,8 @@ public class Graphviz {
   private static void generateJsonModuleGraphs(Path inputPath, File outputFolder) {
     // adapted from Module.loadModules()
     try {
-      Files.walk(inputPath, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
+      Files.walk(inputPath, Integer.MAX_VALUE)
+          .filter(Files::isReadable).filter(Files::isRegularFile)
           .filter(p -> p.toString().endsWith(".json")).parallel().forEach(t -> {
             try {
               JsonObject module = loadFile(t, inputPath);

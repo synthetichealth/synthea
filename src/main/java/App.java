@@ -59,7 +59,7 @@ public class App {
       }
     }
     
-    if(validArgs) {
+    if (validArgs) {
       Generator generator = new Generator(options);
       generator.run();
     }
