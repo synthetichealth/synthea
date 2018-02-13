@@ -51,10 +51,16 @@ public class UtilitiesTest {
     assertTrue(Utilities.compare(lhs, rhs, "!="));
     assertTrue(Utilities.compare(lhs, rhs, "is not nil"));
     assertTrue(Utilities.compare(rhs, lhs, "is not nil"));
+    assertFalse(Utilities.compare(lhs, rhs, "is nil"));
+    assertFalse(Utilities.compare(rhs, lhs, "is nil"));
     lhs = null;
     rhs = null;
     assertTrue(Utilities.compare(lhs, rhs, "is nil"));
     assertTrue(Utilities.compare(rhs, lhs, "is nil"));
+    assertFalse(Utilities.compare(lhs, rhs, "is not nil"));
+    assertFalse(Utilities.compare(rhs, lhs, "is not nil"));
+    // Unsupported operator goes down default branch
+    assertFalse(Utilities.compare(lhs, rhs, "~="));
   }
 
   @Test
@@ -72,6 +78,8 @@ public class UtilitiesTest {
     rhs = null;
     assertTrue(Utilities.compare(lhs, rhs, "is nil"));
     assertFalse(Utilities.compare(lhs, rhs, "is not nil"));
+    // Unsupported operator goes down default branch
+    assertFalse(Utilities.compare(lhs, rhs, "~="));
   }
 
   @Test
@@ -91,6 +99,8 @@ public class UtilitiesTest {
     rhs = null;
     assertTrue(Utilities.compare(lhs, rhs, "is nil"));
     assertTrue(Utilities.compare(rhs, lhs, "is nil"));
+    // Unsupported operator goes down default branch
+    assertFalse(Utilities.compare(lhs, rhs, "~="));
   }
 
   @Test(expected = RuntimeException.class)
