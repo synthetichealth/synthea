@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
@@ -385,23 +386,61 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.BMI, bmi(height, weight));
   }
   
+  /**
+   * Lookup and calculate values from the CDC growth charts, using the LMS
+   * values to calculate the intermediate values.
+   * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
+   * @param heightOrWeight "height" | "weight"
+   * @param gender "M" | "F"
+   * @param ageInMonths 0 - 240
+   * @param percentile 0.0 - 1.0
+   * @return The height (cm) or weight (kg)
+   */
   @SuppressWarnings("rawtypes")
   public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths,
       double percentile) {
-    String[] percentileBuckets = { "3", "5", "10", "25", "50", "75", "90", "95", "97" };
-
     Map chart = (Map) growthChart.get(heightOrWeight);
     Map byGender = (Map) chart.get(gender);
     Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
-    int bucket = 0;
-    for (int i = 0; i < percentileBuckets.length; i++) {
-      if ((Double.parseDouble(percentileBuckets[i]) / 100.0) <= percentile) {
-        bucket = i;
-      } else {
-        break;
-      }
+
+    double l = Double.parseDouble((String) byAge.get("l"));
+    double m = Double.parseDouble((String) byAge.get("m"));
+    double s = Double.parseDouble((String) byAge.get("s"));
+    double z = calculateZScore(percentile);
+
+    if (l == 0) {
+      return m * Math.exp((s * z));
+    } else {
+      return m * Math.pow((1 + (l * s * z)), (1.0 / l));
     }
-    return Double.parseDouble((String) byAge.get(percentileBuckets[bucket]));
+  }
+
+  /**
+   * Z is the z-score that corresponds to the percentile.
+   * z-scores correspond exactly to percentiles, e.g.,
+   * z-scores of:
+   * -1.881, // 3rd
+   * -1.645, // 5th
+   * -1.282, // 10th
+   * -0.674, // 25th
+   *  0,     // 50th
+   *  0.674, // 75th
+   *  1.036, // 85th
+   *  1.282, // 90th
+   *  1.645, // 95th
+   *  1.881  // 97th
+   * @param percentile 0.0 - 1.0
+   * @return z-score that corresponds to the percentile.
+   */
+  protected static double calculateZScore(double percentile) {
+    // Set percentile gt0 and lt1, otherwise the error
+    // function will return Infinity.
+    if (percentile >= 1.0) {
+      percentile = 0.999;
+    } else if (percentile <= 0.0) {
+      percentile = 0.001;
+    }
+    return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
   }
 
   private static double bmi(double heightCM, double weightKG) {
