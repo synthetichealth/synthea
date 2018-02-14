@@ -69,8 +69,9 @@ public class Generator {
   
   /**
    * Create a Generator, using all default settings.
+ * @throws IOException 
    */
-  public Generator() {
+  public Generator() throws IOException {
     this(new GeneratorOptions());
   }
 
@@ -79,8 +80,9 @@ public class Generator {
    * All other settings are left as defaults.
    * 
    * @param population Target population size
+ * @throws IOException 
    */
-  public Generator(int population) {
+  public Generator(int population) throws IOException {
     init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
   }
   
@@ -90,21 +92,23 @@ public class Generator {
    * 
    * @param population Target population size
    * @param seed Seed used for randomness
+ * @throws IOException 
    */
-  public Generator(int population, long seed) {
+  public Generator(int population, long seed) throws IOException {
     init(population, seed, DEFAULT_STATE, null);
   }
 
   /**
    * Create a Generator, with the given options.
    * @param o Desired configuration options
+ * @throws IOException 
    */
-  public Generator(GeneratorOptions o) {
+  public Generator(GeneratorOptions o) throws IOException {
     String state = o.state == null ? DEFAULT_STATE : o.state;
     init(o.population, o.seed, state, o.city);
   }
 
-  private void init(int population, long seed, String state, String city) {
+  private void init(int population, long seed, String state, String city) throws IOException {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -148,6 +152,9 @@ public class Generator {
     Hospital.loadHospitals();
     Module.getModules(); // ensure modules load early
     Costs.loadCostData();
+    
+    // initialize SPEW data
+    Demographics.loadSpew();
     
     String locationName;
     if (city == null) {
@@ -346,14 +353,11 @@ public class Generator {
   private long setDemographics(Person person, Demographics city) {
 	  // Create map and read in the sampled SPEW csv file for Massachusetts 
 
-	  List<LinkedHashMap<String, String>> spewPerson;
-
-	  try {
-		  spewPerson = SimpleCSV.parse(Utilities.readResource("people_25.csv"));
-	  } catch (IOException e) {
-		  e.printStackTrace();
-		  return (Long) null;
-	  }
+	  @SuppressWarnings("rawtypes")
+	  ArrayList<List> spewList = Demographics.getSpewList();
+	  
+	  @SuppressWarnings("unchecked")
+	  List<LinkedHashMap<String, String>> spewPerson = spewList.get(0);
 
 	  // get a random spew person
 
@@ -402,15 +406,8 @@ public class Generator {
 
 	  //TODO hispanic ethnicities that are in SPEW but not in synthea
 
-	  List<LinkedHashMap<String, String>> hispanic_codes;
-
-	  try {
-		  
-		  hispanic_codes = SimpleCSV.parse(Utilities.readResource("hispanic.csv"));
-	  } catch (IOException e) {
-		  e.printStackTrace();
-		  return (Long) null;
-	  }
+	  @SuppressWarnings("unchecked")
+	  List<LinkedHashMap<String, String>> hispanic_codes = spewList.get(1);
 
 	  if(person.attributes.get(race) == null && !hisp.equals("1")){
 		  person.attributes.put(Person.RACE, "hispanic");
@@ -458,15 +455,9 @@ public class Generator {
 		  person.attributes.put(Person.NATIVITY, "foreign_born");
 	  }
 	
-	  List<LinkedHashMap<String, String>> birthplaces;
+	  @SuppressWarnings("unchecked")
+	  List<LinkedHashMap<String, String>> birthplaces = spewList.get(2);
 	  
-	  try {
-		  birthplaces = SimpleCSV.parse(Utilities.readResource("birthplaces.csv"));
-	  } catch (IOException e) {
-		  e.printStackTrace();
-		  return (Long) null;
-	  }
-	    
 	  for(int i = 0;i<=birthplaces.size()-1;i++) {
 		  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
 			  person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
@@ -485,29 +476,17 @@ public class Generator {
 		  person.attributes.put(Person.SCHOOL_ENROLLMENT, "private_school_or_college_or_home_school");
 	  } 
 	  
-	  List<LinkedHashMap<String, String>> grade_level;
-	  
-	  try {
-		  grade_level = SimpleCSV.parse(Utilities.readResource("grade_level.csv"));
-	  } catch (IOException e) {
-		  e.printStackTrace();
-		  return (Long) null;
-	  }
-	    
+	  @SuppressWarnings("unchecked")
+	  List<LinkedHashMap<String, String>> grade_level = spewList.get(3);
+
 	  for(int i = 0;i<=grade_level.size()-1;i++) {
 		  if(spewPerson.get(rand_spew).get("SCHG").equals(grade_level.get(i).get("Code"))) {
 			  person.attributes.put(Person.GRADE_LEVEL, grade_level.get(i).get("grade"));
 		  } 
 	  }
 	  
-	  List<LinkedHashMap<String, String>> relationship;
-	  
-	  try {
-		  relationship = SimpleCSV.parse(Utilities.readResource("relationship.csv"));
-	  } catch (IOException e) {
-		  e.printStackTrace();
-		  return (Long) null;
-	  }
+	  @SuppressWarnings("unchecked")
+	  List<LinkedHashMap<String, String>> relationship = spewList.get(4);
 	    
 	  for(int i = 0;i<=grade_level.size()-1;i++) {
 		  if(spewPerson.get(rand_spew).get("RELP").equals(relationship.get(i).get("Code"))) {
@@ -521,15 +500,10 @@ public class Generator {
 	  double educationLevel = city.educationLevel(education, person);
 	  person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
 
-	  //everyone under 15 has blank income
-	  //use household income, otherwise use personal income
-
-
-	  //TODO: there are some negative incomes in the SPEW data
-	  //probably a SPEW error. resolve in R?
-
 	  long targetAge = Long.valueOf(spewPerson.get(rand_spew).get("AGEP")).longValue();
 
+	  //TODO resolve negative incomes using R
+	  //TODO: Make sure there are no "NA" incomes. Set to HINCP if under age 15
 	  int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
 	  person.attributes.put(Person.INCOME, income);
 	  
@@ -543,14 +517,7 @@ public class Generator {
 	  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
 	  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 	  
-	  List<LinkedHashMap<String, String>> occupations;
-	  
-	  try {
-		  occupations = SimpleCSV.parse(Utilities.readResource("occupations.csv"));
-	  } catch (IOException e) {
-		  e.printStackTrace();
-		  return (Long) null;
-	  }
+	  List<LinkedHashMap<String, String>> occupations = spewList.get(5);
 	  
 	  for(int i = 0;i<=occupations.size()-1;i++) {
 		  if(spewPerson.get(rand_spew).get("OCCP").equals(occupations.get(i).get("Code"))) {

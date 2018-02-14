@@ -4,8 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -14,6 +16,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -39,7 +42,37 @@ public class Demographics {
   private RandomCollection<String> incomeDistribution;
   public Map<String, Double> education;
   private RandomCollection<String> educationDistribution;
+  @SuppressWarnings("rawtypes")
+  private static ArrayList<List> spewList = new ArrayList<List>();
 
+
+  public static void loadSpew() throws IOException {
+	  List<LinkedHashMap<String, String>> spewPerson = SimpleCSV.parse(Utilities.readResource("people_25.csv"));
+	  spewList.add(spewPerson);
+	  
+	  List<LinkedHashMap<String, String>> hispanic_codes = SimpleCSV.parse(Utilities.readResource("hispanic.csv"));
+	  spewList.add(hispanic_codes);
+
+	  List<LinkedHashMap<String, String>> birthplaces = SimpleCSV.parse(Utilities.readResource("birthplaces.csv"));
+	  spewList.add(birthplaces);
+	  
+	  List<LinkedHashMap<String, String>> grade_level = SimpleCSV.parse(Utilities.readResource("grade_level.csv"));
+	  spewList.add(grade_level);
+	  
+	  List<LinkedHashMap<String, String>> relationship = SimpleCSV.parse(Utilities.readResource("relationship.csv"));
+	  spewList.add(relationship);
+	  
+	  List<LinkedHashMap<String, String>> occupations = SimpleCSV.parse(Utilities.readResource("occupations.csv"));
+	  spewList.add(occupations);
+
+  }
+  
+  @SuppressWarnings("rawtypes")
+public static ArrayList<List> getSpewList() {
+	    return spewList;
+	  }
+
+  
   public int pickAge(Random random) {
     // lazy-load in case this randomcollection isn't necessary
     if (ageDistribution == null) {
