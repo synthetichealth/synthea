@@ -29,7 +29,7 @@ public class GraphvizTest {
     System.setOut(print);
     Graphviz.main(args);
     String output = out.toString();
-    Assert.assertTrue(output.contains("Loading"));
+    // Assert.assertTrue(output.contains("Loading"));
     Assert.assertTrue(output.contains("Rendering graphs"));
     Assert.assertTrue(output.contains("Completed"));
     System.setOut(original);
