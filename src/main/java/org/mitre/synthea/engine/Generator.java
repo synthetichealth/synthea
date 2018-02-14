@@ -502,8 +502,6 @@ public class Generator {
 
 	  long targetAge = Long.valueOf(spewPerson.get(rand_spew).get("AGEP")).longValue();
 
-	  //TODO resolve negative incomes using R
-	  //TODO: Make sure there are no "NA" incomes. Set to HINCP if under age 15
 	  int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
 	  person.attributes.put(Person.INCOME, income);
 	  
