@@ -31,6 +31,14 @@ public class Costs {
   private static final double DEFAULT_IMMUNIZATION_COST =
       Double.parseDouble(Config.get("generate.costs.default_immunization_cost"));
   
+  /**
+   * Load all cost data needed by the system.
+   */
+  public static void loadCostData() {
+    // intentionally do nothing
+    // this method is only called to ensure the static data is loaded at a predictable time
+  }
+  
   private static Map<String, Double> parseCsvToMap(String filename) {
     try {
       String rawData = Utilities.readResource(filename);
@@ -39,9 +47,17 @@ public class Costs {
       Map<String, Double> costMap = new HashMap<>();
       for (Map<String,String> line : lines) {
         String code = line.get("CODE");
-        String cost = line.get("COST");
+        String costString = line.get("COST");
         
-        costMap.put(code, Double.valueOf(cost));
+        try {
+          Double cost = Double.valueOf(costString);
+          costMap.put(code, cost);
+        } catch (NumberFormatException nfe) {
+          System.err.println(filename + ": Invalid cost for code: '" + code
+              + "' -- cost should be numeric but was '" + costString + "'");
+          System.err.println("Code '" + code + "' will use the default cost");
+          nfe.printStackTrace();
+        }
       }
       
       return costMap;

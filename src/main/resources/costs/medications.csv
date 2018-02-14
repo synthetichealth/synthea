@@ -9,32 +9,32 @@ CODE,COST,COMMENTS
 608680,0,"Acetaminophen 160 MG - OTC, listing as 0 ***"
 1803932,10,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 575971,2500,oxaliplatin 5 MG/ML [Eloxatin] -- note few instances in data
-1366342,XX,Levonorgestrel 0.00354 MG/HR [Norplant]
-646250,XX,Implanon 68 MG Drug Implant
-1111011,XX,Nexplanon 68 MG Drug Implant
-1000128,XX,1 ML Depo-Provera 150 MG/ML Injection
-1000158,XX,0.65 ML depo-subQ provera 160 MG/ML Prefilled Syringe
-807283,XX,Mirena 52 MG Intrauterine System
-1605257,XX,Liletta 52 MG Intrauterine System
-1856546,XX,Kyleena 19.5 MG Intrauterine System
-748962,XX,Camila 28 Day Pack
-831533,XX,Errin 28 Day Pack
-757594,XX,Jolivette 28 Day Pack
-235389,XX,Mestranol / Norethynodrel [Enovid]
-749882,XX,Norinyl 1+50 28 Day Pack
-1359133,XX,Estrostep Fe 28 Day Pack
-749785,XX,Ortho Tri-Cyclen 28 Day Pack
-751905,XX,Trinessa 28 Day Pack
-749762,XX,Seasonique 91 Day Pack
-748856,XX,Yaz 28 Day Pack
-978950,XX,Natazia 28 Day Pack
-748879,XX,Levora 0.15/30 28 Day Pack
-1536586,XX,Xulane 150/35 MCG/Day Weekly Transdermal System
-1367439,XX,NuvaRing 0.12/0.015 MG per 24HR 21 Day Vaginal Ring
+1366342,600,Levonorgestrel 0.00354 MG/HR [Norplant] -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
+646250,600,Implanon 68 MG Drug Implant -- assuming the same cost for all 3 implants
+1111011,600,Nexplanon 68 MG Drug Implant
+1000128,55,1 ML Depo-Provera 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
+1000158,55,0.65 ML depo-subQ provera 160 MG/ML Prefilled Syringe
+807283,1000,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
+1605257,1000,Liletta 52 MG Intrauterine System
+1856546,1000,Kyleena 19.5 MG Intrauterine System
+748962,35,"Camila 28 Day Pack -- all pills est at 35, based on https://money.usnews.com/money/blogs/alpha-consumer/2012/03/05/the-real-cost-of-birth-control"
+831533,35,Errin 28 Day Pack
+757594,35,Jolivette 28 Day Pack
+235389,35,Mestranol / Norethynodrel [Enovid]
+749882,35,Norinyl 1+50 28 Day Pack
+1359133,35,Estrostep Fe 28 Day Pack
+749785,35,Ortho Tri-Cyclen 28 Day Pack
+751905,35,Trinessa 28 Day Pack
+749762,35,Seasonique 91 Day Pack
+748856,35,Yaz 28 Day Pack
+978950,35,Natazia 28 Day Pack
+748879,35,Levora 0.15/30 28 Day Pack
+1536586,125,Xulane 150/35 MCG/Day Weekly Transdermal System - estimate from a few sources online
+1367439,40,NuvaRing 0.12/0.015 MG per 24HR 21 Day Vaginal Ring - est from https://www.plannedparenthood.org/learn/birth-control/birth-control-vaginal-ring-nuvaring/how-do-i-get-nuvaring
 896188,20,Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT [Advair]
 602735,110,Galantamine 4 MG [Razadyne]
 997221,250,Donepezil hydrochloride 10 MG [Aricept]
-313185,XX,Tacrine 10 MG Oral Capsule
+313185,1300,Tacrine 10 MG Oral Capsule -- using yearly cost from https://www.thepharmaletter.com/article/cognex-approved-for-alzheimer-s-in-usa
 1602593,450,Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG [Namzaric] -- https://www.drugs.com/price-guide/namzaric
 996741,275,Memantine hydrochloride 2 MG/ML [Namenda]
 998582,250,"Donepezil hydrochloride 23 MG [Aricept] -- note aricept expensive, generic only ~10"
@@ -49,7 +49,7 @@ CODE,COST,COMMENTS
 1049636,800,Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG [Percocet] -- note that there are other examples of oxy/acet that are much cheaper
 858069,250,Colchicine 0.6 MG [Colcrys]
 573839,10,Allopurinol 100 MG [Zyloprim]
-1736854,XX,Cisplatin 50 MG Injection
+1736854,445,Cisplatin 50 MG Injection -- https://www.mskcc.org/sites/default/files/node/25097/documents/drug-prices-table-bach-center-health-policy-and-outcomes-v2.pdf
 1734340,200,Etoposide 100 MG Injection -- https://www.drugs.com/price-guide/etoposide
 583214,6500,PACLitaxel 100 MG Injection -- few instances in data set
 849727,0,Naproxen sodium 220 MG [Aleve] - OTC
