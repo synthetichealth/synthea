@@ -44,8 +44,8 @@ dependencies {
 	// CSV Stuff
 	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
-
   compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
+  compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
