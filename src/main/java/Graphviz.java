@@ -48,8 +48,8 @@ public class Graphviz {
 
     Path inputPath = null;
     if (args != null && args.length > 0) {
-      URI uri = new URI("file://" + args[0]);
-      inputPath = Paths.get(uri);
+      File file = new File(args[0]);
+      inputPath = file.toPath();
     } else {
       URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
       inputPath = Paths.get(modulesFolder.toURI());
