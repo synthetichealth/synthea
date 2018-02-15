@@ -5,8 +5,8 @@ CODE,COST,COMMENTS
 745679,65,200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler
 1091166,90,"Methylphenidate Hydrochloride 20 MG [Ritalin] -- note high variability on this one, I see 20-250, avg is ~90"
 617944,300,Atomoxetine 100 MG [Strattera]
-1020137,0,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
-608680,0,"Acetaminophen 160 MG - OTC, listing as 0 ***"
+1020137,8,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
+608680,7,Acetaminophen 160 MG - OTC
 1803932,10,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 575971,2500,oxaliplatin 5 MG/ML [Eloxatin] -- note few instances in data
 1366342,600,Levonorgestrel 0.00354 MG/HR [Norplant] -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
@@ -38,7 +38,7 @@ CODE,COST,COMMENTS
 1602593,450,Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG [Namzaric] -- https://www.drugs.com/price-guide/namzaric
 996741,275,Memantine hydrochloride 2 MG/ML [Namenda]
 998582,250,"Donepezil hydrochloride 23 MG [Aricept] -- note aricept expensive, generic only ~10"
-106258,0,Hydrocortisone 10 MG/ML Topical Cream - OTC
+106258,7,Hydrocortisone 10 MG/ML Topical Cream - OTC
 308971,35,Carbamazepine[Tegretol] -- note fairly high variability
 563026,6,Diazepam [Valium]
 1153378,8,Clonazepam [Klonopin]
@@ -52,7 +52,7 @@ CODE,COST,COMMENTS
 1736854,445,Cisplatin 50 MG Injection -- https://www.mskcc.org/sites/default/files/node/25097/documents/drug-prices-table-bach-center-health-policy-and-outcomes-v2.pdf
 1734340,200,Etoposide 100 MG Injection -- https://www.drugs.com/price-guide/etoposide
 583214,6500,PACLitaxel 100 MG Injection -- few instances in data set
-849727,0,Naproxen sodium 220 MG [Aleve] - OTC
+849727,8,Naproxen sodium 220 MG [Aleve] - OTC
 567645,7,predniSONE 2.5 MG [Deltasone]
 835900,395,cycloSPORINE  modified 100 MG [Neoral]
 105078,7,Penicillin G 375 MG/ML Injectable Solution
@@ -67,22 +67,22 @@ CODE,COST,COMMENTS
 861467,40,Meperidine Hydrochloride 50 MG Oral Tablet -- note a couple major outliers
 1049221,800,Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG Oral Tablet
 857005,50,Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet
-1049630,0,diphenhydrAMINE Hydrochloride 25 MG Oral Tablet - OTC [Benadryl]
-239981,0,Chlorpheniramine 2 MG Chewable Tablet - otc [Chlor-Timeton] - see otc_antihistamine
-389128,0,Chlorpheniramine 8 MG Oral Tablet - otc
-197378,0,Astemizole 10 MG Oral Tablet - otc [hismanal]
-141918,0,Terfenadine 60 MG Oral Tablet - otc [seldane]
-665078,0,Loratadine 5 MG Chewable Tablet - OTC [claritin]
-311372,0,Loratadine 10 MG Oral Tablet - OTC [claritin]
-997488,0,Fexofenadine hydrochloride 30 MG Oral Tablet - OTC [allegra]
-997501,0,Fexofenadine hydrochloride 60 MG Oral Tablet - OTC [allegra]
-1014676,0,cetirizine hydrochloride 5 MG Oral Tablet - OTC [zyrtec]
-1014678,0,cetirizine hydrochloride 10 MG Oral Tablet - OTC [zyrtec]
-243670,0,Aspirin 81 MG Oral Tablet - OTC
-282464,0,Acetaminophen 160 MG Oral Tablet - OTC
-313782,0,Acetaminophen 325 MG Oral Tablet - OTC
-198405,0,Ibuprofen 100 MG Oral Tablet
-310965,0,Ibuprofen 200 MG Oral Tablet
+1049630,5,diphenhydrAMINE Hydrochloride 25 MG Oral Tablet - OTC [Benadryl]
+239981,5,Chlorpheniramine 2 MG Chewable Tablet - otc [Chlor-Timeton] - see otc_antihistamine
+389128,5,Chlorpheniramine 8 MG Oral Tablet - otc
+197378,7,Astemizole 10 MG Oral Tablet - otc [hismanal] - no longer available so assumed to be similar to other otc antihistamines
+141918,9,Terfenadine 60 MG Oral Tablet - otc [seldane]
+665078,7,Loratadine 5 MG Chewable Tablet - OTC [claritin]
+311372,7,Loratadine 10 MG Oral Tablet - OTC [claritin]
+997488,18,Fexofenadine hydrochloride 30 MG Oral Tablet - OTC [allegra]
+997501,18,Fexofenadine hydrochloride 60 MG Oral Tablet - OTC [allegra]
+1014676,19,cetirizine hydrochloride 5 MG Oral Tablet - OTC [zyrtec]
+1014678,19,cetirizine hydrochloride 10 MG Oral Tablet - OTC [zyrtec]
+243670,6.5,Aspirin 81 MG Oral Tablet - OTC
+282464,4,Acetaminophen 160 MG Oral Tablet - OTC
+313782,5,Acetaminophen 325 MG Oral Tablet - OTC
+198405,7,Ibuprofen 100 MG Oral Tablet
+310965,8,Ibuprofen 200 MG Oral Tablet
 849574,8,Naproxen sodium 220 MG Oral Tablet
 1049683,200,oxyCODONE Hydrochloride 10 MG Oral Tablet
 864718,18,Methadone Hydrochloride 5 MG Oral Tablet

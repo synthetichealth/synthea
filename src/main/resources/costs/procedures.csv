@@ -1,121 +1,98 @@
 CODE,COST,COMMENTS
-395142003,,Allergy screening test
-180256009,,Subcutaneous immunotherapy
-313191000,,Injection of adrenaline
+180256009,11870.87276,Subcutaneous immunotherapy
+313191000,2569.027213,Injection of adrenaline
 80146002,12369.65,Appendectomy
-171231001,,Asthma screening
-405783006,,Psychological assessment
-228557008,,Cognitive and behavioral therapy
+405783006,10265.59304,Psychological assessment
+228557008,10265.59304,Cognitive and behavioral therapy
 399208008,7610.58,Plain chest X-ray (procedure)
-269911007,,Sputum examination (procedure)
-23426006,,Measurement of respiratory function (procedure)
-53950000,,Respiratory therapy
+269911007,6097.0171,Sputum examination (procedure)
 73761001,11712.80115,Colonoscopy
-1015401000000100,,Fecal occult blood test
-274031008,,Rectal polypectomy
+1015401000000100,6097.0171,Fecal occult blood test
+274031008,10124.97792,Rectal polypectomy
 76164006,11712.80115,Biopsy of colon
-43075005,,Partial resection of colon
-103744005,,Administration of intravenous fluids
-387607004,,Construction of diverting colostomy
-703423002,,Combined chemotherapy and radiation therapy (procedure)
-698314001,,Consultation for treatment
-287664005,,Bilateral tubal ligation
-169553002,,Insertion of subcutaneous contraceptive
-76601001,,Intramuscular injection
-65200003,,Insertion of intrauterine contraceptive device
-22523008,,Vasectomy
-46706006,,Replacement of contraceptive intrauterine device
-68254000,,Removal of intrauterine device
-755621000000101,,Replacement of subcutaneous contraceptive
-301807007,,Removal of subcutaneous contraceptive
-127783003,,Spirometry (procedure)
-412776001,,Chronic obstructive pulmonary disease clinical management plan
-15081005,,Pulmonary rehabilitation (regime/therapy)
-426990007,,Home oxygen therapy (procedure)
-88039007,,Transplant of lung (procedure)
-429609002,,Lung volume reduction surgery (procedure)
-54550000,,Seizure Count Cerebral Cortex Electroencephalogram (EEG)
-274474001,,Bone immobilization
-385691007,,Fracture care
-312681000,,Bone density scan (procedure)
-133901003,,Burn care
-288086009,,Suture open wound
-384700001,,Injection of tetanus antitoxin
-91251008,,Physical therapy procedure
-699253003,,Surgical manipulation of joint of knee
-387685009,,Surgical manipulation of shoulder joint
-418891003,,Computed tomography of chest and abdomen
-167995008,,Sputum microscopy (procedure)
-91602002,,Thoracentesis (procedure)
-432231006,,Fine needle aspiration biopsy of lung (procedure)
-173160006,,Diagnostic fiberoptic bronchoscopy (procedure)
+43075005,23748.71475,Partial resection of colon
+387607004,31749.48505,Construction of diverting colostomy
+703423002,11870.87276,Combined chemotherapy and radiation therapy (procedure)
+287664005,7510.570372,Bilateral tubal ligation
+169553002,9064.305145,Insertion of subcutaneous contraceptive
+76601001,2569.027213,Intramuscular injection
+65200003,9064.305145,Insertion of intrauterine contraceptive device
+22523008,13136.06819,Vasectomy
+46706006,9064.305145,Replacement of contraceptive intrauterine device
+68254000,9064.305145,Removal of intrauterine device
+755621000000101,9064.305145,Replacement of subcutaneous contraceptive
+301807007,9064.305145,Removal of subcutaneous contraceptive
+127783003,7771.290572,Spirometry (procedure)
+88039007,155227.7365,Transplant of lung (procedure)
+429609002,31423.79603,Lung volume reduction surgery (procedure)
+54550000,9876.914606,Seizure Count Cerebral Cortex Electroencephalogram (EEG)
+312681000,9493.95989,Bone density scan (procedure)
+288086009,9259.88974,Suture open wound
+384700001,2569.027213,Injection of tetanus antitoxin
+91251008,500,Physical therapy procedure
+699253003,16899.34109,Surgical manipulation of joint of knee
+387685009,16899.34109,Surgical manipulation of shoulder joint
+418891003,9239.205362,Computed tomography of chest and abdomen
+167995008,6097.0171,Sputum microscopy (procedure)
+91602002,15507.25552,Thoracentesis (procedure)
+432231006,15507.25552,Fine needle aspiration biopsy of lung (procedure)
+173160006,8490.5551,Diagnostic fiberoptic bronchoscopy (procedure)
 698354004,10207.35977,Magnetic resonance imaging for measurement of brain volume (procedure)
-428191000124101,,Documentation of current medications
+428191000124101,500,Documentation of current medications
 180030006,21342.44596,Amputation of right foot
 79733001,21342.44596,Amputation of right leg
 46028000,21342.44596,"Amputation of right hand -- data only has ""amputation of lower extremity; assume the same for upper"
 13995008,21342.44596,Amputation of left arm
-65546002,,Extraction of wisdom tooth
+65546002,11965.62107,Extraction of wisdom tooth
 56876005,6424.085472,Drug rehabilitation and detoxification
 61480009,6424.085472,Drug detoxification
-424441002,,Prenatal initial visit
-252160004,,Standard pregnancy test
-169230002,,Ultrasound scan for fetal viability
-135892000,,Antenatal education
-713076009,,Antenatal risk assessment
-312404004,,Antenatal blood tests
-274804006,,Evaluation of uterine fundal height
-225158009,,Auscultation of the fetal heart
-44608003,,Blood typing  RH typing
-104091002,,Hemoglobin / Hematocrit / Platelet count
-47758006,,Hepatitis B Surface Antigen Measurement
-31676001,,Human immunodeficiency virus antigen test
-310861008,,Chlamydia antigen test
-165829005,,Gonorrhea infection test
-269828009,,Syphilis infection test
-117010004,,Urine culture
-90226004,,Cytopathology procedure  preparation of smear  genital source
-395123002,,Urine screening test for diabetes
-104375008,,Hepatitis C antibody test
-169690007,,Rubella screening
-104326007,,Measurement of Varicella-zoster virus antibody
-28163009,,Skin test for tuberculosis
-167271000,,Urine protein test
-5880005,,Physical examination following birth
-424619006,,Prenatal visit
-443529005,,Screening for chromosomal aneuploidy in prenatal amniotic fluid
-271442007,,Fetal anatomy study
-275833003,,Alpha-fetoprotein test
-169673001,,Antenatal RhD antibody screening
-51116004,,RhD passive immunization
-399014008,,Vaccination for diphtheria  pertussis  and tetanus
-268556000,,Urine screening for glucose
-118001005,,Streptococcus pneumoniae group B antigen test
-31208007,,Medical induction of labor
-18946005,,Epidural anesthesia
-237001001,,Augmentation of labor
+252160004,5242.673228,Standard pregnancy test
+169230002,9387.358624,Ultrasound scan for fetal viability
+312404004,2000,Antenatal blood tests
+274804006,5242.673228,Evaluation of uterine fundal height
+225158009,5242.673228,Auscultation of the fetal heart
+44608003,2000,Blood typing  RH typing
+104091002,2000,Hemoglobin / Hematocrit / Platelet count
+47758006,2000,Hepatitis B Surface Antigen Measurement
+31676001,2000,Human immunodeficiency virus antigen test
+310861008,2000,Chlamydia antigen test
+165829005,2000,Gonorrhea infection test
+269828009,2000,Syphilis infection test
+117010004,2000,Urine culture
+90226004,2000,Cytopathology procedure  preparation of smear  genital source
+395123002,2000,Urine screening test for diabetes
+104375008,2000,Hepatitis C antibody test
+169690007,2000,Rubella screening
+104326007,2000,Measurement of Varicella-zoster virus antibody
+28163009,2000,Skin test for tuberculosis
+167271000,2000,Urine protein test
+443529005,2000,Screening for chromosomal aneuploidy in prenatal amniotic fluid
+275833003,2000,Alpha-fetoprotein test
+169673001,2000,Antenatal RhD antibody screening
+51116004,2569.027213,RhD passive immunization
+399014008,2569.027213,Vaccination for diphtheria  pertussis  and tetanus
+268556000,2000,Urine screening for glucose
+118001005,2000,Streptococcus pneumoniae group B antigen test
+31208007,3649.164231,Medical induction of labor
+18946005,2000,Epidural anesthesia
+237001001,4069.693889,Augmentation of labor
 85548006,5442.799164,Episiotomy
 236974004,6456.387949,Instrumental delivery
 177157003,6456.387949,Spontaneous breech delivery
 11466000,8381.68,Cesarean section
-236931002,,Methotrexate injection into tubal pregnancy
-445912000,,Excision of fallopian tube and surgical removal of ectopic pregnancy
+236931002,2569.027213,Methotrexate injection into tubal pregnancy
+445912000,7911.699567,Excision of fallopian tube and surgical removal of ectopic pregnancy
 714812005,9105.321512,Induced termination of pregnancy
-183401008,,Anti-suicide psychotherapy
-29240004,,Autopsy examination
-112790001,,Nasal sinus endoscopy (procedure)
-117015009,,Throat culture (procedure)
-609588000,,Total knee replacement
+112790001,5699.796796,Nasal sinus endoscopy (procedure)
+117015009,2000,Throat culture (procedure)
+609588000,19195.68573,Total knee replacement
 52734007,19348.31177,Total replacement of hip
-171245007,,Urine screening
-232717009,,Coronary artery bypass grafting
-447365002,,Insertion of biventricular implantable cardioverter defibrillator
-429500007,,Monophasic defibrillation
-180325003,,Electrical cardioversion
-18286008,,Catheter ablation of tissue of heart
-49436004,,Atrial Fibrillation
-433112001,,Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance
-415070008,,Percutaneous coronary intervention
-308646001,,Death Certification
-410620009,,Well child visit (procedure)
-162673000,,General examination of patient (procedure)
+171245007,2000,Urine screening
+232717009,41931.57962,Coronary artery bypass grafting
+447365002,26054.39635,Insertion of biventricular implantable cardioverter defibrillator
+429500007,26054.39635,Monophasic defibrillation
+180325003,26054.39635,Electrical cardioversion
+18286008,9377.401472,Catheter ablation of tissue of heart
+49436004,26054.39635,Atrial Fibrillation
+433112001,20775.85873,Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance
+415070008,21454.79933,Percutaneous coronary intervention
