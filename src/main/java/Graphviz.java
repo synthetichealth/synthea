@@ -18,6 +18,8 @@ import guru.nidi.graphviz.model.Node;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,29 +39,39 @@ public class Graphviz {
 
   /**
    * Generate the Graphviz-like graphs of the disease modules.
-   * @param args None.
+   * @param args Optional path of modules to render. If not provided,
+   *   the default modules will be loaded using the ClassLoader.
+   * @throws URISyntaxException on failure to load modules.
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws URISyntaxException {
     File folder = Exporter.getOutputFolder("graphviz", null);
+
+    Path inputPath = null;
+    if (args != null && args.length > 0) {
+      File file = new File(args[0]);
+      inputPath = file.toPath();
+    } else {
+      URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
+      inputPath = Paths.get(modulesFolder.toURI());
+    }
 
     System.out.println("Rendering graphs to `" + folder.getAbsolutePath() + "`...");
 
     long start = System.currentTimeMillis();
-    generateJsonModuleGraphs(folder);
+    generateJsonModuleGraphs(inputPath, folder);
 
     System.out.println("Completed in " + (System.currentTimeMillis() - start) + " ms.");
   }
 
-  private static void generateJsonModuleGraphs(File outputFolder) {
+  private static void generateJsonModuleGraphs(Path inputPath, File outputFolder) {
     // adapted from Module.loadModules()
     try {
-      URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-      Path path = Paths.get(modulesFolder.toURI());
-      Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
+      Files.walk(inputPath, Integer.MAX_VALUE)
+          .filter(Files::isReadable).filter(Files::isRegularFile)
           .filter(p -> p.toString().endsWith(".json")).parallel().forEach(t -> {
             try {
-              JsonObject module = loadFile(t, path);
-              String relativePath = relativePath(t, path);
+              JsonObject module = loadFile(t, inputPath);
+              String relativePath = relativePath(t, inputPath);
               generateJsonModuleGraph(module, outputFolder, relativePath);
             } catch (IOException e) {
               e.printStackTrace();
@@ -589,7 +601,7 @@ public class Graphviz {
     } else {
       String conditionType = logic.get("condition_type").getAsString();
       throw new RuntimeException(
-          conditionType + " condition myst be specified by code or attribute");
+          conditionType + " condition must be specified by code or attribute");
     }
   }
 }
