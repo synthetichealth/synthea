@@ -31,6 +31,7 @@ public class App {
   public static void main(String[] args) throws Exception {
     Generator.GeneratorOptions options = new Generator.GeneratorOptions();
     
+    boolean validArgs = true;
     if (args != null && args.length > 0) {
       try {
         Queue<String> argsQ = new LinkedList<String>(Arrays.asList(args));
@@ -54,11 +55,13 @@ public class App {
       } catch (Exception e) {
         e.printStackTrace();
         usage();
-        System.exit(1); // invalid args so exit early
+        validArgs = false;
       }
     }
     
-    Generator generator = new Generator(options);
-    generator.run();
+    if (validArgs) {
+      Generator generator = new Generator(options);
+      generator.run();
+    }
   }
 }

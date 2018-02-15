@@ -1,5 +1,9 @@
 package org.mitre.synthea.helpers;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,10 +16,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.agents.Person;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 
 /**
  * Class to track state and transition metrics from the modules.

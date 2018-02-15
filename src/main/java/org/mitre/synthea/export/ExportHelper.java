@@ -51,7 +51,7 @@ public abstract class ExportHelper {
   public static String dateFromTimestamp(long time) {
     synchronized (DATE_FORMAT) {
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
-      return DATE_FORMAT.format( new Date(time) );
+      return DATE_FORMAT.format(new Date(time));
     }
   }
 }
