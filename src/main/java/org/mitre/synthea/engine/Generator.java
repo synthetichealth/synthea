@@ -138,7 +138,7 @@ public class Generator {
     // initialize hospitals
     Hospital.loadHospitals();
     Module.getModules(); // ensure modules load early
-    Costs.loadCostData();
+    Costs.loadCostData(); // ensure cost data loads early
     
     String locationName;
     if (city == null) {
