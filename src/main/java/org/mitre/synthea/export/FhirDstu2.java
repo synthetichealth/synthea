@@ -1093,6 +1093,9 @@ public class FhirDstu2 {
         new Code("http://hl7.org/fhir/ValueSet/organization-type", "prov", "Healthcare Provider"),
         "Healthcare Provider");
 
+    organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
+    .setValue((String) provider.getResourceID());
+
     organizationResource.setId(provider.getResourceID());
     organizationResource.setName(provider.name);
     organizationResource.setType(organizationType);

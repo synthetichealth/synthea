@@ -1308,6 +1308,9 @@ public class FhirStu3 {
                 "Healthcare Provider"),
             "Healthcare Provider"));
     
+    organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
+    .setValue((String) provider.getResourceID());
+
     organizationResource.setId(provider.getResourceID());
     organizationResource.setName(provider.name);
     organizationResource.setType(organizationType);

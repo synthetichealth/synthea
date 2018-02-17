@@ -73,6 +73,7 @@ public abstract class HospitalDSTU2Exporter {
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) h.getResourceID());
 
+    organizationResource.setId(h.getResourceID());
     organizationResource.setName(h.name);
 
     AddressDt address = new AddressDt();

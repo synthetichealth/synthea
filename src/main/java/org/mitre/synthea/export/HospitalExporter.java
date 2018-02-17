@@ -72,6 +72,7 @@ public abstract class HospitalExporter {
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) h.getResourceID());
 
+    organizationResource.setId(h.getResourceID());
     organizationResource.setName(h.name);
 
     Address address = new Address();

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.sis.geometry.DirectPosition2D;
@@ -34,6 +35,7 @@ public class Provider implements QuadTreeData {
   private static QuadTree providerMap = new QuadTree(500, 500); // node capacity, depth
 
   public Map<String, Object> attributes;
+  public String uuid;
   public String id;
   public String name;
   public String address;
@@ -50,14 +52,13 @@ public class Provider implements QuadTreeData {
   private Table<Integer, String, AtomicInteger> utilization;
 
   protected Provider() {
-    // no-arg constructor provided for subclasses
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<String>();
   }
 
   public String getResourceID() {
-    return id;
+    return uuid;
   }
 
   public Map<String, Object> getAttributes() {
@@ -198,6 +199,7 @@ public class Provider implements QuadTreeData {
 
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
+    d.uuid = UUID.randomUUID().toString();
     d.id = line.get("id");
     d.name = line.get("name");
     d.address = line.get("address");
