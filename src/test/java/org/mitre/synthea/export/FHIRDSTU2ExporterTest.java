@@ -44,7 +44,7 @@ public class FHIRDSTU2ExporterTest {
     validator.setValidateAgainstStandardSchematron(true);
 
     List<String> validationErrors = new ArrayList<String>();
-
+    
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
     for (int i = 0; i < numberOfPeople; i++) {
@@ -77,7 +77,6 @@ public class FHIRDSTU2ExporterTest {
         Exporter.export(person, System.currentTimeMillis());
       }
     }
-
     assertEquals(0, validationErrors.size());
   }
 }

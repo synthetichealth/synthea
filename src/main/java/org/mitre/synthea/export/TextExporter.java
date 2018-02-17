@@ -217,7 +217,7 @@ public class TextExporter {
 
     Provider prov = person.getAmbulatoryProvider();
     if (prov != null) {
-      textRecord.add("Outpatient Provider: " + prov.attributes.get("name"));
+      textRecord.add("Outpatient Provider: " + prov.name);
     }
   }
 

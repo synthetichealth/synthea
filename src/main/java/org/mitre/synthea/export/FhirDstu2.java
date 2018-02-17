@@ -6,6 +6,7 @@ import ca.uhn.fhir.model.api.IDatatype;
 import ca.uhn.fhir.model.dstu2.composite.AddressDt;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
 import ca.uhn.fhir.model.dstu2.composite.MoneyDt;
 import ca.uhn.fhir.model.dstu2.composite.NarrativeDt;
@@ -69,7 +70,6 @@ import ca.uhn.fhir.model.primitive.XhtmlDt;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.vividsolutions.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -345,7 +346,7 @@ public class FhirDstu2 {
         .setPostalCode((String) person.attributes.get(Person.ZIP))
         .setState(state).setCountry("US");
     
-    Point coord = (Point) person.attributes.get(Person.COORDINATE);
+    DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
     if (coord != null) {
       ExtensionDt geolocationExtension = new ExtensionDt();
       geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
@@ -1093,8 +1094,23 @@ public class FhirDstu2 {
         "Healthcare Provider");
 
     organizationResource.setId(provider.getResourceID());
-    organizationResource.setName((String) provider.getAttributes().get("name"));
+    organizationResource.setName(provider.name);
     organizationResource.setType(organizationType);
+
+    AddressDt address = new AddressDt()
+        .addLine(provider.address)
+        .setCity(provider.city)
+        .setPostalCode(provider.zip)
+        .setState(provider.state)
+        .setCountry("US");
+    organizationResource.addAddress(address);
+
+    if (provider.phone != null && !provider.phone.isEmpty()) {
+      ContactPointDt contactPoint = new ContactPointDt()
+          .setSystem(ContactPointSystemEnum.PHONE)
+          .setValue(provider.phone);
+      organizationResource.addTelecom(contactPoint);
+    }
 
     return newEntry(bundle, organizationResource);
   }

@@ -19,8 +19,8 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
@@ -136,7 +136,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Hospital.loadHospitals();
+    Provider.loadProviders(state);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
@@ -175,7 +175,7 @@ public class Generator {
     // have to store providers at the end to correctly capture utilization #s
     // TODO - de-dup hospitals if using a file-based database?
     if (database != null) {
-      database.store(Hospital.getHospitalList());
+      database.store(Provider.getProviderList());
     }
 
     Exporter.runPostCompletionExports(this);

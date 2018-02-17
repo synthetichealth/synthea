@@ -15,8 +15,8 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.TransitionMetrics.Metric;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mockito.Mockito;
 
 public class TransitionMetricsTest {
@@ -62,7 +62,7 @@ public class TransitionMetricsTest {
       // seeds chosen by experimentation, to ensure we hit "Pre_Examplitis" at least once
       person = new Person(seed); 
       person.attributes.put(Person.GENDER, "M");
-      person.setAmbulatoryProvider(Mockito.mock(Hospital.class));
+      person.setAmbulatoryProvider(Mockito.mock(Provider.class));
       time = System.currentTimeMillis();
       person.attributes.put(Person.BIRTHDATE, time);
       person.events.create(time, Event.BIRTH, "transition metrics test", true);
