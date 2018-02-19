@@ -351,202 +351,257 @@ public class Generator {
   }
 
   private long setDemographics(Person person, Demographics city) {
-	  // Create map and read in the sampled SPEW csv file for Massachusetts 
+	  if(Config.get("generate.households.mode").equals("true")) {
+		  System.out.println("Running in households mode");
 
-	  @SuppressWarnings("rawtypes")
-	  ArrayList<List> spewList = Demographics.getSpewList();
-	  
-	  @SuppressWarnings("unchecked")
-	  List<LinkedHashMap<String, String>> spewPerson = spewList.get(0);
+		  // Create map and read in the sampled SPEW csv file for Massachusetts 
 
-	  // get a random spew person
+		  @SuppressWarnings("rawtypes")
+		  ArrayList<List> spewList = Demographics.getSpewList();
 
-	  int[] range = new int[] {1,spewPerson.size() + 1};
+		  @SuppressWarnings("unchecked")
+		  List<LinkedHashMap<String, String>> spewPerson = spewList.get(0);
 
-	  int rand_spew = (int) person.rand(range);
+		  // get a random spew person
 
-	  String spew_serial = spewPerson.get(rand_spew).get("SERIALNO");
-	  person.attributes.put(Person.SPEW_SERIAL_NO, spew_serial);
+		  int[] range = new int[] {1,spewPerson.size() + 1};
 
-	  String household_income = spewPerson.get(rand_spew).get("HINCP");
-	  person.attributes.put(Person.HOUSEHOLD_INCOME, household_income);
+		  int rand_spew = (int) person.rand(range);
 
-	  String household_size = spewPerson.get(rand_spew).get("NP");
-	  person.attributes.put(Person.HOUSEHOLD_SIZE, household_size);
+		  String spew_serial = spewPerson.get(rand_spew).get("SERIALNO");
+		  person.attributes.put(Person.SPEW_SERIAL_NO, spew_serial);
 
-	  //this will have to change based on SPEW latitude/longitude   
-	  person.attributes.put(Person.CITY, city.city);
+		  String household_income = spewPerson.get(rand_spew).get("HINCP");
+		  person.attributes.put(Person.HOUSEHOLD_INCOME, household_income);
 
-	  //TODO spew location changes
-	  person.attributes.put(Person.STATE, city.state);
+		  String household_size = spewPerson.get(rand_spew).get("NP");
+		  person.attributes.put(Person.HOUSEHOLD_SIZE, household_size);
 
-	  String race = spewPerson.get(rand_spew).get("RAC1P");
-	  String hisp = spewPerson.get(rand_spew).get("HISP");
+		  //this will have to change based on SPEW latitude/longitude   
+		  person.attributes.put(Person.CITY, city.city);
 
-	  //race codes, hispanic is a different variable
-	  if(race.equals("1")){
-		  person.attributes.put(Person.RACE, "white");
-	  } else if(race.equals("2")){
-		  person.attributes.put(Person.RACE, "black");
-	  } else if(race.equals("3")){
-		  person.attributes.put(Person.RACE, "native");
-	  } else if(race.equals("4")){
-		  person.attributes.put(Person.RACE, "native");
-	  } else if(race.equals("5")){
-		  person.attributes.put(Person.RACE, "native");
-	  } else if(race.equals("6")){
-		  person.attributes.put(Person.RACE, "asian");
-	  } else if(race.equals("7")){
-		  person.attributes.put(Person.RACE, "asian");
-	  } else if(race.equals("8")){
-		  person.attributes.put(Person.RACE, "other");
-	  } else if(race.equals("9")){
-		  person.attributes.put(Person.RACE, "other");
-	  }
+		  //TODO spew location changes
+		  person.attributes.put(Person.STATE, city.state);
 
-	  //TODO hispanic ethnicities that are in SPEW but not in synthea
+		  String race = spewPerson.get(rand_spew).get("RAC1P");
+		  String hisp = spewPerson.get(rand_spew).get("HISP");
 
-	  @SuppressWarnings("unchecked")
-	  List<LinkedHashMap<String, String>> hispanic_codes = spewList.get(1);
+		  //race codes, hispanic is a different variable
+		  if(race.equals("1")){
+			  person.attributes.put(Person.RACE, "white");
+		  } else if(race.equals("2")){
+			  person.attributes.put(Person.RACE, "black");
+		  } else if(race.equals("3")){
+			  person.attributes.put(Person.RACE, "native");
+		  } else if(race.equals("4")){
+			  person.attributes.put(Person.RACE, "native");
+		  } else if(race.equals("5")){
+			  person.attributes.put(Person.RACE, "native");
+		  } else if(race.equals("6")){
+			  person.attributes.put(Person.RACE, "asian");
+		  } else if(race.equals("7")){
+			  person.attributes.put(Person.RACE, "asian");
+		  } else if(race.equals("8")){
+			  person.attributes.put(Person.RACE, "other");
+		  } else if(race.equals("9")){
+			  person.attributes.put(Person.RACE, "other");
+		  }
 
-	  if(person.attributes.get(race) == null && !hisp.equals("1")){
-		  person.attributes.put(Person.RACE, "hispanic");
-		  person.attributes.put(Person.HISPANIC, true);
-		  
-		  for(int i = 0;i<=hispanic_codes.size()-1;i++) {
-			  if(spewPerson.get(rand_spew).get("HISP").equals(hispanic_codes.get(i).get("Code"))) {
-				  person.attributes.put(Person.ETHNICITY, hispanic_codes.get(i).get("Ethnicity"));
+		  //TODO hispanic ethnicities that are in SPEW but not in synthea
+
+		  @SuppressWarnings("unchecked")
+		  List<LinkedHashMap<String, String>> hispanic_codes = spewList.get(1);
+
+		  if(person.attributes.get(race) == null && !hisp.equals("1")){
+			  person.attributes.put(Person.RACE, "hispanic");
+			  person.attributes.put(Person.HISPANIC, true);
+
+			  for(int i = 0;i<=hispanic_codes.size()-1;i++) {
+				  if(spewPerson.get(rand_spew).get("HISP").equals(hispanic_codes.get(i).get("Code"))) {
+					  person.attributes.put(Person.ETHNICITY, hispanic_codes.get(i).get("Ethnicity"));
+				  } 
+			  }
+		  }
+
+		  if(hisp.equals("1")){
+			  person.attributes.put(Person.HISPANIC, false);
+			  String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
+			  person.attributes.put(Person.ETHNICITY, ethnicity);
+		  }
+
+		  String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),person);
+		  person.attributes.put(Person.FIRST_LANGUAGE, language);
+
+		  String gender = spewPerson.get(rand_spew).get("SEX");
+
+		  if(gender.equals("1")){
+			  person.attributes.put(Person.GENDER, "M");
+		  } else if (gender.equals("2")){
+			  person.attributes.put(Person.GENDER, "F");
+		  }
+
+		  //Longitude and latitude
+		  //TODO a look up to assign address/city/town/zip from lat and long
+		  //look into using FIPS codes
+
+		  String longitude = spewPerson.get(rand_spew).get("longitude");
+		  person.attributes.put(Person.LONGITUDE, longitude);
+
+		  String latitude = spewPerson.get(rand_spew).get("latitude");
+		  person.attributes.put(Person.LATITUDE, latitude);
+
+		  String nativity = spewPerson.get(rand_spew).get("NATIVITY");
+
+		  if(nativity.equals("1")) {
+			  person.attributes.put(Person.NATIVITY, "native");
+		  } else if(nativity.equals("2")) {
+			  person.attributes.put(Person.NATIVITY, "foreign_born");
+		  }
+
+		  @SuppressWarnings("unchecked")
+		  List<LinkedHashMap<String, String>> birthplaces = spewList.get(2);
+
+		  for(int i = 0;i<=birthplaces.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
+				  person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
 			  } 
 		  }
-	  }
-	
-	  if(hisp.equals("1")){
-		  person.attributes.put(Person.HISPANIC, false);
+
+		  String school_enrollment = spewPerson.get(rand_spew).get("SCH");
+
+		  if(school_enrollment.equals("NA")){
+			  person.attributes.put(Person.SCHOOL_ENROLLMENT, "N/A (less than 3 years old)");
+		  } else if (school_enrollment.equals("1")){
+			  person.attributes.put(Person.SCHOOL_ENROLLMENT, "no");
+		  } else if (school_enrollment.equals("2")){
+			  person.attributes.put(Person.SCHOOL_ENROLLMENT, "public_school_or_public_college");
+		  } else if (school_enrollment.equals("3")){
+			  person.attributes.put(Person.SCHOOL_ENROLLMENT, "private_school_or_college_or_home_school");
+		  } 
+
+		  @SuppressWarnings("unchecked")
+		  List<LinkedHashMap<String, String>> grade_level = spewList.get(3);
+
+		  for(int i = 0;i<=grade_level.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("SCHG").equals(grade_level.get(i).get("Code"))) {
+				  person.attributes.put(Person.GRADE_LEVEL, grade_level.get(i).get("grade"));
+			  } 
+		  }
+
+		  @SuppressWarnings("unchecked")
+		  List<LinkedHashMap<String, String>> relationship = spewList.get(4);
+
+		  for(int i = 0;i<=grade_level.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("RELP").equals(relationship.get(i).get("Code"))) {
+				  person.attributes.put(Person.RELATIONSHIP, relationship.get(i).get("Relationship"));
+			  } 
+		  }
+
+		  // Socioeconomic variables of education, income, and education are set.
+		  String education = city.pickEducation(person.random);
+		  person.attributes.put(Person.EDUCATION, education);
+		  double educationLevel = city.educationLevel(education, person);
+		  person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
+
+		  long targetAge = Long.valueOf(spewPerson.get(rand_spew).get("AGEP")).longValue();
+
+		  int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
+		  person.attributes.put(Person.INCOME, income);
+
+		  double incomeLevel = city.incomeLevel(Integer.parseInt(spewPerson.get(rand_spew).get("HINCP")));
+		  person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
+
+		  double occupation = person.rand();
+		  person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
+
+		  double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
+		  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+		  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+
+		  List<LinkedHashMap<String, String>> occupations = spewList.get(5);
+
+		  for(int i = 0;i<=occupations.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("OCCP").equals(occupations.get(i).get("Code"))) {
+				  person.attributes.put(Person.OCCUPATION, occupations.get(i).get("Occupation"));
+			  }
+		  }
+
+		  String employment_status = spewPerson.get(rand_spew).get("ESR");
+
+		  if(employment_status.equals("NA")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "na_under_16");
+		  } else if(employment_status.equals("")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "civilian_employed_at_work");
+		  } else if(employment_status.equals("")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "civilian_employed_with_job_but_not_at_work");
+		  } else if(employment_status.equals("")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "unemployed");
+		  } else if(employment_status.equals("")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "armed_forces_at_work");
+		  } else if(employment_status.equals("")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "armed_forces_with_job_but_not_at_work");
+		  } else if(employment_status.equals("")) {
+			  person.attributes.put(Person.EMPLOYMENT_STATUS, "not_in_labor_force");
+		  }
+
+		  // TODO this is terrible date handling, figure out how to use the java time library
+		  long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
+		  long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
+
+		  long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
+
+		  return birthdate;
+
+	  }else {
+
+		  System.out.println("Running in demographics mode");
+
+		  person.attributes.put(Person.CITY, city.city);
+		  person.attributes.put(Person.STATE, city.state);
+
+		  String race = city.pickRace(person.random);
+		  person.attributes.put(Person.RACE, race);
 		  String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
 		  person.attributes.put(Person.ETHNICITY, ethnicity);
-	  }
- 	  
-	  String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),person);
-	  person.attributes.put(Person.FIRST_LANGUAGE, language);
+		  String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),
+				  person);
+		  person.attributes.put(Person.FIRST_LANGUAGE, language);
 
-	  String gender = spewPerson.get(rand_spew).get("SEX");
-
-	  if(gender.equals("1")){
-		  person.attributes.put(Person.GENDER, "M");
-	  } else if (gender.equals("2")){
-		  person.attributes.put(Person.GENDER, "F");
-	  }
-
-	  //Longitude and latitude
-	  //TODO a look up to assign address/city/town/zip from lat and long
-	  //look into using FIPS codes
-	
-	  String longitude = spewPerson.get(rand_spew).get("longitude");
-	  person.attributes.put(Person.LONGITUDE, longitude);
-	
-	  String latitude = spewPerson.get(rand_spew).get("latitude");
-	  person.attributes.put(Person.LATITUDE, latitude);
-
-	  String nativity = spewPerson.get(rand_spew).get("NATIVITY");
-	
-	  if(nativity.equals("1")) {
-		  person.attributes.put(Person.NATIVITY, "native");
-	  } else if(nativity.equals("2")) {
-		  person.attributes.put(Person.NATIVITY, "foreign_born");
-	  }
-	
-	  @SuppressWarnings("unchecked")
-	  List<LinkedHashMap<String, String>> birthplaces = spewList.get(2);
-	  
-	  for(int i = 0;i<=birthplaces.size()-1;i++) {
-		  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
-			  person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
-		  } 
-	  }
-	  
-	  String school_enrollment = spewPerson.get(rand_spew).get("SCH");
-
-	  if(school_enrollment.equals("NA")){
-		  person.attributes.put(Person.SCHOOL_ENROLLMENT, "N/A (less than 3 years old)");
-	  } else if (school_enrollment.equals("1")){
-		  person.attributes.put(Person.SCHOOL_ENROLLMENT, "no");
-	  } else if (school_enrollment.equals("2")){
-		  person.attributes.put(Person.SCHOOL_ENROLLMENT, "public_school_or_public_college");
-	  } else if (school_enrollment.equals("3")){
-		  person.attributes.put(Person.SCHOOL_ENROLLMENT, "private_school_or_college_or_home_school");
-	  } 
-	  
-	  @SuppressWarnings("unchecked")
-	  List<LinkedHashMap<String, String>> grade_level = spewList.get(3);
-
-	  for(int i = 0;i<=grade_level.size()-1;i++) {
-		  if(spewPerson.get(rand_spew).get("SCHG").equals(grade_level.get(i).get("Code"))) {
-			  person.attributes.put(Person.GRADE_LEVEL, grade_level.get(i).get("grade"));
-		  } 
-	  }
-	  
-	  @SuppressWarnings("unchecked")
-	  List<LinkedHashMap<String, String>> relationship = spewList.get(4);
-	    
-	  for(int i = 0;i<=grade_level.size()-1;i++) {
-		  if(spewPerson.get(rand_spew).get("RELP").equals(relationship.get(i).get("Code"))) {
-			  person.attributes.put(Person.RELATIONSHIP, relationship.get(i).get("Relationship"));
-		  } 
-	  }
-
-	  // Socioeconomic variables of education, income, and education are set.
-	  String education = city.pickEducation(person.random);
-	  person.attributes.put(Person.EDUCATION, education);
-	  double educationLevel = city.educationLevel(education, person);
-	  person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
-
-	  long targetAge = Long.valueOf(spewPerson.get(rand_spew).get("AGEP")).longValue();
-
-	  int income = Integer.parseInt(spewPerson.get(rand_spew).get("PINCP"));
-	  person.attributes.put(Person.INCOME, income);
-	  
-	  double incomeLevel = city.incomeLevel(Integer.parseInt(spewPerson.get(rand_spew).get("HINCP")));
-	  person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
-	  
-	  double occupation = person.rand();
-	  person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
-	  
-	  double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-	  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-	  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
-	  
-	  List<LinkedHashMap<String, String>> occupations = spewList.get(5);
-	  
-	  for(int i = 0;i<=occupations.size()-1;i++) {
-		  if(spewPerson.get(rand_spew).get("OCCP").equals(occupations.get(i).get("Code"))) {
-			  person.attributes.put(Person.OCCUPATION, occupations.get(i).get("Occupation"));
+		  String gender = city.pickGender(person.random);
+		  if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
+			  gender = "M";
+		  } else {
+			  gender = "F";
 		  }
+		  person.attributes.put(Person.GENDER, gender);
+
+		  // Socioeconomic variables of education, income, and education are set.
+		  String education = city.pickEducation(person.random);
+		  person.attributes.put(Person.EDUCATION, education);
+		  double educationLevel = city.educationLevel(education, person);
+		  person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
+
+		  int income = city.pickIncome(person.random);
+		  person.attributes.put(Person.INCOME, income);
+		  double incomeLevel = city.incomeLevel(income);
+		  person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
+
+		  double occupation = person.rand();
+		  person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
+
+		  double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
+		  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+		  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+
+		  long targetAge = city.pickAge(person.random);
+
+		  // TODO this is terrible date handling, figure out how to use the java time library
+		  long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
+		  long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
+
+		  long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
+
+		  return birthdate;
 	  }
-
-	  String employment_status = spewPerson.get(rand_spew).get("ESR");
-
-	  if(employment_status.equals("NA")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "na_under_16");
-	  } else if(employment_status.equals("")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "civilian_employed_at_work");
-	  } else if(employment_status.equals("")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "civilian_employed_with_job_but_not_at_work");
-	  } else if(employment_status.equals("")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "unemployed");
-	  } else if(employment_status.equals("")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "armed_forces_at_work");
-	  } else if(employment_status.equals("")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "armed_forces_with_job_but_not_at_work");
-	  } else if(employment_status.equals("")) {
-		  person.attributes.put(Person.EMPLOYMENT_STATUS, "not_in_labor_force");
-	  }
-
-	  // TODO this is terrible date handling, figure out how to use the java time library
-	  long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
-	  long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
-
-	  long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
-
-	  return birthdate;
   }
 }
