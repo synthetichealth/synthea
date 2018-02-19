@@ -47,7 +47,7 @@ public class Demographics {
 
 
   public static void loadSpew() throws IOException {
-	  List<LinkedHashMap<String, String>> spewPerson = SimpleCSV.parse(Utilities.readResource("people_25.csv"));
+	  List<LinkedHashMap<String, String>> spewPerson = SimpleCSV.parse(Utilities.readResource("samp_people_25.csv"));
 	  spewList.add(spewPerson);
 	  
 	  List<LinkedHashMap<String, String>> hispanic_codes = SimpleCSV.parse(Utilities.readResource("hispanic.csv"));
