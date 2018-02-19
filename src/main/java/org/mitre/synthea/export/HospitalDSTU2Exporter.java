@@ -21,11 +21,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Provider;
 
 public abstract class HospitalDSTU2Exporter {
@@ -39,7 +37,7 @@ public abstract class HospitalDSTU2Exporter {
       
       Bundle bundle = new Bundle();
       bundle.setType(BundleTypeEnum.COLLECTION);
-      for (Hospital h : Hospital.getHospitalList()) {
+      for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
 
         Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
@@ -69,21 +67,20 @@ public abstract class HospitalDSTU2Exporter {
     }
   }
 
-  public static void addHospitalToBundle(Hospital h, Bundle bundle) {
+  public static void addHospitalToBundle(Provider h, Bundle bundle) {
     Organization organizationResource = new Organization();
 
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) h.getResourceID());
 
-    Map<String, Object> hospitalAttributes = h.getAttributes();
-
-    organizationResource.setName(hospitalAttributes.get("name").toString());
+    organizationResource.setId(h.getResourceID());
+    organizationResource.setName(h.name);
 
     AddressDt address = new AddressDt();
-    address.addLine(hospitalAttributes.get("address").toString());
-    address.setCity(hospitalAttributes.get("city").toString());
-    address.setPostalCode(hospitalAttributes.get("city_zip").toString());
-    address.setState(hospitalAttributes.get("state").toString());
+    address.addLine(h.address);
+    address.setCity(h.city);
+    address.setPostalCode(h.zip);
+    address.setState(h.state);
     organizationResource.addAddress(address);
 
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();

@@ -17,7 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Hospital;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class HospitalDSTU2ExporterTest {
@@ -35,11 +35,11 @@ public class HospitalDSTU2ExporterTest {
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir_dstu2.export", "true");
-    Hospital.loadHospitals();
-    assertNotNull(Hospital.getHospitalList());
-    assertFalse(Hospital.getHospitalList().isEmpty());
+    Provider.loadProviders(null);
+    assertNotNull(Provider.getProviderList());
+    assertFalse(Provider.getProviderList().isEmpty());
 
-    Hospital.getHospitalList().get(0).incrementEncounters(EncounterType.WELLNESS.toString(), 0);
+    Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS.toString(), 0);
     HospitalDSTU2Exporter.export(0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir_dstu2").toFile();

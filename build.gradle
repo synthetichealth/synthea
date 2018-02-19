@@ -33,10 +33,9 @@ dependencies {
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0'
 	// C-CDA export uses Apache FreeMarker templates
 	compile 'org.freemarker:freemarker:2.3.26-incubating'
-  // JTS for location processing
-  compile group: 'com.vividsolutions', name: 'jts-core', version: '1.14.0'
-  // used to convert the ma_geo GeoJSON file to JTS
-  compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
+  // location processing
+  compile group: 'org.apache.sis.core', name: 'sis-referencing', version: '0.8'
+  compile group: 'org.apache.sis.storage', name: 'sis-storage', version: '0.8'
   compile group: 'com.h2database', name: 'h2', version: '1.4.196'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'
