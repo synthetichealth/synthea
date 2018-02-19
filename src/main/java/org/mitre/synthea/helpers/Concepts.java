@@ -90,12 +90,8 @@ public class Concepts {
       for (String code : codesInSystem.keySet()) {
         String display = codesInSystem.get(code);
         display = display.replaceAll("\\r\\n|\\r|\\n|,", " ").trim();
-        StringBuilder output = new StringBuilder();
-        output.append(system).append(',')
-              .append(code).append(',')
-              .append(display).append(System.lineSeparator());
-        
-        conceptList.add(output.toString());
+        String concept = system + ',' + code + ',' + display;
+        conceptList.add(concept);
       }
     }
     
