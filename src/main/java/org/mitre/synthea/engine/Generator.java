@@ -153,9 +153,6 @@ public class Generator {
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
-    // initialize SPEW data
-    Demographics.loadSpew();
-    
     String locationName;
     if (city == null) {
       locationName = state;
@@ -176,7 +173,15 @@ public class Generator {
     for (int i = 0; i < this.numberOfPeople; i++) {
       final int index = i;
       final long seed = this.random.nextLong();
-      threadPool.submit(() -> generatePerson(index, seed));
+      threadPool.submit(() -> {
+		try {
+			return generatePerson(index, seed);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	});
     }
 
     try {
@@ -211,8 +216,9 @@ public class Generator {
    * 
    * @param index Target index in the whole set of people to generate
    * @return generated Person
+ * @throws Throwable 
    */
-  public Person generatePerson(int index) {
+  public Person generatePerson(int index) throws Throwable {
     // System.currentTimeMillis is not unique enough
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     return generatePerson(index, personSeed);
@@ -230,8 +236,9 @@ public class Generator {
    * @param personSeed
    *          Seed for the random person
    * @return generated Person
+ * @throws Throwable 
    */
-  public Person generatePerson(int index, long personSeed) {
+  public Person generatePerson(int index, long personSeed) throws Throwable {
     Person person = null;
     try {
       boolean isAlive = true;
@@ -350,17 +357,11 @@ public class Generator {
     }
   }
 
-  private long setDemographics(Person person, Demographics city) {
-	  if(Config.get("generate.households.mode").equals("true")) {
-		  System.out.println("Running in households mode");
-
+  private long setDemographics(Person person, Demographics city) throws IOException {
+	  if(Demographics.householdsMode() == "true") {
 		  // Create map and read in the sampled SPEW csv file for Massachusetts 
 
-		  @SuppressWarnings("rawtypes")
-		  ArrayList<List> spewList = Demographics.getSpewList();
-
-		  @SuppressWarnings("unchecked")
-		  List<LinkedHashMap<String, String>> spewPerson = spewList.get(0);
+		  List<LinkedHashMap<String, String>> spewPerson = Demographics.getSpewPeople();
 
 		  // get a random spew person
 
@@ -409,16 +410,15 @@ public class Generator {
 
 		  //TODO hispanic ethnicities that are in SPEW but not in synthea
 
-		  @SuppressWarnings("unchecked")
-		  List<LinkedHashMap<String, String>> hispanic_codes = spewList.get(1);
+		  List<LinkedHashMap<String, String>> hispanicCodes = Demographics.getHispanicCodes();
 
 		  if(person.attributes.get(race) == null && !hisp.equals("1")){
 			  person.attributes.put(Person.RACE, "hispanic");
 			  person.attributes.put(Person.HISPANIC, true);
 
-			  for(int i = 0;i<=hispanic_codes.size()-1;i++) {
-				  if(spewPerson.get(rand_spew).get("HISP").equals(hispanic_codes.get(i).get("Code"))) {
-					  person.attributes.put(Person.ETHNICITY, hispanic_codes.get(i).get("Ethnicity"));
+			  for(int i = 0;i<=hispanicCodes.size()-1;i++) {
+				  if(spewPerson.get(rand_spew).get("HISP").equals(hispanicCodes.get(i).get("Code"))) {
+					  person.attributes.put(Person.ETHNICITY, hispanicCodes.get(i).get("Ethnicity"));
 				  } 
 			  }
 		  }
@@ -458,8 +458,7 @@ public class Generator {
 			  person.attributes.put(Person.NATIVITY, "foreign_born");
 		  }
 
-		  @SuppressWarnings("unchecked")
-		  List<LinkedHashMap<String, String>> birthplaces = spewList.get(2);
+		  List<LinkedHashMap<String, String>> birthplaces = Demographics.getBirthplaces();
 
 		  for(int i = 0;i<=birthplaces.size()-1;i++) {
 			  if(spewPerson.get(rand_spew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
@@ -479,21 +478,20 @@ public class Generator {
 			  person.attributes.put(Person.SCHOOL_ENROLLMENT, "private_school_or_college_or_home_school");
 		  } 
 
-		  @SuppressWarnings("unchecked")
-		  List<LinkedHashMap<String, String>> grade_level = spewList.get(3);
+		  List<LinkedHashMap<String, String>> gradeLevels = Demographics.getGradeLevels();
 
-		  for(int i = 0;i<=grade_level.size()-1;i++) {
-			  if(spewPerson.get(rand_spew).get("SCHG").equals(grade_level.get(i).get("Code"))) {
-				  person.attributes.put(Person.GRADE_LEVEL, grade_level.get(i).get("grade"));
+		  for(int i = 0;i<=gradeLevels.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("SCHG").equals(gradeLevels.get(i).get("Code"))) {
+				  person.attributes.put(Person.GRADE_LEVEL, gradeLevels.get(i).get("grade"));
 			  } 
 		  }
 
 		  @SuppressWarnings("unchecked")
-		  List<LinkedHashMap<String, String>> relationship = spewList.get(4);
+		  List<LinkedHashMap<String, String>> relationships = Demographics.getRelationships();
 
-		  for(int i = 0;i<=grade_level.size()-1;i++) {
-			  if(spewPerson.get(rand_spew).get("RELP").equals(relationship.get(i).get("Code"))) {
-				  person.attributes.put(Person.RELATIONSHIP, relationship.get(i).get("Relationship"));
+		  for(int i = 0;i<=relationships.size()-1;i++) {
+			  if(spewPerson.get(rand_spew).get("RELP").equals(relationships.get(i).get("Code"))) {
+				  person.attributes.put(Person.RELATIONSHIP, relationships.get(i).get("Relationship"));
 			  } 
 		  }
 
@@ -518,7 +516,7 @@ public class Generator {
 		  person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
 		  person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 
-		  List<LinkedHashMap<String, String>> occupations = spewList.get(5);
+		  List<LinkedHashMap<String, String>> occupations = Demographics.getOccupations();
 
 		  for(int i = 0;i<=occupations.size()-1;i++) {
 			  if(spewPerson.get(rand_spew).get("OCCP").equals(occupations.get(i).get("Code"))) {
@@ -553,9 +551,6 @@ public class Generator {
 		  return birthdate;
 
 	  }else {
-
-		  System.out.println("Running in demographics mode");
-
 		  person.attributes.put(Person.CITY, city.city);
 		  person.attributes.put(Person.STATE, city.state);
 
