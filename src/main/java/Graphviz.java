@@ -40,7 +40,7 @@ public class Graphviz {
   /**
    * Generate the Graphviz-like graphs of the disease modules.
    * @param args Optional path of modules to render. If not provided,
-   *   the default modules will be loaded using the ClassLoader.
+   *     the default modules will be loaded using the ClassLoader.
    * @throws URISyntaxException on failure to load modules.
    */
   public static void main(String[] args) throws URISyntaxException {

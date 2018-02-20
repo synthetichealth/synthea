@@ -105,7 +105,7 @@ public final class EncounterModule extends Module {
 
   public static void emergencyEncounter(Person person, long time) {
     // find closest service provider with emergency service
-    Provider provider = Provider.findClosestService(person, "emergency");
+    Provider provider = person.getEmergencyProvider();
     provider.incrementEncounters("emergency", Utilities.getYear(time));
 
     Encounter encounter = person.record.encounterStart(time, "emergency");

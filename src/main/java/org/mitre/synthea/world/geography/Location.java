@@ -1,11 +1,6 @@
 package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.Table;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,23 +13,26 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
-import org.wololo.geojson.Feature;
-import org.wololo.geojson.FeatureCollection;
-import org.wololo.geojson.GeoJSONFactory;
-import org.wololo.jts2geojson.GeoJSONReader;
 
 public class Location {
-  private FeatureCollection cities;
+  private static Map<String, String> stateAbbreviations = loadAbbreviations();
+
   private long totalPopulation;
 
   // cache the population by city name for performance
   private Map<String, Long> populationByCity;
-  private Map<String, Feature> featuresByName;
-  private Map<String, List<String>> zipCodes;
-  
+  private Map<String, List<Place>> zipCodes;
+
   private String city;
   private Map<String, Demographics> demographics;
 
+  /**
+   * Location is a set of demographic and place information.
+   * @param state The full name of the state.
+   *     e.g. "Ohio" and not an abbreviation.
+   * @param city The full name of the city.
+   *     e.g. "Columbus" or null for an entire state.
+   */
   public Location(String state, String city) {
     try {
       this.city = city;
@@ -64,25 +62,8 @@ public class Location {
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
-    
-    // load the GeoJSON once so we can use it for all patients
-    String filename = Config.get("generate.geography.borders.default_file");
-    featuresByName = new HashMap<>();
 
-    try {
-      String json = Utilities.readResource(filename);
-      cities = (FeatureCollection) GeoJSONFactory.create(json);
-
-      for (Feature f : cities.getFeatures()) {
-        String cityName = (String) f.getProperties().get("cs_name");
-        featuresByName.put(cityName, f);
-      }
-    } catch (Exception e) {
-      System.err.println("ERROR: unable to load geojson: " + filename);
-      e.printStackTrace();
-      throw new ExceptionInInitializerError(e);
-    }
-
+    String filename = null;
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
       String csv = Utilities.readResource(filename);
@@ -90,22 +71,16 @@ public class Location {
 
       zipCodes = new HashMap<>();
       for (Map<String,String> line : ziplist) {
-        String lineState = line.get("USPS");
+        Place place = new Place(line);
         
-        if (!lineState.equals(state)) {
+        if (!place.sameState(state)) {
           continue;
         }
         
-        String lineCity = line.get("NAME");
-        String zip = line.get("ZCTA5");
-        
-        List<String> zipsForCity = zipCodes.get(lineCity);
-        if (zipsForCity == null) {
-          zipsForCity = new ArrayList<>();
-          zipCodes.put(lineCity, zipsForCity);
+        if (!zipCodes.containsKey(place.name)) {
+          zipCodes.put(place.name, new ArrayList<Place>());
         }
-        
-        zipsForCity.add(zip);
+        zipCodes.get(place.name).add(place);
       }
     } catch (Exception e) {
       System.err.println("ERROR: unable to load zips csv: " + filename);
@@ -120,11 +95,10 @@ public class Location {
    * If a city has more than one zip code, this picks a random one.
    * 
    * @param cityName Name of the city
-   * @param random Source of randomness
    * @return a zip code for the given city
    */
-  public String getZipCode(String cityName, Random random) {
-    List<String> zipsForCity = zipCodes.get(cityName);
+  public String getZipCode(String cityName) {
+    List<Place> zipsForCity = zipCodes.get(cityName);
     
     if (zipsForCity == null) {
       zipsForCity = zipCodes.get(cityName + " Town");
@@ -132,12 +106,10 @@ public class Location {
     
     if (zipsForCity == null || zipsForCity.isEmpty()) {
       return "00000"; // if we don't have the city, just use a dummy
-    } else if (zipsForCity.size() == 1) {
-      return zipsForCity.get(0);
-    } else {
-      // pick a random one
-      return zipsForCity.get(random.nextInt(zipsForCity.size()));
+    } else if (zipsForCity.size() >= 1) {
+      return zipsForCity.get(0).postalCode;
     }
+    return "00000";
   }
 
   public long getPopulation(String cityName) {
@@ -190,42 +162,71 @@ public class Location {
    *          Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
-    Feature cityFeature = null;
+    List<Place> zipsForCity = null;
 
-    cityFeature = featuresByName.get(cityName);
+    if (cityName == null) {
+      int size = zipCodes.keySet().size();
+      cityName = (String) zipCodes.keySet().toArray()[person.randInt(size)];
+    }
+    zipsForCity = zipCodes.get(cityName);
 
-    if (cityFeature == null) {
-      cityFeature = featuresByName.get(cityName + " Town");
+    if (zipsForCity == null) {
+      zipsForCity = zipCodes.get(cityName + " Town");
     }
     
-    if (cityFeature == null) {
-      // TODO - warning? 
-      return;
+    Place place = null;
+    if (zipsForCity.size() == 1) {
+      place = zipsForCity.get(0);
+    } else {
+      // pick a random one
+      place = zipsForCity.get(person.randInt(zipsForCity.size()));
     }
     
-    GeoJSONReader reader = new GeoJSONReader();
-    MultiPolygon geom = (MultiPolygon) reader.read(cityFeature.getGeometry());
+    if (place != null) {
+      person.attributes.put(Person.COORDINATE, place.getLatLon());
+    }
+  }
 
-    Polygon boundingBox = (Polygon) geom.getEnvelope();
-    /*
-     * If this Geometry is: empty, returns an empty Point. a point, returns a Point. a line parallel
-     * to an axis, a two-vertex LineString otherwise, returns a Polygon whose vertices are (minx
-     * miny, maxx miny, maxx maxy, minx maxy, minx miny).
-     */
-    Coordinate[] coords = boundingBox.getCoordinates();
-    double minX = coords[0].x;
-    double minY = coords[0].y;
-    double maxX = coords[2].x;
-    double maxY = coords[2].y;
+  private static Map<String, String> loadAbbreviations() {
+    Map<String, String> abbreviations = new HashMap<String, String>();
+    String filename = null;
+    try {
+      filename = Config.get("generate.geography.zipcodes.default_file");
+      String csv = Utilities.readResource(filename);
+      List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
 
-    Point selectedPoint = null;
+      for (Map<String,String> line : ziplist) {
+        String state = line.get("USPS");
+        String abbreviation = line.get("ST");
+        abbreviations.put(state, abbreviation);
+      }
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load zips csv: " + filename);
+      e.printStackTrace();
+    }
+    return abbreviations;
+  }
 
-    do {
-      double x = person.rand(minX, maxX);
-      double y = person.rand(minY, maxY);
-      selectedPoint = new GeometryFactory().createPoint(new Coordinate(x, y));
-    } while (!geom.contains(selectedPoint));
-
-    person.attributes.put(Person.COORDINATE, selectedPoint);
+  /**
+   * Get the abbreviation for a state.
+   * @param state State name. e.g. "Massachusetts"
+   * @return state abbreviation. e.g. "MA"
+   */
+  public static String getAbbreviation(String state) {
+    return stateAbbreviations.get(state);
+  }
+  
+  /**
+   * Get the state name from an abbreviation.
+   * @param abbreviation State abbreviation. e.g. "MA"
+   * @return state name. e.g. "Massachusetts"
+   */
+  public static String getStateName(String abbreviation) {
+    for (String name : stateAbbreviations.keySet()) {
+      if (stateAbbreviations.get(name).equalsIgnoreCase(abbreviation)) {
+        return name;
+      }
+    }
+    return null;
   }
 }

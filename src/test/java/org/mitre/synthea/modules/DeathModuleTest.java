@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -31,9 +31,9 @@ public class DeathModuleTest {
     person = new Person(0L);
 
     person.history = new LinkedList<>();
-    person.setAmbulatoryProvider(Mockito.mock(Hospital.class));
-    person.setEmergencyProvider(Mockito.mock(Hospital.class));
-    person.setInpatientProvider(Mockito.mock(Hospital.class));
+    person.setAmbulatoryProvider(Mockito.mock(Provider.class));
+    person.setEmergencyProvider(Mockito.mock(Provider.class));
+    person.setInpatientProvider(Mockito.mock(Provider.class));
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);

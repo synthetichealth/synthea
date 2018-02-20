@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.sis.geometry.DirectPosition2D;
+import org.apache.sis.index.tree.QuadTreeData;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
 import org.mitre.synthea.engine.Module;
@@ -21,7 +23,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
 
-public class Person implements Serializable {
+public class Person implements Serializable, QuadTreeData {
   private static final long serialVersionUID = 4322116644425686379L;
 
   public static final String BIRTHDATE = "birthdate";
@@ -230,6 +232,7 @@ public class Person implements Serializable {
   }
 
   /**
+   * The total number of all symptom severities.
    * @return total : sum of all the symptom severities. This number drives care-seeking behaviors.
    */
   public int symptomTotal() {
@@ -303,16 +306,30 @@ public class Person implements Serializable {
   public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
 
+  public Provider getProvider(String encounterClass) {
+    switch (encounterClass) {
+      case Provider.AMBULATORY:
+        return this.getAmbulatoryProvider();
+      case Provider.EMERGENCY:
+        return this.getEmergencyProvider();
+      case Provider.INPATIENT:
+        return this.getInpatientProvider();
+      case Provider.WELLNESS:
+        return this.getAmbulatoryProvider();
+      default:
+        return this.getAmbulatoryProvider();
+    }
+  }
+
   public Provider getAmbulatoryProvider() {
     if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER)) {
       setAmbulatoryProvider();
     }
-
     return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
   }
 
   private void setAmbulatoryProvider() {
-    Provider provider = Hospital.findClosestAmbulatory(this);
+    Provider provider = Provider.findClosestService(this, Provider.AMBULATORY);
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
@@ -328,7 +345,7 @@ public class Person implements Serializable {
   }
 
   private void setInpatientProvider() {
-    Provider provider = Hospital.findClosestInpatient(this);
+    Provider provider = Provider.findClosestService(this, Provider.INPATIENT);
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
@@ -344,13 +361,13 @@ public class Person implements Serializable {
   }
 
   private void setEmergencyProvider() {
-    Provider provider = Hospital.findClosestEmergency(this);
+    Provider provider = Provider.findClosestService(this, Provider.EMERGENCY);
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
   public void setEmergencyProvider(Provider provider) {
     if (provider == null) {
-      provider = Hospital.findClosestEmergency(this);
+      provider = Provider.findClosestService(this, Provider.EMERGENCY);
     }
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
@@ -381,5 +398,41 @@ public class Person implements Serializable {
     } else {
       return currentProviders.get(module);
     }
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getX()
+   */
+  @Override
+  public double getX() {
+    return getLatLon().getX();
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getY()
+   */
+  @Override
+  public double getY() {
+    return getLatLon().getY();
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
+   */
+  @Override
+  public DirectPosition2D getLatLon() {
+    return (DirectPosition2D) attributes.get(Person.COORDINATE);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
+   */
+  @Override
+  public String getFileName() {
+    return null;
   }
 }

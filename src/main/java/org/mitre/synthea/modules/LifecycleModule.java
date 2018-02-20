@@ -164,11 +164,13 @@ public final class LifecycleModule extends Module {
     if (location != null) {
       // should never happen in practice, but can happen in unit tests
       location.assignPoint(person, city);
-      person.attributes.put(Person.ZIP, location.getZipCode(city, person.random));
+      person.attributes.put(Person.ZIP, location.getZipCode(city));
       
       if (!person.attributes.containsKey(Person.BIRTHPLACE)){
     	  person.attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
     		}
+      person.attributes.put(Person.ZIP, location.getZipCode(city));
+      attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
     }
     
     boolean hasStreetAddress2 = person.rand() < 0.5;

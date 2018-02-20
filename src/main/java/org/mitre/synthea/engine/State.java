@@ -472,7 +472,7 @@ public abstract class State implements Cloneable {
           person.setCurrentEncounter(module, encounter);
 
           // find closest provider and increment encounters count
-          Provider provider = Provider.findClosestService(person, "wellness");
+          Provider provider = person.getAmbulatoryProvider();
           person.addCurrentProvider(module.name, provider);
           int year = Utilities.getYear(time);
           provider.incrementEncounters("wellness", year);
@@ -494,7 +494,7 @@ public abstract class State implements Cloneable {
         person.setCurrentEncounter(module, encounter);
 
         // find closest provider and increment encounters count
-        Provider provider = Provider.findClosestService(person, encounterClass);
+        Provider provider = person.getProvider(encounterClass);
         person.addCurrentProvider(module.name, provider);
         int year = Utilities.getYear(time);
         provider.incrementEncounters(encounterClass, year);
@@ -1208,6 +1208,16 @@ public abstract class State implements Cloneable {
       Report report = person.record.report(time, primaryCode, numberOfObservations);
       report.name = this.name;
       report.codes.addAll(codes);
+
+      // increment number of labs by respective provider
+      Provider provider;
+      if (person.getCurrentProvider(module.name) != null) {
+        provider = person.getCurrentProvider(module.name);
+      } else { // no provider associated with encounter or procedure
+        provider = person.getAmbulatoryProvider();
+      }
+      int year = Utilities.getYear(time);
+      provider.incrementLabs(year);
 
       return true;
     }

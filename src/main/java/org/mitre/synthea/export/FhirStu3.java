@@ -7,7 +7,6 @@ import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.vividsolutions.jts.geom.Point;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.sis.geometry.DirectPosition2D;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.AllergyIntolerance;
 import org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -45,6 +45,7 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
+import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
@@ -454,7 +455,7 @@ public class FhirStu3 {
           mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
     }
 
-    Point coord = (Point) person.attributes.get(Person.COORDINATE);
+    DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
     if (coord != null) {
       Extension geolocation = addrResource.addExtension();
       geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
@@ -1306,21 +1307,29 @@ public class FhirStu3 {
                 "prov",
                 "Healthcare Provider"),
             "Healthcare Provider"));
-  
-    Map<String,?> attr = provider.getAttributes();
     
+    organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
+    .setValue((String) provider.getResourceID());
+
     organizationResource.setId(provider.getResourceID());
-    organizationResource.setName((String)attr.get("name"));
+    organizationResource.setName(provider.name);
     organizationResource.setType(organizationType);
     
     Address address = new Address()
-        .addLine(attr.get("address").toString())
-        .setCity(attr.get("city").toString())
-        .setPostalCode(attr.get("city_zip").toString())
-        .setState(attr.get("state").toString())
+        .addLine(provider.address)
+        .setCity(provider.city)
+        .setPostalCode(provider.zip)
+        .setState(provider.state)
         .setCountry("US");
     organizationResource.addAddress(address);
-    
+
+    if (provider.phone != null && !provider.phone.isEmpty()) {
+      ContactPoint contactPoint = new ContactPoint()
+          .setSystem(ContactPointSystem.PHONE)
+          .setValue(provider.phone);
+      organizationResource.addTelecom(contactPoint);
+    }
+
     if (USE_SHR_EXTENSIONS) {
       organizationResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Organization"));
       // required fields for this profile are identifier, type, address, and contact

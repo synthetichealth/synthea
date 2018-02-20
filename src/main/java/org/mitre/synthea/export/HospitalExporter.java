@@ -12,7 +12,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hl7.fhir.dstu3.model.Address;
@@ -24,7 +23,6 @@ import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.Organization;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Provider;
 
 public abstract class HospitalExporter {
@@ -38,7 +36,7 @@ public abstract class HospitalExporter {
 
       Bundle bundle = new Bundle();
       bundle.setType(BundleType.COLLECTION);
-      for (Hospital h : Hospital.getHospitalList()) {
+      for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
 
         Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
@@ -68,21 +66,20 @@ public abstract class HospitalExporter {
     }
   }
 
-  public static void addHospitalToBundle(Hospital h, Bundle bundle) {
+  public static void addHospitalToBundle(Provider h, Bundle bundle) {
     Organization organizationResource = new Organization();
 
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) h.getResourceID());
 
-    Map<String, Object> hospitalAttributes = h.getAttributes();
-
-    organizationResource.setName(hospitalAttributes.get("name").toString());
+    organizationResource.setId(h.getResourceID());
+    organizationResource.setName(h.name);
 
     Address address = new Address();
-    address.addLine(hospitalAttributes.get("address").toString());
-    address.setCity(hospitalAttributes.get("city").toString());
-    address.setPostalCode(hospitalAttributes.get("city_zip").toString());
-    address.setState(hospitalAttributes.get("state").toString());
+    address.addLine(h.address);
+    address.setCity(h.city);
+    address.setPostalCode(h.zip);
+    address.setState(h.state);
     organizationResource.addAddress(address);
 
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
