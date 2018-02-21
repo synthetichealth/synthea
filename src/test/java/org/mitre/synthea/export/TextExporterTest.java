@@ -21,7 +21,7 @@ public class TextExporterTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
   
   @Test
-  public void testTextExport() throws Exception {
+  public void testTextExport() throws Throwable {
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     

@@ -28,7 +28,7 @@ public class CCDAExporterTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
   
   @Test
-  public void testCCDAExport() throws Exception {
+  public void testCCDAExport() throws Throwable {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
     CDAUtil.loadPackages();
     List<String> validationErrors = new ArrayList<String>();

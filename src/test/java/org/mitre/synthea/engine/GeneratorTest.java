@@ -73,7 +73,7 @@ public class GeneratorTest {
   }
   
   @Test
-  public void testGeneratePeopleDefaultLocation() throws Exception {
+  public void testGeneratePeopleDefaultLocation() throws Throwable {
     int numberOfPeople = 2;
     Generator generator = new Generator(); // intentionally no args
     for (int i = 0; i < numberOfPeople; i++) {
@@ -83,7 +83,7 @@ public class GeneratorTest {
   }
   
   @Test
-  public void testGeneratePeopleByLocation() throws Exception {
+  public void testGeneratePeopleByLocation() throws Throwable {
     int numberOfPeople = 2;
     String state = "California";
     String city = "South Gate"; // the largest US city with only 1 zip code

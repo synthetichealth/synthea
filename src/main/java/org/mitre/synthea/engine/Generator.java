@@ -486,7 +486,6 @@ public class Generator {
 			  } 
 		  }
 
-		  @SuppressWarnings("unchecked")
 		  List<LinkedHashMap<String, String>> relationships = Demographics.getRelationships();
 
 		  for(int i = 0;i<=relationships.size()-1;i++) {

@@ -23,7 +23,7 @@ public class CSVExporterTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
   
   @Test
-  public void testCSVExport() throws Exception {
+  public void testCSVExport() throws Throwable {
     TestHelper.exportOff();
     Config.set("exporter.csv.export", "true");
     File tempOutputFolder = tempFolder.newFolder();

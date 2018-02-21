@@ -33,7 +33,7 @@ public class FHIRDSTU2ExporterTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
   
   @Test
-  public void testFHIRDSTU2Export() throws Exception {
+  public void testFHIRDSTU2Export() throws Throwable {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
     
     FhirContext ctx = FhirContext.forDstu2();
