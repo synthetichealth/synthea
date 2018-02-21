@@ -167,8 +167,8 @@ public final class LifecycleModule extends Module {
       person.attributes.put(Person.ZIP, location.getZipCode(city));
       
       if (!person.attributes.containsKey(Person.BIRTHPLACE)){
-    	  person.attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
-    		}
+        person.attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
+      }
       person.attributes.put(Person.ZIP, location.getZipCode(city));
       attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
     }

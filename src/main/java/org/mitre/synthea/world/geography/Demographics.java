@@ -44,37 +44,43 @@ public class Demographics {
   
 
   public static List<LinkedHashMap<String, String>> getSpewPeople() throws IOException {
-	  List<LinkedHashMap<String, String>> spewPerson = SimpleCSV.parse(Utilities.readResource("spew/samp_people_25.csv"));
-	  return spewPerson;
+    List<LinkedHashMap<String, String>> spewPerson = SimpleCSV
+        .parse(Utilities.readResource("spew/samp_people_25.csv"));
+    return spewPerson;
   }
   
   public static List<LinkedHashMap<String, String>> getHispanicCodes() throws IOException {
-	  List<LinkedHashMap<String, String>> hispanicCodes = SimpleCSV.parse(Utilities.readResource("spew/hispanic.csv"));
-	  return hispanicCodes;
+    List<LinkedHashMap<String, String>> hispanicCodes = SimpleCSV
+        .parse(Utilities.readResource("spew/hispanic.csv"));
+    return hispanicCodes;
   }
   
   public static List<LinkedHashMap<String, String>> getBirthplaces() throws IOException {
-	  List<LinkedHashMap<String, String>> birthplaces = SimpleCSV.parse(Utilities.readResource("spew/birthplaces.csv"));
-	  return birthplaces;
+    List<LinkedHashMap<String, String>> birthplaces = SimpleCSV
+        .parse(Utilities.readResource("spew/birthplaces.csv"));
+    return birthplaces;
   }
   
   public static List<LinkedHashMap<String, String>> getGradeLevels() throws IOException {
-	  List<LinkedHashMap<String, String>> gradeLevels = SimpleCSV.parse(Utilities.readResource("spew/grade_level.csv"));
-	  return gradeLevels;
+    List<LinkedHashMap<String, String>> gradeLevels = SimpleCSV
+        .parse(Utilities.readResource("spew/grade_level.csv"));
+    return gradeLevels;
   }
   
   public static List<LinkedHashMap<String, String>> getRelationships() throws IOException {
-	  List<LinkedHashMap<String, String>> relationships = SimpleCSV.parse(Utilities.readResource("spew/grade_level.csv"));
-	  return relationships;
+    List<LinkedHashMap<String, String>> relationships = SimpleCSV
+        .parse(Utilities.readResource("spew/grade_level.csv"));
+    return relationships;
   }
   
   public static List<LinkedHashMap<String, String>> getOccupations() throws IOException {
-	  List<LinkedHashMap<String, String>> occupations = SimpleCSV.parse(Utilities.readResource("spew/occupations.csv"));
-	  return occupations;
+    List<LinkedHashMap<String, String>> occupations = SimpleCSV
+        .parse(Utilities.readResource("spew/occupations.csv"));
+    return occupations;
   }
   
   public static String householdsMode() { 
-	return Config.get("generate.households.mode");
+    return Config.get("generate.households.mode");
   }
 
   
