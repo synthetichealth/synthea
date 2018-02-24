@@ -46,6 +46,11 @@ dependencies {
   compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 
+  // Java 9 no longer includes these APIs by default
+  compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+  compile 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
+  compile 'javax.activation:activation:1.1.1'
+
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
   testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
