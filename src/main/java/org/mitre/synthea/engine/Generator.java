@@ -251,12 +251,18 @@ public class Generator {
    * 
    * @param index Target index in the whole set of people to generate
    * @return generated Person
- * @throws Throwable 
    */
-  public Person generatePerson(int index) throws Throwable {
+  public Person generatePerson(int index) {
     // System.currentTimeMillis is not unique enough
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    return generatePerson(index, personSeed);
+    try {
+      return generatePerson(index, personSeed);
+    } catch (Throwable e) {
+      System.err.println("ERROR: unable to load spew data: ");
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw new IllegalArgumentException(e);
+    }
   }
 
   /**
@@ -271,9 +277,8 @@ public class Generator {
    * @param personSeed
    *          Seed for the random person
    * @return generated Person
- * @throws Throwable 
    */
-  public Person generatePerson(int index, long personSeed) throws Throwable {
+  public Person generatePerson(int index, long personSeed){
     Person person = null;
     try {
       boolean isAlive = true;
@@ -362,7 +367,14 @@ public class Generator {
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
-      throw e;
+      try {
+        return generatePerson(index, personSeed);
+      } catch (Throwable e1) {
+        System.err.println("ERROR: unable to load spew data: ");
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        throw new IllegalArgumentException(e);
+      }
     }
     return person;
   }
