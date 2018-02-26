@@ -18,7 +18,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.TransitionMetrics;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -28,6 +30,8 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
+
+import com.google.gson.Gson;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -102,6 +106,40 @@ public class Generator {
     String state = o.state == null ? DEFAULT_STATE : o.state;
     init(o.population, o.seed, state, o.city);
   }
+  
+  @SuppressWarnings("rawtypes")
+  private static Map relationships() {
+    String filename = "cdc_growth_charts.json";
+    try {
+      String json = Utilities.readResource(filename);
+      Gson g = new Gson();
+      return g.fromJson(json, HashMap.class);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load json: " + filename);
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+  
+  //SPEW files
+  
+  List<LinkedHashMap<String, String>> spewPerson = SimpleCSV
+      .parse(Utilities.readResource("spew/samp_people_25.csv"));
+  
+  List<LinkedHashMap<String, String>> hispanicCodes = SimpleCSV
+      .parse(Utilities.readResource("spew/hispanic.csv"));
+  
+  List<LinkedHashMap<String, String>> birthplaces = SimpleCSV
+      .parse(Utilities.readResource("spew/birthplaces.csv"));
+  
+  List<LinkedHashMap<String, String>> gradeLevels = SimpleCSV
+      .parse(Utilities.readResource("spew/grade_level.csv"));
+  
+  List<LinkedHashMap<String, String>> relationships = SimpleCSV
+      .parse(Utilities.readResource("spew/relationship.csv"));
+  
+  List<LinkedHashMap<String, String>> occupations = SimpleCSV
+      .parse(Utilities.readResource("spew/occupations.csv"));
 
   private void init(int population, long seed, String state, String city) throws IOException {
     String dbType = Config.get("generate.database_type");
@@ -356,10 +394,6 @@ public class Generator {
 
   private long setDemographics(Person person, Demographics city) throws IOException {
     if (householdsMode.equals("true")) {
-      // Create map and read in the sampled SPEW csv file for Massachusetts
-
-      List<LinkedHashMap<String, String>> spewPerson = Demographics.getSpewPeople();
-
       // get a random spew person
 
       int[] range = new int[] { 1, spewPerson.size() + 1 };
@@ -406,8 +440,6 @@ public class Generator {
       }
 
       // TODO hispanic ethnicities that are in SPEW but not in synthea
-
-      List<LinkedHashMap<String, String>> hispanicCodes = Demographics.getHispanicCodes();
 
       if (person.attributes.get(race) == null && !hisp.equals("1")) {
         person.attributes.put(Person.RACE, "hispanic");
@@ -457,8 +489,7 @@ public class Generator {
         person.attributes.put(Person.NATIVITY, "foreign_born");
       }
 
-      List<LinkedHashMap<String, String>> birthplaces = Demographics.getBirthplaces();
-
+      //Birthplace
       for (int i = 0; i <= birthplaces.size() - 1; i++) {
         if (spewPerson.get(randSpew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
           person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
@@ -477,16 +508,14 @@ public class Generator {
         person.attributes.put(Person.SCHOOL_ENROLLMENT, "private_school_or_college_or_home_school");
       }
 
-      List<LinkedHashMap<String, String>> gradeLevels = Demographics.getGradeLevels();
-
+      //Grade level
       for (int i = 0; i <= gradeLevels.size() - 1; i++) {
         if (spewPerson.get(randSpew).get("SCHG").equals(gradeLevels.get(i).get("Code"))) {
           person.attributes.put(Person.GRADE_LEVEL, gradeLevels.get(i).get("grade"));
         }
       }
 
-      List<LinkedHashMap<String, String>> relationships = Demographics.getRelationships();
-
+      //Relationship
       for (int i = 0; i <= relationships.size() - 1; i++) {
         if (spewPerson.get(randSpew).get("RELP").equals(relationships.get(i).get("Code"))) {
           person.attributes.put(Person.RELATIONSHIP, relationships.get(i).get("Relationship"));
@@ -515,8 +544,7 @@ public class Generator {
       person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
       person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 
-      List<LinkedHashMap<String, String>> occupations = Demographics.getOccupations();
-
+      //Occupation
       for (int i = 0; i <= occupations.size() - 1; i++) {
         if (spewPerson.get(randSpew).get("OCCP").equals(occupations.get(i).get("Code"))) {
           person.attributes.put(Person.OCCUPATION, occupations.get(i).get("Occupation"));
