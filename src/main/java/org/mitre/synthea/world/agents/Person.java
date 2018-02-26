@@ -70,8 +70,6 @@ public class Person implements Serializable, QuadTreeData {
   public static final String HOUSEHOLD_SIZE = "household_size";
   public static final String RELATIONSHIP = "relationship";
   public static final String HISPANIC = "hispanic";
-  public static final String LONGITUDE = "longitude";
-  public static final String LATITUDE = "latitude";
   public static final String NATIVITY = "nativity";
   public static final String SCHOOL_ENROLLMENT = "school_enrollment";
   public static final String GRADE_LEVEL = "grade_level";

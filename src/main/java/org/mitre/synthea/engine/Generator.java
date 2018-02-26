@@ -486,13 +486,14 @@ public class Generator {
       // Longitude and latitude
       // TODO a look up to assign address/city/town/zip from lat and long
       // look into using FIPS codes
+      
+      String latitude = spewPerson.get(randSpew).get("latitude");
 
       String longitude = spewPerson.get(randSpew).get("longitude");
-      person.attributes.put(Person.LONGITUDE, longitude);
-
-      String latitude = spewPerson.get(randSpew).get("latitude");
-      person.attributes.put(Person.LATITUDE, latitude);
-
+       
+      String coordinates = new StringBuilder(latitude).append(",").append(longitude).toString();
+      person.attributes.put(Person.COORDINATE, coordinates);
+      
       String nativity = spewPerson.get(randSpew).get("NATIVITY");
 
       if (nativity.equals("1")) {
