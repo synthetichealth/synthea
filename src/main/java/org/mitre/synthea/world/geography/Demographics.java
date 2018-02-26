@@ -79,10 +79,6 @@ public class Demographics {
     return occupations;
   }
   
-  public static String householdsMode() { 
-    return Config.get("generate.households.mode");
-  }
-
   
   public int pickAge(Random random) {
     // lazy-load in case this randomcollection isn't necessary

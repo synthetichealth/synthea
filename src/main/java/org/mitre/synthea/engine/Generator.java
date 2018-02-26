@@ -47,6 +47,7 @@ public class Generator {
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyDeadPatients;
+  private String householdsMode;
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
 
@@ -132,6 +133,8 @@ public class Generator {
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
 
+    this.householdsMode = Config.get("generate.households.mode");
+    
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
     stats.put("alive", new AtomicInteger(0));
@@ -352,7 +355,7 @@ public class Generator {
   }
 
   private long setDemographics(Person person, Demographics city) throws IOException {
-    if (Demographics.householdsMode() == "true") {
+    if (householdsMode.equals("true")) {
       // Create map and read in the sampled SPEW csv file for Massachusetts
 
       List<LinkedHashMap<String, String>> spewPerson = Demographics.getSpewPeople();

@@ -73,6 +73,16 @@ public class GeneratorTest {
   }
   
   @Test
+  public void testGenerateHouseholdsMode() throws Exception {
+    Config.set("generate.households.mode", "true");
+    int numberOfPeople = 2;
+    Generator generator = new Generator(numberOfPeople);
+    generator.run();
+    assertEquals(0, generator.stats.get("alive").longValue());
+    assertEquals(numberOfPeople, generator.stats.get("dead").longValue());
+  }
+  
+  @Test
   public void testGeneratePeopleDefaultLocation() throws Throwable {
     int numberOfPeople = 2;
     Generator generator = new Generator(); // intentionally no args
