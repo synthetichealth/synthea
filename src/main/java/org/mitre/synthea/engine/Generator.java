@@ -107,20 +107,6 @@ public class Generator {
     init(o.population, o.seed, state, o.city);
   }
   
-  @SuppressWarnings("rawtypes")
-  private static Map relationships() {
-    String filename = "cdc_growth_charts.json";
-    try {
-      String json = Utilities.readResource(filename);
-      Gson g = new Gson();
-      return g.fromJson(json, HashMap.class);
-    } catch (Exception e) {
-      System.err.println("ERROR: unable to load json: " + filename);
-      e.printStackTrace();
-      throw new ExceptionInInitializerError(e);
-    }
-  }
-  
   //SPEW files
   
   List<LinkedHashMap<String, String>> spewPerson = SimpleCSV
@@ -278,7 +264,7 @@ public class Generator {
    *          Seed for the random person
    * @return generated Person
    */
-  public Person generatePerson(int index, long personSeed){
+  public Person generatePerson(int index, long personSeed) {
     Person person = null;
     try {
       boolean isAlive = true;
@@ -367,14 +353,6 @@ public class Generator {
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
-      try {
-        return generatePerson(index, personSeed);
-      } catch (Throwable e1) {
-        System.err.println("ERROR: unable to load spew data: ");
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-        throw new IllegalArgumentException(e);
-      }
     }
     return person;
   }
@@ -483,7 +461,6 @@ public class Generator {
         person.attributes.put(Person.GENDER, "F");
       }
 
-      // Longitude and latitude
       // TODO a look up to assign address/city/town/zip from lat and long
       // look into using FIPS codes
       
