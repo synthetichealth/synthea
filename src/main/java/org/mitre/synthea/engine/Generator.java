@@ -388,15 +388,17 @@ public class Generator {
 
       int[] range = new int[] { 1, spewPerson.size() + 1 };
 
-      int randSpew = (int) person.rand(range);
+      int rand = (int) person.rand(range);
+      
+      LinkedHashMap<String, String> randSpew = spewPerson.get(rand);
 
-      String spewSerial = spewPerson.get(randSpew).get("SERIALNO");
+      String spewSerial = randSpew.get("SERIALNO");
       person.attributes.put(Person.SPEW_SERIAL_NO, spewSerial);
 
-      String householdIncome = spewPerson.get(randSpew).get("HINCP");
+      String householdIncome = randSpew.get("HINCP");
       person.attributes.put(Person.HOUSEHOLD_INCOME, householdIncome);
 
-      String householdSize = spewPerson.get(randSpew).get("NP");
+      String householdSize = randSpew.get("NP");
       person.attributes.put(Person.HOUSEHOLD_SIZE, householdSize);
 
       // this will have to change based on SPEW latitude/longitude
@@ -405,8 +407,8 @@ public class Generator {
       // TODO spew location changes
       person.attributes.put(Person.STATE, city.state);
 
-      String race = spewPerson.get(randSpew).get("RAC1P");
-      String hisp = spewPerson.get(randSpew).get("HISP");
+      String race = randSpew.get("RAC1P");
+      String hisp = randSpew.get("HISP");
 
       // race codes, hispanic is a different variable
       if (race.equals("1")) {
@@ -436,7 +438,7 @@ public class Generator {
         person.attributes.put(Person.HISPANIC, true);
 
         for (int i = 0; i <= hispanicCodes.size() - 1; i++) {
-          if (spewPerson.get(randSpew).get("HISP").equals(hispanicCodes.get(i).get("Code"))) {
+          if (randSpew.get("HISP").equals(hispanicCodes.get(i).get("Code"))) {
             person.attributes.put(Person.ETHNICITY, hispanicCodes.get(i).get("Ethnicity"));
           }
         }
@@ -453,7 +455,7 @@ public class Generator {
           person);
       person.attributes.put(Person.FIRST_LANGUAGE, language);
 
-      String gender = spewPerson.get(randSpew).get("SEX");
+      String gender = randSpew.get("SEX");
 
       if (gender.equals("1")) {
         person.attributes.put(Person.GENDER, "M");
@@ -464,14 +466,14 @@ public class Generator {
       // TODO a look up to assign address/city/town/zip from lat and long
       // look into using FIPS codes
       
-      String latitude = spewPerson.get(randSpew).get("latitude");
+      String latitude = randSpew.get("latitude");
 
-      String longitude = spewPerson.get(randSpew).get("longitude");
+      String longitude = randSpew.get("longitude");
        
       String coordinates = new StringBuilder(latitude).append(",").append(longitude).toString();
       person.attributes.put(Person.COORDINATE, coordinates);
       
-      String nativity = spewPerson.get(randSpew).get("NATIVITY");
+      String nativity = randSpew.get("NATIVITY");
 
       if (nativity.equals("1")) {
         person.attributes.put(Person.NATIVITY, "native");
@@ -481,12 +483,12 @@ public class Generator {
 
       //Birthplace
       for (int i = 0; i <= birthplaces.size() - 1; i++) {
-        if (spewPerson.get(randSpew).get("POBP").equals(birthplaces.get(i).get("Code"))) {
+        if (randSpew.get("POBP").equals(birthplaces.get(i).get("Code"))) {
           person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
         }
       }
 
-      String schoolEnrollment = spewPerson.get(randSpew).get("SCH");
+      String schoolEnrollment = randSpew.get("SCH");
 
       if (schoolEnrollment.equals("NA")) {
         person.attributes.put(Person.SCHOOL_ENROLLMENT, "N/A (less than 3 years old)");
@@ -500,14 +502,14 @@ public class Generator {
 
       //Grade level
       for (int i = 0; i <= gradeLevels.size() - 1; i++) {
-        if (spewPerson.get(randSpew).get("SCHG").equals(gradeLevels.get(i).get("Code"))) {
+        if (randSpew.get("SCHG").equals(gradeLevels.get(i).get("Code"))) {
           person.attributes.put(Person.GRADE_LEVEL, gradeLevels.get(i).get("grade"));
         }
       }
 
       //Relationship
       for (int i = 0; i <= relationships.size() - 1; i++) {
-        if (spewPerson.get(randSpew).get("RELP").equals(relationships.get(i).get("Code"))) {
+        if (randSpew.get("RELP").equals(relationships.get(i).get("Code"))) {
           person.attributes.put(Person.RELATIONSHIP, relationships.get(i).get("Relationship"));
         }
       }
@@ -518,13 +520,13 @@ public class Generator {
       double educationLevel = city.educationLevel(education, person);
       person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
 
-      long targetAge = Long.valueOf(spewPerson.get(randSpew).get("AGEP")).longValue();
+      long targetAge = Long.valueOf(randSpew.get("AGEP")).longValue();
 
-      int income = Integer.parseInt(spewPerson.get(randSpew).get("PINCP"));
+      int income = Integer.parseInt(randSpew.get("PINCP"));
       person.attributes.put(Person.INCOME, income);
 
       double incomeLevel = city
-          .incomeLevel(Integer.parseInt(spewPerson.get(randSpew).get("HINCP")));
+          .incomeLevel(Integer.parseInt(randSpew.get("HINCP")));
       person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
 
       double occupation = person.rand();
@@ -536,12 +538,12 @@ public class Generator {
 
       //Occupation
       for (int i = 0; i <= occupations.size() - 1; i++) {
-        if (spewPerson.get(randSpew).get("OCCP").equals(occupations.get(i).get("Code"))) {
+        if (randSpew.get("OCCP").equals(occupations.get(i).get("Code"))) {
           person.attributes.put(Person.OCCUPATION, occupations.get(i).get("Occupation"));
         }
       }
 
-      String employmentStatus = spewPerson.get(randSpew).get("ESR");
+      String employmentStatus = randSpew.get("ESR");
 
       if (employmentStatus.equals("NA")) {
         person.attributes.put(Person.EMPLOYMENT_STATUS, "na_under_16");
