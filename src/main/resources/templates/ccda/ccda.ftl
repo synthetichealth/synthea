@@ -18,7 +18,11 @@
         <streetAddressLine>${address}</streetAddressLine>
         <city>${city}</city>
         <state>${state}</state>
+        <#if zip?has_content>
         <postalCode>${zip}</postalCode>
+        <#else>
+        <postalCode nullFlavor="NI"/>
+        </#if>
       </addr>
       <telecom nullFlavor="NI"/>
       <patient>
@@ -48,13 +52,13 @@
       </assignedAuthoringDevice>
       <representedOrganization>
         <id nullFlavor="NA"/>
-        <name>${preferredAmbulatoryProvider.attributes.name}</name>
+        <name>${preferredAmbulatoryProvider.name}</name>
         <telecom nullFlavor="NA"/>
         <addr>
-          <streetAddressLine>${preferredAmbulatoryProvider.attributes.address}</streetAddressLine>
-          <city>${preferredAmbulatoryProvider.attributes.city}</city>
-          <state>${preferredAmbulatoryProvider.attributes.state}</state>
-          <postalCode>${preferredAmbulatoryProvider.attributes.city_zip}</postalCode>
+          <streetAddressLine>${preferredAmbulatoryProvider.address}</streetAddressLine>
+          <city>${preferredAmbulatoryProvider.city}</city>
+          <state>${preferredAmbulatoryProvider.state}</state>
+          <postalCode>${preferredAmbulatoryProvider.zip}</postalCode>
         </addr>
       </representedOrganization>
     </assignedAuthor>
@@ -63,13 +67,13 @@
     <assignedCustodian>
       <representedCustodianOrganization>
         <id nullFlavor="NA"/>
-        <name>${preferredAmbulatoryProvider.attributes.name}</name>
+        <name>${preferredAmbulatoryProvider.name}</name>
         <telecom nullFlavor="NA"/>
         <addr>
-          <streetAddressLine>${preferredAmbulatoryProvider.attributes.address}</streetAddressLine>
-          <city>${preferredAmbulatoryProvider.attributes.city}</city>
-          <state>${preferredAmbulatoryProvider.attributes.state}</state>
-          <postalCode>${preferredAmbulatoryProvider.attributes.city_zip}</postalCode>
+          <streetAddressLine>${preferredAmbulatoryProvider.address}</streetAddressLine>
+          <city>${preferredAmbulatoryProvider.city}</city>
+          <state>${preferredAmbulatoryProvider.state}</state>
+          <postalCode>${preferredAmbulatoryProvider.zip}</postalCode>
         </addr>
       </representedCustodianOrganization>
     </assignedCustodian>
