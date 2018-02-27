@@ -51,6 +51,7 @@ public class CCDAExporterTest {
         });
       } catch (Exception e) {
         e.printStackTrace();
+        validationErrors.add(e.getMessage());
       }
       int y = validationErrors.size();
       if (x != y) {
