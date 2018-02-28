@@ -163,7 +163,9 @@ public final class LifecycleModule extends Module {
     Location location = (Location) attributes.get(Person.LOCATION);
     if (location != null) {
       // should never happen in practice, but can happen in unit tests
-      location.assignPoint(person, city);
+      if (Config.get("generate.households.mode").equals("false")) {
+        location.assignPoint(person, city);
+      }
       person.attributes.put(Person.ZIP, location.getZipCode(city));
       attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
     }

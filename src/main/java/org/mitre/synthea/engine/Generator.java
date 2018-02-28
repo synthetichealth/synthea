@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
@@ -30,6 +31,8 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
+import org.mitre.synthea.world.geography.Place;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.google.gson.Gson;
 
@@ -126,6 +129,23 @@ public class Generator {
   
   List<LinkedHashMap<String, String>> occupations = SimpleCSV
       .parse(Utilities.readResource("spew/occupations.csv"));
+  
+  private static final Map<String, String> SPEW_EMPLOYMENT_STATUS_CODES = createSpewEmploymentCodes();
+
+  private static Map<String, String> createSpewEmploymentCodes() {
+
+    Map<String, String> employmentStatusCodes = new HashMap<>();
+
+    employmentStatusCodes.put("NA", "N/A (less than 16 years old)"); 
+    employmentStatusCodes.put("1", "Civilian employed, at work");
+    employmentStatusCodes.put("2", "Civilian employed, with a job but not at work"); 
+    employmentStatusCodes.put("3", "Unemployed"); 
+    employmentStatusCodes.put("4", "Armed forces, at work"); 
+    employmentStatusCodes.put("5", "Armed forces, with a job but not at work"); 
+    employmentStatusCodes.put("6", "Not in labor force"); 
+    
+    return employmentStatusCodes;
+  }
 
   private void init(int population, long seed, String state, String city) throws IOException {
     String dbType = Config.get("generate.database_type");
@@ -465,12 +485,10 @@ public class Generator {
 
       // TODO a look up to assign address/city/town/zip from lat and long
       // look into using FIPS codes
-      
-      String latitude = randSpew.get("latitude");
 
-      String longitude = randSpew.get("longitude");
-       
-      String coordinates = new StringBuilder(latitude).append(",").append(longitude).toString();
+      DirectPosition2D coordinates = new DirectPosition2D();
+      coordinates.x = Double.parseDouble(randSpew.get("latitude"));
+      coordinates.y = Double.parseDouble(randSpew.get("longitude"));
       person.attributes.put(Person.COORDINATE, coordinates);
       
       String nativity = randSpew.get("NATIVITY");
@@ -482,8 +500,11 @@ public class Generator {
       }
 
       //Birthplace
+      
+      String birthplace = "POBP";
+      
       for (int i = 0; i <= birthplaces.size() - 1; i++) {
-        if (randSpew.get("POBP").equals(birthplaces.get(i).get("Code"))) {
+        if (randSpew.get(birthplace).equals(birthplaces.get(i).get("Code"))) {
           person.attributes.put(Person.BIRTHPLACE, birthplaces.get(i).get("Pob"));
         }
       }
@@ -501,8 +522,11 @@ public class Generator {
       }
 
       //Grade level
+      
+      String gradeLevel = "SCHG";
+      
       for (int i = 0; i <= gradeLevels.size() - 1; i++) {
-        if (randSpew.get("SCHG").equals(gradeLevels.get(i).get("Code"))) {
+        if (randSpew.get(gradeLevel).equals(gradeLevels.get(i).get("Code"))) {
           person.attributes.put(Person.GRADE_LEVEL, gradeLevels.get(i).get("grade"));
         }
       }
@@ -543,24 +567,9 @@ public class Generator {
         }
       }
 
-      String employmentStatus = randSpew.get("ESR");
-
-      if (employmentStatus.equals("NA")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS, "na_under_16");
-      } else if (employmentStatus.equals("")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS, "civilian_employed_at_work");
-      } else if (employmentStatus.equals("")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS,
-            "civilian_employed_with_job_but_not_at_work");
-      } else if (employmentStatus.equals("")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS, "unemployed");
-      } else if (employmentStatus.equals("")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS, "armed_forces_at_work");
-      } else if (employmentStatus.equals("")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS, "armed_forces_with_job_but_not_at_work");
-      } else if (employmentStatus.equals("")) {
-        person.attributes.put(Person.EMPLOYMENT_STATUS, "not_in_labor_force");
-      }
+      String employmentStatusCode = randSpew.get("ESR");
+      String employmentStatusDesc = SPEW_EMPLOYMENT_STATUS_CODES.get(employmentStatusCode);
+      person.attributes.put(Person.EMPLOYMENT_STATUS, employmentStatusDesc);
 
       // TODO this is terrible date handling, figure out how to use the java time library
       long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
