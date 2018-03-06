@@ -29,6 +29,7 @@ import ca.uhn.fhir.model.dstu2.resource.Immunization;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder.DosageInstruction;
 import ca.uhn.fhir.model.dstu2.resource.Observation.Component;
+import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
@@ -60,7 +61,6 @@ import ca.uhn.fhir.model.primitive.BooleanDt;
 import ca.uhn.fhir.model.primitive.DateDt;
 import ca.uhn.fhir.model.primitive.DateTimeDt;
 import ca.uhn.fhir.model.primitive.DecimalDt;
-import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.InstantDt;
 import ca.uhn.fhir.model.primitive.IntegerDt;
 import ca.uhn.fhir.model.primitive.PositiveIntDt;
@@ -155,7 +155,7 @@ public class FhirDstu2 {
     Entry personEntry = basicInfo(person, bundle, stopTime);
 
     for (Encounter encounter : person.record.encounters) {
-      Entry encounterEntry = encounter(personEntry, bundle, encounter);
+      Entry encounterEntry = encounter(person, personEntry, bundle, encounter);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personEntry, bundle, encounterEntry, condition);
@@ -422,6 +422,8 @@ public class FhirDstu2 {
   /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    * 
+   * @param person
+   *          Patient at the encounter.
    * @param personEntry
    *          Entry for the Person
    * @param bundle
@@ -430,7 +432,9 @@ public class FhirDstu2 {
    *          The current Encounter
    * @return The added Entry
    */
-  private static Entry encounter(Entry personEntry, Bundle bundle, Encounter encounter) {
+  private static Entry encounter(Person person, Entry personEntry,
+      Bundle bundle, Encounter encounter) {
+
     ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
         new ca.uhn.fhir.model.dstu2.resource.Encounter();
 
@@ -457,15 +461,7 @@ public class FhirDstu2 {
     }
 
     if (encounter.provider != null) {
-      String providerFullUrl = null;
-
-      for (Entry entry : bundle.getEntry()) {
-        if ((entry.getResource().getResourceName().equals("Organization"))
-            && (entry.getResource().getId().equals(encounter.provider.getResourceID()))) {
-          providerFullUrl = entry.getFullUrl();
-          break;
-        }
-      }
+      String providerFullUrl = findProviderUrl(encounter.provider, bundle);
 
       if (providerFullUrl != null) {
         encounterResource.setServiceProvider(new ResourceReferenceDt(providerFullUrl));
@@ -475,19 +471,15 @@ public class FhirDstu2 {
             .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Patient patient = (Patient) personEntry.getResource();
-      List<ResourceReferenceDt> careProvider = patient.getCareProvider();
+      Provider provider = person.getAmbulatoryProvider();
+      String providerFullUrl = findProviderUrl(provider, bundle);
 
-      if (careProvider.size() > 0) {
-        IdDt generalPractitionerReference = patient.getCareProvider().get(0).getReference();
-
-        for (Entry entry : bundle.getEntry()) {
-          if ((entry.getResource().getResourceName().equals("Organization"))
-              && generalPractitionerReference.equals("urn:uuid:" + entry.getResource().getId())) {
-            encounterResource
-                .setServiceProvider(new ResourceReferenceDt(generalPractitionerReference));
-          }
-        }
+      if (providerFullUrl != null) {
+        encounterResource.setServiceProvider(new ResourceReferenceDt(providerFullUrl));
+      } else {
+        Entry providerOrganization = provider(bundle, provider);
+        encounterResource
+            .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
       }
     }
 
@@ -501,6 +493,24 @@ public class FhirDstu2 {
     }
 
     return newEntry(bundle, encounterResource);
+  }
+
+  /**
+   * Find the provider entry in this bundle, and return the associated "fullUrl" attribute.
+   * @param provider A given provider.
+   * @param bundle The current bundle being generated.
+   * @return Provider.fullUrl if found, otherwise null.
+   */
+  private static String findProviderUrl(Provider provider, Bundle bundle) {
+    for (Entry entry : bundle.getEntry()) {
+      if (entry.getResource().getResourceName().equals("Organization")) {
+        Organization org = (Organization) entry.getResource();
+        if (org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
+          return entry.getFullUrl();
+        }
+      }
+    }
+    return null;
   }
 
   /**
@@ -1096,7 +1106,6 @@ public class FhirDstu2 {
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
     .setValue((String) provider.getResourceID());
 
-    organizationResource.setId(provider.getResourceID());
     organizationResource.setName(provider.name);
     organizationResource.setType(organizationType);
 
@@ -1130,12 +1139,10 @@ public class FhirDstu2 {
    * @return The added Entry
    */
   private static Entry caregoal(Bundle bundle, GoalStatusEnum goalStatus, JsonObject goal) {
-    String resourceID = UUID.randomUUID().toString();
 
     ca.uhn.fhir.model.dstu2.resource.Goal goalResource =
         new ca.uhn.fhir.model.dstu2.resource.Goal();
     goalResource.setStatus(goalStatus);
-    goalResource.setId(resourceID);
 
     if (goal.has("text")) {
       goalResource.setDescription(goal.get("text").getAsString());

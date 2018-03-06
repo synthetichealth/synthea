@@ -71,6 +71,7 @@ import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.Narrative.NarrativeStatus;
 import org.hl7.fhir.dstu3.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
+import org.hl7.fhir.dstu3.model.Organization;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.dstu3.model.Period;
@@ -198,7 +199,7 @@ public class FhirStu3 {
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 
     for (Encounter encounter : person.record.encounters) {
-      BundleEntryComponent encounterEntry = encounter(personEntry, bundle, encounter);
+      BundleEntryComponent encounterEntry = encounter(person, personEntry, bundle, encounter);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personEntry, bundle, encounterEntry, condition);
@@ -545,8 +546,8 @@ public class FhirStu3 {
    *          The current Encounter
    * @return The added Entry
    */
-  private static BundleEntryComponent encounter(BundleEntryComponent personEntry, Bundle bundle,
-      Encounter encounter) {
+  private static BundleEntryComponent encounter(Person person, BundleEntryComponent personEntry,
+      Bundle bundle, Encounter encounter) {
     org.hl7.fhir.dstu3.model.Encounter encounterResource = new org.hl7.fhir.dstu3.model.Encounter();
 
     encounterResource.setSubject(new Reference(personEntry.getFullUrl()));
@@ -574,15 +575,7 @@ public class FhirStu3 {
     }
 
     if (encounter.provider != null) {
-      String providerFullUrl = null;
-
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if ((entry.getResource().fhirType().equals("Organization"))
-            && (entry.getResource().getId().equals(encounter.provider.getResourceID()))) {
-          providerFullUrl = entry.getFullUrl();
-          break;
-        }
-      }
+      String providerFullUrl = findProviderUrl(encounter.provider, bundle);
 
       if (providerFullUrl != null) {
         encounterResource.setServiceProvider(new Reference(providerFullUrl));
@@ -591,19 +584,14 @@ public class FhirStu3 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Patient patient = (Patient) personEntry.getResource();
-      List<Reference> generalPractitioner = patient.getGeneralPractitioner();
+      Provider provider = person.getAmbulatoryProvider();
+      String providerFullUrl = findProviderUrl(provider, bundle);
 
-      if (generalPractitioner.size() > 0) {
-        String generalPractitionerReference = (String) patient.getGeneralPractitioner().get(0)
-            .getReference();
-
-        for (BundleEntryComponent entry : bundle.getEntry()) {
-          if ((entry.getResource().fhirType().equals("Organization"))
-              && generalPractitionerReference.equals("urn:uuid:" + entry.getResource().getId())) {
-            encounterResource.setServiceProvider(new Reference(generalPractitionerReference));
-          }
-        }
+      if (providerFullUrl != null) {
+        encounterResource.setServiceProvider(new Reference(providerFullUrl));
+      } else {
+        BundleEntryComponent providerOrganization = provider(bundle, provider);
+        encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     }
 
@@ -631,6 +619,24 @@ public class FhirStu3 {
     }
   
     return newEntry(bundle, encounterResource);
+  }
+
+  /**
+   * Find the provider entry in this bundle, and return the associated "fullUrl" attribute.
+   * @param provider A given provider.
+   * @param bundle The current bundle being generated.
+   * @return Provider.fullUrl if found, otherwise null.
+   */
+  private static String findProviderUrl(Provider provider, Bundle bundle) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource().fhirType().equals("Organization")) {
+        Organization org = (Organization) entry.getResource();
+        if (org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
+          return entry.getFullUrl();
+        }
+      }
+    }
+    return null;
   }
 
   /**
