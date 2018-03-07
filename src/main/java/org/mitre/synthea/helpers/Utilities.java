@@ -10,6 +10,10 @@ import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -224,5 +228,34 @@ public class Utilities {
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(Logic.class,"condition_type"))
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(State.class, "type"))
       .create();
+  }
+  
+  /**
+   * Convert the parsed CSV into a map of key column => value column.
+   * Given a List of Map&lt;String,String&gt;, this method "rotates" it such that
+   * a lookup can be done from the key column -> value column.
+   * For example, given the following CSV: <pre>
+   * CODE,DEFINITION
+   * 1,AAA
+   * 2,BBB
+   * 3,CCC</pre>
+   * This function may be called with keyColumn="CODE" and valueColumn="DEFINITION" to produce
+   * the following: { "1" => "AAA", "2" => "BBB", "3" => "CCC" }
+   * Any other columns in the given map are ignored.
+   * @param parsedCsv List of data parsed from a CSV file
+   * @param keyColumn Title of the column containing the "key"
+   * @param valueColumn Title of the column containing the "value"
+   * @return Map of keyColumn => valueColumn
+   */
+  public static final Map<String, String> createMapFromCsv(
+      List<LinkedHashMap<String, String>> parsedCsv, String keyColumn, String valueColumn) {
+    Map<String, String> map = new HashMap<>();
+
+    for (Map<String, String> line : parsedCsv) {
+      String key = line.get(keyColumn);
+      String value = line.get(valueColumn);
+      map.put(key, value);
+    }
+    return map;
   }
 }

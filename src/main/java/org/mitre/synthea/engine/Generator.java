@@ -31,10 +31,7 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
-import org.mitre.synthea.world.geography.Place;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.google.gson.Gson;
 
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
@@ -72,6 +69,7 @@ public class Generator {
   /**
    * Create a Generator, using all default settings.
  * @throws IOException 
+ * If any SPEW files do not load correctly
    */
   public Generator() throws IOException {
     this(new GeneratorOptions());
@@ -83,6 +81,7 @@ public class Generator {
    * 
    * @param population Target population size
  * @throws IOException 
+ * If any SPEW files do not load correctly
    */
   public Generator(int population) throws IOException {
     init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
@@ -95,6 +94,7 @@ public class Generator {
    * @param population Target population size
    * @param seed Seed used for randomness
  * @throws IOException 
+ * If any SPEW files do not load correctly
    */
   public Generator(int population, long seed) throws IOException {
     init(population, seed, DEFAULT_STATE, null);
@@ -104,6 +104,7 @@ public class Generator {
    * Create a Generator, with the given options.
    * @param o Desired configuration options
  * @throws IOException 
+ * If any SPEW files do not load correctly
    */
   public Generator(GeneratorOptions o) throws IOException {
     String state = o.state == null ? DEFAULT_STATE : o.state;
@@ -118,6 +119,11 @@ public class Generator {
   List<LinkedHashMap<String, String>> hispanicCodes = SimpleCSV
       .parse(Utilities.readResource("spew/hispanic.csv"));
   
+  List<LinkedHashMap<String, String>> raceCodes = SimpleCSV
+      .parse(Utilities.readResource("spew/raceCodes.csv"));
+  
+  Map<String, String> raceLookup = Utilities.createMapFromCsv(raceCodes, "code", "race");
+  
   List<LinkedHashMap<String, String>> birthplaces = SimpleCSV
       .parse(Utilities.readResource("spew/birthplaces.csv"));
   
@@ -129,8 +135,9 @@ public class Generator {
   
   List<LinkedHashMap<String, String>> occupations = SimpleCSV
       .parse(Utilities.readResource("spew/occupations.csv"));
-  
-  private static final Map<String, String> SPEW_EMPLOYMENT_STATUS_CODES = createSpewEmploymentCodes();
+      
+  private static final Map<String, String> SPEW_EMPLOYMENT_STATUS_CODES = 
+      createSpewEmploymentCodes();
 
   private static Map<String, String> createSpewEmploymentCodes() {
 
@@ -147,7 +154,7 @@ public class Generator {
     return employmentStatusCodes;
   }
 
-  private void init(int population, long seed, String state, String city) throws IOException {
+  private void init(int population, long seed, String state, String city) {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -214,15 +221,7 @@ public class Generator {
     for (int i = 0; i < this.numberOfPeople; i++) {
       final int index = i;
       final long seed = this.random.nextLong();
-      threadPool.submit(() -> {
-        try {
-          return generatePerson(index, seed);
-        } catch (Throwable e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-        return null;
-      });
+      threadPool.submit(() -> generatePerson(index, seed));
     }
 
     try {
@@ -261,14 +260,7 @@ public class Generator {
   public Person generatePerson(int index) {
     // System.currentTimeMillis is not unique enough
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    try {
-      return generatePerson(index, personSeed);
-    } catch (Throwable e) {
-      System.err.println("ERROR: unable to load spew data: ");
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new IllegalArgumentException(e);
-    }
+    return generatePerson(index, personSeed);
   }
 
   /**
@@ -421,39 +413,20 @@ public class Generator {
       String householdSize = randSpew.get("NP");
       person.attributes.put(Person.HOUSEHOLD_SIZE, householdSize);
 
-      // this will have to change based on SPEW latitude/longitude
+      // this will have to change based on SPEW latitude/longitude or FIPS code/place_id
       person.attributes.put(Person.CITY, city.city);
 
       // TODO spew location changes
       person.attributes.put(Person.STATE, city.state);
 
       String race = randSpew.get("RAC1P");
-      String hisp = randSpew.get("HISP");
-
-      // race codes, hispanic is a different variable
-      if (race.equals("1")) {
-        person.attributes.put(Person.RACE, "white");
-      } else if (race.equals("2")) {
-        person.attributes.put(Person.RACE, "black");
-      } else if (race.equals("3")) {
-        person.attributes.put(Person.RACE, "native");
-      } else if (race.equals("4")) {
-        person.attributes.put(Person.RACE, "native");
-      } else if (race.equals("5")) {
-        person.attributes.put(Person.RACE, "native");
-      } else if (race.equals("6")) {
-        person.attributes.put(Person.RACE, "asian");
-      } else if (race.equals("7")) {
-        person.attributes.put(Person.RACE, "asian");
-      } else if (race.equals("8")) {
-        person.attributes.put(Person.RACE, "other");
-      } else if (race.equals("9")) {
-        person.attributes.put(Person.RACE, "other");
-      }
+   
+      person.attributes.put(Person.RACE, raceLookup.get(race));
 
       // TODO hispanic ethnicities that are in SPEW but not in synthea
+      String hisp = randSpew.get("HISP");
 
-      if (person.attributes.get(race) == null && !hisp.equals("1")) {
+      if (!hisp.equals("1")) {
         person.attributes.put(Person.RACE, "hispanic");
         person.attributes.put(Person.HISPANIC, true);
 
@@ -462,13 +435,11 @@ public class Generator {
             person.attributes.put(Person.ETHNICITY, hispanicCodes.get(i).get("Ethnicity"));
           }
         }
-      }
-
-      if (hisp.equals("1")) {
+      } else {
         person.attributes.put(Person.HISPANIC, false);
         String ethnicity = city.ethnicityFromRace((String) person.attributes.get(Person.RACE),
             person);
-        person.attributes.put(Person.ETHNICITY, ethnicity);
+        person.attributes.put(Person.ETHNICITY, ethnicity);        
       }
 
       String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),
@@ -544,8 +515,6 @@ public class Generator {
       double educationLevel = city.educationLevel(education, person);
       person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
 
-      long targetAge = Long.valueOf(randSpew.get("AGEP")).longValue();
-
       int income = Integer.parseInt(randSpew.get("PINCP"));
       person.attributes.put(Person.INCOME, income);
 
@@ -571,6 +540,8 @@ public class Generator {
       String employmentStatusDesc = SPEW_EMPLOYMENT_STATUS_CODES.get(employmentStatusCode);
       person.attributes.put(Person.EMPLOYMENT_STATUS, employmentStatusDesc);
 
+      long targetAge = Long.valueOf(randSpew.get("AGEP")).longValue();
+      
       // TODO this is terrible date handling, figure out how to use the java time library
       long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
       long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
