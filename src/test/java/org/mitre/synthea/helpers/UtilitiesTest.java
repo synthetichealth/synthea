@@ -5,7 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.gson.JsonPrimitive;
+
+import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 
 public class UtilitiesTest {
@@ -148,4 +154,18 @@ public class UtilitiesTest {
       assertTrue(message, d.equals(Utilities.primitive(p)));
     }
   }
+  
+  @Test
+  public void testCreateMap() throws IOException {
+    List<LinkedHashMap<String,String>> parsedCsv =
+        SimpleCSV.parse(Utilities.readResource("sampleCsv.csv"));
+
+    Map<String,String> map = Utilities.createMapFromCsv(parsedCsv, "CODE", "DESCRIPTION");
+
+    assertEquals("Examplitis", map.get("123"));
+    assertEquals("Examplitol", map.get("456"));
+    assertEquals("Examplotomy Encounter", map.get("ABC"));
+    assertEquals("Examplotomy", map.get("789"));
+  }
+  
 }
