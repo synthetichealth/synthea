@@ -611,7 +611,7 @@ public class DataStore {
         Map<String, Object> attributes = p.getAttributes();
 
         providerTable.setString(1, providerID);
-        providerTable.setString(2, (String) attributes.get("name"));
+        providerTable.setString(2, p.name);
         providerTable.addBatch();
 
         for (Object key : attributes.keySet()) {

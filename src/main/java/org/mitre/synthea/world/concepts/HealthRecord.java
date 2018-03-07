@@ -169,7 +169,7 @@ public class HealthRecord {
 
     public Claim(Encounter encounter) {
       // Encounter inpatient
-      if (encounter.type.equalsIgnoreCase("inpatient")) {
+      if (encounter.type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
         baseCost = 75.00;
       } else {
         // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for
@@ -303,9 +303,8 @@ public class HealthRecord {
     if (encounters.size() >= 1) {
       encounter = encounters.get(encounters.size() - 1);
     } else {
-      encounter = new Encounter(time, EncounterType.WELLNESS.toString());
+      encounter = encounterStart(time, EncounterType.WELLNESS);
       encounter.name = "First Wellness";
-      encounters.add(encounter);
     }
     return encounter;
   }
@@ -313,7 +312,7 @@ public class HealthRecord {
   public long timeSinceLastWellnessEncounter(long time) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equals(EncounterType.WELLNESS.toString())) {
+      if (encounter.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())) {
         return (time - encounter.start);
       }
     }
@@ -448,16 +447,24 @@ public class HealthRecord {
     return report;
   }
 
+  public Encounter encounterStart(long time, EncounterType type) {
+    return encounterStart(time, type.toString().toLowerCase());
+  }
+
   public Encounter encounterStart(long time, String type) {
     Encounter encounter = new Encounter(time, type);
     encounters.add(encounter);
     return encounter;
   }
 
+  public void encounterEnd(long time, EncounterType type) {
+    encounterEnd(time, type.toString().toLowerCase());
+  }
+
   public void encounterEnd(long time, String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equals(type) && encounter.stop == 0L) {
+      if (encounter.type.equalsIgnoreCase(type) && encounter.stop == 0L) {
         encounter.stop = time;
         return;
       }
