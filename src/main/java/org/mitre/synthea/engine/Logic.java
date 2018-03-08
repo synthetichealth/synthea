@@ -431,4 +431,35 @@ public abstract class Logic {
       return Utilities.compare(person.getVitalSign(vitalSign), value, operator);
     }
   }
+  
+  /**
+   * The Adherence condition tests a patient's
+   * level of adherence to a given medication prescription.
+   */
+  public static class Adherence extends Logic {
+    private List<Code> codes;
+    private String medicationOrder;
+    private String referencedByAttribute;
+    private String operator;
+    private double value;
+
+    @Override
+    public boolean test(Person person, long time) {
+      Code code;
+      if (medicationOrder != null) {
+        // TODO: figure out how to implement lookup by state name
+        code = null;
+      } else if (referencedByAttribute != null) {
+        Medication medication = (Medication) person.attributes.get(referencedByAttribute);
+        code = medication.codes.get(0);
+      } else if (codes != null) {
+        code = codes.get(0);
+      } else {
+        throw new RuntimeException(
+            "Adherence condition must specify codes, Medication Order, or attribute name.");
+      }
+      
+      return Utilities.compare(person.adherenceLevel(code, time), value, operator);
+    }
+  }
 }

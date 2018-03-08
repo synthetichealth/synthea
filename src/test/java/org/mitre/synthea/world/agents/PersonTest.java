@@ -1,12 +1,14 @@
 package org.mitre.synthea.world.agents;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.TestHelper.timestamp;
 
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class PersonTest {
   private Person person;
@@ -59,5 +61,16 @@ public class PersonTest {
   private void testAgeMonths(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
     assertEquals(expectedAge, person.ageInMonths(now));
+  }
+  
+  @Test
+  public void testCareSeekingBehavior() {
+    long now = System.currentTimeMillis();
+    // initial impl: people are perfect, always seek care, always adhere
+    assertTrue(person.doesSeekCare(true, now));
+    assertTrue(person.doesSeekCare(false, now));
+    
+    HealthRecord.Code med = new HealthRecord.Code("RxNorm", "12345", "Examplitol");
+    assertEquals(1.0, person.adherenceLevel(med, now), 0);
   }
 }

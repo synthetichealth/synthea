@@ -463,6 +463,14 @@ public abstract class State implements Cloneable {
 
     @Override
     public boolean process(Person person, long time) {
+      boolean isEmergency = EncounterType.EMERGENCY.toString().equals(encounterClass);
+      boolean personSeeksCare = person.doesSeekCare(isEmergency, time);
+      
+      if (!personSeeksCare) {
+        // TODO: implement an "onNoCare" or something for when the person does not seek care
+        return false; // block until they do seek care, or fall out
+      }
+      
       if (wellness) {
         HealthRecord.Encounter encounter = person.record.currentEncounter(time);
         String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module.name;

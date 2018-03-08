@@ -283,6 +283,48 @@ public class Person implements Serializable, QuadTreeData {
     }
   }
 
+  // Care-Seeking Behavior
+  
+  /**
+   * Get this person's level of adherence to the given medication, at the given time.
+   * Adherence is a number between 0.0 and 1.0, where 0.0 means they never took the medication,
+   * and 1.0 indicates perfect adherence to guidance.
+   * 
+   * @param medication Medication prescribed
+   * @param time Timestamp
+   * @return adherence rate between 0.0 and 1.0
+   */
+  public double adherenceLevel(Code medication, long time) {
+    // TODO: relevant factors include:
+    //  - education level
+    //  - income
+    //  - drug class
+    //  - demographics (age, race, ethnicity, gender)
+    //  - communication
+
+    return 1.0; // for now everyone is perfect
+  }
+  
+  /**
+   * Whether or not the person seeks care at the given time.
+   * 
+   * @param emergency Is the person experiencing an emergency?
+   * @param time Timestamp
+   * @return whether or not the person will seek care
+   */
+  public boolean doesSeekCare(boolean emergency, long time) {
+    // TODO: relevant factors include:
+    //  - insurance coverage / perception of insurance
+    //  - ability to pay
+    //  - available facility/provider
+    //  - emergency? Y/N
+    
+    // also - could we incorporate wellness encounters into this?
+    // that way we'd have these 2 concepts in 1 place instead of 2 places
+    
+    return true; // for now everyone is perfect
+  }
+  
   // Providers API -----------------------------------------------------------
   public static final String CURRENTPROVIDER = "currentProvider";
   public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
