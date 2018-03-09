@@ -462,4 +462,17 @@ public abstract class Logic {
       return Utilities.compare(person.adherenceLevel(code, time), value, operator);
     }
   }
+  
+  /**
+   * The Care Seeking condition tests whether a patient will seek care for their current conditions.
+   * This condition is intended to be used in a conditional transition leading up to an encounter.
+   */
+  public static class CareSeeking extends Logic {
+    private boolean emergency;
+    
+    @Override
+    public boolean test(Person person, long time) {
+      return person.doesSeekCare(emergency, time);
+    }
+  }
 }
