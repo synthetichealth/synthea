@@ -1,12 +1,10 @@
-{
+﻿{
   "name": "Sinusitis",
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Potential_Onset"
     },
-
     "Potential_Onset": {
       "type": "Delay",
       "exact": {
@@ -40,7 +38,6 @@
         }
       ]
     },
-
     "Viral_Infection_Starts": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -54,7 +51,6 @@
       ],
       "direct_transition": "Symptom_of_Infection"
     },
-
     "Bacterial_Infection_Starts": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -68,7 +64,6 @@
       ],
       "direct_transition": "Symptom_of_Infection"
     },
-
     "Symptom_of_Infection": {
       "type": "Symptom",
       "symptom": "Sinus Pain",
@@ -78,7 +73,6 @@
       },
       "direct_transition": "Common_Symptom"
     },
-
     "Inflammation_Starts": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -92,7 +86,6 @@
       ],
       "direct_transition": "Symptom_of_Inflammation"
     },
-
     "Symptom_of_Inflammation": {
       "type": "Symptom",
       "symptom": "Sinus Pain",
@@ -102,7 +95,6 @@
       },
       "direct_transition": "Common_Symptom"
     },
-
     "Common_Symptom": {
       "type": "Symptom",
       "symptom": "Nasal Congestion",
@@ -112,7 +104,6 @@
       },
       "direct_transition": "Wait_to_see_Dr"
     },
-
     "Wait_to_see_Dr": {
       "type": "Delay",
       "range": {
@@ -122,7 +113,6 @@
       },
       "direct_transition": "Doctor_Visit"
     },
-
     "Doctor_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -148,7 +138,6 @@
         }
       ]
     },
-
     "Prescribe_Antibiotic": {
       "type": "MedicationOrder",
       "remarks": [
@@ -165,12 +154,10 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
-    "End_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Wait_for_condition_to_resolve"
     },
-
     "Wait_for_condition_to_resolve": {
       "type": "Delay",
       "range": {
@@ -225,7 +212,6 @@
         }
       ]
     },
-
     "Sinusitis_Ends": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "Sinusitis Condition",
@@ -248,13 +234,11 @@
         }
       ]
     },
-
     "End_Antibiotic": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Antibiotic",
       "direct_transition": "Symptom1_Subsides"
     },
-
     "Symptom1_Subsides": {
       "type": "Symptom",
       "symptom": "Sinus Pain",
@@ -263,7 +247,6 @@
       },
       "direct_transition": "Symptom2_Subsides"
     },
-
     "Symptom2_Subsides": {
       "type": "Symptom",
       "symptom": "Nasal Congestion",
@@ -272,7 +255,6 @@
       },
       "direct_transition": "Potential_Onset"
     },
-
     "Chronic_Sinusitis_Continues": {
       "type": "Delay",
       "exact": {
@@ -294,7 +276,6 @@
         }
       ]
     },
-
     "Chronic_Symptoms_Worsen": {
       "type": "Symptom",
       "symptom": "Sinus Pain",
@@ -304,11 +285,10 @@
       },
       "direct_transition": "Chronic_Sinusitis_Followup"
     },
-
     "Chronic_Sinusitis_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "Inflammation_Starts",
+      "reason": "Sinusitis Condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -353,7 +333,6 @@
         }
       ]
     },
-
     "Diagnose_Chronic_Sinusitis": {
       "type": "ConditionOnset",
       "target_encounter": "Chronic_Sinusitis_Followup",
@@ -366,12 +345,10 @@
       ],
       "direct_transition": "End_Chronic_Followup"
     },
-
-    "End_Chronic_Followup" : {
-      "type" : "EncounterEnd",
+    "End_Chronic_Followup": {
+      "type": "EncounterEnd",
       "direct_transition": "Chronic_Sinusitis_Continues"
     },
-
     "Sinus_Surgery": {
       "type": "Procedure",
       "target_encounter": "Chronic_Sinusitis_Followup",
@@ -382,11 +359,10 @@
           "display": "Nasal sinus endoscopy (procedure)"
         }
       ],
-      "direct_transition" : "End_Surgery_Encounter"
+      "direct_transition": "End_Surgery_Encounter"
     },
-
-    "End_Surgery_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Surgery_Encounter": {
+      "type": "EncounterEnd",
       "conditional_transition": [
         {
           "condition": {
@@ -406,7 +382,6 @@
         }
       ]
     },
-    
     "Chronic_Sinusisitis_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Diagnose_Chronic_Sinusitis",
