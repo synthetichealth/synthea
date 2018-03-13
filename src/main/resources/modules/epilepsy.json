@@ -34,8 +34,7 @@
           "distribution": 0.9,
           "transition": "Terminal"
         }
-      ],
-      "name": "Initial"
+      ]
     },
     "Ages_0_1": {
       "type": "Delay",
@@ -47,8 +46,7 @@
         "high": 1,
         "unit": "years"
       },
-      "direct_transition": "Suspected_Epilepsy",
-      "name": "Ages_0_1"
+      "direct_transition": "Suspected_Epilepsy"
     },
     "Ages_1_10": {
       "type": "Delay",
@@ -60,8 +58,7 @@
         "high": 10,
         "unit": "years"
       },
-      "direct_transition": "Suspected_Epilepsy",
-      "name": "Ages_1_10"
+      "direct_transition": "Suspected_Epilepsy"
     },
     "Ages_10_15": {
       "type": "Delay",
@@ -73,8 +70,7 @@
         "high": 15,
         "unit": "years"
       },
-      "direct_transition": "Suspected_Epilepsy",
-      "name": "Ages_10_15"
+      "direct_transition": "Suspected_Epilepsy"
     },
     "Ages_15_55": {
       "type": "Delay",
@@ -86,8 +82,7 @@
         "high": 55,
         "unit": "years"
       },
-      "direct_transition": "Suspected_Epilepsy",
-      "name": "Ages_15_55"
+      "direct_transition": "Suspected_Epilepsy"
     },
     "Ages_55_Plus": {
       "type": "Delay",
@@ -99,8 +94,7 @@
         "high": 90,
         "unit": "years"
       },
-      "direct_transition": "Suspected_Epilepsy",
-      "name": "Ages_55_Plus"
+      "direct_transition": "Suspected_Epilepsy"
     },
     "Suspected_Epilepsy": {
       "type": "Simple",
@@ -119,8 +113,7 @@
           },
           "transition": "Female"
         }
-      ],
-      "name": "Suspected_Epilepsy"
+      ]
     },
     "Male": {
       "type": "Simple",
@@ -136,8 +129,7 @@
       ],
       "remarks": [
         ""
-      ],
-      "name": "Male"
+      ]
     },
     "Female": {
       "type": "Simple",
@@ -153,8 +145,7 @@
       ],
       "remarks": [
         "Figures derived from interview with Dr. Friedman, NYU Langone Medical Center."
-      ],
-      "name": "Female"
+      ]
     },
     "Seizure_Disorder": {
       "type": "ConditionOnset",
@@ -170,7 +161,6 @@
       "remarks": [
         ""
       ],
-      "name": "Seizure_Disorder",
       "assign_to_attribute": "seizure"
     },
     "Seizure_Encounter": {
@@ -188,8 +178,7 @@
           "display": "Emergency Room Admission"
         }
       ],
-      "direct_transition": "History_of_Seizure",
-      "name": "Seizure_Encounter"
+      "direct_transition": "History_of_Seizure"
     },
     "History_of_Seizure": {
       "type": "ConditionOnset",
@@ -201,8 +190,7 @@
           "display": "History of single seizure (situation)"
         }
       ],
-      "direct_transition": "EEG_Test",
-      "name": "History_of_Seizure"
+      "direct_transition": "EEG_Test"
     },
     "EEG_Test": {
       "type": "Procedure",
@@ -242,8 +230,7 @@
       ],
       "remarks": [
         "For patients who have already been diagnosed with Epilepsy, the diagnosis is not re-issued. Those patients go back to living with seizures."
-      ],
-      "name": "EEG_Test"
+      ]
     },
     "Epilepsy": {
       "type": "ConditionOnset",
@@ -268,8 +255,7 @@
           "distribution": 0.34,
           "transition": "Clonazepam"
         }
-      ],
-      "name": "Epilepsy"
+      ]
     },
     "Living_with_Seizures": {
       "type": "Simple",
@@ -286,8 +272,7 @@
           "distribution": 0.34,
           "transition": "Clonazepam"
         }
-      ],
-      "name": "Living_with_Seizures"
+      ]
     },
     "Carbamazepine": {
       "type": "MedicationOrder",
@@ -310,8 +295,7 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ],
-      "name": "Carbamazepine"
+      ]
     },
     "Diazepam": {
       "type": "MedicationOrder",
@@ -334,8 +318,7 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ],
-      "name": "Diazepam"
+      ]
     },
     "Clonazepam": {
       "type": "MedicationOrder",
@@ -358,8 +341,7 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ],
-      "name": "Clonazepam"
+      ]
     },
     "End_Seizure_Encounter": {
       "type": "EncounterEnd",
@@ -368,8 +350,7 @@
         "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
       },
-      "direct_transition": "Undergoing_Seizure_Treatment",
-      "name": "End_Seizure_Encounter"
+      "direct_transition": "Undergoing_Seizure_Treatment"
     },
     "Undergoing_Seizure_Treatment": {
       "type": "Delay",
@@ -394,8 +375,7 @@
           "distribution": 0.7,
           "transition": "Medication_Guard"
         }
-      ],
-      "name": "Undergoing_Seizure_Treatment"
+      ]
     },
     "Medication_Guard": {
       "type": "Delay",
@@ -407,8 +387,7 @@
         "high": 12,
         "unit": "weeks"
       },
-      "direct_transition": "Medication_End",
-      "name": "Medication_Guard"
+      "direct_transition": "Medication_End"
     },
     "Medication_End": {
       "type": "MedicationEnd",
@@ -425,8 +404,7 @@
       ],
       "remarks": [
         "Patients who are living with seizures either keep taking meds or go into remission. Their diagnoses doesn't disappear in remission."
-      ],
-      "name": "Medication_End"
+      ]
     },
     "Medicine_Encounter": {
       "type": "Encounter",
@@ -456,8 +434,7 @@
           "distribution": 0.34,
           "transition": "Clonazepam"
         }
-      ],
-      "name": "Medicine_Encounter"
+      ]
     },
     "End_Medicine_Encounter": {
       "type": "EncounterEnd",
@@ -466,8 +443,7 @@
         "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
       },
-      "direct_transition": "Undergoing_Seizure_Treatment",
-      "name": "End_Medicine_Encounter"
+      "direct_transition": "Undergoing_Seizure_Treatment"
     },
     "Sudden_Cardiac_Death": {
       "type": "Death",
@@ -483,12 +459,10 @@
           "display": "Sudden Cardiac Death"
         }
       ],
-      "direct_transition": "Terminal",
-      "name": "Sudden_Cardiac_Death"
+      "direct_transition": "Terminal"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     }
   }
 }

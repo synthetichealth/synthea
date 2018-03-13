@@ -3,8 +3,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Potential_Onset",
-      "name": "Initial"
+      "direct_transition": "Potential_Onset"
     },
     "Potential_Onset": {
       "type": "Delay",
@@ -37,8 +36,7 @@
           "distribution": 0.99,
           "transition": "Potential_Onset"
         }
-      ],
-      "name": "Potential_Onset"
+      ]
     },
     "Viral_Infection_Starts": {
       "type": "ConditionOnset",
@@ -51,8 +49,7 @@
           "display": "Viral sinusitis (disorder)"
         }
       ],
-      "direct_transition": "Symptom_of_Infection",
-      "name": "Viral_Infection_Starts"
+      "direct_transition": "Symptom_of_Infection"
     },
     "Bacterial_Infection_Starts": {
       "type": "ConditionOnset",
@@ -65,8 +62,7 @@
           "display": "Acute bacterial sinusitis (disorder)"
         }
       ],
-      "direct_transition": "Symptom_of_Infection",
-      "name": "Bacterial_Infection_Starts"
+      "direct_transition": "Symptom_of_Infection"
     },
     "Symptom_of_Infection": {
       "type": "Symptom",
@@ -75,8 +71,7 @@
         "low": 40,
         "high": 60
       },
-      "direct_transition": "Common_Symptom",
-      "name": "Symptom_of_Infection"
+      "direct_transition": "Common_Symptom"
     },
     "Inflammation_Starts": {
       "type": "ConditionOnset",
@@ -89,8 +84,7 @@
           "display": "Sinusitis (disorder)"
         }
       ],
-      "direct_transition": "Symptom_of_Inflammation",
-      "name": "Inflammation_Starts"
+      "direct_transition": "Symptom_of_Inflammation"
     },
     "Symptom_of_Inflammation": {
       "type": "Symptom",
@@ -99,8 +93,7 @@
         "low": 20,
         "high": 80
       },
-      "direct_transition": "Common_Symptom",
-      "name": "Symptom_of_Inflammation"
+      "direct_transition": "Common_Symptom"
     },
     "Common_Symptom": {
       "type": "Symptom",
@@ -109,8 +102,7 @@
         "low": 60,
         "high": 90
       },
-      "direct_transition": "Wait_to_see_Dr",
-      "name": "Common_Symptom"
+      "direct_transition": "Wait_to_see_Dr"
     },
     "Wait_to_see_Dr": {
       "type": "Delay",
@@ -119,8 +111,7 @@
         "high": 10,
         "unit": "days"
       },
-      "direct_transition": "Doctor_Visit",
-      "name": "Wait_to_see_Dr"
+      "direct_transition": "Doctor_Visit"
     },
     "Doctor_Visit": {
       "type": "Encounter",
@@ -145,8 +136,7 @@
           "distribution": 0.2,
           "transition": "Prescribe_Antibiotic"
         }
-      ],
-      "name": "Doctor_Visit"
+      ]
     },
     "Prescribe_Antibiotic": {
       "type": "MedicationOrder",
@@ -162,13 +152,11 @@
           "display": " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
         }
       ],
-      "direct_transition": "End_Encounter",
-      "name": "Prescribe_Antibiotic"
+      "direct_transition": "End_Encounter"
     },
     "End_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Wait_for_condition_to_resolve",
-      "name": "End_Encounter"
+      "direct_transition": "Wait_for_condition_to_resolve"
     },
     "Wait_for_condition_to_resolve": {
       "type": "Delay",
@@ -222,8 +210,7 @@
         {
           "transition": "Chronic_Sinusitis_Continues"
         }
-      ],
-      "name": "Wait_for_condition_to_resolve"
+      ]
     },
     "Sinusitis_Ends": {
       "type": "ConditionEnd",
@@ -245,14 +232,12 @@
         {
           "transition": "Symptom1_Subsides"
         }
-      ],
-      "name": "Sinusitis_Ends"
+      ]
     },
     "End_Antibiotic": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Antibiotic",
-      "direct_transition": "Symptom1_Subsides",
-      "name": "End_Antibiotic"
+      "direct_transition": "Symptom1_Subsides"
     },
     "Symptom1_Subsides": {
       "type": "Symptom",
@@ -260,8 +245,7 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Symptom2_Subsides",
-      "name": "Symptom1_Subsides"
+      "direct_transition": "Symptom2_Subsides"
     },
     "Symptom2_Subsides": {
       "type": "Symptom",
@@ -269,8 +253,7 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Potential_Onset",
-      "name": "Symptom2_Subsides"
+      "direct_transition": "Potential_Onset"
     },
     "Chronic_Sinusitis_Continues": {
       "type": "Delay",
@@ -291,8 +274,7 @@
           "distribution": 0.15,
           "transition": "Chronic_Symptoms_Worsen"
         }
-      ],
-      "name": "Chronic_Sinusitis_Continues"
+      ]
     },
     "Chronic_Symptoms_Worsen": {
       "type": "Symptom",
@@ -301,8 +283,7 @@
         "low": 60,
         "high": 100
       },
-      "direct_transition": "Chronic_Sinusitis_Followup",
-      "name": "Chronic_Symptoms_Worsen"
+      "direct_transition": "Chronic_Sinusitis_Followup"
     },
     "Chronic_Sinusitis_Followup": {
       "type": "Encounter",
@@ -350,8 +331,7 @@
             }
           ]
         }
-      ],
-      "name": "Chronic_Sinusitis_Followup"
+      ]
     },
     "Diagnose_Chronic_Sinusitis": {
       "type": "ConditionOnset",
@@ -363,13 +343,11 @@
           "display": "Chronic sinusitis (disorder)"
         }
       ],
-      "direct_transition": "End_Chronic_Followup",
-      "name": "Diagnose_Chronic_Sinusitis"
+      "direct_transition": "End_Chronic_Followup"
     },
     "End_Chronic_Followup": {
       "type": "EncounterEnd",
-      "direct_transition": "Chronic_Sinusitis_Continues",
-      "name": "End_Chronic_Followup"
+      "direct_transition": "Chronic_Sinusitis_Continues"
     },
     "Sinus_Surgery": {
       "type": "Procedure",
@@ -381,8 +359,7 @@
           "display": "Nasal sinus endoscopy (procedure)"
         }
       ],
-      "direct_transition": "End_Surgery_Encounter",
-      "name": "Sinus_Surgery"
+      "direct_transition": "End_Surgery_Encounter"
     },
     "End_Surgery_Encounter": {
       "type": "EncounterEnd",
@@ -403,14 +380,12 @@
         {
           "transition": "Sinusitis_Ends"
         }
-      ],
-      "name": "End_Surgery_Encounter"
+      ]
     },
     "Chronic_Sinusisitis_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Diagnose_Chronic_Sinusitis",
-      "direct_transition": "Sinusitis_Ends",
-      "name": "Chronic_Sinusisitis_Ends"
+      "direct_transition": "Sinusitis_Ends"
     }
   }
 }
