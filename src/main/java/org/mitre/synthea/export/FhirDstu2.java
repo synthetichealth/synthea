@@ -32,6 +32,7 @@ import ca.uhn.fhir.model.dstu2.resource.Observation.Component;
 import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
+import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCriticalityEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceStatusEnum;
@@ -40,6 +41,7 @@ import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.CarePlanActivityStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.CarePlanStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ClaimTypeEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionClinicalStatusCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
@@ -58,6 +60,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ProcedureStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UseEnum;
 import ca.uhn.fhir.model.primitive.BooleanDt;
+import ca.uhn.fhir.model.primitive.CodeDt;
 import ca.uhn.fhir.model.primitive.DateDt;
 import ca.uhn.fhir.model.primitive.DateTimeDt;
 import ca.uhn.fhir.model.primitive.DecimalDt;
@@ -337,6 +340,17 @@ public class FhirDstu2 {
 
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     patientResource.setBirthDate(new DateDt(new Date(birthdate)));
+
+    ExtensionDt birthSexExtension = new ExtensionDt();
+    birthSexExtension.setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
+    if (person.attributes.get(Person.GENDER).equals("M")) {
+      patientResource.setGender(AdministrativeGenderEnum.MALE);
+      birthSexExtension.setValue(new CodeDt("M"));
+    } else if (person.attributes.get(Person.GENDER).equals("F")) {
+      patientResource.setGender(AdministrativeGenderEnum.FEMALE);
+      birthSexExtension.setValue(new CodeDt("F"));
+    }
+    patientResource.addUndeclaredExtension(birthSexExtension);
 
     String state = (String) person.attributes.get(Person.STATE);
     
@@ -676,7 +690,7 @@ public class FhirDstu2 {
 
     Code code = condition.codes.get(0);
     conditionResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
-
+    conditionResource.setCategory(ConditionCategoryCodesEnum.DIAGNOSIS);
     conditionResource.setVerificationStatus(ConditionVerificationStatusEnum.CONFIRMED);
     conditionResource.setClinicalStatus(ConditionClinicalStatusCodesEnum.ACTIVE);
 
@@ -803,7 +817,7 @@ public class FhirDstu2 {
       
     } else if (value instanceof Number) {
       return new QuantityDt().setValue(((Number) value).doubleValue())
-          .setCode(unit).setSystem("http://unitsofmeasure.org/")
+          .setCode(unit).setSystem("http://unitsofmeasure.org")
           .setUnit(unit);
       
     } else {
@@ -898,6 +912,9 @@ public class FhirDstu2 {
 
     medicationResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     medicationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
+        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
+    medicationResource.setPrescriber(encounter.getServiceProvider());
 
     medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
 
@@ -988,6 +1005,16 @@ public class FhirDstu2 {
       Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
     reportResource.setStatus(DiagnosticReportStatusEnum.FINAL);
+    /*
+     * Technically, the CodeableConcept system should be "http://hl7.org/fhir/v2/0074"
+     * But the official Argonauts profiles incorrectly list the category pattern as
+     * the ValueSet (which contains the above system) as
+     * "http://hl7.org/fhir/ValueSet/diagnostic-service-sections", so we repeat the
+     * error here.
+     */
+    CodeableConceptDt category =
+        new CodeableConceptDt("http://hl7.org/fhir/ValueSet/diagnostic-service-sections", "LAB");
+    reportResource.setCategory(category);
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
     reportResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
     reportResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
