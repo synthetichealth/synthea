@@ -562,7 +562,7 @@ public abstract class State implements Cloneable {
     @Override
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      if (!encounter.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())) {
+      if (!EncounterType.WELLNESS.equals(encounter.type)) {
         encounter.stop = time;
       }
 

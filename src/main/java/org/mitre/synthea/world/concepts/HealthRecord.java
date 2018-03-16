@@ -169,7 +169,7 @@ public class HealthRecord {
 
     public Claim(Encounter encounter) {
       // Encounter inpatient
-      if (encounter.type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
+      if (EncounterType.INPATIENT.equals(encounter.type)) {
         baseCost = 75.00;
       } else {
         // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for
@@ -225,7 +225,11 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY
+    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY;
+
+    public boolean equals(String type) {
+      return this.toString().equalsIgnoreCase(type);
+    }
   }
 
   public class Encounter extends Entry {
@@ -312,7 +316,7 @@ public class HealthRecord {
   public long timeSinceLastWellnessEncounter(long time) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())) {
+      if (EncounterType.WELLNESS.equals(encounter.type)) {
         return (time - encounter.start);
       }
     }
