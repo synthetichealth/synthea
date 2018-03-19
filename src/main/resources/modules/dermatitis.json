@@ -581,8 +581,8 @@
       ],
       "codes": [
         {
-          "system": "SNOMED-CT",
-          "code": "205168",
+          "system": "RxNorm",
+          "code": "835900",
           "display": "cycloSPORINE 50 MG Oral Capsule"
         }
       ],
@@ -630,8 +630,8 @@
             "condition_type": "Active Medication",
             "codes": [
               {
-                "system": "SNOMED-CT",
-                "code": "205168",
+                "system": "RxNorm",
+                "code": "835900",
                 "display": "cycloSPORINE 50 MG Oral Capsule"
               }
             ]
