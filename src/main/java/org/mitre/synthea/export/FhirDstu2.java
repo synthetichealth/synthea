@@ -83,6 +83,7 @@ import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
@@ -106,7 +107,9 @@ public class FhirDstu2 {
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
 
+  @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
+  @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
 
   @SuppressWarnings("rawtypes")
@@ -210,6 +213,7 @@ public class FhirDstu2 {
    *          Time the simulation ended
    * @return The created Entry
    */
+  @SuppressWarnings("rawtypes")
   private static Entry basicInfo(Person person, Bundle bundle, long stopTime) {
     Patient patientResource = new Patient();
 
@@ -572,23 +576,43 @@ public class FhirDstu2 {
         .getResource();
 
     // assume institutional claim
-    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL); // TODO review claim type
+    claimResource.setType(ClaimTypeEnum.INSTITUTIONAL);
 
     claimResource.setUse(UseEnum.COMPLETE);
 
     claimResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     claimResource.setOrganization(encounterResource.getServiceProvider());
 
+    // Add data for the encounter
+    ca.uhn.fhir.model.dstu2.resource.Claim.Item encounterItem =
+        new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
+    encounterItem.setSequence(new PositiveIntDt(1));
+
+    // assume item type is clinical service invoice
+    CodingDt itemType = new CodingDt();
+    itemType.setSystem("http://hl7.org/fhir/v3/ActCode")
+        .setCode("CSINV")
+        .setDisplay("clinical service invoice");
+    encounterItem.setType(itemType);
+    CodingDt itemService = new CodingDt();
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
+        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
+    itemService.setSystem(encounter.getTypeFirstRep().getCodingFirstRep().getSystem())
+        .setCode(encounter.getTypeFirstRep().getCodingFirstRep().getCode())
+        .setDisplay(encounter.getTypeFirstRep().getCodingFirstRep().getDisplay());
+    encounterItem.setService(itemService);
+    claimResource.addItem(encounterItem);
+
     int itemSequence = 2;
     int conditionSequence = 1;
     for (ClaimItem item : claim.items) {
-      if (item.entry instanceof Procedure) {
+      if (Costs.hasCost(item.entry)) {
         // update claimItems list
         ca.uhn.fhir.model.dstu2.resource.Claim.Item procedureItem =
             new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
         procedureItem.setSequence(new PositiveIntDt(itemSequence));
 
-        // calculate cost of procedure based on rvu values for a facility
+        // calculate the cost of the procedure
         MoneyDt moneyResource = new MoneyDt();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
@@ -596,21 +620,20 @@ public class FhirDstu2 {
         procedureItem.setNet(moneyResource);
         
         // assume item type is clinical service invoice
-        CodingDt itemType = new CodingDt();
+        itemType = new CodingDt();
         itemType.setSystem("http://hl7.org/fhir/v3/ActCode")
             .setCode("CSINV")
             .setDisplay("clinical service invoice");
-        procedureItem.setType(itemType); // TODO review claim item type
+        procedureItem.setType(itemType);
         
-        // assume item service is expense
-        CodingDt itemService = new CodingDt();
-        itemService.setSystem("http://hl7.org/fhir/ex-USCLS")
-            .setCode("99555")
-            .setDisplay("Expense");
-        procedureItem.setService(itemService); // TODO review claim item service
+        // item service should match the entry code
+        itemService = new CodingDt();
+        itemService.setSystem(item.entry.codes.get(0).system)
+            .setCode(item.entry.codes.get(0).code)
+            .setDisplay(item.entry.codes.get(0).display);
+        procedureItem.setService(itemService);
         
         claimResource.addItem(procedureItem);
-
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
@@ -623,29 +646,6 @@ public class FhirDstu2 {
               new CodingDt(item.entry.codes.get(0).system, item.entry.codes.get(0).code));
         }
         claimResource.addDiagnosis(diagnosisComponent);
-
-        // update claimItems with diagnosis
-        ca.uhn.fhir.model.dstu2.resource.Claim.Item diagnosisItem =
-            new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
-        diagnosisItem.setSequence(new PositiveIntDt(itemSequence));
-        diagnosisItem.addDiagnosisLinkId(conditionSequence);
-        
-        // assume item type is clinical service invoice
-        CodingDt itemType = new CodingDt();
-        itemType.setSystem("http://hl7.org/fhir/v3/ActCode")
-            .setCode("CSINV")
-            .setDisplay("clinical service invoice");
-        diagnosisItem.setType(itemType);
-        
-        // assume item service is expense
-        CodingDt itemService = new CodingDt();
-        itemService.setSystem("http://hl7.org/fhir/ex-USCLS")
-            .setCode("99555")
-            .setDisplay("Expense");
-        diagnosisItem.setService(itemService);
-        
-        claimResource.addItem(diagnosisItem);
-
         conditionSequence++;
       }
       itemSequence++;
@@ -860,7 +860,6 @@ public class FhirDstu2 {
     }
 
     Entry procedureEntry = newEntry(bundle, procedureResource);
-
     procedure.fullUrl = procedureEntry.getFullUrl();
 
     return procedureEntry;
@@ -876,7 +875,10 @@ public class FhirDstu2 {
     immResource.setWasNotGiven(false);
     immResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     immResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
-    return newEntry(bundle, immResource);
+    Entry immunizationEntry = newEntry(bundle, immResource);
+    immunization.fullUrl = immunizationEntry.getFullUrl();
+
+    return immunizationEntry;
   }
 
   /**

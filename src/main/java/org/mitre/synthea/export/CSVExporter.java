@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -137,7 +138,7 @@ public class CSVExporter {
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
-    medications.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
+    medications.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
     medications.write(NEWLINE);
     conditions.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     conditions.write(NEWLINE);
@@ -146,11 +147,11 @@ public class CSVExporter {
     careplans.write(NEWLINE);
     observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS");
     observations.write(NEWLINE);
-    procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
+    procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
-    immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
+    immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
-    encounters.write("ID,DATE,PATIENT,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
+    encounters.write("ID,DATE,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
   }
   
@@ -288,7 +289,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // ID,DATE,PATIENT,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION
+    // ID,DATE,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
     
     String encounterID = UUID.randomUUID().toString();
@@ -299,7 +300,9 @@ public class CSVExporter {
     Code coding = encounter.codes.get(0);
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
-    
+
+    s.append(String.format("%.2f", Costs.calculateCost(encounter, true))).append(',');
+
     if (encounter.reason == null) {
       s.append(','); // reason code & desc
     } else {
@@ -427,7 +430,7 @@ public class CSVExporter {
    */
   private void procedure(String personID, String encounterID,
       Procedure procedure) throws IOException {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION
+    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
     
     s.append(dateFromTimestamp(procedure.start)).append(',');
@@ -438,7 +441,9 @@ public class CSVExporter {
 
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
-    
+
+    s.append(String.format("%.2f", Costs.calculateCost(procedure, true))).append(',');
+
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
     } else {
@@ -461,7 +466,7 @@ public class CSVExporter {
    */
   private void medication(String personID, String encounterID,
       Medication medication) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION
+    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
     
     s.append(dateFromTimestamp(medication.start)).append(',');
@@ -476,7 +481,9 @@ public class CSVExporter {
 
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
-    
+
+    s.append(String.format("%.2f", Costs.calculateCost(medication, true))).append(',');
+
     if (medication.reasons.isEmpty()) {
       s.append(','); // reason code & desc
     } else {
@@ -499,7 +506,7 @@ public class CSVExporter {
    */
   private void immunization(String personID, String encounterID,
       Entry immunization) throws IOException  {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION
+    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST
     StringBuilder s = new StringBuilder();
     
     s.append(dateFromTimestamp(immunization.start)).append(',');
@@ -509,8 +516,10 @@ public class CSVExporter {
     Code coding = immunization.codes.get(0);
 
     s.append(coding.code).append(',');
-    s.append(clean(coding.display));
-    
+    s.append(clean(coding.display)).append(',');
+
+    s.append(String.format("%.2f", Costs.calculateCost(immunization, true)));
+
     s.append(NEWLINE);
     write(s.toString(), immunizations);
   }

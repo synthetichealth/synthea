@@ -138,6 +138,12 @@ public class HealthRecord {
     }
   }
 
+  public class Immunization extends Entry {
+    public Immunization(long start, String type) {
+      super(start, type);
+    }
+  }
+
   public class Procedure extends Entry {
     public List<Code> reasons;
 
@@ -211,16 +217,11 @@ public class HealthRecord {
     }
 
     public BigDecimal cost() {
-      if (entry instanceof Procedure) {
-        if (cost == null) {
-          cost = BigDecimal.valueOf(Costs.calculateCost(entry, true));
-          cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
-        }
-
-        return cost;
+      if (cost == null) {
+        cost = BigDecimal.valueOf(Costs.calculateCost(entry, true));
+        cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
       }
-
-      return BigDecimal.ZERO;
+      return cost;
     }
   }
 
@@ -464,9 +465,11 @@ public class HealthRecord {
     }
   }
 
-  public Entry immunization(long time, String type) {
-    Entry immunization = new Entry(time, type);
-    currentEncounter(time).immunizations.add(immunization);
+  public Immunization immunization(long time, String type) {
+    Immunization immunization = new Immunization(time, type);
+    Encounter encounter = currentEncounter(time);
+    encounter.immunizations.add(immunization);
+    encounter.claim.addItem(immunization);
     return immunization;
   }
 
