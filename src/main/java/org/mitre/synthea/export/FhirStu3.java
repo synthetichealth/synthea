@@ -39,6 +39,7 @@ import org.hl7.fhir.dstu3.model.CarePlan.CarePlanStatus;
 import org.hl7.fhir.dstu3.model.Claim.ClaimStatus;
 import org.hl7.fhir.dstu3.model.Claim.ItemComponent;
 import org.hl7.fhir.dstu3.model.Claim.ProcedureComponent;
+import org.hl7.fhir.dstu3.model.Claim.SpecialConditionComponent;
 import org.hl7.fhir.dstu3.model.CodeType;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -93,6 +94,7 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
@@ -118,7 +120,9 @@ public class FhirStu3 {
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
 
+  @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
+  @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
 
   private static final boolean USE_SHR_EXTENSIONS =
@@ -254,6 +258,7 @@ public class FhirStu3 {
    *          Time the simulation ended
    * @return The created Entry
    */
+  @SuppressWarnings("rawtypes")
   private static BundleEntryComponent basicInfo(Person person, Bundle bundle, long stopTime) {
     Patient patientResource = new Patient();
 
@@ -720,26 +725,42 @@ public class FhirStu3 {
     int itemSequence = 2;
     int conditionSequence = 1;
     int procedureSequence = 1;
+    int informationSequence = 1;
+
     for (ClaimItem item : claim.items) {
-      if (item.entry instanceof Procedure) {
-        Type procedureReference = new Reference(item.entry.fullUrl);
-        ProcedureComponent claimProcedure = new ProcedureComponent(
-            new PositiveIntType(procedureSequence), procedureReference);
-        claimResource.addProcedure(claimProcedure);
-
+      if (Costs.hasCost(item.entry)) {
         // update claimItems list
-        ItemComponent procedureItem = new ItemComponent(new PositiveIntType(itemSequence));
-        procedureItem.addProcedureLinkId(procedureSequence);
+        ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
 
-        // calculate cost of procedure based on rvu values for a facility
+        // calculate the cost of the procedure
         Money moneyResource = new Money();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
         moneyResource.setValue(item.cost());
-        procedureItem.setNet(moneyResource);
-        claimResource.addItem(procedureItem);
+        claimItem.setNet(moneyResource);
+        claimResource.addItem(claimItem);
 
-        procedureSequence++;
+        if (item.entry instanceof HealthRecord.Procedure) {
+          Type procedureReference = new Reference(item.entry.fullUrl);
+          ProcedureComponent claimProcedure = new ProcedureComponent(
+              new PositiveIntType(procedureSequence), procedureReference);
+          claimResource.addProcedure(claimProcedure);
+          claimItem.addProcedureLinkId(procedureSequence);
+          procedureSequence++;
+        } else {
+          Reference informationReference = new Reference(item.entry.fullUrl);
+          SpecialConditionComponent informationComponent = new SpecialConditionComponent();
+          informationComponent.setSequence(informationSequence);
+          informationComponent.setValue(informationReference);
+          CodeableConcept category = new CodeableConcept();
+          category.getCodingFirstRep()
+            .setSystem("http://hl7.org/fhir/claiminformationcategory")
+            .setCode("info");
+          informationComponent.setCategory(category);
+          claimResource.addInformation(informationComponent);
+          claimItem.addInformationLinkId(informationSequence);
+          informationSequence++;
+        }
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
@@ -1023,7 +1044,6 @@ public class FhirStu3 {
     }
 
     BundleEntryComponent procedureEntry = newEntry(bundle, procedureResource);
-
     procedure.fullUrl = procedureEntry.getFullUrl();
 
     return procedureEntry;
@@ -1053,8 +1073,11 @@ public class FhirStu3 {
       
       immResource.addExtension(performedContext);
     }
-    
-    return newEntry(bundle, immResource);
+
+    BundleEntryComponent immunizationEntry = newEntry(bundle, immResource);
+    immunization.fullUrl = immunizationEntry.getFullUrl();
+
+    return immunizationEntry;
   }
 
   /**

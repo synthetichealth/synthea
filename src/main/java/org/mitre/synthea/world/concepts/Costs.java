@@ -68,6 +68,19 @@ public class Costs {
   }
 
   /**
+   * Whether or not this HealthRecord.Entry has an associated cost on a claim.
+   * Billing cost is not necessarily reimbursed cost or paid cost.
+   * @param entry HealthRecord.Entry
+   * @return true if the entry has a cost; false otherwise
+   */
+  public static boolean hasCost(Entry entry) {
+    return (entry instanceof HealthRecord.Procedure)
+        || (entry instanceof HealthRecord.Medication)
+        || (entry instanceof HealthRecord.Encounter)
+        || (entry instanceof HealthRecord.Immunization);
+  }
+
+  /**
    * Calculate the cost of this Procedure, Encounter, Medication, etc.
    * 
    * @param entry Entry to calculate cost of.
@@ -83,10 +96,10 @@ public class Costs {
       return MEDICATION_COSTS.getOrDefault(code, DEFAULT_MEDICATION_COST);
     } else if (entry instanceof HealthRecord.Encounter) {
       return ENCOUNTER_COSTS.getOrDefault(code, DEFAULT_ENCOUNTER_COST);
-    } else {
-      // Immunizations, Conditions, and Allergies are all just Entries,
-      // but this should only be called for Immunizations
+    } else if (entry instanceof HealthRecord.Immunization) {
       return IMMUNIZATION_COSTS.getOrDefault(code, DEFAULT_IMMUNIZATION_COST);
+    } else {
+      return 0;
     }
   }
 }
