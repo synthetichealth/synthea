@@ -25,7 +25,7 @@ public class HealthRecord {
   /**
    * HealthRecord.Code represents a system, code, and display value.
    */
-  public static class Code {
+  public static class Code implements Comparable<Code> {
     /** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
     public String system;
     /** The code itself. */
@@ -75,6 +75,15 @@ public class HealthRecord {
         codes.add(new Code((JsonObject) item));
       });
       return codes;
+    }
+
+    @Override
+    public int compareTo(Code other) {
+      int compare = this.system.compareTo(other.system);
+      if (compare == 0) {
+        compare = this.code.compareTo(other.code);
+      }
+      return compare;
     }
   }
 
