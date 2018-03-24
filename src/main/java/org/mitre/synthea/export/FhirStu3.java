@@ -401,6 +401,15 @@ public class FhirStu3 {
       }
     }
 
+    Extension mothersMaidenNameExtension = new Extension(
+        "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
+    String mothersMaidenName = (String) person.attributes.get(Person.NAME_MOTHER);
+    mothersMaidenNameExtension.setValue(new StringType(mothersMaidenName));
+    patientResource.addExtension(mothersMaidenNameExtension);
+
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    patientResource.setBirthDate(new Date(birthdate));
+
     Extension birthSexExtension = new Extension(
         "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
     if (person.attributes.get(Person.GENDER).equals("M")) {
@@ -411,15 +420,6 @@ public class FhirStu3 {
       birthSexExtension.setValue(new CodeType("F"));
     }
     patientResource.addExtension(birthSexExtension);
-
-    Extension mothersMaidenNameExtension = new Extension(
-        "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName");
-    String mothersMaidenName = (String) person.attributes.get(Person.NAME_MOTHER);
-    mothersMaidenNameExtension.setValue(new StringType(mothersMaidenName));
-    patientResource.addExtension(mothersMaidenNameExtension);
-
-    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    patientResource.setBirthDate(new Date(birthdate));
 
     String state = (String) person.attributes.get(Person.STATE);
     
