@@ -91,7 +91,7 @@ public class StateTest {
     assertFalse(terminal.process(person, time));
     assertFalse(terminal.process(person, time + TimeUnit.DAYS.toMillis(7)));
   }
-  
+
   @Test(expected = RuntimeException.class)
   public void stateMustHaveTransition() {
     getModule("state_without_transition.json");
@@ -435,6 +435,51 @@ public class StateTest {
     Code code = observation.codes.get(0);
     assertEquals("8480-6", code.code);
     assertEquals("Systolic Blood Pressure", code.display);
+  }
+
+  @Test
+  public void imaging_study_during_encounter() {
+    Module module = getModule("imaging_study.json");
+
+    // First, onset the injury
+    State kneeInjury = module.getState("Knee_Injury");
+    assertTrue(kneeInjury.process(person, time));
+    person.history.add(kneeInjury);
+
+    // An ImagingStudy must occur during an Encounter
+    State encounter = module.getState("ED_Visit");
+    assertTrue(encounter.process(person, time));
+    person.history.add(encounter);
+
+    // Run the imaging study
+    State mri = module.getState("Knee_MRI");
+    assertTrue(mri.process(person, time));
+
+    // Verify that the ImagingStudy was added to the record
+    HealthRecord.ImagingStudy study = person.record.encounters.get(0).imagingStudies.get(0);
+    assertEquals(time, study.start);
+    assertEquals(1, study.series.size());
+
+    HealthRecord.ImagingStudy.Series series = study.series.get(0);
+    assertEquals(1, series.instances.size());
+
+    Code bodySite = series.bodySite;
+    assertEquals("SNOMED-CT", bodySite.system);
+    assertEquals("6757004", bodySite.code);
+    assertEquals("Right knee", bodySite.display);
+
+    Code modality = series.modality;
+    assertEquals("DICOM-DCM", modality.system);
+    assertEquals("MR", modality.code);
+    assertEquals("Magnetic Resonance", modality.display);
+
+    HealthRecord.ImagingStudy.Instance instance = series.instances.get(0);
+    assertEquals("Image of right knee", instance.title);
+
+    Code sopClass = instance.sopClass;
+    assertEquals("DICOM-SOP", sopClass.system);
+    assertEquals("1.2.840.10008.5.1.4.1.1.4", sopClass.code);
+    assertEquals("MR Image Storage", sopClass.display);
   }
 
   @Test
@@ -1164,7 +1209,7 @@ public class StateTest {
 
     assertFalse(person.alive(time));
   }
-  
+
   @Test
   public void testDelayRewindTime() {
     // Synthea is currently run in 7-day increments. If a delay falls between increments, then the
@@ -1183,7 +1228,7 @@ public class StateTest {
     // Run number 2: 7 days after run number 1
     module.process(person, time + days(7));
 
-    
+
     assertEquals(6, person.history.size());
     assertEquals("Initial", person.history.get(5).name);
     assertEquals(time, (long)person.history.get(5).entered);
@@ -1209,7 +1254,7 @@ public class StateTest {
     assertEquals(time + days(5), (long) person.history.get(0).entered);
     assertEquals(null, person.history.get(0).exited);
   }
-  
+
   /**
    * Readability helper for the above test case. Turn days into time.
    * @param numDays Number of days
@@ -1218,85 +1263,85 @@ public class StateTest {
   private static long days(long numDays) {
     return Utilities.convertTime("days", numDays);
   }
-  
+
   @Test
   public void testSubmoduleHistory() {
-    Map<String, Module> modules = 
+    Map<String, Module> modules =
         Whitebox.<Map<String, Module>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
     Module subModule1 = getModule("submodules/encounter_submodule.json");
     Module subModule2 = getModule("submodules/medication_submodule.json");
     modules.put("submodules/encounter_submodule", subModule1);
     modules.put("submodules/medication_submodule", subModule2);
-    
+
     try {
       Module module = getModule("recursively_calls_submodules.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
       }
-      
+
       // main module has 5 states, with the callsubmodule counted 2x
       // encounter_submodule has 6 states, with the callsubmodule counted 2x
       // medication_submodule has 5 states
       // total = 18
       System.out.println(person.history);
       assertEquals(18, person.history.size());
-      
+
       assertEquals("Initial", person.history.get(17).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(17).module.name);
-  
+
       assertEquals("Example_Condition", person.history.get(16).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(16).module.name);
-      
+
       assertEquals("Call_Encounter_Submodule", person.history.get(15).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(15).module.name);
-      
-      
+
+
       assertEquals("Initial", person.history.get(14).name);
       assertEquals("Encounter Submodule Module", person.history.get(14).module.name);
-  
+
       assertEquals("Delay", person.history.get(13).name);
       assertEquals("Encounter Submodule Module", person.history.get(13).module.name);
-  
+
       assertEquals("Encounter_In_Submodule", person.history.get(12).name);
       assertEquals("Encounter Submodule Module", person.history.get(12).module.name);
-  
+
       assertEquals("Call_MedicationOrder_Submodule", person.history.get(11).name);
       assertEquals("Encounter Submodule Module", person.history.get(11).module.name);
-  
-      
+
+
       assertEquals("Initial", person.history.get(10).name);
       assertEquals("Medication Submodule Module", person.history.get(10).module.name);
-  
+
       assertEquals("Examplitis_Medication", person.history.get(9).name);
       assertEquals("Medication Submodule Module", person.history.get(9).module.name);
-  
+
       assertEquals("Delay_Yet_Again", person.history.get(8).name);
       assertEquals("Medication Submodule Module", person.history.get(8).module.name);
-  
+
       assertEquals("End_Medication", person.history.get(7).name);
       assertEquals("Medication Submodule Module", person.history.get(7).module.name);
-  
+
       assertEquals("Med_Terminal", person.history.get(6).name);
       assertEquals("Medication Submodule Module", person.history.get(6).module.name);
 
-      
+
       assertEquals("Call_MedicationOrder_Submodule", person.history.get(5).name);
       assertEquals("Encounter Submodule Module", person.history.get(5).module.name);
-      
+
       assertEquals("Delay_Some_More", person.history.get(4).name);
       assertEquals("Encounter Submodule Module", person.history.get(4).module.name);
-  
+
       assertEquals("Encounter_Terminal", person.history.get(3).name);
       assertEquals("Encounter Submodule Module", person.history.get(3).module.name);
-      
-      
+
+
       assertEquals("Call_Encounter_Submodule", person.history.get(2).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(2).module.name);
-      
+
       assertEquals("End_Condition", person.history.get(1).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(1).module.name);
-      
+
       assertEquals("Terminal", person.history.get(0).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(0).module.name);
     } finally {

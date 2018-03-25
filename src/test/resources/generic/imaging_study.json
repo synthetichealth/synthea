@@ -1,0 +1,66 @@
+{
+  "name": "ImagingStudy Test",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Knee_Injury"
+    },
+    "Knee_Injury": {
+      "type": "ConditionOnset",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "239725005",
+        "display": "Rupture of anterior cruciate ligament"
+      }],
+      "target_encounter": "ED_Visit",
+      "direct_transition": "ED_Visit"
+    },
+    "ED_Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [{
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency Room Admission"
+      }],
+      "reason" : "Knee_Injury",
+      "direct_transition": "Knee_MRI"
+    },
+    "Knee_MRI": {
+      "type": "ImagingStudy",
+      "reason": "Knee_Injury",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "6757004",
+            "display": "Right knee"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MR",
+            "display": "Magnetic Resonance"
+          },
+          "instances": [
+            {
+              "title": "Image of right knee",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.4",
+                "display": "MR Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "End_ED_Visit"
+    },
+    "End_ED_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
