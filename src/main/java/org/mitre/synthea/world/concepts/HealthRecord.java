@@ -2,6 +2,7 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,7 +36,7 @@ public class HealthRecord {
 
     /**
      * Create a new code.
-     * 
+     *
      * @param system
      *          the URI identifier of the code system
      * @param code
@@ -51,7 +52,7 @@ public class HealthRecord {
 
     /**
      * Create a new code from JSON.
-     * 
+     *
      * @param definition
      *          JSON object that contains 'system', 'code', and 'display' attributes.
      */
@@ -176,6 +177,41 @@ public class HealthRecord {
     }
   }
 
+  public class ImagingStudy extends Entry {
+    public List<Series> series;
+
+    public ImagingStudy(long time, String type) {
+      super(time, type);
+      this.series = new ArrayList<Series>();
+    }
+
+    /**
+     * ImagingStudy.Series represents a series of images that were taken of
+     * a specific part of the body.
+     */
+    public class Series {
+      /* A SNOMED-CT body structures code */
+      @SerializedName("body_site")
+      public Code bodySite;
+      /* A DICOM acquisition modality code, see https://www.hl7.org/fhir/valueset-dicom-cid29.html */
+      public Code modality;
+      /* One or more imaging Instances that belong to this Series. */
+      public List<Instance> instances;
+    }
+
+    /**
+     * ImagingStudy.Instance represents a single imaging Instance taken as
+     * part of a Series of images.
+     */
+    public class Instance {
+      /* A title for this image. */
+      public String title;
+      /* A DICOM Service-Object Pair (SOP) class from https://www.dicomlibrary.com/dicom/sop/ */
+      @SerializedName("sop_class")
+      public Code sopClass;
+    }
+  }
+
   public class Claim {
     public double baseCost;
     public Encounter encounter;
@@ -247,6 +283,7 @@ public class HealthRecord {
     public List<Entry> immunizations;
     public List<Medication> medications;
     public List<CarePlan> careplans;
+    public List<ImagingStudy> imagingStudies;
     public Claim claim; // for now assume 1 claim per encounter
     public Code reason;
     public Code discharge;
@@ -262,6 +299,7 @@ public class HealthRecord {
       immunizations = new ArrayList<Entry>();
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
+      imagingStudies = new ArrayList<ImagingStudy>();
       claim = new Claim(this);
     }
   }
@@ -285,6 +323,7 @@ public class HealthRecord {
     int immunizations = 0;
     int medications = 0;
     int careplans = 0;
+    int imagingStudies = 0;
     for (Encounter enc : encounters) {
       observations += enc.observations.size();
       reports += enc.reports.size();
@@ -294,17 +333,19 @@ public class HealthRecord {
       immunizations += enc.immunizations.size();
       medications += enc.medications.size();
       careplans += enc.careplans.size();
+      imagingStudies += enc.imagingStudies.size();
     }
     StringBuilder sb = new StringBuilder();
-    sb.append(String.format("Encounters:    %d\n", encounters.size()));
-    sb.append(String.format("Observations:  %d\n", observations));
-    sb.append(String.format("Reports:       %d\n", reports));
-    sb.append(String.format("Conditions:    %d\n", conditions));
-    sb.append(String.format("Allergies:     %d\n", allergies));
-    sb.append(String.format("Procedures:    %d\n", procedures));
-    sb.append(String.format("Immunizations: %d\n", immunizations));
-    sb.append(String.format("Medications:   %d\n", medications));
-    sb.append(String.format("Care Plans:    %d\n", careplans));
+    sb.append(String.format("Encounters:      %d\n", encounters.size()));
+    sb.append(String.format("Observations:    %d\n", observations));
+    sb.append(String.format("Reports:         %d\n", reports));
+    sb.append(String.format("Conditions:      %d\n", conditions));
+    sb.append(String.format("Allergies:       %d\n", allergies));
+    sb.append(String.format("Procedures:      %d\n", procedures));
+    sb.append(String.format("Immunizations:   %d\n", immunizations));
+    sb.append(String.format("Medications:     %d\n", medications));
+    sb.append(String.format("Care Plans:      %d\n", careplans));
+    sb.append(String.format("Imaging Studies: %d\n", imagingStudies));
     return sb.toString();
   }
 
@@ -564,5 +605,12 @@ public class HealthRecord {
 
   public boolean careplanActive(String type) {
     return present.containsKey(type) && ((CarePlan) present.get(type)).stop == 0L;
+  }
+
+  public ImagingStudy imagingStudy(long time, String type, List<ImagingStudy.Series> series) {
+    ImagingStudy study = new ImagingStudy(time, type);
+    study.series = series;
+    currentEncounter(time).imagingStudies.add(study);
+    return study;
   }
 }
