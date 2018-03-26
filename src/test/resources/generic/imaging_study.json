@@ -28,7 +28,6 @@
     },
     "Knee_MRI": {
       "type": "ImagingStudy",
-      "reason": "Knee_Injury",
       "series": [
         {
           "body_site": {
