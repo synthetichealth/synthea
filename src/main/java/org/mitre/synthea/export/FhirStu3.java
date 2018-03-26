@@ -1083,14 +1083,10 @@ public class FhirStu3 {
       immResource.addExtension(performedContext);
     }
 
-<<<<<<< HEAD
     BundleEntryComponent immunizationEntry = newEntry(bundle, immResource);
     immunization.fullUrl = immunizationEntry.getFullUrl();
 
     return immunizationEntry;
-=======
-    return newEntry(bundle, immResource);
->>>>>>> Add ImagingStudy to STU3 exporter
   }
 
   /**
