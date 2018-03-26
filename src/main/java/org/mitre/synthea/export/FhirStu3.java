@@ -1345,7 +1345,7 @@ public class FhirStu3 {
     org.hl7.fhir.dstu3.model.ImagingStudy imagingStudyResource =
       new org.hl7.fhir.dstu3.model.ImagingStudy();
 
-    imagingStudyResource.setUid(randomDicomUid(0, 0));
+    imagingStudyResource.setUid(Utilities.randomDicomUid(0, 0));
     imagingStudyResource.setPatient(new Reference(personEntry.getFullUrl()));
     imagingStudyResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
@@ -1364,7 +1364,7 @@ public class FhirStu3 {
 
     for (ImagingStudy.Series series : imagingStudy.series) {
       ImagingStudySeriesComponent seriesResource = new ImagingStudySeriesComponent();
-      seriesResource.setUid(randomDicomUid(seriesNo, 0));
+      seriesResource.setUid(Utilities.randomDicomUid(seriesNo, 0));
       seriesResource.setNumber(seriesNo);
       seriesResource.setStarted(startDate);
       seriesResource.setAvailability(InstanceAvailability.UNAVAILABLE);
@@ -1388,7 +1388,7 @@ public class FhirStu3 {
       for (ImagingStudy.Instance instance : series.instances) {
         ImagingStudySeriesInstanceComponent instanceResource =
           new ImagingStudySeriesInstanceComponent();
-        instanceResource.setUid(randomDicomUid(seriesNo, instanceNo));
+        instanceResource.setUid(Utilities.randomDicomUid(seriesNo, instanceNo));
         instanceResource.setTitle(instance.title);
         instanceResource.setSopClass("urn:oid:" + instance.sopClass.code);
         instanceResource.setNumber(instanceNo);
@@ -1586,28 +1586,6 @@ public class FhirStu3 {
     } else {
       return new DateType(date);
     }
-  }
-
-  /**
-   * Generate a random DICOM UID to uniquely identify an ImagingStudy, Series, or Instance.
-   * Optionally add series and/or instance numbers to the UID to enhance its uniqueness.
-   * Pass 0 for the series/instance number to omit it from the UID.
-   *
-   * @return a String DICOM UID
-   */
-  private static String randomDicomUid(int seriesNo, int instanceNo) {
-    String now = String.valueOf(System.currentTimeMillis());
-    String uid = "urn:oid:1.2.840.99999999.";  // 99999999 is an arbitrary organizational identifier
-
-    if (seriesNo > 0) {
-      uid += String.valueOf(seriesNo) + ".";
-    }
-
-    if (instanceNo > 0) {
-      uid += String.valueOf(instanceNo) + ".";
-    }
-
-    return uid + now;
   }
 
   /**

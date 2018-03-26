@@ -1145,7 +1145,10 @@ public class FhirDstu2 {
     ca.uhn.fhir.model.dstu2.resource.ImagingStudy imagingStudyResource =
         new ca.uhn.fhir.model.dstu2.resource.ImagingStudy();
 
-    imagingStudyResource.setUid(randomDicomUid(0, 0));
+    OidDt studyUid = new OidDt();
+    studyUid.setValue(Utilities.randomDicomUid(0, 0));
+    imagingStudyResource.setUid(studyUid);
+
     imagingStudyResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
 
     DateTimeDt startDate = new DateTimeDt(new Date(imagingStudy.start));
@@ -1162,7 +1165,11 @@ public class FhirDstu2 {
 
     for (ImagingStudy.Series series : imagingStudy.series) {
       Series seriesResource = new Series();
-      seriesResource.setUid(randomDicomUid(seriesNo, 0));
+
+      OidDt seriesUid = new OidDt();
+      seriesUid.setValue(Utilities.randomDicomUid(seriesNo, 0));
+      seriesResource.setUid(seriesUid);
+
       seriesResource.setNumber(new UnsignedIntDt(seriesNo));
       seriesResource.setStarted(startDate);
       seriesResource.setAvailability(InstanceAvailabilityEnum.UNAVAILABLE);
@@ -1184,7 +1191,11 @@ public class FhirDstu2 {
 
       for (ImagingStudy.Instance instance : series.instances) {
         SeriesInstance instanceResource = new SeriesInstance();
-        instanceResource.setUid(randomDicomUid(seriesNo, instanceNo));
+
+        OidDt instanceUid = new OidDt();
+        instanceUid.setValue(Utilities.randomDicomUid(seriesNo, instanceNo));
+        instanceResource.setUid(instanceUid);
+
         instanceResource.setTitle(instance.title);
 
         OidDt sopOid = new OidDt();
@@ -1353,29 +1364,6 @@ public class FhirDstu2 {
     } else {
       return new DateDt(date);
     }
-  }
-
-  /**
-   * Generate a random DICOM UID to uniquely identify an ImagingStudy, Series, or Instance.
-   * Optionally add series and/or instance numbers to the UID to enhance its uniqueness.
-   * Pass 0 for the series/instance number to omit it from the UID.
-   *
-   * @return an OidDt containing the DICOM UID String
-   */
-  private static OidDt randomDicomUid(int seriesNo, int instanceNo) {
-    String now = String.valueOf(System.currentTimeMillis());
-    String uid = "urn:oid:1.2.840.99999999.";  // 99999999 is an arbitrary organizational identifier
-
-    if (seriesNo > 0) {
-      uid += String.valueOf(seriesNo) + ".";
-    }
-
-    if (instanceNo > 0) {
-      uid += String.valueOf(instanceNo) + ".";
-    }
-    OidDt oid = new OidDt();
-    oid.setValue(uid + now);
-    return oid;
   }
 
   /**
