@@ -563,7 +563,7 @@ public class DataStore {
               "INSERT INTO IMAGING_STUDY "
               + "(id, uid, person_id, encounter_id, start, modality_code, modality_display, modality_system, "
               + " bodysite_code, bodysite_display, bodysite_system, sop_class) "
-              + "VALUES (?,?,?,?,?,?,?,?,?,?,?);");
+              + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, UUID.randomUUID().toString());
           stmt.setString(2, Utilities.randomDicomUid(0, 0));
           stmt.setString(3, personID);
@@ -579,6 +579,9 @@ public class DataStore {
           stmt.setString(9, bodySite.code);
           stmt.setString(10, bodySite.display);
           stmt.setString(11, bodySite.system);
+
+          Code sopClass = imagingStudy.series.get(0).instances.get(0).sopClass;
+          stmt.setString(12, sopClass.code);
 
           stmt.execute();
         }
