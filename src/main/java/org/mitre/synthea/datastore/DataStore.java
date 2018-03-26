@@ -20,6 +20,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -150,6 +151,15 @@ public class DataStore {
               "CREATE TABLE IF NOT EXISTS CAREPLAN "
               + "(id varchar, person_id varchar, provider_id varchar, name varchar, type varchar, "
               + "start bigint, stop bigint, code varchar, display varchar, system varchar)")
+          .execute();
+
+      connection
+          .prepareStatement(
+              "CREATE TABLE IF NOT EXISTS IMAGING_STUDY "
+              + "(id varchar, uid varchar, person_id varchar, encounter_id varchar, start bigint, "
+              + "modality_code varchar, modality_display varchar, modality_system varchar, "
+              + "bodysite_code varchar, bodysite_display varchar, bodysite_system varchar, "
+              + "sop_class varchar)")
           .execute();
 
       connection
@@ -539,6 +549,37 @@ public class DataStore {
             stmt.setString(9, code.display);
             stmt.setString(10, code.system);
           }
+          stmt.execute();
+        }
+
+        for (ImagingStudy imagingStudy : encounter.imagingStudies) {
+          // CREATE TABLE IF NOT EXISTS IMAGING_STUDY (uid varchar,
+          // person_id varchar, encounter_id varchar, start bigint,
+          // modality_code varchar, modality_display varchar, modality_system varchar,
+          // bodysite_code varchar, bodysite_display varchar, bodysite_system varchar,
+          // sop_class varchar)
+
+          stmt = connection.prepareStatement(
+              "INSERT INTO IMAGING_STUDY "
+              + "(id, uid, person_id, encounter_id, start, modality_code, modality_display, modality_system, "
+              + " bodysite_code, bodysite_display, bodysite_system, sop_class) "
+              + "VALUES (?,?,?,?,?,?,?,?,?,?,?);");
+          stmt.setString(1, UUID.randomUUID().toString());
+          stmt.setString(2, Utilities.randomDicomUid(0, 0));
+          stmt.setString(3, personID);
+          stmt.setString(4, encounterID);
+          stmt.setLong(5, imagingStudy.start);
+
+          Code modality = imagingStudy.series.get(0).modality;
+          stmt.setString(6, modality.code);
+          stmt.setString(7, modality.display);
+          stmt.setString(8, modality.system);
+
+          Code bodySite = imagingStudy.series.get(0).bodySite;
+          stmt.setString(9, bodySite.code);
+          stmt.setString(10, bodySite.display);
+          stmt.setString(11, bodySite.system);
+
           stmt.execute();
         }
 
