@@ -21,42 +21,42 @@ public class CSVExporterTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   @Test
   public void testCSVExport() throws Exception {
     TestHelper.exportOff();
     Config.set("exporter.csv.export", "true");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-    
+
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
     for (int i = 0; i < numberOfPeople; i++) {
       generator.generatePerson(i);
     }
-    
+
     // if we get here we at least had no exceptions
-    
+
     File expectedExportFolder = tempOutputFolder.toPath().resolve("csv").toFile();
-    
+
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
-    
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
       if (!csvFile.getName().endsWith(".csv")) {
         continue;
       }
-      
+
       String csvData = Files.readAllLines(csvFile.toPath()).stream()
           .collect(Collectors.joining("\n"));
-      
+
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
-      
+
       count++;
     }
-    
-    assertEquals("Expected 9 CSV files in the output directory, found " + count, 9, count);
+
+    assertEquals("Expected 10 CSV files in the output directory, found " + count, 10, count);
   }
 }
