@@ -235,7 +235,7 @@ public class Utilities {
    */
   public static String randomDicomUid(int seriesNo, int instanceNo) {
     String now = String.valueOf(System.currentTimeMillis());
-    String uid = "urn:oid:1.2.840.99999999.";  // 99999999 is an arbitrary organizational identifier
+    String uid = "1.2.840.99999999.";  // 99999999 is an arbitrary organizational identifier
 
     if (seriesNo > 0) {
       uid += String.valueOf(seriesNo) + ".";
