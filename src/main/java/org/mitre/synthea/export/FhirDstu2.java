@@ -115,7 +115,6 @@ public class FhirDstu2 {
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
-  private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
 
   @SuppressWarnings("rawtypes")
