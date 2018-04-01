@@ -19,11 +19,11 @@
             <templateId root="2.16.840.1.113883.10.20.22.4.63"/>
             <id root="${randomDicomUid(series?counter, 0)}"/>
             <code code="113015" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="Series">
-							<qualifier>
-								<name code="121139" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="Modality"></name>
-								<value code="${series.modality.code}" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="${series.modality.display}"></value>
-							</qualifier>
-						</code>
+            	<qualifier>
+                <name code="121139" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="Modality"></name>
+                <value code="${series.modality.code}" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="${series.modality.display}"></value>
+            	</qualifier>
+            </code>
             <!-- Instances -->
             <#list series.instances as instance>
             <entryRelationship typeCode="COMP">
