@@ -561,8 +561,8 @@ public class DataStore {
 
           stmt = connection.prepareStatement(
               "INSERT INTO IMAGING_STUDY "
-              + "(id, uid, person_id, encounter_id, start, modality_code, modality_display, modality_system, "
-              + " bodysite_code, bodysite_display, bodysite_system, sop_class) "
+              + "(id, uid, person_id, encounter_id, start, modality_code, modality_display, "
+              + "modality_system, bodysite_code, bodysite_display, bodysite_system, sop_class) "
               + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, UUID.randomUUID().toString());
           stmt.setString(2, Utilities.randomDicomUid(0, 0));

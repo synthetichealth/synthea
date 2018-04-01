@@ -41,7 +41,7 @@ public class CCDAExporter {
       Number instanceNo = ((SimpleNumber) args.get(1)).getAsNumber();
       return Utilities.randomDicomUid(seriesNo.intValue(), instanceNo.intValue());
     }
-  };
+  }
 
   private static Configuration templateConfiguration() {
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
