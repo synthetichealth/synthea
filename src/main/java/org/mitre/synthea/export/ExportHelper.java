@@ -39,7 +39,31 @@ public abstract class ExportHelper {
     
     return value;
   }
-  
+
+  /**
+   * Helper to get a readable string representation of an Observation's type.
+   * 
+   * @param observation The observation to get the type from
+   * @return A human-readable string representation of the type of observation.value
+   */
+  public static String getObservationType(Observation observation) {
+    String type = null;
+    
+    if (observation.value instanceof Condition) {
+      type = "text";
+    } else if (observation.value instanceof Code) {
+      type = "text";
+    } else if (observation.value instanceof String) {
+      type = "text";
+    } else if (observation.value instanceof Double) {
+      type = "numeric";
+    } else if (observation.value != null) {
+      type = "text";
+    }
+    
+    return type;
+  }
+
   /**
    * Year-Month-Day date format.
    */

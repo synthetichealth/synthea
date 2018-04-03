@@ -145,7 +145,7 @@ public class CSVExporter {
     careplans.write(
         "ID,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
     careplans.write(NEWLINE);
-    observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS");
+    observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
     procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
@@ -413,8 +413,10 @@ public class CSVExporter {
     s.append(clean(coding.display)).append(',');
     
     String value = ExportHelper.getObservationValue(observation);
+    String type = ExportHelper.getObservationType(observation);
     s.append(value).append(',');
-    s.append(observation.unit);
+    s.append(observation.unit).append(',');
+    s.append(type);
     
     s.append(NEWLINE);
     write(s.toString(), observations);
