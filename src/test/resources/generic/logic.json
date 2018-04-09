@@ -174,6 +174,36 @@
     "since" : "DoctorVisit",
     "within" : { "quantity" : 3, "unit" : "years" }
   },
+  "adherenceByCodeTest" : {
+  	"condition_type": "Adherence",
+  	"codes": [{
+  	  "system": "RxNorm",
+  	  "code": "1234567",
+  	  "display": "Examplitol"
+  	}],
+  	"operator": ">",
+  	"value": 0.85
+  },
+  "adherenceByMedOrderTest" : {
+  	"condition_type": "Adherence",
+    "medication_order": "Prescribe_Medication",
+  	"operator": "<",
+  	"value": 0.5
+  },
+  "adherenceByAttributeTest" : {
+  	"condition_type": "Adherence",
+	"referenced_by_attribute": "Medication1",
+  	"operator": ">=",
+  	"value": 0.5
+  },
+  "careSeekingNonEmergencyTest" : {
+  	"condition_type" : "CareSeeking",
+  	"emergency" : false
+  },
+  "careSeekingEmergencyTest" : {
+  	"condition_type" : "CareSeeking",
+  	"emergency" : true
+  },
   "andAllTrueTest": {
     "condition_type": "And",
     "conditions": [

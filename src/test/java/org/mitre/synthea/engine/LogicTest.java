@@ -25,6 +25,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -354,6 +356,31 @@ public class LogicTest {
     assertTrue(doTest("priorStateCarePlanSinceDoctorVisitTest"));
     assertFalse(doTest("priorStateDoctorVisitWithin3YearsTest"));
     assertFalse(doTest("priorStateCarePlanSinceDoctorVisitWithin3YearsTest"));
+  }
+  
+  @Test
+  public void testAdherence() {
+    // TODO: v1 has all adherence set to 1.0 (100%)
+    
+    // test: examplitol has adherence > 0.85
+    assertTrue(doTest("adherenceByCodeTest"));
+    
+    // TODO: figure out how to create a medication order state
+    // test: med from state(Prescribe_Medication) has adherence < 0.5
+    assertFalse(doTest("adherenceByMedOrderTest"));
+    
+    Medication med = person.record.medicationStart(time, "dummy type");
+    Code code = new Code("RxNorm", "654321", "Examplitol 500MG");
+    med.codes.add(code);
+    person.attributes.put("Medication1", med);
+    // test med from attr(Medication1) has adherence >= 0.5
+    assertTrue(doTest("adherenceByAttributeTest"));
+  }
+  
+  @Test
+  public void testCareSeeking() {
+    assertTrue(doTest("careSeekingNonEmergencyTest"));
+    assertTrue(doTest("careSeekingEmergencyTest"));
   }
 
   @Test
