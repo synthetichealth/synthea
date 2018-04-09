@@ -2,21 +2,17 @@
   "name": "Dermatitis",
   "remarks": [
     "Source: https://nationaleczema.org/research/eczema-prevalence/",
-
     "Known colloquially as Eczema. About 10.7% of children develop dermatitis ",
     "and dermatitis is found in about 10.2% of adults. 31.6M adults overall ",
     "have eczema. 17.8M have moderate to severe cases, usually atopic dermatitis (AD).",
-
     "Atopic dermatitis usually appears in childhood. 1/3 of all children with AD ",
     "have severe cases. Up to 3% of adults are also living with severe AD, suggesting ",
     "that AD is typically a lifelong condition.",
-
     "The remaining patients with dermatitis typically have contact dermatitis (CD), ",
     "aggravated by specific substances such as nickel, latex, and chromium. ",
     "2x as many females develop CD as males."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -26,7 +22,6 @@
       ],
       "direct_transition": "Delay_For_Atopy"
     },
-
     "Delay_For_Atopy": {
       "type": "Delay",
       "remarks": [
@@ -52,7 +47,6 @@
         }
       ]
     },
-
     "Atopic": {
       "type": "Simple",
       "remarks": [
@@ -69,14 +63,12 @@
         }
       ]
     },
-
     "Not_Atopic": {
       "type": "Simple",
       "remarks": [
         "There is a small possibility that non-atopic patients still develop AD.",
         "More commonly however, non-atopic patients instead develop contact ",
         "dermatitis sometime during adulthood, often from a person's occupation.",
-
         "For example, occupational contact dermatitis is common in: ",
         "Metalworkers, Hair Dressers, Healthcare Professionals, Cleaners, ",
         "Construction Workers, Painters, and those in Food Manufacturing."
@@ -96,12 +88,11 @@
         }
       ]
     },
-
     "Atopic_Dermatitis_Incidence": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.50,
+          "distribution": 0.5,
           "transition": "Early_Childhood_AD"
         },
         {
@@ -114,7 +105,6 @@
         }
       ]
     },
-
     "Early_Childhood_AD": {
       "type": "Delay",
       "remarks": [
@@ -128,7 +118,6 @@
       },
       "direct_transition": "Childhood_Atopic_Dermatitis"
     },
-
     "Mid_Childhood_AD": {
       "type": "Delay",
       "remarks": [
@@ -142,7 +131,6 @@
       },
       "direct_transition": "Childhood_Atopic_Dermatitis"
     },
-
     "Late_Childhood_AD": {
       "type": "Delay",
       "remarks": [
@@ -156,7 +144,6 @@
       },
       "direct_transition": "Childhood_Atopic_Dermatitis"
     },
-
     "Delay_Until_Adulthood": {
       "type": "Delay",
       "range": {
@@ -166,7 +153,6 @@
       },
       "direct_transition": "Adult_Contact_Dermatitis"
     },
-
     "Childhood_Atopic_Dermatitis": {
       "type": "ConditionOnset",
       "target_encounter": "PCP_Encounter",
@@ -180,7 +166,6 @@
       ],
       "direct_transition": "PCP_Encounter"
     },
-
     "Adult_Contact_Dermatitis": {
       "type": "ConditionOnset",
       "target_encounter": "PCP_Encounter",
@@ -194,7 +179,6 @@
       ],
       "direct_transition": "PCP_Encounter"
     },
-
     "PCP_Encounter": {
       "type": "Encounter",
       "remarks": [
@@ -215,7 +199,6 @@
       ],
       "direct_transition": "Dermatitis_Careplan"
     },
-
     "Dermatitis_Careplan": {
       "type": "CarePlanStart",
       "remarks": [
@@ -241,7 +224,6 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
       "distributed_transition": [
@@ -258,7 +240,6 @@
         }
       ]
     },
-
     "Delay_For_Dermatologist": {
       "type": "Delay",
       "range": {
@@ -268,7 +249,6 @@
       },
       "direct_transition": "Dermatologist_Visit"
     },
-
     "Dermatologist_Visit": {
       "type": "Encounter",
       "remarks": [
@@ -333,43 +313,36 @@
         }
       ]
     },
-
     "Early_Childhood_AD_Moderate_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/early_moderate_eczema_obs",
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Early_Childhood_AD_Severe_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/early_severe_eczema_obs",
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Mid_Childhood_AD_Moderate_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/mid_moderate_eczema_obs",
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Mid_Childhood_AD_Severe_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/mid_severe_eczema_obs",
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Moderate_Contact_Dermatitis_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/moderate_cd_obs",
       "direct_transition": "Prescribe_Corticosteroid"
     },
-
     "Severe_Contact_Dermatitis_Observations": {
       "type": "CallSubmodule",
       "submodule": "dermatitis/severe_cd_obs",
       "direct_transition": "Prescribe_Corticosteroid"
     },
-
     "Prescribe_Corticosteroid": {
       "type": "MedicationOrder",
       "remarks": [
@@ -388,19 +361,16 @@
       },
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Advise_To_Visit_Allergist": {
       "type": "SetAttribute",
       "attribute": "visit_allergist",
       "value": true,
       "direct_transition": "End_Dermatologist_Visit"
     },
-
     "End_Dermatologist_Visit": {
       "type": "EncounterEnd",
       "direct_transition": "Living_With_Dermatitis"
     },
-
     "Living_With_Dermatitis": {
       "type": "Delay",
       "remarks": [
@@ -414,6 +384,13 @@
         "unit": "months"
       },
       "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Adult_Contact_Dermatitis"
+          },
+          "transition": "Potential_CD_Resolves"
+        },
         {
           "condition": {
             "condition_type": "And",
@@ -440,31 +417,10 @@
           "transition": "Potentially_Outgrow_AD"
         },
         {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "PriorState",
-                "name": "Childhood_Atopic_Dermatitis"
-              },
-              {
-                "condition_type": "PriorState",
-                "name": "Potentially_Outgrow_AD"
-              }
-            ]
-          },
           "transition": "Potential_AD_Flare_Up"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Adult_Contact_Dermatitis"
-          },
-          "transition": "Potential_CD_Resolves"
         }
       ]
     },
-
     "Potentially_Outgrow_AD": {
       "type": "Simple",
       "remarks": [
@@ -481,7 +437,6 @@
         }
       ]
     },
-
     "Potential_AD_Flare_Up": {
       "type": "Simple",
       "remarks": [
@@ -489,7 +444,6 @@
         "very itchy skin, spreading rashes, and sensitivity. For older children (>12) and ",
         "adults an immunosuppressant and topical corticosteroid are prescribed to control ",
         "the symptoms. ",
-
         "Only patients with moderate to severe AD paid a visit to the Dermatologist."
       ],
       "complex_transition": [
@@ -519,7 +473,6 @@
         }
       ]
     },
-
     "AD_Flare_Up": {
       "type": "Delay",
       "remarks": [
@@ -533,7 +486,6 @@
       },
       "direct_transition": "Dermatologist_Visit_For_Flare_Up"
     },
-
     "Dermatologist_Visit_For_Flare_Up": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -570,7 +522,6 @@
         }
       ]
     },
-
     "Prescribe_Immunosuppressant": {
       "type": "MedicationOrder",
       "reason": "dermatitis",
@@ -581,8 +532,8 @@
       ],
       "codes": [
         {
-          "system": "RxNorm",
-          "code": "835900",
+          "system": "SNOMED-CT",
+          "code": "205168",
           "display": "cycloSPORINE 50 MG Oral Capsule"
         }
       ],
@@ -600,7 +551,6 @@
       },
       "direct_transition": "Prescribe_Corticosteroid_For_Flare_Up"
     },
-
     "Prescribe_Corticosteroid_For_Flare_Up": {
       "type": "MedicationOrder",
       "reason": "dermatitis",
@@ -616,7 +566,6 @@
       },
       "direct_transition": "Treating_Flare_Up"
     },
-
     "Treating_Flare_Up": {
       "type": "Delay",
       "range": {
@@ -630,8 +579,8 @@
             "condition_type": "Active Medication",
             "codes": [
               {
-                "system": "RxNorm",
-                "code": "835900",
+                "system": "SNOMED-CT",
+                "code": "205168",
                 "display": "cycloSPORINE 50 MG Oral Capsule"
               }
             ]
@@ -643,19 +592,16 @@
         }
       ]
     },
-
     "End_Immunosuppressant": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Immunosuppressant",
       "direct_transition": "End_Corticosteroid"
     },
-
     "End_Corticosteroid": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Corticosteroid_For_Flare_Up",
       "direct_transition": "Living_With_Dermatitis"
     },
-
     "Potential_CD_Resolves": {
       "type": "Simple",
       "distributed_transition": [
@@ -669,19 +615,16 @@
         }
       ]
     },
-
     "Dermatitis_Resolves": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "dermatitis",
       "direct_transition": "End_Dermatitis_CarePlan"
     },
-
     "End_Dermatitis_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "Dermatitis_Careplan",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }
