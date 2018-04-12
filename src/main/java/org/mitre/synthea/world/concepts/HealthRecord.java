@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Provider;
 
 /**
@@ -177,10 +178,12 @@ public class HealthRecord {
   }
 
   public class ImagingStudy extends Entry {
+    public String dicomUid;
     public List<Series> series;
 
     public ImagingStudy(long time, String type) {
       super(time, type);
+      this.dicomUid = Utilities.randomDicomUid(0, 0);
       this.series = new ArrayList<Series>();
     }
 
@@ -189,6 +192,8 @@ public class HealthRecord {
      * a specific part of the body.
      */
     public class Series {
+      /** A randomly assigned DICOM UID. */
+      public transient String dicomUid;
       /** A SNOMED-CT body structures code */
       public Code bodySite;
       /** A DICOM acquisition modality code,
@@ -204,6 +209,8 @@ public class HealthRecord {
      * part of a Series of images.
      */
     public class Instance {
+      /** A randomly assigned DICOM UID. */
+      public transient String dicomUid;
       /** A title for this image. */
       public String title;
       /**
@@ -612,7 +619,27 @@ public class HealthRecord {
   public ImagingStudy imagingStudy(long time, String type, List<ImagingStudy.Series> series) {
     ImagingStudy study = new ImagingStudy(time, type);
     study.series = series;
+    assignImagingStudyDicomUids(study);
     currentEncounter(time).imagingStudies.add(study);
     return study;
+  }
+
+  /**
+   * Assigns random DICOM UIDs to each Series and Instance in an imaging study after creation.
+   * @param study the ImagingStudy to populate with DICOM UIDs.
+   */
+  private void assignImagingStudyDicomUids(ImagingStudy study) {
+
+    int seriesNo = 1;
+    for (ImagingStudy.Series series : study.series) {
+      series.dicomUid = Utilities.randomDicomUid(seriesNo, 0);
+
+      int instanceNo = 1;
+      for (ImagingStudy.Instance instance : series.instances) {
+        instance.dicomUid = Utilities.randomDicomUid(seriesNo, instanceNo);
+        instanceNo += 1;
+      }
+      seriesNo += 1;
+    }
   }
 }
