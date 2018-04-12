@@ -10,6 +10,7 @@ import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -234,17 +235,35 @@ public class Utilities {
    * @return a String DICOM UID
    */
   public static String randomDicomUid(int seriesNo, int instanceNo) {
+
+    // Add a random salt to increase uniqueness
+    String salt = randomDicomUidSalt();
+
     String now = String.valueOf(System.currentTimeMillis());
-    String uid = "1.2.840.99999999.";  // 99999999 is an arbitrary organizational identifier
+    String uid = "1.2.840.99999999";  // 99999999 is an arbitrary organizational identifier
 
     if (seriesNo > 0) {
-      uid += String.valueOf(seriesNo) + ".";
+      uid += "." + String.valueOf(seriesNo);
     }
 
     if (instanceNo > 0) {
-      uid += String.valueOf(instanceNo) + ".";
+      uid += "." + String.valueOf(instanceNo);
     }
 
-    return uid + now;
+    return uid + "." + salt + "." + now;
+  }
+
+  /**
+   * Generates a random string of 8 numbers to use as a salt for DICOM UIDs.
+   * @return The 8-digit numeric salt, as a String
+   */
+  private static String randomDicomUidSalt() {
+
+    final int MIN = 10000000;
+    final int MAX = 99999999;
+
+    Random rand = new Random();
+    int saltInt = rand.nextInt(MAX - MIN + 1) + MIN;
+    return String.valueOf(saltInt);
   }
 }
