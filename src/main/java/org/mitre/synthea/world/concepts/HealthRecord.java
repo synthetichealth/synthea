@@ -2,7 +2,6 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -191,7 +190,6 @@ public class HealthRecord {
      */
     public class Series {
       /* A SNOMED-CT body structures code */
-      @SerializedName("body_site")
       public Code bodySite;
       /* A DICOM acquisition modality code, see https://www.hl7.org/fhir/valueset-dicom-cid29.html */
       public Code modality;
@@ -207,7 +205,6 @@ public class HealthRecord {
       /* A title for this image. */
       public String title;
       /* A DICOM Service-Object Pair (SOP) class from https://www.dicomlibrary.com/dicom/sop/ */
-      @SerializedName("sop_class")
       public Code sopClass;
     }
   }
