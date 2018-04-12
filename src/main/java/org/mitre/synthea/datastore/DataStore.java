@@ -565,7 +565,7 @@ public class DataStore {
               + "modality_system, bodysite_code, bodysite_display, bodysite_system, sop_class) "
               + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);");
           stmt.setString(1, UUID.randomUUID().toString());
-          stmt.setString(2, Utilities.randomDicomUid(0, 0));
+          stmt.setString(2, imagingStudy.dicomUid);
           stmt.setString(3, personID);
           stmt.setString(4, encounterID);
           stmt.setLong(5, imagingStudy.start);

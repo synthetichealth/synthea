@@ -9,7 +9,7 @@
       <!-- Study -->
       <act classCode="ACT" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.6.2.6"/>
-        <id root="${randomDicomUid(0, 0)}"/>
+        <id root="${study.dicomUid}"/>
         <code code="113014" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="Study"/>
         <effectiveTime value="${study.start?number_to_date?string["yyyyMMddHHmmss"]}"/>
         <!-- Series -->
@@ -17,7 +17,7 @@
         <entryRelationship typeCode="COMP">
           <act classCode="ACT" moodCode="EVN">
             <templateId root="2.16.840.1.113883.10.20.22.4.63"/>
-            <id root="${randomDicomUid(series?counter, 0)}"/>
+            <id root="${series.dicomUid}"/>
             <code code="113015" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="Series">
             	<qualifier>
                 <name code="121139" codeSystem="1.2.840.10008.2.16.4" codeSystemName="DICOM Controlled Terminology" displayName="Modality"></name>
@@ -29,7 +29,7 @@
             <entryRelationship typeCode="COMP">
               <observation classCode="DGIMG" moodCode="EVN">
                 <templateId root="2.16.840.1.113883.10.20.6.2.8"/>
-                <id root="${randomDicomUid(series?counter, instance?counter)}"/>
+                <id root="${instance.dicomUid}"/>
                 <code code="${instance.sopClass.code}" codeSystem="1.2.840.10008.2.6.1" codeSystemName="DCMUID" displayName="${instance.sopClass.display}"></code>
               </observation>
             </entryRelationship>

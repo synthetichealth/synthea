@@ -1145,7 +1145,7 @@ public class FhirDstu2 {
         new ca.uhn.fhir.model.dstu2.resource.ImagingStudy();
 
     OidDt studyUid = new OidDt();
-    studyUid.setValue("urn:oid:" + Utilities.randomDicomUid(0, 0));
+    studyUid.setValue("urn:oid:" + imagingStudy.dicomUid);
     imagingStudyResource.setUid(studyUid);
 
     imagingStudyResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
@@ -1166,7 +1166,7 @@ public class FhirDstu2 {
       Series seriesResource = new Series();
 
       OidDt seriesUid = new OidDt();
-      seriesUid.setValue("urn:oid:" + Utilities.randomDicomUid(seriesNo, 0));
+      seriesUid.setValue("urn:oid:" + series.dicomUid);
       seriesResource.setUid(seriesUid);
 
       seriesResource.setNumber(new UnsignedIntDt(seriesNo));
@@ -1192,7 +1192,7 @@ public class FhirDstu2 {
         SeriesInstance instanceResource = new SeriesInstance();
 
         OidDt instanceUid = new OidDt();
-        instanceUid.setValue("urn:oid:" + Utilities.randomDicomUid(seriesNo, instanceNo));
+        instanceUid.setValue("urn:oid:" + instance.dicomUid);
         instanceResource.setUid(instanceUid);
 
         instanceResource.setTitle(instance.title);

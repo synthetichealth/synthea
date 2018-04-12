@@ -1345,7 +1345,7 @@ public class FhirStu3 {
     org.hl7.fhir.dstu3.model.ImagingStudy imagingStudyResource =
         new org.hl7.fhir.dstu3.model.ImagingStudy();
 
-    imagingStudyResource.setUid("urn:oid:" + Utilities.randomDicomUid(0, 0));
+    imagingStudyResource.setUid("urn:oid:" + imagingStudy.dicomUid);
     imagingStudyResource.setPatient(new Reference(personEntry.getFullUrl()));
     imagingStudyResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
@@ -1364,7 +1364,7 @@ public class FhirStu3 {
 
     for (ImagingStudy.Series series : imagingStudy.series) {
       ImagingStudySeriesComponent seriesResource = new ImagingStudySeriesComponent();
-      seriesResource.setUid("urn:oid:" + Utilities.randomDicomUid(seriesNo, 0));
+      seriesResource.setUid("urn:oid:" + series.dicomUid);
       seriesResource.setNumber(seriesNo);
       seriesResource.setStarted(startDate);
       seriesResource.setAvailability(InstanceAvailability.UNAVAILABLE);
@@ -1388,7 +1388,7 @@ public class FhirStu3 {
       for (ImagingStudy.Instance instance : series.instances) {
         ImagingStudySeriesInstanceComponent instanceResource =
             new ImagingStudySeriesInstanceComponent();
-        instanceResource.setUid("urn:oid:" + Utilities.randomDicomUid(seriesNo, instanceNo));
+        instanceResource.setUid("urn:oid:" + instance.dicomUid);
         instanceResource.setTitle(instance.title);
         instanceResource.setSopClass("urn:oid:" + instance.sopClass.code);
         instanceResource.setNumber(instanceNo);
