@@ -189,11 +189,13 @@ public class HealthRecord {
      * a specific part of the body.
      */
     public class Series {
-      /* A SNOMED-CT body structures code */
+      /** A SNOMED-CT body structures code */
       public Code bodySite;
-      /* A DICOM acquisition modality code, see https://www.hl7.org/fhir/valueset-dicom-cid29.html */
+      /** A DICOM acquisition modality code,
+       * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM modality codes</a>
+       */
       public Code modality;
-      /* One or more imaging Instances that belong to this Series. */
+      /** One or more imaging Instances that belong to this Series. */
       public List<Instance> instances;
     }
 
@@ -202,9 +204,12 @@ public class HealthRecord {
      * part of a Series of images.
      */
     public class Instance {
-      /* A title for this image. */
+      /** A title for this image. */
       public String title;
-      /* A DICOM Service-Object Pair (SOP) class from https://www.dicomlibrary.com/dicom/sop/ */
+      /**
+       * A DICOM Service-Object Pair (SOP) class,
+       * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
+       */
       public Code sopClass;
     }
   }
