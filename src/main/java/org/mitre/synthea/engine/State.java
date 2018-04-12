@@ -1225,7 +1225,7 @@ public abstract class State implements Cloneable {
 
   /**
    * The ImagingStudy state indicates a point in the module when an imaging study was performed.
-   * An ImagingStudy consists of one or more Studies, where each Study containes one or more
+   * An ImagingStudy consists of one or more Studies, where each Study contains one or more
    * Instances of an image. ImagingStudy states may only be processed during an Encounter,
    * and must occur after the target Encounter state and before the EncounterEnd. See the
    * Encounter section above for more details.
