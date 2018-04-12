@@ -10,7 +10,6 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
@@ -30,18 +29,6 @@ public class CCDAExporter {
       return UUID.randomUUID().toString();
     }
   };
-
-  /**
-   * Generates a random DICOM UID for a study, instance, or series
-   * in a CCDA template.
-   */
-  private static class RandomDicomUidMethod implements TemplateMethodModelEx {
-    public Object exec(List args) {
-      Number seriesNo = ((SimpleNumber) args.get(0)).getAsNumber();
-      Number instanceNo = ((SimpleNumber) args.get(1)).getAsNumber();
-      return Utilities.randomDicomUid(seriesNo.intValue(), instanceNo.intValue());
-    }
-  }
 
   private static Configuration templateConfiguration() {
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
@@ -94,7 +81,6 @@ public class CCDAExporter {
     // The export templates fill in the record by accessing the attributes
     // of the Person, so we add a few attributes just for the purposes of export.
     person.attributes.put("UUID", UUID_GEN);
-    person.attributes.put("randomDicomUid", new RandomDicomUidMethod());
     person.attributes.put("ehr_encounters", person.record.encounters);
     person.attributes.put("ehr_observations", superEncounter.observations);
     person.attributes.put("ehr_reports", superEncounter.reports);
