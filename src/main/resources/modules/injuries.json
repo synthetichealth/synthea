@@ -1161,6 +1161,35 @@
           "display": "Fracture of clavicle"
         }
       ],
+      "direct_transition": "Clavicle_X_Ray"
+    },
+
+    "Clavicle_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "51299004",
+            "display": "Clavicle"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of clavicle",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
       "direct_transition": "Broken_Bone_Surgery"
     },
 
@@ -1173,6 +1202,35 @@
           "system": "SNOMED-CT",
           "code": "65966004",
           "display": "Fracture of forearm"
+        }
+      ],
+      "direct_transition": "Arm_X_Ray"
+    },
+
+    "Arm_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "40983000",
+            "display": "Arm"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of arm",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
         }
       ],
       "direct_transition": "Broken_Bone_Immobilization"
@@ -1189,6 +1247,35 @@
           "display": "Fracture subluxation of wrist"
         }
       ],
+      "direct_transition": "Wrist_X_Ray"
+    },
+
+    "Wrist_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "8205005",
+            "display": "Wrist"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of wrist",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
       "direct_transition": "Broken_Bone_Immobilization"
     },
 
@@ -1201,6 +1288,35 @@
           "system": "SNOMED-CT",
           "code": "16114001",
           "display": "Fracture of ankle"
+        }
+      ],
+      "direct_transition": "Ankle_X_Ray"
+    },
+
+    "Ankle_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "344001",
+            "display": "Ankle"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of ankle",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
         }
       ],
       "direct_transition": "Broken_Bone_Immobilization"
@@ -1217,6 +1333,35 @@
           "display": "Fracture of rib"
         }
       ],
+      "direct_transition": "Chest_X_Ray"
+    },
+
+    "Chest_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "51185008",
+            "display": "Chest"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of chest",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
       "direct_transition": "Broken_Bone_Immobilization"
     },
 
@@ -1229,6 +1374,35 @@
           "system": "SNOMED-CT",
           "code": "359817006",
           "display": "Closed fracture of hip"
+        }
+      ],
+      "direct_transition": "Pelvic_X_Ray"
+    },
+
+    "Pelvic_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "12921003",
+            "display": "Pelvis"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of pelvis",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
         }
       ],
       "direct_transition": "Broken_Bone_Surgery"
@@ -2153,6 +2327,35 @@
           "system": "SNOMED-CT",
           "code": "50849002",
           "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Knee_X_Ray"
+    },
+
+    "Knee_X_Ray": {
+      "type": "ImagingStudy",
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "72696002",
+            "display": "Knee"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of knee",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
         }
       ],
       "direct_transition": "Knee_Injury_CarePlan"
