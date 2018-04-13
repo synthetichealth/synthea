@@ -1231,11 +1231,15 @@ public abstract class State implements Cloneable {
    * Encounter section above for more details.
    */
   public static class ImagingStudy extends State {
+    /** The equivalent SNOMED codes that describe this ImagingStudy as a Procedure. */
+    private Code procedureCode;
+    /** The Series of Instances that represent this ImagingStudy. */
     private List<HealthRecord.ImagingStudy.Series> series;
 
     @Override
     public ImagingStudy clone() {
       ImagingStudy clone = (ImagingStudy) super.clone();
+      clone.procedureCode = procedureCode;
       clone.series = series;
       return clone;
     }
@@ -1246,6 +1250,12 @@ public abstract class State implements Cloneable {
       // of the type of ImagingStudy this is
       String primaryModality = series.get(0).modality.code;
       HealthRecord.ImagingStudy study = person.record.imagingStudy(time, primaryModality, series);
+
+      // Also add the Procedure equivalent of this ImagingStudy to the patient's record
+      String primaryProcedureCode = procedureCode.code;
+      HealthRecord.Procedure procedure = person.record.procedure(time, primaryProcedureCode);
+      procedure.name = this.name;
+      procedure.codes.add(procedureCode);
       return true;
     }
   }
