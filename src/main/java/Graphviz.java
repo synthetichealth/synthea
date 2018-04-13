@@ -376,6 +376,21 @@ public class Graphviz {
         details.append("Group the last ").append(state.get("number_of_observations").getAsString())
             .append(" Observations").append(NEWLINE);
         break;
+      case "ImagingStudy":
+        JsonArray series = state.get("series").getAsJsonArray();
+
+        JsonObject modality = series.get(0).getAsJsonObject().get("modality").getAsJsonObject();
+        String modalityCode = modality.get("code").getAsString();
+        String modalityDisplay = modality.get("display").getAsString();
+        details.append("DICOM-DCM[").append(modalityCode).append("]: ").append(modalityDisplay)
+            .append(NEWLINE);
+
+        JsonObject bodySite = series.get(0).getAsJsonObject().get("body_site").getAsJsonObject();
+        String bodySiteCode = bodySite.get("code").getAsString();
+        String bodySiteDisplay = bodySite.get("display").getAsString();
+
+        details.append("SNOMED-CT[").append(bodySiteCode).append("] Body Site: ")
+            .append(bodySiteDisplay).append(NEWLINE);
       default:
         // no special description
     }

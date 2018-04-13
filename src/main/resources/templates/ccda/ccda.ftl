@@ -127,6 +127,11 @@
       <#if ehr_careplans?has_content>
         <#include "care_goals.ftl">
       </#if>
+      <#if ehr_imaging_studies?has_content>
+        <#include "diagnostic_imaging_reports.ftl">
+      <#else>
+        <#include "diagnostic_imaging_reports_no_current.ftl" parse=false>
+      </#if>
       <#if ehr_social_history?has_content>
         <#include "social_history.ftl">
       <#else>

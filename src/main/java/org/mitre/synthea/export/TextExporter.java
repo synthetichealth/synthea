@@ -21,6 +21,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -35,7 +36,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * Gender:              M
  * Age:                 51
  * Birth Date:          1966-10-26
- * Marital Status:      
+ * Marital Status:
  * Outpatient Provider: MCLEAN HOSPITAL CORPORATION
  * --------------------------------------------------------------------------------
  * ALLERGIES:
@@ -62,11 +63,11 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * --------------------------------------------------------------------------------
  * OBSERVATIONS:
  * 2017-11-01 : Blood Pressure
- *            - Diastolic Blood Pressure                 76.0 mmHg 
- *            - Systolic Blood Pressure                  117.8 mmHg 
- * 2017-11-01 : Body Mass Index                          37.2 kg/m2 
- * 2017-11-01 : Body Weight                              122.7 kg 
- * 2017-11-01 : Body Height                              181.6 cm 
+ *            - Diastolic Blood Pressure                 76.0 mmHg
+ *            - Systolic Blood Pressure                  117.8 mmHg
+ * 2017-11-01 : Body Mass Index                          37.2 kg/m2
+ * 2017-11-01 : Body Weight                              122.7 kg
+ * 2017-11-01 : Body Height                              181.6 cm
  * --------------------------------------------------------------------------------
  * ENCOUNTERS:
  * 2017-11-01 : Encounter for check up (procedure)
@@ -77,7 +78,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 public class TextExporter {
   /**
    * Produce and export a person's record in the text format.
-   * 
+   *
    * @param person Person to export
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
@@ -94,6 +95,7 @@ public class TextExporter {
     List<Medication> medications = new ArrayList<>();
     List<Entry> immunizations = new ArrayList<>();
     List<CarePlan> careplans = new ArrayList<>();
+    List<ImagingStudy> imagingStudies = new ArrayList<>();
 
     for (Encounter encounter : person.record.encounters) {
       conditions.addAll(encounter.conditions);
@@ -103,6 +105,7 @@ public class TextExporter {
       medications.addAll(encounter.medications);
       immunizations.addAll(encounter.immunizations);
       careplans.addAll(encounter.careplans);
+      imagingStudies.addAll(encounter.imagingStudies);
     }
 
     // reverse these items so they are displayed in reverse chrono order
@@ -114,6 +117,7 @@ public class TextExporter {
     Collections.reverse(medications);
     Collections.reverse(immunizations);
     Collections.reverse(careplans);
+    Collections.reverse(imagingStudies);
 
     // now we finally start writing things
     List<String> textRecord = new LinkedList<>();
@@ -171,6 +175,13 @@ public class TextExporter {
     for (Encounter encounter : encounters) {
       encounter(textRecord, encounter);
     }
+    breakline(textRecord);
+
+    textRecord.add("IMAGING STUDIES:");
+    for (ImagingStudy imagingStudy : imagingStudies) {
+      imagingStudy(textRecord, imagingStudy);
+    }
+    breakline(textRecord);
 
     // finally write to the file
     File outDirectory = Exporter.getOutputFolder("text", person);
@@ -180,7 +191,7 @@ public class TextExporter {
 
   /**
    * Add the basic information to the record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param person
@@ -223,7 +234,7 @@ public class TextExporter {
 
   /**
    * Write a line for a single Encounter to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param encounter
@@ -241,7 +252,7 @@ public class TextExporter {
 
   /**
    * Write a line for a single Condition to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param condition
@@ -263,7 +274,7 @@ public class TextExporter {
 
   /**
    * Write a line for a single Observation to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param observation
@@ -292,7 +303,7 @@ public class TextExporter {
 
   /**
    * Write lines for an Observation with multiple parts to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param observation
@@ -315,7 +326,7 @@ public class TextExporter {
 
   /**
    * Write a line for a single Procedure to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param procedure
@@ -334,7 +345,7 @@ public class TextExporter {
 
   /**
    * Write a line for a single Medication to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param medication
@@ -354,7 +365,7 @@ public class TextExporter {
 
   /**
    * Write a line for a single Immunization to the exported record.
-   * 
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param immunization
@@ -367,8 +378,8 @@ public class TextExporter {
   }
 
   /**
-   * Write lines for a single Encounter to the exported record.
-   * 
+   * Write lines for a single CarePlan to the exported record.
+   *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param careplan
@@ -394,13 +405,29 @@ public class TextExporter {
   }
 
   /**
+   * Write lines for a single ImagingStudy to the exported record.
+   *
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param careplan
+   *          The ImagingStudy to add to the export
+   */
+  private static void imagingStudy(List<String> textRecord, ImagingStudy imagingStudy) {
+    String studyTime = dateFromTimestamp(imagingStudy.start);
+    String modality = imagingStudy.series.get(0).modality.display;
+    String bodySite = imagingStudy.series.get(0).bodySite.display;
+
+    textRecord.add(studyTime + " : " + modality + ", " + bodySite);
+  }
+
+  /**
    * Section separator (80 dashes).
    */
   private static final String SECTION_SEPARATOR = String.join("", Collections.nCopies(80, "-"));
 
   /**
    * Add a section separator line to the record.
-   * 
+   *
    * @param textRecord
    *          Record to add separator line to
    */
