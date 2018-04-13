@@ -28,6 +28,11 @@
     },
     "Knee_MRI": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "2491000087104",
+        "display": "Magnetic resonance imaging of right knee"
+      },
       "series": [
         {
           "body_site": {

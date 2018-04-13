@@ -1166,6 +1166,11 @@
 
     "Clavicle_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "168594001",
+        "display": "Clavicle X-ray"
+      },
       "series": [
         {
           "body_site": {
@@ -1209,6 +1214,11 @@
 
     "Arm_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "1225002",
+        "display": "Upper arm X-ray"
+      },
       "series": [
         {
           "body_site": {
@@ -1252,6 +1262,11 @@
 
     "Wrist_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "60027007",
+        "display": "X-ray or wrist"
+      },
       "series": [
         {
           "body_site": {
@@ -1295,6 +1310,11 @@
 
     "Ankle_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "19490002",
+        "display": "Ankle X-ray"
+      },
       "series": [
         {
           "body_site": {
@@ -1338,6 +1358,11 @@
 
     "Chest_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "399208008",
+        "display": "Chest X-ray"
+      },
       "series": [
         {
           "body_site": {
@@ -1381,6 +1406,11 @@
 
     "Pelvic_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "268425006",
+        "display": "Pelvis X-ray"
+      },
       "series": [
         {
           "body_site": {
@@ -2334,6 +2364,11 @@
 
     "Knee_X_Ray": {
       "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "74016001",
+        "display": "Knee X-ray"
+      },
       "series": [
         {
           "body_site": {
