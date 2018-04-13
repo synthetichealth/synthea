@@ -265,7 +265,10 @@
               "transition": "Whiplash_Injury"
             },
             {
-              "distribution": { "attribute" : "probability_of_fall_injury", "default" : 0.06 },
+              "distribution": {
+                "attribute": "probability_of_fall_injury",
+                "default": 0.06
+              },
               "remarks": [
                 "Highest probability for elderly with osteoporosis.",
                 "see also http://www.shef.ac.uk/FRAX/charts.aspx",
@@ -327,7 +330,10 @@
               "transition": "Whiplash_Injury"
             },
             {
-              "distribution": { "attribute" : "probability_of_fall_injury", "default" : 0.035 },
+              "distribution": {
+                "attribute": "probability_of_fall_injury",
+                "default": 0.035
+              },
               "remarks": [
                 "Retain high probability for elderly - reduced somewhat here since these are the patients without osteoporosis"
               ],
@@ -2101,7 +2107,7 @@
           "display": "Stretching exercises"
         }
       ],
-      "direct_transition": "End_Knee_Injury_Encounter_I"
+      "direct_transition": "Knee_Injury_Prescribe_Non_Opioid"
     },
     "Torn_ACL": {
       "type": "ConditionOnset",
@@ -2162,7 +2168,7 @@
       "type": "EncounterEnd",
       "conditional_transition": [
         {
-          "transition": "Knee_Injury_Prescribe_Non_Opioid",
+          "transition": "Knee_Injury_Recovery_Period",
           "condition": {
             "condition_type": "PriorState",
             "name": "Torn_Meniscus"
@@ -2214,12 +2220,12 @@
     "Knee_Injury_Prescribe_Opioid": {
       "type": "CallSubmodule",
       "submodule": "medications/moderate_opioid_pain_reliever",
-      "direct_transition": "Knee_Injury_Prescribe_Non_Opioid"
+      "direct_transition": "End_Knee_Injury_Encounter_II"
     },
     "Knee_Injury_Prescribe_Non_Opioid": {
       "type": "CallSubmodule",
       "submodule": "medications/otc_pain_reliever",
-      "direct_transition": "End_Knee_Injury_Encounter_II"
+      "direct_transition": "End_Knee_Injury_Encounter_I"
     },
     "End_Knee_Injury_Encounter_II": {
       "type": "EncounterEnd",
