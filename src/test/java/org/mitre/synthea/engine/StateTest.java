@@ -447,16 +447,18 @@ public class StateTest {
     person.history.add(kneeInjury);
 
     // An ImagingStudy must occur during an Encounter
-    State encounter = module.getState("ED_Visit");
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
+    State encounterState = module.getState("ED_Visit");
+    assertTrue(encounterState.process(person, time));
+    person.history.add(encounterState);
 
     // Run the imaging study
     State mri = module.getState("Knee_MRI");
     assertTrue(mri.process(person, time));
 
     // Verify that the ImagingStudy was added to the record
-    HealthRecord.ImagingStudy study = person.record.encounters.get(0).imagingStudies.get(0);
+    HealthRecord.Encounter encounter = person.record.encounters.get(0);
+
+    HealthRecord.ImagingStudy study = encounter.imagingStudies.get(0);
     assertEquals(time, study.start);
     assertEquals(1, study.series.size());
 
@@ -480,6 +482,15 @@ public class StateTest {
     assertEquals("DICOM-SOP", sopClass.system);
     assertEquals("1.2.840.10008.5.1.4.1.1.4", sopClass.code);
     assertEquals("MR Image Storage", sopClass.display);
+
+    // Verify that the equivalent Procedure was also added to the patient's record
+    HealthRecord.Procedure procedure = encounter.procedures.get(0);
+    assertEquals(time, procedure.start);
+
+    Code procCode = procedure.codes.get(0);
+    assertEquals("2491000087104", procCode.code);
+    assertEquals("Magnetic resonance imaging of right knee", procCode.display);
+    assertEquals("SNOMED-CT", procCode.system);
   }
 
   @Test
