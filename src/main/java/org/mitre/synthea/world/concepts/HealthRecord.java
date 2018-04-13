@@ -194,9 +194,9 @@ public class HealthRecord {
     public class Series {
       /** A randomly assigned DICOM UID. */
       public transient String dicomUid;
-      /** A SNOMED-CT body structures code */
+      /** A SNOMED-CT body structures code. */
       public Code bodySite;
-      /** A DICOM acquisition modality code,
+      /** A DICOM acquisition modality code.
        * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM modality codes</a>
        */
       public Code modality;
@@ -214,7 +214,7 @@ public class HealthRecord {
       /** A title for this image. */
       public String title;
       /**
-       * A DICOM Service-Object Pair (SOP) class,
+       * A DICOM Service-Object Pair (SOP) class.
        * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
        */
       public Code sopClass;
