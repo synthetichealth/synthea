@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Helm chart for the synthea
+name: synthea
+version: 0.0.1

@@ -28,6 +28,8 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
+  compile group: 'org.eclipse.emf', name: 'org.eclipse.emf.common', version: '2.12.0'
+
   compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0'
@@ -85,7 +87,7 @@ buildscript {
   dependencies {
     // commons-io used in getting the version id below
     classpath group: 'commons-io', name: 'commons-io', version: '2.5'
-    // note that commons-io is already a dependency 
+    // note that commons-io is already a dependency
     // of commons-csv in the primary dependencies above
   }
 }
@@ -126,7 +128,7 @@ task versionTxt() {
     }
 }
 
-compileJava.dependsOn versionTxt
+// compileJava.dependsOn versionTxt
 
 task cleanOutput {
   doLast {

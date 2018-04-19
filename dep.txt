@@ -1,0 +1,1745 @@
+:dependencies
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+annotationProcessor - Annotation processors and their dependencies for source set 'main'.
+No dependencies
+
+apiElements - API elements for main. (n)
+No dependencies
+
+archives - Configuration for archive artifacts.
+No dependencies
+
+checkstyle - The Checkstyle libraries to be used for this project.
+\--- com.puppycrawl.tools:checkstyle:8.4
+     +--- antlr:antlr:2.7.7
+     +--- org.antlr:antlr4-runtime:4.7
+     +--- commons-beanutils:commons-beanutils:1.9.3
+     |    \--- commons-collections:commons-collections:3.2.2
+     +--- commons-cli:commons-cli:1.4
+     +--- com.google.guava:guava:23.2-jre
+     |    +--- com.google.code.findbugs:jsr305:1.3.9
+     |    +--- com.google.errorprone:error_prone_annotations:2.0.18
+     |    +--- com.google.j2objc:j2objc-annotations:1.1
+     |    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
+     \--- net.sf.saxon:Saxon-HE:9.8.0-5
+
+compile - Dependencies for source set 'main' (deprecated, use 'implementation ' instead).
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+\--- org.slf4j:slf4j-nop:1.6.1
+     \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+
+compileClasspath - Compile classpath for source set 'main'.
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+\--- org.slf4j:slf4j-nop:1.6.1
+     \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+
+compileOnly - Compile only dependencies for source set 'main'.
+No dependencies
+
+default - Configuration for default artifacts.
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+\--- org.slf4j:slf4j-nop:1.6.1
+     \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+
+implementation - Implementation only dependencies for source set 'main'. (n)
+No dependencies
+
+jacocoAgent - The Jacoco agent to use to get coverage data.
+\--- org.jacoco:org.jacoco.agent:0.8.0
+
+jacocoAnt - The Jacoco ant tasks to use to get execute Gradle tasks.
+\--- org.jacoco:org.jacoco.ant:0.8.0
+     +--- org.jacoco:org.jacoco.core:0.8.0
+     |    +--- org.ow2.asm:asm:6.0
+     |    +--- org.ow2.asm:asm-commons:6.0
+     |    |    \--- org.ow2.asm:asm-tree:6.0
+     |    |         \--- org.ow2.asm:asm:6.0
+     |    +--- org.ow2.asm:asm-tree:6.0 (*)
+     |    +--- org.ow2.asm:asm-analysis:6.0
+     |    |    \--- org.ow2.asm:asm-tree:6.0 (*)
+     |    \--- org.ow2.asm:asm-util:6.0
+     |         \--- org.ow2.asm:asm-tree:6.0 (*)
+     +--- org.jacoco:org.jacoco.report:0.8.0
+     |    \--- org.jacoco:org.jacoco.core:0.8.0 (*)
+     \--- org.jacoco:org.jacoco.agent:0.8.0
+
+runtime - Runtime dependencies for source set 'main' (deprecated, use 'runtimeOnly ' instead).
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+\--- org.slf4j:slf4j-nop:1.6.1
+     \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+
+runtimeClasspath - Runtime classpath of source set 'main'.
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+\--- org.slf4j:slf4j-nop:1.6.1
+     \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
+
+runtimeElements - Elements of runtime for main. (n)
+No dependencies
+
+runtimeOnly - Runtime only dependencies for source set 'main'. (n)
+No dependencies
+
+testAnnotationProcessor - Annotation processors and their dependencies for source set 'test'.
+No dependencies
+
+testCompile - Dependencies for source set 'test' (deprecated, use 'testImplementation ' instead).
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4 -> 1.2
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- org.slf4j:slf4j-nop:1.6.1
+|    \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- junit:junit:4.12
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.mockito:mockito-core:2.7.22 -> 2.8.9
+|    +--- net.bytebuddy:byte-buddy:1.6.14
+|    +--- net.bytebuddy:byte-buddy-agent:1.6.14
+|    \--- org.objenesis:objenesis:2.5
++--- org.powermock:powermock-module-junit4:1.7.1
+|    +--- org.powermock:powermock-module-junit4-common:1.7.1
+|    |    +--- org.powermock:powermock-reflect:1.7.1
+|    |    |    \--- org.objenesis:objenesis:2.4 -> 2.5
+|    |    +--- org.powermock:powermock-core:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    +--- org.javassist:javassist:3.21.0-GA
+|    |    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    |    +--- junit:junit:4.12 (*)
+|    |    \--- org.hamcrest:hamcrest-core:1.3
+|    +--- junit:junit:4.12 (*)
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.powermock:powermock-api-mockito2:1.7.1
+|    +--- org.powermock:powermock-api-mockito-common:1.7.1
+|    |    +--- org.powermock:powermock-api-support:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    \--- org.powermock:powermock-core:1.7.1 (*)
+|    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    \--- org.mockito:mockito-core:2.8.9 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0 (*)
+|    \--- org.apache.httpcomponents:httpclient:4.5.3
+|         +--- org.apache.httpcomponents:httpcore:4.4.6
+|         +--- commons-logging:commons-logging:1.2
+|         \--- commons-codec:commons-codec:1.9 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.1.0
++--- com.phloc:phloc-schematron:2.7.1
+|    +--- com.phloc:phloc-commons:4.3.3 -> 4.4.11
+|    |    +--- org.slf4j:slf4j-api:1.7.10 -> 1.7.25
+|    |    \--- com.google.code.findbugs:annotations:2.0.3
+|    \--- net.sf.saxon:Saxon-HE:9.5.1-5
+\--- com.phloc:phloc-commons:4.4.11 (*)
+
+testCompileClasspath - Compile classpath for source set 'test'.
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4 -> 1.2
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- org.slf4j:slf4j-nop:1.6.1
+|    \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- junit:junit:4.12
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.mockito:mockito-core:2.7.22 -> 2.8.9
+|    +--- net.bytebuddy:byte-buddy:1.6.14
+|    +--- net.bytebuddy:byte-buddy-agent:1.6.14
+|    \--- org.objenesis:objenesis:2.5
++--- org.powermock:powermock-module-junit4:1.7.1
+|    +--- org.powermock:powermock-module-junit4-common:1.7.1
+|    |    +--- org.powermock:powermock-reflect:1.7.1
+|    |    |    \--- org.objenesis:objenesis:2.4 -> 2.5
+|    |    +--- org.powermock:powermock-core:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    +--- org.javassist:javassist:3.21.0-GA
+|    |    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    |    +--- junit:junit:4.12 (*)
+|    |    \--- org.hamcrest:hamcrest-core:1.3
+|    +--- junit:junit:4.12 (*)
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.powermock:powermock-api-mockito2:1.7.1
+|    +--- org.powermock:powermock-api-mockito-common:1.7.1
+|    |    +--- org.powermock:powermock-api-support:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    \--- org.powermock:powermock-core:1.7.1 (*)
+|    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    \--- org.mockito:mockito-core:2.8.9 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0 (*)
+|    \--- org.apache.httpcomponents:httpclient:4.5.3
+|         +--- org.apache.httpcomponents:httpcore:4.4.6
+|         +--- commons-logging:commons-logging:1.2
+|         \--- commons-codec:commons-codec:1.9 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.1.0
++--- com.phloc:phloc-schematron:2.7.1
+|    +--- com.phloc:phloc-commons:4.3.3 -> 4.4.11
+|    |    +--- org.slf4j:slf4j-api:1.7.10 -> 1.7.25
+|    |    \--- com.google.code.findbugs:annotations:2.0.3
+|    \--- net.sf.saxon:Saxon-HE:9.5.1-5
+\--- com.phloc:phloc-commons:4.4.11 (*)
+
+testCompileOnly - Compile only dependencies for source set 'test'.
+No dependencies
+
+testImplementation - Implementation only dependencies for source set 'test'. (n)
+No dependencies
+
+testRuntime - Runtime dependencies for source set 'test' (deprecated, use 'testRuntimeOnly ' instead).
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4 -> 1.2
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- org.slf4j:slf4j-nop:1.6.1
+|    \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- junit:junit:4.12
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.mockito:mockito-core:2.7.22 -> 2.8.9
+|    +--- net.bytebuddy:byte-buddy:1.6.14
+|    +--- net.bytebuddy:byte-buddy-agent:1.6.14
+|    \--- org.objenesis:objenesis:2.5
++--- org.powermock:powermock-module-junit4:1.7.1
+|    +--- org.powermock:powermock-module-junit4-common:1.7.1
+|    |    +--- org.powermock:powermock-reflect:1.7.1
+|    |    |    \--- org.objenesis:objenesis:2.4 -> 2.5
+|    |    +--- org.powermock:powermock-core:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    +--- org.javassist:javassist:3.21.0-GA
+|    |    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    |    +--- junit:junit:4.12 (*)
+|    |    \--- org.hamcrest:hamcrest-core:1.3
+|    +--- junit:junit:4.12 (*)
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.powermock:powermock-api-mockito2:1.7.1
+|    +--- org.powermock:powermock-api-mockito-common:1.7.1
+|    |    +--- org.powermock:powermock-api-support:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    \--- org.powermock:powermock-core:1.7.1 (*)
+|    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    \--- org.mockito:mockito-core:2.8.9 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0 (*)
+|    \--- org.apache.httpcomponents:httpclient:4.5.3
+|         +--- org.apache.httpcomponents:httpcore:4.4.6
+|         +--- commons-logging:commons-logging:1.2
+|         \--- commons-codec:commons-codec:1.9 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.1.0
++--- com.phloc:phloc-schematron:2.7.1
+|    +--- com.phloc:phloc-commons:4.3.3 -> 4.4.11
+|    |    +--- org.slf4j:slf4j-api:1.7.10 -> 1.7.25
+|    |    \--- com.google.code.findbugs:annotations:2.0.3
+|    \--- net.sf.saxon:Saxon-HE:9.5.1-5
+\--- com.phloc:phloc-commons:4.4.11 (*)
+
+testRuntimeClasspath - Runtime classpath of source set 'test'.
++--- com.google.code.gson:gson:2.8.0 -> 2.8.1
++--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0
+|    +--- com.google.code.gson:gson:2.8.1
+|    +--- org.apache.commons:commons-lang3:3.6 -> 3.7
+|    +--- commons-codec:commons-codec:1.10
+|    +--- commons-io:commons-io:2.5
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    \--- org.slf4j:jcl-over-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0
+|    |    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    |    +--- com.google.code.gson:gson:2.8.1
+|    |    +--- commons-codec:commons-codec:1.10
+|    |    \--- commons-io:commons-io:2.5
+|    \--- commons-codec:commons-codec:1.1 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- org.freemarker:freemarker:2.3.26-incubating
++--- org.apache.sis.core:sis-referencing:0.8
+|    +--- org.apache.sis.core:sis-utility:0.8
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1
+|    |         \--- javax.measure:unit-api:1.0
+|    +--- org.apache.sis.core:sis-metadata:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- javax.measure:unit-api:1.0
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- org.apache.sis.storage:sis-storage:0.8
+|    +--- org.apache.sis.core:sis-feature:0.8
+|    |    +--- org.apache.sis.core:sis-utility:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    |    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    |    +--- javax.measure:unit-api:1.0
+|    |    \--- org.opengis:geoapi:3.0.1 (*)
+|    +--- org.apache.sis.core:sis-metadata:0.8 (*)
+|    +--- org.apache.sis.core:sis-referencing:0.8 (*)
+|    \--- org.opengis:geoapi:3.0.1 (*)
++--- com.h2database:h2:1.4.196
++--- com.google.guava:guava:23.0
+|    +--- com.google.code.findbugs:jsr305:1.3.9
+|    +--- com.google.errorprone:error_prone_annotations:2.0.18
+|    +--- com.google.j2objc:j2objc-annotations:1.1
+|    \--- org.codehaus.mojo:animal-sniffer-annotations:1.14
++--- guru.nidi:graphviz-java:0.2.2
+|    +--- org.apache.xmlgraphics:batik-rasterizer:1.9
+|    |    \--- org.apache.xmlgraphics:batik-svgrasterizer:1.9
+|    |         +--- org.apache.xmlgraphics:batik-parser:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9
+|    |         |    |         +--- org.apache.xmlgraphics:batik-constants:1.9
+|    |         |    |         \--- org.apache.xmlgraphics:batik-i18n:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9
+|    |         |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         +--- org.apache.xmlgraphics:batik-transcoder:1.9
+|    |         |    +--- org.apache.xmlgraphics:batik-anim:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2
+|    |         |    |    |    |    +--- commons-io:commons-io:1.3.1 -> 2.5
+|    |         |    |    |    |    \--- commons-logging:commons-logging:1.0.4 -> 1.2
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    |    +--- xalan:xalan:2.7.2
+|    |         |    |    |    |    \--- xalan:serializer:2.7.2
+|    |         |    |    |    |         \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-bridge:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-css:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-ext:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-gvt:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    |    \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-parser:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-script:1.9
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-anim:1.9 (*)
+|    |         |    |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    |    +--- org.apache.xmlgraphics:batik-svg-dom:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    |    +--- xalan:xalan:2.7.2 (*)
+|    |         |    |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-dom:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-gvt:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-svggen:1.9
+|    |         |    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |         |    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    |    \--- xml-apis:xml-apis:1.3.04
+|    |         |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |         |    +--- org.apache.xmlgraphics:batik-xml:1.9 (*)
+|    |         |    +--- xml-apis:xml-apis:1.3.04
+|    |         |    \--- xml-apis:xml-apis-ext:1.3.04
+|    |         \--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    +--- org.apache.xmlgraphics:batik-codec:1.9
+|    |    +--- org.apache.xmlgraphics:batik-awt-util:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-bridge:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-transcoder:1.9 (*)
+|    |    +--- org.apache.xmlgraphics:batik-util:1.9 (*)
+|    |    \--- xml-apis:xml-apis:1.3.04
+|    +--- org.apache.xmlgraphics:xmlgraphics-commons:2.2 (*)
+|    +--- com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0
+|    +--- com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0
+|    +--- org.apache.commons:commons-exec:1.3
+|    +--- org.slf4j:slf4j-api:1.7.25
+|    +--- org.slf4j:jcl-over-slf4j:1.7.25 (*)
+|    \--- org.slf4j:jul-to-slf4j:1.7.25
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.apache.commons:commons-csv:1.5
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.8
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.8
+|    \--- com.fasterxml.jackson.core:jackson-annotations:2.8.0
++--- org.yaml:snakeyaml:1.19
++--- org.apache.commons:commons-math3:3.6.1
++--- org.apache.commons:commons-text:1.2
+|    \--- org.apache.commons:commons-lang3:3.7
++--- javax.xml.bind:jaxb-api:2.3.0
++--- org.glassfish.jaxb:jaxb-runtime:2.3.0
+|    +--- org.glassfish.jaxb:jaxb-core:2.3.0
+|    |    +--- javax.xml.bind:jaxb-api:2.3.0
+|    |    +--- org.glassfish.jaxb:txw2:2.3.0
+|    |    \--- com.sun.istack:istack-commons-runtime:3.0.5
+|    +--- org.jvnet.staxex:stax-ex:1.7.8
+|    \--- com.sun.xml.fastinfoset:FastInfoset:1.2.13
++--- javax.activation:activation:1.1.1
++--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- org.slf4j:slf4j-nop:1.6.1
+|    \--- org.slf4j:slf4j-api:1.6.1 -> 1.7.25
++--- junit:junit:4.12
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.mockito:mockito-core:2.7.22 -> 2.8.9
+|    +--- net.bytebuddy:byte-buddy:1.6.14
+|    +--- net.bytebuddy:byte-buddy-agent:1.6.14
+|    \--- org.objenesis:objenesis:2.5
++--- org.powermock:powermock-module-junit4:1.7.1
+|    +--- org.powermock:powermock-module-junit4-common:1.7.1
+|    |    +--- org.powermock:powermock-reflect:1.7.1
+|    |    |    \--- org.objenesis:objenesis:2.4 -> 2.5
+|    |    +--- org.powermock:powermock-core:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    +--- org.javassist:javassist:3.21.0-GA
+|    |    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    |    +--- junit:junit:4.12 (*)
+|    |    \--- org.hamcrest:hamcrest-core:1.3
+|    +--- junit:junit:4.12 (*)
+|    \--- org.hamcrest:hamcrest-core:1.3
++--- org.powermock:powermock-api-mockito2:1.7.1
+|    +--- org.powermock:powermock-api-mockito-common:1.7.1
+|    |    +--- org.powermock:powermock-api-support:1.7.1
+|    |    |    +--- org.powermock:powermock-reflect:1.7.1 (*)
+|    |    |    \--- org.powermock:powermock-core:1.7.1 (*)
+|    |    \--- org.mockito:mockito-core:2.8.9 (*)
+|    \--- org.mockito:mockito-core:2.8.9 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation:3.1.0
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
+|    +--- ca.uhn.hapi.fhir:hapi-fhir-utilities:3.1.0 (*)
+|    \--- org.apache.httpcomponents:httpclient:4.5.3
+|         +--- org.apache.httpcomponents:httpcore:4.4.6
+|         +--- commons-logging:commons-logging:1.2
+|         \--- commons-codec:commons-codec:1.9 -> 1.10
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.1.0
+|    \--- ca.uhn.hapi.fhir:hapi-fhir-base:3.1.0 (*)
++--- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.1.0
++--- com.phloc:phloc-schematron:2.7.1
+|    +--- com.phloc:phloc-commons:4.3.3 -> 4.4.11
+|    |    +--- org.slf4j:slf4j-api:1.7.10 -> 1.7.25
+|    |    \--- com.google.code.findbugs:annotations:2.0.3
+|    \--- net.sf.saxon:Saxon-HE:9.5.1-5
+\--- com.phloc:phloc-commons:4.4.11 (*)
+
+testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
+No dependencies
+
+(*) - dependencies omitted (listed previously)
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed

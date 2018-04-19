@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = false
+trim_trailing_whitespace = true
+brace_style = collapse
+
+[**.html]
+brace_style = collapse
+indent_style = space
+indent_size = 4
+
+[**.css]
+indent_style = space
+indent_size = 4
+brace_style = collapse
+
+[*.js]
+indent_style = space
+indent_size = 2
+jslint_happy = true
+brace_style = collapse
+keep_array_indentation = true
+good_stuff = true
