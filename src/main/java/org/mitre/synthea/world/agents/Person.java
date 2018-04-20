@@ -18,6 +18,8 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -285,6 +287,21 @@ public class Person implements Serializable, QuadTreeData {
 
   // Care-Seeking Behavior
   
+  private static final double PATIENT_WEIGHT =
+      Double.parseDouble(Config.get("person.adherence.weights.patient"));
+  
+  private static final double SOCIOECONOMIC_WEIGHT =
+      Double.parseDouble(Config.get("person.adherence.weights.socieconomic"));
+  
+  private static final double CONDITION_WEIGHT =
+      Double.parseDouble(Config.get("person.adherence.weights.condition"));
+  
+  private static final double THERAPY_WEIGHT =
+      Double.parseDouble(Config.get("person.adherence.weights.therapy"));
+  
+  private static final double PROVIDER_SYSTEM_WEIGHT =
+      Double.parseDouble(Config.get("person.adherence.weights.provider_system"));
+  
   /**
    * Get this person's level of adherence to the given medication, at the given time.
    * Adherence is a number between 0.0 and 1.0, where 0.0 means they never took the medication,
@@ -295,15 +312,84 @@ public class Person implements Serializable, QuadTreeData {
    * @return adherence rate between 0.0 and 1.0
    */
   public double adherenceLevel(Code medication, long time) {
-    // TODO: relevant factors include:
-    //  - education level
-    //  - income
-    //  - drug class
-    //  - demographics (age, race, ethnicity, gender)
-    //  - communication
+    // notes: http://www.who.int/chp/knowledge/publications/adherence_report/en/
+    
+    // WHO finds that 
+    // "Adherence to long-term therapy for chronic illnesses in developed countries averages 50%.
+    // In developing countries, the rates are even lower." 
+    // We aim for this function to average ~50% across the population
+    
+    // the WHO groups adherence factors into 5 categories:
+    // patient-related factors, socioeconomic factors,
+    // condition-related factors, therapy-related factors,
+    // and health care team/health system factors
 
-    return 1.0; // for now everyone is perfect
+    // these factors can vary based on condition
+    // (for instance, higher age is correlated with 
+    //   better adherence for certain conditions and worse adherence in others,
+    //   there are gender-based differences in various conditions, etc)
+    // but for version 1 we're just going to consider them uniformly
+    // and implement a weighted sum, bounded to [0, 1)
+    
+    // PATIENT-RELATED FACTORS
+    // ex. belief in the efficacy of treatment, motivation, forgetfulness, depression or stress
+    // TODO: implement some of these
+    // for starters set it at 50%, to center around a baseline adherence rate of 50%
+    double patientFactors = 0.5;
+
+    // SOCIOECONOMIC FACTORS
+    // ex. cost of the treatment, education level, distance from treatment location,
+    // cultural beliefs about the illness/treatment, demographics
+
+    //  - education level, this is already scaled 0-1 for socioeconomic status
+    double edLevel = (double) attributes.get(EDUCATION_LEVEL);
+    
+    //  - income level, this is already scaled 0-1 for socioeconomic status
+    double income = (double) attributes.get(INCOME_LEVEL);
+    
+    //  - demographics (age, race, ethnicity, gender)
+    // TODO - make this numeric
+    // this is likely to be "people in age range X are Y% more likely to see a doctor" etc
+    double demographics = 0.0;
+
+    // TODO: make weights at this level configurable too?
+    double socioeconomicFactors = edLevel * 0.5 
+                                + income * 0.5 
+                                + demographics * 0.0; 
+    
+    // CONDITION-RELATED FACTORS
+    // ex. symptom levels, or is the person asymptomatic?
+    // TODO: link to the condition that this medication is being taken for
+    // for starters set it at 50%, to center around a baseline adherence rate of 50%
+    double conditionFactors = 0.5;
+    
+    // THERAPY-RELATED FACTORS
+    // ex. side effects, complexity of regimen
+    // TODO: link the medication to side effects -- maybe http://sideeffects.embl.de/  ?
+    // for starters set it at 50%, to center around a baseline adherence rate of 50%
+    double therapyFactors = 0.5;
+    
+    // HEALTH CARE TEAM / HEALTH SYSTEM FACTORS
+    // ex. relationship between patient + physician, quality of care, 
+    // TODO: make this a factor of # of visits or some other measurable criteria
+    // for starters set it at 50%, to center around a baseline adherence rate of 50%
+    double providerOrSystemFactors = 0.5;
+    
+    double adherenceSum = (patientFactors * 0.0) // TODO: NYI  -- PATIENT_WEIGHT) 
+                        + (socioeconomicFactors * SOCIOECONOMIC_WEIGHT)
+                        + (conditionFactors * 0.0) // TODO: NYI -- CONDITION_WEIGHT) 
+                        + (therapyFactors * 0.0) // TODO: NYI -- THERAPY_WEIGHT)
+                        + (providerOrSystemFactors * 0.0); // TODO: NYI -- PROVIDER_SYSTEM_WEIGHT);
+
+    adherenceSum /= (SOCIOECONOMIC_WEIGHT); 
+    // divide by the weights actually used to scale it in 0-1
+    // TODO: remove this if all weights are used
+    
+    return adherenceSum;
   }
+  
+  private static final double CARESEEKING_THRESHOLD =
+      Double.parseDouble(Config.get("person.careseeking.threshold"));
   
   /**
    * Whether or not the person seeks care at the given time.
@@ -313,16 +399,93 @@ public class Person implements Serializable, QuadTreeData {
    * @return whether or not the person will seek care
    */
   public boolean doesSeekCare(boolean emergency, long time) {
-    // TODO: relevant factors include:
-    //  - insurance coverage / perception of insurance
-    //  - ability to pay
-    //  - available facility/provider
-    //  - emergency? Y/N
+    // inspired by the above notes in adherenceLevel,
+    // we group the relevant factors in careseeking behavior into 5 categories
     
-    // also - could we incorporate wellness encounters into this?
+    // for v1, if it's an emergency they will always seek care
+    if (emergency) {
+      return true;
+    }
+
+    // PATIENT-RELATED FACTORS
+    final double patientFactors = 1.0;
+
+    // SOCIOECONOMIC FACTORS
+    double insuranceScore;
+    List<String> insHistory = (List<String>) attributes.get(HealthInsuranceModule.INSURANCE);
+    int age = ageInYears(time);
+    String insurance = insHistory.get(age);
+    if (insurance == null) {
+      insurance = insHistory.get(age - 1);
+    }
+    
+    switch (insurance) {
+      case HealthInsuranceModule.PRIVATE:
+        insuranceScore = 1;
+        break;
+      case HealthInsuranceModule.DUAL_ELIGIBLE:
+      case HealthInsuranceModule.MEDICAID:
+      case HealthInsuranceModule.MEDICARE:
+        insuranceScore = 0.5;
+        break;
+      case HealthInsuranceModule.NO_INSURANCE:
+        insuranceScore = -1;
+        break;
+      default:
+        // should never happen
+        throw new IllegalStateException("Unknown health insurance value: " + insurance);
+    }
+    
+    double abilityToPay = (double) attributes.get(INCOME_LEVEL) - 0.5; // scale to -0.5 to 0.5
+
+    Provider provider = getAmbulatoryProvider();
+    double distanceToProvider = Double.MAX_VALUE;
+    if (provider != null) {
+      distanceToProvider = this.getLatLon().distance(provider.getLatLon());
+    }
+    // assume ~ 25 miles is the cutoff for acceptable distance to the provider
+    // based on https://www.ofm.wa.gov/sites/default/files/public/legacy/researchbriefs/2013/brief070.pdf
+    // "How Long and How Far Do Adults Travel and Will Adults Travel for Primary Care?",
+    // - Wei Yen, The Health Care Research Group 
+    // map distance to a score 0-1, where 1 = 0 distance, and 0 = 25 miles or more
+    double distanceScore = Math.max(0, Math.min(1, 1 - distanceToProvider / 25)); // clamp to [0,1]
+    
+    final double socioeconomicFactors = (insuranceScore * 0.4)
+                                      + (abilityToPay * 0.1)
+                                      + (distanceScore * 0.5);
+    
+    // CONDITION-RELATED FACTORS
+    // severity of symptoms, etc
+    final double conditionFactors = 1.0;
+
+    // THERAPY-RELATED FACTORS
+    // for an initial visit, nothing to do here
+    // but for followups and referrals we should consider various factors
+    final double therapyFactors = 1.0;
+
+    // HEALTH CARE TEAM / HEALTH SYSTEM FACTORS
+    // for simplicity we roll up the concept of provider capacity into this step,
+    // even though it's technically separate
+    double availableProviderScore = 1.0; // TODO: provider.capacity???
+    
+    final double providerOrSystemFactors = (availableProviderScore * 1.0);
+    
+    // version 1. implement a weighted sum, 
+    // and if that sum > some threshold, return true
+
+    double careSeekingSum = (patientFactors * 0.0) // TODO: NYI  -- PATIENT_WEIGHT) 
+                          + (socioeconomicFactors * SOCIOECONOMIC_WEIGHT)
+                          + (conditionFactors * 0.0) // TODO: NYI -- CONDITION_WEIGHT) 
+                          + (therapyFactors * 0.0) // TODO: NYI -- THERAPY_WEIGHT)
+                          + (providerOrSystemFactors * 0.0); // TODO: NYI -- PROVIDER_SYSTEM_WEIGHT);
+    
+    careSeekingSum /= (SOCIOECONOMIC_WEIGHT); 
+    // divide by the weights actually used to scale it in 0-1
+    // TODO: remove this if all weights are used
+    
+    // TODO - could we incorporate wellness encounters into this?
     // that way we'd have these 2 concepts in 1 place instead of 2 places
-    
-    return true; // for now everyone is perfect
+    return careSeekingSum > CARESEEKING_THRESHOLD;
   }
   
   // Providers API -----------------------------------------------------------
@@ -355,11 +518,15 @@ public class Person implements Serializable, QuadTreeData {
 
   private void setAmbulatoryProvider() {
     Provider provider = Provider.findClosestService(this, Provider.AMBULATORY);
-    attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+    setAmbulatoryProvider(provider);
   }
 
   public void setAmbulatoryProvider(Provider provider) {
-    attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+    if (provider == null) {
+      attributes.remove(PREFERREDAMBULATORYPROVIDER);
+    } else {
+      attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+    }
   }
 
   public Provider getInpatientProvider() {
@@ -371,11 +538,15 @@ public class Person implements Serializable, QuadTreeData {
 
   private void setInpatientProvider() {
     Provider provider = Provider.findClosestService(this, Provider.INPATIENT);
-    attributes.put(PREFERREDINPATIENTPROVIDER, provider);
+    setInpatientProvider(provider);
   }
 
   public void setInpatientProvider(Provider provider) {
-    attributes.put(PREFERREDINPATIENTPROVIDER, provider);
+    if (provider == null) {
+      attributes.remove(PREFERREDINPATIENTPROVIDER);
+    } else {
+      attributes.put(PREFERREDINPATIENTPROVIDER, provider);
+    }
   }
 
   public Provider getEmergencyProvider() {
@@ -387,14 +558,15 @@ public class Person implements Serializable, QuadTreeData {
 
   private void setEmergencyProvider() {
     Provider provider = Provider.findClosestService(this, Provider.EMERGENCY);
-    attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
+    setEmergencyProvider(provider);
   }
 
   public void setEmergencyProvider(Provider provider) {
     if (provider == null) {
-      provider = Provider.findClosestService(this, Provider.EMERGENCY);
+      attributes.remove(PREFERREDEMERGENCYPROVIDER);
+    } else {
+      attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
     }
-    attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

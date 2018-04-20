@@ -182,7 +182,7 @@
   	  "display": "Examplitol"
   	}],
   	"operator": ">",
-  	"value": 0.85
+  	"value": 0.5
   },
   "adherenceByMedOrderTest" : {
   	"condition_type": "Adherence",

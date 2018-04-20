@@ -18,10 +18,12 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 
+import org.apache.sis.geometry.DirectPosition2D;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -359,10 +361,13 @@ public class LogicTest {
   }
   
   @Test
-  public void testAdherence() {
-    // TODO: v1 has all adherence set to 1.0 (100%)
-    
-    // test: examplitol has adherence > 0.85
+  public void testAdherence() {   
+    // test: examplitol has adherence > 0.5
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.INCOME, 100_000);
+    person.attributes.put(Person.INCOME_LEVEL, 1.0);
+    person.attributes.put(Person.EDUCATION_LEVEL, 1.0);
     assertTrue(doTest("adherenceByCodeTest"));
     
     // TODO: figure out how to create a medication order state
@@ -379,7 +384,15 @@ public class LogicTest {
   
   @Test
   public void testCareSeeking() {
-    assertTrue(doTest("careSeekingNonEmergencyTest"));
+    // careseeking depends on insurance, so run the insurance module once to set it up
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    person.attributes.put(Person.INCOME, 10_000);
+    person.attributes.put(Person.INCOME_LEVEL, 0.0);
+    person.attributes.put(Person.COORDINATE, new DirectPosition2D(-71, 42));
+    new HealthInsuranceModule().process(person, time);
+
+    assertFalse(doTest("careSeekingNonEmergencyTest"));
     assertTrue(doTest("careSeekingEmergencyTest"));
   }
 
