@@ -1,0 +1,3 @@
+synthea successfully deployed!
+
+Write some notes to the operator who just deployed your application.

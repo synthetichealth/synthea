@@ -1,0 +1,36 @@
+# Default values for synthea
+replicaCount: 1
+
+# the docker image your pods will use.
+image:
+  repository: registry.ciitizen.net/synthea
+  tag: latest
+  pullPolicy: Always
+
+# K8s version of a load balancer comes in the port and goes to your service
+# on the target port
+service:
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+
+# Is your service accessible outside the cluster? Probably not, otherwise
+# lets chat.
+ingress:
+  enabled: false
+  path: /path/to/service
+  hosts:
+    - "api.ciitizen.net"
+  tls:
+    - secretName: letsencrypt-prod
+      hosts:
+        - api.ciitizen.net
+
+# Resource for your container. Deliberately small to start
+resources:
+  limits:
+   cpu: 100m
+   memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 128Mi

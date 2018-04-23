@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: synthea-configmap
+
+data:
+  config.yaml: |
+    someKey: "{{ .Values.someValue }}"
+
