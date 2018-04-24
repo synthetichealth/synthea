@@ -241,6 +241,26 @@
       "remarks": [
         "TODO: Make observations about the results of the biopsy."
       ],
+      "direct_transition": "ImmunoHistoChemistry_Test"
+    },
+
+    "ImmunoHistoChemistry_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "117617002",
+          "display": "Immunohistochemistry procedure"
+        }
+      ],
+      "direct_transition": "ImmunoHistoChemistry_Test_Findings"
+    },
+
+    "ImmunoHistoChemistry_Test_Findings": {
+      "type": "Simple",
+      "remarks": [
+        "TODO: Record the results of the IHC test."
+      ],
       "direct_transition": "Stage_IV_Breast_Cancer"
     },
 
@@ -259,6 +279,192 @@
 
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
+      "direct_transition": "Receptor_Status"
+    },
+
+    "Receptor_Status": {
+      "type": "Simple",
+      "remarks": [
+        "70% HR+/HER2-; 15% HR-/HER2+; 15% HR-/HER2- "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "HR+/HER2-"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "HR-/HER2+"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "HR-/HER2-"
+        }
+      ]
+    },
+
+    "HR+/HER2-": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        "HR+/HER2- Endocrine Therapy                                           ",
+        "======================================================================"
+      ],
+      "direct_transition": "Endocrine_Therapy_Initial_Encounter"
+    },
+
+    "Endocrine_Therapy_Initial_Encounter": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the initial encounter to begin endocrine therapy. ",
+        "The patient is prescribed either Anastrazole or Tamoxifen ",
+        "depending on her age, then started on the treatment cycle."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Prescribe_Anastrazole"
+        },
+        {
+          "transition": "Prescribe_Tamoxifen"
+        }
+      ]
+    },
+
+    "Prescribe_Anastrazole": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "199224",
+          "display": "Anastrazole 1MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Baseline_Exam"
+    },
+
+    "Prescribe_Tamoxifen": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198240",
+          "display": "Tamoxifen 10MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Baseline_Exam"
+    },
+
+    "Baseline_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/full_breast_cancer_exam",
+      "direct_transition": "End_Endocrine_Therapy_Initial_Encounter"
+    },
+
+    "End_Endocrine_Therapy_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Endocrine_Therapy_Cycle"
+    },
+
+    "Endocrine_Therapy_Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "Endocrine_Therapy_Check_Up"
+    },
+
+    "Endocrine_Therapy_Check_Up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "direct_transition": "Routine_Exam"
+    },
+
+    "Routine_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/full_breast_cancer_exam",
+      "direct_transition": "End_Endocrine_Therapy_Check_Up"
+    },
+
+    "End_Endocrine_Therapy_Check_Up": {
+      "type": "EncounterEnd",
+      "direct_transition": "HR+/HER2-_Progression?"
+    },
+
+    "HR+/HER2-_Progression?": {
+      "type": "Simple",
+      "remarks": [
+        "50% of patients have a 1st progression by 13 months. Given 8 weeks/cycle, ",
+        "that's roughly 7 cycles before 50% of patients have progressed.",
+        "Applying basic probability theory: ",
+        "P(progression) = 0.5 = (1 - P(no_progression)) ^ 7 ",
+        "P(no_progression) == 0.93 for each event ",
+        "P(progression) == 0.07 for each event "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.93,
+          "transition": "Endocrine_Therapy_Cycle"
+        },
+        {
+          "distribution": 0.07,
+          "transition": "HR+/HER2-_First_Progression"
+        }
+      ]
+    },
+
+    "HR+/HER2-_First_Progression": {
+      "type": "Simple",
+      "direct_transition": "HR+/HER2-_Eventual_Death"
+    },
+
+    "HR+/HER2-_Eventual_Death": {
+      "type": "Death",
+      "remarks": [
+        "Schedules the future death of the patient. 50% mortality at 50mo., ",
+        "long tail of 4 -> 6 -> 8 -> 10 yrs of survival for the remainder."
+      ],
+      "range": {
+        "low": 10,
+        "high": 120,
+        "unit": "months"
+      },
+      "direct_transition": "Endocrine_Therapy_Cycle"
+    },
+
+    "HR-/HER2+": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        "HR-/HER2+ Chemotherapy and Endocrine Therapy                          ",
+        "======================================================================"
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "HR-/HER2-": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        "HR-/HER2- Chemotherapy                                                ",
+        "======================================================================"
+      ],
       "direct_transition": "Terminal"
     },
 
