@@ -90,7 +90,7 @@
 
     "Ellective_Annual_Mammogram": {
       "type": "CallSubmodule",
-      "submodule": "procedures/mammogram",
+      "submodule": "procedures/metastatic_breast_cancer/mammogram",
       "direct_transition": "Abormal_Finding?"
     },
 
@@ -164,6 +164,18 @@
           "display": "Encounter for symptom"
         }
       ],
+      "direct_transition": "Physical_Examination"
+    },
+
+    "Physical_Examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "5880005",
+          "display": "Physical examination"
+        }
+      ],
       "direct_transition": "End_Encounter_For_Symptoms"
     },
 
@@ -184,7 +196,7 @@
 
     "Initial_Diagnostic_Mammogram": {
       "type": "CallSubmodule",
-      "submodule": "procedures/mammogram",
+      "submodule": "procedures/metastatic_breast_cancer/mammogram",
       "direct_transition": "Delay_For_Mammogram_Review"
     },
 
@@ -372,7 +384,7 @@
 
     "Baseline_Exam": {
       "type": "CallSubmodule",
-      "submodule": "procedures/full_breast_cancer_exam",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
       "direct_transition": "End_Endocrine_Therapy_Initial_Encounter"
     },
 
@@ -398,7 +410,7 @@
 
     "Routine_Exam": {
       "type": "CallSubmodule",
-      "submodule": "procedures/full_breast_cancer_exam",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
       "direct_transition": "End_Endocrine_Therapy_Check_Up"
     },
 
@@ -412,10 +424,7 @@
       "remarks": [
         "50% of patients have a 1st progression by 13 months. Given 8 weeks/cycle, ",
         "that's roughly 7 cycles before 50% of patients have progressed.",
-        "Applying basic probability theory: ",
-        "P(progression) = 0.5 = (1 - P(no_progression)) ^ 7 ",
-        "P(no_progression) == 0.93 for each event ",
-        "P(progression) == 0.07 for each event "
+        "Model: P(progression) = 0.93 ^ n_cycles "
       ],
       "distributed_transition": [
         {
@@ -431,21 +440,35 @@
 
     "HR+/HER2-_First_Progression": {
       "type": "Simple",
-      "direct_transition": "HR+/HER2-_Eventual_Death"
+      "direct_transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
     },
 
-    "HR+/HER2-_Eventual_Death": {
-      "type": "Death",
+    "Living_With_Progressing_Metastatic_Breast_Cancer": {
+      "type": "Simple",
+      "direct_transition": "HR+/HER2-_Diminishing_Liklihood_Of_Survival"
+    },
+
+    "HR+/HER2-_Diminishing_Liklihood_Of_Survival": {
+      "type": "Delay",
       "remarks": [
-        "Schedules the future death of the patient. 50% mortality at 50mo., ",
-        "long tail of 4 -> 6 -> 8 -> 10 yrs of survival for the remainder."
+        "Annual chances of survival decay exponentially. 50% of patients die ",
+        "within 13 months of their first progression.",
+        "Model: P(survival) = .845 ^ n_years "
       ],
-      "range": {
-        "low": 10,
-        "high": 120,
-        "unit": "months"
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
       },
-      "direct_transition": "Endocrine_Therapy_Cycle"
+      "distributed_transition": [
+        {
+          "distribution": 0.845,
+          "transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+        },
+        {
+          "distribution": 0.155,
+          "transition": "Death"
+        }
+      ]
     },
 
     "HR-/HER2+": {
@@ -455,6 +478,107 @@
         "HR-/HER2+ Chemotherapy and Endocrine Therapy                          ",
         "======================================================================"
       ],
+      "direct_transition": "HR-/HER2+_Therapy_Initial_Encounter"
+    },
+
+    "HR-/HER2+_Therapy_Initial_Encounter": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the initial encounter to begin 'combo' encodrine + chemo ",
+        "therapy. For chemotherapy the patient is prescribed either Pertuzimab, ",
+        "Trastuzimab, or Taxane. For endocrine therapy, the patient is prescribed ",
+        "either Anastrazole or Tamoxifen depending on her age."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "direct_transition": "HR-/HER2+_Select_Chemotherapy_Drug"
+    },
+
+    "HR-/HER2+_Select_Chemotherapy_Drug": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.34,
+          "transition": "HR-/HER2+_Prescribe_Pertuzimab"
+        },
+        {
+          "distribution": 0.33,
+          "transition": "HR-/HER2+_Prescribe_Trastuzimab"
+        },
+        {
+          "distribution": 0.33,
+          "transition": "HR-/HER2+_Prescribe_Taxane"
+        }
+      ]
+    },
+
+    "HR-/HER2+_Prescribe_Pertuzimab": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2+_Select_Endocrine_Therapy_Drug"
+    },
+
+    "HR-/HER2+_Prescribe_Trastuzimab": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2+_Select_Endocrine_Therapy_Drug"
+    },
+
+    "HR-/HER2+_Prescribe_Taxane": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2+_Select_Endocrine_Therapy_Drug"
+    },
+
+    "HR-/HER2+_Select_Endocrine_Therapy_Drug": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "HR-/HER2+_Prescribe_Anastrazole"
+        },
+        {
+          "transition": "HR-/HER2+_Prescribe_Tamoxifen"
+        }
+      ]
+    },
+
+    "HR-/HER2+_Prescribe_Anastrazole": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "199224",
+          "display": "Anastrazole 1MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "HR-/HER2+_End_Therapy_Initial_Encounter"
+    },
+
+    "HR-/HER2+_Prescribe_Tamoxifen": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198240",
+          "display": "Tamoxifen 10MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "HR-/HER2+_End_Therapy_Initial_Encounter"
+    },
+
+    "HR-/HER2+_End_Therapy_Initial_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
 
@@ -465,6 +589,11 @@
         "HR-/HER2- Chemotherapy                                                ",
         "======================================================================"
       ],
+      "direct_transition": "Terminal"
+    },
+
+    "Death": {
+      "type": "Death",
       "direct_transition": "Terminal"
     },
 
