@@ -1,0 +1,225 @@
+{
+  "name": "HR-/HER2+ Combo Therapy Treatment",
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Therapy_Initial_Encounter"
+    },
+
+    "Therapy_Initial_Encounter": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the initial encounter to begin 'combo' encodrine + chemo ",
+        "therapy. For chemotherapy the patient is prescribed either Pertuzimab, ",
+        "Trastuzimab, or Taxane. For endocrine therapy, the patient is prescribed ",
+        "either Anastrazole or Tamoxifen depending on her age."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "direct_transition": "Select_Chemotherapy_Drug"
+    },
+
+    "Select_Chemotherapy_Drug": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.34,
+          "transition": "Prescribe_Pertuzimab"
+        },
+        {
+          "distribution": 0.33,
+          "transition": "Prescribe_Trastuzimab"
+        },
+        {
+          "distribution": 0.33,
+          "transition": "Prescribe_Taxane"
+        }
+      ]
+    },
+
+    "Prescribe_Pertuzimab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1298948",
+          "display": "14 ML pertuzumab 30 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Select_Endocrine_Therapy_Drug"
+    },
+
+    "Prescribe_Trastuzimab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1922509",
+          "display": "Trastuzumab 150 MG Injection"
+        }
+      ],
+      "direct_transition": "Select_Endocrine_Therapy_Drug"
+    },
+
+    "Prescribe_Taxane": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "583214",
+          "display": "PACLitaxel 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Select_Endocrine_Therapy_Drug"
+    },
+
+    "Select_Endocrine_Therapy_Drug": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Prescribe_Anastrazole"
+        },
+        {
+          "transition": "Prescribe_Tamoxifen"
+        }
+      ]
+    },
+
+    "Prescribe_Anastrazole": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "199224",
+          "display": "Anastrazole 1MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Baseline_Exam"
+    },
+
+    "Prescribe_Tamoxifen": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198240",
+          "display": "Tamoxifen 10MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Baseline_Exam"
+    },
+
+    "Baseline_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "metastatic_breast_cancer/full_exam",
+      "direct_transition": "End_Therapy_Initial_Encounter"
+    },
+
+    "End_Therapy_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Combo_Therapy_Cycle"
+    },
+
+    "Combo_Therapy_Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "Combo_Therapy_Check_Up"
+    },
+
+    "Combo_Therapy_Check_Up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "direct_transition": "Routine_Exam"
+    },
+
+    "Routine_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
+      "direct_transition": "End_Combo_Therapy_Check_Up"
+    },
+
+    "End_Combo_Therapy_Check_Up": {
+      "type": "EncounterEnd",
+      "direct_transition": "Progression?"
+    },
+
+    "Progression?": {
+      "type": "Simple",
+      "remarks": [
+        "50% of patients have a 1st progression by 9 months. Given 8 weeks/cycle, ",
+        "that's roughly 5 cycles before 50% of patients have progressed.",
+        "Model: P(progression) = 0.87 ^ n_cycles "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.87,
+          "transition": "Combo_Therapy_Cycle"
+        },
+        {
+          "distribution": 0.13,
+          "transition": "First_Progression"
+        }
+      ]
+    },
+
+    "First_Progression": {
+      "type": "Simple",
+      "direct_transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+    },
+
+    "Living_With_Progressing_Metastatic_Breast_Cancer": {
+      "type": "Simple",
+      "direct_transition": "Diminishing_Likelihood_Of_Survival"
+    },
+
+    "Diminishing_Likelihood_Of_Survival": {
+      "type": "Delay",
+      "remarks": [
+        "Annual chances of survival decay exponentially. 50% of patients die ",
+        "within 48 months of their first progression.",
+        "Model: P(survival) = .84 ^ n_years "
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.84,
+          "transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+        },
+        {
+          "distribution": 0.16,
+          "transition": "Death"
+        }
+      ]
+    },
+
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
