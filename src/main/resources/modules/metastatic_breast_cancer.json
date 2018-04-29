@@ -1,0 +1,340 @@
+{
+  "name": "Metastatic Breast Cancer",
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "transition": "Select_For_Metastatic_Breast_Cancer"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Select_For_Metastatic_Breast_Cancer": {
+      "type": "Simple",
+      "remarks": [
+        "1/8 women get breast cancer, 20-25% of those are stage IV at diagnosis.",
+        "(1 / 8) * 0.25 => 0.03125 probability of getting stage IV breast cancer."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.03125,
+          "transition": "Delay_For_Adulthood"
+        },
+        {
+          "distribution": 0.96875,
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Delay_For_Adulthood": {
+      "type": "Delay",
+      "remarks": [
+        "On average women start getting annual mammograms at age 40. Not all women in ",
+        "this pool will necessarily elect to get mammograms."
+      ],
+      "range": {
+        "low": 35,
+        "high": 45,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Ellective_Annual_Mammogram"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "No_Ellective_Annual_Mammogram"
+        }
+      ]
+    },
+
+    "No_Ellective_Annual_Mammogram": {
+      "type": "Simple",
+      "direct_transition": "Delay_Until_Symptoms_Present"
+    },
+
+    "Delay_Until_Symptoms_Present": {
+      "type": "Delay",
+      "remarks": [
+        "Of those women who do not get an annual mammogram, their breast cancer ",
+        "will not be diagnosed until they present with symptoms and seek medical ",
+        "attention."
+      ],
+      "range": {
+        "low": 0,
+        "high": 20,
+        "unit": "years"
+      },
+      "direct_transition": "Symptoms_Present"
+    },
+
+    "Symptoms_Present": {
+      "type": "Simple",
+      "remarks": [
+        "At this point in the module these women are experiencing symptoms bad enough ",
+        "to merit a visit to the doctor."
+      ],
+      "direct_transition": "Encounter_For_Symptoms"
+    },
+
+    "Ellective_Annual_Mammogram": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/mammogram",
+      "direct_transition": "Abormal_Finding?"
+    },
+
+    "Abormal_Finding?": {
+      "type": "Simple",
+      "remarks": [
+        "Following the annual mammogram, 2% of women will show abnormalities due to ",
+        "breast cancer. The remainder will go back into the candidate pool and wait ",
+        "until next year's mammogram."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.02,
+          "transition": "Abnormality_Detected"
+        },
+        {
+          "distribution": 0.98,
+          "transition": "No_Abnormality_Detected"
+        }
+      ]
+    },
+
+    "Abnormality_Detected": {
+      "type": "Simple",
+      "direct_transition": "Delay_For_Mammogram_Review"
+    },
+
+    "No_Abnormality_Detected": {
+      "type": "Simple",
+      "direct_transition": "Delay_For_Next_Mammogram"
+    },
+
+    "Delay_For_Next_Mammogram": {
+      "type": "Delay",
+      "remarks": [
+        "All women in the candidate pool will present with stage IV breast cancer ",
+        "by age 65, many sooner than that."
+      ],
+      "range": {
+        "low": 11,
+        "high": 14,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years"
+          },
+          "transition": "Symptoms_Present"
+        },
+        {
+          "transition": "Ellective_Annual_Mammogram"
+        }
+      ]
+    },
+
+    "Encounter_For_Symptoms": {
+      "type": "Encounter",
+      "remarks": [
+        "These women have not had a mammogram before. Once symptoms present these ",
+        "women seek medical care."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Physical_Examination"
+    },
+
+    "Physical_Examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "5880005",
+          "display": "Physical examination"
+        }
+      ],
+      "direct_transition": "End_Encounter_For_Symptoms"
+    },
+
+    "End_Encounter_For_Symptoms": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_For_Initial_Diagnostic_Mammogram"
+    },
+
+    "Delay_For_Initial_Diagnostic_Mammogram": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Initial_Diagnostic_Mammogram"
+    },
+
+    "Initial_Diagnostic_Mammogram": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/mammogram",
+      "direct_transition": "Delay_For_Mammogram_Review"
+    },
+
+    "Delay_For_Mammogram_Review": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Diagnosis_Encounter_Post_Mammogram"
+    },
+
+    "Diagnosis_Encounter_Post_Mammogram": {
+      "type": "Encounter",
+      "remarks": [
+        "Once breast cancer is suspected (and at least one recent mammogram has been ",
+        "performed to confirm), all women will have a followup encounter to review ",
+        "the mammogram findings and to perform an initial biopsy and suite of tests."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Mammogram_Findings"
+    },
+
+    "Mammogram_Findings": {
+      "type": "Simple",
+      "remarks": [
+        "TODO: Make observations about the results of the mammogram."
+      ],
+      "direct_transition": "Breast_Biopsy"
+    },
+
+    "Breast_Biopsy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "122548005",
+          "display": "Biopsy of breast"
+        }
+      ],
+      "direct_transition": "Biopsy_Findings"
+    },
+
+    "Biopsy_Findings": {
+      "type": "Simple",
+      "remarks": [
+        "TODO: Make observations about the results of the biopsy."
+      ],
+      "direct_transition": "ImmunoHistoChemistry_Test"
+    },
+
+    "ImmunoHistoChemistry_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "117617002",
+          "display": "Immunohistochemistry procedure"
+        }
+      ],
+      "direct_transition": "ImmunoHistoChemistry_Test_Findings"
+    },
+
+    "ImmunoHistoChemistry_Test_Findings": {
+      "type": "Simple",
+      "remarks": [
+        "TODO: Record the results of the IHC test."
+      ],
+      "direct_transition": "Stage_IV_Breast_Cancer"
+    },
+
+    "Stage_IV_Breast_Cancer": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diagnosis_Encounter_Post_Mammogram",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "254837009",
+          "display": "Malignant neoplasm of breast"
+        }
+      ],
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Receptor_Status"
+    },
+
+    "Receptor_Status": {
+      "type": "Simple",
+      "remarks": [
+        "70% HR+/HER2-; 15% HR-/HER2+; 15% HR-/HER2- "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "HR+/HER2-_Treatment"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "HR-/HER2+_Treatment"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "HR-/HER2-_Treatment"
+        }
+      ]
+    },
+
+    "HR+/HER2-_Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "metastatic_breast_cancer/hr+_her2-_treatment",
+      "direct_transition": "Terminal"
+    },
+
+    "HR-/HER2+_Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "metastatic_breast_cancer/hr-_her2+_treatment",
+      "direct_transition": "Terminal"
+    },
+
+    "HR-/HER2-_Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "metastatic_breast_cancer/hr-_her2-_treatment",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

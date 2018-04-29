@@ -1,0 +1,165 @@
+{
+  "name": "HR+/HER2- Endocrine Therapy Treatment",
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Endocrine_Therapy_Initial_Encounter"
+    },
+
+    "Endocrine_Therapy_Initial_Encounter": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the initial encounter to begin endocrine therapy. ",
+        "The patient is prescribed either Anastrazole or Tamoxifen ",
+        "depending on her age, then started on the treatment cycle."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Prescribe_Anastrazole"
+        },
+        {
+          "transition": "Prescribe_Tamoxifen"
+        }
+      ]
+    },
+
+    "Prescribe_Anastrazole": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "199224",
+          "display": "Anastrazole 1MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Baseline_Exam"
+    },
+
+    "Prescribe_Tamoxifen": {
+      "type": "MedicationOrder",
+      "reason": "Stage_IV_Breast_Cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198240",
+          "display": "Tamoxifen 10MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Baseline_Exam"
+    },
+
+    "Baseline_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
+      "direct_transition": "End_Endocrine_Therapy_Initial_Encounter"
+    },
+
+    "End_Endocrine_Therapy_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Endocrine_Therapy_Cycle"
+    },
+
+    "Endocrine_Therapy_Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "Endocrine_Therapy_Check_Up"
+    },
+
+    "Endocrine_Therapy_Check_Up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "direct_transition": "Routine_Exam"
+    },
+
+    "Routine_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
+      "direct_transition": "End_Endocrine_Therapy_Check_Up"
+    },
+
+    "End_Endocrine_Therapy_Check_Up": {
+      "type": "EncounterEnd",
+      "direct_transition": "Progression?"
+    },
+
+    "Progression?": {
+      "type": "Simple",
+      "remarks": [
+        "50% of patients have a 1st progression by 13 months. Given 8 weeks/cycle, ",
+        "that's roughly 7 cycles before 50% of patients have progressed.",
+        "Model: P(progression) = 0.93 ^ n_cycles "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.93,
+          "transition": "Endocrine_Therapy_Cycle"
+        },
+        {
+          "distribution": 0.07,
+          "transition": "First_Progression"
+        }
+      ]
+    },
+
+    "First_Progression": {
+      "type": "Simple",
+      "direct_transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+    },
+
+    "Living_With_Progressing_Metastatic_Breast_Cancer": {
+      "type": "Simple",
+      "direct_transition": "Diminishing_Likelihood_Of_Survival"
+    },
+
+    "Diminishing_Likelihood_Of_Survival": {
+      "type": "Delay",
+      "remarks": [
+        "Annual chances of survival decay exponentially. 50% of patients die ",
+        "within 50 months of their first progression.",
+        "Model: P(survival) = .845 ^ n_years "
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.845,
+          "transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+        },
+        {
+          "distribution": 0.155,
+          "transition": "Death"
+        }
+      ]
+    },
+
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

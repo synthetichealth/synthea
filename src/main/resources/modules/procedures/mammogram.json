@@ -1,0 +1,52 @@
+{
+  "name": "Annual Mammogram",
+  "remarks": [
+    "A routine mammogram given once annual to women."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Encounter_For_Mammogram"
+    },
+
+    "Encounter_For_Mammogram": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "direct_transition": "Mammogram"
+    },
+
+    "Mammogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "71651007",
+          "display": "Mammogram"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Mammogram_Encounter"
+    },
+
+    "End_Mammogram_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
