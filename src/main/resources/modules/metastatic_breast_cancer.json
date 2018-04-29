@@ -322,10 +322,10 @@
         "HR+/HER2- Endocrine Therapy                                           ",
         "======================================================================"
       ],
-      "direct_transition": "Endocrine_Therapy_Initial_Encounter"
+      "direct_transition": "HR+/HER2-_Endocrine_Therapy_Initial_Encounter"
     },
 
-    "Endocrine_Therapy_Initial_Encounter": {
+    "HR+/HER2-_Endocrine_Therapy_Initial_Encounter": {
       "type": "Encounter",
       "remarks": [
         "This is the initial encounter to begin endocrine therapy. ",
@@ -348,15 +348,15 @@
             "quantity": 50,
             "unit": "years"
           },
-          "transition": "Prescribe_Anastrazole"
+          "transition": "HR+/HER2-_Prescribe_Anastrazole"
         },
         {
-          "transition": "Prescribe_Tamoxifen"
+          "transition": "HR+/HER2-_Prescribe_Tamoxifen"
         }
       ]
     },
 
-    "Prescribe_Anastrazole": {
+    "HR+/HER2-_Prescribe_Anastrazole": {
       "type": "MedicationOrder",
       "reason": "Stage_IV_Breast_Cancer",
       "codes": [
@@ -366,10 +366,10 @@
           "display": "Anastrazole 1MG Oral Tablet"
         }
       ],
-      "direct_transition": "Baseline_Exam"
+      "direct_transition": "HR+/HER2-_Baseline_Exam"
     },
 
-    "Prescribe_Tamoxifen": {
+    "HR+/HER2-_Prescribe_Tamoxifen": {
       "type": "MedicationOrder",
       "reason": "Stage_IV_Breast_Cancer",
       "codes": [
@@ -379,42 +379,42 @@
           "display": "Tamoxifen 10MG Oral Tablet"
         }
       ],
-      "direct_transition": "Baseline_Exam"
+      "direct_transition": "HR+/HER2-_Baseline_Exam"
     },
 
-    "Baseline_Exam": {
+    "HR+/HER2-_Baseline_Exam": {
       "type": "CallSubmodule",
       "submodule": "procedures/metastatic_breast_cancer/full_exam",
-      "direct_transition": "End_Endocrine_Therapy_Initial_Encounter"
+      "direct_transition": "HR+/HER2-_End_Endocrine_Therapy_Initial_Encounter"
     },
 
-    "End_Endocrine_Therapy_Initial_Encounter": {
+    "HR+/HER2-_End_Endocrine_Therapy_Initial_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Endocrine_Therapy_Cycle"
+      "direct_transition": "HR+/HER2-_Endocrine_Therapy_Cycle"
     },
 
-    "Endocrine_Therapy_Cycle": {
+    "HR+/HER2-_Endocrine_Therapy_Cycle": {
       "type": "Delay",
       "exact": {
         "quantity": 8,
         "unit": "weeks"
       },
-      "direct_transition": "Endocrine_Therapy_Check_Up"
+      "direct_transition": "HR+/HER2-_Endocrine_Therapy_Check_Up"
     },
 
-    "Endocrine_Therapy_Check_Up": {
+    "HR+/HER2-_Endocrine_Therapy_Check_Up": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "direct_transition": "Routine_Exam"
+      "direct_transition": "HR+/HER2-_Routine_Exam"
     },
 
-    "Routine_Exam": {
+    "HR+/HER2-_Routine_Exam": {
       "type": "CallSubmodule",
       "submodule": "procedures/metastatic_breast_cancer/full_exam",
-      "direct_transition": "End_Endocrine_Therapy_Check_Up"
+      "direct_transition": "HR+/HER2-_End_Endocrine_Therapy_Check_Up"
     },
 
-    "End_Endocrine_Therapy_Check_Up": {
+    "HR+/HER2-_End_Endocrine_Therapy_Check_Up": {
       "type": "EncounterEnd",
       "direct_transition": "HR+/HER2-_Progression?"
     },
@@ -429,7 +429,7 @@
       "distributed_transition": [
         {
           "distribution": 0.93,
-          "transition": "Endocrine_Therapy_Cycle"
+          "transition": "HR+/HER2-_Endocrine_Therapy_Cycle"
         },
         {
           "distribution": 0.07,
@@ -440,19 +440,19 @@
 
     "HR+/HER2-_First_Progression": {
       "type": "Simple",
-      "direct_transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+      "direct_transition": "HR+/HER2-_Living_With_Progressing_Metastatic_Breast_Cancer"
     },
 
-    "Living_With_Progressing_Metastatic_Breast_Cancer": {
+    "HR+/HER2-_Living_With_Progressing_Metastatic_Breast_Cancer": {
       "type": "Simple",
-      "direct_transition": "HR+/HER2-_Diminishing_Liklihood_Of_Survival"
+      "direct_transition": "HR+/HER2-_Diminishing_Likelihood_Of_Survival"
     },
 
-    "HR+/HER2-_Diminishing_Liklihood_Of_Survival": {
+    "HR+/HER2-_Diminishing_Likelihood_Of_Survival": {
       "type": "Delay",
       "remarks": [
         "Annual chances of survival decay exponentially. 50% of patients die ",
-        "within 13 months of their first progression.",
+        "within 50 months of their first progression.",
         "Model: P(survival) = .845 ^ n_years "
       ],
       "exact": {
@@ -462,7 +462,7 @@
       "distributed_transition": [
         {
           "distribution": 0.845,
-          "transition": "Living_With_Progressing_Metastatic_Breast_Cancer"
+          "transition": "HR+/HER2-_Living_With_Progressing_Metastatic_Breast_Cancer"
         },
         {
           "distribution": 0.155,
@@ -519,17 +519,38 @@
     },
 
     "HR-/HER2+_Prescribe_Pertuzimab": {
-      "type": "Simple",
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1298948",
+          "display": "14 ML pertuzumab 30 MG/ML Injection"
+        }
+      ],
       "direct_transition": "HR-/HER2+_Select_Endocrine_Therapy_Drug"
     },
 
     "HR-/HER2+_Prescribe_Trastuzimab": {
-      "type": "Simple",
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1922509",
+          "display": "Trastuzumab 150 MG Injection"
+        }
+      ],
       "direct_transition": "HR-/HER2+_Select_Endocrine_Therapy_Drug"
     },
 
     "HR-/HER2+_Prescribe_Taxane": {
-      "type": "Simple",
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "583214",
+          "display": "PACLitaxel 100 MG Injection"
+        }
+      ],
       "direct_transition": "HR-/HER2+_Select_Endocrine_Therapy_Drug"
     },
 
@@ -561,7 +582,7 @@
           "display": "Anastrazole 1MG Oral Tablet"
         }
       ],
-      "direct_transition": "HR-/HER2+_End_Therapy_Initial_Encounter"
+      "direct_transition": "HR-/HER2+_Baseline_Exam"
     },
 
     "HR-/HER2+_Prescribe_Tamoxifen": {
@@ -574,12 +595,96 @@
           "display": "Tamoxifen 10MG Oral Tablet"
         }
       ],
+      "direct_transition": "HR-/HER2+_Baseline_Exam"
+    },
+
+    "HR-/HER2+_Baseline_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedure/metastatic_breast_cancer/full_exam",
       "direct_transition": "HR-/HER2+_End_Therapy_Initial_Encounter"
     },
 
     "HR-/HER2+_End_Therapy_Initial_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "HR-/HER2+_Combo_Therapy_Cycle"
+    },
+
+    "HR-/HER2+_Combo_Therapy_Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "HR-/HER2+_Combo_Therapy_Check_Up"
+    },
+
+    "HR-/HER2+_Combo_Therapy_Check_Up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "direct_transition": "HR-/HER2+_Routine_Exam"
+    },
+
+    "HR-/HER2+_Routine_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
+      "direct_transition": "HR-/HER2+_End_Combo_Therapy_Check_Up"
+    },
+
+    "HR-/HER2+_End_Combo_Therapy_Check_Up": {
+      "type": "EncounterEnd",
+      "direct_transition": "HR-/HER2+_Progression?"
+    },
+
+    "HR-/HER2+_Progression?": {
+      "type": "Simple",
+      "remarks": [
+        "50% of patients have a 1st progression by 9 months. Given 8 weeks/cycle, ",
+        "that's roughly 5 cycles before 50% of patients have progressed.",
+        "Model: P(progression) = 0.87 ^ n_cycles "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.87,
+          "transition": "HR-/HER2+_Combo_Therapy_Cycle"
+        },
+        {
+          "distribution": 0.13,
+          "transition": "HR-/HER2+_First_Progression"
+        }
+      ]
+    },
+
+    "HR-/HER2+_First_Progression": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2+_Living_With_Progressing_Metastatic_Breast_Cancer"
+    },
+
+    "HR-/HER2+_Living_With_Progressing_Metastatic_Breast_Cancer": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2+_Diminishing_Likelihood_Of_Survival"
+    },
+
+    "HR-/HER2+_Diminishing_Likelihood_Of_Survival": {
+      "type": "Delay",
+      "remarks": [
+        "Annual chances of survival decay exponentially. 50% of patients die ",
+        "within 48 months of their first progression.",
+        "Model: P(survival) = .84 ^ n_years "
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.84,
+          "transition": "HR-/HER2+_Living_With_Progressing_Metastatic_Breast_Cancer"
+        },
+        {
+          "distribution": 0.16,
+          "transition": "Death"
+        }
+      ]
     },
 
     "HR-/HER2-": {
@@ -589,7 +694,151 @@
         "HR-/HER2- Chemotherapy                                                ",
         "======================================================================"
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "HR-/HER2-_Therapy_Initial_Encounter"
+    },
+
+    "HR-/HER2-_Therapy_Initial_Encounter": {
+      "type": "Encounter",
+      "remarks": [
+        "This is the initial encounter to begin chemotherapy. The patient is ",
+        "prescribed either Taxane or Capecitabine."
+      ],
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure"
+        }
+      ],
+      "direct_transition": "HR-/HER2-_Select_Chemotherapy_Drug"
+    },
+
+    "HR-/HER2-_Select_Chemotherapy_Drug": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "HR-/HER2-_Prescribe_Taxane"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "HR-/HER2-_Prescribe_Capecitabine"
+        }
+      ]
+    },
+
+    "HR-/HER2-_Prescribe_Taxane": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "583214",
+          "display": "PACLitaxel 100 MG Injection"
+        }
+      ],
+      "direct_transition": "HR-/HER2-_Baseline_Exam"
+    },
+
+    "HR-/HER2-_Prescribe_Capecitabine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "200327",
+          "display": "Capecitabine 150 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "HR-/HER2-_Baseline_Exam"
+    },
+
+    "HR-/HER2-_Baseline_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
+      "direct_transition": "HR-/HER2-_End_Therapy_Initial_Encounter"
+    },
+
+    "HR-/HER2-_End_Therapy_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "HR-/HER2-_Chemotherapy_Cycle"
+    },
+
+    "HR-/HER2-_Chemotherapy_Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "HR-/HER2-_Chemotherapy_Check_Up"
+    },
+
+    "HR-/HER2-_Chemotherapy_Check_Up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "direct_transition": "HR-/HER2-_Routine_Exam"
+    },
+
+    "HR-/HER2-_Routine_Exam": {
+      "type": "CallSubmodule",
+      "submodule": "procedures/metastatic_breast_cancer/full_exam",
+      "direct_transition": "HR-/HER2-_End_Chemotherapy_Check_Up"
+    },
+
+    "HR-/HER2-_End_Chemotherapy_Check_Up": {
+      "type": "EncounterEnd",
+      "direct_transition": "HR-/HER2-_Progression?"
+    },
+
+    "HR-/HER2-_Progression?": {
+      "type": "Simple",
+      "remarks": [
+        "50% of patients have a 1st progression by 12 weeks. Given 8 weeks/cycle, ",
+        "that's roughly 2 cycles before 50% of patients have progressed.",
+        "Model: P(progression) = 0.7 ^ n_cycles "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "HR-/HER2-_Chemotherapy_Cycle"
+        },
+        {
+          "distribution": 0.3,
+          "transition": "HR-/HER2-_First_Progression"
+        }
+      ]
+    },
+
+    "HR-/HER2-_First_Progression": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2-_Living_With_Progressing_Metastatic_Breast_Cancer"
+    },
+
+    "HR-/HER2-_Living_With_Progressing_Metastatic_Breast_Cancer": {
+      "type": "Simple",
+      "direct_transition": "HR-/HER2-_Diminishing_Likelihood_Of_Survival"
+    },
+
+    "HR-/HER2-_Diminishing_Likelihood_Of_Survival": {
+      "type": "Delay",
+      "remarks": [
+        "Annual chances of survival decay exponentially. 50% of patients die ",
+        "within 13 months of their first progression.",
+        "Model: P(survival) = .51 ^ n_years "
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.51,
+          "transition": "HR-/HER2-_Living_With_Progressing_Metastatic_Breast_Cancer"
+        },
+        {
+          "distribution": 0.49,
+          "transition": "Death"
+        }
+      ]
     },
 
     "Death": {
