@@ -12,7 +12,6 @@
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -24,42 +23,8 @@
         " | Osteoarthritis |   0.34000  |    2:1    | ",
         " ------------------------------------------- "
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "distribution": 0.113,
-              "transition": "Delay_Until_Arthritis"
-            },
-            {
-              "distribution": 0.887,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "distribution": 0.2267,
-              "transition": "Delay_Until_Arthritis"
-            },
-            {
-              "distribution": 0.7733,
-              "transition": "Terminal"
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Delay_Until_Arthritis"
     },
-
     "Delay_Until_Arthritis": {
       "type": "Delay",
       "range": {
@@ -67,9 +32,25 @@
         "high": 80,
         "unit": "years"
       },
-      "direct_transition": "Osteoarthritis"
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Non_Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
     },
-
     "Osteoarthritis": {
       "type": "Simple",
       "remarks": [
@@ -93,7 +74,6 @@
         }
       ]
     },
-
     "OA_Of_The_Hand": {
       "type": "ConditionOnset",
       "target_encounter": "OA_Diagnosis",
@@ -107,7 +87,6 @@
       ],
       "direct_transition": "OA_Diagnosis"
     },
-
     "OA_Of_The_Knee": {
       "type": "ConditionOnset",
       "target_encounter": "OA_Diagnosis",
@@ -121,7 +100,6 @@
       ],
       "direct_transition": "OA_Diagnosis"
     },
-
     "OA_Of_The_Hip": {
       "type": "ConditionOnset",
       "target_encounter": "OA_Diagnosis",
@@ -135,7 +113,6 @@
       ],
       "direct_transition": "OA_Diagnosis"
     },
-
     "OA_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -149,7 +126,6 @@
       ],
       "direct_transition": "OA_CarePlan"
     },
-
     "OA_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "OA_Diagnosis",
@@ -176,7 +152,6 @@
       ],
       "direct_transition": "OA_Pain_Medication"
     },
-
     "OA_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "OA_Diagnosis",
@@ -243,28 +218,74 @@
         }
       ]
     },
-
     "Setup_Knee_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "knee",
       "direct_transition": "End_Encounter"
     },
-
     "Setup_Hip_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "hip",
       "direct_transition": "End_Encounter"
     },
-
-    "End_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Terminal"
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
+    },
+    "Veteran": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Osteoarthritis",
+          "distribution": 0.21
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.79
+        }
+      ]
+    },
+    "Non_Veteran": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.21
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.79
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.2267
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7733
+            }
+          ]
+        }
+      ]
     }
   }
 }
