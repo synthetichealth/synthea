@@ -15,7 +15,7 @@ public class CostsTest {
   @Before
   public void setup() {
     Costs.loadCostData();
-    record = new HealthRecord();
+    record = new HealthRecord(null);
   }
   
   @Test public void testCostByKnownCode() {
@@ -23,7 +23,7 @@ public class CostsTest {
     Entry fakeMedication = record.medicationStart(0L, code.display);
     fakeMedication.codes.add(code);
     
-    double cost = Costs.calculateCost(fakeMedication, false);
+    double cost = Costs.calculateCost(fakeMedication, null, null, null);
     assertEquals(20.00, cost, 0.01); // assert the cost is within $0.01
   }
   
@@ -34,7 +34,7 @@ public class CostsTest {
     
     // it's the same number as above, but a procedure not a medication,
     // so we don't expect the same result
-    double cost = Costs.calculateCost(fakeProcedure, false);
+    double cost = Costs.calculateCost(fakeProcedure, null, null, null);
     double expectedCost = Double.parseDouble(Config.get("generate.costs.default_procedure_cost"));
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
   }
@@ -44,7 +44,7 @@ public class CostsTest {
     Entry fakeMedication = record.medicationStart(0L, code.display);
     fakeMedication.codes.add(code);
     
-    double cost = Costs.calculateCost(fakeMedication, false);
+    double cost = Costs.calculateCost(fakeMedication, null, null, null);
     double expectedCost = Double.parseDouble(Config.get("generate.costs.default_medication_cost"));
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
   }

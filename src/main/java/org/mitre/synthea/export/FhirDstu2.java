@@ -14,8 +14,8 @@ import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
-import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt;
+import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
@@ -97,7 +97,6 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
-import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
@@ -637,8 +636,8 @@ public class FhirDstu2 {
 
     int itemSequence = 2;
     int conditionSequence = 1;
-    for (ClaimItem item : claim.items) {
-      if (Costs.hasCost(item.entry)) {
+    for (HealthRecord.Entry item : claim.items) {
+      if (Costs.hasCost(item)) {
         // update claimItems list
         ca.uhn.fhir.model.dstu2.resource.Claim.Item procedureItem =
             new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
@@ -660,9 +659,9 @@ public class FhirDstu2 {
 
         // item service should match the entry code
         itemService = new CodingDt();
-        itemService.setSystem(item.entry.codes.get(0).system)
-            .setCode(item.entry.codes.get(0).code)
-            .setDisplay(item.entry.codes.get(0).display);
+        itemService.setSystem(item.codes.get(0).system)
+            .setCode(item.codes.get(0).code)
+            .setDisplay(item.codes.get(0).display);
         procedureItem.setService(itemService);
 
         claimResource.addItem(procedureItem);
@@ -672,10 +671,10 @@ public class FhirDstu2 {
         ca.uhn.fhir.model.dstu2.resource.Claim.Diagnosis diagnosisComponent =
             new ca.uhn.fhir.model.dstu2.resource.Claim.Diagnosis();
         diagnosisComponent.setSequence(new PositiveIntDt(conditionSequence));
-        if (item.entry.codes.size() > 0) {
+        if (item.codes.size() > 0) {
           // use first code
           diagnosisComponent.setDiagnosis(
-              new CodingDt(item.entry.codes.get(0).system, item.entry.codes.get(0).code));
+              new CodingDt(item.codes.get(0).system, item.codes.get(0).code));
         }
         claimResource.addDiagnosis(diagnosisComponent);
         conditionSequence++;

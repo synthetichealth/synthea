@@ -9,6 +9,8 @@ import java.util.Map;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 public class Costs {
@@ -30,6 +32,10 @@ public class Costs {
       Double.parseDouble(Config.get("generate.costs.default_encounter_cost"));
   private static final double DEFAULT_IMMUNIZATION_COST =
       Double.parseDouble(Config.get("generate.costs.default_immunization_cost"));
+  
+  private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = 
+      parseCsvToMap("costs/adjustmentFactors.csv"); 
+  // Note that this file will have headers CODE and COST for simplicity
   
   /**
    * Load all cost data needed by the system.
@@ -84,22 +90,39 @@ public class Costs {
    * Calculate the cost of this Procedure, Encounter, Medication, etc.
    * 
    * @param entry Entry to calculate cost of.
-   * @param isFacility Whether to use facility-based cost factors.
+   * @param patient Person to whom the entry refers to
+   * @param provider Provider that performed the service, if any
+   * @param payer Entity paying for the service, if any
    * @return Cost, in USD.
    */
-  public static double calculateCost(Entry entry, boolean isFacility) {
-    String code = entry.codes.get(0).code;
-    
-    if (entry instanceof HealthRecord.Procedure) {
-      return PROCEDURE_COSTS.getOrDefault(code, DEFAULT_PROCEDURE_COST);
-    } else if (entry instanceof HealthRecord.Medication) {
-      return MEDICATION_COSTS.getOrDefault(code, DEFAULT_MEDICATION_COST);
-    } else if (entry instanceof HealthRecord.Encounter) {
-      return ENCOUNTER_COSTS.getOrDefault(code, DEFAULT_ENCOUNTER_COST);
-    } else if (entry instanceof HealthRecord.Immunization) {
-      return IMMUNIZATION_COSTS.getOrDefault(code, DEFAULT_IMMUNIZATION_COST);
-    } else {
+  public static double calculateCost(Entry entry, Person patient, Provider provider, String payer) {
+    if (!hasCost(entry)) {
       return 0;
     }
+    
+    String code = entry.codes.get(0).code;
+    
+    double baseCost = 0.0;
+    
+    if (entry instanceof HealthRecord.Procedure) {
+      baseCost = PROCEDURE_COSTS.getOrDefault(code, DEFAULT_PROCEDURE_COST);
+    } else if (entry instanceof HealthRecord.Medication) {
+      baseCost = MEDICATION_COSTS.getOrDefault(code, DEFAULT_MEDICATION_COST);
+    } else if (entry instanceof HealthRecord.Encounter) {
+      baseCost = ENCOUNTER_COSTS.getOrDefault(code, DEFAULT_ENCOUNTER_COST);
+    } else if (entry instanceof HealthRecord.Immunization) {
+      baseCost = IMMUNIZATION_COSTS.getOrDefault(code, DEFAULT_IMMUNIZATION_COST);
+    }
+    
+    double locationAdjustment = 1.0;
+    if (patient != null && patient.attributes.containsKey(Person.STATE)) {
+      String state = (String) patient.attributes.get(Person.STATE);
+      
+      if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
+        locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
+      }
+    }
+    
+    return baseCost * locationAdjustment;
   }
 }

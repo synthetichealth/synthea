@@ -304,7 +304,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", Costs.calculateCost(encounter, true))).append(',');
+    s.append(String.format("%.2f", encounter.cost())).append(',');
 
     if (encounter.reason == null) {
       s.append(','); // reason code & desc
@@ -447,7 +447,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", Costs.calculateCost(procedure, true))).append(',');
+    s.append(String.format("%.2f", procedure.cost())).append(',');
 
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -487,7 +487,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", Costs.calculateCost(medication, true))).append(',');
+    s.append(String.format("%.2f", medication.cost())).append(',');
 
     if (medication.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -523,7 +523,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", Costs.calculateCost(immunization, true)));
+    s.append(String.format("%.2f", immunization.cost()));
 
     s.append(NEWLINE);
     write(s.toString(), immunizations);
