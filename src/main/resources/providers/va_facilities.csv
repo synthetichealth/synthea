@@ -202,7 +202,7 @@
 460GD,"Cape May County CBOC","1 Monro Avenue","Cape May",NJ,"08204","800-461-8262 X 2850","VA Facility",Government,no,"Not Available",38.9351,-74.906
 529GD,"Clarion County VA Outpatient Clinic","56 Clarion Plaza, Suite 115","Monroe Township",PA,"16214",814-226-3900,"VA Facility",Government,no,"Not Available",40.3192,-74.4285
 693GF,"Columbia County Outpatient Clinic","Alley Medical Center, 301 West Third Street",Berwick,PA,"18603",570-759-0351,"VA Facility",Government,no,"Not Available",40.7796,-90.5437
-529GF,"Cranberry Township VA Outpatient Clinic","900 Commonwealth Drive, Suite 900","Cranberry Township",PA,"16066","724-742-3500 Or 724-741-3131","VA Facility",Government,no,"Not Available",0,0
+529GF,"Cranberry Township VA Outpatient Clinic","900 Commonwealth Drive, Suite 900","Cranberry Township",PA,"16066","724-742-3500 Or 724-741-3131","VA Facility",Government,no,"Not Available",40.6831,-80.1117
 562GA,"Crawford County Primary Care Clinic","16954 Conneaut Lake Road",Meadville,PA,"16335",866-962-3210,"VA Facility",Government,no,"Not Available",39.7925,-93.2925
 460HG,"Cumberland County CBOC","79 W. Landis Avenue",Vineland,NJ,"08360","800-461-8262 X 6500","VA Facility",Government,no,"Not Available",39.48669,-75.03702
 503GB,"DuBois (Clearfield County) VA Outpatient Clinic (503GB)","5690 Shaffer Road",DuBois,PA,"15801",877-626-2500,"VA Facility",Government,no,"Not Available",43.493,-109.6436
@@ -217,7 +217,7 @@
 529GA,"Mercer County VA Outpatient Clinic","295 N. Kerrwood Drive, Suite 110",Hermitage,PA,"16148",724-346-1569,"VA Facility",Government,no,"Not Available",41.237286,-80.46313
 693GG,"Northampton County Outpatient Clinic","Phoebe Slate Belt Nursing Home & Rehab Center 701 Slate Belt Boulevard",Bangor,PA,"18013",610-599-0127,"VA Facility",Government,no,"Not Available",40.8657,-75.2066
 595GF,"Pottsville VA Clinic (595GF)","1410 Laurel Blvd., Suite 2",Pottsville,PA,"17901",570-628-5374,"VA Facility",Government,no,"Not Available",40.68376,-76.211494
-595GD,"Reading VA Clinic (595GD)","2762 Century Boulevard",Wyomissing,PA,"19610",484-220-2572,"VA Facility",Government,no,"Not Available",0,0
+595GD,"Reading VA Clinic (595GD)","2762 Century Boulevard",Wyomissing,PA,"19610",484-220-2572,"VA Facility",Government,no,"Not Available",40.357185,-75.989094
 693GA,"Sayre VA Outpatient Clinic (693GA)","1537 Elmira Street",Sayre,PA,"18840",570-888-6803,"VA Facility",Government,no,"Not Available",41.974503,-76.540665
 542GE,"Spring City VA Outpatient Clinic (542GE)","11 Independence Drive","Spring City",PA,"19475",610-383-0239,"VA Facility",Government,no,"Not Available",40.187653,-75.565445
 542GA,"Springfield VA Outpatient Clinic (542GA)","Crozer Keystone Healthplex 194 W. Sproul Road, Suite 105",Springfield,PA,"19064",610-383-0239,"VA Facility",Government,no,"Not Available",39.7495,-89.606
@@ -280,7 +280,7 @@
 512GD,"Loch Raven VA Outpatient Clinic","3901 The Alameda",Baltimore,MD,"21218","410-605-7650 Or 410-605-7650","VA Facility",Government,no,"Not Available",39.2904,-76.6122
 540GD,"Monongalia County (540GD)","40 Commerce Drive, Suite 101",Westover,WV,"26501",304-292-7535,"VA Facility",Government,no,"Not Available",39.6001,-75.9369
 613GE,"Petersburg Community Based Outpatient Clinic","15 Grant St.",Petersburg,WV,"26847","304-263-0811 X 5130","VA Facility",Government,no,"Not Available",38.99487,-79.11806
-512GE,"Pocomoke City VA Outpatient Clinic","1701 Market Street, Unit 211",Pocomoke,MD,"21851","410-957-6718 Or 866-441-0287","VA Facility",Government,no,"Not Available",0,0
+512GE,"Pocomoke City VA Outpatient Clinic","1701 Market Street, Unit 211",Pocomoke,MD,"21851","410-957-6718 Or 866-441-0287","VA Facility",Government,no,"Not Available",38.062634,-75.547691
 581GA,"Prestonsburg VA Clinic","5230 KY RT 321",Prestonsburg,KY,"41653",606-886-1970,"VA Facility",Government,no,"Not Available",37.6656,-82.7716
 517QA,"Princeton VA Clinic","1511 North Walker Street",Princeton,WV,"24740","304-255-2121 X 3404","VA Facility",Government,no,"Not Available",37.367912,-81.10203
 540,"Rural Mobile Unit (540)","1 Medical Center Drive",Clarksburg,WV,"26301",304-623-3461,"VA Facility",Government,no,"Not Available",39.269535,-80.36269
@@ -463,31 +463,25 @@
 573BY,"Jacksonville OPC","1536 N Jefferson St",Jacksonville,FL,"32209","877-870-5048 Or 904-475-5800","VA Facility",Government,no,"Not Available",30.344486,-81.66289
 675GG,"Lake Baldwin OPC","5201 Raymond Street",Orlando,FL,"32803",407-646-5500,"VA Facility",Government,no,"Not Available",28.578913,-81.32207
 516BZ,"Lee County VA Healthcare Center","2489 Diplomat Parkway East","Cape Coral",FL,"33909",239-652-1800,"VA Facility",Government,no,"Not Available",26.5629,-81.9495
-672BZ,"Mayaguez OPC","175 Algarrobo Ave.",Mayaguez,PR,"00682","787-641-7582 X 48501","VA Facility",Government,no,"Not Available",0,0
+672BZ,"Mayaguez OPC","175 Algarrobo Ave.",Mayaguez,PR,"00682","787-641-7582 X 48501","VA Facility",Government,no,"Not Available",18.237088,-67.159446
 673BZ,"New Port Richey OPC","9912 Little Road","New Port Richey",FL,"34654",727-869-4100,"VA Facility",Government,no,"Not Available",28.294464,-82.67542
-672BO,"Ponce OPC","Paseo Del Veterano #1010",Ponce,PR,"00716","787-641-7582 X 44001 Or 787-641-7582 X 44002","VA Facility",Government,no,"Not Available",0,0
+672BO,"Ponce OPC","Paseo Del Veterano #1010",Ponce,PR,"00716","787-641-7582 X 44001 Or 787-641-7582 X 44002","VA Facility",Government,no,"Not Available",17.987974,-66.603875
 573BY,"Southpoint Clinic","6900 Southpoint Dr North",Jacksonville,FL,"32209",904-470-6900,"VA Facility",Government,no,"Not Available",30.255903,-81.5878
 573GF,"Tallahassee HCC","2181 East Orange Avenue",Tallahassee,FL,"32311","800-541-8387 Or 850-878-0191","VA Facility",Government,no,"Not Available",30.4383,-84.2807
 573GI,"The Villages OPC","8900 SE 165th Mulberry Ln.","The Villages",FL,"32162","877-649-0024 Or 352-674-5000","VA Facility",Government,no,"Not Available",28.9341,-81.9599
-672,"Utuado VA Rural Outpatient Clinic","Isaac Gonzalez Street Equina Ledesma",Utuado,PR,"00641","787-522-2650 Or 787-522-2650","VA Facility",Government,no,"Not Available",0,0
+672,"Utuado VA Rural Outpatient Clinic","Isaac Gonzalez Street Equina Ledesma",Utuado,PR,"00641","787-522-2650 Or 787-522-2650","VA Facility",Government,no,"Not Available",18.267224,-66.707528
 548ZZ2,"VA Moore Haven Outpatient Clinic","1021 Health Park Drive","Moore Haven",FL,"33471",,"VA Facility",Government,no,"Not Available",26.8331,-81.0931
 675GA,"Viera OPC","2900 Veterans Way",Viera,FL,"32940",321-637-3788,"VA Facility",Government,no,"Not Available",28.251802,-80.742805
 675GB,"William V. Chappell, Jr., VA OPC","551 National Health Care Drive","Daytona Beach",FL,"32114",386-323-7500,"VA Facility",Government,no,"Not Available",29.205873,-81.06211
 548,"St Lucie County PTSD Clinical Team (PCT) Outpatient Program","126 SW Chamber Court","Port St Lucie",FL,"34986",772-878-7876,"VA Facility",Government,no,"Not Available",27.2939,-80.3503
-672GC,"Arecibo CBOC","Road PR-10, Puerto Rico",Arecibo,PR,"00612","787-641-7582 X 28683 Or 800-449-8729 X 28678","VA Facility",Government,no,"Not Available",0,0
 548GD,"Boca Raton CBOC","901 Meadows Road","Boca Raton",FL,"33433",561-416-8995,"VA Facility",Government,no,"Not Available",26.358753,-80.10404
 516GD,"Bradenton Community-Based Outpatient Clinic","5520 S.R. 64 Suite 101",Bradenton,FL,"34208",941-721-0649,"VA Facility",Government,no,"Not Available",27.4989,-82.5748
 673GC,"Brooksville CBOC","14540 Cortez Blvd., Suite 108",Brooksville,FL,"34613",352-597-8287,"VA Facility",Government,no,"Not Available",28.53387,-82.48409
-672GD,"Ceiba Community Based Outpatient Clinic","PR-3, Km. 54.9 Lot#3","Pueblo Ward",PR,"00735","787-641-7582 X 29001 Or 800-449-8729 X 29001","VA Facility",Government,no,"Not Available",0,0
-672GD,"Ceiba Community Based Outpatient Clinic","PR-3, Km. 54.9 Lot#3","Pueblo Ward",PR,"00735","800-449-8729 X 29001","VA Facility",Government,no,"Not Available",0,0
-6298,"Ceiba VA Community Based Outpatient Clinic","PR-3, Km. 54.9, Lot #3","Pueblo Ward",PR,"00735","800-449-8729 X 29001","VA Facility",Government,no,"Not Available",0,0
 5924,"Clermont Community Based Outpatient Clinic","805 Oakley Seaver Drive",Clermont,FL,"34711",352-536-8200,"VA Facility",Government,no,"Not Available",28.5494,-81.7729
-714,"Comerio Rural Outpatient Clinic","15 De Diego Street",Comerio,PR,"00782",787-522-2660,"VA Facility",Government,no,"Not Available",0,0
 3333,"Crossroads Annex","925 South Semoran Blvd Suite 114","Winter Park",FL,"32792",866-998-4365,"VA Facility",Government,no,"Not Available",28.583382,-81.30698
 546GH,"Deerfield Beach VA Community Based Outpatient Clinic","2100 S.W. 10th St.","Deerfield Beach",FL,"33442",954-570-5572,"VA Facility",Government,no,"Not Available",26.30437,-80.13228
 548GB,"Delray Beach CBOC","4800 Linton Blvd., Building E, Suite 300","Delray Beach",FL,"33445",561-495-1973,"VA Facility",Government,no,"Not Available",26.439363,-80.11655
 548GA,"Fort Pierce CBOC","1901 South 25th Street, Suite 103","Ft. Pierce",FL,"34947",772-595-5150,"VA Facility",Government,no,"Not Available",27.467018,-80.34966
-672GE,"Guayama CBOC","FISA Bldg 1st Fl, Paseo Del Pueblo, km 0.3, lote no 6",Guayama,PR,"00784",787-866-8886,"VA Facility",Government,no,"Not Available",0,0
 546GA,"Healthcare for Homeless Veterans","1492 W. Flagler St., Suite 101",Miami,FL,"33135",305-541-5864,"VA Facility",Government,no,"Not Available",25.773327,-80.21949
 546,"Healthcare for Homeless Veterans","1492 Flagler St",Miami,FL,"33135",305-541-5864,"VA Facility",Government,no,"Not Available",25.773329,-80.21944
 546,"Hollywood VA Community Based Outpatient Clinic","3702 Washington St., Suite 201",Hollywood,FL,"33021",954-986-1811,"VA Facility",Government,no,"Not Available",26.00302,-80.18108
@@ -510,7 +504,6 @@
 516GE,"Port Charlotte Community-Based Outpatient Clinic","4161 Tamiami Trail Suite 401 & Suite 602 (Annex Bldg)","Port Charlotte",FL,"33952",941-235-2710,"VA Facility",Government,no,"Not Available",26.9762,-82.0906
 548,"Port St Lucie PTSD Clinical Team (PCT) Outpatient Program","128 SW Chamber Court","Port Saint Lucie",FL,"34986",772-344-9288,"VA Facility",Government,no,"Not Available",27.2939,-80.3503
 573GE,"Saint Augustine CBOC","195 Southpark Blvd.","St. Augustine",FL,"32086","866-401-8387 Or 904-829-0814","VA Facility",Government,no,"Not Available",29.862272,-81.32687
-672GA,"Saint Croix CBOC","Box 12, RR-02, The Village Mall #113","Kings Hill",VI,"00850",340-778-5553,"VA Facility",Government,no,"Not Available",0,0
 672GB,"Saint Thomas CBOC","Medical Foundation Building Suite 101","St. Thomas",VI,"00802",340-776-7072,"VA Facility",Government,no,"Not Available",48.6306,-97.4713
 516GA,"Sarasota Community-Based Outpatient Clinic","5682 Bee Ridge Road, Suite 100",Sarasota,FL,"34233",941-371-3349,"VA Facility",Government,no,"Not Available",27.29881,-82.45636
 516GH,"Sebring Community-Based Outpatient Clinic","5901 U.S. Highway 27 South",Sebring,FL,"33870",863-471-6227,"VA Facility",Government,no,"Not Available",27.4273,-81.3405
@@ -520,11 +513,9 @@
 675GE,"Tavares Community Based Outpatient Clinic","1390 E. Burleigh Blvd.",Tavares,FL,"32778",352-253-2900,"VA Facility",Government,no,"Not Available",28.776,-81.7152
 573GA,"Valdosta CBOC","2841 N. Patterson Street",Valdosta,GA,"31602","229-293-0132 Or 877-303-8387","VA Facility",Government,no,"Not Available",30.868034,-83.29001
 548GE,"Vero Beach CBOC","372 17th Street","Vero Beach",FL,"32960",772-299-4623,"VA Facility",Government,no,"Not Available",27.632372,-80.38043
-714,"Vieques Rural Outpatient Clinic","Co.Destino Carretera #997",Vieques,PR,"00765","787-641-7582 X 28601","VA Facility",Government,no,"Not Available",0,0
 573GM,"Waycross CBOC","515B City Boulevard",Waycross,GA,"31501",912-279-4400,"VA Facility",Government,no,"Not Available",31.231209,-82.34093
 546,"William Bill Kling VA Clinic","9800 W. Commercial Blvd.",Sunrise,FL,"33351",954-475-5500,"VA Facility",Government,no,"Not Available",26.134,-80.1131
 673GF,"Zephyrhills CBOC","6937 Medical View Ln",Zephyrhills,FL,"33541",813-780-2550,"VA Facility",Government,no,"Not Available",28.2059,-82.3201
-0309V,"Arecibo Vet Center","50 Gonzalo Marin St",Arecibo,PR,"00612","787-641-7582 X 28151","VA Facility",Government,no,"Not Available",0,0
 0339V,"Clearwater Vet Center","29259 US Hwy 19 North",Clearwater,FL,"33761","727-549-3600 Or 727-549-3600","VA Facility",Government,no,"Not Available",27.9658,-82.8001
 675GF,"Clermont Vet Center","1655 East Highway 50, Suite 102",Clermont,FL,"34711","352-536-6701 Or 877-927-8387","VA Facility",Government,no,"Not Available",28.545898,-81.7555
 0341V,"Daytona Beach Vet Center","1620 Mason Ave., Suite C","Daytona Beach",FL,"32117","386-366-6600 Or 386-366-6600","VA Facility",Government,no,"Not Available",29.21203,-81.0657
@@ -542,10 +533,9 @@
 0314V,"Orlando Vet Center","5575 S. Semoran Blvd., Suite #30",Orlando,FL,"32822","407-857-2800 Or 407-857-2800","VA Facility",Government,no,"Not Available",28.48248,-81.310104
 0326V,"Palm Beach Vet Center","4996 10th Ave North, Suite 6",Greenacres,FL,"33463","561-422-1201 Or 561-422-1201","VA Facility",Government,no,"Not Available",26.631065,-80.122665
 0338V,"Pasco County Vet Center","5139 Deer Park Drive","New Port Richey",FL,"34653","727-372-1854 Or 727-372-1854","VA Facility",Government,no,"Not Available",28.2442,-82.7193
-0336V,"Pompano Beach Vet Center","2300 West Sample Road, Suite 102",Pompano,FL,"33073","954-984-1669 Or 877-927-8387","VA Facility",Government,no,"Not Available",0,0
-0312V,"Ponce Vet Center","35 Mayor Street, Suite 1",Ponce,PR,"00730","787-841-3260 Or 787-841-3260","VA Facility",Government,no,"Not Available",0,0
+0336V,"Pompano Beach Vet Center","2300 West Sample Road, Suite 102",Pompano,FL,"33073","954-984-1669 Or 877-927-8387","VA Facility",Government,no,"Not Available",26.273829,-80.155570
+0312V,"Ponce Vet Center","35 Mayor Street, Suite 1",Ponce,PR,"00730","787-841-3260 Or 787-841-3260","VA Facility",Government,no,"Not Available",26.273932,-80.155644 
 0300V,"RCS Southeast District 2 District Office","450 Carillon Parkway, Suite 150","St. Petersburg",FL,"33716","727-398-9343 Or 727-398-9343","VA Facility",Government,no,"Not Available",27.88889,-82.66944
-0307V,"San Juan Vet Center","Cond. Medical Center Plaza Suite LC 8, 9 & 11, Urb. La Riviera","Rio Piedras",PR,"00921","787-749-4409 Or 877-927-8387","VA Facility",Government,no,"Not Available",0,0
 0320V,"Sarasota Vet Center","4801 Swift Rd. Suite A",Sarasota,FL,"34231","941-927-8285 Or 877-927-8387","VA Facility",Government,no,"Not Available",27.283916,-82.514145
 03121V,"St. Croix Vet Center Outstation","The Village Mall, RR 2 Box 10553 Kingshill","St. Croix",VI,"00850","340-778-5553 Or 787-641-7582 X 25613","VA Facility",Government,no,"Not Available",38.1765,-86.5826
 0301V,"St. Petersburg Vet Center","6798 Crosswinds Drive, Bldg A","St. Petersburg",FL,"33710","727-549-3633 Or 877-927-8387","VA Facility",Government,no,"Not Available",27.79047,-82.7337
@@ -585,7 +575,7 @@
 614GB,"Jonesboro, Arkansas CBOC","2908 Caraway Road",Jonesboro,AR,"72401","870-277-0778 Or 870-268-6962","VA Facility",Government,no,"Not Available",35.80957,-90.67815
 621,"Jonesville Rural Outreach Clinic","32613 Wilderness Road, Suite 101",Jonesville,VA,"24263",276-346-2595,"VA Facility",Government,no,"Not Available",34.836,-81.6809
 621,"Knoxville, Tennessee CBOC","8033 Ray Mears Blvd.",Knoxville,TN,"37919",865-545-4592,"VA Facility",Government,no,"Not Available",35.923336,-84.04693
-621,"LaFollette (Campbell County), Tennessee CBOC","130 Independence Lane",LaFollette,TN,"37757",423-563-7666,"VA Facility",Government,no,"Not Available",0,0
+621,"LaFollette (Campbell County), Tennessee CBOC","130 Independence Lane",LaFollette,TN,"37757",423-563-7666,"VA Facility",Government,no,"Not Available",36.352983,-84.158129 
 621,"Marion Rural Outreach Clinic","4451 Lee Highway",Marion,VA,"24354",276-783-2756,"VA Facility",Government,no,"Not Available",41.5637,-72.9257
 626,"Maury County CBOC","833 Nashville Highway",Columbia,TN,"38401",931-981-6930,"VA Facility",Government,no,"Not Available",35.62945,-87.02559
 626,"Meharry (Nashville General)","1810 Albion Street",Nashville,TN,"37208",615-873-6700,"VA Facility",Government,no,"Not Available",36.16626,-86.80563
@@ -595,7 +585,7 @@
 621GA,"Rogersville, Tennessee CBOC","401 Scenic Drive",Rogersville,TN,"37857",423-235-1471,"VA Facility",Government,no,"Not Available",36.40194,-83.01576
 614GD,"Savannah, Tennessee CBOC","765 Florence Rd",Savannah,TN,"38372",731-925-2300,"VA Facility",Government,no,"Not Available",35.21224,-88.2393
 621,"Sevierville Clinic","1124 Blanton Dr",Sevierville,TN,"37862",865-286-6950,"VA Facility",Government,no,"Not Available",35.8681,-83.5618
-626GG,"Tullahoma, Tennessee CBOC","225 Von Karman Rd","Arnold Air Force Base",TN,"37389",931-454-6134,"VA Facility",Government,no,"Not Available",0,0
+626GG,"Tullahoma, Tennessee CBOC","225 Von Karman Rd","Arnold Air Force Base",TN,"37389",931-454-6134,"VA Facility",Government,no,"Not Available",35.383858,-86.037065 
 614,"Tupelo VA Clinic","1114 Commonwealth Blvd",Tupelo,MS,"38804",662-840-6366,"VA Facility",Government,no,"Not Available",34.2499,-88.7168
 596GD,"VA Clinic Berea","209 Pauline Drive",Berea,KY,"40403",859-986-1259,"VA Facility",Government,no,"Not Available",39.1365,-80.9337
 596,"VA Clinic Hazard","210 Black Gold Blvd",Hazard,KY,"41701",606-436-2350,"VA Facility",Government,no,"Not Available",37.2495,-83.1932
@@ -1020,7 +1010,7 @@
 0705V,"Corpus Christi Vet Center","4646 Corona Suite 250","Corpus Christi",TX,"78411","361-854-9961 Or 361-854-9961","VA Facility",Government,no,"Not Available",27.713821,-97.38916
 5461,"Dallas Vet Center","8610 Greenville Ave., Suite 125",Dallas,TX,"75243","214-361-5896 Or 214-361-5896","VA Facility",Government,no,"Not Available",32.894432,-96.75287
 0707V,"El Paso Vet Center","1155 Westmoreland Suite 121","El Paso",TX,"79925","915-772-0013 Or 915-772-0013","VA Facility",Government,no,"Not Available",31.778967,-106.38721
-0708V,"Fort Worth Vet Center","6620 Hawk Creek Avenue","Westworth Village",TX,"76114","817-921-9095 Or 877-927-8387","VA Facility",Government,no,"Not Available",0,0
+0708V,"Fort Worth Vet Center","6620 Hawk Creek Avenue","Westworth Village",TX,"76114","817-921-9095 Or 877-927-8387","VA Facility",Government,no,"Not Available",32.756968,-97.428408 
 0726V,"Killeen Vet Center","302 Millers Crossing, Suite #4","Harker Heights",TX,"76548","254-953-7100 Or 877-927-8387","VA Facility",Government,no,"Not Available",31.06693,-97.6638
 0712V,"Laredo Vet Center","6999 McPherson Road Suite 102",Laredo,TX,"78041","956-723-4680 Or 956-723-4680","VA Facility",Government,no,"Not Available",27.572512,-99.47259
 0714V,"Lubbock Vet Center","3106 50th st sute 400",Lubbock,TX,"79413","806-792-9782 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.54874,-101.881485
@@ -1109,7 +1099,7 @@
 635GE,"Stillwater VA Clinic","320 N. Perkins Avenue",Stillwater,OK,"74074",405-707-8100,"VA Facility",Government,no,"Not Available",40.3234,-81.3084
 623,"Vinita Outpatient Clinic","269 S 7th St",Vinita,OK,"74301",918-713-5400,"VA Facility",Government,no,"Not Available",36.63692,-95.14327
 660GJ,"Western Salt Lake CBOC","2750 South 5600 West","West Valley City",UT,"84120",801-417-5734,"VA Facility",Government,no,"Not Available",40.709984,-112.02493
-635GB,"Wichita Falls VA Clinic","149 Hart Street","Sheppard Air Force Base",TX,"76311",940-257-0000,"VA Facility",Government,no,"Not Available",0,0
+635GB,"Wichita Falls VA Clinic","149 Hart Street","Sheppard Air Force Base",TX,"76311",940-257-0000,"VA Facility",Government,no,"Not Available",33.976726,-98.517373 
 0509V,"Billings Vet Center","2795 Enterprise Ave., Suite 1",Billings,MT,"59102","406-657-6071 Or 406-657-6071","VA Facility",Government,no,"Not Available",45.75003,-108.58542
 527,"Boulder Vet Center","4999 Pearl East Circle, Suite 106",Boulder,CO,"80301","303-440-7306 Or 877-927-8387","VA Facility",Government,no,"Not Available",40.02116,-105.23718
 0519V,"Casper Vet Center","1030 North Poplar, Suite B",Casper,WY,"82601","307-261-5355 Or 307-261-5355","VA Facility",Government,no,"Not Available",42.860615,-106.33267
@@ -1208,7 +1198,7 @@
 523,"Yakima Vet Center","2119 W. Lincoln Ave",Yakima,WA,"98902","509-457-2736 Or 509-457-2736","VA Facility",Government,no,"Not Available",46.603485,-120.537346
 687,687,"77 Wainwright Drive","Walla Walla",WA,"99362",,"VA Facility",Government,no,"Not Available",46.052536,-118.35569
 523,"Yakima Valley Vet Center","2119 West Lincoln Avenue",Yakima,WA,"98902",509-457-2736,"VA Facility",Government,no,"Not Available",46.603485,-120.53733
-10N21,"VISN 21: Sierra Pacific Network","201 Walnut Avenue","Mare Island",CA,"94592",707-562-8350,"VA Facility",Government,no,"Not Available",0,0
+10N21,"VISN 21: Sierra Pacific Network","201 Walnut Avenue","Mare Island",CA,"94592",707-562-8350,"VA Facility",Government,no,"Not Available", 38.100625,-122.273223 
 662,"San Francisco VA Health Care System","4150 Clement Street","San Francisco",CA,"94121",415-221-4810,"VA Facility",Government,no,"Not Available",37.781143,-122.504105
 570,"Central California VA Health Care System","2615 E. Clinton Avenue",Fresno,CA,"93703","559-225-6100 Or 559-225-6100","VA Facility",Government,no,"Not Available",36.77229,-119.78002
 640,Livermore,"4951 Arroyo Road",Livermore,CA,"94550",925-373-4700,"VA Facility",Government,no,"Not Available",37.637985,-121.763985
@@ -1217,12 +1207,12 @@
 459,"VA Pacific Islands Health Care System","459 Patterson Road",Honolulu,HI,"96819","808-433-0600 Or 800-214-1306","VA Facility",Government,no,"Not Available",21.36117,-157.88878
 640,"VA Palo Alto Health Care System","3801 Miranda Avenue","Palo Alto",CA,"94304",650-493-5000,"VA Facility",Government,no,"Not Available",37.402836,-122.14173
 654,"VA Sierra Nevada Health Care System","975 Kirman Avenue",Reno,NV,"89502","775-786-7200 Or 775-786-7200","VA Facility",Government,no,"Not Available",39.515854,-119.79849
-593,"VA Southern Nevada Healthcare System","6900 North Pecos Road","N. Las Vegas",NV,"89086",702-791-9024,"VA Facility",Government,no,"Not Available",0,0
+593,"VA Southern Nevada Healthcare System","6900 North Pecos Road","N. Las Vegas",NV,"89086",702-791-9024,"VA Facility",Government,no,"Not Available",36.285391,-115.095119 
 640,"Capitola Clinic","1350 41st Avenue, Suite 102",Capitola,CA,"95010",831-464-5519,"VA Facility",Government,no,"Not Available",36.97057,-121.96488
 612,"Chico Outpatient Clinic","280 Cohasset Road",Chico,CA,"95926","530-879-5000 X 9 Or 530-879-5000","VA Facility",Government,no,"Not Available",39.751648,-121.85145
 612,"Fairfield Outpatient Clinic","103 Bodin Circle, Travis Air Force Base",Fairfield,CA,"94535","707-437-1800 Or 707-437-1800","VA Facility",Government,no,"Not Available",38.267887,-121.95876
 5199,"Major General William H. Gourley VA-DoD Outpatient Clinic","201 Ninth Street",Marina,CA,"93933",831-884-1000,"VA Facility",Government,no,"Not Available",36.6799,-121.7897
-96440,"Manila Outpatient Clinic","1501 Roxas Boulevard","Pasay City",PI,"01302",632-550-3888,"VA Facility",Government,no,"Not Available",0,0
+96440,"Manila Outpatient Clinic","1501 Roxas Boulevard","Pasay City",PI,"01302",632-550-3888,"VA Facility",Government,no,"Not Available",14.544023,120.992405 
 612,"Mare Island Outpatient Clinic","201 Walnut Avenue",Vallejo,CA,"94592","707-562-8200 Or 707-562-8200","VA Facility",Government,no,"Not Available",38.1041,-122.2566
 612,"Martinez Outpatient Clinic and Community Living Center","150 Muir Road",Martinez,CA,"94553","925-372-2000 Or 925-372-2000","VA Facility",Government,no,"Not Available",37.994648,-122.11164
 612,"McClellan Dental Clinic - Sacramento","5401 Arnold Avenue",McClellan,CA,"95652",916-333-5500,"VA Facility",Government,no,"Not Available",38.6679,-121.4032
@@ -1256,24 +1246,19 @@
 662BU,"SFVA Downtown Clinic","401 3rd Street","San Francisco",CA,"94107",415-281-5100,"VA Facility",Government,no,"Not Available",37.782543,-122.39735
 570,"Tulare Community-Based Outpatient Clinic","1050 N. Cherry Street",Tulare,CA,"93274",559-684-8703,"VA Facility",Government,no,"Not Available",36.22275,-119.33752
 662GD,"Ukiah VA Outpatient Clinic","630 Kings Court",Ukiah,CA,"95482",707-468-7700,"VA Facility",Government,no,"Not Available",39.14806,-123.1984
-459,"VA American Samoa CBOC","Fiatele Teo Army Reserve Bldg","Pago Pago",AS,"96799",684-699-3730,"VA Facility",Government,no,"Not Available",0,0
 654,"VA Carson Valley Outpatient Clinic","1330 Waterloo Lane, Suite 101",Gardnerville,NV,"89410",775-782-5265,"VA Facility",Government,no,"Not Available",38.925064,-119.74963
 654GD,"VA Diamond View Outpatient Clinic","110 Bella Way",Susanville,CA,"96130","530-251-4550 Or 530-251-4550","VA Facility",Government,no,"Not Available",40.4163,-120.653
-459,"VA Guam Community Based Outpatient Clinic","498 Chalan Palayso","Agana Heights",GU,"96910",671-475-5760,"VA Facility",Government,no,"Not Available",0,0
 459,"VA Hilo Community Based Outpatient Clinic","1285 Waianuenue Avenue, Suite 211",Hilo,HI,"96720",808-935-3781,"VA Facility",Government,no,"Not Available",19.717466,-155.11314
 459,"VA Kauai Community Based Outpatient Clinic","4485 Pahe'e Street, Suite 150",Lihue,HI,"96766",808-246-0497,"VA Facility",Government,no,"Not Available",21.968864,-159.38431
 459,"VA Kona Community Based Outpatient Clinic","35-377 Hualalai Road",Kailua-Kona,HI,"96740",808-329-0774,"VA Facility",Government,no,"Not Available",19.6406,-155.9956
 1396,"VA Leeward Community Based Outpatient Clinic","91-2135 Fort Weaver Road","Ewa Beach",HI,"96706",800-214-1306,"VA Facility",Government,no,"Not Available",21.369507,-158.02618
 459,"VA Maui Community Based Outpatient Clinic","203 Ho'ohana Street, Suite 303",Kahului,HI,"96732",808-871-2454,"VA Facility",Government,no,"Not Available",20.88696,-156.46333
-6307,"VA Saipan Outreach Clinic","Marina Heights Business Park",Saipan,MP,"96950","670-323-9000 Or 670-322-0035","VA Facility",Government,no,"Not Available",0,0
 612,"Yuba City Outpatient Clinic","425 Plumas Street","Yuba City",CA,"95991",530-751-4500,"VA Facility",Government,no,"Not Available",39.130913,-121.614136
-616,"American Samoa Vet Center","Ottoville Road, P.O. Box 982942","Pago Pago",AS,"96799","684-699-3760 Or 877-927-8387","VA Facility",Government,no,"Not Available",0,0
 649,"Chico Vet Center","250 Cohasset Road, Suite 40",Chico,CA,"95926","530-899-6300 Or 530-899-6300","VA Facility",Government,no,"Not Available",39.75176,-121.85193
 610,"Citrus Heights Vet Center","5650 Sunrise Blvd., Suite 150","Citrus Heights",CA,"95610","916-535-0420 Or 916-535-0420","VA Facility",Government,no,"Not Available",38.670345,-121.27155
 602,"Concord Vet Center","1333 Willow Pass Road, Suite 106",Concord,CA,"94520","925-680-4526 Or 925-680-4526","VA Facility",Government,no,"Not Available",37.972385,-122.05445
 644,"Eureka Vet Center","2830 G Street, Suite A",Eureka,CA,"95501","707-444-8271 Or 707-444-8271","VA Facility",Government,no,"Not Available",40.782574,-124.16242
 628,"Fresno Vet Center","1320 E. Shaw Ave, Suite 125",Fresno,CA,"93710","559-487-5660 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.808594,-119.76464
-648,"Guam Vet Center","222 Chalan Santo Papa Street, Suite 201",Hagatna,GU,"96910",671-472-7161,"VA Facility",Government,no,"Not Available",0,0
 534,"Henderson Vet Center","400 North Stephanie, Suite 180",Henderson,NV,"89014","702-791-9100 Or 702-791-9100","VA Facility",Government,no,"Not Available",36.05657,-115.0462
 635,"Hilo Vet Center","70 Lanihuli Street, Suite 102",Hilo,HI,"96720","808-969-3833 Or 887-969-3833","VA Facility",Government,no,"Not Available",19.71111,-155.07872
 609,"Honolulu Vet Center","1680 Kapiolani Blvd. Suite F-3",Honolulu,HI,"96814","808-973-8387 Or 877-927-8387","VA Facility",Government,no,"Not Available",21.291153,-157.83807
