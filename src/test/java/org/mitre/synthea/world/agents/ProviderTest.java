@@ -1,7 +1,14 @@
 package org.mitre.synthea.world.agents;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.world.geography.Location;
 
 public class ProviderTest {
@@ -78,5 +85,23 @@ public class ProviderTest {
     location.assignPoint(person, location.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.EMERGENCY);
     Assert.assertNotNull(provider);
+  }
+  
+  @Test
+  public void testAllFiles() throws Exception {
+    // just load all files and make sure they don't crash
+    URL providersFolder = ClassLoader.getSystemClassLoader().getResource("providers");
+    Path path = Paths.get(providersFolder.toURI());
+    Files.walk(path)
+         .filter(Files::isReadable)
+         .filter(Files::isRegularFile)
+         .filter(p -> p.toString().endsWith(".csv"))
+         .forEach(t -> {
+           try {
+             Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName());
+           } catch (Exception e) {
+             throw new RuntimeException("Failed to load provider file " + t, e);
+           }
+         });
   }
 }

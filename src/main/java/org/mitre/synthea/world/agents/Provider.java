@@ -161,15 +161,24 @@ public class Provider implements QuadTreeData {
   public static void loadProviders(String state) {
     try {
       String abbreviation = Location.getAbbreviation(state);
-      loadHospitals(state, abbreviation);
+      String hospitalFile = Config.get("generate.providers.hospitals.default_file");
+      loadProviders(state, abbreviation, hospitalFile);
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
     }
   }
 
-  private static void loadHospitals(String state, String abbreviation) throws IOException {
-    String filename = Config.get("generate.providers.hospitals.default_file");
+  /**
+   * Read the providers from the given resource file, only importing the ones for the given state.
+   * 
+   * @param state Name of the current state, ex "Massachusetts"
+   * @param abbreviation State abbreviation, ex "MA"
+   * @param filename Location of the file, relative to src/main/resources
+   * @throws IOException if the file cannot be read
+   */
+  public static void loadProviders(String state, String abbreviation, String filename)
+      throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
 
@@ -184,7 +193,7 @@ public class Provider implements QuadTreeData {
         parsed.servicesProvided.add(Provider.AMBULATORY);
         parsed.servicesProvided.add(Provider.INPATIENT);
         parsed.servicesProvided.add(Provider.WELLNESS);
-        if (row.get("emergency").equals("Yes")) {
+        if ("Yes".equals(row.get("emergency"))) {
           parsed.servicesProvided.add(Provider.EMERGENCY);
         }
         providerList.add(parsed);
