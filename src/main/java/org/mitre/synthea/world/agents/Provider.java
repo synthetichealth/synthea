@@ -109,14 +109,18 @@ public class Provider implements QuadTreeData {
       return null;
     }
   }
+  
+  public boolean accepts(Person person, long time) {
+    return true;
+  }
 
-  public static Provider findClosestService(Person person, String service) {
+  public static Provider findClosestService(Person person, String service, long time) {
     double maxDistance = 500;
     double distance = 100;
     double step = 100;
     Provider provider = null;
     while (provider == null && distance <= maxDistance) {
-      provider = findService(person.getLatLon(), service, distance);
+      provider = findService(person, service, distance, time);
       if (provider != null) {
         return provider;
       }
@@ -132,8 +136,9 @@ public class Provider implements QuadTreeData {
    * @param searchDistance in kilometers
    * @return Service provider or null if none is available.
    */
-  private static Provider findService(DirectPosition2D coord,
-      String service, double searchDistance) {
+  private static Provider findService(Person person,
+      String service, double searchDistance, long time) {
+    DirectPosition2D coord = person.getLatLon();
     List<QuadTreeData> results = providerMap.queryByPointRadius(coord, searchDistance);
 
     Provider closest = null;
@@ -143,7 +148,8 @@ public class Provider implements QuadTreeData {
 
     for (QuadTreeData item : results) {
       provider = (Provider) item;
-      if (provider.hasService(service) || service == null) {
+      if (provider.accepts(person, time)
+          && (provider.hasService(service) || service == null)) {
         distance = item.getLatLon().distance(coord);
         if (distance < minDistance) {
           closest = (Provider) item;

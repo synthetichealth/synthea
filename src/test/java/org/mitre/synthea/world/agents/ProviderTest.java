@@ -1,6 +1,5 @@
 package org.mitre.synthea.world.agents;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +7,6 @@ import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.world.geography.Location;
 
 public class ProviderTest {
@@ -33,7 +31,7 @@ public class ProviderTest {
     Person person = new Person(0L);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider provider = Provider.findClosestService(person, Provider.INPATIENT);
+    Provider provider = Provider.findClosestService(person, Provider.INPATIENT, 0);
     Assert.assertNotNull(provider);
   }
 
@@ -43,7 +41,7 @@ public class ProviderTest {
     Person person = new Person(0L);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider provider = Provider.findClosestService(person, Provider.AMBULATORY);
+    Provider provider = Provider.findClosestService(person, Provider.AMBULATORY, 0);
     Assert.assertNotNull(provider);
   }
 
@@ -53,7 +51,7 @@ public class ProviderTest {
     Person person = new Person(0L);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider provider = Provider.findClosestService(person, Provider.EMERGENCY);
+    Provider provider = Provider.findClosestService(person, Provider.EMERGENCY, 0);
     Assert.assertNotNull(provider);
   }
   
@@ -63,7 +61,7 @@ public class ProviderTest {
     Person person = new Person(0L);
     Location location = new Location("Massachusetts", "Bedford");
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider provider = Provider.findClosestService(person, Provider.INPATIENT);
+    Provider provider = Provider.findClosestService(person, Provider.INPATIENT, 0);
     Assert.assertNotNull(provider);
   }
 
@@ -73,7 +71,7 @@ public class ProviderTest {
     Person person = new Person(0L);
     Location location = new Location("Massachusetts", "Bedford");
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider provider = Provider.findClosestService(person, Provider.AMBULATORY);
+    Provider provider = Provider.findClosestService(person, Provider.AMBULATORY, 0);
     Assert.assertNotNull(provider);
   }
 
@@ -83,7 +81,7 @@ public class ProviderTest {
     Person person = new Person(0L);
     Location location = new Location("Massachusetts", "Bedford");
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider provider = Provider.findClosestService(person, Provider.EMERGENCY);
+    Provider provider = Provider.findClosestService(person, Provider.EMERGENCY, 0);
     Assert.assertNotNull(provider);
   }
   

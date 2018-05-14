@@ -226,7 +226,7 @@ public class TextExporter {
     textRecord.add("Marital Status:      "
         + person.attributes.getOrDefault(Person.MARITAL_STATUS, "S"));
 
-    Provider prov = person.getAmbulatoryProvider();
+    Provider prov = person.getAmbulatoryProvider(endTime);
     if (prov != null) {
       textRecord.add("Outpatient Provider: " + prov.name);
     }
