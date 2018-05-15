@@ -13,6 +13,7 @@ public class ProviderTest {
 
   @Test
   public void testLoadProvidersByAbbreviation() {
+    Provider.getProviderList().clear();
     Provider.loadProviders("MA");
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
@@ -20,6 +21,7 @@ public class ProviderTest {
 
   @Test
   public void testLoadProvidersByStateName() {
+    Provider.getProviderList().clear();
     Provider.loadProviders("Massachusetts");
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
@@ -85,6 +87,23 @@ public class ProviderTest {
     Assert.assertNotNull(provider);
   }
   
+  @Test
+  public void testVaFacilityOnlyAcceptsVeteran() {
+    Provider.loadProviders("Massachusetts");
+
+    Provider vaProvider = Provider.getProviderList()
+                                  .stream()
+                                  .filter(p -> "VA Facility".equals(p.type))
+                                  .findFirst().get();
+
+    Person veteran = new Person(0L);
+    veteran.attributes.put("veteran", "vietnam");
+    Person nonVet = new Person(1L);
+
+    Assert.assertTrue(vaProvider.accepts(veteran, System.currentTimeMillis()));
+    Assert.assertFalse(vaProvider.accepts(nonVet, System.currentTimeMillis()));
+  }
+
   @Test
   public void testAllFiles() throws Exception {
     // just load all files and make sure they don't crash

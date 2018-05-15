@@ -12,7 +12,7 @@
 405,"White River Junction VA Medical Center","163 Veterans Drive","White River Junction",VT,"05009","802-295-9363 Or 802-295-9363","VA Facility",Government,no,"Not Available",43.648075,-72.34463
 523BZ,"Causeway OPC","251 Causeway St.",Boston,MA,"02114",800-865-3384,"VA Facility",Government,no,"Not Available",42.3665,-71.05931
 402F,"Fort Kent Access Point Clinic","3 Mountain View Drive","Fort Kent",ME,"04743",207-834-1572,"VA Facility",Government,no,"Not Available",47.2587,-68.5895
-4730,"Houlton Satellite Clinic","Houlton Regional Hospital - 20 Hartford Street",Houlton,ME,"04730","207-623-8411 X 7490 Or 877-421-8263 X 7490","VA Facility",Government,no,"Not Available",45.0743,-92.7505
+"04730","Houlton Satellite Clinic","Houlton Regional Hospital - 20 Hartford Street",Houlton,ME,"04730","207-623-8411 X 7490 Or 877-421-8263 X 7490","VA Facility",Government,no,"Not Available",45.0743,-92.7505
 402MMU,"Mobile Medical Unit","241 Main Street",Bingham,ME,"04920","207-623-8411 X 7490 Or 877-421-8263 X 7490","VA Facility",Government,no,"Not Available",45.053535,-69.88254
 518-vccc,"Lowell Veterans Community Care Center","130 Marshall Road",Lowell,MA,"01852",978-671-9000,"VA Facility",Government,no,"Not Available",42.62101,-71.31481
 402GD,"Aroostook County (Caribou) Community Based Outpatient Clinic","163 Van Buren Drive, Ste 6",Caribou,ME,"04736","207-623-8411 X 7490 Or 877-421-8263 X 7490","VA Facility",Government,no,"Not Available",46.9121,-68.0431
@@ -55,29 +55,29 @@
 689GC,"Willimantic Outpatient Clinic","1320 Main Street",Willimantic,CT,"06226",860-450-7583,"VA Facility",Government,no,"Not Available",41.715214,-72.22889
 689GD,"Winsted Outpatient Clinic","115 Spencer Street",Winsted,CT,"06908",860-738-6985,"VA Facility",Government,no,"Not Available",41.930405,-73.07571
 631GE,"Worcester Outpatient Clinic","605 Lincoln Street,",Worcester,MA,"01605","508-856-0104 Or 508-856-0104","VA Facility",Government,no,"Not Available",42.297756,-71.766815
-121,"Bangor Vet Center","615 Odlin Road, Suite 3",Bangor,ME,"04401","207-947-3391 Or 207-947-3391","VA Facility",Government,no,"Not Available",44.78075,-68.82331
-134,"Berlin Vet Center","515 Main Street Suite 2",Gorham,NH,"03581",603-752-2571,"VA Facility",Government,no,"Not Available",44.428604,-71.19247
+"0121","Bangor Vet Center","615 Odlin Road, Suite 3",Bangor,ME,"04401","207-947-3391 Or 207-947-3391","VA Facility",Government,no,"Not Available",44.78075,-68.82331
+"0134","Berlin Vet Center","515 Main Street Suite 2",Gorham,NH,"03581",603-752-2571,"VA Facility",Government,no,"Not Available",44.428604,-71.19247
 0101V,"Boston Vet Center","7 Drydock Ave, Suite 2070",Boston,MA,"02210",857-203-6461,"VA Facility",Government,no,"Not Available",42.34461,-71.03728
-104,"Brockton Vet Center","1041L Pearl St.",Brockton,MA,"02301","508-580-2730 Or 508-580-2730","VA Facility",Government,no,"Not Available",42.055134,-71.06661
-136,"Cape Cod Vet Center","474 West Main Street",Hyannis,MA,"02601","508-778-0124 Or 508-778-0124","VA Facility",Government,no,"Not Available",41.650307,-70.313515
-140,"Danbury Vet Center","457 North Main St., 1st Floor",Danbury,CT,"06811","203-790-4000 Or 203-790-4000","VA Facility",Government,no,"Not Available",41.40501,-73.462845
-117,"Hartford Vet Center","25 Elm Street, Suite A","Rocky Hill",CT,"06067",860-563-8800,"VA Facility",Government,no,"Not Available",41.664818,-72.64043
-1221,"Keene Vet Center Outstation","640 Marlboro Rd. (Route 101)",Keene,NH,"03431","603-358-4950 Or 603-358-4950","VA Facility",Government,no,"Not Available",40.3451,-81.8682
-129,"Lewiston Vet Center","35 Westminster St.",Lewiston,ME,"04240","207-783-0068 Or 207-783-0068","VA Facility",Government,no,"Not Available",44.075405,-70.17508
-125,"Lowell Vet Center","10 George Street, Gateway Center",Lowell,MA,"01852",978-453-1151,"VA Facility",Government,no,"Not Available",42.642513,-71.3062
-108,"Manchester Vet Center","1461 Hooksett Rd., B6",Hooksett,NH,"03106","603-668-7060 Or 603-668-7060","VA Facility",Government,no,"Not Available",43.07247,-71.454254
-128,"New Bedford Vet Center","73 Huttleton Ave., Unit 2",Fairhaven,MA,"02719","508-999-6920 Or 508-999-6920","VA Facility",Government,no,"Not Available",41.6318,-70.8801
-116,"New Haven Vet Center","291 South Lambert Road",Orange,CT,"06477",203-795-0148,"VA Facility",Government,no,"Not Available",41.262207,-73.00565
-119,"Northern Maine Vet Center","456 York Street",Caribou,ME,"04736",207-496-3900,"VA Facility",Government,no,"Not Available",46.9121,-68.0431
-127,"Norwich Vet Center","2 Cliff St.",Norwich,CT,"06360","860-887-1755 Or 860-887-1755","VA Facility",Government,no,"Not Available",41.52734,-72.06744
-115,"Portland Vet Center","475 Stevens Ave.",Portland,ME,"04103",207-780-3584,"VA Facility",Government,no,"Not Available",43.674862,-70.29505
-113,"Providence Vet Center","2038 Warwick Ave",Warwick,RI,"02889",401-739-0167,"VA Facility",Government,no,"Not Available",41.72111,-71.40386
+"0104","Brockton Vet Center","1041L Pearl St.",Brockton,MA,"02301","508-580-2730 Or 508-580-2730","VA Facility",Government,no,"Not Available",42.055134,-71.06661
+"0136","Cape Cod Vet Center","474 West Main Street",Hyannis,MA,"02601","508-778-0124 Or 508-778-0124","VA Facility",Government,no,"Not Available",41.650307,-70.313515
+"0140","Danbury Vet Center","457 North Main St., 1st Floor",Danbury,CT,"06811","203-790-4000 Or 203-790-4000","VA Facility",Government,no,"Not Available",41.40501,-73.462845
+"0117","Hartford Vet Center","25 Elm Street, Suite A","Rocky Hill",CT,"06067",860-563-8800,"VA Facility",Government,no,"Not Available",41.664818,-72.64043
+"01221","Keene Vet Center Outstation","640 Marlboro Rd. (Route 101)",Keene,NH,"03431","603-358-4950 Or 603-358-4950","VA Facility",Government,no,"Not Available",40.3451,-81.8682
+"0129","Lewiston Vet Center","35 Westminster St.",Lewiston,ME,"04240","207-783-0068 Or 207-783-0068","VA Facility",Government,no,"Not Available",44.075405,-70.17508
+"0125","Lowell Vet Center","10 George Street, Gateway Center",Lowell,MA,"01852",978-453-1151,"VA Facility",Government,no,"Not Available",42.642513,-71.3062
+"0108","Manchester Vet Center","1461 Hooksett Rd., B6",Hooksett,NH,"03106","603-668-7060 Or 603-668-7060","VA Facility",Government,no,"Not Available",43.07247,-71.454254
+"0128","New Bedford Vet Center","73 Huttleton Ave., Unit 2",Fairhaven,MA,"02719","508-999-6920 Or 508-999-6920","VA Facility",Government,no,"Not Available",41.6318,-70.8801
+"0116","New Haven Vet Center","291 South Lambert Road",Orange,CT,"06477",203-795-0148,"VA Facility",Government,no,"Not Available",41.262207,-73.00565
+"0119","Northern Maine Vet Center","456 York Street",Caribou,ME,"04736",207-496-3900,"VA Facility",Government,no,"Not Available",46.9121,-68.0431
+"0127","Norwich Vet Center","2 Cliff St.",Norwich,CT,"06360","860-887-1755 Or 860-887-1755","VA Facility",Government,no,"Not Available",41.52734,-72.06744
+"0115","Portland Vet Center","475 Stevens Ave.",Portland,ME,"04103",207-780-3584,"VA Facility",Government,no,"Not Available",43.674862,-70.29505
+"0113","Providence Vet Center","2038 Warwick Ave",Warwick,RI,"02889",401-739-0167,"VA Facility",Government,no,"Not Available",41.72111,-71.40386
 0100V,"RCS North Atlantic District 1, Zone 1 District Office","15 Dartmouth Drive, Suite 202",Auburn,NH,"03032","603-623-4204 Or 603-623-4204","VA Facility",Government,no,"Not Available",42.2514,-94.8778
-130,"Sanford Vet Center","628 Main Street",Springvale,ME,"04083","207-490-1513 Or 207-490-1513","VA Facility",Government,no,"Not Available",43.455822,-70.79014
-118,"South Burlington Vet Center","19 Gregory Drive Suite 201","South Burlington",VT,"05403",802-862-1806,"VA Facility",Government,no,"Not Available",44.455273,-73.13991
-103,"Springfield Vet Center","95 Ashley Avenue, Suite A","West Springfield",MA,"01089","413-737-5167 Or 413-737-5167","VA Facility",Government,no,"Not Available",42.139397,-72.62382
-122,"White River Junction Vet Center","118 Prospect Street Suite 100","White River Junction",VT,"05001","802-295-2908 Or 802-295-2908","VA Facility",Government,no,"Not Available",43.649,-72.3193
-126,"Worcester Vet Center","255 Park Ave Suite # 900",Worcester,MA,"01609",508-753-7902,"VA Facility",Government,no,"Not Available",42.265556,-71.818665
+"0130","Sanford Vet Center","628 Main Street",Springvale,ME,"04083","207-490-1513 Or 207-490-1513","VA Facility",Government,no,"Not Available",43.455822,-70.79014
+"0118","South Burlington Vet Center","19 Gregory Drive Suite 201","South Burlington",VT,"05403",802-862-1806,"VA Facility",Government,no,"Not Available",44.455273,-73.13991
+"0103","Springfield Vet Center","95 Ashley Avenue, Suite A","West Springfield",MA,"01089","413-737-5167 Or 413-737-5167","VA Facility",Government,no,"Not Available",42.139397,-72.62382
+"0122","White River Junction Vet Center","118 Prospect Street Suite 100","White River Junction",VT,"05001","802-295-2908 Or 802-295-2908","VA Facility",Government,no,"Not Available",43.649,-72.3193
+"0126","Worcester Vet Center","255 Park Ave Suite # 900",Worcester,MA,"01609",508-753-7902,"VA Facility",Government,no,"Not Available",42.265556,-71.818665
 10N2,"VISN 2: New York/New Jersey VA Health Care Network","130 W. Kingsbridge Road, Building 16",Bronx,NY,"10468",718-741-4134,"VA Facility",Government,no,"Not Available",40.869125,-73.90309
 620,"VA Hudson Valley Health Care System","2094 Albany Post Rd.",Montrose,NY,"10548",914-737-4400,"VA Facility",Government,no,"Not Available",41.2446,-73.926155
 561,"VA New Jersey Health Care System","385 Tremont Avenue","East Orange",NJ,"07018",973-676-1000,"VA Facility",Government,no,"Not Available",40.753803,-74.23407
@@ -157,26 +157,26 @@
 528G2,Westport,"7426 NYS Route 9N",Westport,NY,"12993",518-626-5236,"VA Facility",Government,no,"Not Available",41.3089,-73.3637
 526GA,"White Plains Community Clinic","23 South Broadway","White Plains",NY,"10601","914-421-1951 X 4300","VA Facility",Government,no,"Not Available",41.032364,-73.76228
 526GB,"Yonkers Community Clinic","124 New Main St.",Yonkers,NY,"10701","914-375-8055 X 4400","VA Facility",Government,no,"Not Available",40.93349,-73.89745
-111,"Albany Vet Center","17 Computer Drive West",Albany,NY,"12205",518-626-5130,"VA Facility",Government,no,"Not Available",42.72057,-73.8087
-120,"Babylon Vet Center","100 West Main Street",Babylon,NY,"11702","631-661-3930 Or 631-661-3930","VA Facility",Government,no,"Not Available",40.695957,-73.325325
-137,"Binghamton Vet Center","53 Chenango Street",Binghamton,NY,"13901","607-722-2393 Or 607-722-2393","VA Facility",Government,no,"Not Available",42.100487,-75.91025
-112,"Bloomfield Vet Center","2 Broad St. Suite 703",Bloomfield,NJ,"07003","973-748-0980 Or 973-748-0980","VA Facility",Government,no,"Not Available",40.793514,-74.19776
-110,"Bronx Vet Center","2471 Morris Ave., Suite 1A",Bronx,NY,"10468","718-367-3500 Or 718-367-3500","VA Facility",Government,no,"Not Available",40.86264,-73.89976
+"0111","Albany Vet Center","17 Computer Drive West",Albany,NY,"12205",518-626-5130,"VA Facility",Government,no,"Not Available",42.72057,-73.8087
+"0120","Babylon Vet Center","100 West Main Street",Babylon,NY,"11702","631-661-3930 Or 631-661-3930","VA Facility",Government,no,"Not Available",40.695957,-73.325325
+"0137","Binghamton Vet Center","53 Chenango Street",Binghamton,NY,"13901","607-722-2393 Or 607-722-2393","VA Facility",Government,no,"Not Available",42.100487,-75.91025
+"0112","Bloomfield Vet Center","2 Broad St. Suite 703",Bloomfield,NJ,"07003","973-748-0980 Or 973-748-0980","VA Facility",Government,no,"Not Available",40.793514,-74.19776
+"0110","Bronx Vet Center","2471 Morris Ave., Suite 1A",Bronx,NY,"10468","718-367-3500 Or 718-367-3500","VA Facility",Government,no,"Not Available",40.86264,-73.89976
 0105V,"Brooklyn Vet Center","25 Chapel St. Suite 604",Brooklyn,NY,"11201","718-630-2830 Or 718-630-2830","VA Facility",Government,no,"Not Available",40.697277,-73.98651
 0107V,"Buffalo Vet Center","2372 Sweet Home Road",Amherst,NY,"14228","716-862-7350 Or 716-862-7350","VA Facility",Government,no,"Not Available",43.024666,-78.79905
-133,"Harlem Vet Center","2279 - 3rd Avenue, 2nd Floor","New York",NY,"10035","646-273-8139 Or 646-273-8139","VA Facility",Government,no,"Not Available",40.7143,-74.006
-141,"Lakewood Vet Center","1255 NJ-70 Suite 22N",Lakewood,NJ,"08701","908-607-6364 Or 908-607-6364","VA Facility",Government,no,"Not Available",40.0979,-74.2176
-106,"Manhattan Vet Center","32 Broadway 2nd Floor - Suite 200","New York",NY,"10004","212-951-6866 Or 212-951-6866","VA Facility",Government,no,"Not Available",40.70634,-74.01284
-139,"Middletown Vet Center","726 East Main Street, Suite 203",Middletown,NY,"10940","845-342-9917 Or 845-342-9917","VA Facility",Government,no,"Not Available",41.43988,-74.36706
+"0133","Harlem Vet Center","2279 - 3rd Avenue, 2nd Floor","New York",NY,"10035","646-273-8139 Or 646-273-8139","VA Facility",Government,no,"Not Available",40.7143,-74.006
+"0141","Lakewood Vet Center","1255 NJ-70 Suite 22N",Lakewood,NJ,"08701","908-607-6364 Or 908-607-6364","VA Facility",Government,no,"Not Available",40.0979,-74.2176
+"0106","Manhattan Vet Center","32 Broadway 2nd Floor - Suite 200","New York",NY,"10004","212-951-6866 Or 212-951-6866","VA Facility",Government,no,"Not Available",40.70634,-74.01284
+"0139","Middletown Vet Center","726 East Main Street, Suite 203",Middletown,NY,"10940","845-342-9917 Or 845-342-9917","VA Facility",Government,no,"Not Available",41.43988,-74.36706
 0138V,"Nassau Vet Center","970 South Broadway",Hicksville,NY,"11801","516-348-0088 Or 516-348-0088","VA Facility",Government,no,"Not Available",40.7548,-73.6018
-109,"Queens Vet Center","75-10B 91 Avenue",Woodhaven,NY,"11421",718-296-2871,"VA Facility",Government,no,"Not Available",40.685898,-73.86519
-124,"Rochester Vet Center","2000 S. Winton Road, Bldg 5, Ste. 201",Rochester,NY,"14618",585-232-5040,"VA Facility",Government,no,"Not Available",43.107155,-77.57613
-102,"Secaucus Vet Center","110A Meadowlands Parkway, Suite 102",Secaucus,NJ,"07094","201-223-7787 Or 201-223-7787","VA Facility",Government,no,"Not Available",40.78257,-74.077415
-132,"Staten Island Vet Center","60 Bay Street","Staten Island",NY,"10301","718-816-4499 Or 718-816-4499","VA Facility",Government,no,"Not Available",40.64047,-74.07568
-131,"Syracuse Vet Center","109 Pine Street, Suite 101",Syracuse,NY,"13210",315-478-7127,"VA Facility",Government,no,"Not Available",43.050083,-76.129715
-114,"Trenton Vet Center","934 Parkway Ave. Suite 201",Ewing,NJ,"08618","609-882-5744 Or 609-882-5744","VA Facility",Government,no,"Not Available",40.255383,-74.79256
-135,"Watertown Vet Center","210 Court Street, Suite 20",Watertown,NY,"13601","315-782-5479 Or 315-782-5479","VA Facility",Government,no,"Not Available",43.976658,-75.91245
-123,"White Plains Vet Center","300 Hamilton Ave. Suite C","White Plains",NY,"10601",914-682-6250,"VA Facility",Government,no,"Not Available",41.03415,-73.767494
+"0109","Queens Vet Center","75-10B 91 Avenue",Woodhaven,NY,"11421",718-296-2871,"VA Facility",Government,no,"Not Available",40.685898,-73.86519
+"0124","Rochester Vet Center","2000 S. Winton Road, Bldg 5, Ste. 201",Rochester,NY,"14618",585-232-5040,"VA Facility",Government,no,"Not Available",43.107155,-77.57613
+"0102","Secaucus Vet Center","110A Meadowlands Parkway, Suite 102",Secaucus,NJ,"07094","201-223-7787 Or 201-223-7787","VA Facility",Government,no,"Not Available",40.78257,-74.077415
+"0132","Staten Island Vet Center","60 Bay Street","Staten Island",NY,"10301","718-816-4499 Or 718-816-4499","VA Facility",Government,no,"Not Available",40.64047,-74.07568
+"0131","Syracuse Vet Center","109 Pine Street, Suite 101",Syracuse,NY,"13210",315-478-7127,"VA Facility",Government,no,"Not Available",43.050083,-76.129715
+"0114","Trenton Vet Center","934 Parkway Ave. Suite 201",Ewing,NJ,"08618","609-882-5744 Or 609-882-5744","VA Facility",Government,no,"Not Available",40.255383,-74.79256
+"0135","Watertown Vet Center","210 Court Street, Suite 20",Watertown,NY,"13601","315-782-5479 Or 315-782-5479","VA Facility",Government,no,"Not Available",43.976658,-75.91245
+"0123","White Plains Vet Center","300 Hamilton Ave. Suite C","White Plains",NY,"10601",914-682-6250,"VA Facility",Government,no,"Not Available",41.03415,-73.767494
 10N4,"VISN 4: VA Healthcare - VISN 4","323 North Shore Drive, Suite 400",Pittsburgh,PA,"15212",412-822-3316,"VA Facility",Government,no,"Not Available",40.4344,-80.0248
 646,"VA Pittsburgh Healthcare System","University Drive",Pittsburgh,PA,"15240",412-822-2222,"VA Facility",Government,no,"Not Available",40.4344,-80.0248
 503,"Altoona - James E. Van Zandt VA Medical Center","2907 Pleasant Valley Boulevard",Altoona,PA,"16602","814-943-8164 Or 814-943-8164","VA Facility",Government,no,"Not Available",40.48913,-78.39827
@@ -233,14 +233,14 @@
 646GB,"Westmoreland County Outpatient Clinic","5274 Rt 30 East, Suite 10",Greensburg,PA,"15601",724-216-0317,"VA Facility",Government,no,"Not Available",40.3015,-79.5389
 693GB,"Williamsport OPC, Campus of Divine Providence Hospital (693GB)","1705 Warren Avenue, Werner Building - 3rd Floor (Suite 304)",Williamsport,PA,"17701",570-322-4791,"VA Facility",Government,no,"Not Available",41.260082,-76.98141
 595GE,"York VA Clinic (595GE)","2251 Eastern Blvd.",York,PA,"17402",717-840-2730,"VA Facility",Government,no,"Not Available",39.9719,-76.6848
-238,"Bucks County Vet Center","2 Canal's End Road, Suite 201B",Bristol,PA,"19007","215-823-4590 Or 215-823-4590","VA Facility",Government,no,"Not Available",39.2879,-80.524
-227,"DuBois Vet Center","100 Meadow Lane, Suite 8",DuBois,PA,"15801",814-372-2095,"VA Facility",Government,no,"Not Available",43.493,-109.6436
+"0238","Bucks County Vet Center","2 Canal's End Road, Suite 201B",Bristol,PA,"19007","215-823-4590 Or 215-823-4590","VA Facility",Government,no,"Not Available",39.2879,-80.524
+"0227","DuBois Vet Center","100 Meadow Lane, Suite 8",DuBois,PA,"15801",814-372-2095,"VA Facility",Government,no,"Not Available",43.493,-109.6436
 0222V,"Erie Vet Center","240 W. 11th St., Erie Metro Center, Suite 105",Erie,PA,"16501","814-453-7955 Or 814-453-7955","VA Facility",Government,no,"Not Available",42.12275,-80.0867
 0218V,"Harrisburg Vet Center","1500 N. Second Street Suite 2",Harrisburg,PA,"17102","717-782-3954 Or 717-782-3954","VA Facility",Government,no,"Not Available",40.27054,-76.89296
-242,"Lancaster County Vet Center","1817 Olde Homestead Lane, Suite 207",Lancaster,PA,"17601","717-283-0735 Or 717-283-0735","VA Facility",Government,no,"Not Available",38.5478,-87.8653
+"0242","Lancaster County Vet Center","1817 Olde Homestead Lane, Suite 207",Lancaster,PA,"17601","717-283-0735 Or 717-283-0735","VA Facility",Government,no,"Not Available",38.5478,-87.8653
 0239V,"Norristown Vet Center","320 E. Johnson Hwy, Suite 201",Norristown,PA,"19401","215-823-5245 Or 877-927-8387","VA Facility",Government,no,"Not Available",40.128048,-75.32217
 0219V,"Northeast Philadelphia Vet Center","101 E. Olney Avenue",Philadelphia,PA,"19120","215-924-4670 Or 215-924-4670","VA Facility",Government,no,"Not Available",40.035076,-75.11968
-210,"Philadelphia Vet Center","801 Arch Street Suite 502",Philadelphia,PA,"19107","215-627-0238 Or 215-627-0238","VA Facility",Government,no,"Not Available",39.95318,-75.15322
+"0210","Philadelphia Vet Center","801 Arch Street Suite 502",Philadelphia,PA,"19107","215-627-0238 Or 215-627-0238","VA Facility",Government,no,"Not Available",39.95318,-75.15322
 0211V,"Pittsburgh Vet Center","2500 Baldwick Rd, Suite 15",Pittsburgh,PA,"15205","412-920-1765 Or 412-920-1765","VA Facility",Government,no,"Not Available",40.426678,-80.05733
 0229V,"Scranton Vet Center","1002 Pittston Ave.",Scranton,PA,"18505","570-344-2676 Or 570-344-2676","VA Facility",Government,no,"Not Available",41.395813,-75.6689
 243V,"Sussex County Vet Center","20653 Dupont Blvd, Suite 1",Georgetown,DE,"19947","302-225-9110 Or 302-225-9110","VA Facility",Government,no,"Not Available",39.9376,-76.0833
@@ -289,7 +289,7 @@
 613GC,"Stephens City Outpatient Clinic","170 Prosperity Drive",Winchester,VA,"22602","304-263-0811 X 5130","VA Facility",Government,no,"Not Available",42.7734,-72.3831
 540GA,"Tucker County CBOC (540GA)","260 Spruce Street",Parsons,WV,"26287",304-478-2219,"VA Facility",Government,no,"Not Available",39.096973,-79.683685
 540GB,"Wood County CBOC (540GB)","2311 Ohio Avenue, Suite A",Parkersburg,WV,"26101",304-422-5114,"VA Facility",Government,no,"Not Available",39.282536,-81.549706
-2092,"Aberdeen Vet Center Outstation","223 W. Bel Air Avenue",Aberdeen,MD,"21001","410-272-6771 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.510605,-76.16716
+"02092","Aberdeen Vet Center Outstation","223 W. Bel Air Avenue",Aberdeen,MD,"21001","410-272-6771 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.510605,-76.16716
 0228V,"Alexandria Vet Center","6940 South Kings Highway #204",Alexandria,VA,"22310","703-360-8633 Or 703-360-8633","VA Facility",Government,no,"Not Available",38.768433,-77.11709
 0235V,"Annapolis Vet Center","100 Annapolis Street",Annapolis,MD,"21401","410-605-7826 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.990086,-76.50218
 0201V,"Baltimore Vet Center","1777 Reisterstown Road Suite 199",Baltimore,MD,"21208","410-764-9400 Or 410-764-9400","VA Facility",Government,no,"Not Available",39.383865,-76.73311
@@ -297,18 +297,18 @@
 0223V,"Charleston Vet Center","200 Tracy Way",Charleston,WV,"25311","304-343-3825 Or 304-343-3825","VA Facility",Government,no,"Not Available",38.35907,-81.59911
 0237V,"Clinton Vet Center","7905 Malcolm Road, Suite 101",Clinton,MD,"20735","301-856-7173 Or 301-856-7173","VA Facility",Government,no,"Not Available",38.782055,-76.889824
 0236V,"Dundalk Vet Center","1553 Merritt Blvd",Dundalk,MD,"21222","410-282-6144 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.27272,-76.5025
-209,"Elkton Vet Center","103 Chesapeake Blvd. Suite A",Elkton,MD,"21921","410-392-4485 Or 410-392-4485","VA Facility",Government,no,"Not Available",36.81,-87.1542
+"0209","Elkton Vet Center","103 Chesapeake Blvd. Suite A",Elkton,MD,"21921","410-392-4485 Or 410-392-4485","VA Facility",Government,no,"Not Available",36.81,-87.1542
 0208V,"Huntington Vet Center","3135 16th Street Road Suite 11",Huntington,WV,"25701","304-523-8387 Or 304-523-8387","VA Facility",Government,no,"Not Available",38.39435,-82.40953
 02231V,"Logan Vet Center Outstation","21 Veterans Avenue",Henlawson,WV,"25624","304-752-4453 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.9023,-81.9882
-224,"Martinsburg Vet Center","300 Foxcroft Ave. Suite 100A",Martinsburg,WV,"25401","304-263-6776 Or 304-263-6776","VA Facility",Government,no,"Not Available",39.462715,-77.986916
+"0224","Martinsburg Vet Center","300 Foxcroft Ave. Suite 100A",Martinsburg,WV,"25401","304-263-6776 Or 304-263-6776","VA Facility",Government,no,"Not Available",39.462715,-77.986916
 0216V,"Morgantown Vet Center","34 Commerce Drive, Suite 101",Morgantown,WV,"26501","304-291-4303 Or 304-291-4303","VA Facility",Government,no,"Not Available",39.6295,-79.9559
-2081,"Parkersburg Vet Center Outstation","2311 Ohio Avenue, Suite D",Pakersburg,WV,"26101","304-485-1599 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.282536,-81.549706
+"02081","Parkersburg Vet Center Outstation","2311 Ohio Avenue, Suite D",Pakersburg,WV,"26101","304-485-1599 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.282536,-81.549706
 0232V,"Princeton Vet Center","1511 North Walker Street",Princeton,WV,"24740",304-425-8098,"VA Facility",Government,no,"Not Available",37.367912,-81.10203
 0200V,"RCS North Atlantic District 1","305 W. Chesapeake Ave., Suite 300",Towson,MD,"21204","410-828-6619 Or 410-828-6619","VA Facility",Government,no,"Not Available",39.40007,-76.60994
-2091,"Salisbury Outstation","926 Snow Hill Road, Building 3",Salisbury,MD,"21804","410-912-7263 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.34735,-75.58189
+"02091","Salisbury Outstation","926 Snow Hill Road, Building 3",Salisbury,MD,"21804","410-912-7263 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.34735,-75.58189
 0213V,"Silver Spring Vet Center","2900 Linden Lane","Silver Spring",MD,"20910","301-589-1073 Or 301-589-1073","VA Facility",Government,no,"Not Available",39.014156,-77.05791
-213,"Washington DC Vet Center","1296 Upshur St NW",Washington,DC,"20011","202-726-5212 Or 202-463-0943","VA Facility",Government,no,"Not Available",38.941853,-77.029495
-233,"Wheeling Vet Center","1058 Bethlehem Blvd.",Wheeling,WV,"26003","304-232-0587 Or 304-232-0587","VA Facility",Government,no,"Not Available",40.053024,-80.701645
+"0213","Washington DC Vet Center","1296 Upshur St NW",Washington,DC,"20011","202-726-5212 Or 202-463-0943","VA Facility",Government,no,"Not Available",38.941853,-77.029495
+"0233","Wheeling Vet Center","1058 Bethlehem Blvd.",Wheeling,WV,"26003","304-232-0587 Or 304-232-0587","VA Facility",Government,no,"Not Available",40.053024,-80.701645
 10N6,"VISN 6: VA Mid-Atlantic Health Care Network","3518 Westgate Drive",Durham,NC,"27707",919-956-5541,"VA Facility",Government,no,"Not Available",35.968067,-78.96135
 637,"Asheville VA Medical Center","1100 Tunnel Road",Asheville,NC,"28805",828-298-7911,"VA Facility",Government,no,"Not Available",35.586716,-82.48251
 558,"Durham VA Medical Center","508 Fulton Street",Durham,NC,"27705","919-286-0411 Or 919-286-0411","VA Facility",Government,no,"Not Available",36.008934,-78.937294
@@ -357,16 +357,15 @@
 658GE,"Wytheville CBOC","165 Peppers Ferry Road",Wytheville,VA,"24382",276-223-5400,"VA Facility",Government,no,"Not Available",36.9498,-81.1289
 0317V,"Charlotte Vet Center","2114 Ben Craig Dr., Suite 300",Charlotte,NC,"28262","704-549-8025 Or 877-927-8387","VA Facility",Government,no,"Not Available",35.2271,-80.8431
 0315V,"Fayetteville Vet Center","2301 Robeson St. Suite 103",Fayetteville,NC,"28305","910-488-6252 Or 910-488-6252","VA Facility",Government,no,"Not Available",35.042355,-78.91646
-327,"Greensboro Vet Center","3515 W Market St., Suite 120",Greensboro,NC,"27406","336-323-2660 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.0726,-79.792
+"0327","Greensboro Vet Center","3515 W Market St., Suite 120",Greensboro,NC,"27406","336-323-2660 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.0726,-79.792
 0319V,"Greenville, NC Vet Center","1021 WH Smith Blvd., Suite #100",Greenville,NC,"27834","252-355-7920 Or 252-355-7920","VA Facility",Government,no,"Not Available",34.8526,-82.394
 0343V,"Jacksonville Vet Center","110A Branchwood Dr",Jacksonville,NC,"28546","910-577-1100 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.8137,-85.7613
 0207V,"Norfolk Vet Center","1711 Church Street, Suites A&B",Norfolk,VA,"23504","757-623-7584 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.8468,-76.2852
 0328V,"Raleigh Vet Center","8851 Ellstree Lane, Suite 122",Raleigh,NC,"27617","919-361-6419 Or 877-927-8387","VA Facility",Government,no,"Not Available",35.7721,-78.6386
 0217V,"Richmond Vet Center","4902 Fitzhugh Avenue",Richmond,VA,"23230","804-353-8958 Or 804-353-8958","VA Facility",Government,no,"Not Available",37.579716,-77.495415
-226,"Roanoke Vet Center","350 Albemarle Ave., SW",Roanoke,VA,"24016","540-342-9726 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.263206,-79.94751
-3271,"Rutherford Vet Center Outstation","303 Fairground Road",Spindale,NC,"28160","828-288-2757 Or 828-288-2757","VA Facility",Government,no,"Not Available",35.3586,-81.9238
+"0226","Roanoke Vet Center","350 Albemarle Ave., SW",Roanoke,VA,"24016","540-342-9726 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.263206,-79.94751
+"03271","Rutherford Vet Center Outstation","303 Fairground Road",Spindale,NC,"28160","828-288-2757 Or 828-288-2757","VA Facility",Government,no,"Not Available",35.3586,-81.9238
 0240V,"Virginia Beach Vet Center","324 Southport Circle, Suite 102","Virginia Beach",VA,"23452","757-248-3665 Or 757-248-3665","VA Facility",Government,no,"Not Available",36.831814,-76.13131
-0315V,"Fayetteville (NC) Vet Center","2301 Robeson St., Suite 103",Fayetteville,NC,"28305","910-488-6252 Or 800-771-6106 X 7701","VA Facility",Government,no,"Not Available",35.042355,-78.91646
 0343V,"Jacksonville Vet Center","110A Branchwood Dr",Jacksonville,NC,"28345","910-577-1100 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.8137,-85.7613
 10N7,"VISN 7: VA Southeast Network","3700 Crestwood Parkway, NW, Suite 500",Duluth,GA,"30096",678-924-5700,"VA Facility",Government,no,"Not Available",33.94617,-84.13016
 508,"Atlanta VA Health Care System","1670 Clairmont Road",Decatur,GA,"30033",404-321-6111,"VA Facility",Government,no,"Not Available",33.8016,-84.30972
@@ -441,7 +440,7 @@
 0324V,"Columbia Vet Center","1710 Richland Street, Suite A",Columbia,SC,"29201","803-765-9944 Or 877-927-8387","VA Facility",Government,no,"Not Available",34.01316,-81.02945
 0349V,"Columbus Vet Center","2601 Cross Country Drive, Condominium B-2 Suite 900",Columbus,GA,"31906",706-596-7170,"VA Facility",Government,no,"Not Available",32.461,-84.9877
 0316V,"Greenville, SC Vet Center","3 Caledon Court, Suite B",Greenville,SC,"29615","864-271-2711 Or 864-271-2711","VA Facility",Government,no,"Not Available",34.861446,-82.339714
-738,"Huntsville Vet Center","415 Church Street, Bldg H, Suite 101",Huntsville,AL,"35801","256-539-5775 Or 256-539-5775","VA Facility",Government,no,"Not Available",34.73529,-86.591606
+"0738","Huntsville Vet Center","415 Church Street, Bldg H, Suite 101",Huntsville,AL,"35801","256-539-5775 Or 256-539-5775","VA Facility",Government,no,"Not Available",34.73529,-86.591606
 0329V,"Lawrenceville Vet Center","930 River Centre Place",Lawrenceville,GA,"30043","404-728-4195 Or 404-728-4195","VA Facility",Government,no,"Not Available",33.973522,-84.03296
 0333V,"Macon Vet Center","750 Riverside Drive",Macon,GA,"31201","478-477-3813 Or 877-927-8387","VA Facility",Government,no,"Not Available",32.841946,-83.62805
 0342V,"Marietta Vet Center","40 Dodd St., Suite 700",Marietta,GA,"30060","404-327-4954 Or 404-327-4954","VA Facility",Government,no,"Not Available",33.950397,-84.52376
@@ -529,7 +528,7 @@
 0332V,"Melbourne Vet Center","2098 Sarno Road",Melbourne,FL,"32935","321-254-3410 Or 877-927-8387","VA Facility",Government,no,"Not Available",28.12169,-80.65558
 0310V,"Miami Vet Center","8280 NW 27th St Suite 511",Miami,FL,"33122","305-718-3712 Or 305-718-3712","VA Facility",Government,no,"Not Available",25.799692,-80.336395
 0348V,"Naples Vet Center","2705 Horseshoe Dr. South, Suite #204",Naples,FL,"34104","239-403-2377 Or 877-927-8387","VA Facility",Government,no,"Not Available",26.16184,-81.77219
-344,"Ocala Vet Center","3300 SW 34th Avenue, Suite 140",Ocala,FL,"34474","352-237-1947 Or 877-927-8387","VA Facility",Government,no,"Not Available",29.151766,-82.17551
+"0344","Ocala Vet Center","3300 SW 34th Avenue, Suite 140",Ocala,FL,"34474","352-237-1947 Or 877-927-8387","VA Facility",Government,no,"Not Available",29.151766,-82.17551
 0314V,"Orlando Vet Center","5575 S. Semoran Blvd., Suite #30",Orlando,FL,"32822","407-857-2800 Or 407-857-2800","VA Facility",Government,no,"Not Available",28.48248,-81.310104
 0326V,"Palm Beach Vet Center","4996 10th Ave North, Suite 6",Greenacres,FL,"33463","561-422-1201 Or 561-422-1201","VA Facility",Government,no,"Not Available",26.631065,-80.122665
 0338V,"Pasco County Vet Center","5139 Deer Park Drive","New Port Richey",FL,"34653","727-372-1854 Or 727-372-1854","VA Facility",Government,no,"Not Available",28.2442,-82.7193
@@ -601,10 +600,10 @@
 603GC,"VA Healthcare Center, Shively Kentucky CBOC","3934 North Dixie Highway, Suite 210",Louisville,KY,"40216",502-287-6000,"VA Facility",Government,no,"Not Available",38.194138,-85.806725
 621,"Vansant Rural Outreach Clinic","1941 Lovers Gap Road, Suite A",Vansant,VA,"24656",276-597-2106,"VA Facility",Government,no,"Not Available",37.1942,-82.1322
 0722V,"Chattanooga Vet Center","951 Eastgate Loop Road Bldg. 5700 - Suite 300",Chattanooga,TN,"37411","423-855-6570 Or 423-855-6570","VA Facility",Government,no,"Not Available",35.009804,-85.21353
-701,"Johnson City Vet Center","2203 McKinley Road, Suite 254","Johnson City",TN,"37604","423-928-8387 Or 423-928-8387","VA Facility",Government,no,"Not Available",36.3134,-82.3535
-720,"Knoxville Vet Center","8033 Ray Mears Blvd",Knoxville,TN,"37914",865-633-0000,"VA Facility",Government,no,"Not Available",35.923336,-84.04693
-203,"Lexington Vet Center","1500 Leestown Rd Suite 104",Lexington,KY,"40511","859-253-0717 Or 859-253-0717","VA Facility",Government,no,"Not Available",38.065773,-84.523636
-202,"Louisville Vet Center","1347 S. Third Street",Louisville,KY,"40208","502-287-6710 Or 502-287-6710","VA Facility",Government,no,"Not Available",38.23077,-85.75937
+"0701","Johnson City Vet Center","2203 McKinley Road, Suite 254","Johnson City",TN,"37604","423-928-8387 Or 423-928-8387","VA Facility",Government,no,"Not Available",36.3134,-82.3535
+"0720","Knoxville Vet Center","8033 Ray Mears Blvd",Knoxville,TN,"37914",865-633-0000,"VA Facility",Government,no,"Not Available",35.923336,-84.04693
+"0203","Lexington Vet Center","1500 Leestown Rd Suite 104",Lexington,KY,"40511","859-253-0717 Or 859-253-0717","VA Facility",Government,no,"Not Available",38.065773,-84.523636
+"0202","Louisville Vet Center","1347 S. Third Street",Louisville,KY,"40208","502-287-6710 Or 502-287-6710","VA Facility",Government,no,"Not Available",38.23077,-85.75937
 0719V,"Memphis Vet Center","1407 Union Ave., Suite 410",Memphis,TN,"38104","901-522-3950 Or 901-522-3950","VA Facility",Government,no,"Not Available",35.136623,-90.01462
 0724V,"Nashville Vet Center","1420 Donelson Pike Suite A-5",Nashville,TN,"37217","615-366-1220 Or 615-366-1220","VA Facility",Government,no,"Not Available",36.097065,-86.67747
 487,"VISN 10: VA Healthcare System","11500 Northlake Drive, Suite 200",Cincinnati,OH,"45249",513-247-4621,"VA Facility",Government,no,"Not Available",39.276237,-84.34727
@@ -693,25 +692,25 @@
 515BY,"Wyoming Health Care Center","5838 Metro Way",Wyoming,MI,"49519",616-249-5300,"VA Facility",Government,no,"Not Available",37.5823,-81.6018
 553GA,"Yale VA Outpatient Clinic","7470 Brockway Road",Yale,MI,"48097",810-387-3211,"VA Facility",Government,no,"Not Available",43.138046,-82.79886
 757GA,"Zanesville Community Based Outpatient Clinic","2800 Maple Avenue",Zanesville,OH,"43701","740-453-7725 Or 888-615-9448 X 5751","VA Facility",Government,no,"Not Available",39.974194,-82.01204
-204,"Cincinnati Vet Center","801B W. 8th St. Suite 126",Cincinnati,OH,"45203","513-763-3500 Or 513-763-3500","VA Facility",Government,no,"Not Available",39.103344,-84.52966
+"0204","Cincinnati Vet Center","801B W. 8th St. Suite 126",Cincinnati,OH,"45203","513-763-3500 Or 513-763-3500","VA Facility",Government,no,"Not Available",39.103344,-84.52966
 0205V,"Cleveland Vet Center","5310 1/2 Warrensville Center Rd","Maple Heights",OH,"44137","216-707-7901 Or 216-707-7901","VA Facility",Government,no,"Not Available",41.41617,-81.53732
 0221V,"Columbus Vet Center","30 Spruce Street",Columbus,OH,"43215",614-257-5550,"VA Facility",Government,no,"Not Available",39.97233,-83.00369
 0225V,"Dayton Vet Center","627 Edwin C. Moses Blvd.,6th Floor, East Medical Plaza",Dayton,OH,"45417","937-461-9150 Or 937-461-9150","VA Facility",Government,no,"Not Available",39.74863,-84.19844
 0401V,"Dearborn Vet Center","19855 Outer Drive, Suite 105 W",Dearborn,MI,"48124","313-277-1428 Or 313-277-1428","VA Facility",Government,no,"Not Available",42.303585,-83.26335
-402,"Detroit Vet Center","11214 East Jefferson Avenue",Detroit,MI,"48214",313-822-1141,"VA Facility",Government,no,"Not Available",42.36637,-82.97188
+"0402","Detroit Vet Center","11214 East Jefferson Avenue",Detroit,MI,"48214",313-822-1141,"VA Facility",Government,no,"Not Available",42.36637,-82.97188
 0409V,"Fort Wayne Vet Center","5800 Fairfield Ave., Suite 265","Fort Wayne",IN,"46807","260-460-1456 Or 260-460-1456","VA Facility",Government,no,"Not Available",41.03154,-85.14336
-403,"Grand Rapids Vet Center","2050 Breton Rd SE","Grand Rapids",MI,"49546",616-285-5795,"VA Facility",Government,no,"Not Available",42.926167,-85.60905
+"0403","Grand Rapids Vet Center","2050 Breton Rd SE","Grand Rapids",MI,"49546",616-285-5795,"VA Facility",Government,no,"Not Available",42.926167,-85.60905
 0413V,"Indianapolis Vet Center","8330 Naab Road, Suite 103",Indianapolis,IN,"46260","317-988-1600 Or 317-988-1600","VA Facility",Government,no,"Not Available",39.911648,-86.198395
 0437V,"Macomb County Vet Center","42621 Garfield Rd. Suite 105","Clinton Township",MI,"48038","586-412-0107 Or 586-412-0107","VA Facility",Government,no,"Not Available",42.610115,-82.95288
 02061V,"McCafferty Vet Center Outstation","4242 Lorain Avenue Suite 203",Cleveland,OH,"44113","216-939-0784 Or 877-927-8387","VA Facility",Government,no,"Not Available",41.479897,-81.71472
 0206V,"Parma Vet Center","5700 Pearl Road Suite 102",Parma,OH,"44129","440-845-5023 Or 440-845-5023","VA Facility",Government,no,"Not Available",41.406796,-81.74186
 0417V,"Peoria Vet Center","8305 N. Allen Road, Suite 1",Peoria,IL,"61615","309-689-9708 Or 309-689-9708","VA Facility",Government,no,"Not Available",40.788372,-89.63111
 0438V,"Pontiac Vet Center","44200 Woodward Avenue, Suite 108",Pontiac,MI,"48341","248-874-1015 Or 248-874-1015","VA Facility",Government,no,"Not Available",36.5225,-92.5633
-433,"Saginaw Vet Center","5360 Hampton Place",Saginaw,MI,"48604","989-321-4650 Or 989-321-4650","VA Facility",Government,no,"Not Available",37.0239,-94.4683
+"0433","Saginaw Vet Center","5360 Hampton Place",Saginaw,MI,"48604","989-321-4650 Or 989-321-4650","VA Facility",Government,no,"Not Available",37.0239,-94.4683
 0421V,"Springfield, IL Vet Center","2980 Baker Drive",Springfield,IL,"62703","217-492-4955 Or 217-492-4955","VA Facility",Government,no,"Not Available",39.762154,-89.64444
 0241V,"Stark County Vet Center","601 Cleveland Ave N, Suite C",Canton,OH,"44702","330-454-3120 Or 330-454-3120","VA Facility",Government,no,"Not Available",40.79531,-81.37779
 0234V,"Toledo Vet Center","1565 S. Byrne Road, Suite 104",Toledo,OH,"43614","419-213-7533 Or 877-927-8387","VA Facility",Government,no,"Not Available",41.6112,-83.625755
-445,"Traverse City Vet Center","3766 N US 31 South","Traverse City",MI,"49684","231-935-0051 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.7631,-85.6206
+"0445","Traverse City Vet Center","3766 N US 31 South","Traverse City",MI,"49684","231-935-0051 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.7631,-85.6206
 506,"VA Ann Arbor - North Campus Research Complex","2800 Plymouth Road","Ann Arbor",MI,"48105",734-769-7100,"VA Facility",Government,no,"Not Available",42.30256,-83.705765
 506,"VA Ann Arbor - Offsite Warehouse","844 Highland Drive","Ann Arbor",MI,"48105",734-769-7100,"VA Facility",Government,no,"Not Available",42.22654,-83.72491
 506,"VA Ann Arbor Business Office","2200 Commonwealth Blvd","Ann Arbor",MI,"48105",734-769-7100,"VA Facility",Government,no,"Not Available",42.307255,-83.69625
@@ -784,8 +783,8 @@
 0411V,"Oak Park Vet Center","1515 South Harlem","Forest Park",IL,"60130",708-457-8805,"VA Facility",Government,no,"Not Available",33.6221,-84.3691
 0435V,"Orland Park Vet Center","8651 W.159th Street, Suite 1","Orland Park",IL,"60462",708-444-0561,"VA Facility",Government,no,"Not Available",41.60169,-87.83271
 0447V,"Rockford Vet Center","7015 Rote Road, Suite 105",Rockford,IL,"61107","815-395-1276 Or 877-927-8387","VA Facility",Government,no,"Not Available",45.0883,-93.7344
-444,"South Bend Vet Center","4727 Miami Street","South Bend",IN,"46614","574-231-8480 Or 877-927-8387","VA Facility",Government,no,"Not Available",41.627018,-86.234795
-4421,"Wausau Vet Center","605 S 24th Ave, Suite 24",Wausau,WI,"54401","715-842-1724 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.957066,-89.66565
+"0444","South Bend Vet Center","4727 Miami Street","South Bend",IN,"46614","574-231-8480 Or 877-927-8387","VA Facility",Government,no,"Not Available",41.627018,-86.234795
+"04421","Wausau Vet Center","605 S 24th Ave, Suite 24",Wausau,WI,"54401","715-842-1724 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.957066,-89.66565
 10N15,"VISN 15: VA Heartland Network","1201 Walnut St, Suite 800","Kansas City",MO,"64106",816-701-3000,"VA Facility",Government,no,"Not Available",39.099815,-94.582054
 657,"VA St. Louis Health Care System","1 Jefferson Barracks Drive","Saint Louis",MO,"63125",314-652-4100,"VA Facility",Government,no,"Not Available",38.509212,-90.28942
 657,"VA St. Louis Health Care System - John Cochran Division","915 North Grand Blvd.","Saint Louis",MO,"63106",314-652-4100,"VA Facility",Government,no,"Not Available",38.641426,-90.22986
@@ -930,7 +929,7 @@
 0734V,"Alexandria Vet Center","5803 Coliseum Blvd., Sute D",Alexandria,LA,"71303","318-466-4327 Or 877-927-8387","VA Facility",Government,no,"Not Available",31.295115,-92.49501
 0725V,"Baton Rouge Vet Center","7850 Anselmo Lane, Suite B","Baton Rouge",LA,"70810","225-761-3140 Or 225-761-3140","VA Facility",Government,no,"Not Available",30.392668,-91.100845
 0744v,"Bay County Vet Center","3109 Minnesota Ave, Suite 101","Panama City",FL,"32405","850-522-6102 Or 850-522-6102","VA Facility",Government,no,"Not Available",30.208765,-85.6455
-735,"Beaumont Vet Center","990 IH10 North, Suite 180",Beaumont,TX,"77702","409-347-0124 Or 409-347-0124","VA Facility",Government,no,"Not Available",30.0861,-94.1018
+"0735","Beaumont Vet Center","990 IH10 North, Suite 180",Beaumont,TX,"77702","409-347-0124 Or 409-347-0124","VA Facility",Government,no,"Not Available",30.0861,-94.1018
 0737V,"Biloxi Vet Center","288 Veterans Ave",Biloxi,MS,"39531","228-388-9938 Or 228-388-9938","VA Facility",Government,no,"Not Available",30.40239,-88.94716
 0727V,"Fayetteville Vet Center","1416 N. College Ave.",Fayetteville,AR,"72703","479-582-7152 Or 479-582-7152","VA Facility",Government,no,"Not Available",36.08108,-94.156654
 0710V,"Houston Southwest Vet Center","10103 Fondren Road, Suite 470",Houston,TX,"77096",713-523-0884,"VA Facility",Government,no,"Not Available",29.67084,-95.50856
@@ -1016,7 +1015,7 @@
 0714V,"Lubbock Vet Center","3106 50th st sute 400",Lubbock,TX,"79413","806-792-9782 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.54874,-101.881485
 0715V,"McAllen Vet Center","2108 S M Street, MedPoint Plaza, Unit 2",McAllen,TX,"78503","956-631-2147 Or 956-631-2147","VA Facility",Government,no,"Not Available",26.2034,-98.23
 0730V,"Mesquite Vet Center","502 West Kearney, Suite 300",Mesquite,TX,"75149","972-288-8030 Or 972-288-8030","VA Facility",Government,no,"Not Available",32.770718,-96.602806
-716,"Midland Vet Center","4400 N. Midland Drive, Suite 540",Midland,TX,"79707","432-697-8222 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.122,-87.1917
+"0716","Midland Vet Center","4400 N. Midland Drive, Suite 540",Midland,TX,"79707","432-697-8222 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.122,-87.1917
 0700V,"RCS Continental District 4, Zone 2 District Office","4500 S. Lancaster Rd. Building 69",Dallas,TX,"75216","214-857-1254 Or 214-857-1254","VA Facility",Government,no,"Not Available",32.694347,-96.79335
 0721V,"San Antonio Northeast Vet Center","9504 IH 35 N, Suite 214","San Antonio",TX,"78233","210-650-0422 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.1838,-122.5914
 0729V,"San Antonio Northwest Vet Center","9910 W Loop 1604 N, Suite 126","San Antonio",TX,"78254","210-688-0606 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.1838,-122.5914
@@ -1101,26 +1100,26 @@
 660GJ,"Western Salt Lake CBOC","2750 South 5600 West","West Valley City",UT,"84120",801-417-5734,"VA Facility",Government,no,"Not Available",40.709984,-112.02493
 635GB,"Wichita Falls VA Clinic","149 Hart Street","Sheppard Air Force Base",TX,"76311",940-257-0000,"VA Facility",Government,no,"Not Available",33.976726,-98.517373 
 0509V,"Billings Vet Center","2795 Enterprise Ave., Suite 1",Billings,MT,"59102","406-657-6071 Or 406-657-6071","VA Facility",Government,no,"Not Available",45.75003,-108.58542
-527,"Boulder Vet Center","4999 Pearl East Circle, Suite 106",Boulder,CO,"80301","303-440-7306 Or 877-927-8387","VA Facility",Government,no,"Not Available",40.02116,-105.23718
+"0527","Boulder Vet Center","4999 Pearl East Circle, Suite 106",Boulder,CO,"80301","303-440-7306 Or 877-927-8387","VA Facility",Government,no,"Not Available",40.02116,-105.23718
 0519V,"Casper Vet Center","1030 North Poplar, Suite B",Casper,WY,"82601","307-261-5355 Or 307-261-5355","VA Facility",Government,no,"Not Available",42.860615,-106.33267
 0501V,"Cheyenne Vet Center","3219 E Pershing Blvd",Cheyenne,WY,"82001","307-778-7370 Or 307-778-7370","VA Facility",Government,no,"Not Available",41.145607,-104.77146
-525,"Colorado Springs Vet Center","602 South Nevada Avenue","Colorado Springs",CO,"80903","719-471-9992 Or 719-471-9992","VA Facility",Government,no,"Not Available",38.82535,-104.822044
+"0525","Colorado Springs Vet Center","602 South Nevada Avenue","Colorado Springs",CO,"80903","719-471-9992 Or 719-471-9992","VA Facility",Government,no,"Not Available",38.82535,-104.822044
 0504V,"Denver Vet Center","7465 East First Avenue Suite B",Denver,CO,"80230",303-326-0645,"VA Facility",Government,no,"Not Available",39.718548,-104.90127
 0543V,"Fort Collins Vet Center","702 W Drake Builing C","Fort Collins",CO,"80526","970-221-5176 Or 970-221-5176","VA Facility",Government,no,"Not Available",40.552666,-105.087814
-526,"Grand Junction Vet Center","2472 Patterson Road Unit 16","Grand Junction",CO,"81505","970-245-4156 Or 970-245-4156","VA Facility",Government,no,"Not Available",39.091896,-108.59437
-538,"Great Falls Vet Center","615 2nd Avenue North","Great Falls",MT,"59401","406-452-9048 Or 406-452-9048","VA Facility",Government,no,"Not Available",47.507515,-111.29696
+"0526","Grand Junction Vet Center","2472 Patterson Road Unit 16","Grand Junction",CO,"81505","970-245-4156 Or 970-245-4156","VA Facility",Government,no,"Not Available",39.091896,-108.59437
+"0538","Great Falls Vet Center","615 2nd Avenue North","Great Falls",MT,"59401","406-452-9048 Or 406-452-9048","VA Facility",Government,no,"Not Available",47.507515,-111.29696
 5281,"Helena Outstation","1301 Elm Street Suite C",Helena,MT,"59601",406-457-8060,"VA Facility",Government,no,"Not Available",46.607727,-112.01875
-539,"Kalispell Vet Center","690 North Meridian Road, Suite 101",Kalispell,MT,"59901",406-257-7308,"VA Facility",Government,no,"Not Available",48.189045,-114.330666
+"0539","Kalispell Vet Center","690 North Meridian Road, Suite 101",Kalispell,MT,"59901",406-257-7308,"VA Facility",Government,no,"Not Available",48.189045,-114.330666
 0728V,"Lawton Vet Center","1016 SW C Avenue, Suite B",Lawton,OK,"73501",580-585-5880,"VA Facility",Government,no,"Not Available",34.605194,-98.40351
-528,"Missoula Vet Center","910 Brooks St.",Missoula,MT,"59801",406-721-4918,"VA Facility",Government,no,"Not Available",46.855923,-114.007286
+"0528","Missoula Vet Center","910 Brooks St.",Missoula,MT,"59801",406-721-4918,"VA Facility",Government,no,"Not Available",46.855923,-114.007286
 5141,"Ogden Outstation","2357 N 400 E Washington Blvd","North Ogden",UT,"84414",801-737-9737,"VA Facility",Government,no,"Not Available",41.30123,-111.968796
 0718V,"Oklahoma City Vet Center","6804 N. Robinson Avenue","Oklahoma City",OK,"73116","405-456-5184 Or 877-927-8387","VA Facility",Government,no,"Not Available",35.540695,-97.51643
-531,"Pocatello Vet Center","1800 Garrett Way, Suite 47",Pocatello,ID,"83201","208-232-0316 Or 208-232-0316","VA Facility",Government,no,"Not Available",42.87654,-112.458466
-532,"Provo Vet Center","360 S. State Street Bldg C Suite 103",Orem,UT,"84058",801-377-1117,"VA Facility",Government,no,"Not Available",40.29056,-111.69216
-542,"Pueblo Vet Center","1515 Fortino Blvd., Suite 130",Pueblo,CO,"81008",719-583-4058,"VA Facility",Government,no,"Not Available",38.312466,-104.62828
+"0531","Pocatello Vet Center","1800 Garrett Way, Suite 47",Pocatello,ID,"83201","208-232-0316 Or 208-232-0316","VA Facility",Government,no,"Not Available",42.87654,-112.458466
+"0532","Provo Vet Center","360 S. State Street Bldg C Suite 103",Orem,UT,"84058",801-377-1117,"VA Facility",Government,no,"Not Available",40.29056,-111.69216
+"0542","Pueblo Vet Center","1515 Fortino Blvd., Suite 130",Pueblo,CO,"81008",719-583-4058,"VA Facility",Government,no,"Not Available",38.312466,-104.62828
 0500V,"RCS Continental District 4 District Office","789 Sherman Street, Suite 570",Denver,CO,"80203","303-577-5205 Or 303-577-5207","VA Facility",Government,no,"Not Available",39.728817,-104.98489
 0540v,"Saint George Vet Center","1664 South Dixie Drive, Suite C-102","St. George",UT,"84770","435-673-4494 Or 435-673-4494","VA Facility",Government,no,"Not Available",56.6,-169.5417
-514,"Salt Lake Vet Center","22 West Fireclay Avenue",Murray,UT,"84107","801-266-1499 Or 877-927-8387","VA Facility",Government,no,"Not Available",40.677994,-111.89191
+"0514","Salt Lake Vet Center","22 West Fireclay Avenue",Murray,UT,"84107","801-266-1499 Or 877-927-8387","VA Facility",Government,no,"Not Available",40.677994,-111.89191
 0723V,"Tulsa Vet Center","14002 E. 21st Street",Tulsa,OK,"74134","918-628-2760 Or 918-628-2760","VA Facility",Government,no,"Not Available",36.13344,-95.82066
 10N20,"VISN 20: Northwest Network","1601 4th Plain Blvd Building 17, 4th Floor, Suite 403",Vancouver,WA,"98661",360-619-5925,"VA Facility",Government,no,"Not Available",45.6387,-122.6615
 463,"Alaska VA Healthcare System","1201 North Muldoon Road",Anchorage,AK,"99504","907-257-4700 Or 907-257-4700","VA Facility",Government,no,"Not Available",61.23116,-149.74269
@@ -1182,22 +1181,21 @@
 0522V,"Bellingham Vet Center","3800 Byron Ave Suite 124",Bellingham,WA,"98229","360-733-9226 Or 877-927-8387","VA Facility",Government,no,"Not Available",48.73362,-122.46637
 0503V,"Boise Vet Center","2424 Bank DrivE, Suite 100",Boise,ID,"83705","208-342-3612 Or 877-927-8387","VA Facility",Government,no,"Not Available",43.59107,-116.211555
 0622V,"Central Oregon Vet Center","1645 NE Forbes Rd. Suite 105",Bend,OR,"97701","541-749-2112 Or 541-749-2112","VA Facility",Government,no,"Not Available",31.0561,-98.509
-626,"Eugene Vet Center","190 East 11th Avenue",Eugene,OR,"97401","541-465-6918 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.0477,-123.08984
-529,"Everett Vet Center","3311 Wetmore Avenue",Everett,WA,"98201",425-252-9701,"VA Facility",Government,no,"Not Available",47.97373,-122.20698
+"0626","Eugene Vet Center","190 East 11th Avenue",Eugene,OR,"97401","541-465-6918 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.0477,-123.08984
+"0529","Everett Vet Center","3311 Wetmore Avenue",Everett,WA,"98201",425-252-9701,"VA Facility",Government,no,"Not Available",47.97373,-122.20698
 0511V,"Fairbanks Vet Center","540 4th Ave., Suite 100",Fairbanks,AK,"99701","907-456-4238 Or 877-927-8387","VA Facility",Government,no,"Not Available",64.842415,-147.71849
 0535V,"Federal Way Vet Center","32020 32nd Ave South Suite 110","Federal Way",WA,"98001","253-838-3090 Or 253-838-3090","VA Facility",Government,no,"Not Available",47.3223,-122.3126
-645,"Grants Pass Vet Center","211 S.E. 10th St.","Grants Pass",OR,"97526","541-479-6912 Or 877-927-8387","VA Facility",Government,no,"Not Available",42.43722,-123.322266
+"0645","Grants Pass Vet Center","211 S.E. 10th St.","Grants Pass",OR,"97526","541-479-6912 Or 877-927-8387","VA Facility",Government,no,"Not Available",42.43722,-123.322266
 05021V,"Kenai Vet Center Outstation","43299 Kalifornsky Beach Rd. Ste 4",Soldotna,AK,"99669","907-260-7640 Or 877-927-8387","VA Facility",Government,no,"Not Available",60.3208,-150.7989
 0617V,"Portland Vet Center","1505 NE 122nd Ave.",Portland,OR,"97230","503-688-5361 Or 877-927-8387 X 7","VA Facility",Government,no,"Not Available",45.53367,-122.53765
-640,"Salem Vet Center","2645 Portland Road NE, Suite 250",Salem,OR,"97301","503-362-9911 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.961227,-123.014565
+"0640","Salem Vet Center","2645 Portland Road NE, Suite 250",Salem,OR,"97301","503-362-9911 Or 877-927-8387","VA Facility",Government,no,"Not Available",44.961227,-123.014565
 0507V,"Seattle Vet Center","4735 E Marginal Way S, Room 1102",Seattle,WA,"98134","206-658-4225 Or 877-927-8387","VA Facility",Government,no,"Not Available",47.6062,-122.3321
 0510V,"Spokane Vet Center","13109 E Mirabeau Parkway",Spokane,WA,"99216","509-444-8387 Or 509-444-8387","VA Facility",Government,no,"Not Available",47.6597,-117.4291
-508,"Tacoma Vet Center","4916 Center St. Suite E",Tacoma,WA,"98409","253-565-7038 Or 253-565-7038","VA Facility",Government,no,"Not Available",47.234417,-122.50397
+"0508","Tacoma Vet Center","4916 Center St. Suite E",Tacoma,WA,"98409","253-565-7038 Or 253-565-7038","VA Facility",Government,no,"Not Available",47.234417,-122.50397
 0541V,"Walla Walla County Vet Center","1104 West Poplar","Walla Walla",WA,"99362","509-526-8387 Or 509-526-8387","VA Facility",Government,no,"Not Available",46.059216,-118.35254
 0512V,"Wasilla Vet Center","851 E. West Point Drive Suite 102",Wasilla,AK,"99654","907-376-4318 Or 907-376-4318","VA Facility",Government,no,"Not Available",61.58227,-149.42818
-523,"Yakima Vet Center","2119 W. Lincoln Ave",Yakima,WA,"98902","509-457-2736 Or 509-457-2736","VA Facility",Government,no,"Not Available",46.603485,-120.537346
 687,687,"77 Wainwright Drive","Walla Walla",WA,"99362",,"VA Facility",Government,no,"Not Available",46.052536,-118.35569
-523,"Yakima Valley Vet Center","2119 West Lincoln Avenue",Yakima,WA,"98902",509-457-2736,"VA Facility",Government,no,"Not Available",46.603485,-120.53733
+"0523","Yakima Valley Vet Center","2119 West Lincoln Avenue",Yakima,WA,"98902",509-457-2736,"VA Facility",Government,no,"Not Available",46.603485,-120.53733
 10N21,"VISN 21: Sierra Pacific Network","201 Walnut Avenue","Mare Island",CA,"94592",707-562-8350,"VA Facility",Government,no,"Not Available", 38.100625,-122.273223 
 662,"San Francisco VA Health Care System","4150 Clement Street","San Francisco",CA,"94121",415-221-4810,"VA Facility",Government,no,"Not Available",37.781143,-122.504105
 570,"Central California VA Health Care System","2615 E. Clinton Avenue",Fresno,CA,"93703","559-225-6100 Or 559-225-6100","VA Facility",Government,no,"Not Available",36.77229,-119.78002
@@ -1253,29 +1251,29 @@
 459,"VA Kona Community Based Outpatient Clinic","35-377 Hualalai Road",Kailua-Kona,HI,"96740",808-329-0774,"VA Facility",Government,no,"Not Available",19.6406,-155.9956
 1396,"VA Leeward Community Based Outpatient Clinic","91-2135 Fort Weaver Road","Ewa Beach",HI,"96706",800-214-1306,"VA Facility",Government,no,"Not Available",21.369507,-158.02618
 459,"VA Maui Community Based Outpatient Clinic","203 Ho'ohana Street, Suite 303",Kahului,HI,"96732",808-871-2454,"VA Facility",Government,no,"Not Available",20.88696,-156.46333
-612,"Yuba City Outpatient Clinic","425 Plumas Street","Yuba City",CA,"95991",530-751-4500,"VA Facility",Government,no,"Not Available",39.130913,-121.614136
-649,"Chico Vet Center","250 Cohasset Road, Suite 40",Chico,CA,"95926","530-899-6300 Or 530-899-6300","VA Facility",Government,no,"Not Available",39.75176,-121.85193
-610,"Citrus Heights Vet Center","5650 Sunrise Blvd., Suite 150","Citrus Heights",CA,"95610","916-535-0420 Or 916-535-0420","VA Facility",Government,no,"Not Available",38.670345,-121.27155
-602,"Concord Vet Center","1333 Willow Pass Road, Suite 106",Concord,CA,"94520","925-680-4526 Or 925-680-4526","VA Facility",Government,no,"Not Available",37.972385,-122.05445
-644,"Eureka Vet Center","2830 G Street, Suite A",Eureka,CA,"95501","707-444-8271 Or 707-444-8271","VA Facility",Government,no,"Not Available",40.782574,-124.16242
-628,"Fresno Vet Center","1320 E. Shaw Ave, Suite 125",Fresno,CA,"93710","559-487-5660 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.808594,-119.76464
-534,"Henderson Vet Center","400 North Stephanie, Suite 180",Henderson,NV,"89014","702-791-9100 Or 702-791-9100","VA Facility",Government,no,"Not Available",36.05657,-115.0462
-635,"Hilo Vet Center","70 Lanihuli Street, Suite 102",Hilo,HI,"96720","808-969-3833 Or 887-969-3833","VA Facility",Government,no,"Not Available",19.71111,-155.07872
-609,"Honolulu Vet Center","1680 Kapiolani Blvd. Suite F-3",Honolulu,HI,"96814","808-973-8387 Or 877-927-8387","VA Facility",Government,no,"Not Available",21.291153,-157.83807
+"0612","Yuba City Outpatient Clinic","425 Plumas Street","Yuba City",CA,"95991",530-751-4500,"VA Facility",Government,no,"Not Available",39.130913,-121.614136
+"0649","Chico Vet Center","250 Cohasset Road, Suite 40",Chico,CA,"95926","530-899-6300 Or 530-899-6300","VA Facility",Government,no,"Not Available",39.75176,-121.85193
+"0610","Citrus Heights Vet Center","5650 Sunrise Blvd., Suite 150","Citrus Heights",CA,"95610","916-535-0420 Or 916-535-0420","VA Facility",Government,no,"Not Available",38.670345,-121.27155
+"0602","Concord Vet Center","1333 Willow Pass Road, Suite 106",Concord,CA,"94520","925-680-4526 Or 925-680-4526","VA Facility",Government,no,"Not Available",37.972385,-122.05445
+"0644","Eureka Vet Center","2830 G Street, Suite A",Eureka,CA,"95501","707-444-8271 Or 707-444-8271","VA Facility",Government,no,"Not Available",40.782574,-124.16242
+"0628","Fresno Vet Center","1320 E. Shaw Ave, Suite 125",Fresno,CA,"93710","559-487-5660 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.808594,-119.76464
+"0534","Henderson Vet Center","400 North Stephanie, Suite 180",Henderson,NV,"89014","702-791-9100 Or 702-791-9100","VA Facility",Government,no,"Not Available",36.05657,-115.0462
+"0635","Hilo Vet Center","70 Lanihuli Street, Suite 102",Hilo,HI,"96720","808-969-3833 Or 887-969-3833","VA Facility",Government,no,"Not Available",19.71111,-155.07872
+"0609","Honolulu Vet Center","1680 Kapiolani Blvd. Suite F-3",Honolulu,HI,"96814","808-973-8387 Or 877-927-8387","VA Facility",Government,no,"Not Available",21.291153,-157.83807
 0636V,"Kailua-Kona Vet Center","73-4976 Kamanu St",Kailua-Kona,HI,"96740",808-329-0574,"VA Facility",Government,no,"Not Available",19.687277,-156.01602
-633,"Kauai Vet Center","4485 Pahe'e St., Suite 101",Lihue,HI,"96766","808-246-1163 Or 877-927-8387","VA Facility",Government,no,"Not Available",21.968864,-159.38431
+"0633","Kauai Vet Center","4485 Pahe'e St., Suite 101",Lihue,HI,"96766","808-246-1163 Or 877-927-8387","VA Facility",Government,no,"Not Available",21.968864,-159.38431
 0505V,"Las Vegas Vet Center","7455 W. Washington Ave, Suite 240","Las Vegas",NV,"89128",702-791-9170,"VA Facility",Government,no,"Not Available",36.181328,-115.2531
-634,"Maui Vet Center","157 Ma'a Street",KAHULUI,HI,"96732",808-242-8557,"VA Facility",Government,no,"Not Available",20.8895,-156.4743
-650,"Modesto Vet Center","1219 N. Carpenter Rd., Suite 11-12",Modesto,CA,"95351","209-569-0713 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.652004,-121.031006
-646,"North Bay Vet Center","6010 Commerce Blvd., Ste. 145","Rohnert Park",CA,"94928",707-586-3295,"VA Facility",Government,no,"Not Available",38.352222,-122.71077
-612,"Oakland Vet Center","7700 Edgewater Drive, Suite 125",Oakland,CA,"94621","510-562-7906 Or 510-562-7906","VA Facility",Government,no,"Not Available",37.743034,-122.20435
-647,"Peninsula Vet Center","345 Middlefield Road, Building 1","Menlo Park",CA,"94025","650-617-4300 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.456406,-122.16773
+"0634","Maui Vet Center","157 Ma'a Street",KAHULUI,HI,"96732",808-242-8557,"VA Facility",Government,no,"Not Available",20.8895,-156.4743
+"0650","Modesto Vet Center","1219 N. Carpenter Rd., Suite 11-12",Modesto,CA,"95351","209-569-0713 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.652004,-121.031006
+"0646","North Bay Vet Center","6010 Commerce Blvd., Ste. 145","Rohnert Park",CA,"94928",707-586-3295,"VA Facility",Government,no,"Not Available",38.352222,-122.71077
+"0612","Oakland Vet Center","7700 Edgewater Drive, Suite 125",Oakland,CA,"94621","510-562-7906 Or 510-562-7906","VA Facility",Government,no,"Not Available",37.743034,-122.20435
+"0647","Peninsula Vet Center","345 Middlefield Road, Building 1","Menlo Park",CA,"94025","650-617-4300 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.456406,-122.16773
 0600V,"RCS Pacific District 5 District Office","420 Executive Court North Suite A",Fairfield,CA,"94534","707-646-2988 Or 707-646-2988","VA Facility",Government,no,"Not Available",38.230152,-122.12159
 0506V,"Reno Vet Center","5580 Mill St. Suite 600",Reno,NV,"89502","775-323-1294 Or 877-927-8387","VA Facility",Government,no,"Not Available",39.3728,-81.3957
-638,"Sacramento Vet Center","1111 Howe Avenue Suite #390",Sacramento,CA,"95825","916-566-7430 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.584957,-121.41534
-620,"San Francisco Vet Center","505 Polk Street","San Francisco",CA,"94102","415-441-5051 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.78154,-122.418884
-615,"San Jose Vet Center","80 Great Oaks Blvd.","San Jose",CA,"95119","408-993-0729 Or 408-993-0729","VA Facility",Government,no,"Not Available",37.233974,-121.778854
-639,"Santa Cruz County Vet Center","1350 41st Ave, Suite 104",Capitola,CA,"95010","831-464-4575 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.97057,-121.96488
+"0638","Sacramento Vet Center","1111 Howe Avenue Suite #390",Sacramento,CA,"95825","916-566-7430 Or 877-927-8387","VA Facility",Government,no,"Not Available",38.584957,-121.41534
+"0620","San Francisco Vet Center","505 Polk Street","San Francisco",CA,"94102","415-441-5051 Or 877-927-8387","VA Facility",Government,no,"Not Available",37.78154,-122.418884
+"0615","San Jose Vet Center","80 Great Oaks Blvd.","San Jose",CA,"95119","408-993-0729 Or 408-993-0729","VA Facility",Government,no,"Not Available",37.233974,-121.778854
+"0639","Santa Cruz County Vet Center","1350 41st Ave, Suite 104",Capitola,CA,"95010","831-464-4575 Or 877-927-8387","VA Facility",Government,no,"Not Available",36.97057,-121.96488
 0621V,"Western Oahu Vet Center","885 Kamokila Boulevard, Suite 105",Kapolei,HI,"96707","808-674-2414 Or 877-927-8387","VA Facility",Government,no,"Not Available",21.330032,-158.08583
 593GH,"Laughlin Rural Outreach Clinic","3650 South Point Circle, Building D, 2nd Floor, Suite 200",Laughlin,NV,"89029",702-298-1100,"VA Facility",Government,no,"Not Available",35.1678,-114.573
 10N22,"VISN 22: Desert Pacific Healthcare Network","300 Oceangate, Suite 700","Long Beach",CA,"90802",562-826-5963,"VA Facility",Government,no,"Not Available",33.766495,-118.1987
@@ -1358,33 +1356,33 @@
 600gd,"Whittier/Santa Fe Springs Clinic","10330 Pioneer Blvd Suite 180","Santa Fe Springs",CA,"90670",562-347-2200,"VA Facility",Government,no,"Not Available",33.9472,-118.0854
 470-8262,"Yuma Clinic","3111 S. 4th Avenue",Yuma,AZ,"85364",928-317-9973,"VA Facility",Government,no,"Not Available",32.672523,-114.62432
 0515V,"Albuquerque Vet Center","2001 Mountain Road NW",Albuquerque,NM,"87104","505-346-6562 Or 505-346-6562","VA Facility",Government,no,"Not Available",35.098385,-106.66792
-603,"Antelope Valley Vet Center","38925 Trade Center Drive, Suites I/J",Palmdale,CA,"93551","661-267-1026 Or 661-267-1026","VA Facility",Government,no,"Not Available",34.5794,-118.1165
-601,"Bakersfield Vet Center","1110 Golden State Ave.",Bakersfield,CA,"93301","661-323-8387 Or 661-323-8387","VA Facility",Government,no,"Not Available",44.782,-72.8029
+"0603","Antelope Valley Vet Center","38925 Trade Center Drive, Suites I/J",Palmdale,CA,"93551","661-267-1026 Or 661-267-1026","VA Facility",Government,no,"Not Available",34.5794,-118.1165
+"0601","Bakersfield Vet Center","1110 Golden State Ave.",Bakersfield,CA,"93301","661-323-8387 Or 661-323-8387","VA Facility",Government,no,"Not Available",44.782,-72.8029
 605,"Chatsworth Vet Center","20946 Devonshire St, Suite 101",Chatsworth,CA,"91311",818-576-0201,"VA Facility",Government,no,"Not Available",34.25723,-118.5896
 05161V,"Chinle Vet Center Outstation","Navajo Route 7, Old BIA Complex-B59",Chinle,AZ,"86503",844-286-7270,"VA Facility",Government,no,"Not Available",36.2391,-109.5747
-614,"Chula Vista Vet Center","180 Otay Lakes Road, Suite 108",Bonita,CA,"91902","877-618-6534 Or 877-618-6534","VA Facility",Government,no,"Not Available",32.659225,-117.03042
-611,"Corona Vet Center","800 Magnolia Avenue Suite 110",Corona,CA,"92879","951-734-0525 Or 951-734-0525","VA Facility",Government,no,"Not Available",33.85894,-117.55446
-607,"Culver City Vet Center","5730 Uplander Way Suite 100","Culver City",CA,"90230","310-641-0326 Or 310-641-0326","VA Facility",Government,no,"Not Available",33.986443,-118.38459
-623,"East Los Angeles Vet Center","5400 E. Olympic Blvd. Suite 140",Commerce,CA,"90022","323-728-9966 Or 323-728-9966","VA Facility",Government,no,"Not Available",34.015686,-118.1557
+"0614","Chula Vista Vet Center","180 Otay Lakes Road, Suite 108",Bonita,CA,"91902","877-618-6534 Or 877-618-6534","VA Facility",Government,no,"Not Available",32.659225,-117.03042
+"0611","Corona Vet Center","800 Magnolia Avenue Suite 110",Corona,CA,"92879","951-734-0525 Or 951-734-0525","VA Facility",Government,no,"Not Available",33.85894,-117.55446
+"0607","Culver City Vet Center","5730 Uplander Way Suite 100","Culver City",CA,"90230","310-641-0326 Or 310-641-0326","VA Facility",Government,no,"Not Available",33.986443,-118.38459
+"0623","East Los Angeles Vet Center","5400 E. Olympic Blvd. Suite 140",Commerce,CA,"90022","323-728-9966 Or 323-728-9966","VA Facility",Government,no,"Not Available",34.015686,-118.1557
 0516V,"Farmington Vet Center","4251 E. Main Suite A",Farmington,NM,"87402","505-327-9684 Or 505-327-9684","VA Facility",Government,no,"Not Available",36.759556,-108.15592
-613,"High Desert Vet Center","15095 Amargosa Rd, Suite 107",Victorville,CA,"92394","760-261-5925 Or 760-261-5925","VA Facility",Government,no,"Not Available",34.524727,-117.33031
-5162,"Hopi Vet Center Outstation","P.O. Box 929, 1 Main St.",Hotevilla,AZ,"86030","928-734-5166 Or 928-734-5166","VA Facility",Government,no,"Not Available",35.9278,-110.6729
-536,"Lake Havasu Vet Center","1720 Mesquite, Suite 101","Lake Havasu",AZ,"86403","928-505-0394 Or 928-505-0394","VA Facility",Government,no,"Not Available",34.478374,-114.34081
-530,"Las Cruces Vet Center","1120 Commerce Street, Suite B","Las Cruces",NM,"88001","575-523-9826 Or 575-523-9826","VA Facility",Government,no,"Not Available",32.3123,-106.7783
+"0613","High Desert Vet Center","15095 Amargosa Rd, Suite 107",Victorville,CA,"92394","760-261-5925 Or 760-261-5925","VA Facility",Government,no,"Not Available",34.524727,-117.33031
+"05162","Hopi Vet Center Outstation","P.O. Box 929, 1 Main St.",Hotevilla,AZ,"86030","928-734-5166 Or 928-734-5166","VA Facility",Government,no,"Not Available",35.9278,-110.6729
+"0536","Lake Havasu Vet Center","1720 Mesquite, Suite 101","Lake Havasu",AZ,"86403","928-505-0394 Or 928-505-0394","VA Facility",Government,no,"Not Available",34.478374,-114.34081
+"0530","Las Cruces Vet Center","1120 Commerce Street, Suite B","Las Cruces",NM,"88001","575-523-9826 Or 575-523-9826","VA Facility",Government,no,"Not Available",32.3123,-106.7783
 0606V,"Los Angeles Vet Center","1045 W. Redondo Beach Blvd. Suite 150",Gardena,CA,"90247","310-767-1221 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.89245,-118.29319
-524,"Mesa Vet Center","1303 South Longmore, Suite 5",Mesa,AZ,"85202","480-610-6727 Or 480-610-6727","VA Facility",Government,no,"Not Available",33.391068,-111.863785
-624,"North Orange County Vet Center","12453 Lewis St. Suite 101","Garden Grove",CA,"92840","714-776-0161 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.78244,-117.897484
+"0524","Mesa Vet Center","1303 South Longmore, Suite 5",Mesa,AZ,"85202","480-610-6727 Or 480-610-6727","VA Facility",Government,no,"Not Available",33.391068,-111.863785
+"0624","North Orange County Vet Center","12453 Lewis St. Suite 101","Garden Grove",CA,"92840","714-776-0161 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.78244,-117.897484
 0517V,"Phoenix Vet Center","4020 N. 20th St. #110",Phoenix,AZ,"85016","602-640-2981 Or 602-640-2981","VA Facility",Government,no,"Not Available",33.4934,-112.038925
 0518V,"Prescott Vet Center (Dr. Cameron K. McKinley Vet Center)","3180 Stillwater Drive, Suite A",Prescott,AZ,"86305","928-778-3469 Or 877-927-8387","VA Facility",Government,no,"Not Available",34.59808,-112.46729
-637,"San Bernardino Vet Center","1325 E. Cooley Drive, Suite 101",Colton,CA,"92324","909-801-5762 Or 877-927-8387","VA Facility",Government,no,"Not Available",34.054634,-117.30536
-618,"San Diego Vet Center","2790 Truxtun Road, Suite 130","San Diego",CA,"92106","858-642-1500 Or 858-642-1500","VA Facility",Government,no,"Not Available",32.740627,-117.21285
+"0637","San Bernardino Vet Center","1325 E. Cooley Drive, Suite 101",Colton,CA,"92324","909-801-5762 Or 877-927-8387","VA Facility",Government,no,"Not Available",34.054634,-117.30536
+"0618","San Diego Vet Center","2790 Truxtun Road, Suite 130","San Diego",CA,"92106","858-642-1500 Or 858-642-1500","VA Facility",Government,no,"Not Available",32.740627,-117.21285
 0619v,"San Luis Obispo Vet Center","1070 Southwood Drive","San Luis Obispo",CA,"93401","805-782-9101 Or 877-927-8387","VA Facility",Government,no,"Not Available",35.265366,-120.64087
-642,"San Marcos Vet Center","One Civic Center Dr., Suite 150","San Marcos",CA,"92069","855-898-6050 Or 877-927-8387","VA Facility",Government,no,"Not Available",29.8833,-97.9414
+"0642","San Marcos Vet Center","One Civic Center Dr., Suite 150","San Marcos",CA,"92069","855-898-6050 Or 877-927-8387","VA Facility",Government,no,"Not Available",29.8833,-97.9414
 0520V,"Santa Fe Vet Center","2209 Brothers Road Suite 110","Santa Fe",NM,"87505","505-988-6562 Or 505-988-6562","VA Facility",Government,no,"Not Available",35.65078,-105.95243
 5921,"South Orange County Vet Center","26431 Crown Valley Parkway, Suite 100","Mission Viejo",CA,"92691","949-348-6700 Or 877-927-8387","VA Facility",Government,no,"Not Available",33.6,-117.672
-608,"Temecula Vet Center","40935 County Center Drive, Suite A/B",Temecula,CA,"92591","951-302-4849 Or 951-302-4849","VA Facility",Government,no,"Not Available",33.528206,-117.16034
+"0608","Temecula Vet Center","40935 County Center Drive, Suite A/B",Temecula,CA,"92591","951-302-4849 Or 951-302-4849","VA Facility",Government,no,"Not Available",33.528206,-117.16034
 0521V,"Tucson Vet Center","2525 E. Broadway Blvd Suite 100",Tucson,AZ,"85716",520-882-0333,"VA Facility",Government,no,"Not Available",32.221508,-110.93447
-643,"Ventura Vet Center","790 E. Santa Clara St. Suite 100",Ventura,CA,"93001","805-585-1860 Or 805-585-1860","VA Facility",Government,no,"Not Available",34.279526,-119.28866
+"0643","Ventura Vet Center","790 E. Santa Clara St. Suite 100",Ventura,CA,"93001","805-585-1860 Or 805-585-1860","VA Facility",Government,no,"Not Available",34.279526,-119.28866
 0533V,"West Valley Vet Center","14050 N. 83rd Avenue Suite 170",Peoria,AZ,"85381","623-398-8854 Or 623-398-8854","VA Facility",Government,no,"Not Available",33.612053,-112.23756
 0537V,"Yuma Vet Center","1450 E. 16th St, Suite 103",Yuma,AZ,"85365","928-271-8700 Or 928-271-8700","VA Facility",Government,no,"Not Available",32.69857,-114.60357
 678CG,"Casa Grande Rural Health Care Coordination Center","1179 E. Cottonwood Lane, Suite 1","Casa Grande",AZ,"85122","520-629-4801 Or 520-629-4801","VA Facility",Government,no,"Not Available",32.894085,-111.735535
@@ -1473,7 +1471,7 @@
 0406V,"Fargo Vet Center","3310 Fiechtner Drive. Suite 100",Fargo,ND,"58103","701-237-0942 Or 701-237-0942","VA Facility",Government,no,"Not Available",46.86399,-96.83272
 589GE,"Grand Forks Vet Center","3001 32nd Ave. S. Suite 6A","Grand Forks",ND,"58201","701-620-1448 Or 877-927-8387","VA Facility",Government,no,"Not Available",47.88944,-97.07062
 0427V,"Lincoln Vet Center","3119 O Street, Suite A",Lincoln,NE,"68510","402-476-9736 Or 402-476-9736","VA Facility",Government,no,"Not Available",40.813408,-96.67602
-4231,"Martin Outstation","P.O. Box 910 105 E. Hwy 18",Martin,SD,"57747","605-685-1300 Or 605-685-1300","VA Facility",Government,no,"Not Available",47.7686,-100.0911
+"04231","Martin Outstation","P.O. Box 910 105 E. Hwy 18",Martin,SD,"57747","605-685-1300 Or 605-685-1300","VA Facility",Government,no,"Not Available",47.7686,-100.0911
 0404V,"Minot Vet Center","1400 20th Avenue SW Ste 2",Minot,ND,"58701","701-852-0177 Or 877-927-8387","VA Facility",Government,no,"Not Available",48.210842,-101.31301
 0424V,"Omaha Vet Center","3047 S 72nd Street",Omaha,NE,"68124",402-346-6735,"VA Facility",Government,no,"Not Available",41.23105,-96.02388
 0430V,"Quad Cities Vet Center","465 Avenue of the Cities, Suite #140","East Moline",IL,"61244","309-755-3260 Or 309-755-3260","VA Facility",Government,no,"Not Available",41.5212,-90.3858
@@ -1482,5 +1480,3 @@
 0425V,"Sioux Falls Vet Center","3200 W 49th Street","Sioux Falls",SD,"57106","605-330-4552 Or 605-330-4552","VA Facility",Government,no,"Not Available",43.50762,-96.765205
 0416V,"St. Paul Vet Center","550 County Road D West, Suite 10","New Brighton",MN,"55112","651-644-4022 Or 651-644-4022","VA Facility",Government,no,"Not Available",40.7531,-80.2419
 438GE,"Wagner Outreach Clinic","400 West Hwy 46",Wagner,SD,"57380",605-384-2340,"VA Facility",Government,no,"Not Available",43.0401,-98.2874
-,,,,,,,,,,,,
-
