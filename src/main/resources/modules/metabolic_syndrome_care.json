@@ -1,1925 +1,2271 @@
 {
-  "name" : "Metabolic Syndrome Standards of Care",
-  "remarks" : [],
-  "states" : {
-
-    "Initial" : {
-      "type" : "Initial",
-      "remarks" : ["Initial impl == direct translation of ruby module"],
-      "direct_transition" : "Wellness_Encounter"
+  "name": "Metabolic Syndrome Standards of Care",
+  "remarks": [],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Initial impl == direct translation of ruby module"
+      ],
+      "direct_transition": "Wellness_Encounter"
     },
-
-    "Wellness_Encounter" : {
-      "type" : "Encounter",
-      "wellness" : true,
-      "direct_transition" : "Check_Hypertension"
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Check_Hypertension"
     },
-
-    "Check_Hypertension" : {
-      "type" : "Simple",
+    "Check_Hypertension": {
+      "type": "Simple",
       "conditional_transition": [
         {
           "condition": {
             "condition_type": "And",
             "conditions": [
               {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 18,
-                "unit": "years"
-              },
-              {
                 "condition_type": "Attribute",
                 "attribute": "hypertension",
                 "operator": "==",
                 "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_dx",
+                "operator": "is nil"
               }
             ]
           },
           "transition": "Diagnose_Hypertension"
         },
         {
-          "transition": "Check_Diabetes"
+          "transition": "Check_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "!=",
+            "value": true
+          }
+        },
+        {
+          "transition": "Check_Hypertension_BP"
         }
       ]
     },
-
-    "Diagnose_Hypertension" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "38341003",
-        "display" : "Hypertension"
-      }],
-      "direct_transition" : "Check_Diabetes"
-    },
-
-    "Check_Diabetes" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Diagnose_Hypertension": {
+      "type": "ConditionOnset",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "Or",
-            "conditions" : [
+          "system": "SNOMED-CT",
+          "code": "38341003",
+          "display": "Hypertension"
+        }
+      ],
+      "assign_to_attribute": "hypertension_dx",
+      "direct_transition": "Check_Hypertension_BP"
+    },
+    "Check_Diabetes": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
               {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes",
-                "operator" : "is not nil"
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "is not nil"
               },
               {
-                "condition_type" : "Attribute",
-                "attribute" : "prediabetes",
-                "operator" : "is not nil"
+                "condition_type": "Attribute",
+                "attribute": "prediabetes",
+                "operator": "is not nil"
               }
             ]
           },
-          "transition" : "Record_HA1C"
+          "transition": "Record_HA1C"
         },
         {
-          "transition" : "Wellness_Encounter"
+          "transition": "Wellness_Encounter"
         }
       ]
     },
-
-    "Record_HA1C" : {
-      "type" : "Observation",
-      "vital_sign" : "Blood Glucose",
-      "category" : "laboratory",
-      "codes" : [{
-        "system" : "LOINC",
-        "code" : "4548-4",
-        "display" : "Hemoglobin A1c/Hemoglobin.total in Blood"
-      }],
-      "unit" : "%",
-      "direct_transition" : "Diagnosis"
-    },
-
-    "Diagnosis" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Record_HA1C": {
+      "type": "Observation",
+      "vital_sign": "Blood Glucose",
+      "category": "laboratory",
+      "codes": [
         {
-          "condition" : {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "unit": "%",
+      "direct_transition": "Diagnosis"
+    },
+    "Diagnosis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
             "condition_type": "Observation",
-            "codes" : [{
-              "system" : "LOINC",
-              "code" : "4548-4",
-              "display" : "Hemoglobin A1c/Hemoglobin.total in Blood"
-            }],
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "4548-4",
+                "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+              }
+            ],
             "operator": "<=",
             "value": 5.7
           },
-          "remarks" : ["Normal level"],
-          "transition" : "Wellness_Encounter"
+          "remarks": [
+            "Normal level"
+          ],
+          "transition": "Wellness_Encounter"
         },
         {
-          "condition" : {
+          "condition": {
             "condition_type": "Observation",
-            "codes" : [{
-              "system" : "LOINC",
-              "code" : "4548-4",
-              "display" : "Hemoglobin A1c/Hemoglobin.total in Blood"
-            }],
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "4548-4",
+                "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+              }
+            ],
             "operator": "<=",
             "value": 6.5
           },
-          "remarks" : ["Prediabetic level"],
-          "transition" : "Set_Severity_0"
+          "remarks": [
+            "Prediabetic level"
+          ],
+          "transition": "Set_Severity_0"
         },
         {
-          "condition" : {
+          "condition": {
             "condition_type": "Observation",
-            "codes" : [{
-              "system" : "LOINC",
-              "code" : "4548-4",
-              "display" : "Hemoglobin A1c/Hemoglobin.total in Blood"
-            }],
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "4548-4",
+                "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+              }
+            ],
             "operator": "<=",
             "value": 7.5
           },
-          "remarks" : ["Diabetic level"],
-          "transition" : "Set_Severity_1"
-        },
-        {
-          "condition" : {
-            "condition_type": "Observation",
-            "codes" : [{
-              "system" : "LOINC",
-              "code" : "4548-4",
-              "display" : "Hemoglobin A1c/Hemoglobin.total in Blood"
-            }],
-            "operator": "<=",
-            "value": 9.0
-          },
-          "remarks" : ["Severe level"],
-          "transition" : "Set_Severity_2"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : ">=",
-                "value" : 3
-              },
-              {
-                "condition_type" : "PriorState",
-                "name" : "Set_Severity_3",
-                "within" : { "quantity": 1, "unit" : "years" }
-              }
-            ]
-          },
-          "remarks" : ["in words - if the severity is >= 3 and they have been set severity 3 within a year"],
-          "transition" : "Set_Severity_4"
-        },
-        {
-          "remarks" : ["> severe level"],
-          "transition" : "Set_Severity_3"
-        }
-      ]
-    },
-
-    "Set_Severity_0" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_severity",
-      "value" : 0,
-      "remarks" : ["setting prediabetes as severity 0 makes some things easier"],
-      "direct_transition" : "Diagnose_Prediabetes"
-    },
-
-    "Diagnose_Prediabetes" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "15777000",
-        "display" : "Prediabetes"
-      }],
-      "assign_to_attribute" : "diabetes_stage",
-      "direct_transition" : "Check_CarePlan"
-    },
-
-    "Set_Severity_1" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_severity",
-      "value" : 1,
-      "direct_transition" : "Diagnose_Diabetes"
-    },
-
-    "Set_Severity_2" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_severity",
-      "value" : 2,
-      "direct_transition" : "Diagnose_Diabetes"
-    },
-
-    "Set_Severity_3" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_severity",
-      "value" : 3,
-      "direct_transition" : "Diagnose_Diabetes"
-    },
-
-    "Set_Severity_4" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_severity",
-      "value" : 4,
-      "direct_transition" : "Diagnose_Diabetes"
-    },
-
-    "Diagnose_Diabetes" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "44054006",
-        "display" : "Diabetes"
-      }],
-      "assign_to_attribute" : "diabetes_stage",
-      "direct_transition" : "Check_CarePlan"
-    },
-
-    "Check_CarePlan" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "Active CarePlan",
-            "codes" : [{
-              "system" : "SNOMED-CT",
-              "code" : "698360004",
-              "display" : "Diabetes self management plan"
-            }]
-          },
-          "transition" : "Prescribe_Medications"
-        },
-        {
-          "transition" : "Diabetic_CarePlan"
-        }
-      ]
-    },
-
-    "Diabetic_CarePlan" : {
-      "type" : "CarePlanStart",
-      "codes" : [{
-          "system" : "SNOMED-CT",
-          "code" : "698360004",
-          "display" : "Diabetes self management plan"
-      }],
-      "activities" : [
-        {
-          "system" : "SNOMED-CT",
-          "code" : "160670007",
-          "display" : "Diabetic diet"
-        },
-        {
-          "system" : "SNOMED-CT",
-          "code" : "229065009",
-          "display" : "Exercise therapy"
-        }
-      ],
-      "goals" : [
-        {
-          "observation" : {
-            "codes" : [{
-              "system" : "LOINC",
-              "code" : "4548-4",
-              "display" : "Hemoglobin A1c total in Blood"
-            }],
-            "operator" : "<",
-            "value" : "7.0"
-          },
-          "addresses" : ["diabetes_stage"]
-        },
-        {
-          "observation" : {
-            "codes" : [{
-              "system" : "LOINC",
-              "code" : "2339-0",
-              "display" : "Glucose [Mass/volume] in Blood"
-            }],
-            "operator" : "<",
-            "value" : "108"
-          },
-          "addresses" : ["diabetes_stage"]
-        },
-        {
-          "text" : "Maintain blood pressure below 140/90 mmHg",
-          "addresses" : ["diabetes_stage"]
-        },
-        {
-          "text" : "Improve and maintenance of optimal foot health: aim at early detection of peripheral vascular problems and neuropathy presumed due to diabetes; and prevention of diabetic foot ulcer, gangrene",
-          "addresses" : ["diabetes_stage"]
-        },
-        {
-          "text" : "Address patient knowledge deficit on diabetic self-care",
-          "addresses" : ["diabetes_stage"]
-        }
-      ],
-      "remarks" : ["based on https://github.com/clinical-cloud/sample-careplans"],
-      "reason" : "diabetes_stage",
-      "direct_transition" : "Prescribe_Medications"
-    },
-
-    "Prescribe_Medications" : {
-      "type" : "Simple",
-      "direct_transition" : "Monotherapy"
-    },
-
-    "Monotherapy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : ">=",
-                "value" : 2
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Medication",
-                  "codes" : [{
-                    "system" : "RxNorm",
-                    "code" : "860975",
-                    "display" : "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Prescribe_Metformin"
-        },
-        {
-          "transition" : "Bitherapy"
-        }
-      ]
-    },
-
-    "Prescribe_Metformin" : {
-      "type" : "MedicationOrder",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "860975",
-        "display" : "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
-      }],
-      "reason" : "Diagnose_Diabetes",
-      "direct_transition" : "Bitherapy"
-    },
-
-    "Bitherapy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : ">=",
-                "value" : 3
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Medication",
-                  "codes" : [{
-                    "system" : "RxNorm",
-                    "code" : "897122",
-                    "display" : "3 ML liraglutide 6 MG/ML Pen Injector"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Prescribe_Liraglutide"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : "<",
-                "value" : 3
-              },
-              {
-                "condition_type" : "Active Medication",
-                "codes" : [{
-                  "system" : "RxNorm",
-                  "code" : "897122",
-                  "display" : "3 ML liraglutide 6 MG/ML Pen Injector"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Liraglutide"
-        },
-        {
-          "transition" : "Tritherapy"
-        }
-      ]
-    },
-
-    "Prescribe_Liraglutide" : {
-      "type" : "MedicationOrder",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "897122",
-        "display" : "3 ML liraglutide 6 MG/ML Pen Injector"
-      }],
-      "reason" : "Diagnose_Diabetes",
-      "direct_transition" : "Tritherapy"
-    },
-
-    "End_Liraglutide" : {
-      "type" : "MedicationEnd",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "897122",
-        "display" : "3 ML liraglutide 6 MG/ML Pen Injector"
-      }],
-      "direct_transition" : "Tritherapy"
-    },
-
-
-    "Tritherapy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : ">=",
-                "value" : 4
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Medication",
-                  "codes" : [{
-                    "system" : "RxNorm",
-                    "code" : "1373463",
-                    "display" : "canagliflozin 100 MG Oral Tablet"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Prescribe_Canagliflozin"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "diabetes_severity",
-                "operator" : "<",
-                "value" : 4
-              },
-              {
-                "condition_type" : "Active Medication",
-                "codes" : [{
-                  "system" : "RxNorm",
-                  "code" : "1373463",
-                  "display" : "canagliflozin 100 MG Oral Tablet"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Canagliflozin"
-        },
-        {
-          "transition" : "Insulin"
-        }
-      ]
-    },
-
-    "Prescribe_Canagliflozin" : {
-      "type" : "MedicationOrder",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "1373463",
-        "display" : "canagliflozin 100 MG Oral Tablet"
-      }],
-      "reason" : "Diagnose_Diabetes",
-      "direct_transition" : "Insulin"
-    },
-
-    "End_Canagliflozin" : {
-      "type" : "MedicationEnd",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "1373463",
-        "display" : "canagliflozin 100 MG Oral Tablet"
-      }],
-      "direct_transition" : "Insulin"
-    },
-
-
-    "Insulin" : {
-      "type" : "Simple",
-      "remarks" : ["around a third of patients with type 2 diabetes are on insulin ",
-                   "30.8% (17.8% only insulin and 13.0% insulin and other med)",
-                   "https://www.cdc.gov/diabetes/statistics/meduse/fig2.htm",
-                   "coincidentally around a third of patients have nephropathy",
-                   "for simplicity we'll make this a 1-1 relationship so that nephropathy --> insulin"],
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "Active Condition",
-            "codes" : [{
-              "system" : "SNOMED-CT",
-              "code" : "127013003",
-              "display" : "Diabetic renal disease (disorder)"
-            }]
-          },
-          "transition" : "Prescribe_Insulin"
-        },
-        {
-          "transition" : "End_Insulin"
-        }
-      ]
-    },
-
-    "Prescribe_Insulin" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "Active Medication",
-            "codes" : [{
-              "system" : "RxNorm",
-              "code" : "106892",
-              "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
-            }]
-          },
-          "remarks" : ["they have basal so stop it and change towards prandial"],
-          "transition" : "End_Basal_Insulin_Towards_Prandial"
-        },
-        {
-          "condition" : {
-            "condition_type" : "Active Medication",
-            "codes" : [{
-              "system" : "RxNorm",
-              "code" : "865098",
-              "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
-            }]
-          },
-          "remarks" : ["they have prandial so do nothing"],
-          "transition" : "Check_Complications"
-        },
-        {
-          "remarks" : ["prescribe basal the first time around"],
-          "transition" : "Prescribe_Basal_Insulin"
-        }
-      ]
-    },
-
-    "Prescribe_Basal_Insulin" : {
-      "type" : "MedicationOrder",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "106892",
-        "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
-      }],
-      "reason" : "Diagnose_Diabetes",
-      "direct_transition" : "Check_Complications"
-    },
-
-    "End_Basal_Insulin_Towards_Prandial" : {
-      "type" : "MedicationEnd",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "106892",
-        "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
-      }],
-      "direct_transition" : "Prescribe_Prandial_Insulin"
-    },
-
-    "Prescribe_Prandial_Insulin" : {
-      "type" : "MedicationOrder",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "865098",
-        "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
-      }],
-      "reason" : "Diagnose_Diabetes",
-      "direct_transition" : "Check_Complications"
-    },
-
-    "End_Insulin" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "Active Medication",
-            "codes" : [{
-              "system" : "RxNorm",
-              "code" : "106892",
-              "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
-            }]
-          },
-          "transition" : "End_Basal_Insulin"
-        },
-        {
-          "condition" : {
-            "condition_type" : "Active Medication",
-            "codes" : [{
-              "system" : "RxNorm",
-              "code" : "865098",
-              "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
-            }]
-          },
-          "transition" : "End_Prandial_Insulin"
-        },
-        {
-          "transition" : "Check_Complications"
-        }
-      ]
-    },
-
-    "End_Basal_Insulin" : {
-      "type" : "MedicationEnd",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "106892",
-        "display" : "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
-      }],
-      "direct_transition" : "Check_Complications"
-    },
-
-    "End_Prandial_Insulin" : {
-      "type" : "MedicationEnd",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "865098",
-        "display" : "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
-      }],
-      "direct_transition" : "Check_Complications"
-    },
-
-
-    "Check_Complications" : {
-      "type" : "Simple",
-      "direct_transition" : "Check_Nephropathy"
-    },
-
-    "Check_Nephropathy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "nephropathy",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "127013003",
-                    "display" : "Diabetic renal disease (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Nephropathy"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "nephropathy",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "127013003",
-                  "display" : "Diabetic renal disease (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Nephropathy"
-        },
-        {
-          "transition" : "Check_Microalbuminuria"
-        }
-      ]
-    },
-
-    "Diagnose_Nephropathy" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "127013003",
-        "display" : "Diabetic renal disease (disorder)"
-      }],
-      "direct_transition" : "Check_Microalbuminuria"
-    },
-
-    "End_Nephropathy" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "127013003",
-        "display" : "Diabetic renal disease (disorder)"
-      }],
-      "direct_transition" : "Check_Microalbuminuria"
-    },
-
-
-    "Check_Microalbuminuria" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "microalbuminuria",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "90781000119102",
-                    "display" : "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Microalbuminuria"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "microalbuminuria",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "90781000119102",
-                  "display" : "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Microalbuminuria"
-        },
-        {
-          "transition" : "Check_Proteinuria"
-        }
-      ]
-    },
-
-    "Diagnose_Microalbuminuria" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "90781000119102",
-        "display" : "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Proteinuria"
-    },
-
-    "End_Microalbuminuria" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "90781000119102",
-        "display" : "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Proteinuria"
-    },
-
-
-    "Check_Proteinuria" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "proteinuria",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "157141000119108",
-                    "display" : "Proteinuria due to type 2 diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Proteinuria"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "proteinuria",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "157141000119108",
-                  "display" : "Proteinuria due to type 2 diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Proteinuria"
-        },
-        {
-          "transition" : "Check_End_Stage_Renal_Disease"
-        }
-      ]
-    },
-
-    "Diagnose_Proteinuria" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "157141000119108",
-        "display" : "Proteinuria due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_End_Stage_Renal_Disease"
-    },
-
-    "End_Proteinuria" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "157141000119108",
-        "display" : "Proteinuria due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_End_Stage_Renal_Disease"
-    },
-
-
-    "Check_End_Stage_Renal_Disease" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "end_stage_renal_disease",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "46177005",
-                    "display" : "End stage renal disease (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_End_Stage_Renal_Disease"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "end_stage_renal_disease",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "46177005",
-                  "display" : "End stage renal disease (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_End_Stage_Renal_Disease"
-        },
-        {
-          "transition" : "Check_Retinopathy"
-        }
-      ]
-    },
-
-    "Diagnose_End_Stage_Renal_Disease" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "46177005",
-        "display" : "End stage renal disease (disorder)"
-      }],
-      "direct_transition" : "Check_Retinopathy"
-    },
-
-    "End_End_Stage_Renal_Disease" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "46177005",
-        "display" : "End stage renal disease (disorder)"
-      }],
-      "direct_transition" : "Check_Retinopathy"
-    },
-
-
-    "Check_Retinopathy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "retinopathy",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "422034002",
-                    "display" : "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Retinopathy"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "retinopathy",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "422034002",
-                  "display" : "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Retinopathy"
-        },
-        {
-          "transition" : "Check_Nonproliferative_Retinopathy"
-        }
-      ]
-    },
-
-    "Diagnose_Retinopathy" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "422034002",
-        "display" : "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Nonproliferative_Retinopathy"
-    },
-
-    "End_Retinopathy" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "422034002",
-        "display" : "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Nonproliferative_Retinopathy"
-    },
-
-
-    "Check_Nonproliferative_Retinopathy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "nonproliferative_retinopathy",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "1551000119108",
-                    "display" : "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Nonproliferative_Retinopathy"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "nonproliferative_retinopathy",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "1551000119108",
-                  "display" : "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Nonproliferative_Retinopathy"
-        },
-        {
-          "transition" : "Check_Proliferative_Retinopathy"
-        }
-      ]
-    },
-
-    "Diagnose_Nonproliferative_Retinopathy" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "1551000119108",
-        "display" : "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Proliferative_Retinopathy"
-    },
-
-    "End_Nonproliferative_Retinopathy" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "1551000119108",
-        "display" : "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Proliferative_Retinopathy"
-    },
-
-
-    "Check_Proliferative_Retinopathy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "proliferative_retinopathy",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "1501000119109",
-                    "display" : "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Proliferative_Retinopathy"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "proliferative_retinopathy",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "1501000119109",
-                  "display" : "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Proliferative_Retinopathy"
-        },
-        {
-          "transition" : "Check_Macular_Edema"
-        }
-      ]
-    },
-
-    "Diagnose_Proliferative_Retinopathy" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "1501000119109",
-        "display" : "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Macular_Edema"
-    },
-
-    "End_Proliferative_Retinopathy" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "1501000119109",
-        "display" : "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Macular_Edema"
-    },
-
-
-    "Check_Macular_Edema" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "macular_edema",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "97331000119101",
-                    "display" : "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Macular_Edema"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "macular_edema",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "97331000119101",
-                  "display" : "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Macular_Edema"
-        },
-        {
-          "transition" : "Check_Blindness"
-        }
-      ]
-    },
-
-    "Diagnose_Macular_Edema" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "97331000119101",
-        "display" : "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Blindness"
-    },
-
-    "End_Macular_Edema" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "97331000119101",
-        "display" : "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Blindness"
-    },
-
-
-    "Check_Blindness" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "blindness",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "60951000119105",
-                    "display" : "Blindness due to type 2 diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Blindness"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "blindness",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "60951000119105",
-                  "display" : "Blindness due to type 2 diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Blindness"
-        },
-        {
-          "transition" : "Check_Neuropathy"
-        }
-      ]
-    },
-
-    "Diagnose_Blindness" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "60951000119105",
-        "display" : "Blindness due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Neuropathy"
-    },
-
-    "End_Blindness" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "60951000119105",
-        "display" : "Blindness due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Check_Neuropathy"
-    },
-
-
-    "Check_Neuropathy" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "neuropathy",
-                "operator" : "is not nil"
-              },
-              {
-                "condition_type" : "Not",
-                "condition" : {
-                  "condition_type" : "Active Condition",
-                  "codes" : [{
-                    "system" : "SNOMED-CT",
-                    "code" : "368581000119106",
-                    "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
-                  }]
-                }
-              }
-            ]
-          },
-          "transition" : "Diagnose_Neuropathy"
-        },
-        {
-          "condition" : {
-            "condition_type" : "And",
-            "conditions" : [
-              {
-                "condition_type" : "Attribute",
-                "attribute" : "neuropathy",
-                "operator" : "is nil"
-              },
-              {
-                "condition_type" : "Active Condition",
-                "codes" : [{
-                  "system" : "SNOMED-CT",
-                  "code" : "368581000119106",
-                  "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
-                }]
-              }
-            ]
-          },
-          "transition" : "End_Neuropathy"
-        },
-        {
-          "transition" : "Consider_Procedures"
-        }
-      ]
-    },
-
-    "Diagnose_Neuropathy" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "368581000119106",
-        "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Consider_Procedures"
-    },
-
-    "End_Neuropathy" : {
-      "type" : "ConditionEnd",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "368581000119106",
-        "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
-      }],
-      "direct_transition" : "Consider_Procedures"
-    },
-
-
-    "Consider_Procedures" : {
-      "type" : "Simple",
-      "direct_transition" : "Potential_Dialysis"
-    },
-
-    "Potential_Dialysis" : {
-      "type" : "Simple",
-      "conditional_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "Active Condition",
-            "codes" : [{
-              "system" : "SNOMED-CT",
-              "code" : "46177005",
-              "display" : "End stage renal disease (disorder)"
-            }]
-          },
-          "transition" : "Dialysis"
-        },
-        {
-          "transition" : "Potential_Amputation"
-        }
-      ]
-    },
-
-    "Dialysis" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "265764009",
-        "display" : "Renal dialysis (procedure)"
-      }],
-      "direct_transition" : "Potential_Amputation"
-    },
-
-    "Potential_Amputation" : {
-      "type" : "Simple",
-      "complex_transition" : [
-        {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_Necessary",
-            "within" : { "quantity" : 1, "unit" : "years" }
-          },
-          "remarks" : ["dialysis means this check is made every few days which can skew results.",
-                       "we only want to consider amputation once a year"],
-          "transition" : "No_Amputation_Necessary"
-        },
-        {
-          "condition" : {
-            "condition_type" : "Active Condition",
-            "codes" : [{
-              "system" : "SNOMED-CT",
-              "code" : "368581000119106",
-              "display" : "Neuropathy due to type 2 diabetes mellitus (disorder)"
-            }]
-          },
-          "distributions" : [
-            { "distribution" : 0.0025, "transition" : "Amputation_Necessary" },
-            { "distribution" : 0.9975, "transition" : "No_Amputation_Necessary" }
+          "remarks": [
+            "Diabetic level"
           ],
-          "remarks" : ["In 2010, about 73,000 non-traumatic lower-limb amputations were performed in adults aged 20 years or older with diagnosed diabetes.",
-                       "28.9 million adults had diagnosed diabetes. 73,000/ 28,900,000 = 0.0025 or 0.25% per year",
-                       "https://www.cdc.gov/diabetes/data/statistics/2014statisticsreport.html"]
+          "transition": "Set_Severity_1"
         },
         {
-          "transition" : "No_Amputation_Necessary"
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "4548-4",
+                "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+              }
+            ],
+            "operator": "<=",
+            "value": 9
+          },
+          "remarks": [
+            "Severe level"
+          ],
+          "transition": "Set_Severity_2"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 3
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Set_Severity_3",
+                "within": {
+                  "quantity": 1,
+                  "unit": "years"
+                }
+              }
+            ]
+          },
+          "remarks": [
+            "in words - if the severity is >= 3 and they have been set severity 3 within a year"
+          ],
+          "transition": "Set_Severity_4"
+        },
+        {
+          "remarks": [
+            "> severe level"
+          ],
+          "transition": "Set_Severity_3"
         }
       ]
     },
-
-    "Amputation_Necessary" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_amputation_necessary",
-      "value" : true,
-      "direct_transition" : "Schedule_Followup"
+    "Set_Severity_0": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_severity",
+      "value": 0,
+      "remarks": [
+        "setting prediabetes as severity 0 makes some things easier"
+      ],
+      "direct_transition": "Diagnose_Prediabetes"
     },
-
-    "No_Amputation_Necessary" : {
-      "type" : "SetAttribute",
-      "attribute" : "diabetes_amputation_necessary",
-      "value" : false,
-      "direct_transition" : "Schedule_Followup"
-    },
-
-
-    "Schedule_Followup" : {
-      "type" : "EncounterEnd",
-      "conditional_transition" : [
+    "Diagnose_Prediabetes": {
+      "type": "ConditionOnset",
+      "codes": [
         {
-          "condition" : {
+          "system": "SNOMED-CT",
+          "code": "15777000",
+          "display": "Prediabetes"
+        }
+      ],
+      "assign_to_attribute": "diabetes_stage",
+      "direct_transition": "Check_CarePlan"
+    },
+    "Set_Severity_1": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_severity",
+      "value": 1,
+      "direct_transition": "Diagnose_Diabetes"
+    },
+    "Set_Severity_2": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_severity",
+      "value": 2,
+      "direct_transition": "Diagnose_Diabetes"
+    },
+    "Set_Severity_3": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_severity",
+      "value": 3,
+      "direct_transition": "Diagnose_Diabetes"
+    },
+    "Set_Severity_4": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_severity",
+      "value": 4,
+      "direct_transition": "Diagnose_Diabetes"
+    },
+    "Diagnose_Diabetes": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44054006",
+          "display": "Diabetes"
+        }
+      ],
+      "assign_to_attribute": "diabetes_stage",
+      "direct_transition": "Check_CarePlan"
+    },
+    "Check_CarePlan": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active CarePlan",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "698360004",
+                "display": "Diabetes self management plan"
+              }
+            ]
+          },
+          "transition": "Prescribe_Medications"
+        },
+        {
+          "transition": "Diabetic_CarePlan"
+        }
+      ]
+    },
+    "Diabetic_CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698360004",
+          "display": "Diabetes self management plan"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "160670007",
+          "display": "Diabetic diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "229065009",
+          "display": "Exercise therapy"
+        }
+      ],
+      "goals": [
+        {
+          "observation": {
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "4548-4",
+                "display": "Hemoglobin A1c total in Blood"
+              }
+            ],
+            "operator": "<",
+            "value": "7.0"
+          },
+          "addresses": [
+            "diabetes_stage"
+          ]
+        },
+        {
+          "observation": {
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "2339-0",
+                "display": "Glucose [Mass/volume] in Blood"
+              }
+            ],
+            "operator": "<",
+            "value": "108"
+          },
+          "addresses": [
+            "diabetes_stage"
+          ]
+        },
+        {
+          "text": "Maintain blood pressure below 140/90 mmHg",
+          "addresses": [
+            "diabetes_stage"
+          ]
+        },
+        {
+          "text": "Improve and maintenance of optimal foot health: aim at early detection of peripheral vascular problems and neuropathy presumed due to diabetes; and prevention of diabetic foot ulcer, gangrene",
+          "addresses": [
+            "diabetes_stage"
+          ]
+        },
+        {
+          "text": "Address patient knowledge deficit on diabetic self-care",
+          "addresses": [
+            "diabetes_stage"
+          ]
+        }
+      ],
+      "remarks": [
+        "based on https://github.com/clinical-cloud/sample-careplans"
+      ],
+      "reason": "diabetes_stage",
+      "direct_transition": "Prescribe_Medications"
+    },
+    "Prescribe_Medications": {
+      "type": "Simple",
+      "direct_transition": "Monotherapy"
+    },
+    "Monotherapy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Medication",
+                  "codes": [
+                    {
+                      "system": "RxNorm",
+                      "code": "860975",
+                      "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Prescribe_Metformin"
+        },
+        {
+          "transition": "Bitherapy"
+        }
+      ]
+    },
+    "Prescribe_Metformin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "860975",
+          "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Bitherapy"
+    },
+    "Bitherapy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 3
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Medication",
+                  "codes": [
+                    {
+                      "system": "RxNorm",
+                      "code": "897122",
+                      "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Prescribe_Liraglutide"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": "<",
+                "value": 3
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "897122",
+                    "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Liraglutide"
+        },
+        {
+          "transition": "Tritherapy"
+        }
+      ]
+    },
+    "Prescribe_Liraglutide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "897122",
+          "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Tritherapy"
+    },
+    "End_Liraglutide": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "897122",
+          "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+        }
+      ],
+      "direct_transition": "Tritherapy"
+    },
+    "Tritherapy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 4
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Medication",
+                  "codes": [
+                    {
+                      "system": "RxNorm",
+                      "code": "1373463",
+                      "display": "canagliflozin 100 MG Oral Tablet"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Prescribe_Canagliflozin"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": "<",
+                "value": 4
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "1373463",
+                    "display": "canagliflozin 100 MG Oral Tablet"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Canagliflozin"
+        },
+        {
+          "transition": "Insulin"
+        }
+      ]
+    },
+    "Prescribe_Canagliflozin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1373463",
+          "display": "canagliflozin 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Insulin"
+    },
+    "End_Canagliflozin": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1373463",
+          "display": "canagliflozin 100 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Insulin"
+    },
+    "Insulin": {
+      "type": "Simple",
+      "remarks": [
+        "around a third of patients with type 2 diabetes are on insulin ",
+        "30.8% (17.8% only insulin and 13.0% insulin and other med)",
+        "https://www.cdc.gov/diabetes/statistics/meduse/fig2.htm",
+        "coincidentally around a third of patients have nephropathy",
+        "for simplicity we'll make this a 1-1 relationship so that nephropathy --> insulin"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "127013003",
+                "display": "Diabetic renal disease (disorder)"
+              }
+            ]
+          },
+          "transition": "Prescribe_Insulin"
+        },
+        {
+          "transition": "End_Insulin"
+        }
+      ]
+    },
+    "Prescribe_Insulin": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "106892",
+                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+              }
+            ]
+          },
+          "remarks": [
+            "they have basal so stop it and change towards prandial"
+          ],
+          "transition": "End_Basal_Insulin_Towards_Prandial"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "865098",
+                "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+              }
+            ]
+          },
+          "remarks": [
+            "they have prandial so do nothing"
+          ],
+          "transition": "Check_Complications"
+        },
+        {
+          "remarks": [
+            "prescribe basal the first time around"
+          ],
+          "transition": "Prescribe_Basal_Insulin"
+        }
+      ]
+    },
+    "Prescribe_Basal_Insulin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106892",
+          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Check_Complications"
+    },
+    "End_Basal_Insulin_Towards_Prandial": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106892",
+          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+        }
+      ],
+      "direct_transition": "Prescribe_Prandial_Insulin"
+    },
+    "Prescribe_Prandial_Insulin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "865098",
+          "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Check_Complications"
+    },
+    "End_Insulin": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "106892",
+                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+              }
+            ]
+          },
+          "transition": "End_Basal_Insulin"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "865098",
+                "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+              }
+            ]
+          },
+          "transition": "End_Prandial_Insulin"
+        },
+        {
+          "transition": "Check_Complications"
+        }
+      ]
+    },
+    "End_Basal_Insulin": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106892",
+          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+        }
+      ],
+      "direct_transition": "Check_Complications"
+    },
+    "End_Prandial_Insulin": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "865098",
+          "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+        }
+      ],
+      "direct_transition": "Check_Complications"
+    },
+    "Check_Complications": {
+      "type": "Simple",
+      "direct_transition": "Check_Nephropathy"
+    },
+    "Check_Nephropathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "nephropathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "127013003",
+                      "display": "Diabetic renal disease (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Nephropathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "nephropathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "127013003",
+                    "display": "Diabetic renal disease (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Nephropathy"
+        },
+        {
+          "transition": "Check_Microalbuminuria"
+        }
+      ]
+    },
+    "Diagnose_Nephropathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "127013003",
+          "display": "Diabetic renal disease (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Microalbuminuria"
+    },
+    "End_Nephropathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "127013003",
+          "display": "Diabetic renal disease (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Microalbuminuria"
+    },
+    "Check_Microalbuminuria": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "microalbuminuria",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "90781000119102",
+                      "display": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Microalbuminuria"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "microalbuminuria",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "90781000119102",
+                    "display": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Microalbuminuria"
+        },
+        {
+          "transition": "Check_Proteinuria"
+        }
+      ]
+    },
+    "Diagnose_Microalbuminuria": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90781000119102",
+          "display": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Proteinuria"
+    },
+    "End_Microalbuminuria": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90781000119102",
+          "display": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Proteinuria"
+    },
+    "Check_Proteinuria": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "proteinuria",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "157141000119108",
+                      "display": "Proteinuria due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Proteinuria"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "proteinuria",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "157141000119108",
+                    "display": "Proteinuria due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Proteinuria"
+        },
+        {
+          "transition": "Check_End_Stage_Renal_Disease"
+        }
+      ]
+    },
+    "Diagnose_Proteinuria": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "157141000119108",
+          "display": "Proteinuria due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_End_Stage_Renal_Disease"
+    },
+    "End_Proteinuria": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "157141000119108",
+          "display": "Proteinuria due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_End_Stage_Renal_Disease"
+    },
+    "Check_End_Stage_Renal_Disease": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "end_stage_renal_disease",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "46177005",
+                      "display": "End stage renal disease (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_End_Stage_Renal_Disease"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "end_stage_renal_disease",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "46177005",
+                    "display": "End stage renal disease (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_End_Stage_Renal_Disease"
+        },
+        {
+          "transition": "Check_Retinopathy"
+        }
+      ]
+    },
+    "Diagnose_End_Stage_Renal_Disease": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46177005",
+          "display": "End stage renal disease (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Retinopathy"
+    },
+    "End_End_Stage_Renal_Disease": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46177005",
+          "display": "End stage renal disease (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Retinopathy"
+    },
+    "Check_Retinopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "retinopathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "422034002",
+                      "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Retinopathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "retinopathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "422034002",
+                    "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Retinopathy"
+        },
+        {
+          "transition": "Check_Nonproliferative_Retinopathy"
+        }
+      ]
+    },
+    "Diagnose_Retinopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "422034002",
+          "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nonproliferative_Retinopathy"
+    },
+    "End_Retinopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "422034002",
+          "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nonproliferative_Retinopathy"
+    },
+    "Check_Nonproliferative_Retinopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "nonproliferative_retinopathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "1551000119108",
+                      "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Nonproliferative_Retinopathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "nonproliferative_retinopathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "1551000119108",
+                    "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Nonproliferative_Retinopathy"
+        },
+        {
+          "transition": "Check_Proliferative_Retinopathy"
+        }
+      ]
+    },
+    "Diagnose_Nonproliferative_Retinopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1551000119108",
+          "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Proliferative_Retinopathy"
+    },
+    "End_Nonproliferative_Retinopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1551000119108",
+          "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Proliferative_Retinopathy"
+    },
+    "Check_Proliferative_Retinopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "proliferative_retinopathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "1501000119109",
+                      "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Proliferative_Retinopathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "proliferative_retinopathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "1501000119109",
+                    "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Proliferative_Retinopathy"
+        },
+        {
+          "transition": "Check_Macular_Edema"
+        }
+      ]
+    },
+    "Diagnose_Proliferative_Retinopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1501000119109",
+          "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Macular_Edema"
+    },
+    "End_Proliferative_Retinopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1501000119109",
+          "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Macular_Edema"
+    },
+    "Check_Macular_Edema": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "macular_edema",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "97331000119101",
+                      "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Macular_Edema"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "macular_edema",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "97331000119101",
+                    "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Macular_Edema"
+        },
+        {
+          "transition": "Check_Blindness"
+        }
+      ]
+    },
+    "Diagnose_Macular_Edema": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "97331000119101",
+          "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Blindness"
+    },
+    "End_Macular_Edema": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "97331000119101",
+          "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Blindness"
+    },
+    "Check_Blindness": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "blindness",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "60951000119105",
+                      "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Blindness"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "blindness",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "60951000119105",
+                    "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Blindness"
+        },
+        {
+          "transition": "Check_Neuropathy"
+        }
+      ]
+    },
+    "Diagnose_Blindness": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "60951000119105",
+          "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Neuropathy"
+    },
+    "End_Blindness": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "60951000119105",
+          "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Neuropathy"
+    },
+    "Check_Neuropathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "neuropathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "368581000119106",
+                      "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Neuropathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "neuropathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "368581000119106",
+                    "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Neuropathy"
+        },
+        {
+          "transition": "Consider_Procedures"
+        }
+      ]
+    },
+    "Diagnose_Neuropathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "368581000119106",
+          "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Consider_Procedures"
+    },
+    "End_Neuropathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "368581000119106",
+          "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Consider_Procedures"
+    },
+    "Consider_Procedures": {
+      "type": "Simple",
+      "direct_transition": "Potential_Dialysis"
+    },
+    "Potential_Dialysis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "46177005",
+                "display": "End stage renal disease (disorder)"
+              }
+            ]
+          },
+          "transition": "Dialysis"
+        },
+        {
+          "transition": "Potential_Amputation"
+        }
+      ]
+    },
+    "Dialysis": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "265764009",
+          "display": "Renal dialysis (procedure)"
+        }
+      ],
+      "direct_transition": "Potential_Amputation"
+    },
+    "Potential_Amputation": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_Necessary",
+            "within": {
+              "quantity": 1,
+              "unit": "years"
+            }
+          },
+          "remarks": [
+            "dialysis means this check is made every few days which can skew results.",
+            "we only want to consider amputation once a year"
+          ],
+          "transition": "No_Amputation_Necessary"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "368581000119106",
+                "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.0025,
+              "transition": "Amputation_Necessary"
+            },
+            {
+              "distribution": 0.9975,
+              "transition": "No_Amputation_Necessary"
+            }
+          ],
+          "remarks": [
+            "In 2010, about 73,000 non-traumatic lower-limb amputations were performed in adults aged 20 years or older with diagnosed diabetes.",
+            "28.9 million adults had diagnosed diabetes. 73,000/ 28,900,000 = 0.0025 or 0.25% per year",
+            "https://www.cdc.gov/diabetes/data/statistics/2014statisticsreport.html"
+          ]
+        },
+        {
+          "transition": "No_Amputation_Necessary"
+        }
+      ]
+    },
+    "Amputation_Necessary": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_amputation_necessary",
+      "value": true,
+      "direct_transition": "Schedule_Followup"
+    },
+    "No_Amputation_Necessary": {
+      "type": "SetAttribute",
+      "attribute": "diabetes_amputation_necessary",
+      "value": false,
+      "direct_transition": "Schedule_Followup"
+    },
+    "Schedule_Followup": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "condition": {
             "condition_type": "Attribute",
             "attribute": "diabetes_amputation_necessary",
             "operator": "==",
             "value": true
           },
-          "transition" : "Delay_Before_Amputation"
+          "transition": "Delay_Before_Amputation"
         },
         {
-          "transition" : "Living_With_Diabetes"
+          "transition": "Living_With_Diabetes"
         }
       ]
     },
-
-    "Delay_Before_Amputation" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 6, "unit" : "weeks" },
-      "direct_transition" : "Amputation"
+    "Delay_Before_Amputation": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Amputation"
     },
-
-    "Amputation" : {
-      "type" : "Encounter",
-      "encounter_class" : "inpatient",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "185347001",
-        "display" : "Encounter for problem"
-      }],
-      "reason" : "Diagnose_Neuropathy",
-      "remarks" : ["lower limb amputation occurs in 0.65% of the diabetic population",
-                   " with upper limb amputation occurring in an ever fewer 0.034%",
-                   "http://www.amputee-coalition.org/resources/massachusetts/",
-                   "== lower limb =~ 20x more likely than upper limb"],
-      "distributed_transition" : [
-        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Left_Foot" },
-        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Left_Leg" },
-        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Right_Foot" },
-        { "distribution" : 0.2375, "transition" : "Potential_Amputation_of_Right_Leg" },
-        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Left_Hand" },
-        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Left_Arm" },
-        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Right_Hand" },
-        { "distribution" : 0.0125, "transition" : "Potential_Amputation_of_Right_Arm" }
+    "Amputation": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "reason": "Diagnose_Neuropathy",
+      "remarks": [
+        "lower limb amputation occurs in 0.65% of the diabetic population",
+        " with upper limb amputation occurring in an ever fewer 0.034%",
+        "http://www.amputee-coalition.org/resources/massachusetts/",
+        "== lower limb =~ 20x more likely than upper limb"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Left_Foot"
+        },
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Left_Leg"
+        },
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Right_Foot"
+        },
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Right_Leg"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Left_Hand"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Left_Arm"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Right_Hand"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Right_Arm"
+        }
       ]
     },
-
-    "Potential_Amputation_of_Left_Foot" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Potential_Amputation_of_Left_Foot": {
+      "type": "Simple",
+      "conditional_transition": [
         {
-          "condition" : {
-            "condition_type" : "Or",
-            "conditions" : [
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Left_Foot"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Foot"
               },
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Left_Leg"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Leg"
               }
             ]
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Left_Foot"
+          "transition": "Amputation_of_Left_Foot"
         }
       ]
     },
-
-    "Amputation_of_Left_Foot" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "180030006",
-        "display" : "Amputation of left foot"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Foot_Amputation"
-    },
-
-
-    "Potential_Amputation_of_Right_Foot" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Left_Foot": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "Or",
-            "conditions" : [
+          "system": "SNOMED-CT",
+          "code": "180030006",
+          "display": "Amputation of left foot"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Foot_Amputation"
+    },
+    "Potential_Amputation_of_Right_Foot": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Right_Foot"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Foot"
               },
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Right_Leg"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Leg"
               }
             ]
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Right_Foot"
+          "transition": "Amputation_of_Right_Foot"
         }
       ]
     },
-
-    "Amputation_of_Right_Foot" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "180030006",
-        "display" : "Amputation of right foot"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Foot_Amputation"
-    },
-
-    "Potential_Amputation_of_Left_Leg" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Right_Foot": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Left_Leg"
+          "system": "SNOMED-CT",
+          "code": "180030006",
+          "display": "Amputation of right foot"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Foot_Amputation"
+    },
+    "Potential_Amputation_of_Left_Leg": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Left_Leg"
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Left_Leg"
+          "transition": "Amputation_of_Left_Leg"
         }
       ]
     },
-
-    "Amputation_of_Left_Leg" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "79733001",
-        "display" : "Amputation of left leg"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Lower_Limb_Amputation"
-    },
-
-    "Potential_Amputation_of_Right_Leg" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Left_Leg": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Right_Leg"
+          "system": "SNOMED-CT",
+          "code": "79733001",
+          "display": "Amputation of left leg"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Lower_Limb_Amputation"
+    },
+    "Potential_Amputation_of_Right_Leg": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Right_Leg"
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Right_Leg"
+          "transition": "Amputation_of_Right_Leg"
         }
       ]
     },
-
-    "Amputation_of_Right_Leg" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "79733001",
-        "display" : "Amputation of right leg"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Lower_Limb_Amputation"
-    },
-
-    "History_of_Lower_Limb_Amputation" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "161622006",
-        "display" : "History of lower limb amputation (situation)"
-      }],
-      "direct_transition" : "Recovery_After_Amputation"
-    },
-
-    "History_of_Foot_Amputation" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "429280009",
-        "display" : "History of amputation of foot (situation)"
-      }],
-      "direct_transition" : "Recovery_After_Amputation"
-    },
-
-
-    "Potential_Amputation_of_Left_Hand" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Right_Leg": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "Or",
-            "conditions" : [
+          "system": "SNOMED-CT",
+          "code": "79733001",
+          "display": "Amputation of right leg"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Lower_Limb_Amputation"
+    },
+    "History_of_Lower_Limb_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "161622006",
+          "display": "History of lower limb amputation (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "History_of_Foot_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "429280009",
+          "display": "History of amputation of foot (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "Potential_Amputation_of_Left_Hand": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Left_Hand"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Hand"
               },
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Left_Arm"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Arm"
               }
             ]
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Left_Hand"
+          "transition": "Amputation_of_Left_Hand"
         }
       ]
     },
-
-    "Amputation_of_Left_Hand" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "46028000",
-        "display" : "Amputation of left hand"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Hand_Amputation"
-    },
-
-    "Potential_Amputation_of_Right_Hand" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Left_Hand": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "Or",
-            "conditions" : [
+          "system": "SNOMED-CT",
+          "code": "46028000",
+          "display": "Amputation of left hand"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Hand_Amputation"
+    },
+    "Potential_Amputation_of_Right_Hand": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Right_Hand"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Hand"
               },
               {
-                "condition_type" : "PriorState",
-                "name" : "Amputation_of_Right_Arm"
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Arm"
               }
             ]
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Right_Hand"
+          "transition": "Amputation_of_Right_Hand"
         }
       ]
     },
-
-    "Amputation_of_Right_Hand" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "46028000",
-        "display" : "Amputation of right hand"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Hand_Amputation"
-    },
-
-    "Potential_Amputation_of_Right_Arm" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Right_Hand": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Right_Arm"
+          "system": "SNOMED-CT",
+          "code": "46028000",
+          "display": "Amputation of right hand"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Hand_Amputation"
+    },
+    "Potential_Amputation_of_Right_Arm": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Right_Arm"
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Right_Arm"
+          "transition": "Amputation_of_Right_Arm"
         }
       ]
     },
-
-    "Amputation_of_Right_Arm" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "13995008",
-        "display" : "Amputation of right arm"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Upper_Limb_Amputation"
-    },
-
-    "Potential_Amputation_of_Left_Arm" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Right_Arm": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "PriorState",
-            "name" : "Amputation_of_Left_Arm"
+          "system": "SNOMED-CT",
+          "code": "13995008",
+          "display": "Amputation of right arm"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Upper_Limb_Amputation"
+    },
+    "Potential_Amputation_of_Left_Arm": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Left_Arm"
           },
-          "transition" : "End_Amputation_Encounter"
+          "transition": "End_Amputation_Encounter"
         },
         {
-          "transition" : "Amputation_of_Left_Arm"
+          "transition": "Amputation_of_Left_Arm"
         }
       ]
     },
-
-    "Amputation_of_Left_Arm" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "13995008",
-        "display" : "Amputation of left arm"
-      }],
-      "duration" : { "low" : 1, "high" : 4, "unit" : "hours" },
-      "reason" : "Diagnose_Neuropathy",
-      "direct_transition" : "History_of_Upper_Limb_Amputation"
-    },
-
-    "History_of_Upper_Limb_Amputation" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "161621004",
-        "display" : "History of upper limb amputation (situation)"
-      }],
-      "direct_transition" : "Recovery_After_Amputation"
-    },
-
-    "History_of_Hand_Amputation" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "698423002",
-        "display" : "History of disarticulation at wrist (situation)"
-      }],
-      "direct_transition" : "Recovery_After_Amputation"
-    },
-
-    "Recovery_After_Amputation" : {
-      "type" : "Delay",
-      "range" : { "low" : 3, "high" : 6, "unit" : "weeks" },
-      "direct_transition" : "End_Amputation_Encounter"
-    },
-
-    "End_Amputation_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Living_With_Diabetes"
-    },
-
-
-    "Living_With_Diabetes" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Amputation_of_Left_Arm": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
-            "condition_type" : "Active Condition",
-            "codes" : [{
-              "system" : "SNOMED-CT",
-              "code" : "46177005",
-              "display" : "End stage renal disease (disorder)"
-            }]
+          "system": "SNOMED-CT",
+          "code": "13995008",
+          "display": "Amputation of left arm"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Upper_Limb_Amputation"
+    },
+    "History_of_Upper_Limb_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "161621004",
+          "display": "History of upper limb amputation (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "History_of_Hand_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698423002",
+          "display": "History of disarticulation at wrist (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "Recovery_After_Amputation": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Amputation_Encounter"
+    },
+    "End_Amputation_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_With_Diabetes"
+    },
+    "Living_With_Diabetes": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "46177005",
+                "display": "End stage renal disease (disorder)"
+              }
+            ]
           },
-          "transition" : "Delay_Before_Next_Dialysis_Encounter"
+          "transition": "Delay_Before_Next_Dialysis_Encounter"
         },
         {
-          "transition" : "Followup_Encounter_After_Diagnosis"
+          "transition": "Followup_Encounter_After_Diagnosis"
         }
       ]
     },
-
-    "Followup_Encounter_After_Diagnosis" : {
-      "type" : "Encounter",
-      "wellness" : true,
-      "direct_transition" : "Record_HA1C"
+    "Followup_Encounter_After_Diagnosis": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Record_HA1C"
     },
-
-    "Delay_Before_Next_Dialysis_Encounter" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 3, "unit" : "days" },
-      "direct_transition" : "Dialysis_Encounter"
+    "Delay_Before_Next_Dialysis_Encounter": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Dialysis_Encounter"
     },
-
-    "Dialysis_Encounter" : {
-      "type" : "Encounter",
-      "encounter_class" : "outpatient",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "185347001",
-        "display" : "Encounter for problem"
-      }],
-      "reason" : "Diagnose_End_Stage_Renal_Disease",
-      "direct_transition" : "Record_HA1C"
+    "Dialysis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "reason": "Diagnose_End_Stage_Renal_Disease",
+      "direct_transition": "Record_HA1C"
+    },
+    "Hypertension_Medication_Low": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 316052,
+          "display": "Hydrochlorothiazide 6.25 MG"
+        }
+      ],
+      "direct_transition": "Check_Diabetes",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx"
+    },
+    "Hypertension_Medication_High": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 316049,
+          "display": "Hydrochlorothiazide 25 MG"
+        }
+      ],
+      "direct_transition": "Check_Diabetes",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx"
+    },
+    "End_Hypertension_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hypertension_medication",
+      "conditional_transition": [
+        {
+          "transition": "Hypertension_Medication_Low",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 160
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_High",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        }
+      ]
+    },
+    "Check_Hypertension_BP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_Low_Dose",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 160
+          }
+        },
+        {
+          "transition": "Check_High_Dose",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        }
+      ]
+    },
+    "Check_Low_Dose": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_Diabetes",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316052,
+                "display": "Hydrochlorothiazide 6.25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Hypertension_Medication",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316049,
+                "display": "Hydrochlorothiazide 25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_Low",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          }
+        }
+      ]
+    },
+    "Check_High_Dose": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_Diabetes",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316049,
+                "display": "Hydrochlorothiazide 25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Hypertension_Medication",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316052,
+                "display": "Hydrochlorothiazide 6.25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_High",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          }
+        }
+      ]
     }
   }
 }
