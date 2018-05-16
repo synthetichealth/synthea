@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.stream.Collectors;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,8 +46,7 @@ public class CSVExporterTest {
         continue;
       }
 
-      String csvData = Files.readAllLines(csvFile.toPath()).stream()
-          .collect(Collectors.joining("\n"));
+      String csvData = new String(Files.readAllBytes(csvFile.toPath()));
 
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
