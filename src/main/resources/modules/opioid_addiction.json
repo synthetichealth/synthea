@@ -530,7 +530,7 @@
     },
     "Directed_Use_Overdose_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "emergency",
       "reason": "Directed_Use_Overdose",
       "codes": [
         {
@@ -568,7 +568,7 @@
     },
     "Misuse_Overdose_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "emergency",
       "reason": "Misuse_Overdose",
       "codes": [
         {
@@ -606,7 +606,7 @@
     },
     "Addiction_Overdose_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "emergency",
       "reason": "Addiction_Overdose",
       "codes": [
         {

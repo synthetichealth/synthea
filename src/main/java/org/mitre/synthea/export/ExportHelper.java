@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -70,12 +71,37 @@ public abstract class ExportHelper {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYY-MM-dd");
 
   /**
+   * Iso8601 date time format.
+   */
+  private static final SimpleDateFormat ISO_DATE_FORMAT = iso();
+
+  /**
+   * Create a SimpleDateFormat for iso8601.
+   * @return Iso8601 date time format.
+   */
+  private static final SimpleDateFormat iso() {
+    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+    f.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return f;
+  }
+
+  /**
    * Get a date string in the format YYYY-MM-DD from the given time stamp.
    */
   public static String dateFromTimestamp(long time) {
     synchronized (DATE_FORMAT) {
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
       return DATE_FORMAT.format(new Date(time));
+    }
+  }
+
+  /**
+   * Get an iso8601 string for the given time stamp.
+   */
+  public static String iso8601Timestamp(long time) {
+    synchronized (ISO_DATE_FORMAT) {
+      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
+      return ISO_DATE_FORMAT.format(new Date(time));
     }
   }
 }

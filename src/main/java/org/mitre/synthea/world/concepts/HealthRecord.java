@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Provider;
@@ -160,6 +161,7 @@ public class HealthRecord {
     public Procedure(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
+      this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
     }
   }
 
@@ -517,8 +519,25 @@ public class HealthRecord {
   public void encounterEnd(long time, String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equals(type) && encounter.stop == 0L) {
+      if (encounter.type.equalsIgnoreCase(type) && encounter.stop == 0L) {
         encounter.stop = time;
+
+        long duration = Utilities.convertTime("minutes", (encounter.stop - encounter.start));
+        if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString()) && duration < 60) {
+          // Emergency encounters should take at least an hour.
+          encounter.stop = encounter.start + TimeUnit.MINUTES.toMillis(60);
+        } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString()) && duration < 1440) {
+          // Inpatient encounters should last at least a day (1440 minutes).
+          encounter.stop = encounter.start + TimeUnit.MINUTES.toMillis(1440);
+        } else if (duration < 15) {
+          // If the wellness or outpatient encounter was less than 15 minutes,
+          // let's force it to be at least that long.
+          encounter.stop = encounter.start + TimeUnit.MINUTES.toMillis(15);
+        }
+        // Now, add time for each procedure.
+        for (Procedure p : encounter.procedures) {
+          encounter.stop += (p.stop - p.start);
+        }
         return;
       }
     }

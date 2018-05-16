@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
@@ -563,7 +564,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
       if (encounter.type != EncounterType.WELLNESS.toString()) {
-        encounter.stop = time;
+        person.record.encounterEnd(time, encounter.type);
       }
 
       encounter.discharge = dischargeDisposition;
@@ -1256,6 +1257,7 @@ public abstract class State implements Cloneable {
       HealthRecord.Procedure procedure = person.record.procedure(time, primaryProcedureCode);
       procedure.name = this.name;
       procedure.codes.add(procedureCode);
+      procedure.stop = procedure.start + TimeUnit.MINUTES.toMillis(30);
       return true;
     }
   }

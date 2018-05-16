@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
+import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -31,23 +32,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * Files include:
  * patients.csv, encounters.csv, allergies.csv,
  * medications.csv, conditions.csv, careplans.csv,
- * observations.csv, procedures.csv, and immunizations.csv .
- * Sample:
- * - patients.csv <pre>
- * ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
- * 5e0d195e,1946-12-14,2015-10-03,999-12-2377,S99962866,false,Mrs.,Miracle267,Ledner332,,Raynor597,M,white,irish,F,Millbury MA,2502 Fisher Manor Boston MA 02132
- * 52082709,1968-05-23,,999-17-1808,S99941406,X41451685X,Mrs.,Alda869,Gorczany848,,Funk527,M,white,italian,F,Gardner MA,46973 Velda Gateway Franklin Town MA 02038
- * 8b4c62c8,1967-06-22,1985-07-04,999-11-1173,S99955795,,Ms.,Moshe832,Zulauf396,,,,white,english,F,Boston MA,250 Reba Park Carver MA 02330
- * 965c5539,1934-11-04,2015-06-19,999-63-2195,S99931866,X71888970X,Mr.,Verla554,Roberts329,,,S,white,irish,M,Fall River MA,321 Abdullah Bridge Needham MA 02492
- * 2b28d6c3,1964-08-13,,999-55-5054,S99990374,X68574707X,Ms.,Henderson277,Labadie810,,,S,black,dominican,F,North Attleborough MA,55825 Barrows Prairie Suite 144 Boston MA 02134
- * </pre>
- * - conditions.csv <pre>
- * START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
- * 1965-10-10,,5e0d195e,918b17f4,38341003,Hypertension
- * 1966-09-09,,5e0d195e,918b17f4,15777000,Prediabetes
- * 1988-09-25,,5e0d195e,918b17f4,239872002,Osteoarthritis of hip
- * 1990-09-01,,5e0d195e,918b17f4,410429000,Cardiac Arrest
- * </pre>
+ * observations.csv, procedures.csv, and immunizations.csv.
  */
 public class CSVExporter {
   /**
@@ -141,7 +126,8 @@ public class CSVExporter {
    */
   private void writeCSVHeaders() throws IOException {
     patients.write("ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
-        + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS");
+        + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
+        + "ADDRESS,CITY,STATE,ZIP");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
@@ -160,7 +146,7 @@ public class CSVExporter {
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
-    encounters.write("ID,DATE,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
+    encounters.write("ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("ID,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
@@ -276,20 +262,15 @@ public class CSVExporter {
         Person.RACE,
         Person.ETHNICITY,
         Person.GENDER,
-        Person.BIRTHPLACE
+        Person.BIRTHPLACE,
+        Person.ADDRESS,
+        Person.CITY,
+        Person.STATE,
+        Person.ZIP
     }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
     }
-
-    s.append(',');
-
-    String address = (String) person.attributes.get(Person.ADDRESS)
-            + " " + (String) person.attributes.get(Person.CITY)
-             + " " + (String) person.attributes.get(Person.STATE)
-              + " " + (String) person.attributes.get(Person.ZIP)
-               + " US";
-    s.append(clean(address));
 
     s.append(NEWLINE);
     write(s.toString(), patients);
@@ -306,12 +287,17 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // ID,DATE,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
     s.append(encounterID).append(',');
-    s.append(dateFromTimestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    if (encounter.stop != 0L) {
+      s.append(iso8601Timestamp(encounter.stop)).append(',');
+    } else {
+      s.append(',');
+    }
     s.append(personID).append(',');
 
     Code coding = encounter.codes.get(0);

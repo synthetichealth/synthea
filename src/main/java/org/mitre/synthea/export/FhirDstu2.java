@@ -85,7 +85,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Utilities;
@@ -478,11 +477,9 @@ public class FhirDstu2 {
     }
 
     encounterResource.setClassElement(EncounterClassEnum.forCode(encounter.type));
-    long encounterEnd = encounter.stop > 0 ? encounter.stop
-        : encounter.start + TimeUnit.MINUTES.toMillis(15);
-
-    encounterResource.setPeriod(new PeriodDt().setStart(new DateTimeDt(new Date(encounter.start)))
-        .setEnd(new DateTimeDt(new Date(encounterEnd))));
+    encounterResource.setPeriod(new PeriodDt()
+        .setStart(new DateTimeDt(new Date(encounter.start)))
+        .setEnd(new DateTimeDt(new Date(encounter.stop))));
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
