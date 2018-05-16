@@ -311,7 +311,7 @@
           "distributions": [
             {
               "distribution": 0.95,
-              "transition": "Chronic_Sinusitis_Continues"
+              "transition": "Chronic_Sinusitis_Followup_without_action"
             },
             {
               "distribution": 0.05,
@@ -386,6 +386,10 @@
       "type": "ConditionEnd",
       "condition_onset": "Diagnose_Chronic_Sinusitis",
       "direct_transition": "Sinusitis_Ends"
+    },
+    "Chronic_Sinusitis_Followup_without_action": {
+      "type": "EncounterEnd",
+      "direct_transition": "Chronic_Sinusitis_Continues"
     }
   }
 }
