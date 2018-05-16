@@ -299,9 +299,21 @@ public class HealthRecord {
     public Code reason;
     public Code discharge;
     public Provider provider;
+    public boolean ended;
 
     public Encounter(long time, String type) {
       super(time, type);
+      if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
+        // Emergency encounters should take at least an hour.
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(60);
+      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
+        // Inpatient encounters should last at least a day (1440 minutes).
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(1440);
+      } else {
+        // Other encounters will default to 15 minutes.
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
+      }
+      ended = false;
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
@@ -519,24 +531,19 @@ public class HealthRecord {
   public void encounterEnd(long time, String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equalsIgnoreCase(type) && encounter.stop == 0L) {
-        encounter.stop = time;
-
-        long duration = Utilities.convertTime("minutes", (encounter.stop - encounter.start));
-        if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString()) && duration < 60) {
-          // Emergency encounters should take at least an hour.
-          encounter.stop = encounter.start + TimeUnit.MINUTES.toMillis(60);
-        } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString()) && duration < 1440) {
-          // Inpatient encounters should last at least a day (1440 minutes).
-          encounter.stop = encounter.start + TimeUnit.MINUTES.toMillis(1440);
-        } else if (duration < 15) {
-          // If the wellness or outpatient encounter was less than 15 minutes,
-          // let's force it to be at least that long.
-          encounter.stop = encounter.start + TimeUnit.MINUTES.toMillis(15);
+      if (encounter.type.equalsIgnoreCase(type) && !encounter.ended) {
+        encounter.ended = true;
+        // Only override the stop time if it is longer than the default.
+        if (time > encounter.stop) {
+          encounter.stop = time;
         }
         // Now, add time for each procedure.
+        long procedureTime;
         for (Procedure p : encounter.procedures) {
-          encounter.stop += (p.stop - p.start);
+          procedureTime = (p.stop - p.start);
+          if (procedureTime > 0) {
+            encounter.stop += procedureTime;
+          }
         }
         return;
       }

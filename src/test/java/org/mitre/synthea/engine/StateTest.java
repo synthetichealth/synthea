@@ -552,7 +552,7 @@ public class StateTest {
     // Verify that the Encounter was added to the record
     HealthRecord.Encounter enc = person.record.encounters.get(0);
     assertEquals(time, enc.start);
-    assertEquals(0L, enc.stop);
+    assertEquals(time + TimeUnit.MINUTES.toMillis(60), enc.stop);
 
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
@@ -575,7 +575,7 @@ public class StateTest {
     // Verify that the Encounter was added to the record
     HealthRecord.Encounter enc = person.record.encounters.get(0);
     assertEquals(time, enc.start);
-    assertEquals(0L, enc.stop);
+    assertEquals(time + TimeUnit.MINUTES.toMillis(60), enc.stop);
     assertEquals("73211009", enc.reason.code);
     assertEquals("Diabetes Mellitus", enc.reason.display);
 
