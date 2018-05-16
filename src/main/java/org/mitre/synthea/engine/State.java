@@ -472,7 +472,7 @@ public abstract class State implements Cloneable {
           person.setCurrentEncounter(module, encounter);
 
           // find closest provider and increment encounters count
-          Provider provider = person.getAmbulatoryProvider();
+          Provider provider = person.getAmbulatoryProvider(time);
           person.addCurrentProvider(module.name, provider);
           int year = Utilities.getYear(time);
           provider.incrementEncounters("wellness", year);
@@ -494,7 +494,7 @@ public abstract class State implements Cloneable {
         person.setCurrentEncounter(module, encounter);
 
         // find closest provider and increment encounters count
-        Provider provider = person.getProvider(encounterClass);
+        Provider provider = person.getProvider(encounterClass, time);
         person.addCurrentProvider(module.name, provider);
         int year = Utilities.getYear(time);
         provider.incrementEncounters(encounterClass, year);
@@ -804,7 +804,7 @@ public abstract class State implements Cloneable {
       Provider medicationProvider = person.getCurrentProvider(module.name);
       if (medicationProvider == null) {
         // no provider associated with encounter or medication order
-        medicationProvider = person.getAmbulatoryProvider();
+        medicationProvider = person.getAmbulatoryProvider(time);
       }
 
       int year = Utilities.getYear(time);
@@ -1010,7 +1010,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getAmbulatoryProvider();
+        provider = person.getAmbulatoryProvider(time);
       }
       int year = Utilities.getYear(time);
       provider.incrementProcedures(year);
@@ -1214,7 +1214,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getAmbulatoryProvider();
+        provider = person.getAmbulatoryProvider(time);
       }
       int year = Utilities.getYear(time);
       provider.incrementLabs(year);

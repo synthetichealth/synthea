@@ -598,7 +598,7 @@ public class FhirStu3 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getAmbulatoryProvider();
+      Provider provider = person.getAmbulatoryProvider(encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {

@@ -734,7 +734,7 @@ public final class CardiovascularDiseaseModule extends Module {
           Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
           // no provider associated with encounter or procedure
           if (provider == null) {
-            provider = person.getAmbulatoryProvider();
+            provider = person.getAmbulatoryProvider(time);
           }
           provider.incrementPrescriptions(year);
         }
@@ -765,7 +765,7 @@ public final class CardiovascularDiseaseModule extends Module {
             Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
             // no provider associated with encounter or procedure
             if (provider == null) {
-              provider = person.getAmbulatoryProvider();
+              provider = person.getAmbulatoryProvider(time);
             }
             provider.incrementProcedures(year);
           }
@@ -781,7 +781,7 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param diagnosis The diagnosis to be made.
    */
   public static void performEmergency(Person person, long time, String diagnosis) {
-    Provider provider = person.getEmergencyProvider();
+    Provider provider = person.getEmergencyProvider(time);
 
     int year = Utilities.getYear(time);
 
