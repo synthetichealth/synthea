@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.hl7.fhir.dstu3.model.Address;
@@ -577,11 +576,10 @@ public class FhirStu3 {
     }
 
     encounterResource.setClass_(new Coding().setCode(encounter.type));
-    long encounterEnd = encounter.stop > 0 ? encounter.stop
-        : encounter.start + TimeUnit.MINUTES.toMillis(15);
-
     encounterResource
-        .setPeriod(new Period().setStart(new Date(encounter.start)).setEnd(new Date(encounterEnd)));
+        .setPeriod(new Period()
+            .setStart(new Date(encounter.start))
+            .setEnd(new Date(encounter.stop)));
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)

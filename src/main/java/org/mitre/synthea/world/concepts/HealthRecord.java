@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Provider;
@@ -160,6 +161,7 @@ public class HealthRecord {
     public Procedure(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
+      this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
     }
   }
 
@@ -297,9 +299,21 @@ public class HealthRecord {
     public Code reason;
     public Code discharge;
     public Provider provider;
+    public boolean ended;
 
     public Encounter(long time, String type) {
       super(time, type);
+      if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
+        // Emergency encounters should take at least an hour.
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(60);
+      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
+        // Inpatient encounters should last at least a day (1440 minutes).
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(1440);
+      } else {
+        // Other encounters will default to 15 minutes.
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
+      }
+      ended = false;
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
@@ -517,8 +531,20 @@ public class HealthRecord {
   public void encounterEnd(long time, String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equals(type) && encounter.stop == 0L) {
-        encounter.stop = time;
+      if (encounter.type.equalsIgnoreCase(type) && !encounter.ended) {
+        encounter.ended = true;
+        // Only override the stop time if it is longer than the default.
+        if (time > encounter.stop) {
+          encounter.stop = time;
+        }
+        // Now, add time for each procedure.
+        long procedureTime;
+        for (Procedure p : encounter.procedures) {
+          procedureTime = (p.stop - p.start);
+          if (procedureTime > 0) {
+            encounter.stop += procedureTime;
+          }
+        }
         return;
       }
     }
