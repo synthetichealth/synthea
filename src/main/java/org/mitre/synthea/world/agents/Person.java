@@ -289,30 +289,30 @@ public class Person implements Serializable, QuadTreeData {
   public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
 
-  public Provider getProvider(String encounterClass) {
+  public Provider getProvider(String encounterClass, long time) {
     switch (encounterClass) {
       case Provider.AMBULATORY:
-        return this.getAmbulatoryProvider();
+        return this.getAmbulatoryProvider(time);
       case Provider.EMERGENCY:
-        return this.getEmergencyProvider();
+        return this.getEmergencyProvider(time);
       case Provider.INPATIENT:
-        return this.getInpatientProvider();
+        return this.getInpatientProvider(time);
       case Provider.WELLNESS:
-        return this.getAmbulatoryProvider();
+        return this.getAmbulatoryProvider(time);
       default:
-        return this.getAmbulatoryProvider();
+        return this.getAmbulatoryProvider(time);
     }
   }
 
-  public Provider getAmbulatoryProvider() {
+  public Provider getAmbulatoryProvider(long time) {
     if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER)) {
-      setAmbulatoryProvider();
+      setAmbulatoryProvider(time);
     }
     return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
   }
 
-  private void setAmbulatoryProvider() {
-    Provider provider = Provider.findClosestService(this, Provider.AMBULATORY);
+  private void setAmbulatoryProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.AMBULATORY, time);
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
@@ -320,15 +320,15 @@ public class Person implements Serializable, QuadTreeData {
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
-  public Provider getInpatientProvider() {
+  public Provider getInpatientProvider(long time) {
     if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER)) {
-      setInpatientProvider();
+      setInpatientProvider(time);
     }
     return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
   }
 
-  private void setInpatientProvider() {
-    Provider provider = Provider.findClosestService(this, Provider.INPATIENT);
+  private void setInpatientProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.INPATIENT, time);
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
@@ -336,22 +336,19 @@ public class Person implements Serializable, QuadTreeData {
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
-  public Provider getEmergencyProvider() {
+  public Provider getEmergencyProvider(long time) {
     if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER)) {
-      setEmergencyProvider();
+      setEmergencyProvider(time);
     }
     return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
   }
 
-  private void setEmergencyProvider() {
-    Provider provider = Provider.findClosestService(this, Provider.EMERGENCY);
+  private void setEmergencyProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.EMERGENCY, time);
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
   public void setEmergencyProvider(Provider provider) {
-    if (provider == null) {
-      provider = Provider.findClosestService(this, Provider.EMERGENCY);
-    }
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 

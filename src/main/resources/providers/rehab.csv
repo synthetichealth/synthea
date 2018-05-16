@@ -1,4 +1,4 @@
-,id,name,address,city,state,zip,county,phone,ownership,startdate,lat,lon,hospital,rehab
+,id,name,address,city,state,zip,county,phone,ownership,startdate,LAT,LON,hospital,rehab
 0,36T180,CLEVELAND CLINIC - MAIN,9500 EUCLID AVENUE,CLEVELAND,OH,44195,Cuyahoga,(216) 445-0708,Non-profit,01/01/2011,41.505546, -81.6915,false,true
 1,44T156,PARKRIDGE MEDICAL CENTER,2333 MCCALLIE AVE,CHATTANOOGA,TN,37404,Hamilton,(423) 493-6822,For profit,04/01/2003,35.045756, -85.308287,false,true
 2,04R319,DEQUEEN MEDICAL CENTER,1306 WEST COLLIN RAYE DRIVE,DEQUEEN,AR,71832,Sevier,(870) 584-0299,For profit,10/01/2006,34.03776, -94.341528,false,true

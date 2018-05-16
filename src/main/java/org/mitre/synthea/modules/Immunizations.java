@@ -45,7 +45,7 @@ public class Immunizations {
     }
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void performEncounter(Person person, long time) {
     Map<String, List<Long>> immunizationsGiven;
     if (person.attributes.containsKey(IMMUNIZATIONS)) {
@@ -59,7 +59,7 @@ public class Immunizations {
       if (immunizationDue(immunization, person, time, immunizationsGiven)) {
         List<Long> history = immunizationsGiven.get(immunization);
         history.add(time);
-        HealthRecord.Entry entry = person.record.immunization(time, immunization);
+        HealthRecord.Immunization entry = person.record.immunization(time, immunization);
         Map code = (Map) immunizationSchedule.get(immunization).get("code");
         HealthRecord.Code immCode = new HealthRecord.Code(code.get("system").toString(),
             code.get("code").toString(), code.get("display").toString());

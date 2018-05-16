@@ -1,9 +1,8 @@
 package org.mitre.synthea.helpers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -14,6 +13,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
@@ -21,11 +23,11 @@ import org.junit.Test;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class ConceptsTest {
-  private Table<String,String,String> concepts;
+  private Map<Code,Set<String>> concepts;
 
   @Before
   public void setup() {
-    concepts = HashBasedTable.create();
+    concepts = new TreeMap<Code,Set<String>>();;
   }
   
   @Test
@@ -46,19 +48,18 @@ public class ConceptsTest {
     JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
     
     // example_module has 4 codes:
-    // Examplitis condition
-    // Examplitol medication
-    // Examplotomy_Encounter
-    // Examplotomy procedure
-    
-    
+    List<Code> codes = new ArrayList<Code>();
+    codes.add(new Code("SNOMED-CT","123","Examplitis"));
+    codes.add(new Code("SNOMED-CT","ABC","Examplotomy Encounter"));
+    codes.add(new Code("SNOMED-CT","789","Examplotomy"));
+    codes.add(new Code("RxNorm","456","Examplitol"));
+
     Concepts.inventoryModule(concepts, module);
-    
-    assertEquals(4, concepts.cellSet().size());
-    assertEquals("Examplitis", concepts.get("SNOMED-CT", "123"));
-    assertEquals("Examplitol", concepts.get("RxNorm", "456"));
-    assertEquals("Examplotomy Encounter", concepts.get("SNOMED-CT", "ABC"));
-    assertEquals("Examplotomy", concepts.get("SNOMED-CT", "789"));
+
+    assertEquals(4, concepts.keySet().size());
+    for (Code code : codes) {
+      assertTrue(concepts.containsKey(code));
+    }
   }
 
   @Test
@@ -70,10 +71,11 @@ public class ConceptsTest {
     JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
     JsonObject state = module.getAsJsonObject("states").getAsJsonObject("Appendicitis");
     
-    Concepts.inventoryState(concepts, state);
+    Concepts.inventoryState(concepts, state, module.get("name").getAsString());
     
-    assertEquals(1, concepts.cellSet().size());
-    assertEquals("Rupture of appendix", concepts.get("SNOMED-CT", "47693006"));
+    assertEquals(1, concepts.keySet().size());
+    Code code = new Code("SNOMED-CT", "47693006", "Rupture of appendix");
+    assertTrue(concepts.containsKey(code));
   }
   
   @Test
@@ -86,11 +88,11 @@ public class ConceptsTest {
     codes.add(new Code("RxNorm","834060","Penicillin V Potassium 250 MG")); 
     // note duplicate code here!! ex, same code in multiple modules
     
-    Concepts.inventoryCodes(concepts, codes);
+    Concepts.inventoryCodes(concepts, codes, ConceptsTest.class.getSimpleName());
     
-    assertEquals(3, concepts.cellSet().size());
-    assertEquals("Stroke", concepts.get("SNOMED-CT", "230690007"));
-    assertEquals("Myocardial Infarction", concepts.get("SNOMED-CT", "22298006"));
-    assertEquals("Penicillin V Potassium 250 MG", concepts.get("RxNorm", "834060"));
+    assertEquals(3, concepts.keySet().size());
+    for (Code code : codes) {
+      assertTrue(concepts.containsKey(code));
+    }
   }
 }

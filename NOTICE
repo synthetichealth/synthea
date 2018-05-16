@@ -1,0 +1,28 @@
+Synthea
+Copyright 2017-2018 The MITRE Corporation
+
+This material contains prescribable drug codes from RxNorm that are released by
+the National Library of Medicine and is in the public domain.
+https://www.nlm.nih.gov/research/umls/rxnorm/docs/prescribe.html
+
+This material contains content from LOINC (R) (http://loinc.org). The LOINC
+table, LOINC codes, and LOINC panels and forms file are protected by US
+Copyright Law (C) 1995-2014, Regenstrief Institute, Inc. and the Logical
+Observation Identifiers Names and Codes (LOINC) Committee and available at no
+cost under the license at http://loinc.org/terms-of-use
+
+This material contains content from SNOMED CT and constitutes a fair use of such
+copyrighted material as provided for in section 107 of the US Copyright Law for
+the purposes of research and nonprofit educational purposes.
+
+SNOMED CT is a comprehensive clinical terminology, originally created by the
+College of American Pathologists (CAP) and, as of April 2007, and is owned,
+maintained, and distributed by the International Health Terminology Standards
+Development Organisation (IHTSDO) (http://www.ihtsdo.org), a not-for-profit
+association.
+
+Use of SNOMED CT is subject to the IHTSDO Affiliate license provisions and is
+free in IHTSDO Member territories including the United States, in low income
+countries, and for Qualifying Research Projects in any country. To learn more,
+please see the IHTSDO SNOMED CT and Licensing page
+(https://www.snomed.org/snomed-ct/get-snomed-ct).

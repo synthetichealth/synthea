@@ -13,6 +13,7 @@ import ca.uhn.fhir.validation.ValidationResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hl7.fhir.dstu3.model.DiagnosticReport;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,7 +70,12 @@ public class FHIRDSTU2ExporterTest {
               validationErrors.add(emessage.getMessage());
             }
           }
-          
+          if (entry.getResource() instanceof DiagnosticReport) {
+            DiagnosticReport report = (DiagnosticReport) entry.getResource();
+            if (report.getPerformer().isEmpty()) {
+              validationErrors.add("Performer is a required field on DiagnosticReport!");
+            }
+          }
         }
       }
       int y = validationErrors.size();
