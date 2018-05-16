@@ -475,7 +475,7 @@ public abstract class State implements Cloneable {
           Provider provider = person.getAmbulatoryProvider(time);
           person.addCurrentProvider(module.name, provider);
           int year = Utilities.getYear(time);
-          provider.incrementEncounters("wellness", year);
+          provider.incrementEncounters(EncounterType.WELLNESS, year);
           encounter.provider = provider;
 
           diagnosePastConditions(person, time);
@@ -562,7 +562,7 @@ public abstract class State implements Cloneable {
     @Override
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      if (encounter.type != EncounterType.WELLNESS.toString()) {
+      if (!EncounterType.WELLNESS.equals(encounter.type)) {
         encounter.stop = time;
       }
 

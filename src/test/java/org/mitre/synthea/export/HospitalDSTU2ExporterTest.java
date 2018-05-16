@@ -39,7 +39,7 @@ public class HospitalDSTU2ExporterTest {
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 
-    Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS.toString(), 0);
+    Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS, 0);
     HospitalDSTU2Exporter.export(0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir_dstu2").toFile();

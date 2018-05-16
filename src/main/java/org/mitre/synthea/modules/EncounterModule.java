@@ -39,7 +39,7 @@ public final class EncounterModule extends Module {
     // add a wellness encounter if this is the right time
     if (person.record.timeSinceLastWellnessEncounter(time) >= recommendedTimeBetweenWellnessVisits(
         person, time)) {
-      Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
+      Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS);
       encounter.name = "Encounter Module Scheduled Wellness";
       encounter.codes.add(ENCOUNTER_CHECKUP);
       encounter.codes.add(getWellnessVisitCode(person, time));
@@ -48,7 +48,7 @@ public final class EncounterModule extends Module {
     } else if (person.symptomTotal() > SYMPTOM_THRESHOLD) {
       // add a symptom driven encounter if symptoms are severe
       person.resetSymptoms();
-      Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
+      Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS);
       encounter.name = "Encounter Module Symptom Driven";
       encounter.codes.add(ENCOUNTER_CHECKUP);
       encounter.codes.add(getWellnessVisitCode(person, time));
@@ -106,14 +106,14 @@ public final class EncounterModule extends Module {
   public static void emergencyEncounter(Person person, long time) {
     // find closest service provider with emergency service
     Provider provider = person.getEmergencyProvider(time);
-    provider.incrementEncounters("emergency", Utilities.getYear(time));
+    provider.incrementEncounters(EncounterType.EMERGENCY, Utilities.getYear(time));
 
-    Encounter encounter = person.record.encounterStart(time, "emergency");
+    Encounter encounter = person.record.encounterStart(time, EncounterType.EMERGENCY);
     encounter.codes.add(ENCOUNTER_EMERGENCY);
     // TODO: emergency encounters need their duration to be defined by the activities performed
     // based on the emergencies given here (heart attack, stroke)
     // assume people will be in the hospital for observation for a few days
-    person.record.encounterEnd(time + TimeUnit.DAYS.toMillis(4), "emergency");
+    person.record.encounterEnd(time + TimeUnit.DAYS.toMillis(4), EncounterType.EMERGENCY);
   }
 
   public long recommendedTimeBetweenWellnessVisits(Person person, long time) {
@@ -141,7 +141,7 @@ public final class EncounterModule extends Module {
   }
 
   public void endWellnessEncounter(Person person, long time) {
-    person.record.encounterEnd(time, EncounterType.WELLNESS.toString());
+    person.record.encounterEnd(time, EncounterType.WELLNESS);
     person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
   }
 

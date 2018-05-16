@@ -17,6 +17,7 @@ import org.apache.sis.index.tree.QuadTreeData;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
 public class Provider implements QuadTreeData {
@@ -76,6 +77,10 @@ public class Provider implements QuadTreeData {
   public void incrementEncounters(String encounterType, int year) {
     increment(year, ENCOUNTERS);
     increment(year, ENCOUNTERS + "-" + encounterType);
+  }
+
+  public void incrementEncounters(EncounterType encounterType, int year) {
+    incrementEncounters(encounterType.toString().toLowerCase(), year);
   }
 
   public void incrementProcedures(int year) {
