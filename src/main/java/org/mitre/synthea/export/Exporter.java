@@ -84,6 +84,14 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+
+    if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
+      try {
+        CDWExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -127,13 +135,25 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+
+    if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
+      CDWExporter.getInstance().writeFactTables();
+    }
   }
   
+  /**
+   * Filter the patient's history to only the last __ years
+   * but also include relevant history from before that. Exclude
+   * any history that occurs after the specified end_time -- typically
+   * this is the current time/System.currentTimeMillis().
+   *
+   * @param original The Person to filter.
+   * @param yearsToKeep The last __ years to keep.
+   * @param endTime The time the history ends.
+   * @return Modified Person with history expunged.
+   */
   public static Person filterForExport(Person original, int yearsToKeep, long endTime) {
-    // filter the patient's history to only the last __ years
-    // but also include relevant history from before that. Exclude
-    // any history that occurs after the specified end_time -- typically
-    // this is the current time/System.currentTimeMillis().
+
 
     long cutoffDate = endTime - Utilities.convertTime("years", yearsToKeep);
 
@@ -256,6 +276,16 @@ public abstract class Exporter {
     return false;
   }
 
+  /**
+   * Get the folder where the patient record should be stored.
+   * See the configuration settings "exporter.subfolders_by_id_substring" and
+   * "exporter.baseDirectory".
+   *
+   * @param folderName The base folder to use.
+   * @param person The person being exported.
+   * @return Either the base folder provided, or a subdirectory, depending on configuration
+   *     settings.
+   */
   public static File getOutputFolder(String folderName, Person person) {
     List<String> folders = new ArrayList<>();
 
@@ -276,6 +306,14 @@ public abstract class Exporter {
     return f;
   }
 
+  /**
+   * Get the filename to used to export the patient record.
+   * See the configuration setting "exporter.use_uuid_filenames".
+   *
+   * @param person The person being exported.
+   * @param extension The file extension to use.
+   * @return The filename only (not a path).
+   */
   public static String filename(Person person, String extension) {
     if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
       return person.attributes.get(Person.ID) + "." + extension;
