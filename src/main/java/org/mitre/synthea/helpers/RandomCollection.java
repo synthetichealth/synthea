@@ -13,6 +13,9 @@ public class RandomCollection<E> {
   private double total = 0;
 
   public void add(double weight, E result) {
+    if (weight <= 0) {
+      return;
+    }
     total += weight;
     map.put(total, result);
   }
