@@ -172,11 +172,12 @@ public abstract class Exporter {
       filterEntries(encounter.careplans, cutoffDate, endTime, cp -> record.careplanActive(cp.type));
     }
 
+    // if ANY of these are not empty, the encounter is not empty
     Predicate<Encounter> encounterNotEmpty = e ->
-        !e.conditions.isEmpty() && !e.allergies.isEmpty()
-        && !e.observations.isEmpty() && !e.reports.isEmpty()
-        && !e.procedures.isEmpty() && !e.medications.isEmpty()
-        && !e.immunizations.isEmpty() && !e.careplans.isEmpty();
+        !e.conditions.isEmpty() || !e.allergies.isEmpty()
+        || !e.observations.isEmpty() || !e.reports.isEmpty()
+        || !e.procedures.isEmpty() || !e.medications.isEmpty()
+        || !e.immunizations.isEmpty() || !e.careplans.isEmpty();
 
     Predicate<Encounter> isDeathCertification = 
         e -> !e.codes.isEmpty() && DeathModule.DEATH_CERTIFICATION.equals(e.codes.get(0));
