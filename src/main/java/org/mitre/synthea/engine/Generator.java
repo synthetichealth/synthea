@@ -234,7 +234,6 @@ public class Generator {
     Person person = null;
     try {
       boolean isAlive = true;
-      boolean meetsCriteria = true;
 
       Demographics city = location.randomCity(new Random(personSeed));
 
@@ -310,7 +309,7 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
-      } while ((!isAlive && !onlyDeadPatients) || (isAlive && onlyDeadPatients) || !meetsCriteria);
+      } while ((!isAlive && !onlyDeadPatients) || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
