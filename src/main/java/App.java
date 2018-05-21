@@ -15,7 +15,7 @@ public class App {
   public static void usage() {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-p populationSize]");
-    System.out.println("         [-g gender] [-a minAge-maxAge] [-c code percent]");
+    System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("Examples:");
     System.out.println("run_synthea Massachusetts");
     System.out.println("run_synthea Alaska Juneau");
@@ -23,7 +23,7 @@ public class App {
     System.out.println("run_synthea -p 1000)");
     System.out.println("run_synthea -s 987 Washington Seattle");
     System.out.println("run_synthea -s 21 -p 100 Utah \"Salt Lake City\"");
-    System.out.println("run_synthea -g M -a 60-65 -c 44054006 1.0");
+    System.out.println("run_synthea -g M -a 60-65");
   }
   
   /**
