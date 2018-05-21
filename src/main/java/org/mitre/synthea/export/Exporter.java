@@ -18,6 +18,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
@@ -138,38 +139,40 @@ public abstract class Exporter {
     final HealthRecord record = filtered.record;
     
     for (Encounter encounter : record.encounters) { 
+      List<ClaimItem> claimItems = encounter.claim.items;
       // keep conditions if still active, regardless of start date
       Predicate<HealthRecord.Entry> conditionActive = c -> record.conditionActive(c.type);
       // or if the condition was active at any point since the cutoff date
       Predicate<HealthRecord.Entry> activeWithinCutoff = c -> c.stop != 0L && c.stop > cutoffDate;
       Predicate<HealthRecord.Entry> keepCondition = conditionActive.or(activeWithinCutoff); 
-      filterEntries(encounter.conditions, cutoffDate, endTime, keepCondition);
+      filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, keepCondition);
 
       // allergies are essentially the same as conditions
-      filterEntries(encounter.allergies, cutoffDate, endTime, keepCondition);
+      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepCondition);
 
       // some of the "future death" logic could potentially add a future-dated death certificate
       Predicate<Observation> isCauseOfDeath =
           o -> DeathModule.CAUSE_OF_DEATH_CODE.code.equals(o.type);
       // keep cause of death unless it's future dated
       Predicate<Observation> keepObservation = isCauseOfDeath.and(notFutureDated);
-      filterEntries(encounter.observations, cutoffDate, endTime, keepObservation);
+      filterEntries(encounter.observations, claimItems, cutoffDate, endTime, keepObservation);
 
       // keep all death certificates, unless they are future-dated
       Predicate<Report> isDeathCertificate = r -> DeathModule.DEATH_CERTIFICATE.code.equals(r.type);
       Predicate<Report> keepReport = isDeathCertificate.and(notFutureDated);
-      filterEntries(encounter.reports, cutoffDate, endTime, keepReport);
+      filterEntries(encounter.reports, claimItems, cutoffDate, endTime, keepReport);
 
-      filterEntries(encounter.procedures, cutoffDate, endTime, null);
+      filterEntries(encounter.procedures, claimItems, cutoffDate, endTime, null);
 
       // keep medications if still active, regardless of start date
-      filterEntries(encounter.medications, cutoffDate, endTime, 
+      filterEntries(encounter.medications, claimItems, cutoffDate, endTime, 
           med -> record.medicationActive(med.type));
 
-      filterEntries(encounter.immunizations, cutoffDate, endTime, null);
+      filterEntries(encounter.immunizations, claimItems, cutoffDate, endTime, null);
 
       // keep careplans if they are still active, regardless of start date
-      filterEntries(encounter.careplans, cutoffDate, endTime, cp -> record.careplanActive(cp.type));
+      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime,
+          cp -> record.careplanActive(cp.type));
     }
 
     // if ANY of these are not empty, the encounter is not empty
@@ -185,7 +188,7 @@ public abstract class Exporter {
         encounterNotEmpty.or(isDeathCertification.and(notFutureDated));
 
     // finally filter out any empty encounters
-    filterEntries(record.encounters, cutoffDate, endTime, keepEncounter);
+    filterEntries(record.encounters, Collections.emptyList(), cutoffDate, endTime, keepEncounter);
 
     return filtered;
   }
@@ -197,6 +200,8 @@ public abstract class Exporter {
    * 
    * @param entries
    *          List of `Entry`s to filter
+   * @param claimItems
+   *          List of ClaimItems, from which any removed items should also be removed.
    * @param cutoffDate
    *          Minimum date, entries older than this may be discarded
    * @param endTime
@@ -205,7 +210,7 @@ public abstract class Exporter {
    *          Keep function, if this function returns `true` for an entry then it will be kept
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-      long cutoffDate, long endTime, Predicate<E> keepFunction) {
+      List<ClaimItem> claimItems, long cutoffDate, long endTime, Predicate<E> keepFunction) {
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
     while (iterator.hasNext()) {
@@ -216,6 +221,9 @@ public abstract class Exporter {
       if (!entryWithinTimeRange(entry, cutoffDate, endTime) 
           && (keepFunction == null || !keepFunction.test(entry))) {
         iterator.remove();
+        
+        claimItems.removeIf(ci -> ci.entry == entry); 
+        // compare with == because we only care if it's the actual same object
       }
     }
   }

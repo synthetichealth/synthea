@@ -191,6 +191,23 @@ public class ExporterTest {
     assertEquals("diabetes", filtered.record.encounters.get(0).conditions.get(0).type);
   }
   
+  @Test public void test_export_filter_should_filter_claim_items() {
+    record.encounterStart(time - years(10), "er_visit");
+    record.conditionStart(time - years(10), "something_permanent");
+    record.procedure(time - years(10), "xray");
+    
+    assertEquals(1, record.encounters.size());
+    assertEquals(2, record.encounters.get(0).claim.items.size()); // 1 condition, 1 procedure
+    
+    Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
+    // filter removes the procedure but keeps the open condition
+    assertEquals(1, filtered.record.encounters.size());
+    assertEquals(1, filtered.record.encounters.get(0).conditions.size());
+    assertEquals("something_permanent", filtered.record.encounters.get(0).conditions.get(0).type);
+    assertEquals(1, record.encounters.get(0).claim.items.size());
+    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).entry.type);
+  }
+  
   private static long years(long numYears) {
     return Utilities.convertTime("years", numYears);
   }
