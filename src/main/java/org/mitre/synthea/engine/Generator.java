@@ -61,62 +61,8 @@ public class Generator {
     public int minAge = 0;
     /** Maximum age of people to be generated. Defaults to 140. */
     public int maxAge = 140;
-    /** Code inclusion/exclusion criteria applies. */
-    public boolean codesSpecified = false;
-    /**
-     * Map of Codes (SNOMED/RxNorm/LOINC) and the percentage (0.0 - 1.0)
-     * of the population who must possess that code. Defaults to empty map.
-     */
-    public Map<String,Double> codes = new HashMap<String,Double>();
-    public Map<String,Integer> hasCodes = new HashMap<String,Integer>();
-    public Map<String,Integer> missingCodes = new HashMap<String,Integer>();
     public String city;
     public String state = DEFAULT_STATE;
-
-    /**
-     * Determines whether or not a generated person meets criteria
-     * in the options.
-     * @param person Generated person.
-     * @param time Time used to determine person age.
-     * @return true if the option criteria are met, otherwise false.
-     */
-    public boolean meetsCriteria(Person person, long time) {
-      boolean meetsCriteria = true;
-      if (gender != null) {
-        meetsCriteria &= (gender.equals(person.attributes.get(Person.GENDER)));
-      }
-      if (meetsCriteria && ageSpecified) {
-        int age = person.ageInYears(time);
-        meetsCriteria &= (age >= minAge);
-        meetsCriteria &= (age <= maxAge);
-      }
-      if (meetsCriteria && codesSpecified) {
-        int need;
-        int notNeed;
-        boolean hasCode;
-        for (String code : codes.keySet()) {
-          if (meetsCriteria) {
-            hasCode = person.record.present.containsKey(code);
-            if (hasCode) {
-              need = hasCodes.get(code);
-              if (need > 0) {
-                hasCodes.put(code, (need - 1));
-              } else {
-                meetsCriteria = false;
-              }
-            } else {
-              notNeed = missingCodes.get(code);
-              if (notNeed > 0) {
-                missingCodes.put(code, (notNeed - 1));
-              } else {
-                meetsCriteria = false;
-              }
-            }
-          }
-        }
-      }
-      return meetsCriteria;
-    }
   }
   
   /**
@@ -217,12 +163,6 @@ public class Generator {
         o.minAge, o.maxAge));
     if (o.gender != null) {
       System.out.println(String.format("Gender: %s", o.gender));
-    }
-    if (o.codesSpecified) {
-      System.out.println("Required Codes:");
-      for (String code : o.codes.keySet()) {
-        System.out.println(String.format("  %2.0f%% : %s", (100.0 * o.codes.get(code)), code));
-      }
     }
   }
 
@@ -341,11 +281,6 @@ public class Generator {
           continue;
           // skip the other stuff if the patient is alive and we only want dead patients
           // note that this skips ahead to the while check and doesn't automatically re-loop
-        }
-
-        meetsCriteria = this.options.meetsCriteria(person, time);
-        if (!meetsCriteria) {
-          continue;
         }
 
         if (database != null) {

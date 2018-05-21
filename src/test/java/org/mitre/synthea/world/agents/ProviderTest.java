@@ -39,6 +39,19 @@ public class ProviderTest {
     Provider provider = Provider.findClosestService(person, Provider.AMBULATORY);
     Assert.assertNotNull(provider);
   }
+  
+  @Test
+  public void testPatientCachesProvider() {
+    Provider.loadProviders("Massachusetts");
+    Person person = new Person(0L);
+    Location location = new Location("Massachusetts", "Bedford");
+    location.assignPoint(person, location.randomCityName(person.random));
+    Provider p = person.getAmbulatoryProvider();
+    Assert.assertTrue(person.attributes.containsKey(Person.PREFERREDAMBULATORYPROVIDER));
+    Assert.assertNotNull(person.attributes.get(Person.PREFERREDAMBULATORYPROVIDER));
+    Provider q = person.getAmbulatoryProvider();
+    Assert.assertEquals(p, q);
+  }
 
   @Test
   public void testNearestEmergencyInState() {

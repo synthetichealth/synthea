@@ -67,24 +67,6 @@ public class AppTest {
   }
 
   @Test
-  public void testAppWithCodes() throws Exception {
-    TestHelper.exportOff();
-    String[] args = {"-s", "0", "-p", "1", "-a", "30-50", "-c", "44054006", "1.0"};
-    final PrintStream original = System.out;
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    final PrintStream print = new PrintStream(out, true);
-    System.setOut(print);
-    App.main(args);
-    String output = out.toString();
-    Assert.assertTrue(output.contains("Running with options:"));
-    Assert.assertTrue(output.contains("Seed:"));
-    Assert.assertTrue(output.contains("Required Codes:"));
-    Assert.assertTrue(output.contains("100% : 44054006"));
-    Assert.assertTrue(output.contains("alive=1"));
-    System.setOut(original);
-  }
-
-  @Test
   public void testInvalidArgs() throws Exception {
     String[] args = {"-s", "foo", "-p", "foo", "Massachusetts", "Bedford"};
     final PrintStream original = System.out;

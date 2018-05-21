@@ -65,12 +65,6 @@ public class App {
             } else {
               throw new Exception("Age format: minAge-maxAge. E.g. 60-65.");
             }
-          } else if (currArg.equalsIgnoreCase("-c")) {
-            options.codesSpecified = true;
-            String code = argsQ.poll();
-            String value = argsQ.poll();
-            Double percent = Double.parseDouble(value);
-            options.codes.put(code, percent);
           } else if (options.state == null) {
             options.state = currArg;
           } else {
@@ -86,17 +80,6 @@ public class App {
     }
     
     if (validArgs) {
-      if (options.codesSpecified) {
-        // Before we generate, we determine how many patients do and do not
-        // require any specified codes. These counts are used to know when
-        // we can stop generating.
-        for (String code : options.codes.keySet()) {
-          Double percent = options.codes.get(code);
-          Integer value = (int) StrictMath.round(percent * options.population);
-          options.hasCodes.put(code, value);
-          options.missingCodes.put(code, (options.population - value));
-        }
-      }
       Generator generator = new Generator(options);
       generator.run();
     }
