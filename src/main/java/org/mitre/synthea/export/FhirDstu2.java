@@ -922,14 +922,9 @@ public class FhirDstu2 {
 
     medicationResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     medicationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
-    ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
-        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
-    medicationResource.setPrescriber(encounter.getServiceProvider());
-
     medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
-
     if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationOrderStatusEnum.STOPPED);
     } else {
