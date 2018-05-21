@@ -1,7 +1,5 @@
 package org.mitre.synthea.helpers;
 
-import static org.junit.Assert.*;
-
 import java.util.Random;
 
 import org.junit.Assert;
@@ -34,9 +32,9 @@ public class RandomCollectionTest {
     rc.add(0.0, "asian");
     
     Random random = new Random();
-    for (int i=0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
       String randomString = rc.next(random);
-      assertEquals("black", randomString);
+      Assert.assertEquals("black", randomString);
     }
   }
   
@@ -44,7 +42,7 @@ public class RandomCollectionTest {
   public void testFixed() {
     Fixed fixed = new Fixed();
     double[] expected = {0.0, 0.5, 0.999, 0.0, 0.5, 0.999, 0.0, 0.5, 0.999};
-    for (int i=0; i < expected.length; i++) {
+    for (int i = 0; i < expected.length; i++) {
       Assert.assertTrue(fixed.nextDouble() == expected[i]);
     }
   }
@@ -61,7 +59,7 @@ public class RandomCollectionTest {
     int asian = 0;
     
     Fixed fixed = new Fixed();
-    for (int i=0; i < 9; i++) {
+    for (int i = 0; i < 9; i++) {
       String notRandomString = rc.next(fixed);
       switch (notRandomString) {
         case "white":
@@ -72,6 +70,8 @@ public class RandomCollectionTest {
           break;
         case "asian":
           asian++;
+          break;
+        default:
           break;
       }
     }
