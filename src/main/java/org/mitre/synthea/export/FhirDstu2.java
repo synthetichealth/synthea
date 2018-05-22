@@ -20,6 +20,7 @@ import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.Activity;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.ActivityDetail;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
@@ -52,6 +53,7 @@ import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
 import ca.uhn.fhir.model.dstu2.valueset.GoalStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.HTTPVerbEnum;
 import ca.uhn.fhir.model.dstu2.valueset.IdentifierTypeCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.InstanceAvailabilityEnum;
 import ca.uhn.fhir.model.dstu2.valueset.MaritalStatusCodesEnum;
@@ -87,6 +89,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.sis.geometry.DirectPosition2D;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -120,6 +123,9 @@ public class FhirDstu2 {
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
+
+  protected static boolean TRANSACTION_BUNDLE =
+      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
 
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
@@ -162,7 +168,11 @@ public class FhirDstu2 {
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
-    bundle.setType(BundleTypeEnum.COLLECTION);
+    if (TRANSACTION_BUNDLE) {
+      bundle.setType(BundleTypeEnum.TRANSACTION);
+    } else {
+      bundle.setType(BundleTypeEnum.COLLECTION);
+    }
 
     Entry personEntry = basicInfo(person, bundle, stopTime);
 
@@ -1407,6 +1417,13 @@ public class FhirDstu2 {
     entry.setFullUrl("urn:uuid:" + resourceID);
 
     entry.setResource(resource);
+
+    if (TRANSACTION_BUNDLE) {
+      EntryRequest request = entry.getRequest();
+      request.setMethod(HTTPVerbEnum.POST);
+      request.setUrl(resource.getResourceName());
+      entry.setRequest(request);
+    }
 
     return entry;
   }
