@@ -29,7 +29,9 @@ import org.hl7.fhir.dstu3.model.Basic;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityComponent;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityDetailComponent;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
@@ -131,6 +133,8 @@ public class FhirStu3 {
 
   private static final boolean USE_SHR_EXTENSIONS =
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
+  protected static boolean TRANSACTION_BUNDLE =
+      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
 
   private static final Table<String,String,String> SHR_MAPPING = loadSHRMapping();
 
@@ -202,7 +206,11 @@ public class FhirStu3 {
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
-    bundle.setType(BundleType.COLLECTION);
+    if (TRANSACTION_BUNDLE) {
+      bundle.setType(BundleType.TRANSACTION);
+    } else {
+      bundle.setType(BundleType.COLLECTION);
+    }
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 
@@ -1636,6 +1644,13 @@ public class FhirStu3 {
     entry.setFullUrl("urn:uuid:" + resourceID);
 
     entry.setResource(resource);
+
+    if (TRANSACTION_BUNDLE) {
+      BundleEntryRequestComponent request = entry.getRequest();
+      request.setMethod(HTTPVerb.POST);
+      request.setUrl(resource.getResourceType().name());
+      entry.setRequest(request);
+    }
 
     return entry;
   }
