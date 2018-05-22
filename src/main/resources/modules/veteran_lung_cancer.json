@@ -21,37 +21,10 @@
         "high": 65,
         "unit": "years"
       },
-      "direct_transition": "Lung Cancer Probabilities",
+      "direct_transition": "smoking_status",
       "remarks": [
         "Lung cancer mainly occurs in older people. About 2 out of 3 people diagnosed with lung cancer are 65 or older, while less than 2% are younger than 45. The average age at the time of diagnosis is about 70.",
         "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-key-statistics"
-      ]
-    },
-    "Lung Cancer Probabilities": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": {
-            "attribute": "probability_of_lung_cancer",
-            "default": 0.0645
-          },
-          "transition": "Onset_Lung_Cancer"
-        },
-        {
-          "distribution": {
-            "attribute": "probability_of_no_lung_cancer",
-            "default": 0.93355
-          },
-          "transition": "Terminal"
-        }
-      ],
-      "remarks": [
-        "Overall, the chance that a man will develop lung cancer in his lifetime is about 1 in 14; for a woman, the risk is about 1 in 17.",
-        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-key-statistics",
-        "Men who smoke are 23 times more likely to develop lung cancer. Women are 13 times more likely, compared to never smokers.",
-        "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html",
-        "In a 2006 European study, the risk of developing lung cancer was: 0.2 percent for men who never smoked (0.4% for women); 5.5 percent of male former smokers (2.6% in women); 15.9 percent of current male smokers (9.5% for women); 24.4 percent for male “heavy smokers” defined as smoking more than 5 cigarettes per day (18.5 percent for women)",
-        "https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868"
       ]
     },
     "Onset_Lung_Cancer": {
@@ -925,10 +898,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "new_state_2": {
-      "type": "Simple",
-      "direct_transition": "new_state_2"
-    },
     "Veteran_Guard": {
       "type": "Guard",
       "allow": {
@@ -937,6 +906,75 @@
         "operator": "is not nil"
       },
       "direct_transition": "Ages_45_65"
+    },
+    "smoking_status": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "veteran_smoker",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "veteran_non_smoker",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "veteran_smoker": {
+      "type": "Simple",
+      "direct_transition": "smoker_Lung Cancer Probabilities"
+    },
+    "veteran_non_smoker": {
+      "type": "Simple",
+      "direct_transition": "non_smoker_Lung Cancer Probabilities"
+    },
+    "non_smoker_Lung Cancer Probabilities": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": {
+            "attribute": "probability_of_lung_cancer",
+            "default": 0.0645
+          },
+          "transition": "Onset_Lung_Cancer"
+        },
+        {
+          "distribution": {
+            "attribute": "probability_of_no_lung_cancer",
+            "default": 0.93355
+          },
+          "transition": "Terminal"
+        }
+      ],
+      "remarks": [
+        "Overall, the chance that a man will develop lung cancer in his lifetime is about 1 in 14; for a woman, the risk is about 1 in 17.",
+        "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-key-statistics",
+        "Men who smoke are 23 times more likely to develop lung cancer. Women are 13 times more likely, compared to never smokers.",
+        "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html",
+        "In a 2006 European study, the risk of developing lung cancer was: 0.2 percent for men who never smoked (0.4% for women); 5.5 percent of male former smokers (2.6% in women); 15.9 percent of current male smokers (9.5% for women); 24.4 percent for male “heavy smokers” defined as smoking more than 5 cigarettes per day (18.5 percent for women)",
+        "https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868"
+      ]
+    },
+    "smoker_Lung Cancer Probabilities": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Onset_Lung_Cancer",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.7
+        }
+      ]
     }
   }
 }
