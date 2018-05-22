@@ -265,11 +265,18 @@ public class CDWExporter {
     s.append(",None"); // Religion
     
     // Currently there are no divorces or widows
+    // Legal codes: (D)ivorced, (N)ever Married, (S)eperated, (W)idowed, (M)arried, (U)nknown
     String marital = ((String) person.attributes.get(Person.MARITAL_STATUS));
-    if (marital != null && marital.equals("M")) {
-      s.append(",Married");
+    if (marital != null) {
+      if (marital.equals("M")) {
+        s.append(",Married");
+      } else {
+        marital = "N";
+        s.append(",Never Married");
+      }
     } else {
-      s.append(",Never Married");
+      marital = "U";
+      s.append(",Unknown");
     }
     s.append(',').append(maritalStatus.addFact(marital, marital));
     
