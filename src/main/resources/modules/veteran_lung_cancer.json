@@ -12,7 +12,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Ages_45_65"
+      "direct_transition": "Veteran_Guard"
     },
     "Ages_45_65": {
       "type": "Delay",
@@ -924,6 +924,19 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "new_state_2": {
+      "type": "Simple",
+      "direct_transition": "new_state_2"
+    },
+    "Veteran_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "veteran",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Ages_45_65"
     }
   }
 }
