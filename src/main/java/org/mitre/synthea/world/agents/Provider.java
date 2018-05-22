@@ -166,6 +166,7 @@ public class Provider implements QuadTreeData {
         distance = item.getLatLon().distance(coord);
         if (distance < minDistance) {
           closest = (Provider) item;
+          minDistance = distance;
         }
       }
     }
