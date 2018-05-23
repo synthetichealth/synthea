@@ -1,0 +1,482 @@
+{
+  "name": "Veteran Prostate Cancer",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "age_guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "veteran_status": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "male_guard",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "age_guard": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 60,
+        "unit": "years"
+      },
+      "direct_transition": "veteran_status"
+    },
+    "annual_wellness_visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "wellness visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "wellness_procedure",
+      "wellness": true
+    },
+    "male_guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "annual_wellness_visit",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        }
+      ]
+    },
+    "wellness_procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63476009,
+          "display": "Prostate specific antigen measurement"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 410006001,
+          "display": "Digital examination of rectum"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 5,
+        "unit": "minutes"
+      },
+      "reason": "wellness visit",
+      "distributed_transition": [
+        {
+          "transition": "abnormal_DRE",
+          "distribution": 0.6
+        },
+        {
+          "transition": "normal_DRE",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "detect_abnormal results": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2857-1",
+          "display": "Prostate specific Ag [Mass/​volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "end_wellness_visit",
+      "range": {
+        "low": 4.5,
+        "high": 7.7
+      }
+    },
+    "end_wellness_visit": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "2857-1",
+                "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
+              }
+            ],
+            "operator": "<=",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "wellness_visit_time_delay",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "2857-1",
+                "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
+              }
+            ],
+            "operator": ">=",
+            "value": 4.1
+          },
+          "distributions": [
+            {
+              "transition": "biopsy_visit",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "detect_normal results": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2857-1",
+          "display": "Prostate specific Ag [Mass/​volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "end_wellness_visit",
+      "range": {
+        "low": 0.5,
+        "high": 4
+      }
+    },
+    "abnormal_DRE": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "abnormal",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": 275302008,
+          "display": "Prostate enlarged on PR"
+        }
+      ],
+      "attribute": "abnormal_dre",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "abnormal_dre",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "detect_abnormal results",
+              "distribution": 0.29
+            },
+            {
+              "transition": "detect_normal results",
+              "distribution": 0.71
+            }
+          ]
+        }
+      ]
+    },
+    "normal_DRE": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "normal",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": 300531004,
+          "display": "Normal size prostate"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "detect_normal results"
+    },
+    "wellness_visit_time_delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "male_guard"
+    },
+    "biopsy_visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "abnormal_dre",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "biopsy procedure"
+    },
+    "biopsy procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65575008,
+          "display": "Biopsy of prostate"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "biopsy_results_abnormal",
+          "distribution": 0.5
+        },
+        {
+          "transition": "biopsy_results_normal",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "biopsy_results_abnormal": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": 165132006,
+          "display": "Surgical biopsy result abnormal"
+        }
+      ],
+      "direct_transition": "Prostate_Cancer",
+      "attribute": "biopsy_abnormal"
+    },
+    "biopsy_results_normal": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": 165131004,
+          "display": "Surgical biopsy result normal"
+        }
+      ],
+      "direct_transition": "biopsy_visit_end",
+      "attribute": "biopsy_normal"
+    },
+    "biopsy_visit_end": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "prostate_cancer",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "transition": "wellness_visit_time_delay",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "prostate_cancer",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Prostate_Cancer Therapy",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Prostate_Cancer": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "prostate_cancer",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 126906006,
+          "display": "Neoplasm of prostate"
+        }
+      ],
+      "direct_transition": "biopsy_visit_end"
+    },
+    "Prostate_Cancer Therapy": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "prostate_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Aggressive_Therapy_Careplan",
+          "distribution": 0.7
+        },
+        {
+          "transition": "Watchful_Waiting_Careplan",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Aggressive_Therapy_Careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 126906006,
+          "display": "Neoplasm of prostate"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Hormone Order",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ]
+    },
+    "Watchful_Waiting_Careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 126906006,
+          "display": "Neoplasm of prostate"
+        }
+      ],
+      "direct_transition": "end_cancer_therapy encounter",
+      "assign_to_attribute": "watchful_waiting"
+    },
+    "Chemotherapy_Hormone Order": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1860480,
+          "display": "1 ML DOCEtaxel 20 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": "Leuprolide",
+          "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
+        }
+      ],
+      "direct_transition": "Prostatectomy",
+      "assign_to_attribute": "prostate cancer"
+    },
+    "Prostatectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 90470006,
+          "display": "Prostatectomy"
+        }
+      ],
+      "duration": {
+        "low": 4,
+        "high": 6,
+        "unit": "hours"
+      },
+      "direct_transition": "end_cancer_therapy encounter",
+      "reason": "prostate_cancer"
+    },
+    "end_cancer_therapy encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "watchful_waiting",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "watchful_waiting_guard",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "watchful_waiting",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "transition": "eventual_death",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "watchful_waiting_guard": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Prostate_Cancer Therapy"
+    },
+    "eventual_death": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    }
+  }
+}
