@@ -6,26 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "Veteran",
-            "operator": "is not nil",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Non_Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "Veteran",
-            "operator": "is nil",
-            "value": 0
-          }
-        }
-      ]
+      "direct_transition": "age guard"
     },
     "Terminal": {
       "type": "Terminal"
@@ -564,6 +545,37 @@
       ],
       "direct_transition": "end_Psych_encounter",
       "assign_to_attribute": "mdd"
+    },
+    "age guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 21,
+        "unit": "years"
+      },
+      "direct_transition": "veteran guard"
+    },
+    "veteran guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
     }
   }
 }
