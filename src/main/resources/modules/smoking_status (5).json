@@ -1,5 +1,5 @@
 {
-  "name": "Smoking Status",
+  "name": "Veteran Smoking Status",
   "remarks": [
     "A blank module"
   ],
@@ -109,8 +109,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 191887008,
+          "display": "Tobacco dependence, continuous"
         }
       ],
       "reason": "smoking",
