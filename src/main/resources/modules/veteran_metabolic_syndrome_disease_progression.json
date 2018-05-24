@@ -29,7 +29,7 @@
       "allow": {
         "condition_type": "Age",
         "operator": ">=",
-        "quantity": 18,
+        "quantity": 21,
         "unit": "years"
       },
       "direct_transition": "Chance_to_Onset_Hypertension"
