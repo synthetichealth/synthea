@@ -25,6 +25,7 @@ public class Provider implements QuadTreeData {
   public static final String AMBULATORY = "ambulatory";
   public static final String INPATIENT = "inpatient";
   public static final String EMERGENCY = "emergency";
+  public static final String URGENTCARE ="urgent care";
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
   public static final String LABS = "labs";
@@ -186,6 +187,9 @@ public class Provider implements QuadTreeData {
       loadProviders(state, abbreviation, hospitalFile);
       String vaFile = Config.get("generate.providers.veterans.default_file");
       loadProviders(state, abbreviation, vaFile);
+      String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
+      loadProviders(state, abbreviation, urgentcareFile);
+
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
@@ -214,14 +218,21 @@ public class Provider implements QuadTreeData {
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
         Provider parsed = csvLineToProvider(row);
         
-        
-        parsed.servicesProvided.add(Provider.AMBULATORY);
-        parsed.servicesProvided.add(Provider.INPATIENT);
-        parsed.servicesProvided.add(Provider.WELLNESS);
-        if ("Yes".equals(row.remove("emergency"))) {
-          parsed.servicesProvided.add(Provider.EMERGENCY);
+      System.out.println("Aqui");
+      System.out.println(filename);
+      System.out.println(filename.equals("providers/hospitals.csv") ); 
+        if (filename.equals("providers/hospitals.csv") || filename.equals("providers/va_facilities.csv")) {
+          System.out.println("HERE");
+          parsed.servicesProvided.add(Provider.AMBULATORY);
+          parsed.servicesProvided.add(Provider.INPATIENT);
+          parsed.servicesProvided.add(Provider.WELLNESS);
+          if ("Yes".equals(row.remove("emergency"))) {
+            parsed.servicesProvided.add(Provider.EMERGENCY);
+          }
         }
-        
+        else if (filename.equals("providers/urgent_care_facilities.csv")){
+          parsed.servicesProvided.add(Provider.URGENTCARE);
+        }
         // add any remaining columns we didn't explicitly map to first-class fields
         // into the attributes table
         for (Map.Entry<String, String> e : row.entrySet()) {
@@ -239,18 +250,24 @@ public class Provider implements QuadTreeData {
   }
 
   private static Provider csvLineToProvider(Map<String,String> line) {
+
     Provider d = new Provider();
     d.uuid = UUID.randomUUID().toString();
     // using remove instead of get here so that we can iterate over the remaining keys later
     d.id = line.remove("id");
     d.name = line.remove("name");
+
     d.address = line.remove("address");
+
     d.city = line.remove("city");
     d.state = line.remove("state");
     d.zip = line.remove("zip");
+
     d.phone = line.remove("phone");
+    
     d.type = line.remove("type");
     d.ownership = line.remove("ownership");
+
     try {
       d.quality = Integer.parseInt(line.remove("quality"));
     } catch (Exception e) {

@@ -282,7 +282,7 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY
+    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY, URGENTCARE
   }
 
   public class Encounter extends Entry {

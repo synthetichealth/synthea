@@ -26,6 +26,8 @@ public final class EncounterModule extends Module {
       "Well child visit (procedure)");
   public static final Code GENERAL_EXAM = new Code("SNOMED-CT", "162673000",
       "General examination of patient (procedure)");
+  public static final Code ENCOUNTER_URGENTCARE = new Code("SNOMED-CT", "371883000",
+      "Outpatient procedure (procedure)");
   // NOTE: if new codes are added, be sure to update getAllCodes below
 
   public EncounterModule() {
@@ -152,7 +154,7 @@ public final class EncounterModule extends Module {
    */
   public static Collection<Code> getAllCodes() {
     return Arrays.asList(ENCOUNTER_CHECKUP, ENCOUNTER_EMERGENCY, 
-                         WELL_CHILD_VISIT, GENERAL_EXAM);
+                         WELL_CHILD_VISIT, GENERAL_EXAM, ENCOUNTER_URGENTCARE);
   }
 
 }
