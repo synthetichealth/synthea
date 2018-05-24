@@ -6,26 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Non_Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil",
-            "value": 0
-          }
-        }
-      ]
+      "direct_transition": "age guard"
     },
     "Terminal": {
       "type": "Terminal"
@@ -472,17 +453,80 @@
           "display": "Sertraline"
         }
       ],
-      "direct_transition": "end_Psych_encounter",
       "assign_to_attribute": "SSRI",
-      "reason": "ptsd"
+      "reason": "ptsd",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "distributed_transition": [
+        {
+          "transition": "end_Psych_encounter",
+          "distribution": 0.5
+        },
+        {
+          "transition": "PTSD Chronic Pain Med",
+          "distribution": 0.5
+        }
+      ]
     },
     "end re_evaluation_medication": {
       "type": "MedicationEnd",
-      "direct_transition": "PTSD Medication Order"
+      "direct_transition": "PTSD Medication Order",
+      "medication_order": "ptsd"
     },
     "end_PTSD_Re_evaluation_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
+    },
+    "age guard": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 21,
+        "unit": "years"
+      },
+      "direct_transition": "veteran guard"
+    },
+    "veteran guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "PTSD Chronic Pain Med": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 856980,
+          "display": "Acetaminophen/Hydrocodone"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "reason": "ptsd"
     }
   }
 }
