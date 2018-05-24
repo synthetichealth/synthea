@@ -451,9 +451,18 @@
           "display": "Fluoxetine"
         }
       ],
-      "direct_transition": "end_Psych_encounter",
       "assign_to_attribute": "ssri",
-      "reason": "mdd"
+      "reason": "mdd",
+      "distributed_transition": [
+        {
+          "transition": "end_Psych_encounter",
+          "distribution": 0.5
+        },
+        {
+          "transition": "MDD Chronic Pain Med",
+          "distribution": 0.5
+        }
+      ]
     },
     "MDD_Careplan_Rx_ONLY": {
       "type": "CarePlanStart",
@@ -543,6 +552,18 @@
         }
       ],
       "direct_transition": "Change_Dx_Not_MDD"
+    },
+    "MDD Chronic Pain Med": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 856980,
+          "display": "Acetaminophen / Hydrocodone"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "assign_to_attribute": "mdd"
     }
   }
 }
