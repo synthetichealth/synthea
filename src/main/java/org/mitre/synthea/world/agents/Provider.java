@@ -218,11 +218,8 @@ public class Provider implements QuadTreeData {
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
         Provider parsed = csvLineToProvider(row);
         
-      System.out.println("Aqui");
-      System.out.println(filename);
-      System.out.println(filename.equals("providers/hospitals.csv") ); 
+
         if (filename.equals("providers/hospitals.csv") || filename.equals("providers/va_facilities.csv")) {
-          System.out.println("HERE");
           parsed.servicesProvided.add(Provider.AMBULATORY);
           parsed.servicesProvided.add(Provider.INPATIENT);
           parsed.servicesProvided.add(Provider.WELLNESS);
