@@ -336,7 +336,6 @@ public class Generator {
 
     if (this.logLevel.equals("detailed")) {
       System.out.println("ATTRIBUTES");
-
       for (String attribute : person.attributes.keySet()) {
         System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
       }

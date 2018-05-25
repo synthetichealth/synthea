@@ -268,7 +268,6 @@ public final class LifecycleModule extends Module {
     person.attributes.put(AGE, newAge);
     person.attributes.put(AGE_MONTHS, newAgeMos);
 
-
     switch (newAge) {
       case 16:
         // driver's license

@@ -226,8 +226,7 @@ public class Provider implements QuadTreeData {
           if ("Yes".equals(row.remove("emergency"))) {
             parsed.servicesProvided.add(Provider.EMERGENCY);
           }
-        }
-        else if (filename.equals("providers/urgent_care_facilities.csv")){
+        } else if (filename.equals("providers/urgent_care_facilities.csv")){
           parsed.servicesProvided.add(Provider.URGENTCARE);
         }
         // add any remaining columns we didn't explicitly map to first-class fields
@@ -247,24 +246,18 @@ public class Provider implements QuadTreeData {
   }
 
   private static Provider csvLineToProvider(Map<String,String> line) {
-
     Provider d = new Provider();
     d.uuid = UUID.randomUUID().toString();
     // using remove instead of get here so that we can iterate over the remaining keys later
     d.id = line.remove("id");
     d.name = line.remove("name");
-
     d.address = line.remove("address");
-
     d.city = line.remove("city");
     d.state = line.remove("state");
     d.zip = line.remove("zip");
-
     d.phone = line.remove("phone");
-    
     d.type = line.remove("type");
     d.ownership = line.remove("ownership");
-
     try {
       d.quality = Integer.parseInt(line.remove("quality"));
     } catch (Exception e) {

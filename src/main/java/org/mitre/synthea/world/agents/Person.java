@@ -173,7 +173,6 @@ public class Person implements Serializable, QuadTreeData {
 
   public void setSymptom(String cause, String type, int value) {
     if (!symptoms.containsKey(type)) {
-      System.out.println(" cause is " +cause + " and type is " + type + " value  is: " + value); 
       symptoms.put(type, new ConcurrentHashMap<String, Integer>());
     }
     symptoms.get(type).put(cause, value);
