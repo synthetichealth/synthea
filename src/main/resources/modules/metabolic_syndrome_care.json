@@ -91,7 +91,7 @@
         }
       ],
       "unit": "%",
-      "direct_transition": "Diagnosis"
+      "direct_transition": "Blood_Sugar_Check"
     },
     "Diagnosis": {
       "type": "Simple",
@@ -2120,7 +2120,7 @@
           "display": "Body mass index 30+ - obesity (finding)"
         }
       ],
-      "direct_transition": "Blood_Sugar_Check"
+      "direct_transition": "Wellness_Encounter"
     },
     "Severe Obesity": {
       "type": "ConditionOnset",
@@ -2132,7 +2132,7 @@
           "display": "Body mass index 40+ - severely obese (finding)"
         }
       ],
-      "direct_transition": "Blood_Sugar_Check"
+      "direct_transition": "Wellness_Encounter"
     },
     "Obese_Check": {
       "type": "Simple",
@@ -2156,7 +2156,7 @@
           }
         },
         {
-          "transition": "Blood_Sugar_Check"
+          "transition": "Wellness_Encounter"
         }
       ]
     },
@@ -2257,7 +2257,7 @@
           }
         },
         {
-          "transition": "Wellness_Encounter"
+          "transition": "Diagnosis"
         }
       ]
     },
@@ -2271,7 +2271,7 @@
           "display": "Metabolic syndrome X (disorder)"
         }
       ],
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Diagnosis"
     }
   }
 }
