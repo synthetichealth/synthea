@@ -465,7 +465,8 @@ public class CDWExporter {
     s.setLength(0);
     s.append(getNextKey(appointment)).append(',');
     if (encounter.provider != null) {
-      String tz = Location.getTimezoneByState(encounter.provider.state);
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
       s.append(sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz));
     }
     s.append(',');
