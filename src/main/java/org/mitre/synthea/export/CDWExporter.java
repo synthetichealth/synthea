@@ -452,7 +452,7 @@ public class CDWExporter {
       locationSid = location.addFact(encounter.provider.id, clean(encounter.provider.name));
       s.append(locationSid).append(',');
     } else {
-      s.append(",,");
+      s.append(',');
     }
     s.append(personID);
     s.append(NEWLINE);
