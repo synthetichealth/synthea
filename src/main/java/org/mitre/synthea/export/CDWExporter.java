@@ -81,6 +81,12 @@ public class CDWExporter {
   private FileWriter allergycomment;
 
   /**
+   * Writers for condition data.
+   */
+  private FileWriter problemlist;
+  private FileWriter vdiagnosis;
+
+  /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
    */
   private static final String NEWLINE = System.lineSeparator();
@@ -116,6 +122,10 @@ public class CDWExporter {
       // Allergy Data
       allergy = openFileWriter(outputDirectory, "allergy.csv");
       allergycomment = openFileWriter(outputDirectory, "allergycomment.csv");
+
+      // Condition Data
+      problemlist = openFileWriter(outputDirectory, "problemlist.csv");
+      vdiagnosis = openFileWriter(outputDirectory, "vdiagnosis.csv");
 
       writeCSVHeaders();
     } catch (IOException e) {
@@ -188,6 +198,16 @@ public class CDWExporter {
     allergycomment.write("AllergyCommentSID,AllergyIEN,Sta3n,PatientSID,OriginationDateTime,"
         + "EnteringStaffSID,AllergyComment");
     allergycomment.write(NEWLINE);
+
+    // Condition Tables
+    problemlist.write("ProblemListSID,Sta3n,ICD9SID,ICD10SID,PatientSID,ProviderNarrativeSID,"
+        + "EnteredDateTime,OnsetDateTime,ProblemListCondition,RecordingProviderSID,"
+        + "ResolvedDateTime,SNOMEDCTConceptCode");
+    problemlist.write(NEWLINE);
+    vdiagnosis.write("VDiagnosisSID,Sta3n,ICD9SID,ICD10SID,PatientSID,VisitSID,"
+        + "VisitDateTime,VDiagnosisDateTime,ProviderNarrativeSID,ProblemListSID,"
+        + "OrderingProviderSID,EncounterProviderSID");
+    vdiagnosis.write(NEWLINE);
   }
 
   /**
@@ -227,7 +247,7 @@ public class CDWExporter {
       int encounterID = encounter(personID, person, encounter);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
-        condition(personID, encounterID, condition);
+        condition(personID, encounterID, encounter, condition);
       }
 
       for (HealthRecord.Entry allergy : encounter.allergies) {
@@ -278,6 +298,10 @@ public class CDWExporter {
     // Allergy Data
     allergy.flush();
     allergycomment.flush();
+
+    // Condition Data
+    problemlist.flush();
+    vdiagnosis.flush();
   }
   
   /**
@@ -551,29 +575,64 @@ public class CDWExporter {
    *
    * @param personID ID of the person that has the condition.
    * @param encounterID ID of the encounter where the condition was diagnosed
+   * @param encounter The encounter
    * @param condition The condition itself
    * @throws IOException if any IO error occurs
    */
-  private void condition(int personID, int encounterID,
+  private void condition(int personID, int encounterID, Encounter encounter,
       Entry condition) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
     StringBuilder s = new StringBuilder();
+    Integer sta3nValue = null;
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+    }
 
-    s.append(dateFromTimestamp(condition.start)).append(',');
-    if (condition.stop != 0L) {
-      s.append(dateFromTimestamp(condition.stop));
+    // problemlist.write("ProblemListSID,Sta3n,ICD9SID,ICD10SID,PatientSID,ProviderNarrativeSID,"
+    //    + "EnteredDateTime,OnsetDateTime,ProblemListCondition,RecordingProviderSID,"
+    //    + "ResolvedDateTime,SNOMEDCTConceptCode");
+    int problemListSid = getNextKey(problemlist);
+    s.append(problemListSid).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
     }
     s.append(',');
+    s.append(",,"); // skip icd 9 and icd 10
+    s.append(personID).append(',');
+    s.append(','); // provider narrative -- history of present illness
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(condition.start)).append(',');
+    s.append("P,");
+    s.append("-1,");
+    if (condition.stop != 0L) {
+      s.append(iso8601Timestamp(condition.stop));
+    }
+    s.append(',');
+    s.append(condition.codes.get(0).code);
+    s.append(NEWLINE);
+    write(s.toString(), problemlist);
+
+    // vdiagnosis.write("VDiagnosisSID,Sta3n,ICD9SID,ICD10SID,PatientSID,VisitSID,"
+    //    + "VisitDateTime,VDiagnosisDateTime,ProviderNarrativeSID,ProblemListSID,"
+    //    + "OrderingProviderSID,EncounterProviderSID");
+    s.setLength(0);
+    s.append(getNextKey(vdiagnosis));
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(",,"); // skip icd 9 and icd 10
     s.append(personID).append(',');
     s.append(encounterID).append(',');
-
-    Code coding = condition.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display));
-
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(condition.start)).append(',');
+    s.append(','); // provider narrative -- history of present illness
+    s.append(problemListSid).append(',');
+    s.append("-1,");
+    s.append("-1");
     s.append(NEWLINE);
-    //write(s.toString(), conditions);
+    write(s.toString(), vdiagnosis);
   }
 
   /**
@@ -788,8 +847,8 @@ public class CDWExporter {
     StringBuilder s = new StringBuilder();
 
     // immunization.write("ImmunizationSID,ImmunizationIEN,Sta3n,PatientSID,ImmunizationNameSID,"
-    //     + "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
-    //     + "VisitSID,ImmunizationComments,ImmunizationRemarks");
+    // + "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
+    // + "VisitSID,ImmunizationComments,ImmunizationRemarks");
     int immunizationSid = getNextKey(immunization);
     s.append(immunizationSid).append(',');
     s.append(immunizationSid).append(','); // ImmunizationIEN
@@ -802,7 +861,9 @@ public class CDWExporter {
     s.append(personID).append(',');
     Code cvx = immunizationEntry.codes.get(0);
     int maxInSeries = Immunizations.getMaximumDoses(cvx.code);
-    s.append(immunizationName.addFact(cvx.code, clean(cvx.display) + "," + cvx.code + "," + maxInSeries));
+    s.append(
+        immunizationName.addFact(
+            cvx.code, clean(cvx.display) + "," + cvx.code + "," + maxInSeries));
     int series = immunizationEntry.series;
     if (series == maxInSeries) {
       s.append(",C,");
@@ -815,9 +876,11 @@ public class CDWExporter {
     s.append("-1,-1,");
     s.append(encounterID).append(',');
     // Comment
-    s.append("Dose #" + series + " of " + maxInSeries + " of " + clean(cvx.display) + " vaccine administered.,");
+    s.append("Dose #" + series + " of " + maxInSeries + " of "
+        + clean(cvx.display) + " vaccine administered.,");
     // Remark
-    s.append("Dose #" + series + " of " + maxInSeries + " of " + clean(cvx.display) + " vaccine administered.");
+    s.append("Dose #" + series + " of " + maxInSeries + " of "
+        + clean(cvx.display) + " vaccine administered.");
     s.append(NEWLINE);
     write(s.toString(), immunization);
   }
