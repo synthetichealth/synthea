@@ -27,7 +27,7 @@ public class CDWExporterTest {
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
-    int numberOfPeople = 10;
+    int numberOfPeople = 100;
     Generator generator = new Generator(numberOfPeople);
     for (int i = 0; i < numberOfPeople; i++) {
       generator.generatePerson(i);

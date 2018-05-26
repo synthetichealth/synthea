@@ -75,6 +75,12 @@ public class CDWExporter {
   private FileWriter immunization;
 
   /**
+   * Writers for allergy data.
+   */
+  private FileWriter allergy;
+  private FileWriter allergycomment;
+
+  /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
    */
   private static final String NEWLINE = System.lineSeparator();
@@ -106,6 +112,10 @@ public class CDWExporter {
 
       // Immunization Data
       immunization = openFileWriter(outputDirectory, "immunization.csv");
+
+      // Allergy Data
+      allergy = openFileWriter(outputDirectory, "allergy.csv");
+      allergycomment = openFileWriter(outputDirectory, "allergycomment.csv");
 
       writeCSVHeaders();
     } catch (IOException e) {
@@ -168,6 +178,16 @@ public class CDWExporter {
         + "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
         + "VisitSID,ImmunizationComments,ImmunizationRemarks");
     immunization.write(NEWLINE);
+
+    // Allergy Tables
+    allergy.write("AllergySID,AllergyIEN,Sta3n,PatientSID,AllergyType,AllergicReactant,"
+        + "LocalDrugSID,DrugNameWithoutDoseSID,DrugClassSID,ReactantSID,DrugIngredientSID,"
+        + "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
+        + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
+    allergy.write(NEWLINE);
+    allergycomment.write("AllergyCommentSID,AllergyIEN,Sta3n,PatientSID,OriginationDateTime,"
+        + "EnteringStaffSID,AllergyComment");
+    allergycomment.write(NEWLINE);
   }
 
   /**
@@ -211,7 +231,7 @@ public class CDWExporter {
       }
 
       for (HealthRecord.Entry allergy : encounter.allergies) {
-        allergy(personID, encounterID, allergy);
+        allergy(personID, person, encounterID, encounter, allergy);
       }
 
       for (Observation observation : encounter.observations) {
@@ -251,6 +271,13 @@ public class CDWExporter {
     visit.flush();
     appointment.flush();
     inpatient.flush();
+
+    // Immunization Data
+    immunization.flush();
+
+    // Allergy Data
+    allergy.flush();
+    allergycomment.flush();
   }
   
   /**
@@ -553,30 +580,75 @@ public class CDWExporter {
    * Write a single Allergy to allergies.csv.
    *
    * @param personID ID of the person that has the allergy.
+   * @param person The person
    * @param encounterID ID of the encounter where the allergy was diagnosed
-   * @param allergy The allergy itself
+   * @param encounter The encounter
+   * @param allergyEntry The allergy itself
    * @throws IOException if any IO error occurs
    */
-  private void allergy(int personID, int encounterID,
-      Entry allergy) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
+  private void allergy(int personID, Person person, int encounterID, Encounter encounter,
+      Entry allergyEntry) throws IOException {
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(allergy.start)).append(',');
-    if (allergy.stop != 0L) {
-      s.append(dateFromTimestamp(allergy.stop));
+    Integer sta3nValue = null;
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+    }
+    Code code = allergyEntry.codes.get(0);
+    boolean food = code.display.matches(".*(nut|peanut|milk|dairy|eggs|shellfish|wheat).*");
+
+    // allergy.write("AllergySID,AllergyIEN,Sta3n,PatientSID,AllergyType,AllergicReactant,"
+    //     + "LocalDrugSID,DrugNameWithoutDoseSID,DrugClassSID,ReactantSID,DrugIngredientSID,"
+    //     + "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
+    //     + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
+    int allergySID = getNextKey(allergy);
+    s.append(allergySID).append(',');
+    s.append(allergySID).append(',');
+    if (encounter.provider != null) {
+      s.append(sta3nValue);
     }
     s.append(',');
     s.append(personID).append(',');
-    s.append(encounterID).append(',');
-
-    Code coding = allergy.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display));
-
+    if (food) {
+      s.append('F').append(','); // F: Food allergy
+    } else {
+      s.append('O').append(','); // O: Other
+    }
+    s.append(','); // AllergicReactant
+    s.append(','); // LocalDrugSID
+    s.append(','); // DrugNameWithoutDoseSID
+    s.append(','); // DrugClassSID
+    s.append(','); // ReactantSID
+    s.append(','); // DrugIngredientSID
+    s.append(iso8601Timestamp(allergyEntry.start)).append(',');
+    s.append("-1,");
+    s.append(person.rand(new String[] {"o", "h"})).append(',');
+    s.append("A,");
+    s.append("1,"); // Verified
+    s.append(iso8601Timestamp(allergyEntry.start)).append(',');
+    s.append("-1,");
+    s.append(',');
     s.append(NEWLINE);
-    //write(s.toString(), allergies);
+    write(s.toString(), allergy);
+
+    // allergycomment.write("AllergyCommentSID,AllergyIEN,Sta3n,PatientSID,OriginationDateTime,"
+    //     + "EnteringStaffSID,AllergyComment");
+    s.setLength(0);
+    int allergyCommentSid = getNextKey(allergycomment);
+    s.append(allergyCommentSid).append(',');
+    s.append(allergyCommentSid).append(',');
+    if (encounter.provider != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(personID).append(',');
+    s.append(iso8601Timestamp(allergyEntry.start)).append(',');
+    s.append("-1,");
+    s.append(clean(code.display));
+    s.append(NEWLINE);
+    write(s.toString(), allergycomment);
   }
 
   /**
