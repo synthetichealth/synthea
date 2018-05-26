@@ -16,6 +16,7 @@ import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -25,6 +26,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
+import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -48,6 +50,7 @@ public class CDWExporter {
   private FactTable location = new FactTable();
   // private FactTable appointmentStatus = new FactTable();
   // private FactTable appointmentType = new FactTable();
+  private FactTable immunizationName = new FactTable();
   
   /**
    * Writers for patient data.
@@ -65,6 +68,11 @@ public class CDWExporter {
   private FileWriter visit;
   private FileWriter appointment;
   private FileWriter inpatient;
+
+  /**
+   * Writers for immunization data.
+   */
+  private FileWriter immunization;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -96,6 +104,9 @@ public class CDWExporter {
       appointment = openFileWriter(outputDirectory, "appointment.csv");
       inpatient = openFileWriter(outputDirectory, "inpatient.csv");
 
+      // Immunization Data
+      immunization = openFileWriter(outputDirectory, "immunization.csv");
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -119,6 +130,7 @@ public class CDWExporter {
     maritalStatus.setHeader("MaritalStatusSID,MaritalStatusCode");
     sta3n.setHeader("Sta3n,Sta3nName,TimeZone");
     location.setHeader("LocationSID,LocationName");
+    immunizationName.setHeader("ImmunizationNameSID,ImmunizationName,CVXCode,MaxInSeries");
 
     // Patient Tables
     spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
@@ -150,6 +162,12 @@ public class CDWExporter {
     appointment.write(NEWLINE);
     inpatient.write("InpatientSID,PatientSID,AdmitDateTime");
     inpatient.write(NEWLINE);
+
+    // Immunization Table
+    immunization.write("ImmunizationSID,ImmunizationIEN,Sta3n,PatientSID,ImmunizationNameSID,"
+        + "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
+        + "VisitSID,ImmunizationComments,ImmunizationRemarks");
+    immunization.write(NEWLINE);
   }
 
   /**
@@ -208,8 +226,8 @@ public class CDWExporter {
         medication(personID, encounterID, medication);
       }
 
-      for (HealthRecord.Entry immunization : encounter.immunizations) {
-        immunization(personID, encounterID, immunization);
+      for (Immunization immunization : encounter.immunizations) {
+        immunization(personID, person, encounterID, encounter, immunization);
       }
 
       for (CarePlan careplan : encounter.careplans) {
@@ -246,6 +264,7 @@ public class CDWExporter {
       maritalStatus.write(openFileWriter(outputDirectory,"maritalstatus.csv"));
       sta3n.write(openFileWriter(outputDirectory,"sta3n.csv"));
       location.write(openFileWriter(outputDirectory,"location.csv"));
+      immunizationName.write(openFileWriter(outputDirectory,"immunizationname.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -433,7 +452,6 @@ public class CDWExporter {
    * @throws IOException if any IO error occurs
    */
   private int encounter(int personID, Person person, Encounter encounter) throws IOException {
-    // ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     // consult.write("ConsultSID,ToRequestServiceSID");
@@ -687,28 +705,49 @@ public class CDWExporter {
    * Write a single Immunization to immunizations.csv.
    *
    * @param personID ID of the person on whom the immunization was performed.
+   * @param person The person
    * @param encounterID ID of the encounter where the immunization was performed
+   * @param encounter The encounter itself
    * @param immunization The immunization itself
    * @throws IOException if any IO error occurs
    */
-  private void immunization(int personID, int encounterID,
-      Entry immunization) throws IOException  {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST
+  private void immunization(int personID, Person person, int encounterID, Encounter encounter,
+      Immunization immunizationEntry) throws IOException  {
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(immunization.start)).append(',');
+    // immunization.write("ImmunizationSID,ImmunizationIEN,Sta3n,PatientSID,ImmunizationNameSID,"
+    //     + "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
+    //     + "VisitSID,ImmunizationComments,ImmunizationRemarks");
+    int immunizationSid = getNextKey(immunization);
+    s.append(immunizationSid).append(',');
+    s.append(immunizationSid).append(','); // ImmunizationIEN
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      s.append(sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz));
+    }
+    s.append(',');
     s.append(personID).append(',');
+    Code cvx = immunizationEntry.codes.get(0);
+    int maxInSeries = Immunizations.getMaximumDoses(cvx.code);
+    s.append(immunizationName.addFact(cvx.code, clean(cvx.display) + "," + cvx.code + "," + maxInSeries));
+    int series = immunizationEntry.series;
+    if (series == maxInSeries) {
+      s.append(",C,");
+    } else {
+      s.append(",B,");
+    }
+    s.append(person.randInt(12)).append(','); // Reaction
+    s.append(iso8601Timestamp(immunizationEntry.start)).append(',');
+    s.append(iso8601Timestamp(immunizationEntry.start)).append(',');
+    s.append("-1,-1,");
     s.append(encounterID).append(',');
-
-    Code coding = immunization.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display)).append(',');
-
-    s.append(String.format("%.2f", Costs.calculateCost(immunization, true)));
-
+    // Comment
+    s.append("Dose #" + series + " of " + maxInSeries + " of " + clean(cvx.display) + " vaccine administered.,");
+    // Remark
+    s.append("Dose #" + series + " of " + maxInSeries + " of " + clean(cvx.display) + " vaccine administered.");
     s.append(NEWLINE);
-    //write(s.toString(), immunizations);
+    write(s.toString(), immunization);
   }
 
   /**

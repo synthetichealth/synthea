@@ -42,7 +42,7 @@ public class CDWExporterTest {
       if (!cdwFile.getName().endsWith(".csv")) {
         continue;
       }
-
+      System.out.println("Parsing " + cdwFile.getPath());
       String cdwData = new String(Files.readAllBytes(cdwFile.toPath()));
 
       // the CDW exporter doesn't use the SimpleCSV class to write the data,
