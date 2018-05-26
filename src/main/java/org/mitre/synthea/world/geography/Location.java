@@ -16,6 +16,7 @@ import org.mitre.synthea.world.agents.Person;
 
 public class Location {
   private static Map<String, String> stateAbbreviations = loadAbbreviations();
+  private static Map<String, String> timezones = loadTimezones();
 
   private long totalPopulation;
 
@@ -228,5 +229,35 @@ public class Location {
       }
     }
     return null;
+  }
+
+  private static Map<String, String> loadTimezones() {
+    HashMap<String, String> timezones = new HashMap<String, String>();
+    String filename = null;
+    try {
+      filename = Config.get("generate.geography.timezones.default_file");
+      String csv = Utilities.readResource(filename);
+      List<? extends Map<String,String>> tzlist = SimpleCSV.parse(csv);
+
+      for (Map<String,String> line : tzlist) {
+        String state = line.get("STATE");
+        String timezone = line.get("TIMEZONE");
+        timezones.put(state, timezone);
+      }
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load timezones csv: " + filename);
+      e.printStackTrace();
+    }
+    return timezones;
+  }
+
+  /**
+   * Get the full name of the timezone by the full name of the state.
+   * Timezones are approximate.
+   * @param state The full name of the state (e.g. "Massachusetts")
+   * @return The full name of the timezone (e.g. "Eastern Standard Time")
+   */
+  public static String getTimezoneByState(String state) {
+    return timezones.get(state);
   }
 }

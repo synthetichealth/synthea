@@ -22,11 +22,13 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.geography.Location;
 
 /**
  * This exporter attempts to export synthetic patient data into 
@@ -42,6 +44,10 @@ public class CDWExporter {
   private Map<FileWriter,AtomicInteger> sids;
   
   private FactTable maritalStatus = new FactTable();
+  private FactTable sta3n = new FactTable();
+  private FactTable location = new FactTable();
+  // private FactTable appointmentStatus = new FactTable();
+  // private FactTable appointmentType = new FactTable();
   
   /**
    * Writers for patient data.
@@ -51,7 +57,14 @@ public class CDWExporter {
   private FileWriter spatientphone;
   private FileWriter patientrace;
   private FileWriter patientethnicity;
-  private FileWriter maritalStatusWriter;
+
+  /**
+   * Writers for encounter data.
+   */
+  private FileWriter consult;
+  private FileWriter visit;
+  private FileWriter appointment;
+  private FileWriter inpatient;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -69,18 +82,20 @@ public class CDWExporter {
       File output = Exporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
-      File spatientFile = outputDirectory.resolve("spatient.csv").toFile();
-      File spatientaddressFile = outputDirectory.resolve("spatientaddress.csv").toFile();
-      File spatientphoneFile = outputDirectory.resolve("spatientphone.csv").toFile();
-      File patientraceFile = outputDirectory.resolve("patientrace.csv").toFile();
-      File patientethnicityFile = outputDirectory.resolve("patientethnicity.csv").toFile();
 
-      spatient = new FileWriter(spatientFile);
-      spatientaddress = new FileWriter(spatientaddressFile);
-      spatientphone = new FileWriter(spatientphoneFile);
-      patientrace = new FileWriter(patientraceFile);
-      patientethnicity = new FileWriter(patientethnicityFile);
-      
+      // Patient Data
+      spatient = openFileWriter(outputDirectory, "spatient.csv");
+      spatientaddress = openFileWriter(outputDirectory, "spatientaddress.csv");
+      spatientphone = openFileWriter(outputDirectory, "spatientphone.csv");
+      patientrace = openFileWriter(outputDirectory, "patientrace.csv");
+      patientethnicity = openFileWriter(outputDirectory, "patientethnicity.csv");
+
+      // Encounter Data
+      consult = openFileWriter(outputDirectory, "consult.csv");
+      visit = openFileWriter(outputDirectory, "visit.csv");
+      appointment = openFileWriter(outputDirectory, "appointment.csv");
+      inpatient = openFileWriter(outputDirectory, "inpatient.csv");
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -90,6 +105,11 @@ public class CDWExporter {
     }
   }
 
+  private FileWriter openFileWriter(Path outputDirectory, String filename) throws IOException {
+    File file = outputDirectory.resolve(filename).toFile();
+    return new FileWriter(file);
+  }
+
   /**
    * Write the headers to each of the CSV files.
    * @throws IOException if any IO error occurs
@@ -97,6 +117,8 @@ public class CDWExporter {
   private void writeCSVHeaders() throws IOException {
     // Fact Tables
     maritalStatus.setHeader("MaritalStatusSID,MaritalStatusCode");
+    sta3n.setHeader("Sta3n,Sta3nName,TimeZone");
+    location.setHeader("LocationSID,LocationName");
 
     // Patient Tables
     spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
@@ -115,6 +137,19 @@ public class CDWExporter {
     patientrace.write(NEWLINE);
     patientethnicity.write("PatientEthnicitySID,PatientSID,Ethnicity");
     patientethnicity.write(NEWLINE);
+
+    // Encounter Tables
+    consult.write("ConsultSID,ToRequestServiceSID");
+    consult.write(NEWLINE);
+    visit.write("VisitSID,VisitDateTime,CreatedByStaffSID,LocationSID,PatientSID");
+    visit.write(NEWLINE);
+    appointment.write("AppointmentSID,Sta3n,PatientSID,AppointmentDateTime,AppointmentMadeDate,"
+        + "AppointmentTypeSID,AppointmentStatus,VisitSID,LocationSID,PurposeOfVisit,"
+        + "SchedulingRequestType,FollowUpVisitFlag,LengthOfAppointment,ConsultSID,"
+        + "CheckInDateTime,CheckOutDateTime");
+    appointment.write(NEWLINE);
+    inpatient.write("InpatientSID,PatientSID,AdmitDateTime");
+    inpatient.write(NEWLINE);
   }
 
   /**
@@ -151,7 +186,7 @@ public class CDWExporter {
     int personID = patient(person, time);
 
     for (Encounter encounter : person.record.encounters) {
-      int encounterID = encounter(personID, encounter);
+      int encounterID = encounter(personID, person, encounter);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personID, encounterID, condition);
@@ -186,11 +221,18 @@ public class CDWExporter {
       }
     }
 
+    // Patient Data
     spatient.flush();
     spatientaddress.flush();
     spatientphone.flush();
     patientrace.flush();
     patientethnicity.flush();
+
+    // Encounter Data
+    consult.flush();
+    visit.flush();
+    appointment.flush();
+    inpatient.flush();
   }
   
   /**
@@ -201,9 +243,9 @@ public class CDWExporter {
       File output = Exporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
-      File maritalStatusFile = outputDirectory.resolve("maritalstatus.csv").toFile();
-      maritalStatusWriter = new FileWriter(maritalStatusFile);
-      maritalStatus.write(maritalStatusWriter);
+      maritalStatus.write(openFileWriter(outputDirectory,"maritalstatus.csv"));
+      sta3n.write(openFileWriter(outputDirectory,"sta3n.csv"));
+      location.write(openFileWriter(outputDirectory,"location.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -292,7 +334,7 @@ public class CDWExporter {
     s.setLength(0);
     s.append(getNextKey(spatientaddress)).append(',');
     s.append(personID).append(',');
-    s.append("Residential").append(',');
+    s.append("Legal Residence").append(',');
     s.append(person.attributes.get(Person.FIRST_NAME)).append(' ');
     s.append(person.attributes.get(Person.LAST_NAME)).append(',');
     s.append("Self").append(',');
@@ -315,7 +357,7 @@ public class CDWExporter {
     s.setLength(0);
     s.append(getNextKey(spatientphone)).append(',');
     s.append(personID).append(',');
-    s.append("Phone").append(',');
+    s.append("Patient Cell Phone").append(',');
     s.append(person.attributes.get(Person.FIRST_NAME)).append(' ');
     s.append(person.attributes.get(Person.LAST_NAME)).append(',');
     s.append("Self").append(',');
@@ -328,7 +370,7 @@ public class CDWExporter {
       s.setLength(0);
       s.append(getNextKey(spatientphone)).append(',');
       s.append(personID).append(',');
-      s.append("Email").append(',');
+      s.append("Patient Email").append(',');
       s.append(person.attributes.get(Person.FIRST_NAME)).append(' ');
       s.append(person.attributes.get(Person.LAST_NAME)).append(',');
       s.append("Self").append(',');
@@ -340,7 +382,24 @@ public class CDWExporter {
     }
 
     //patientrace.write("PatientRaceSID,PatientSID,Race");
-    String race = (String) person.attributes.get(Person.RACE);       
+    String race = (String) person.attributes.get(Person.RACE);
+    if (race.equals("white")) {
+      race = "WHITE NOT OF HISP ORIG";
+    } else if (race.equals("hispanic")) {
+      race = "WHITE";
+    } else if (race.equals("black")) {
+      race = "BLACK OR AFRICAN AMERICAN";
+    } else if (race.equals("asian")) {
+      race = "ASIAN";
+    } else if (race.equals("native")) {
+      if (person.attributes.get(Person.STATE).equals("Hawaii")) {
+        race = "NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER";
+      } else {
+        race = "AMERICAN INDIAN OR ALASKA NATIVE";
+      }
+    } else { // race.equals("other")
+      race = "ASIAN";
+    }
     s.setLength(0);
     s.append(getNextKey(patientrace)).append(',');
     s.append(personID).append(',');
@@ -352,10 +411,11 @@ public class CDWExporter {
     s.setLength(0);
     s.append(getNextKey(patientethnicity)).append(',');
     s.append(personID).append(',');
-    if (race == "hispanic") {
-      s.append("Hispanic or Latino");
+    race = (String) person.attributes.get(Person.RACE);
+    if (race.equals("hispanic")) {
+      s.append("HISPANIC OR LATINO");
     } else {
-      s.append("Not Hispanic or Latino");
+      s.append("NOT HISPANIC OR LATINO");
     }
     s.append(NEWLINE);
     write(s.toString(), patientethnicity);
@@ -367,41 +427,77 @@ public class CDWExporter {
    * Write a single Encounter line to encounters.csv.
    *
    * @param personID The ID of the person that had this encounter
+   * @param person The person attending the encounter
    * @param encounter The encounter itself
    * @return The encounter ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
-  private int encounter(int personID, Encounter encounter) throws IOException {
+  private int encounter(int personID, Person person, Encounter encounter) throws IOException {
     // ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    int encounterID = 0; //getNextKey(encounterTable);
-    s.append(encounterID).append(',');
+    // consult.write("ConsultSID,ToRequestServiceSID");
+    int consultSid = getNextKey(consult);
+    s.append(consultSid).append(',').append(consultSid).append(NEWLINE);
+    write(s.toString(), consult);
+
+    // visit.write("VisitSID,VisitDateTime,CreatedByStaffSID,LocationSID,PatientSID");
+    int visitSid = getNextKey(visit);
+    s.setLength(0);
+    s.append(visitSid).append(',');
     s.append(iso8601Timestamp(encounter.start)).append(',');
-    if (encounter.stop != 0L) {
-      s.append(iso8601Timestamp(encounter.stop)).append(',');
+    s.append(','); // CreatedByStaffID == null
+    Integer locationSid = null;
+    if (encounter.provider != null) {
+      locationSid = location.addFact(encounter.provider.id, clean(encounter.provider.name));
+      s.append(locationSid).append(',');
     } else {
-      s.append(',');
+      s.append(",,");
     }
-    s.append(personID).append(',');
-
-    Code coding = encounter.codes.get(0);
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display)).append(',');
-
-    s.append(String.format("%.2f", Costs.calculateCost(encounter, true))).append(',');
-
-    if (encounter.reason == null) {
-      s.append(','); // reason code & desc
-    } else {
-      s.append(encounter.reason.code).append(',');
-      s.append(clean(encounter.reason.display));
-    }
-
+    s.append(personID);
     s.append(NEWLINE);
-    //write(s.toString(), encounters);
+    write(s.toString(), visit);
 
-    return encounterID;
+    // appointment.write("AppointmentSID,Sta3n,PatientSID,AppointmentDateTime,AppointmentMadeDate,"
+    //    + "AppointmentTypeSID,AppointmentStatus,VisitSID,LocationSID,PurposeOfVisit,"
+    //    + "SchedulingRequestType,FollowUpVisitFlag,LengthOfAppointment,ConsultSID,"
+    //    + "CheckInDateTime,CheckOutDateTime");
+    s.setLength(0);
+    s.append(getNextKey(appointment)).append(',');
+    if (encounter.provider != null) {
+      String tz = Location.getTimezoneByState(encounter.provider.state);
+      s.append(sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz));
+    }
+    s.append(',');
+    s.append(personID).append(',');
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(",,"); // skip: AppointmentTypeSID, AppointmentStatus
+    s.append(visitSid).append(',');
+    if (locationSid != null) {
+      s.append(locationSid).append(',');
+    } else {
+      s.append(",,");
+    }
+    s.append("3,"); // 3:SCHEDULED VISIT
+    s.append(person.rand(new String[] {"N", "C", "P", "W", "M", "A", "O"})).append(',');
+    s.append(person.randInt(1)).append(',');
+    s.append((encounter.stop - encounter.start) / (60 * 1000)).append(',');
+    s.append(consultSid).append(',');
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(encounter.stop)).append(NEWLINE);
+    write(s.toString(), appointment);
+
+    if (encounter.type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
+      // inpatient.write("InpatientSID,PatientSID,AdmitDateTime");
+      s.setLength(0);
+      s.append(getNextKey(inpatient)).append(',');
+      s.append(personID).append(',');
+      s.append(iso8601Timestamp(encounter.start)).append(NEWLINE);
+      write(s.toString(), inpatient);
+    }
+
+    return visitSid;
   }
 
   /**
@@ -700,7 +796,9 @@ public class CDWExporter {
   }
 
   private int getNextKey(FileWriter table) {
-    return sids.computeIfAbsent(table, k -> new AtomicInteger(1)).getAndIncrement();
+    synchronized (sids) {
+      return sids.computeIfAbsent(table, k -> new AtomicInteger(1)).getAndIncrement();
+    }
   }
   
   /**

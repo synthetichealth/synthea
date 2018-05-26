@@ -21,4 +21,11 @@ public class LocationTest {
     Assert.assertTrue(location.getPopulation("Bedford") > 0);
     Assert.assertTrue(location.getZipCode("Bedford").equals("01730"));
   }
+
+  @Test
+  public void testTimezone() {
+    String tz = Location.getTimezoneByState("Massachusetts");
+    Assert.assertNotNull(tz);
+    Assert.assertTrue(tz.equals("Eastern Standard Time"));
+  }
 }
