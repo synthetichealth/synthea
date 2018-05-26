@@ -78,8 +78,8 @@ public class Immunizations {
    * @param time The time the immunization would be given
    * @param immunizationsGiven The history of immunizations
    * @return -1 if the immunization should not be given, otherwise a positive integer,
-   * where the value is the series. For example, 1 if this is the first time the
-   * vaccine was administered; 2 if this is the second time, et cetera.
+   *     where the value is the series. For example, 1 if this is the first time the
+   *     vaccine was administered; 2 if this is the second time, et cetera.
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static int immunizationDue(String immunization, Person person, long time,
