@@ -3,6 +3,8 @@ package org.mitre.synthea.export;
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
+import com.google.gson.JsonObject;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,7 +53,11 @@ public class CDWExporter {
   // private FactTable appointmentStatus = new FactTable();
   // private FactTable appointmentType = new FactTable();
   private FactTable immunizationName = new FactTable();
-  
+  private FactTable localDrug = new FactTable();
+  private FactTable nationalDrug = new FactTable();
+  private FactTable dosageForm = new FactTable();
+  private FactTable pharmacyOrderableItem = new FactTable();
+
   /**
    * Writers for patient data.
    */
@@ -85,6 +91,11 @@ public class CDWExporter {
    */
   private FileWriter problemlist;
   private FileWriter vdiagnosis;
+
+  /**
+   * Writers for medications data.
+   */
+  private FileWriter rxoutpatient;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -127,6 +138,9 @@ public class CDWExporter {
       problemlist = openFileWriter(outputDirectory, "problemlist.csv");
       vdiagnosis = openFileWriter(outputDirectory, "vdiagnosis.csv");
 
+      // Medications Data
+      rxoutpatient = openFileWriter(outputDirectory, "rxoutpatient.csv");
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -151,6 +165,12 @@ public class CDWExporter {
     sta3n.setHeader("Sta3n,Sta3nName,TimeZone");
     location.setHeader("LocationSID,LocationName");
     immunizationName.setHeader("ImmunizationNameSID,ImmunizationName,CVXCode,MaxInSeries");
+    localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
+        + "NationalDrugSID,NationalDrugNameWithDose");
+    nationalDrug.setHeader("NationalDrugSID,DrugNameWithDose,DosageFormSID,"
+        + "InactivationDate,VUID");
+    dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
+    pharmacyOrderableItem.setHeader("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
 
     // Patient Tables
     spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
@@ -208,6 +228,12 @@ public class CDWExporter {
         + "VisitDateTime,VDiagnosisDateTime,ProviderNarrativeSID,ProblemListSID,"
         + "OrderingProviderSID,EncounterProviderSID");
     vdiagnosis.write(NEWLINE);
+
+    // Medications Tables
+    rxoutpatient.write("RxOutpatSID,Sta3n,RxNumber,IssueDate,CancelDate,FinishingDateTime,"
+        + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
+        + "PharmacyOrderableItemSID,MaxRefills,RxStatus,OrderedQuantity");
+    rxoutpatient.write(NEWLINE);
   }
 
   /**
@@ -263,7 +289,7 @@ public class CDWExporter {
       }
 
       for (Medication medication : encounter.medications) {
-        medication(personID, encounterID, medication);
+        medication(personID, encounterID, encounter, medication);
       }
 
       for (Immunization immunization : encounter.immunizations) {
@@ -316,6 +342,10 @@ public class CDWExporter {
       sta3n.write(openFileWriter(outputDirectory,"sta3n.csv"));
       location.write(openFileWriter(outputDirectory,"location.csv"));
       immunizationName.write(openFileWriter(outputDirectory,"immunizationname.csv"));
+      localDrug.write(openFileWriter(outputDirectory,"localdrug.csv"));
+      nationalDrug.write(openFileWriter(outputDirectory,"nationaldrug.csv"));
+      dosageForm.write(openFileWriter(outputDirectory,"dosageform.csv"));
+      pharmacyOrderableItem.write(openFileWriter(outputDirectory,"pharmacyorderableitem.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -797,39 +827,108 @@ public class CDWExporter {
    *
    * @param personID ID of the person prescribed the medication.
    * @param encounterID ID of the encounter where the medication was prescribed
+   * @param encounter The encounter
    * @param medication The medication itself
    * @throws IOException if any IO error occurs
    */
-  private void medication(int personID, int encounterID,
+  private void medication(int personID, int encounterID, Encounter encounter,
       Medication medication) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(medication.start)).append(',');
+    Integer sta3nValue = null;
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+    }
+    Code code = medication.codes.get(0);
+
+    // pharmacyOrderableItem ("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
+    int pharmSID = pharmacyOrderableItem.addFact(code.code, clean(code.display) + ",1");
+
+    // dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
+    Integer dosageSID = null;
+    if (medication.prescriptionDetails != null
+        && medication.prescriptionDetails.has("dosage")) {
+      JsonObject dosage = medication.prescriptionDetails.get("dosage").getAsJsonObject();
+      s.setLength(0);
+      s.append(dosage.get("amount").getAsInt());
+      s.append(" dose(s) ");
+      s.append(dosage.get("frequency").getAsInt());
+      s.append(" time(s) per ");
+      s.append(dosage.get("period").getAsInt());
+      s.append(" ");
+      s.append(dosage.get("unit").getAsString());
+      dosageSID = dosageForm.addFact(code.code, pharmSID + "," + s.toString());
+    }
+
+    // nationalDrug.setHeader("NationalDrugSID,DrugNameWithDose,DosageFormSID,"
+    //    + "InactivationDate,VUID");
+    s.setLength(0);
+    s.append(clean(code.display));
+    s.append(',');
+    if (dosageSID != null) {
+      s.append(dosageSID);
+    }
+    s.append(",,");
+    s.append(code.code);
+    int ndrugSID = nationalDrug.addFact(code.code, s.toString());
+
+    // localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
+    //    + "NationalDrugSID,NationalDrugNameWithDose");
+    s.setLength(0);
+    s.append(ndrugSID).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(clean(code.display)).append(',');
+    s.append(ndrugSID).append(',');
+    s.append(clean(code.display));
+    int ldrugSID = localDrug.addFact(code.code, s.toString());
+
+    // rxoutpatient.write("RxOutpatSID,Sta3n,RxNumber,IssueDate,CancelDate,FinishingDateTime,"
+    //    + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
+    //    + "PharmacyOrderableItemSID,MaxRefills,RxStatus,OrderedQuantity");
+    s.setLength(0);
+    int rxNum = getNextKey(rxoutpatient);
+    s.append(rxNum).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(rxNum).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
     if (medication.stop != 0L) {
-      s.append(dateFromTimestamp(medication.stop));
+      s.append(iso8601Timestamp(medication.stop));
+    }
+    s.append(',');
+    if (medication.prescriptionDetails != null
+        && medication.prescriptionDetails.has("duration")) {
+      JsonObject duration = medication.prescriptionDetails.get("duration").getAsJsonObject();
+      long time = Utilities.convertTime(
+          duration.get("unit").getAsString(), duration.get("quantity").getAsLong());
+      s.append(iso8601Timestamp(medication.start + time));
     }
     s.append(',');
     s.append(personID).append(',');
-    s.append(encounterID).append(',');
-
-    Code coding = medication.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display)).append(',');
-
-    s.append(String.format("%.2f", Costs.calculateCost(medication, true))).append(',');
-
-    if (medication.reasons.isEmpty()) {
-      s.append(','); // reason code & desc
-    } else {
-      Code reason = medication.reasons.get(0);
-      s.append(reason.code).append(',');
-      s.append(clean(reason.display));
+    s.append("-1,"); // Provider
+    s.append("-1,"); // Entered by staff
+    s.append(ldrugSID).append(',');
+    s.append(ndrugSID).append(',');
+    s.append(pharmSID).append(',');
+    if (medication.prescriptionDetails != null
+        && medication.prescriptionDetails.has("refills")) {
+      s.append(medication.prescriptionDetails.get("refills").getAsInt());
     }
-
+    s.append(',');
+    if (medication.stop == 0L) {
+      s.append("0,"); // Active
+    } else {
+      s.append("10,"); // Done
+    }
     s.append(NEWLINE);
-    //write(s.toString(), medications);
+    write(s.toString(), rxoutpatient);
   }
 
   /**
