@@ -1,0 +1,206 @@
+Synthea Module Builder
+Download Module
+×
+
+{
+  "name": "Veteran Congestive Heart Failure",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "age guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "age guard": {
+      "type": "Delay",
+      "direct_transition": "veteran guard",
+      "range": {
+        "low": 50,
+        "high": 80,
+        "unit": "years"
+      }
+    },
+    "veteran guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CHF symptom onset 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "CHF symptom onset 1": {
+      "type": "Symptom",
+      "symptom": "shortness of breath",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF symptom onset 2"
+    },
+    "CHF symptom onset 2": {
+      "type": "Symptom",
+      "symptom": "swelling",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF symptom onset 3"
+    },
+    "CHF symptom onset 3": {
+      "type": "Symptom",
+      "symptom": "excercise intolerance",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF Condition Start"
+    },
+    "new_state_2": {
+      "type": "Simple",
+      "direct_transition": "new_state_2"
+    },
+    "CHF Condition Start": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chf",
+      "target_encounter": "CHF initial workup encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 88805009,
+          "display": "congestive heart failure"
+        }
+      ],
+      "direct_transition": "CHF initial workup encounter"
+    },
+    "CHF initial workup encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Initial Workup labs for CHF"
+    },
+    "Initial Workup labs for CHF": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24320-4",
+          "display": "basic metabolic panel"
+        },
+        {
+          "system": "LOINC",
+          "code": "42637-9",
+          "display": "natriuretic peptide B in blood"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Initial Workup labs for CHF"
+    },
+    "inital workup imaging for CHF": {
+      "type": "Simple",
+      "direct_transition": "inital workup imaging for CHF"
+    },
+    "new_state": {
+      "type": "Simple",
+      "direct_transition": "new_state"
+    },
+    "new_state_3": {
+      "type": "Simple",
+      "direct_transition": "new_state_3"
+    }
+  }
+}
+Veteran Congestive Heart Failure
+A blank module
+Initial Workup labs for CHF
+State Type: ObservationRemove StateCopy State
+
+Category: laboratory
+Unit: 
+Codes
+remove
+System: LOINC
+Code: 24320-4
+Display: basic metabolic panel
+remove
+System: LOINC
+Code: 42637-9
+Display: natriuretic peptide B in blood
++
+
+Exact Quantity: 1
+Change to Range
+Change to Attribute
+Change to Vital Sign
+
+Transition Type:Direct
+Transition To:Initial Workup labs for CHF
+
+Help
+Initial
+age guard
+Delay
+50 - 80 years
+Terminal
+veteran guard
+Simple
+2. Attribute: 'veteran' is nil
+CHF symptom onset 1
+Symptom
+shortness of breath: 1
+1. Attribute: 'veteran' is not nil
+CHF symptom onset 2
+Symptom
+swelling: 1
+CHF symptom onset 3
+Symptom
+excercise intolerance: 1
+CHF Condition Start
+ConditionOnset
+SNOMED-CT[88805009]: congestive heart failure
+Diagnose at CHF initial workup encounter
+Assign to Attribute: 'chf'
+new_state_2
+Simple
+CHF initial workup encounter
+Encounter
+SNOMED-CT[1234]: SNOMED Code
+Reason: chf
+Initial Workup labs for CHF
+Observation
+LOINC[24320-4]: basic metabolic panel
+LOINC[42637-9]: natriuretic peptide B in blood
+Category: laboratory
+inital workup imaging for CHF
+Simple
+new_state
+Simple
+new_state_3
+Simple
