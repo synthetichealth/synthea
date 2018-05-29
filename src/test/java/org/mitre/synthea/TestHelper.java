@@ -4,6 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.function.Function;
+
+import org.junit.Assert;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
@@ -44,5 +47,18 @@ public abstract class TestHelper {
   public static long timestamp(int year, int month, int day, int hr, int min, int sec) {
     return LocalDateTime.of(year, month, day, hr, min, sec).toInstant(ZoneOffset.UTC)
         .toEpochMilli();
+  }
+  
+  /**
+   * Helper method to apply a function to two objects, and assert that the results are equal.
+   * @param base Object to serve as the basis for comparison
+   * @param compare Object to compare against the basis
+   * @param func Function to get a result from both base and compare
+   * @param message Message to display if results are not equal
+   */
+  public static <S,R> void assertEqual(S base, S compare, Function<S,R> func, String message) {
+    R baseResult = func.apply(base);
+    R compareResult = func.apply(compare);
+    Assert.assertEquals(message, baseResult, compareResult);
   }
 }

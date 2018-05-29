@@ -46,6 +46,13 @@ public class Generator {
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
 
+  /**
+   * Used only for testing and debugging. Populate this field to keep track of all patients
+   * generated, living or dead, during a simulation. Note that this may result in significantly
+   * increased memory usage as patients cannot be GC'ed.
+   */
+  public List<Person> internalStore;
+  
   private static final String TARGET_AGE = "target_age";
   
   /**
@@ -236,7 +243,7 @@ public class Generator {
     Person person = null;
     try {
       boolean isAlive = true;
-      int tryNumber = 0;
+      int tryNumber = 0; // number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
       Demographics city = location.randomCity(randomForDemographics);
       
@@ -287,6 +294,10 @@ public class Generator {
           database.store(person);
         }
 
+        if (internalStore != null) {
+          internalStore.add(person);
+        }
+        
         if (this.metrics != null) {
           metrics.recordStats(person, time);
         }
