@@ -538,5 +538,11 @@
     "system": "SNOMED-CT",
     "code": "197927001",
     "disability_weight": 0.051
-    }
+    },
+
+  "Hypothyroidism" : {
+    "system": "SNOMED-CT",
+    "code": "40930008",
+    "disability_weight": 0.019
+  }
 }
