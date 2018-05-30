@@ -288,7 +288,7 @@ public class Person implements Serializable, QuadTreeData {
   public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
   public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
-
+  public static final String PREFERREDURGENTCAREPROVIDER = "preferredUrgentCareProvider";
   public Provider getProvider(String encounterClass, long time) {
     switch (encounterClass) {
       case Provider.AMBULATORY:
@@ -299,6 +299,8 @@ public class Person implements Serializable, QuadTreeData {
         return this.getInpatientProvider(time);
       case Provider.WELLNESS:
         return this.getAmbulatoryProvider(time);
+      case Provider.URGENTCARE:
+        return this.getUrgentCareProvider(time);
       default:
         return this.getAmbulatoryProvider(time);
     }
@@ -350,6 +352,22 @@ public class Person implements Serializable, QuadTreeData {
 
   public void setEmergencyProvider(Provider provider) {
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
+  }
+
+  public Provider getUrgentCareProvider(long time) {
+    if (!attributes.containsKey(PREFERREDURGENTCAREPROVIDER)) {
+      setUrgentCareProvider(time);
+    }
+    return (Provider) attributes.get(PREFERREDURGENTCAREPROVIDER);
+  }
+
+  private void setUrgentCareProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.URGENTCARE, time);
+    attributes.put(PREFERREDURGENTCAREPROVIDER, provider);
+  }
+
+  public void setUrgentCareProvider(Provider provider) {
+    attributes.put(PREFERREDURGENTCAREPROVIDER, provider);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

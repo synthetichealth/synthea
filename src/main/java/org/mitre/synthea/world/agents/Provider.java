@@ -25,6 +25,7 @@ public class Provider implements QuadTreeData {
   public static final String AMBULATORY = "ambulatory";
   public static final String INPATIENT = "inpatient";
   public static final String EMERGENCY = "emergency";
+  public static final String URGENTCARE ="urgent care";
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
   public static final String LABS = "labs";
@@ -186,6 +187,9 @@ public class Provider implements QuadTreeData {
       loadProviders(state, abbreviation, hospitalFile);
       String vaFile = Config.get("generate.providers.veterans.default_file");
       loadProviders(state, abbreviation, vaFile);
+      String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
+      loadProviders(state, abbreviation, urgentcareFile);
+
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
@@ -214,14 +218,17 @@ public class Provider implements QuadTreeData {
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
         Provider parsed = csvLineToProvider(row);
         
-        
-        parsed.servicesProvided.add(Provider.AMBULATORY);
-        parsed.servicesProvided.add(Provider.INPATIENT);
-        parsed.servicesProvided.add(Provider.WELLNESS);
-        if ("Yes".equals(row.remove("emergency"))) {
-          parsed.servicesProvided.add(Provider.EMERGENCY);
+
+        if (filename.equals("providers/hospitals.csv") || filename.equals("providers/va_facilities.csv")) {
+          parsed.servicesProvided.add(Provider.AMBULATORY);
+          parsed.servicesProvided.add(Provider.INPATIENT);
+          parsed.servicesProvided.add(Provider.WELLNESS);
+          if ("Yes".equals(row.remove("emergency"))) {
+            parsed.servicesProvided.add(Provider.EMERGENCY);
+          }
+        } else if (filename.equals("providers/urgent_care_facilities.csv")){
+          parsed.servicesProvided.add(Provider.URGENTCARE);
         }
-        
         // add any remaining columns we didn't explicitly map to first-class fields
         // into the attributes table
         for (Map.Entry<String, String> e : row.entrySet()) {
