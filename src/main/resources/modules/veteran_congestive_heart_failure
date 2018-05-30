@@ -1,0 +1,209 @@
+{
+  "name": "Veteran Congestive Heart Failure",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "age guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "age guard": {
+      "type": "Delay",
+      "direct_transition": "veteran guard",
+      "range": {
+        "low": 50,
+        "high": 80,
+        "unit": "years"
+      }
+    },
+    "veteran guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CHF symptom onset 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "CHF symptom onset 1": {
+      "type": "Symptom",
+      "symptom": "shortness of breath",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF symptom onset 2"
+    },
+    "CHF symptom onset 2": {
+      "type": "Symptom",
+      "symptom": "swelling",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF symptom onset 3"
+    },
+    "CHF symptom onset 3": {
+      "type": "Symptom",
+      "symptom": "excercise intolerance",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF Condition Start"
+    },
+    "new_state_2": {
+      "type": "Simple",
+      "direct_transition": "new_state_2"
+    },
+    "CHF Condition Start": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chf",
+      "target_encounter": "CHF initial workup encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 88805009,
+          "display": "congestive heart failure"
+        }
+      ],
+      "direct_transition": "CHF initial workup encounter"
+    },
+    "CHF initial workup encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "BNP lab workup"
+    },
+    "Initial Workup labs for CHF": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24320-4",
+          "display": "basic metabolic panel"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "initial encounter end"
+    },
+    "inital workup imaging for CHF": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "34552-0",
+        "display": "trans thoracic echocardiogram"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 261179002,
+            "display": "thoracic"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "XX",
+            "display": "DICOM Modality Code"
+          },
+          "instances": []
+        }
+      ],
+      "direct_transition": "CHF careplan"
+    },
+    "BNP lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "pg/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "42637-9",
+          "display": "Natriuretic peptide B"
+        }
+      ],
+      "direct_transition": "Initial Workup labs for CHF",
+      "range": {
+        "low": 100,
+        "high": 2
+      }
+    },
+    "time delay ": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "followup_CHF_encounter"
+    },
+    "followup_CHF_encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "inital workup imaging for CHF"
+    },
+    "CHF careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 88805009,
+          "display": "congestive heart failure"
+        }
+      ],
+      "direct_transition": "CHF careplan",
+      "assign_to_attribute": "chf",
+      "reason": "chf",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183063000,
+          "display": "low salt diet education"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183301007,
+          "display": "physical exercise"
+        }
+      ]
+    },
+    "initial encounter end": {
+      "type": "EncounterEnd",
+      "direct_transition": "time delay"
+    }
+  }
+}
