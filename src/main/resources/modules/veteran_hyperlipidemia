@@ -99,23 +99,6 @@
       ],
       "direct_transition": "CHF careplan"
     },
-    "BNP lab workup": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "pg/mL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "42637-9",
-          "display": "Natriuretic peptide B"
-        }
-      ],
-      "direct_transition": "Record_Glucose",
-      "range": {
-        "low": 100,
-        "high": 2
-      }
-    },
     "Record_Glucose": {
       "type": "Observation",
       "category": "laboratory",
@@ -349,7 +332,87 @@
           "display": "SNOMED Code"
         }
       ],
-      "direct_transition": "BNP lab workup"
+      "direct_transition": "Total Cholesterol lab workup"
+    },
+    "Total Cholesterol lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2093-3",
+          "display": "Cholesterol"
+        }
+      ],
+      "direct_transition": "HDL Cholesterol lab workup",
+      "range": {
+        "low": 205,
+        "high": 305
+      }
+    },
+    "HDL Cholesterol lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2085-9",
+          "display": "Cholesterol in HDL"
+        }
+      ],
+      "direct_transition": "LDL Cholesterol lab workup",
+      "range": {
+        "low": 20,
+        "high": 65
+      }
+    },
+    "Triglycerides lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2571-8",
+          "display": "Triglyceride"
+        }
+      ],
+      "direct_transition": "Record_lipidpanel",
+      "range": {
+        "low": 100,
+        "high": 400
+      }
+    },
+    "LDL Cholesterol lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "13457-7",
+          "display": "Cholesterol in LDL"
+        }
+      ],
+      "direct_transition": "Triglycerides lab workup",
+      "range": {
+        "low": 101,
+        "high": 200
+      }
+    },
+    "Record_lipidpanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 4,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24331-1",
+          "display": "Lipid Panel"
+        }
+      ],
+      "direct_transition": "Record_Glucose"
     }
   }
 }
