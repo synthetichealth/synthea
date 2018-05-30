@@ -648,6 +648,7 @@ public class CDWExporter {
     //    + "OrderingProviderSID,EncounterProviderSID");
     s.setLength(0);
     s.append(getNextKey(vdiagnosis));
+    s.append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
     }
@@ -1098,6 +1099,7 @@ public class CDWExporter {
   private static void write(String line, FileWriter writer) throws IOException {
     synchronized (writer) {
       writer.write(line);
+      writer.flush();
     }
   }
 }
