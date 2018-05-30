@@ -6,12 +6,10 @@
     "for reassignment."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Clear_Contraceptive_Med"
     },
-
     "Clear_Contraceptive_Med": {
       "type": "Simple",
       "remarks": [
@@ -32,25 +30,21 @@
         }
       ]
     },
-
     "End_Contraceptive_Med": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "contraceptive",
       "direct_transition": "Clear_Contraceptive"
     },
-
     "Clear_Contraceptive": {
       "type": "SetAttribute",
       "attribute": "contraceptive",
       "direct_transition": "Clear_Contraceptive_Type"
     },
-
     "Clear_Contraceptive_Type": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

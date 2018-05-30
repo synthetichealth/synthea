@@ -1109,7 +1109,6 @@
       ],
       "direct_transition": "Clavicle_X_Ray"
     },
-
     "Clavicle_X_Ray": {
       "type": "ImagingStudy",
       "procedure_code": {
@@ -1156,7 +1155,6 @@
       ],
       "direct_transition": "Arm_X_Ray"
     },
-
     "Arm_X_Ray": {
       "type": "ImagingStudy",
       "procedure_code": {
@@ -1203,7 +1201,6 @@
       ],
       "direct_transition": "Wrist_X_Ray"
     },
-
     "Wrist_X_Ray": {
       "type": "ImagingStudy",
       "procedure_code": {
@@ -1250,7 +1247,6 @@
       ],
       "direct_transition": "Ankle_X_Ray"
     },
-
     "Ankle_X_Ray": {
       "type": "ImagingStudy",
       "procedure_code": {
@@ -1297,7 +1293,6 @@
       ],
       "direct_transition": "Chest_X_Ray"
     },
-
     "Chest_X_Ray": {
       "type": "ImagingStudy",
       "procedure_code": {
@@ -1344,7 +1339,6 @@
       ],
       "direct_transition": "Pelvic_X_Ray"
     },
-
     "Pelvic_X_Ray": {
       "type": "ImagingStudy",
       "procedure_code": {

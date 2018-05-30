@@ -6,17 +6,13 @@
     "in this module are accurate for the current year of the simulation. ",
     "If a patient is not eligible for an opioid pain reliever (for example, ",
     "if they are already taking one, or if they are a young child), none is prescribed.",
-
     "All medications prescribed in this module are assigned to the attribute ",
     "'opioid_prescription'. It is the responsibility of the Opioid Addiction module ",
     "to end this medication.",
-
     "Availability dates for different drugs came from the FDA: ",
     "http://www.accessdata.fda.gov/scripts/cder/daf/",
-
     "Dosage information came from FDA reference sheets available at: ",
     "https://www.drugs.com/dosage/",
-
     "The following medications are prescribed in this module. Most opioids were invented ",
     "during or prior to WWII, but did not become widely available until after the war:",
     "1. Meperidine (Demerol)                      available after 1945      ",
@@ -24,7 +20,6 @@
     "3. Oxycodone/Acetaminophen (Percocet)        available after 1920 (est)"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -52,7 +47,6 @@
         }
       ]
     },
-
     "Prescribe_Moderate_Opioid": {
       "type": "Simple",
       "complex_transition": [
@@ -100,7 +94,6 @@
         }
       ]
     },
-
     "Prescribe_Meperidine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "opioid_prescription",
@@ -125,7 +118,6 @@
       },
       "direct_transition": "Moderate_Opioid_Terminal"
     },
-
     "Prescribe_Oxycodone_Acetaminophen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "opioid_prescription",
@@ -150,7 +142,6 @@
       },
       "direct_transition": "Moderate_Opioid_Terminal"
     },
-
     "Prescribe_Hydrocodone_Acetaminophen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "opioid_prescription",
@@ -175,7 +166,6 @@
       },
       "direct_transition": "Moderate_Opioid_Terminal"
     },
-
     "Moderate_Opioid_Terminal": {
       "type": "Terminal"
     }

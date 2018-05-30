@@ -10,7 +10,6 @@
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -33,7 +32,6 @@
         }
       ]
     },
-
     "Delay_Until_Arthritis": {
       "type": "Delay",
       "range": {
@@ -43,7 +41,6 @@
       },
       "direct_transition": "Rheumatoid_Arthritis"
     },
-
     "Rheumatoid_Arthritis": {
       "type": "ConditionOnset",
       "remarks": [
@@ -62,7 +59,6 @@
       ],
       "direct_transition": "RA_Diagnosis"
     },
-
     "RA_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -76,7 +72,6 @@
       ],
       "direct_transition": "RA_CarePlan"
     },
-
     "RA_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "RA_Diagnosis",
@@ -108,7 +103,6 @@
       ],
       "direct_transition": "RA_Nonopioid_Pain_Medication"
     },
-
     "RA_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
@@ -140,7 +134,6 @@
         }
       ]
     },
-
     "DMARD": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
@@ -160,12 +153,10 @@
       ],
       "direct_transition": "Encounter_Ends_After_DMARD"
     },
-
-    "Encounter_Ends_After_DMARD" : {
-      "type" : "EncounterEnd",
+    "Encounter_Ends_After_DMARD": {
+      "type": "EncounterEnd",
       "direct_transition": "DMARD_Treatment_Period"
     },
-
     "DMARD_Treatment_Period": {
       "type": "Delay",
       "range": {
@@ -175,7 +166,6 @@
       },
       "direct_transition": "End_DMARD"
     },
-
     "End_DMARD": {
       "type": "MedicationEnd",
       "medication_order": "DMARD",
@@ -193,7 +183,6 @@
         }
       ]
     },
-
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "RA_Diagnosis",
@@ -212,12 +201,10 @@
       ],
       "direct_transition": "Encounter_Ends_After_Corticosteroids"
     },
-
-    "Encounter_Ends_After_Corticosteroids" : {
-      "type" : "EncounterEnd",
+    "Encounter_Ends_After_Corticosteroids": {
+      "type": "EncounterEnd",
       "direct_transition": "Corticosteroid_Treatment"
     },
-
     "Corticosteroid_Treatment": {
       "type": "Delay",
       "range": {
@@ -227,7 +214,6 @@
       },
       "direct_transition": "End_Corticosteroid"
     },
-
     "End_Corticosteroid": {
       "type": "MedicationEnd",
       "medication_order": "Corticosteroid",
@@ -246,7 +232,6 @@
         }
       ]
     },
-
     "Living_With_RA": {
       "type": "Delay",
       "range": {
@@ -273,39 +258,33 @@
         }
       ]
     },
-
     "Setup_Knee_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "knee",
       "direct_transition": "Terminal"
     },
-
     "Setup_Hip_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "hip",
       "direct_transition": "Terminal"
     },
-
     "RA_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Rheumatoid_Arthritis",
       "direct_transition": "End_RA_CarePlan"
     },
-
     "End_RA_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "RA_CarePlan",
       "direct_transition": "End_RA_Nonopioid"
     },
-
     "End_RA_Nonopioid": {
       "type": "MedicationEnd",
       "medication_order": "RA_Nonopioid_Pain_Medication",
       "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

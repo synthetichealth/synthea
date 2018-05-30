@@ -7,12 +7,10 @@
     "http://www.cdc.gov/nchs/products/databriefs/db94.htm"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Delay_For_Atopy"
     },
-
     "Delay_For_Atopy": {
       "type": "Delay",
       "remarks": [
@@ -38,7 +36,6 @@
         }
       ]
     },
-
     "Atopic": {
       "type": "Simple",
       "remarks": [
@@ -55,7 +52,6 @@
         }
       ]
     },
-
     "Not_Atopic": {
       "type": "Simple",
       "remarks": [
@@ -75,7 +71,6 @@
         }
       ]
     },
-
     "Asthma_Incidence": {
       "type": "Simple",
       "remarks": [
@@ -99,7 +94,6 @@
         }
       ]
     },
-
     "Delay_For_Childhood_Asthma": {
       "type": "Delay",
       "remarks": [
@@ -112,7 +106,6 @@
       },
       "direct_transition": "Childhood_Asthma_Begins"
     },
-
     "Delay_Until_Adulthood": {
       "type": "Delay",
       "range": {
@@ -122,7 +115,6 @@
       },
       "direct_transition": "Adult_Asthma_Begins"
     },
-
     "Childhood_Asthma_Begins": {
       "type": "ConditionOnset",
       "target_encounter": "Asthma_Diagnosis",
@@ -136,14 +128,12 @@
       ],
       "direct_transition": "Set_Childhood_Asthma"
     },
-
     "Set_Childhood_Asthma": {
       "type": "SetAttribute",
       "attribute": "asthma_type",
       "value": "childhood",
       "direct_transition": "Asthma_Diagnosis"
     },
-
     "Adult_Asthma_Begins": {
       "type": "ConditionOnset",
       "target_encounter": "Asthma_Diagnosis",
@@ -157,14 +147,12 @@
       ],
       "direct_transition": "Set_Adult_Asthma"
     },
-
     "Set_Adult_Asthma": {
       "type": "SetAttribute",
       "attribute": "asthma_type",
       "value": "lifelong",
       "direct_transition": "Asthma_Diagnosis"
     },
-
     "Asthma_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -178,7 +166,6 @@
       ],
       "direct_transition": "Asthma_Screening"
     },
-
     "Asthma_Screening": {
       "type": "Procedure",
       "target_encounter": "Asthma_Diagnosis",
@@ -192,7 +179,6 @@
       ],
       "direct_transition": "Prescribe_Maintenance_Inhaler"
     },
-
     "Prescribe_Maintenance_Inhaler": {
       "type": "MedicationOrder",
       "target_encounter": "Asthma_Diagnosis",
@@ -209,7 +195,6 @@
       },
       "direct_transition": "Prescribe_Emergency_Inhaler"
     },
-
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
       "target_encounter": "Asthma_Diagnosis",
@@ -226,7 +211,6 @@
       },
       "direct_transition": "Asthma_CarePlan_Selector"
     },
-
     "Asthma_CarePlan_Selector": {
       "type": "Simple",
       "conditional_transition": [
@@ -255,7 +239,6 @@
         }
       ]
     },
-
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Asthma_Diagnosis",
@@ -318,12 +301,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
-    "End_Diagnosis_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Maintaining_Asthma"
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Maintaining_Asthma"
     },
-
     "Maintaining_Asthma": {
       "type": "Delay",
       "exact": {
@@ -359,7 +340,6 @@
         }
       ]
     },
-
     "Childhood_Asthma_May_Subside": {
       "type": "Simple",
       "distributed_transition": [
@@ -378,26 +358,22 @@
         "https://www.ncbi.nlm.nih.gov/pubmed/23897917"
       ]
     },
-
     "Childhood_Asthma_Becomes_Lifelong_Asthma": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "asthma_condition",
       "direct_transition": "Lifelong_Asthma"
     },
-
     "Lifelong_Asthma": {
       "type": "SetAttribute",
       "attribute": "asthma_type",
       "value": "lifelong",
       "direct_transition": "Next_Adult_Welness_Encounter"
     },
-
     "Next_Adult_Welness_Encounter": {
       "type": "Encounter",
       "wellness": true,
       "direct_transition": "Lifelong_Asthma_Begins"
     },
-
     "Lifelong_Asthma_Begins": {
       "type": "ConditionOnset",
       "target_encounter": "Next_Adult_Welness_Encounter",
@@ -411,7 +387,6 @@
       ],
       "direct_transition": "Maintaining_Asthma"
     },
-
     "Potential_Asthma_Attack": {
       "type": "Simple",
       "remarks": [
@@ -433,7 +408,6 @@
         }
       ]
     },
-
     "Asthma_Attack": {
       "type": "Simple",
       "distributed_transition": [
@@ -456,7 +430,6 @@
         }
       ]
     },
-
     "Asthma_ED_Visit": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -470,12 +443,10 @@
       ],
       "direct_transition": "End_Asthma_ED_Visit"
     },
-
     "End_Asthma_ED_Visit": {
       "type": "EncounterEnd",
       "direct_transition": "Delay_For_Followup"
     },
-
     "Delay_For_Followup": {
       "type": "Delay",
       "range": {
@@ -485,7 +456,6 @@
       },
       "direct_transition": "Asthma_Attack_Followup"
     },
-
     "Asthma_Attack_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -499,42 +469,35 @@
       ],
       "direct_transition": "Followup_End"
     },
-
     "Followup_End": {
       "type": "EncounterEnd",
       "direct_transition": "Maintaining_Asthma"
     },
-
     "Next_Wellness_Encounter": {
       "type": "Encounter",
       "wellness": "true",
       "direct_transition": "Maintenance_Medication_End"
     },
-
     "Maintenance_Medication_End": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Maintenance_Inhaler",
       "direct_transition": "Emergency_Medication_End"
     },
-
     "Emergency_Medication_End": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Emergency_Inhaler",
       "direct_transition": "Childhood_Asthma_Subsides"
     },
-
     "Childhood_Asthma_Subsides": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "asthma_condition",
       "direct_transition": "End_Asthma_CarePlan"
     },
-
     "End_Asthma_CarePlan": {
       "type": "CarePlanEnd",
       "referenced_by_attribute": "asthma_careplan",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

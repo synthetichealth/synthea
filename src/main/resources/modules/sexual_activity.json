@@ -4,20 +4,16 @@
     "This module models the sexual activity of males and females from puberty ",
     "to old age. Most of the incidence in this module is based on a recent study ",
     "from Indiana University: http://www.nationalsexstudy.indiana.edu/graph.html",
-
     "This module operates on the assumption that these incidences for human sexual ",
     "activity have remained similar throughout modern history.",
-
     "No consideration is given to the age, race, socioeconomic status, or marriage ",
     "status of the patient. This complexity could be added."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Initially_Inactive"
     },
-
     "Initially_Inactive": {
       "type": "SetAttribute",
       "remarks": [
@@ -27,7 +23,6 @@
       "value": false,
       "direct_transition": "Delay_For_Sexual_Activity"
     },
-
     "Delay_For_Sexual_Activity": {
       "type": "Delay",
       "remarks": [
@@ -54,7 +49,6 @@
         }
       ]
     },
-
     "Female_Sexual_Activity": {
       "type": "Delay",
       "remarks": [
@@ -97,11 +91,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.30,
+              "distribution": 0.3,
               "transition": "Sexually_Active"
             },
             {
-              "distribution": 0.70,
+              "distribution": 0.7,
               "transition": "Not_Sexually_Active"
             }
           ]
@@ -133,11 +127,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.80,
+              "distribution": 0.8,
               "transition": "Sexually_Active"
             },
             {
-              "distribution": 0.20,
+              "distribution": 0.2,
               "transition": "Not_Sexually_Active"
             }
           ]
@@ -187,11 +181,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.70,
+              "distribution": 0.7,
               "transition": "Sexually_Active"
             },
             {
-              "distribution": 0.30,
+              "distribution": 0.3,
               "transition": "Not_Sexually_Active"
             }
           ]
@@ -252,7 +246,6 @@
         }
       ]
     },
-
     "Male_Sexual_Activity": {
       "type": "Delay",
       "remarks": [
@@ -293,11 +286,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.30,
+              "distribution": 0.3,
               "transition": "Sexually_Active"
             },
             {
-              "distribution": 0.70,
+              "distribution": 0.7,
               "transition": "Not_Sexually_Active"
             }
           ]
@@ -448,21 +441,18 @@
         }
       ]
     },
-
     "Sexually_Active": {
       "type": "SetAttribute",
       "attribute": "sexually_active",
       "value": true,
       "direct_transition": "Old_Age_Check"
     },
-
     "Not_Sexually_Active": {
       "type": "SetAttribute",
       "attribute": "sexually_active",
       "value": false,
       "direct_transition": "Old_Age_Check"
     },
-
     "Old_Age_Check": {
       "type": "Simple",
       "remarks": [
@@ -496,7 +486,6 @@
         }
       ]
     },
-
     "Terminal": {
       "type": "Terminal"
     }

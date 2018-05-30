@@ -6,24 +6,19 @@
     "in this module are accurate for the current year of the simulation. ",
     "If a patient is not eligible for an opioid pain reliever (for example, ",
     "if they are already taking one, or if they are a young child), none is prescribed.",
-
     "All medications prescribed in this module are assigned to the attribute ",
     "'opioid_prescription'. It is the responsibility of the Opioid Addiction module ",
     "to end this medication.",
-
     "Availability dates for different drugs came from the FDA: ",
     "http://www.accessdata.fda.gov/scripts/cder/daf/",
-
     "Dosage information came from FDA reference sheets available at: ",
     "https://www.drugs.com/dosage/",
-
     "The following medications are prescribed in this module. Most opioids were invented ",
     "during or prior to WWII, but did not become widely available until after the war:",
     "1. Methadone (Dolophine)             available after 1947      ",
     "2. Oxycodone (OxyContin)             available after 1920 (est)"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -51,7 +46,6 @@
         }
       ]
     },
-
     "Prescribe_Strong_Opioid": {
       "type": "Simple",
       "complex_transition": [
@@ -95,7 +89,6 @@
         }
       ]
     },
-
     "Prescribe_Oxycodone": {
       "type": "MedicationOrder",
       "assign_to_attribute": "opioid_prescription",
@@ -120,7 +113,6 @@
       },
       "direct_transition": "Strong_Opioid_Terminal"
     },
-
     "Prescribe_Methadone": {
       "type": "MedicationOrder",
       "assign_to_attribute": "opioid_prescription",
@@ -145,7 +137,6 @@
       },
       "direct_transition": "Strong_Opioid_Terminal"
     },
-
     "Strong_Opioid_Terminal": {
       "type": "Terminal"
     }

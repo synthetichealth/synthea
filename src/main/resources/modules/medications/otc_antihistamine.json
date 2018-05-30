@@ -6,40 +6,31 @@
     "current year of the simulation. Medications are not prescribed before they ",
     "were invented, and older medications (e.g. benadryl) are prescribed less ",
     "frequently as alternatives (e.g. claritin) become available.",
-
     "IT IS THE RESPONSIBILITY OF THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
     "All medications prescribed in this module are assigned to the attribute ",
     "'otc_antihistamine'.",
-
     "Availability dates for different drugs came from the FDA: ",
     "http://www.accessdata.fda.gov/scripts/cder/daf/",
-
     "Dosage information came from FDA reference sheets available at: ",
     "https://www.drugs.com/dosage/",
-
     "Although there are now liquid forms of some medications (especially for ",
     "children), it's unclear when those became available and the dosing is too ",
     "complicated to model easily. For simplicity, all OTC antihistamines prescribed ",
     "in this module are of the oral tablet type.",
-
     "Historically there has been 3 'generations' of antihistamines: ",
-
     "Generaton 1 H1 antihistamines: ",
     "1. Diphenhydramine (Benadryl)           available after 1946 ",
     "2. Chlorphenamine (Chlor-Timeton)       available after 1951 ",
-
     "Generation 2 H1 antihistamines. Some were discontinued in the 1990's due ",
     "to rare but serious risk of cardiac arrest: ",
     "3. Astemizole (Hismanal)                available 1977 - 1990 ",
     "4. Terfenadine (Seldane)                available 1985 - 1992 ",
     "5. Loratadine (Claritin)                available after 1993 ",
     "6. Cetirizine (Zyrtec)                  available after 2007 ",
-
     "Generation 3 H1 antihistamines: ",
     "7. Fexofenadine (Allegra)               available after 1996 "
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -56,7 +47,6 @@
         }
       ]
     },
-
     "Prescribe_OTC_Antihistamine": {
       "type": "Simple",
       "complex_transition": [
@@ -205,7 +195,6 @@
         }
       ]
     },
-
     "Prescribe_Diphenhydramine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -225,7 +214,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Prescribe_Chlorphenamine": {
       "type": "Simple",
       "conditional_transition": [
@@ -243,7 +231,6 @@
         }
       ]
     },
-
     "Pediatric_Chlorphenamine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -259,7 +246,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Adult_Chlorphenamine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -275,7 +261,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Prescribe_Astemizole": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -296,7 +281,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Prescribe_Terfenadine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -317,7 +301,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Prescribe_Loratadine": {
       "type": "Simple",
       "conditional_transition": [
@@ -335,7 +318,6 @@
         }
       ]
     },
-
     "Pediatric_Loratadine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -351,7 +333,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Adult_Loratadine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -367,7 +348,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Prescribe_Fexofenadine": {
       "type": "Simple",
       "conditional_transition": [
@@ -385,7 +365,6 @@
         }
       ]
     },
-
     "Pediatric_Fexofenadine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -401,7 +380,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Adult_Fexofenadine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -417,7 +395,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Prescribe_Cetirizine": {
       "type": "Simple",
       "conditional_transition": [
@@ -435,7 +412,6 @@
         }
       ]
     },
-
     "Pediatric_Cetirizine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -451,7 +427,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "Adult_Cetirizine": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_antihistamine",
@@ -467,7 +442,6 @@
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },
-
     "OTC_Anthistamine_Terminal": {
       "type": "Terminal"
     }

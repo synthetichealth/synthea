@@ -6,12 +6,10 @@
     "is pretty high. Using the same general 'outgrow' percentage of 75%."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Tree_Allergy"
     },
-
     "Tree_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -52,7 +50,6 @@
         }
       ]
     },
-
     "Outgrow_Tree_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -64,7 +61,6 @@
       ],
       "direct_transition": "Grass_Allergy"
     },
-
     "Grass_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -105,7 +101,6 @@
         }
       ]
     },
-
     "Outgrow_Grass_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -117,7 +112,6 @@
       ],
       "direct_transition": "Mold_Allergy"
     },
-
     "Mold_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -158,7 +152,6 @@
         }
       ]
     },
-
     "Outgrow_Mold_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -170,7 +163,6 @@
       ],
       "direct_transition": "Pet_Dander_Allergy"
     },
-
     "Pet_Dander_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -211,7 +203,6 @@
         }
       ]
     },
-
     "Outgrow_Pet_Dander_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -223,7 +214,6 @@
       ],
       "direct_transition": "Mite_Allergy"
     },
-
     "Mite_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -264,7 +254,6 @@
         }
       ]
     },
-
     "Outgrow_Mite_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -276,7 +265,6 @@
       ],
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }
