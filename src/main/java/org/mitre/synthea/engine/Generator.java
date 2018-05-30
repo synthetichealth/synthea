@@ -319,8 +319,10 @@ public class Generator {
           personSeed = new Random(personSeed).nextLong();
           
           // if we've tried and failed > 10 times to generate someone over age 90
+          // and the options allow for ages as low as 85
           // reduce the age to increase the likelihood of success
-          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90) {
+          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
+              && (!options.ageSpecified || options.minAge <= 85)) {
             // pick a new target age between 85 and 90
             int newTargetAge = randomForDemographics.nextInt(5) + 85;
             // the final age bracket is 85-110, but our patients rarely break 100
