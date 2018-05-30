@@ -8,12 +8,10 @@
     "http://www.aafp.org/afp/1998/0315/p1270.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Potential_Infection"
     },
-
     "Potential_Infection": {
       "type": "Delay",
       "exact": {
@@ -61,7 +59,6 @@
         }
       ]
     },
-
     "Bronchitis_Infection": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -74,7 +71,6 @@
       ],
       "direct_transition": "Bronchitis_Symptom1"
     },
-
     "Bronchitis_Symptom1": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -84,7 +80,6 @@
       },
       "direct_transition": "Bronchitis_Symptom2"
     },
-
     "Bronchitis_Symptom2": {
       "type": "Symptom",
       "symptom": "Mucus",
@@ -94,7 +89,6 @@
       },
       "direct_transition": "Bronchitis_Symptom3"
     },
-
     "Bronchitis_Symptom3": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
@@ -104,7 +98,6 @@
       },
       "direct_transition": "Symptoms_Dont_improve"
     },
-
     "Symptoms_Dont_improve": {
       "type": "Delay",
       "range": {
@@ -114,7 +107,6 @@
       },
       "direct_transition": "Doctor_Visit"
     },
-
     "Doctor_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -149,7 +141,6 @@
         }
       ]
     },
-
     "Chest_Xray": {
       "type": "Procedure",
       "reason": "Bronchitis_Infection",
@@ -160,10 +151,13 @@
           "display": "Plain chest X-ray (procedure)"
         }
       ],
-      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
+      "duration": {
+        "low": 10,
+        "high": 25,
+        "unit": "minutes"
+      },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
-
     "Sputum_Test": {
       "type": "Procedure",
       "reason": "Bronchitis_Infection",
@@ -174,10 +168,13 @@
           "display": "Sputum examination (procedure)"
         }
       ],
-      "duration" : { "low" : 3, "high" : 15, "unit" : "minutes" },
+      "duration": {
+        "low": 3,
+        "high": 15,
+        "unit": "minutes"
+      },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
-
     "Lung_Function_Test": {
       "type": "Procedure",
       "reason": "Bronchitis_Infection",
@@ -188,10 +185,13 @@
           "display": "Measurement of respiratory function (procedure)"
         }
       ],
-      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
+      "duration": {
+        "low": 10,
+        "high": 25,
+        "unit": "minutes"
+      },
       "direct_transition": "Bronchitis_CarePlan_Selector"
     },
-
     "Bronchitis_CarePlan_Selector": {
       "type": "Simple",
       "conditional_transition": [
@@ -220,7 +220,6 @@
         }
       ]
     },
-
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
       "assign_to_attribute": "bronchitis_careplan",
@@ -251,7 +250,6 @@
       ],
       "direct_transition": "OTC_Medicine"
     },
-
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
       "assign_to_attribute": "bronchitis_careplan",
@@ -277,7 +275,6 @@
       ],
       "direct_transition": "OTC_Medicine"
     },
-
     "OTC_Medicine": {
       "type": "Simple",
       "remarks": [
@@ -320,7 +317,6 @@
         }
       ]
     },
-
     "Cough_suppressant": {
       "type": "MedicationOrder",
       "assign_to_attribute": "OTC_Bronchitis_Med",
@@ -334,7 +330,6 @@
       ],
       "direct_transition": "End_Doctor_Visit"
     },
-
     "Acetaminophen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "OTC_Bronchitis_Med",
@@ -348,12 +343,10 @@
       ],
       "direct_transition": "End_Doctor_Visit"
     },
-
-    "End_Doctor_Visit" : {
-      "type" : "EncounterEnd",
+    "End_Doctor_Visit": {
+      "type": "EncounterEnd",
       "direct_transition": "Wait_for_condition_to_resolve"
     },
-
     "Wait_for_condition_to_resolve": {
       "type": "Delay",
       "range": {
@@ -368,7 +361,6 @@
       "condition_onset": "Bronchitis_Infection",
       "direct_transition": "Bronchitis_Symptom1_Subsides"
     },
-
     "Bronchitis_Symptom1_Subsides": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -377,7 +369,6 @@
       },
       "direct_transition": "Bronchitis_Symptom2_Subsides"
     },
-
     "Bronchitis_Symptom2_Subsides": {
       "type": "Symptom",
       "symptom": "Mucus",
@@ -386,7 +377,6 @@
       },
       "direct_transition": "Bronchitis_Symptom3_Subsides"
     },
-
     "Bronchitis_Symptom3_Subsides": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
@@ -407,19 +397,16 @@
         }
       ]
     },
-
     "End_OTC_Medication": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "OTC_Bronchitis_Med",
       "direct_transition": "Next_Well_Visit"
     },
-
     "Next_Well_Visit": {
       "type": "Encounter",
       "wellness": true,
       "direct_transition": "End_Bronchitis_CarePlan"
     },
-
     "End_Bronchitis_CarePlan": {
       "type": "CarePlanEnd",
       "referenced_by_attribute": "bronchitis_careplan",

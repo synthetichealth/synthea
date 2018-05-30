@@ -6,22 +6,17 @@
     "current year of the simulation. Medications are not prescribed before they ",
     "were invented, and older medications (e.g. aspirin) are prescribed less ",
     "frequently as alternatives (e.g. acetaminophen) become available.",
-
     "IT IS THE RESPONSIBILITY OF THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
     "All medications prescribed in this module are assigned to the attribute ",
     "'otc_pain_reliever'.",
-
     "Availability dates for different drugs came from the FDA: ",
     "http://www.accessdata.fda.gov/scripts/cder/daf/",
-
     "Dosage information came from FDA reference sheets available at: ",
     "https://www.drugs.com/dosage/",
-
     "Although there are now liquid forms of some medications (especially for ",
     "children), it's unclear when those became available and the dosing is too ",
     "complicated to model easily. For simplicity, all OTC pain relievers prescribed ",
     "in this module are of the oral tablet type.",
-
     "The following medications may be prescribed by this module:  ",
     "1. Aspirin                              available after 1899 ",
     "2. Acetaminophen (Tylenol)              available after 1950 ",
@@ -29,7 +24,6 @@
     "4. Naproxen Sodium (Aleve)              available after 1994 "
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -46,7 +40,6 @@
         }
       ]
     },
-
     "Prescribe_OTC_Pain_Reliever": {
       "type": "Simple",
       "complex_transition": [
@@ -136,7 +129,6 @@
         }
       ]
     },
-
     "Prescribe_Aspirin": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_pain_reliever",
@@ -156,7 +148,6 @@
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
-
     "Prescribe_Acetaminophen": {
       "type": "Simple",
       "conditional_transition": [
@@ -174,7 +165,6 @@
         }
       ]
     },
-
     "Pediatric_Acetaminophen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_pain_reliever",
@@ -190,7 +180,6 @@
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
-
     "Adult_Acetaminophen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_pain_reliever",
@@ -206,7 +195,6 @@
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
-
     "Prescribe_Ibuprofen": {
       "type": "Simple",
       "conditional_transition": [
@@ -224,7 +212,6 @@
         }
       ]
     },
-
     "Pediatric_Ibuprofen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_pain_reliever",
@@ -240,7 +227,6 @@
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
-
     "Adult_Ibuprofen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_pain_reliever",
@@ -256,7 +242,6 @@
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
-
     "Prescribe_Naproxen_Sodium": {
       "type": "Simple",
       "remarks": [
@@ -292,7 +277,6 @@
         }
       ]
     },
-
     "Naproxen_Sodium": {
       "type": "MedicationOrder",
       "assign_to_attribute": "otc_pain_reliever",
@@ -308,7 +292,6 @@
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
-
     "OTC_Pain_Reliever_Terminal": {
       "type": "Terminal"
     }

@@ -7,15 +7,13 @@
     "seen with contact dermatitis."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Eczema_Obs_Head_And_Neck"
     },
-
     "Eczema_Obs_Head_And_Neck": {
       "type": "Observation",
-      "category" : "exam",
+      "category": "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -29,10 +27,9 @@
       "unit": "%",
       "direct_transition": "Eczema_Obs_Trunk"
     },
-
     "Eczema_Obs_Trunk": {
       "type": "Observation",
-      "category" : "exam",
+      "category": "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -46,10 +43,9 @@
       "unit": "%",
       "direct_transition": "Eczema_Obs_Upper_Extremities"
     },
-
     "Eczema_Obs_Upper_Extremities": {
       "type": "Observation",
-      "category" : "exam",
+      "category": "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -64,10 +60,9 @@
       "unit": "%",
       "direct_transition": "Eczema_Obs_Lower_Extremities"
     },
-
     "Eczema_Obs_Lower_Extremities": {
       "type": "Observation",
-      "category" : "exam",
+      "category": "exam",
       "codes": [
         {
           "system": "LOINC",
@@ -82,7 +77,6 @@
       "unit": "%",
       "direct_transition": "Eczema_Obs_Terminal"
     },
-
     "Eczema_Obs_Terminal": {
       "type": "Terminal"
     }

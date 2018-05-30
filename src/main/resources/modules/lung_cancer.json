@@ -10,12 +10,10 @@
     "5. Life Expectancies: http://www.healthcommunities.com/lung-cancer/prognosis.shtml"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Ages_45_65"
     },
-
     "Ages_45_65": {
       "type": "Delay",
       "range": {
@@ -29,16 +27,21 @@
         "http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-cancer-key-statistics"
       ]
     },
-
     "Lung Cancer Probabilities": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": { "attribute" : "probability_of_lung_cancer", "default" : 0.0645 },
+          "distribution": {
+            "attribute": "probability_of_lung_cancer",
+            "default": 0.0645
+          },
           "transition": "Onset_Lung_Cancer"
         },
         {
-          "distribution": { "attribute" : "probability_of_no_lung_cancer", "default" : 0.93355 },
+          "distribution": {
+            "attribute": "probability_of_no_lung_cancer",
+            "default": 0.93355
+          },
           "transition": "Terminal"
         }
       ],
@@ -51,43 +54,47 @@
         "https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868"
       ]
     },
-    
-    "Onset_Lung_Cancer" : {
-      "type" : "SetAttribute",
-      "attribute" : "lung_cancer",
-      "value" : true,
-      "direct_transition" : "Init_Lung_Cancer_Counter"
+    "Onset_Lung_Cancer": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer",
+      "value": true,
+      "direct_transition": "Init_Lung_Cancer_Counter"
     },
-    
-    "Init_Lung_Cancer_Counter" : {
-      "type" : "SetAttribute",
-      "attribute" : "lung_cancer_nondiagnosis_counter",
-      "value" : 0,
-      "direct_transition" : "Undiagnosed_Lung_Cancer"
+    "Init_Lung_Cancer_Counter": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_nondiagnosis_counter",
+      "value": 0,
+      "direct_transition": "Undiagnosed_Lung_Cancer"
     },
-    
-    "Undiagnosed_Lung_Cancer" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 1, "unit" : "months" },
-      "distributed_transition" : [
-         {
-          "distribution": { "attribute" : "probability_of_lung_cancer_treatment", "default" : 0.2 },
+    "Undiagnosed_Lung_Cancer": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": {
+            "attribute": "probability_of_lung_cancer_treatment",
+            "default": 0.2
+          },
           "transition": "Cough"
         },
         {
-          "distribution": { "attribute" : "probability_of_no_lung_cancer_treatment", "default" : 0.8 },
+          "distribution": {
+            "attribute": "probability_of_no_lung_cancer_treatment",
+            "default": 0.8
+          },
           "transition": "Increment_Counter"
         }
       ]
     },
-    
-    "Increment_Counter" : {
-      "type" : "Counter",
-      "action" : "increment",
-      "attribute" : "lung_cancer_nondiagnosis_counter",
-      "direct_transition" : "Undiagnosed_Lung_Cancer"
+    "Increment_Counter": {
+      "type": "Counter",
+      "action": "increment",
+      "attribute": "lung_cancer_nondiagnosis_counter",
+      "direct_transition": "Undiagnosed_Lung_Cancer"
     },
-
     "Cough": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -97,7 +104,6 @@
       },
       "direct_transition": "Chest Pain"
     },
-
     "Chest Pain": {
       "type": "Symptom",
       "symptom": "Chest Pain",
@@ -107,7 +113,6 @@
       },
       "direct_transition": "Suspected Lung Cancer"
     },
-
     "Suspected Lung Cancer": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter I",
@@ -121,7 +126,6 @@
       ],
       "direct_transition": "Diagnosis Encounter I"
     },
-
     "Diagnosis Encounter I": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -135,7 +139,6 @@
       ],
       "direct_transition": "Chest X-Ray"
     },
-
     "Chest X-Ray": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter I",
@@ -147,15 +150,17 @@
           "display": "Plain chest X-ray (procedure)"
         }
       ],
-      "duration" : { "low" : 10, "high" : 25, "unit" : "minutes" },
+      "duration": {
+        "low": 10,
+        "high": 25,
+        "unit": "minutes"
+      },
       "direct_transition": "End_Diagnosis_Encounter_I"
     },
-
-    "End_Diagnosis_Encounter_I" : {
-      "type" : "EncounterEnd",
+    "End_Diagnosis_Encounter_I": {
+      "type": "EncounterEnd",
       "direct_transition": "Schedule Follow Up I"
     },
-
     "Schedule Follow Up I": {
       "type": "Delay",
       "range": {
@@ -165,7 +170,6 @@
       },
       "direct_transition": "Diagnosis Encounter II"
     },
-
     "Diagnosis Encounter II": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -179,7 +183,6 @@
       ],
       "direct_transition": "Chest CT Scan"
     },
-
     "Chest CT Scan": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter II",
@@ -191,15 +194,17 @@
           "display": "Computed tomography of chest and abdomen"
         }
       ],
-      "duration" : { "low" : 20, "high" : 60, "unit" : "minutes" },
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
       "direct_transition": "End_Diagnosis_Encounter_II"
     },
-
-    "End_Diagnosis_Encounter_II" : {
-      "type" : "EncounterEnd",
+    "End_Diagnosis_Encounter_II": {
+      "type": "EncounterEnd",
       "direct_transition": "Schedule Follow Up II"
     },
-
     "Schedule Follow Up II": {
       "type": "Delay",
       "range": {
@@ -223,14 +228,12 @@
         "http://www.cancer.org/cancer/lungcancer/index"
       ]
     },
-
     "Non-Small Cell Lung Cancer": {
       "type": "SetAttribute",
       "attribute": "Lung Cancer Type",
       "value": "NSCLC",
       "direct_transition": "NSCLC"
     },
-
     "NSCLC": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter III",
@@ -244,14 +247,12 @@
       ],
       "direct_transition": "Diagnosis Encounter III"
     },
-
     "Small Cell Lung Cancer": {
       "type": "SetAttribute",
       "attribute": "Lung Cancer Type",
       "value": "SCLC",
       "direct_transition": "SCLC"
     },
-
     "SCLC": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter III",
@@ -265,7 +266,6 @@
       ],
       "direct_transition": "Diagnosis Encounter III"
     },
-
     "Diagnosis Encounter III": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -296,7 +296,6 @@
         }
       ]
     },
-
     "Sputum Cytology (Phelgm)": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter III",
@@ -310,7 +309,6 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter_III"
     },
-
     "Thoracentesis (Fluid)": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter III",
@@ -324,7 +322,6 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter_III"
     },
-
     "Needle Biopsy (Cells)": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter III",
@@ -338,7 +335,6 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter_III"
     },
-
     "Bronchoscopy (Tube)": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter III",
@@ -352,12 +348,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter_III"
     },
-
-    "End_Diagnosis_Encounter_III" : {
-      "type" : "EncounterEnd",
+    "End_Diagnosis_Encounter_III": {
+      "type": "EncounterEnd",
       "direct_transition": "Schedule Follow Up III"
     },
-
     "Schedule Follow Up III": {
       "type": "Delay",
       "range": {
@@ -371,46 +365,45 @@
         "http://seer.cancer.gov/csr/1975_2013/browse_csr.php?sectionSEL=15&pageSEL=sect_15_table.13.html",
         "only 15 percent of lung cancer cases are diagnosed at an early stage.",
         "http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-lung-cancer/lung-cancer-fact-sheet.html",
-    "updated remarks 2017-08-31:",
-    "http://oregon.providence.org/our-services/a/ask-a-providence-expert/forms-and-information/ask-an-expert-lung-cancer-growth-and-spread/",
-    "It takes at least 30 divisions of one cancer cell to create a tumor that is 1 centimeter in size (about half an inch).",
-    "That is the smallest size likely to be seen on an X-ray. It takes about three to six months for most lung cancers to double their size. ",
-    "Therefore, it could take several years for a typical lung cancer to reach a size at which it could be diagnosed on a chest X-ray. "
+        "updated remarks 2017-08-31:",
+        "http://oregon.providence.org/our-services/a/ask-a-providence-expert/forms-and-information/ask-an-expert-lung-cancer-growth-and-spread/",
+        "It takes at least 30 divisions of one cancer cell to create a tumor that is 1 centimeter in size (about half an inch).",
+        "That is the smallest size likely to be seen on an X-ray. It takes about three to six months for most lung cancers to double their size. ",
+        "Therefore, it could take several years for a typical lung cancer to reach a size at which it could be diagnosed on a chest X-ray. "
       ],
-    "conditional_transition" : [
+      "conditional_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute" : "lung_cancer_nondiagnosis_counter",
+            "attribute": "lung_cancer_nondiagnosis_counter",
             "operator": "<=",
             "value": 36
           },
-        "transition" : "Stage I"
-      },
-      {
-        "condition": {
-          "condition_type": "Attribute",
-          "attribute" : "lung_cancer_nondiagnosis_counter",
-          "operator": "<=",
-          "value": 72
+          "transition": "Stage I"
         },
-        "transition" : "Stage II"
-      },
-      {
-        "condition": {
-          "condition_type": "Attribute",
-          "attribute" : "lung_cancer_nondiagnosis_counter",
-          "operator": "<=",
-          "value": 108
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_cancer_nondiagnosis_counter",
+            "operator": "<=",
+            "value": 72
+          },
+          "transition": "Stage II"
         },
-        "transition" : "Stage III"
-      },
-      {
-        "transition" : "Stage IV"
-      }
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_cancer_nondiagnosis_counter",
+            "operator": "<=",
+            "value": 108
+          },
+          "transition": "Stage III"
+        },
+        {
+          "transition": "Stage IV"
+        }
       ]
     },
-
     "Stage I": {
       "type": "Death",
       "range": {
@@ -440,7 +433,6 @@
         }
       ]
     },
-
     "Stage II": {
       "type": "Death",
       "range": {
@@ -470,7 +462,6 @@
         }
       ]
     },
-
     "Stage III": {
       "type": "Death",
       "range": {
@@ -500,7 +491,6 @@
         }
       ]
     },
-
     "Stage IV": {
       "type": "Death",
       "range": {
@@ -530,7 +520,6 @@
         }
       ]
     },
-
     "NSCLC I": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -544,7 +533,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "NSCLC II": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -558,7 +546,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "NSCLC III": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -572,7 +559,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "NSCLC IV": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -586,7 +572,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "SCLC I": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -600,7 +585,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "SCLC II": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -614,7 +598,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "SCLC III": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -628,7 +611,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "SCLC IV": {
       "type": "ConditionOnset",
       "target_encounter": "Diagnosis Encounter IV",
@@ -642,7 +624,6 @@
       ],
       "direct_transition": "Diagnosis Encounter IV"
     },
-
     "Diagnosis Encounter IV": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -656,7 +637,6 @@
       ],
       "direct_transition": "Lung_Cancer_CarePlan"
     },
-
     "Lung_Cancer_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Diagnosis Encounter IV",
@@ -687,7 +667,6 @@
       ],
       "direct_transition": "MRI Brain"
     },
-
     "MRI Brain": {
       "type": "Procedure",
       "target_encounter": "Diagnosis Encounter IV",
@@ -699,12 +678,15 @@
           "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
         }
       ],
-      "duration" : { "low" : 30, "high" : 120, "unit" : "minutes" },
-      "direct_transition" : "End_Diagnosis_Encounter_IV"
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Diagnosis_Encounter_IV"
     },
-
-    "End_Diagnosis_Encounter_IV" : {
-      "type" : "EncounterEnd",
+    "End_Diagnosis_Encounter_IV": {
+      "type": "EncounterEnd",
       "conditional_transition": [
         {
           "condition": {
@@ -726,12 +708,10 @@
         }
       ]
     },
-
     "SCLC Treatment Path": {
       "type": "Simple",
       "direct_transition": "SCLC Treatment Encounter"
     },
-
     "SCLC Treatment Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -748,7 +728,6 @@
       ],
       "direct_transition": "SCLC Chemotheraphy I"
     },
-
     "SCLC Chemotheraphy I": {
       "type": "MedicationOrder",
       "target_encounter": "SCLC Treatment Encounter",
@@ -767,13 +746,11 @@
       ],
       "direct_transition": "SCLC Chemotheraphy IB"
     },
-
     "SCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "chemotherapy1",
       "direct_transition": "SCLC Chemotheraphy II"
     },
-
     "SCLC Chemotheraphy II": {
       "type": "MedicationOrder",
       "target_encounter": "SCLC Treatment Encounter",
@@ -792,13 +769,11 @@
       ],
       "direct_transition": "SCLC Chemotheraphy IIB"
     },
-
     "SCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "chemotherapy2",
       "direct_transition": "SCLC Radiation"
     },
-
     "SCLC Radiation": {
       "type": "Procedure",
       "target_encounter": "SCLC Treatment Encounter",
@@ -814,15 +789,17 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
-      "duration" : { "low" : 0.5, "high" : 4.0, "unit" : "hours" },
+      "duration": {
+        "low": 0.5,
+        "high": 4,
+        "unit": "hours"
+      },
       "direct_transition": "End_SCLC_Treatment_Encounter"
     },
-
-    "End_SCLC_Treatment_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_SCLC_Treatment_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "SCLC Treatment Delay"
     },
-
     "SCLC Treatment Delay": {
       "type": "Delay",
       "range": {
@@ -838,12 +815,10 @@
       ],
       "direct_transition": "SCLC Treatment Path"
     },
-
     "NSCLC Treatment Path": {
       "type": "Simple",
       "direct_transition": "NSCLC Treatment Encounter"
     },
-
     "NSCLC Treatment Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -859,7 +834,6 @@
       ],
       "direct_transition": "NSCLC Chemotheraphy I"
     },
-
     "NSCLC Chemotheraphy I": {
       "type": "MedicationOrder",
       "target_encounter": "NSCLC Treatment Encounter",
@@ -879,13 +853,11 @@
       ],
       "direct_transition": "NSCLC Chemotheraphy IB"
     },
-
     "NSCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "chemotherapy1",
       "direct_transition": "NSCLC Chemotheraphy II"
     },
-
     "NSCLC Chemotheraphy II": {
       "type": "MedicationOrder",
       "target_encounter": "NSCLC Treatment Encounter",
@@ -904,13 +876,11 @@
       ],
       "direct_transition": "NSCLC Chemotheraphy IIB"
     },
-
     "NSCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "chemotherapy2",
       "direct_transition": "NSCLC Radiation"
     },
-
     "NSCLC Radiation": {
       "type": "Procedure",
       "target_encounter": "NSCLC Treatment Encounter",
@@ -926,15 +896,17 @@
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
-      "duration" : { "low" : 0.5, "high" : 4.0, "unit" : "hours" },
+      "duration": {
+        "low": 0.5,
+        "high": 4,
+        "unit": "hours"
+      },
       "direct_transition": "End_NSCLC_Treatment_Encounter"
     },
-
-    "End_NSCLC_Treatment_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_NSCLC_Treatment_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "NSCLC Treatment Delay"
     },
-
     "NSCLC Treatment Delay": {
       "type": "Delay",
       "range": {
@@ -950,7 +922,6 @@
       ],
       "direct_transition": "NSCLC Treatment Path"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

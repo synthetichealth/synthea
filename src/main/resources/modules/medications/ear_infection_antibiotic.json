@@ -4,20 +4,15 @@
     "This submodule prescribes an antibiotic used to treat ear infections ",
     "(otitis media). If no medication is available in the current year of ",
     "the simulation then none is prescribed.",
-
     "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
     "All antibiotics prescribed in this module are assigned to the attribute ",
     "'antibiotic_prescription'.",
-
     "Source for common antibiotics used to treat otitis media: ",
     "http://www.nps.org.au/conditions/ear-nose-mouth-and-throat-disorders/ear-nose-and-throat-infections/ear-infection-middle/for-individuals/medicines-and-treatments",
-
     "Availability dates for different drugs came from the FDA: ",
     "http://www.accessdata.fda.gov/scripts/cder/daf/",
-
     "Dosage information came from FDA reference sheets available at: ",
     "https://www.drugs.com/dosage/",
-
     "Medications prescribed in this module:     ",
     "1. Penicillin        available after 1945  ",
     "2. Ampicillin        available after 1961  ",
@@ -27,7 +22,6 @@
     "6. Cefuroxime        available after 1983  "
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -44,7 +38,6 @@
         }
       ]
     },
-
     "Prescribe_Ear_Infection_Antibiotic": {
       "type": "Simple",
       "complex_transition": [
@@ -168,7 +161,6 @@
         }
       ]
     },
-
     "Prescribe_Penicillin": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -205,7 +197,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Prescribe_Ampicillin": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -242,7 +233,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Prescribe_Doxycycline": {
       "type": "Simple",
       "remarks": [
@@ -264,7 +254,6 @@
         }
       ]
     },
-
     "Pediatric_Doxycycline": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -301,7 +290,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Adult_Doxycycline": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -338,7 +326,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Prescribe_Amoxicillin": {
       "type": "Simple",
       "conditional_transition": [
@@ -356,7 +343,6 @@
         }
       ]
     },
-
     "Pediatric_Amoxicillin": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -388,7 +374,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Adult_Amoxicillin": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -420,7 +405,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Prescribe_Cefaclor": {
       "type": "Simple",
       "conditional_transition": [
@@ -438,7 +422,6 @@
         }
       ]
     },
-
     "Pediatric_Cefaclor": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -470,7 +453,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Adult_Cefaclor": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -502,7 +484,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Prescribe_Cefuroxime": {
       "type": "MedicationOrder",
       "assign_to_attribute": "antibiotic_prescription",
@@ -537,7 +518,6 @@
       },
       "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
-
     "Ear_Infection_Antibiotic_Terminal": {
       "type": "Terminal"
     }
