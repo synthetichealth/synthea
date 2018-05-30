@@ -1,0 +1,355 @@
+{
+  "name": "Veteran Hyperlipidemia",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "age guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "age guard": {
+      "type": "Delay",
+      "direct_transition": "veteran guard",
+      "range": {
+        "low": 40,
+        "high": 80,
+        "unit": "years"
+      }
+    },
+    "veteran guard": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Hyperlipidemia symptom onset 1",
+              "distribution": 0.397
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.603
+            }
+          ]
+        }
+      ]
+    },
+    "Initial Workup labs for CHF": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24320-4",
+          "display": "basic metabolic panel"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "initial encounter end"
+    },
+    "inital workup imaging for CHF": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "34552-0",
+        "display": "trans thoracic echocardiogram"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 261179002,
+            "display": "thoracic"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "XX",
+            "display": "DICOM Modality Code"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "DICOM Subject-Object Pair Code"
+              }
+            },
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "DICOM Subject-Object Pair Code"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "CHF careplan"
+    },
+    "BNP lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "pg/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "42637-9",
+          "display": "Natriuretic peptide B"
+        }
+      ],
+      "direct_transition": "Record_Glucose",
+      "range": {
+        "low": 100,
+        "high": 2
+      }
+    },
+    "Record_Glucose": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Glucose",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2339-0",
+          "display": "Glucose"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_UreaNitrogen"
+    },
+    "Record_UreaNitrogen": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Urea Nitrogen",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6299-2",
+          "display": "Urea Nitrogen"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_Creatinine"
+    },
+    "Record_Creatinine": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Creatinine",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38483-4",
+          "display": "Creatinine"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_Calcium"
+    },
+    "Record_Calcium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Calcium",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "49765-1",
+          "display": "Calcium"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_Sodium"
+    },
+    "Record_Sodium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Sodium",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2947-0",
+          "display": "Sodium"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_Potassium"
+    },
+    "Record_Potassium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Potassium",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6298-4",
+          "display": "Potassium"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_Chloride"
+    },
+    "Record_Chloride": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Chloride",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2069-3",
+          "display": "Chloride"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_CO2"
+    },
+    "Record_CO2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Carbon Dioxide",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "20565-8",
+          "display": "Carbon Dioxide"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_MetabolicPanel"
+    },
+    "Record_MetabolicPanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 8,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "51990-0",
+          "display": "Basic Metabolic Panel"
+        }
+      ],
+      "direct_transition": "Initial Workup labs for CHF"
+    },
+    "followup_CHF_encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "inital workup imaging for CHF"
+    },
+    "CHF careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 88805009,
+          "display": "congestive heart failure"
+        }
+      ],
+      "direct_transition": "CHF medication start",
+      "assign_to_attribute": "chf",
+      "reason": "chf",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183063000,
+          "display": "low salt diet education"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183301007,
+          "display": "physical exercise"
+        }
+      ]
+    },
+    "initial encounter end": {
+      "type": "EncounterEnd",
+      "direct_transition": "intra_encounter time gate"
+    },
+    "intra_encounter time gate": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "followup_CHF_encounter"
+    },
+    "CHF medication start": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 866412,
+          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
+        },
+        {
+          "system": "RxNorm",
+          "code": 316151,
+          "display": "Lisinopril 10 MG"
+        },
+        {
+          "system": "RxNorm",
+          "code": 315970,
+          "display": "Furosemide 20 MG"
+        }
+      ],
+      "direct_transition": "followup encounter end",
+      "reason": "chf"
+    },
+    "followup encounter end": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Hyperlipidemia symptom onset 1": {
+      "type": "Symptom",
+      "symptom": "weight gain",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Hyperlipidemia Condition Start"
+    },
+    "Hyperlipidemia Condition Start": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Hyperlipidemia",
+      "target_encounter": "Hyperlipidemia initial workup encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 55822004,
+          "display": "hyperlipidemia"
+        }
+      ],
+      "direct_transition": "Hyperlipidemia initial workup encounter"
+    },
+    "Hyperlipidemia initial workup encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Hyperlipidemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "BNP lab workup"
+    }
+  }
+}
