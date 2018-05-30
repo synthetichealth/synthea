@@ -149,19 +149,135 @@
           "display": "Natriuretic peptide B"
         }
       ],
-      "direct_transition": "Initial Workup labs for CHF",
+      "direct_transition": "Record_Glucose",
       "range": {
         "low": 100,
         "high": 2
       }
     },
-    "time delay ": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 3,
-        "unit": "weeks"
-      },
-      "direct_transition": "followup_CHF_encounter"
+    "Record_Glucose": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Glucose",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2339-0",
+          "display": "Glucose"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_UreaNitrogen"
+    },
+    "Record_UreaNitrogen": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Urea Nitrogen",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6299-2",
+          "display": "Urea Nitrogen"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_Creatinine"
+    },
+    "Record_Creatinine": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Creatinine",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38483-4",
+          "display": "Creatinine"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_Calcium"
+    },
+    "Record_Calcium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Calcium",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "49765-1",
+          "display": "Calcium"
+        }
+      ],
+      "unit": "mg/dL",
+      "direct_transition": "Record_Sodium"
+    },
+    "Record_Sodium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Sodium",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2947-0",
+          "display": "Sodium"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_Potassium"
+    },
+    "Record_Potassium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Potassium",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6298-4",
+          "display": "Potassium"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_Chloride"
+    },
+    "Record_Chloride": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Chloride",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2069-3",
+          "display": "Chloride"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_CO2"
+    },
+    "Record_CO2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "Carbon Dioxide",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "20565-8",
+          "display": "Carbon Dioxide"
+        }
+      ],
+      "unit": "mmol/L",
+      "direct_transition": "Record_MetabolicPanel"
+    },
+    "Record_MetabolicPanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 8,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "51990-0",
+          "display": "Basic Metabolic Panel"
+        }
+      ],
+      "direct_transition": "Initial Workup labs for CHF"
     },
     "followup_CHF_encounter": {
       "type": "Encounter",
@@ -203,7 +319,15 @@
     },
     "initial encounter end": {
       "type": "EncounterEnd",
-      "direct_transition": "time delay"
+      "direct_transition": "intra_encounter time gate"
+    },
+    "intra_encounter time gate": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "followup_CHF_encounter"
     }
   }
 }
