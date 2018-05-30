@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -14,14 +15,15 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 public class Costs {
-  // all of these are CSVs with these columns: code, cost in $, comments
-  private static final Map<String, Double> PROCEDURE_COSTS =
+  // all of these are CSVs with these columns: 
+  // code, min cost in $, mode cost in $, max cost in $, comments
+  private static final Map<String, CostData> PROCEDURE_COSTS =
       parseCsvToMap("costs/procedures.csv");
-  private static final Map<String, Double> MEDICATION_COSTS =
+  private static final Map<String, CostData> MEDICATION_COSTS =
       parseCsvToMap("costs/medications.csv");
-  private static final Map<String, Double> ENCOUNTER_COSTS =
+  private static final Map<String, CostData> ENCOUNTER_COSTS =
       parseCsvToMap("costs/encounters.csv");
-  private static final Map<String, Double> IMMUNIZATION_COSTS =
+  private static final Map<String, CostData> IMMUNIZATION_COSTS =
       parseCsvToMap("costs/immunizations.csv");
   
   private static final double DEFAULT_PROCEDURE_COST =
@@ -34,7 +36,7 @@ public class Costs {
       Double.parseDouble(Config.get("generate.costs.default_immunization_cost"));
   
   private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = 
-      parseCsvToMap("costs/adjustmentFactors.csv"); 
+      parseAdjustmentFactors(); 
   // Note that this file will have headers CODE and COST for simplicity
   
   /**
@@ -45,22 +47,27 @@ public class Costs {
     // this method is only called to ensure the static data is loaded at a predictable time
   }
   
-  private static Map<String, Double> parseCsvToMap(String filename) {
+  private static Map<String, CostData> parseCsvToMap(String filename) {
     try {
       String rawData = Utilities.readResource(filename);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
       
-      Map<String, Double> costMap = new HashMap<>();
+      Map<String, CostData> costMap = new HashMap<>();
       for (Map<String,String> line : lines) {
         String code = line.get("CODE");
-        String costString = line.get("COST");
+        String minStr = line.get("COST"); // "MIN");
+        String modeStr = line.get("COST"); // "MODE");
+        String maxStr = line.get("COST"); // "MAX");
         
         try {
-          Double cost = Double.valueOf(costString);
-          costMap.put(code, cost);
+          double min = Double.parseDouble(minStr);
+          double mode = Double.parseDouble(modeStr);
+          double max = Double.parseDouble(maxStr);
+          costMap.put(code, new CostData(min, mode, max));
         } catch (NumberFormatException nfe) {
           System.err.println(filename + ": Invalid cost for code: '" + code
-              + "' -- cost should be numeric but was '" + costString + "'");
+              + "' -- costs should be numeric but were "
+              + "'" + minStr + "', '" + modeStr + "', '" + maxStr + "'");
           System.err.println("Code '" + code + "' will use the default cost");
           nfe.printStackTrace();
         }
@@ -70,6 +77,30 @@ public class Costs {
     } catch (IOException e) {
       e.printStackTrace();
       throw new ExceptionInInitializerError("Unable to read required file: " + filename);
+    }
+  }
+  
+  private static Map<String, Double> parseAdjustmentFactors() {
+    try {
+      String rawData = Utilities.readResource("costs/adjustmentFactors.csv");
+      List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
+
+      Map<String, Double> costMap = new HashMap<>();
+      for (Map<String, String> line : lines) {
+        String state = line.get("CODE"); // "STATE");
+        String factorStr = line.get("COST"); // "ADJ_FACTOR");
+        try {
+          Double factor = Double.valueOf(factorStr);
+          costMap.put(state, factor);
+        } catch (NumberFormatException nfe) {
+          throw new RuntimeException("Invalid cost adjustment factor: " + factorStr, nfe);
+        }
+      }
+      return costMap;
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(
+          "Unable to read required file: costs/adjustmentFactors.csv");
     }
   }
 
@@ -102,16 +133,28 @@ public class Costs {
     
     String code = entry.codes.get(0).code;
     
-    double baseCost = 0.0;
+    double defaultCost = 0.0;
+    Map<String, CostData> costs = null;
     
     if (entry instanceof HealthRecord.Procedure) {
-      baseCost = PROCEDURE_COSTS.getOrDefault(code, DEFAULT_PROCEDURE_COST);
+      costs = PROCEDURE_COSTS;
+      defaultCost = DEFAULT_PROCEDURE_COST;
     } else if (entry instanceof HealthRecord.Medication) {
-      baseCost = MEDICATION_COSTS.getOrDefault(code, DEFAULT_MEDICATION_COST);
+      costs = MEDICATION_COSTS;
+      defaultCost = DEFAULT_MEDICATION_COST;
     } else if (entry instanceof HealthRecord.Encounter) {
-      baseCost = ENCOUNTER_COSTS.getOrDefault(code, DEFAULT_ENCOUNTER_COST);
+      costs = ENCOUNTER_COSTS;
+      defaultCost = DEFAULT_ENCOUNTER_COST;
     } else if (entry instanceof HealthRecord.Immunization) {
-      baseCost = IMMUNIZATION_COSTS.getOrDefault(code, DEFAULT_IMMUNIZATION_COST);
+      costs = IMMUNIZATION_COSTS;
+      defaultCost = DEFAULT_IMMUNIZATION_COST;
+    }
+    
+    double baseCost;
+    if (costs != null && costs.containsKey(code)) {
+      baseCost = costs.get(code).chooseCost(patient.random);
+    } else {
+      baseCost = defaultCost;
     }
     
     double locationAdjustment = 1.0;
@@ -124,5 +167,31 @@ public class Costs {
     }
     
     return baseCost * locationAdjustment;
+  }
+  
+  private static class CostData {
+    private double min;
+    private double mode;
+    private double max;
+    
+    private CostData(double min, double mode, double max) {
+      this.min = min;
+      this.mode = mode;
+      this.max = max;
+    }
+    
+    private double chooseCost(Random random) {
+      return triangularDistribution(min, max, mode, random.nextDouble());
+    }
+    
+    // https://en.wikipedia.org/wiki/Triangular_distribution
+    public static double triangularDistribution(double a, double b, double c, double rand) {
+      double f = (c - a) / (b - a);
+      if (rand < f) {
+        return a + Math.sqrt(rand * (b - a) * (c - a));
+      } else {
+        return b - Math.sqrt((1 - rand) * (b - a) * (b - c));
+      }
+    }
   }
 }
