@@ -128,23 +128,19 @@ public class GeneratorTest {
     generator.internalStore = new LinkedList<>();
     for (int i = 0; i < numberOfPeople; i++) {
       Person person = generator.generatePerson(i);
-
       
       for (int j = 0; j < generator.internalStore.size(); j++) {
         Person compare = generator.internalStore.get(j);
         
-        TestHelper.assertEqual(person, compare, 
-            p -> p.attributes.get(Person.CITY), "Cities are not equal");
-        TestHelper.assertEqual(person, compare, 
-            p -> p.attributes.get(Person.RACE), "Races are not equal");
+        assertEquals(person.attributes.get(Person.CITY), compare.attributes.get(Person.CITY));
+        assertEquals(person.attributes.get(Person.RACE), compare.attributes.get(Person.RACE));
         
         if (j < 10) {
           // only the first 10 attempts keep the same birthdate.
           // after that it picks a lower target age
-          TestHelper.assertEqual(person, compare,
-              p -> p.attributes.get(Person.BIRTHDATE), "Birthdates are not equal");
+          assertEquals((long)person.attributes.get(Person.BIRTHDATE), 
+                     (long)compare.attributes.get(Person.BIRTHDATE));
         }
-
       }
       
       generator.internalStore.clear();

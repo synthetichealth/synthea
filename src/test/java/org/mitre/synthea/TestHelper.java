@@ -48,17 +48,4 @@ public abstract class TestHelper {
     return LocalDateTime.of(year, month, day, hr, min, sec).toInstant(ZoneOffset.UTC)
         .toEpochMilli();
   }
-  
-  /**
-   * Helper method to apply a function to two objects, and assert that the results are equal.
-   * @param base Object to serve as the basis for comparison
-   * @param compare Object to compare against the basis
-   * @param func Function to get a result from both base and compare
-   * @param message Message to display if results are not equal
-   */
-  public static <S,R> void assertEqual(S base, S compare, Function<S,R> func, String message) {
-    R baseResult = func.apply(base);
-    R compareResult = func.apply(compare);
-    Assert.assertEquals(message, baseResult, compareResult);
-  }
 }
