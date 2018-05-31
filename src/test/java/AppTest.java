@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Generator;
 
 public class AppTest {
 
@@ -24,6 +25,7 @@ public class AppTest {
     Assert.assertTrue(output.contains("Location:"));
     Assert.assertTrue(output.contains("alive=3"));
     Assert.assertTrue(output.contains("dead="));
+    Assert.assertTrue(output.contains("Location: Bedford, Massachusetts"));
     System.setOut(original);
   }
 
@@ -43,6 +45,7 @@ public class AppTest {
     Assert.assertTrue(output.contains("alive=4"));
     Assert.assertTrue(output.contains("dead="));
     Assert.assertFalse(output.contains("y/o F"));
+    Assert.assertTrue(output.contains("Location: " + Generator.DEFAULT_STATE));
     System.setOut(original);
   }
 
@@ -59,6 +62,7 @@ public class AppTest {
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
     Assert.assertTrue(output.contains("alive=3"));
+    Assert.assertTrue(output.contains("Location: " + Generator.DEFAULT_STATE));
     String regex = "(.\n)*(3[0-9] y/o)(.\n)*";
     Assert.assertTrue(Pattern.compile(regex).matcher(output).find());
     regex = "(.\n)*(\\(([0-9]|[0-2][0-9]|[4-9][0-9]) y/o)(.\n)*";
@@ -66,6 +70,24 @@ public class AppTest {
     System.setOut(original);
   }
 
+
+  @Test
+  public void testAppWithDifferentLocation() throws Exception {
+    TestHelper.exportOff();
+    String[] args = {"-s", "0", "-p", "3", "Utah", "Salt Lake City"};
+    final PrintStream original = System.out;
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final PrintStream print = new PrintStream(out, true);
+    System.setOut(print);
+    App.main(args);
+    String output = out.toString();
+    Assert.assertTrue(output.contains("Running with options:"));
+    Assert.assertTrue(output.contains("Seed:"));
+    Assert.assertTrue(output.contains("alive=3"));
+    Assert.assertTrue(output.contains("Location: Salt Lake City, Utah"));
+    System.setOut(original);
+  }
+  
   @Test
   public void testInvalidArgs() throws Exception {
     String[] args = {"-s", "foo", "-p", "foo", "Massachusetts", "Bedford"};
