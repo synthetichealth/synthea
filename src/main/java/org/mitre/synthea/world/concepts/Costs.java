@@ -55,9 +55,9 @@ public class Costs {
       Map<String, CostData> costMap = new HashMap<>();
       for (Map<String,String> line : lines) {
         String code = line.get("CODE");
-        String minStr = line.get("COST"); // "MIN");
-        String modeStr = line.get("COST"); // "MODE");
-        String maxStr = line.get("COST"); // "MAX");
+        String minStr = line.get("MIN");
+        String modeStr = line.get("MODE");
+        String maxStr = line.get("MAX");
         
         try {
           double min = Double.parseDouble(minStr);
@@ -87,8 +87,8 @@ public class Costs {
 
       Map<String, Double> costMap = new HashMap<>();
       for (Map<String, String> line : lines) {
-        String state = line.get("CODE"); // "STATE");
-        String factorStr = line.get("COST"); // "ADJ_FACTOR");
+        String state = line.get("STATE");
+        String factorStr = line.get("ADJ_FACTOR");
         try {
           Double factor = Double.valueOf(factorStr);
           costMap.put(state, factor);
