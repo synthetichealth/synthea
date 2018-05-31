@@ -62,7 +62,7 @@ public class Generator {
     /** Maximum age of people to be generated. Defaults to 140. */
     public int maxAge = 140;
     public String city;
-    public String state = DEFAULT_STATE;
+    public String state;
   }
   
   /**
@@ -125,6 +125,10 @@ public class Generator {
                 + "' . Valid values are file, in-memory, or none.");
     }
 
+    if (o.state == null) {
+      o.state = DEFAULT_STATE;
+    }
+    
     this.options = o;
     this.random = new Random(o.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
