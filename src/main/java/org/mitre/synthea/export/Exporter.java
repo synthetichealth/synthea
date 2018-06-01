@@ -119,6 +119,15 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+
+    if (Boolean.parseBoolean(Config.get("exporter.custom_report"))) {
+      try {
+        CustomSqlReport.export(generator);
+      } catch (Exception e) {
+        System.err.println("Custom report generation failed!");
+        e.printStackTrace();
+      }
+    }
   }
   
   public static Person filterForExport(Person original, int yearsToKeep, long endTime) {
