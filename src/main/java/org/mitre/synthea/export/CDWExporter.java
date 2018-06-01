@@ -20,6 +20,7 @@ import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -61,6 +62,7 @@ public class CDWExporter {
   /**
    * Writers for patient data.
    */
+  private FileWriter lookuppatient;
   private FileWriter spatient;
   private FileWriter spatientaddress;
   private FileWriter spatientphone;
@@ -115,6 +117,7 @@ public class CDWExporter {
       Path outputDirectory = output.toPath();
 
       // Patient Data
+      lookuppatient = openFileWriter(outputDirectory, "lookuppatient.csv");
       spatient = openFileWriter(outputDirectory, "spatient.csv");
       spatientaddress = openFileWriter(outputDirectory, "spatientaddress.csv");
       spatientphone = openFileWriter(outputDirectory, "spatientphone.csv");
@@ -173,6 +176,9 @@ public class CDWExporter {
     pharmacyOrderableItem.setHeader("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
 
     // Patient Tables
+    lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
+        + "PatientName,TestPatient");
+    lookuppatient.write(NEWLINE);
     spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
         + "BirthDateTime,DeceasedFlag,DeathDateTime,Gender,SelfIdentifiedGender,Religion,"
         + "MaritalStatus,MaritalStatusSID,PatientEnteredDateTime");
@@ -266,8 +272,15 @@ public class CDWExporter {
     //    if (!person.attributes.containsKey("veteran")) {
     //      return;
     //    }
-    
-    int personID = patient(person, time);
+    int primarySta3n = -1;
+    Provider provider = person.getAmbulatoryProvider(time);
+    if (provider != null) {
+      String state = Location.getStateName(provider.state);
+      String tz = Location.getTimezoneByState(state);
+      primarySta3n = sta3n.addFact(provider.id, clean(provider.name) + "," + tz);
+    }
+
+    int personID = patient(person, primarySta3n, time);
 
     for (Encounter encounter : person.record.encounters) {
       int encounterID = encounter(personID, person, encounter);
@@ -306,6 +319,7 @@ public class CDWExporter {
     }
 
     // Patient Data
+    lookuppatient.flush();
     spatient.flush();
     spatientaddress.flush();
     spatientphone.flush();
@@ -358,18 +372,14 @@ public class CDWExporter {
    * Record a Patient.
    *
    * @param person Person to write data for
+   * @param sta3n The primary station ID for this patient
    * @param time Time the simulation ended, to calculate age/deceased status
    * @return the patient's ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
-  private int patient(Person person, long time) throws IOException {
-    //    spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
-    //        + "BirthDateTime,DeceasedFlag,DeathDateTime,Gender,SelfIdentifiedGender,Religion,"
-    //        + "MaritalStatus,MaritalStatusSID,PatientEnteredDateTime");    
+  private int patient(Person person, int sta3n, long time) throws IOException {
+    // Generate full name and ID
     StringBuilder s = new StringBuilder();
-    int personID = getNextKey(spatient);
-    s.append(personID).append(',');
-    
     if (person.attributes.containsKey(Person.NAME_PREFIX)) {
       s.append(person.attributes.get(Person.NAME_PREFIX)).append(' ');
     }
@@ -378,6 +388,27 @@ public class CDWExporter {
     if (person.attributes.containsKey(Person.NAME_SUFFIX)) {
       s.append(' ').append(person.attributes.get(Person.NAME_SUFFIX));
     }
+    String patientName = s.toString();
+    int personID = getNextKey(spatient);
+
+    // lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
+    //     + "PatientName,TestPatient");
+    s.setLength(0);
+    s.append(personID).append(',');
+    s.append(sta3n).append(',');
+    s.append(personID).append(',');
+    s.append(personID).append(',');
+    s.append(personID).append(',');
+    s.append(patientName).append(",1");
+    s.append(NEWLINE);
+    write(s.toString(), lookuppatient);
+
+    // spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
+    //     + "BirthDateTime,DeceasedFlag,DeathDateTime,Gender,SelfIdentifiedGender,Religion,"
+    //     + "MaritalStatus,MaritalStatusSID,PatientEnteredDateTime");
+    s.setLength(0);
+    s.append(personID).append(',');
+    s.append(patientName);
     s.append(',').append(clean((String) person.attributes.getOrDefault(Person.LAST_NAME, "")));
     s.append(',').append(clean((String) person.attributes.getOrDefault(Person.FIRST_NAME, "")));
     s.append(',').append(clean((String) person.attributes.getOrDefault(Person.IDENTIFIER_SSN, "")));
