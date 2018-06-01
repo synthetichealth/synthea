@@ -1,0 +1,201 @@
+{
+  "name": "Primary atrophic hypothyroidism",
+  "remarks": [
+    "Hypothyroidism is a disorder of the endocrine system in which the thyroid gland does not produce enough thyroid hormone. Diagnosed by lab panel, and treated with synthroid."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Age delay": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 75,
+        "unit": "years"
+      },
+      "remarks": [
+        "common onset of primary atrophic hypothyroidism does not occer till after 50 years of age.",
+        ""
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Cold Symptom",
+              "distribution": 0.048
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.952
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Cold Symptom",
+              "distribution": 0.009
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.991
+            }
+          ]
+        }
+      ]
+    },
+    "Hypothyroid Condition Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Hypothyroidism encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 40930008,
+          "display": "Hypothyroidism (disorder)"
+        }
+      ],
+      "direct_transition": "Hypothyroidism encounter"
+    },
+    "encounter end": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "fT4 panel results": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/dl",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "Thyroxine (T4) free [Mass/​volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "TSH panel result",
+      "range": {
+        "low": 0.1,
+        "high": 0.4
+      }
+    },
+    "TSH panel result": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "m[IU]/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3016-3",
+          "display": "Thyrotropin [Units/​volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "Label Panel Results",
+      "range": {
+        "low": 2,
+        "high": 5
+      }
+    },
+    "Synthroid Medication Order": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 966222,
+          "display": "Levothyroxine Sodium 0.075 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "encounter end",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 60,
+          "unit": "days"
+        },
+        "refills": 6
+      }
+    },
+    "Label Panel Results": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 2,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24348-5",
+          "display": "Free T4 and TSH panel - Serum or Plasma"
+        }
+      ],
+      "direct_transition": "Synthroid Medication Order"
+    },
+    "Cold Symptom": {
+      "type": "Symptom",
+      "symptom": "cold intolerance",
+      "cause": "",
+      "direct_transition": "Decreased Appetite",
+      "range": {
+        "low": 1,
+        "high": 20
+      }
+    },
+    "Decreased Appetite": {
+      "type": "Symptom",
+      "symptom": "decreased appetite",
+      "cause": "",
+      "direct_transition": "Weight Gain",
+      "range": {
+        "low": 1,
+        "high": 20
+      }
+    },
+    "Weight Gain": {
+      "type": "Symptom",
+      "symptom": "weight gain",
+      "cause": "",
+      "direct_transition": "Fatigue Symptom",
+      "range": {
+        "low": 1,
+        "high": 20
+      }
+    },
+    "Fatigue Symptom": {
+      "type": "Symptom",
+      "symptom": "fatigue",
+      "cause": "",
+      "direct_transition": "Hypothyroid Condition Onset",
+      "range": {
+        "low": 1,
+        "high": 20
+      }
+    },
+    "Hypothyroidism encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "fT4 panel results"
+    }
+  }
+}

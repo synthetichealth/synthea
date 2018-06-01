@@ -289,6 +289,7 @@ public class Person implements Serializable, QuadTreeData {
   public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
   public static final String PREFERREDURGENTCAREPROVIDER = "preferredUrgentCareProvider";
+
   public Provider getProvider(String encounterClass, long time) {
     switch (encounterClass) {
       case Provider.AMBULATORY:
