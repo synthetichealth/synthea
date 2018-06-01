@@ -47,6 +47,15 @@ public class Generator {
   public static final String DEFAULT_STATE = "Massachusetts";
 
   /**
+   * Used only for testing and debugging. Populate this field to keep track of all patients
+   * generated, living or dead, during a simulation. Note that this may result in significantly
+   * increased memory usage as patients cannot be GC'ed.
+   */
+  List<Person> internalStore;
+  
+  private static final String TARGET_AGE = "target_age";
+  
+  /**
    * Helper class following the "Parameter Object" pattern.
    * This class provides the default values for Generator, or alternatives may be set.
    */
@@ -238,20 +247,19 @@ public class Generator {
     Person person = null;
     try {
       boolean isAlive = true;
-
-      Demographics city = location.randomCity(new Random(personSeed));
+      int tryNumber = 0; // number of tries to create these demographics
+      Random randomForDemographics = new Random(personSeed);
+      Demographics city = location.randomCity(randomForDemographics);
+      
+      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
+      long start = (long) demoAttributes.get(Person.BIRTHDATE);
 
       do {
         List<Module> modules = Module.getModules();
 
         person = new Person(personSeed);
         person.populationSeed = this.options.seed;
-
-        // TODO - this is quick & easy to implement,
-        // but we need to adapt the ruby method of pre-defining all the demographic buckets
-        // and then putting people into those
-        // -- but: how will that work with seeds?
-        long start = setDemographics(person, city);
+        person.attributes.putAll(demoAttributes);
         person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
@@ -290,6 +298,10 @@ public class Generator {
           database.store(person);
         }
 
+        if (internalStore != null) {
+          internalStore.add(person);
+        }
+        
         if (this.metrics != null) {
           metrics.recordStats(person, time);
         }
@@ -305,9 +317,25 @@ public class Generator {
 
         totalGeneratedPopulation.incrementAndGet();
         
+        tryNumber++;
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
+          
+          // if we've tried and failed > 10 times to generate someone over age 90
+          // and the options allow for ages as low as 85
+          // reduce the age to increase the likelihood of success
+          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
+              && (!options.ageSpecified || options.minAge <= 85)) {
+            // pick a new target age between 85 and 90
+            int newTargetAge = randomForDemographics.nextInt(5) + 85;
+            // the final age bracket is 85-110, but our patients rarely break 100
+            // so reducing a target age to 85-90 shouldn't affect numbers too much
+            demoAttributes.put(TARGET_AGE, newTargetAge);
+            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
+            demoAttributes.put(Person.BIRTHDATE, birthdate);
+            start = birthdate;
+          }
         }
 
         // TODO - export is DESTRUCTIVE when it filters out data
@@ -354,61 +382,68 @@ public class Generator {
     }
   }
 
-  private long setDemographics(Person person, Demographics city) {
-    person.attributes.put(Person.CITY, city.city);
-    person.attributes.put(Person.STATE, city.state);
+  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+    Map<String, Object> out = new HashMap<>();
+    out.put(Person.CITY, city.city);
+    out.put(Person.STATE, city.state);
     
-    String race = city.pickRace(person.random);
-    person.attributes.put(Person.RACE, race);
-    String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
-    person.attributes.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),
-        person);
-    person.attributes.put(Person.FIRST_LANGUAGE, language);
+    String race = city.pickRace(random);
+    out.put(Person.RACE, race);
+    String ethnicity = city.ethnicityFromRace(race, random);
+    out.put(Person.ETHNICITY, ethnicity);
+    String language = city.languageFromEthnicity(ethnicity, random);
+    out.put(Person.FIRST_LANGUAGE, language);
 
     String gender = null;
     if (options.gender != null) {
       gender = options.gender;
     } else {
-      gender = city.pickGender(person.random);
+      gender = city.pickGender(random);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
         gender = "F";
       }
     }
-    person.attributes.put(Person.GENDER, gender);
+    out.put(Person.GENDER, gender);
 
     // Socioeconomic variables of education, income, and education are set.
-    String education = city.pickEducation(person.random);
-    person.attributes.put(Person.EDUCATION, education);
-    double educationLevel = city.educationLevel(education, person);
-    person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
+    String education = city.pickEducation(random);
+    out.put(Person.EDUCATION, education);
+    double educationLevel = city.educationLevel(education, random);
+    out.put(Person.EDUCATION_LEVEL, educationLevel);
 
-    int income = city.pickIncome(person.random);
-    person.attributes.put(Person.INCOME, income);
+    int income = city.pickIncome(random);
+    out.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
-    person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
+    out.put(Person.INCOME_LEVEL, incomeLevel);
 
-    double occupation = person.rand();
-    person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
+    double occupation = random.nextDouble();
+    out.put(Person.OCCUPATION_LEVEL, occupation);
 
     double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-    person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-    person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+    out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+    out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 
-    long targetAge;
+    int targetAge;
     if (options.ageSpecified) {
-      targetAge = (long) person.rand(options.minAge, options.maxAge);
+      targetAge = 
+          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
     } else {
-      targetAge = city.pickAge(person.random);
+      targetAge = city.pickAge(random);
     }
+    out.put(TARGET_AGE, targetAge);
 
+    long birthdate = birthdateFromTargetAge(targetAge, random);
+    out.put(Person.BIRTHDATE, birthdate);
+    
+    return out;
+  }
+  
+  private long birthdateFromTargetAge(long targetAge, Random random) {
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
-
-    long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
-
-    return birthdate;
+    return 
+        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
   }
 }

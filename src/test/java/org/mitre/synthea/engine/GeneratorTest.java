@@ -3,6 +3,8 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.LinkedList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
@@ -113,4 +115,36 @@ public class GeneratorTest {
       assertEquals("01730", p.attributes.get(Person.ZIP));
     }
   }
+  
+  @Test
+  public void testDemographicsRetry() throws Exception {
+    // confirm that the demographic choices will persist if the first generated patients die
+    int numberOfPeople = 4;
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = numberOfPeople;
+    opts.minAge = 50;
+    opts.maxAge = 100;
+    Generator generator = new Generator(opts);
+    generator.internalStore = new LinkedList<>();
+    for (int i = 0; i < numberOfPeople; i++) {
+      Person person = generator.generatePerson(i);
+      
+      for (int j = 0; j < generator.internalStore.size(); j++) {
+        Person compare = generator.internalStore.get(j);
+        
+        assertEquals(person.attributes.get(Person.CITY), compare.attributes.get(Person.CITY));
+        assertEquals(person.attributes.get(Person.RACE), compare.attributes.get(Person.RACE));
+        
+        if (j < 10) {
+          // only the first 10 attempts keep the same birthdate.
+          // after that it picks a lower target age
+          assertEquals((long)person.attributes.get(Person.BIRTHDATE), 
+                     (long)compare.attributes.get(Person.BIRTHDATE));
+        }
+      }
+      
+      generator.internalStore.clear();
+    }
+  }
+  
 }
