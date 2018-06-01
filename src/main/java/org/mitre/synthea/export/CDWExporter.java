@@ -185,7 +185,7 @@ public class CDWExporter {
     spatient.write(NEWLINE);
     spatientaddress.write("SPatientAddressSID,PatientSID,AddressType,NameOfContact,"
         + "RelationshipToPatient,StreetAddress1,StreetAddress2,StreetAddress3,"
-        + "City,State,Zip,Country,GISMatchScore,GISStreetSide,"
+        + "City,State,Zip,PostalCode,Country,GISMatchScore,GISStreetSide,"
         + "GISPatientAddressLongitude,GISPatientAddressLatitude,GISFIPSCode");
     spatientaddress.write(NEWLINE);
     spatientphone.write("SPatientPhoneSID,PatientSID,PatientContactType,NameOfContact,"
@@ -460,7 +460,7 @@ public class CDWExporter {
     
     //  spatientaddress.write("SPatientAddressSID,PatientSID,AddressType,NameOfContact,"
     //  + "RelationshipToPatient,StreetAddress1,StreetAddress2,StreetAddress3,"
-    //  + "City,State,Zip,Country,GISMatchScore,GISStreetSide,"
+    //  + "City,State,Zip,PostalCode,Country,GISMatchScore,GISStreetSide,"
     //  + "GISPatientAddressLongitude,GISPatientAddressLatitude,GISFIPSCode");
     s.setLength(0);
     s.append(getNextKey(spatientaddress)).append(',');
@@ -472,8 +472,9 @@ public class CDWExporter {
     s.append(person.attributes.get(Person.ADDRESS)).append(",,,");
     s.append(person.attributes.get(Person.CITY)).append(',');
     s.append(person.attributes.get(Person.STATE)).append(',');
+    s.append(person.attributes.get(Person.ZIP));
     s.append(person.attributes.get(Person.ZIP)).append(",USA,,,");
-    
+
     DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
     if (coord != null) {
       s.append(coord.x).append(',').append(coord.y).append(',');
