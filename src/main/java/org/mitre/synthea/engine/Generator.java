@@ -51,7 +51,7 @@ public class Generator {
    * generated, living or dead, during a simulation. Note that this may result in significantly
    * increased memory usage as patients cannot be GC'ed.
    */
-  public List<Person> internalStore;
+  List<Person> internalStore;
   
   private static final String TARGET_AGE = "target_age";
   
