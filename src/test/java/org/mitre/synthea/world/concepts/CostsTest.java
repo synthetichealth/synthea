@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.concepts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,11 +22,25 @@ public class CostsTest {
   
   @Test public void testCostByKnownCode() {
     Code code = new Code("RxNorm","564666","Nitroglycerin 0.4 MG/ACTUAT [Nitrolingual]");
+    // note: cost range = 8.5-400, with mode at 20
+    double minCost = 8.5;
+    double maxCost = 400;
+    
     Entry fakeMedication = person.record.medicationStart(0L, code.display);
     fakeMedication.codes.add(code);
     
     double cost = Costs.calculateCost(fakeMedication, person, null, null);
-    assertEquals(20.00, cost, 0.01); // assert the cost is within $0.01
+    // at this point person has no state set, so there won't be a geographic factor applied
+    
+    assertTrue(cost <= maxCost);
+    assertTrue(cost >= minCost);
+
+    person.attributes.put(Person.STATE, "Massachusetts");
+    double adjFactor = 1.3124;
+    cost = Costs.calculateCost(fakeMedication, person, null, null);
+    assertTrue(cost <= (maxCost * adjFactor));
+    assertTrue(cost >= (minCost * adjFactor));
+    
   }
   
   @Test public void testCostByCodeWithDifferentSystem() {
