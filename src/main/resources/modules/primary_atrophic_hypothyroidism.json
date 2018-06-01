@@ -104,8 +104,8 @@
       ],
       "direct_transition": "Label Panel Results",
       "range": {
-        "low": 5,
-        "high": 2
+        "low": 2,
+        "high": 5
       }
     },
     "Synthroid Medication Order": {
