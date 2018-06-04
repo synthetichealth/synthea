@@ -13,6 +13,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.geography.Location;
 
 public class Costs {
   // all of these are CSVs with these columns: 
@@ -160,7 +161,7 @@ public class Costs {
     double locationAdjustment = 1.0;
     if (patient != null && patient.attributes.containsKey(Person.STATE)) {
       String state = (String) patient.attributes.get(Person.STATE);
-      
+      state = Location.getAbbreviation(state);
       if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
         locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
       }
