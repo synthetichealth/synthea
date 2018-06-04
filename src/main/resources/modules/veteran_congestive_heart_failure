@@ -68,10 +68,6 @@
       },
       "direct_transition": "CHF Condition Start"
     },
-    "new_state_2": {
-      "type": "Simple",
-      "direct_transition": "new_state_2"
-    },
     "CHF Condition Start": {
       "type": "ConditionOnset",
       "assign_to_attribute": "chf",
@@ -301,7 +297,7 @@
           "display": "congestive heart failure"
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "CHF Medication Start 1",
       "assign_to_attribute": "chf",
       "reason": "chf",
       "activities": [
@@ -328,6 +324,56 @@
         "unit": "weeks"
       },
       "direct_transition": "followup_CHF_encounter"
+    },
+    "CHF Medication Start 1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 866414,
+          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet [Toprol]"
+        }
+      ],
+      "direct_transition": "CHF Medication Start 2",
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 1
+      }
+    },
+    "CHF Medication Start 2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 315971,
+          "display": "Lasix 40mg"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 10
+      }
     }
   }
 }
