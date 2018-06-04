@@ -42,63 +42,6 @@
         }
       ]
     },
-    "Initial Workup labs for CHF": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "24320-4",
-          "display": "basic metabolic panel"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "initial encounter end"
-    },
-    "inital workup imaging for CHF": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": "34552-0",
-        "display": "trans thoracic echocardiogram"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 261179002,
-            "display": "thoracic"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "XX",
-            "display": "DICOM Modality Code"
-          },
-          "instances": [
-            {
-              "title": "Title of this image",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.3.4.5.6.7.8",
-                "display": "DICOM Subject-Object Pair Code"
-              }
-            },
-            {
-              "title": "Title of this image",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.3.4.5.6.7.8",
-                "display": "DICOM Subject-Object Pair Code"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "CHF careplan"
-    },
     "Record_Glucose": {
       "type": "Observation",
       "category": "laboratory",
@@ -221,45 +164,7 @@
           "display": "Basic Metabolic Panel"
         }
       ],
-      "direct_transition": "Initial Workup labs for CHF"
-    },
-    "followup_CHF_encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "direct_transition": "inital workup imaging for CHF"
-    },
-    "CHF careplan": {
-      "type": "CarePlanStart",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 88805009,
-          "display": "congestive heart failure"
-        }
-      ],
-      "direct_transition": "CHF medication start",
-      "assign_to_attribute": "chf",
-      "reason": "chf",
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": 183063000,
-          "display": "low salt diet education"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 183301007,
-          "display": "physical exercise"
-        }
-      ]
+      "direct_transition": "Initial Workup labs for hyperlipidemia"
     },
     "initial encounter end": {
       "type": "EncounterEnd",
@@ -271,29 +176,7 @@
         "quantity": 3,
         "unit": "weeks"
       },
-      "direct_transition": "followup_CHF_encounter"
-    },
-    "CHF medication start": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 866412,
-          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
-        },
-        {
-          "system": "RxNorm",
-          "code": 316151,
-          "display": "Lisinopril 10 MG"
-        },
-        {
-          "system": "RxNorm",
-          "code": 315970,
-          "display": "Furosemide 20 MG"
-        }
-      ],
-      "direct_transition": "followup encounter end",
-      "reason": "chf"
+      "direct_transition": "followup_hyperlipidemia_encounter"
     },
     "followup encounter end": {
       "type": "EncounterEnd",
@@ -413,6 +296,125 @@
         }
       ],
       "direct_transition": "Record_Glucose"
+    },
+    "Initial Workup labs for hyperlipidemia": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24320-4",
+          "display": "basic metabolic panel"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "initial encounter end"
+    },
+    "followup_hyperlipidemia_encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hyperlipidemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter"
+        }
+      ],
+      "direct_transition": "inital workup imaging for hyperlipidemia"
+    },
+    "inital workup imaging for hyperlipidemia": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "34552-0",
+        "display": "trans thoracic echocardiogram"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 261179002,
+            "display": "thoracic"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "XX",
+            "display": "DICOM Modality Code"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "DICOM Subject-Object Pair Code"
+              }
+            },
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "DICOM Subject-Object Pair Code"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "hyperlipidemia careplan"
+    },
+    "hyperlipidemia careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 55822004,
+          "display": "hyperlipidemia"
+        }
+      ],
+      "direct_transition": "Hyperlipidemia medication start",
+      "reason": "hyperlipidemia",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183063000,
+          "display": "low salt diet education"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183301007,
+          "display": "physical exercise"
+        }
+      ]
+    },
+    "Hyperlipidemia medication start": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 316672,
+          "display": "Simvistatin 10 MG"
+        }
+      ],
+      "direct_transition": "followup encounter end",
+      "reason": "hyperlipidemia",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 10
+      }
     }
   }
 }
