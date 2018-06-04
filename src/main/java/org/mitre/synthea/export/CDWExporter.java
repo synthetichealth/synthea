@@ -738,7 +738,7 @@ public class CDWExporter {
     } else {
       s.append('O').append(','); // O: Other
     }
-    s.append(','); // AllergicReactant
+    s.append(clean(code.display)).append(','); // AllergicReactant
     s.append(','); // LocalDrugSID
     s.append(','); // DrugNameWithoutDoseSID
     s.append(','); // DrugClassSID
