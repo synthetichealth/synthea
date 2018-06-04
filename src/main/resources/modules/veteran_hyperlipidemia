@@ -211,8 +211,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185345009,
+          "display": "Encounter for symptom"
         }
       ],
       "direct_transition": "Total Cholesterol lab workup"
