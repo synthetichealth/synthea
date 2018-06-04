@@ -301,7 +301,7 @@
           "display": "congestive heart failure"
         }
       ],
-      "direct_transition": "CHF careplan",
+      "direct_transition": "Terminal",
       "assign_to_attribute": "chf",
       "reason": "chf",
       "activities": [
