@@ -58,6 +58,8 @@ public class CDWExporter {
   private FactTable nationalDrug = new FactTable();
   private FactTable dosageForm = new FactTable();
   private FactTable pharmacyOrderableItem = new FactTable();
+  private FactTable orderStatus = new FactTable();
+  private FactTable vistaPackage = new FactTable();
 
   /**
    * Writers for patient data.
@@ -98,6 +100,8 @@ public class CDWExporter {
    * Writers for medications data.
    */
   private FileWriter rxoutpatient;
+  private FileWriter nonvamed;
+  private FileWriter cprsorder;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -143,6 +147,8 @@ public class CDWExporter {
 
       // Medications Data
       rxoutpatient = openFileWriter(outputDirectory, "rxoutpatient.csv");
+      nonvamed = openFileWriter(outputDirectory, "nonvamed.csv");
+      cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
 
       writeCSVHeaders();
     } catch (IOException e) {
@@ -174,6 +180,8 @@ public class CDWExporter {
         + "InactivationDate,VUID");
     dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
     pharmacyOrderableItem.setHeader("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
+    orderStatus.setHeader("OrderStatusSID,OrderStatus");
+    vistaPackage.setHeader("VistaPackageSID,VistaPackage");
 
     // Patient Tables
     lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
@@ -240,6 +248,14 @@ public class CDWExporter {
         + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
         + "PharmacyOrderableItemSID,MaxRefills,RxStatus,OrderedQuantity");
     rxoutpatient.write(NEWLINE);
+    nonvamed.write("NonVAMedSID,PatientSID,NonVAMedIEN,Sta3n,LocalDrugSID,Dosage,"
+        + "MedicationRoute,Schedule,NonVAMedStatus,CPRSOrderSID,StartDateTime,"
+        + "DocumentedDateTime,NonVAMedComments");
+    nonvamed.write(NEWLINE);
+    cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
+        + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+        + "PackageReference");
+    cprsorder.write(NEWLINE);
   }
 
   /**
@@ -360,6 +376,8 @@ public class CDWExporter {
       nationalDrug.write(openFileWriter(outputDirectory,"nationaldrug.csv"));
       dosageForm.write(openFileWriter(outputDirectory,"dosageform.csv"));
       pharmacyOrderableItem.write(openFileWriter(outputDirectory,"pharmacyorderableitem.csv"));
+      orderStatus.write(openFileWriter(outputDirectory,"orderstatus.csv"));
+      vistaPackage.write(openFileWriter(outputDirectory,"vistapackage.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -962,6 +980,65 @@ public class CDWExporter {
     }
     s.append(NEWLINE);
     write(s.toString(), rxoutpatient);
+
+    // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
+    //    + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+    //    + "PackageReference");
+    int cprsSID = getNextKey(cprsorder);
+    s.setLength(0);
+    s.append(cprsSID).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(personID).append(',');
+    s.append("-1,"); // OrderStaffSID
+    s.append("-1,"); // EnteredByStaffSID
+    s.append(iso8601Timestamp(medication.start)).append(',');
+    int orderStatusSID = -1;
+    if (medication.stop != 0L) {
+      orderStatusSID = orderStatus.addFact("EXPIRED", "EXPIRED");
+    } else {
+      orderStatusSID = orderStatus.addFact("ACTIVE", "ACTIVE");
+    }
+    s.append(orderStatusSID).append(',');
+    s.append(vistaPackage.addFact("OUTPATIENT PHARMACY", "OUTPATIENT PHARMACY")).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
+    if (medication.stop != 0L) {
+      s.append(iso8601Timestamp(medication.stop));
+    }
+    s.append(',');
+    s.append("OUTPATIENT PHARMACY");
+    s.append(NEWLINE);
+    write(s.toString(), cprsorder);
+
+    // nonvamed.write("NonVAMedSID,PatientSID,NonVAMedIEN,Sta3n,LocalDrugSID,Dosage,"
+    //    + "MedicationRoute,Schedule,NonVAMedStatus,CPRSOrderSID,StartDateTime,"
+    //    + "DocumentedDateTime,NonVAMedComments");
+    s.setLength(0);
+    int nonvamedSID = getNextKey(nonvamed);
+    s.append(nonvamedSID).append(',');
+    s.append(personID).append(',');
+    s.append(nonvamedSID).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(ldrugSID).append(',');
+    if (dosageSID != null) {
+      String fact = dosageForm.getFactById(dosageSID);
+      s.append(fact.substring(fact.indexOf(',') + 1));
+    }
+    s.append(',');
+    s.append(','); // MedicationRoute
+    s.append(','); // Schedule
+    s.append(orderStatus.getFactById(orderStatusSID)).append(',');
+    s.append(cprsSID).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
+    s.append(clean(code.display));
+    s.append(NEWLINE);
+    write(s.toString(), nonvamed);
   }
 
   /**
