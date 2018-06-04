@@ -47,8 +47,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 268565007,
+          "display": "Adult Health Examination"
         }
       ],
       "direct_transition": "wellness_procedure",
@@ -95,7 +95,7 @@
       "reason": "wellness visit",
       "distributed_transition": [
         {
-          "transition": "abnormal_DRE",
+          "transition": "Prostate Cancer Symptom 2",
           "distribution": 0.6
         },
         {
@@ -159,7 +159,7 @@
           },
           "distributions": [
             {
-              "transition": "biopsy_visit",
+              "transition": "Prostate Cancer Symptom",
               "distribution": 1
             }
           ]
@@ -246,8 +246,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185345009,
+          "display": "Encounter for symptom"
         }
       ],
       "direct_transition": "biopsy procedure"
@@ -329,8 +329,11 @@
           },
           "distributions": [
             {
-              "transition": "Prostate_Cancer Therapy",
-              "distribution": 1
+              "transition": "Prostate Symtpom 3",
+              "distribution": {
+                "attribute": "attribute",
+                "default": 1
+              }
             }
           ]
         }
@@ -356,8 +359,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "distributed_transition": [
@@ -384,8 +387,13 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 408580007,
+          "display": "Physical activity target light exercise"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 229578001,
+          "display": "Ice bath treatment"
         }
       ]
     },
@@ -477,6 +485,37 @@
     "eventual_death": {
       "type": "Simple",
       "direct_transition": "Terminal"
+    },
+    "Prostate Cancer Symptom": {
+      "type": "Symptom",
+      "symptom": "difficulty with urination",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "biopsy_visit"
+    },
+    "Prostate Cancer Symptom 2": {
+      "type": "Symptom",
+      "symptom": "blood in urine",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "abnormal_DRE"
+    },
+    "Prostate Symtpom 3": {
+      "type": "Symptom",
+      "symptom": "urinary frequency",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Prostate_Cancer Therapy"
+    },
+    "Prostatectomy ": {
+      "type": "CarePlanEnd",
+      "direct_transition": "Prostatectomy "
     }
   }
 }
