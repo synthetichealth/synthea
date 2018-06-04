@@ -52,7 +52,26 @@ public class FactTable {
   public int getFactId(String key) {
     return keys.get(key);
   }
-  
+
+  /**
+   * Get the fact for a given key.
+   * @param key The key for a fact. For example, 'M' or 'F'.
+   * @return The fact. For example, 'Male' or 'Female'.
+   */
+  public String getFactByKey(String key) {
+    Integer id = keys.get(key);
+    return facts.get(id);
+  }
+
+  /**
+   * Get the fact for a given key.
+   * @param id The ID for the fact. For example, 1 or 2.
+   * @return The fact. For example, 'Male' or 'Female'.
+   */
+  public String getFactById(Integer id) {
+    return facts.get(id);
+  }
+
   /**
    * Adds a new key/fact combination to the table
    * and returns the ID. If the key already exists,
