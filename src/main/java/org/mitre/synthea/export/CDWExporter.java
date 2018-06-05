@@ -54,6 +54,7 @@ public class CDWExporter {
   // private FactTable appointmentStatus = new FactTable();
   // private FactTable appointmentType = new FactTable();
   private FactTable immunizationName = new FactTable();
+  private FactTable reaction = new FactTable();
   private FactTable localDrug = new FactTable();
   private FactTable nationalDrug = new FactTable();
   private FactTable dosageForm = new FactTable();
@@ -88,6 +89,7 @@ public class CDWExporter {
    * Writers for allergy data.
    */
   private FileWriter allergy;
+  private FileWriter allergyreaction;
   private FileWriter allergycomment;
 
   /**
@@ -139,6 +141,7 @@ public class CDWExporter {
 
       // Allergy Data
       allergy = openFileWriter(outputDirectory, "allergy.csv");
+      allergyreaction = openFileWriter(outputDirectory, "allergyreaction.csv");
       allergycomment = openFileWriter(outputDirectory, "allergycomment.csv");
 
       // Condition Data
@@ -174,6 +177,7 @@ public class CDWExporter {
     sta3n.setHeader("Sta3n,Sta3nName,TimeZone");
     location.setHeader("LocationSID,LocationName");
     immunizationName.setHeader("ImmunizationNameSID,ImmunizationName,CVXCode,MaxInSeries");
+    reaction.setHeader("ReactionSID,Reaction,VUID");
     localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
         + "NationalDrugSID,NationalDrugNameWithDose");
     nationalDrug.setHeader("NationalDrugSID,DrugNameWithDose,DosageFormSID,"
@@ -229,8 +233,10 @@ public class CDWExporter {
         + "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
         + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
     allergy.write(NEWLINE);
-    allergycomment.write("AllergyCommentSID,AllergyIEN,Sta3n,PatientSID,OriginationDateTime,"
-        + "EnteringStaffSID,AllergyComment");
+    allergyreaction.write("AllergicReactionSID,AllergySID,AllergyIEN,Sta3n,ReactionSID");
+    allergyreaction.write(NEWLINE);
+    allergycomment.write("AllergyCommentSID,AllergySID,AllergyIEN,Sta3n,PatientSID,"
+        + "OriginationDateTime,EnteringStaffSID,AllergyComment,CommentEnteredDateTime");
     allergycomment.write(NEWLINE);
 
     // Condition Tables
@@ -353,6 +359,7 @@ public class CDWExporter {
 
     // Allergy Data
     allergy.flush();
+    allergyreaction.flush();
     allergycomment.flush();
 
     // Condition Data
@@ -372,6 +379,7 @@ public class CDWExporter {
       sta3n.write(openFileWriter(outputDirectory,"sta3n.csv"));
       location.write(openFileWriter(outputDirectory,"location.csv"));
       immunizationName.write(openFileWriter(outputDirectory,"immunizationname.csv"));
+      reaction.write(openFileWriter(outputDirectory,"reaction.csv"));
       localDrug.write(openFileWriter(outputDirectory,"localdrug.csv"));
       nationalDrug.write(openFileWriter(outputDirectory,"nationaldrug.csv"));
       dosageForm.write(openFileWriter(outputDirectory,"dosageform.csv"));
@@ -773,12 +781,30 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), allergy);
 
-    // allergycomment.write("AllergyCommentSID,AllergyIEN,Sta3n,PatientSID,OriginationDateTime,"
-    //     + "EnteringStaffSID,AllergyComment");
+    // allergyreaction.write("AllergicReactionSID,AllergySID,AllergyIEN,Sta3n,ReactionSID");
+    String reactionDisplay = person.rand(
+        new String[] {"Sneezing and Coughing", "Inflammation of Skin",
+            "Itchy Watery Eyes", "Difficulty Breathing"});
+    s.setLength(0);
+    int allergyreactionSID = getNextKey(allergyreaction);
+    s.append(allergyreactionSID);
+    s.append(allergySID).append(',');
+    s.append(allergySID).append(',');
+    if (encounter.provider != null) {
+      s.append(sta3nValue);
+    }
+    s.append(',');
+    s.append(reaction.addFact(reactionDisplay, reactionDisplay + "," + allergyreactionSID));
+    s.append(NEWLINE);
+    write(s.toString(), allergyreaction);
+
+    // allergycomment.write("AllergyCommentSID,AllergySID,AllergyIEN,Sta3n,PatientSID,"
+    //    + "OriginationDateTime,EnteringStaffSID,AllergyComment,CommentEnteredDateTime");
     s.setLength(0);
     int allergyCommentSid = getNextKey(allergycomment);
     s.append(allergyCommentSid).append(',');
-    s.append(allergyCommentSid).append(',');
+    s.append(allergySID).append(',');
+    s.append(allergySID).append(',');
     if (encounter.provider != null) {
       s.append(sta3nValue);
     }
@@ -786,7 +812,8 @@ public class CDWExporter {
     s.append(personID).append(',');
     s.append(iso8601Timestamp(allergyEntry.start)).append(',');
     s.append("-1,");
-    s.append(clean(code.display));
+    s.append(clean(code.display)).append(',');
+    s.append(iso8601Timestamp(allergyEntry.start));
     s.append(NEWLINE);
     write(s.toString(), allergycomment);
   }
