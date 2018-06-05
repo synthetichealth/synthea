@@ -1,3 +1,13 @@
+-- CUSTOM REPORT QUERIES
+-- This file contains the queries that will be run, one at a time, to generate custom CSV reports.
+-- Each query will produce 1 report.
+-- Blank lines and lines starting with -- (single line comments) will be ignored.
+-- In this initial implementation, all queries must start with SELECT 
+--   (ie, no creation of views or modification of data allowed)
+-- and each query must be on its own line, entirely on a single line.
+-- See the DataStore class for details on what tables are available.
+
+
 -- Sample Query 1: select everything from the "person" table.
 -- Note that column ordering is not guaranteed.
 
