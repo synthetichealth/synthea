@@ -89,7 +89,7 @@ public class CDWExporter {
    * Writers for allergy data.
    */
   private FileWriter allergy;
-  private FileWriter allergyreaction;
+  private FileWriter allergicreaction;
   private FileWriter allergycomment;
 
   /**
@@ -141,7 +141,7 @@ public class CDWExporter {
 
       // Allergy Data
       allergy = openFileWriter(outputDirectory, "allergy.csv");
-      allergyreaction = openFileWriter(outputDirectory, "allergyreaction.csv");
+      allergicreaction = openFileWriter(outputDirectory, "allergyreaction.csv");
       allergycomment = openFileWriter(outputDirectory, "allergycomment.csv");
 
       // Condition Data
@@ -233,8 +233,8 @@ public class CDWExporter {
         + "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
         + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
     allergy.write(NEWLINE);
-    allergyreaction.write("AllergicReactionSID,AllergySID,AllergyIEN,Sta3n,ReactionSID");
-    allergyreaction.write(NEWLINE);
+    allergicreaction.write("AllergicReactionSID,AllergySID,AllergyIEN,Sta3n,ReactionSID");
+    allergicreaction.write(NEWLINE);
     allergycomment.write("AllergyCommentSID,AllergySID,AllergyIEN,Sta3n,PatientSID,"
         + "OriginationDateTime,EnteringStaffSID,AllergyComment,CommentEnteredDateTime");
     allergycomment.write(NEWLINE);
@@ -359,7 +359,7 @@ public class CDWExporter {
 
     // Allergy Data
     allergy.flush();
-    allergyreaction.flush();
+    allergicreaction.flush();
     allergycomment.flush();
 
     // Condition Data
@@ -786,7 +786,7 @@ public class CDWExporter {
         new String[] {"Sneezing and Coughing", "Inflammation of Skin",
             "Itchy Watery Eyes", "Difficulty Breathing"});
     s.setLength(0);
-    int allergyreactionSID = getNextKey(allergyreaction);
+    int allergyreactionSID = getNextKey(allergicreaction);
     s.append(allergyreactionSID);
     s.append(allergySID).append(',');
     s.append(allergySID).append(',');
@@ -796,7 +796,7 @@ public class CDWExporter {
     s.append(',');
     s.append(reaction.addFact(reactionDisplay, reactionDisplay + "," + allergyreactionSID));
     s.append(NEWLINE);
-    write(s.toString(), allergyreaction);
+    write(s.toString(), allergicreaction);
 
     // allergycomment.write("AllergyCommentSID,AllergySID,AllergyIEN,Sta3n,PatientSID,"
     //    + "OriginationDateTime,EnteringStaffSID,AllergyComment,CommentEnteredDateTime");
