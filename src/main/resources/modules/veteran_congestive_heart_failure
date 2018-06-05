@@ -298,7 +298,6 @@
         }
       ],
       "direct_transition": "CHF Medication Start 1",
-      "assign_to_attribute": "chf",
       "reason": "chf",
       "activities": [
         {
@@ -359,7 +358,7 @@
           "display": "Lasix 40mg"
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "end_followup_encounter",
       "reason": "chf",
       "prescription": {
         "dosage": {
@@ -374,6 +373,10 @@
         },
         "refills": 10
       }
+    },
+    "end_followup_encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   }
 }
