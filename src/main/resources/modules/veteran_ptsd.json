@@ -192,8 +192,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47505003,
-          "display": "Posttraumatic stress disorder"
+          "code": 185345009,
+          "display": "Encounter for symptom"
         }
       ],
       "direct_transition": "PTSD_Initial_Careplan"
@@ -207,7 +207,6 @@
           "display": "Posttrumatic stress disorder"
         }
       ],
-      "assign_to_attribute": "ptsd",
       "reason": "ptsd",
       "activities": [
         {
@@ -222,11 +221,6 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 47505003,
-          "display": "Posttraumatic stress disorder"
-        },
         {
           "system": "SNOMED-CT",
           "code": 79094001,
@@ -255,23 +249,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
-          "display": "Coping Support Management"
-        },
-        {
-          "system": "SNOMED-CT",
           "code": 225337009,
           "display": "Suicide Risk Assessment"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 406185000,
-          "display": "Trauma Therapy"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
         }
       ],
       "conditional_transition": [
@@ -293,7 +272,19 @@
           }
         }
       ],
-      "reason": "ptsd"
+      "reason": "ptsd",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 406185000,
+          "display": "Trauma Therapy"
+        }
+      ]
     },
     "PTSD_Careplan_Psych": {
       "type": "CarePlanStart",
@@ -319,7 +310,8 @@
           "display": "Trauma Therapy"
         }
       ],
-      "direct_transition": "end_Psych_encounter"
+      "direct_transition": "end_Psych_encounter",
+      "reason": "ptsd"
     },
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
@@ -361,7 +353,8 @@
             "operator": "is nil"
           }
         }
-      ]
+      ],
+      "reason": "ptsd"
     },
     "PTSD Diagnosis": {
       "type": "ConditionOnset",
@@ -395,7 +388,7 @@
     },
     "end_PTSD_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Initial_Psychiatric_PTSD_Encounter",
+      "direct_transition": "time gate",
       "discharge_disposition": {
         "system": "NUBC",
         "code": 1,
@@ -405,7 +398,7 @@
     "Evaluation Gate delay": {
       "type": "Delay",
       "exact": {
-        "quantity": 3,
+        "quantity": 6,
         "unit": "months"
       },
       "direct_transition": "PTSD_Re_evaluation Encounter"
@@ -413,7 +406,6 @@
     "PTSD_Re_evaluation Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "PTSD Diagnosis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -438,7 +430,8 @@
           "transition": "PTSD_Careplan_Psych_and_Rx",
           "distribution": 0.15
         }
-      ]
+      ],
+      "reason": "ptsd"
     },
     "end_Psych_encounter": {
       "type": "EncounterEnd",
@@ -485,7 +478,7 @@
     },
     "end_PTSD_Re_evaluation_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "end_follow_up_careplan"
     },
     "age guard": {
       "type": "Delay",
@@ -527,6 +520,20 @@
       ],
       "direct_transition": "end_Psych_encounter",
       "reason": "ptsd"
+    },
+    "end_follow_up_careplan": {
+      "type": "CarePlanEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "ptsd",
+      "careplan": "text"
+    },
+    "time gate": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Initial_Psychiatric_PTSD_Encounter"
     }
   }
 }
