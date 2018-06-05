@@ -55,6 +55,7 @@ public class CDWExporter {
   // private FactTable appointmentType = new FactTable();
   private FactTable immunizationName = new FactTable();
   private FactTable reaction = new FactTable();
+  private FactTable providerNarrative = new FactTable();
   private FactTable localDrug = new FactTable();
   private FactTable nationalDrug = new FactTable();
   private FactTable dosageForm = new FactTable();
@@ -178,6 +179,7 @@ public class CDWExporter {
     location.setHeader("LocationSID,LocationName");
     immunizationName.setHeader("ImmunizationNameSID,ImmunizationName,CVXCode,MaxInSeries");
     reaction.setHeader("ReactionSID,Reaction,VUID");
+    providerNarrative.setHeader("ProviderNarrativeSID,ProviderNarrative");
     localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
         + "NationalDrugSID,NationalDrugNameWithDose");
     nationalDrug.setHeader("NationalDrugSID,DrugNameWithDose,DosageFormSID,"
@@ -380,6 +382,7 @@ public class CDWExporter {
       location.write(openFileWriter(outputDirectory,"location.csv"));
       immunizationName.write(openFileWriter(outputDirectory,"immunizationname.csv"));
       reaction.write(openFileWriter(outputDirectory,"reaction.csv"));
+      providerNarrative.write(openFileWriter(outputDirectory, "providernarrative.csv"));
       localDrug.write(openFileWriter(outputDirectory,"localdrug.csv"));
       nationalDrug.write(openFileWriter(outputDirectory,"nationaldrug.csv"));
       dosageForm.write(openFileWriter(outputDirectory,"dosageform.csv"));
@@ -677,6 +680,9 @@ public class CDWExporter {
       sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
     }
 
+    Code code = condition.codes.get(0);
+    int snomedSID = providerNarrative.addFact(code.code, clean(code.display));
+
     // problemlist.write("ProblemListSID,Sta3n,ICD9SID,ICD10SID,PatientSID,ProviderNarrativeSID,"
     //    + "EnteredDateTime,OnsetDateTime,ProblemListCondition,RecordingProviderSID,"
     //    + "ResolvedDateTime,SNOMEDCTConceptCode");
@@ -688,7 +694,7 @@ public class CDWExporter {
     s.append(',');
     s.append(",,"); // skip icd 9 and icd 10
     s.append(personID).append(',');
-    s.append(','); // provider narrative -- history of present illness
+    s.append(snomedSID).append(','); // snomed display is jammed into narrative.
     s.append(iso8601Timestamp(encounter.start)).append(',');
     s.append(iso8601Timestamp(condition.start)).append(',');
     s.append("P,");
@@ -697,7 +703,7 @@ public class CDWExporter {
       s.append(iso8601Timestamp(condition.stop));
     }
     s.append(',');
-    s.append(condition.codes.get(0).code);
+    s.append(code.code);
     s.append(NEWLINE);
     write(s.toString(), problemlist);
 
