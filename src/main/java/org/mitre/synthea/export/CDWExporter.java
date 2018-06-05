@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,6 +20,7 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.Immunizations;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -43,11 +45,18 @@ import org.mitre.synthea.world.geography.Location;
  * https://www.data.va.gov/dataset/corporate-data-warehouse-cdw
  */
 public class CDWExporter {
+  /** Number of clinicians to generate. */
+  private static final int CLINICIANS = 100;
+
+  /** Temporary attribute to record clinician on a provider encounter. */
+  private static final String CLINICIAN_SID = "CLINICIAN_SID";
+
   /**
    * Table key sequence generators.
    */
   private Map<FileWriter,AtomicInteger> sids;
-  
+
+  private FactTable sstaff = new FactTable();
   private FactTable maritalStatus = new FactTable();
   private FactTable sta3n = new FactTable();
   private FactTable location = new FactTable();
@@ -155,6 +164,7 @@ public class CDWExporter {
       cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
 
       writeCSVHeaders();
+      generateClinicians();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -174,6 +184,7 @@ public class CDWExporter {
    */
   private void writeCSVHeaders() throws IOException {
     // Fact Tables
+    sstaff.setHeader("StaffSID,StaffName");
     maritalStatus.setHeader("MaritalStatusSID,MaritalStatusCode");
     sta3n.setHeader("Sta3n,Sta3nName,TimeZone");
     location.setHeader("LocationSID,LocationName");
@@ -264,6 +275,28 @@ public class CDWExporter {
         + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
         + "PackageReference");
     cprsorder.write(NEWLINE);
+  }
+
+  /**
+   * Generate a list of practicing Clinicians.
+   * This is temporary until Provider organizations have associated
+   * Clinician agents.
+   */
+  private void generateClinicians() {
+    Random random = new Random(999L);
+    for (int i=0; i < CLINICIANS; i++) {
+      Person clinician = new Person(random.nextLong());
+      if (random.nextBoolean()) {
+        clinician.attributes.put(Person.GENDER, "M");
+      } else {
+        clinician.attributes.put(Person.GENDER, "F");
+      }
+      clinician.attributes.put(Person.FIRST_LANGUAGE, "English");
+      LifecycleModule.birth(clinician, 0L);
+      String name = "Dr. " + clinician.attributes.get(Person.FIRST_NAME);
+      name += " " + clinician.attributes.get(Person.LAST_NAME);
+      sstaff.addFact(""+i, clean(name));
+    }
   }
 
   /**
@@ -377,6 +410,7 @@ public class CDWExporter {
       File output = Exporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
+      sstaff.write(openFileWriter(outputDirectory,"sstaff.csv"));
       maritalStatus.write(openFileWriter(outputDirectory,"maritalstatus.csv"));
       sta3n.write(openFileWriter(outputDirectory,"sta3n.csv"));
       location.write(openFileWriter(outputDirectory,"location.csv"));
@@ -603,10 +637,15 @@ public class CDWExporter {
 
     // visit.write("VisitSID,VisitDateTime,CreatedByStaffSID,LocationSID,PatientSID");
     int visitSid = getNextKey(visit);
+    int staffSid = person.randInt(CLINICIANS);
+    if (encounter.provider != null) {
+      encounter.provider.attributes.put(CLINICIAN_SID, staffSid);
+    }
+
     s.setLength(0);
     s.append(visitSid).append(',');
     s.append(iso8601Timestamp(encounter.start)).append(',');
-    s.append(','); // CreatedByStaffID == null
+    s.append(staffSid).append(','); // CreatedByStaffID
     Integer locationSid = null;
     if (encounter.provider != null) {
       locationSid = location.addFact(encounter.provider.id, clean(encounter.provider.name));
@@ -674,10 +713,12 @@ public class CDWExporter {
       Entry condition) throws IOException {
     StringBuilder s = new StringBuilder();
     Integer sta3nValue = null;
+    Integer providerSID = 0;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
       sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
 
     Code code = condition.codes.get(0);
@@ -698,7 +739,7 @@ public class CDWExporter {
     s.append(iso8601Timestamp(encounter.start)).append(',');
     s.append(iso8601Timestamp(condition.start)).append(',');
     s.append("P,");
-    s.append("-1,");
+    s.append(providerSID).append(','); // RecordingProviderSID
     if (condition.stop != 0L) {
       s.append(iso8601Timestamp(condition.stop));
     }
@@ -724,8 +765,8 @@ public class CDWExporter {
     s.append(iso8601Timestamp(condition.start)).append(',');
     s.append(','); // provider narrative -- history of present illness
     s.append(problemListSid).append(',');
-    s.append("-1,");
-    s.append("-1");
+    s.append(providerSID).append(','); // OrderingProviderSID
+    s.append(providerSID).append(','); // EncounterProviderSID
     s.append(NEWLINE);
     write(s.toString(), vdiagnosis);
   }
@@ -745,10 +786,12 @@ public class CDWExporter {
     StringBuilder s = new StringBuilder();
 
     Integer sta3nValue = null;
+    Integer providerSID = 0;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
       sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
     Code code = allergyEntry.codes.get(0);
     boolean food = code.display.matches(".*(nut|peanut|milk|dairy|eggs|shellfish|wheat).*");
@@ -777,12 +820,12 @@ public class CDWExporter {
     s.append(','); // ReactantSID
     s.append(','); // DrugIngredientSID
     s.append(iso8601Timestamp(allergyEntry.start)).append(',');
-    s.append("-1,");
+    s.append(providerSID).append(','); // OriginatingStaffSID
     s.append(person.rand(new String[] {"o", "h"})).append(',');
     s.append("A,");
     s.append("1,"); // Verified
     s.append(iso8601Timestamp(allergyEntry.start)).append(',');
-    s.append("-1,");
+    s.append(providerSID).append(','); // VerifyingStaffSID
     s.append(',');
     s.append(NEWLINE);
     write(s.toString(), allergy);
@@ -817,7 +860,7 @@ public class CDWExporter {
     s.append(',');
     s.append(personID).append(',');
     s.append(iso8601Timestamp(allergyEntry.start)).append(',');
-    s.append("-1,");
+    s.append(providerSID).append(','); // EnteringStaffSID
     s.append(clean(code.display)).append(',');
     s.append(iso8601Timestamp(allergyEntry.start));
     s.append(NEWLINE);
@@ -920,10 +963,12 @@ public class CDWExporter {
     StringBuilder s = new StringBuilder();
 
     Integer sta3nValue = null;
+    Integer providerSID = 0;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
       sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
     Code code = medication.codes.get(0);
 
@@ -996,8 +1041,8 @@ public class CDWExporter {
     }
     s.append(',');
     s.append(personID).append(',');
-    s.append("-1,"); // Provider
-    s.append("-1,"); // Entered by staff
+    s.append(providerSID).append(","); // Provider
+    s.append(providerSID).append(","); // Entered by staff
     s.append(ldrugSID).append(',');
     s.append(ndrugSID).append(',');
     s.append(pharmSID).append(',');
@@ -1025,8 +1070,8 @@ public class CDWExporter {
     }
     s.append(',');
     s.append(personID).append(',');
-    s.append("-1,"); // OrderStaffSID
-    s.append("-1,"); // EnteredByStaffSID
+    s.append(providerSID).append(","); // OrderStaffSID
+    s.append(providerSID).append(","); // EnteredByStaffSID
     s.append(iso8601Timestamp(medication.start)).append(',');
     int orderStatusSID = -1;
     if (medication.stop != 0L) {
@@ -1094,10 +1139,12 @@ public class CDWExporter {
     int immunizationSid = getNextKey(immunization);
     s.append(immunizationSid).append(',');
     s.append(immunizationSid).append(','); // ImmunizationIEN
+    Integer providerSID = 0;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
       s.append(sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz));
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
     s.append(',');
     s.append(personID).append(',');
@@ -1115,7 +1162,8 @@ public class CDWExporter {
     s.append(person.randInt(12)).append(','); // Reaction
     s.append(iso8601Timestamp(immunizationEntry.start)).append(',');
     s.append(iso8601Timestamp(immunizationEntry.start)).append(',');
-    s.append("-1,-1,");
+    s.append(providerSID).append(","); // OrderingStaffSID
+    s.append(providerSID).append(","); // ImmunizingStaffSID
     s.append(encounterID).append(',');
     // Comment
     s.append("Dose #" + series + " of " + maxInSeries + " of "
