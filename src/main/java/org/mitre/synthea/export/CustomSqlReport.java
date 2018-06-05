@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -8,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +31,12 @@ import org.mitre.synthea.helpers.Utilities;
  * 
  */
 public class CustomSqlReport {
+  
+  /**
+   * The String that will be used in the results when the query found no rows
+   * matching the criteria.
+   */
+  public static final String NO_RESULTS = "No results found.";
   
   /**
    * Run the exporter to produce the custom reports based on the given population.
@@ -69,43 +77,51 @@ public class CustomSqlReport {
           throw new IllegalArgumentException("Custom SQL query must only start with SELECT");
         }
 
-        List<Map<String, String>> results = new LinkedList<>();
-
-        PreparedStatement stmt = connection.prepareStatement(query);
-
-        ResultSet rs = stmt.executeQuery();
-
-        // get the list of column names from metadata
-        ResultSetMetaData rsmd = rs.getMetaData();
-        List<String> columnNames = new ArrayList<>(rsmd.getColumnCount());
-        for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-          columnNames.add(rsmd.getColumnName(i));
-        }
-
-        while (rs.next()) {
-          Map<String, String> line = new HashMap<>();
-          for (String column : columnNames) {
-            String value = String.valueOf(rs.getObject(column));
-            line.put(column, value);
-          }
-          results.add(line);
-        }
-
-        String resultContent;
-        if (results.isEmpty()) {
-          resultContent = "No results found.";
-        } else {
-          resultContent = SimpleCSV.unparse(results);
-        }
+        String result = queryToCsv(connection, query);
         
         // add the query as the first line so it's easy to see what it was
-        String newCsvData = query + System.lineSeparator() + resultContent;
+        String newCsvData = query + System.lineSeparator() + result;
         Path outFilePath = outDirectory.toPath()
             .resolve("custom_query" + reportNum + "_" + System.currentTimeMillis() + ".csv");
 
         Files.write(outFilePath, Collections.singleton(newCsvData), StandardOpenOption.CREATE_NEW);
         reportNum++;
       }
+    }
+  }
+  
+  static String queryToCsv(Connection connection, String query) throws SQLException, IOException {
+    List<Map<String, String>> results = new LinkedList<>();
+    // possibility of sql injection, but this is the user's own local DB 
+    // so it doesn't really matter if they inject themselves
+    // if we extend the DataStore to connect outside, we should take real care to only allow SELECTs
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+        ResultSet rs = stmt.executeQuery()) {
+  
+      // get the list of column names from metadata
+      ResultSetMetaData rsmd = rs.getMetaData();
+      List<String> columnNames = new ArrayList<>(rsmd.getColumnCount());
+      for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+        columnNames.add(rsmd.getColumnName(i));
+      }
+  
+      while (rs.next()) {
+        Map<String, String> line = new HashMap<>();
+        for (String column : columnNames) {
+          String value = String.valueOf(rs.getObject(column));
+          line.put(column, value);
+        }
+        results.add(line);
+      }
+  
+      String resultContent;
+      if (results.isEmpty()) {
+        resultContent = NO_RESULTS;
+      } else {
+        resultContent = SimpleCSV.unparse(results);
+      }
+      
+      return resultContent;
     }
   }
 }
