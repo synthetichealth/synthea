@@ -43,14 +43,7 @@
     "annual_wellness_visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "wellness visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 268565007,
-          "display": "Adult Health Examination"
-        }
-      ],
+      "codes": [],
       "direct_transition": "wellness_procedure",
       "wellness": true
     },
@@ -78,11 +71,6 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 63476009,
-          "display": "Prostate specific antigen measurement"
-        },
-        {
-          "system": "SNOMED-CT",
           "code": 410006001,
           "display": "Digital examination of rectum"
         }
@@ -92,7 +80,6 @@
         "high": 5,
         "unit": "minutes"
       },
-      "reason": "wellness visit",
       "distributed_transition": [
         {
           "transition": "Prostate Cancer Symptom 2",
@@ -186,7 +173,7 @@
     "abnormal_DRE": {
       "type": "Observation",
       "category": "exam",
-      "unit": "abnormal",
+      "unit": "{nominal}",
       "codes": [
         {
           "system": "LOINC",
@@ -194,31 +181,24 @@
           "display": "Prostate enlarged on PR"
         }
       ],
-      "attribute": "abnormal_dre",
-      "complex_transition": [
+      "exact": {
+        "quantity": 1
+      },
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "abnormal_dre",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "transition": "detect_abnormal results",
-              "distribution": 0.29
-            },
-            {
-              "transition": "detect_normal results",
-              "distribution": 0.71
-            }
-          ]
+          "transition": "detect_abnormal results",
+          "distribution": 0.29
+        },
+        {
+          "transition": "detect_normal results",
+          "distribution": 0.71
         }
       ]
     },
     "normal_DRE": {
       "type": "Observation",
       "category": "exam",
-      "unit": "normal",
+      "unit": "{nominal}",
       "codes": [
         {
           "system": "LOINC",
@@ -242,7 +222,6 @@
     "biopsy_visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "abnormal_dre",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -307,35 +286,22 @@
     },
     "biopsy_visit_end": {
       "type": "EncounterEnd",
-      "complex_transition": [
+      "conditional_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "prostate_cancer",
-            "operator": "is nil"
-          },
-          "distributions": [
-            {
-              "transition": "wellness_visit_time_delay",
-              "distribution": 1
-            }
-          ]
-        },
-        {
+          "transition": "Prostate Symtpom 3",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "prostate_cancer",
             "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "transition": "Prostate Symtpom 3",
-              "distribution": {
-                "attribute": "attribute",
-                "default": 1
-              }
-            }
-          ]
+          }
+        },
+        {
+          "transition": "wellness_visit_time_delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "prostate_cancer",
+            "operator": "is nil"
+          }
         }
       ]
     },
@@ -395,7 +361,8 @@
           "code": 229578001,
           "display": "Ice bath treatment"
         }
-      ]
+      ],
+      "reason": "prostate_cancer"
     },
     "Watchful_Waiting_Careplan": {
       "type": "CarePlanStart",
