@@ -316,15 +316,7 @@
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
       "direct_transition": "end_PTSD_Re_evaluation_Encounter",
-      "referenced_by_attribute": "ptsd",
-      "condition_onset": "text",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 47505003,
-          "display": "posttraumatic stress disorder"
-        }
-      ]
+      "referenced_by_attribute": "ptsd"
     },
     "PTSD_Careplan_Rx_ONLY": {
       "type": "CarePlanStart",
@@ -442,8 +434,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 36437,
-          "display": "Sertraline"
+          "code": 328670,
+          "display": "Sertraline 100MG"
         }
       ],
       "assign_to_attribute": "SSRI",
@@ -474,7 +466,8 @@
     "end re_evaluation_medication": {
       "type": "MedicationEnd",
       "direct_transition": "PTSD Medication Order",
-      "medication_order": "ptsd"
+      "medication_order": "",
+      "referenced_by_attribute": "SSRI"
     },
     "end_PTSD_Re_evaluation_Encounter": {
       "type": "EncounterEnd",
@@ -500,7 +493,7 @@
           }
         },
         {
-          "transition": "Terminal",
+          "transition": "Non_Veteran",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "veteran",
