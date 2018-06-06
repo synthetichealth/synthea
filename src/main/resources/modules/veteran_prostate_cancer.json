@@ -259,7 +259,7 @@
     "biopsy_results_abnormal": {
       "type": "Observation",
       "category": "procedure",
-      "unit": "",
+      "unit": "{nominal}",
       "codes": [
         {
           "system": "LOINC",
@@ -273,7 +273,7 @@
     "biopsy_results_normal": {
       "type": "Observation",
       "category": "procedure",
-      "unit": "",
+      "unit": "{nominal}",
       "codes": [
         {
           "system": "LOINC",
@@ -308,7 +308,7 @@
     "Prostate_Cancer": {
       "type": "ConditionOnset",
       "assign_to_attribute": "prostate_cancer",
-      "target_encounter": "",
+      "target_encounter": "Prostate_Cancer_Therapy",
       "codes": [
         {
           "system": "SNOMED-CT",
