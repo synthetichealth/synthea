@@ -3,14 +3,18 @@ package org.mitre.synthea.export;
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
+import com.google.gson.JsonObject;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.UUID;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -132,7 +136,8 @@ public class CSVExporter {
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
     medications.write(
-        "START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION"
+        "START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,DISPENSES,TOTALCOST,"
+        + "REASONCODE,REASONDESCRIPTION"
     );
     medications.write(NEWLINE);
     conditions.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
@@ -201,7 +206,7 @@ public class CSVExporter {
       }
 
       for (Medication medication : encounter.medications) {
-        medication(personID, encounterID, medication);
+        medication(personID, encounterID, medication, time);
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -467,11 +472,13 @@ public class CSVExporter {
    * @param personID ID of the person prescribed the medication.
    * @param encounterID ID of the encounter where the medication was prescribed
    * @param medication The medication itself
+   * @param stopTime End time
    * @throws IOException if any IO error occurs
    */
   private void medication(String personID, String encounterID,
-      Medication medication) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+      Medication medication, long stopTime) throws IOException {
+    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,
+    // COST,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(medication.start)).append(',');
@@ -487,7 +494,45 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", medication.cost())).append(',');
+    BigDecimal cost = medication.cost();
+    s.append(cost).append(',');
+    long dispenses = 1; // dispenses = refills + original
+    // makes the math cleaner and more explicit. dispenses * unit cost = total cost
+    
+    long stop = medication.stop;
+    if (stop == 0L) {
+      stop = stopTime;
+    }
+    long medDuration = stop - medication.start;
+
+    if (medication.prescriptionDetails != null 
+        && medication.prescriptionDetails.has("refills")) {
+      dispenses = medication.prescriptionDetails.get("refills").getAsInt();
+    } else if (medication.prescriptionDetails != null 
+        && medication.prescriptionDetails.has("duration")) {
+      JsonObject duration = medication.prescriptionDetails.getAsJsonObject("duration");
+      
+      long quantity = duration.get("quantity").getAsLong();
+      String unit = duration.get("unit").getAsString();
+      long durationMs = Utilities.convertTime(unit, quantity);
+      dispenses = medDuration / durationMs;
+    } else {
+      // assume 1 refill / month
+      long durationMs = Utilities.convertTime("months", 1);
+      dispenses = medDuration / durationMs;
+    }
+    
+    if (dispenses < 1) {
+      // integer division could leave us with 0, 
+      // if the active time is less than the 
+      dispenses = 1;
+    }
+
+    s.append(dispenses).append(','); 
+    BigDecimal totalCost = cost
+        .multiply(BigDecimal.valueOf(dispenses))
+        .setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+    s.append(totalCost).append(',');
 
     if (medication.reasons.isEmpty()) {
       s.append(','); // reason code & desc
