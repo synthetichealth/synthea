@@ -360,15 +360,10 @@
     },
     "Watchful_Waiting_Careplan": {
       "type": "CarePlanStart",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 126906006,
-          "display": "Neoplasm of prostate"
-        }
-      ],
+      "codes": [],
       "direct_transition": "end_cancer_therapy encounter",
-      "assign_to_attribute": "watchful_waiting"
+      "assign_to_attribute": "watchful_waiting",
+      "reason": "prostate_cancer"
     },
     "Chemotherapy_Hormone Order": {
       "type": "MedicationOrder",
@@ -384,8 +379,18 @@
           "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
         }
       ],
-      "direct_transition": "Prostatectomy",
-      "assign_to_attribute": "prostate cancer"
+      "assign_to_attribute": "prostate cancer",
+      "conditional_transition": [
+        {
+          "transition": "Prostatectomy",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          }
+        }
+      ]
     },
     "Prostatectomy": {
       "type": "Procedure",
@@ -401,7 +406,7 @@
         "high": 6,
         "unit": "hours"
       },
-      "direct_transition": "end_cancer_therapy encounter",
+      "direct_transition": "end_chemo_med",
       "reason": "prostate_cancer"
     },
     "end_cancer_therapy encounter": {
@@ -477,6 +482,10 @@
     "Prostatectomy ": {
       "type": "CarePlanEnd",
       "direct_transition": "Prostatectomy "
+    },
+    "end_chemo_med": {
+      "type": "MedicationEnd",
+      "direct_transition": "end_cancer_therapy encounter"
     }
   }
 }
