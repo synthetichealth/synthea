@@ -342,13 +342,7 @@
     },
     "Aggressive_Therapy_Careplan": {
       "type": "CarePlanStart",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 126906006,
-          "display": "Neoplasm of prostate"
-        }
-      ],
+      "codes": [],
       "direct_transition": "Chemotherapy_Hormone Order",
       "activities": [
         {
