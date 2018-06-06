@@ -73,8 +73,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 83664006,
+          "display": "Idiopathic atrophic hypothyroidism"
         }
       ],
       "direct_transition": "Hypothyroidism Encounter Workup"
@@ -90,7 +90,7 @@
           "display": "Encounter for Problem"
         }
       ],
-      "direct_transition": "TSH panel order"
+      "direct_transition": "fT4 panel results"
     },
     "Hypothyroid symptom": {
       "type": "Symptom",
@@ -122,7 +122,7 @@
     "Hypothyroidism followup encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "hypothyroidism followup",
+      "reason": "hypothyroidism",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -130,23 +130,7 @@
           "display": "Encounter for Problem"
         }
       ],
-      "direct_transition": "fT4 panel results"
-    },
-    "TSH panel order": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "24348-5",
-          "display": "Free T4 and TSH panel - Serum or Plasma"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "encounter end"
+      "direct_transition": "Synthroid Medication Order"
     },
     "encounter time delay": {
       "type": "Delay",
@@ -157,7 +141,7 @@
       "direct_transition": "Hypothyroid symptoms"
     },
     "encounter end": {
-      "type": "Simple",
+      "type": "EncounterEnd",
       "direct_transition": "encounter time delay"
     },
     "fT4 panel results": {
@@ -188,7 +172,7 @@
           "display": "Thyrotropin [Units/​volume] in Serum or Plasma"
         }
       ],
-      "direct_transition": "Synthroid Medication Order",
+      "direct_transition": "encounter end",
       "range": {
         "low": 5,
         "high": 2
@@ -208,7 +192,7 @@
         "dosage": {
           "amount": 1,
           "frequency": 1,
-          "period": 1,
+          "period": 60,
           "unit": "days"
         },
         "duration": {
