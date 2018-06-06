@@ -88,8 +88,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "BNP lab workup"
@@ -154,7 +154,6 @@
     "Record_Glucose": {
       "type": "Observation",
       "category": "laboratory",
-      "vital_sign": "Glucose",
       "codes": [
         {
           "system": "LOINC",
@@ -163,7 +162,8 @@
         }
       ],
       "unit": "mg/dL",
-      "direct_transition": "Record_UreaNitrogen"
+      "direct_transition": "Record_UreaNitrogen",
+      "vital_sign": "Glucose"
     },
     "Record_UreaNitrogen": {
       "type": "Observation",
@@ -282,8 +282,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "inital workup imaging for CHF"
@@ -343,10 +343,10 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 30,
           "unit": "days"
         },
-        "refills": 1
+        "refills": 12
       }
     },
     "CHF Medication Start 2": {
@@ -368,7 +368,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 30,
           "unit": "days"
         },
         "refills": 10
