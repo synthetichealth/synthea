@@ -36,7 +36,7 @@ public class CostsTest {
     assertTrue(cost >= minCost);
 
     person.attributes.put(Person.STATE, "Massachusetts");
-    double adjFactor = 1.3124;
+    double adjFactor = 1.0333;
     cost = Costs.calculateCost(fakeMedication, person, null, null);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
