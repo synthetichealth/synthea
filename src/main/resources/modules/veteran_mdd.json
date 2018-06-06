@@ -316,15 +316,7 @@
     "Change_Dx_Not_MDD": {
       "type": "ConditionEnd",
       "direct_transition": "end_MDD_Re_evaluation Encounter",
-      "condition_onset": "mdd",
-      "referenced_by_attribute": "mdd_psych",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 370143000,
-          "display": "major depression disorder"
-        }
-      ]
+      "referenced_by_attribute": "mdd"
     },
     "end_MDD_Re_evaluation Encounter": {
       "type": "EncounterEnd",
@@ -389,17 +381,19 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
-          "display": "Coping Support Management"
-        },
-        {
-          "system": "SNOMED-CT",
           "code": 225337009,
           "display": "Suicide Risk Assessment"
         }
       ],
       "direct_transition": "end_Psych_encounter",
-      "reason": "mdd_psych"
+      "reason": "mdd_psych",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        }
+      ]
     },
     "MDD_Re_evaluation Encounter": {
       "type": "Encounter",
@@ -428,8 +422,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 315952,
-          "display": "Fluoxetine"
+          "code": 406022,
+          "display": "Fluoxetine 25MG"
         }
       ],
       "assign_to_attribute": "ssri",
@@ -443,7 +437,20 @@
           "transition": "MDD Chronic Pain Med",
           "distribution": 0.5
         }
-      ]
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 60,
+          "unit": "days"
+        },
+        "refills": 12
+      }
     },
     "MDD_Careplan_Rx_ONLY": {
       "type": "CarePlanStart",
@@ -535,16 +542,9 @@
       "direct_transition": "Change_Dx_Not_MDD"
     },
     "MDD Chronic Pain Med": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 856980,
-          "display": "Acetaminophen / Hydrocodone"
-        }
-      ],
-      "direct_transition": "end_Psych_encounter",
-      "assign_to_attribute": "mdd"
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "end_Psych_encounter"
     },
     "age guard": {
       "type": "Guard",
@@ -568,7 +568,7 @@
           }
         },
         {
-          "transition": "Terminal",
+          "transition": "Non_Veteran",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "veteran",
