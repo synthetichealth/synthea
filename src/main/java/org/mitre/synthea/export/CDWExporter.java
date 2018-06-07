@@ -535,7 +535,7 @@ public class CDWExporter {
     s.append(person.attributes.get(Person.ADDRESS)).append(",,,");
     s.append(person.attributes.get(Person.CITY)).append(',');
     s.append(person.attributes.get(Person.STATE)).append(',');
-    s.append(person.attributes.get(Person.ZIP));
+    s.append(person.attributes.get(Person.ZIP)).append(',');
     s.append(person.attributes.get(Person.ZIP)).append(",USA,,,");
 
     DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
