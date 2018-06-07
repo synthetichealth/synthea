@@ -763,7 +763,7 @@ public class CDWExporter {
     s.append(encounterID).append(',');
     s.append(iso8601Timestamp(encounter.start)).append(',');
     s.append(iso8601Timestamp(condition.start)).append(',');
-    s.append(','); // provider narrative -- history of present illness
+    s.append(snomedSID).append(','); // snomed display is jammed into narrative.
     s.append(problemListSid).append(',');
     s.append(providerSID).append(','); // OrderingProviderSID
     s.append(providerSID).append(','); // EncounterProviderSID
