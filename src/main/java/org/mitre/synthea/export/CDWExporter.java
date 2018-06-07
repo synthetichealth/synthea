@@ -151,7 +151,7 @@ public class CDWExporter {
 
       // Allergy Data
       allergy = openFileWriter(outputDirectory, "allergy.csv");
-      allergicreaction = openFileWriter(outputDirectory, "allergyreaction.csv");
+      allergicreaction = openFileWriter(outputDirectory, "allergicreaction.csv");
       allergycomment = openFileWriter(outputDirectory, "allergycomment.csv");
 
       // Condition Data
