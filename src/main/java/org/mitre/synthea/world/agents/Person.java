@@ -84,7 +84,7 @@ public class Person implements Serializable, QuadTreeData {
     vitalSigns = new ConcurrentHashMap<VitalSign, Double>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     events = new EventList();
-    record = new HealthRecord();
+    record = new HealthRecord(this);
   }
 
   public double rand() {

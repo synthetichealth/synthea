@@ -18,7 +18,6 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
@@ -148,7 +147,7 @@ public abstract class Exporter {
     final HealthRecord record = filtered.record;
     
     for (Encounter encounter : record.encounters) { 
-      List<ClaimItem> claimItems = encounter.claim.items;
+      List<HealthRecord.Entry> claimItems = encounter.claim.items;
       // keep conditions if still active, regardless of start date
       Predicate<HealthRecord.Entry> conditionActive = c -> record.conditionActive(c.type);
       // or if the condition was active at any point since the cutoff date
@@ -219,7 +218,7 @@ public abstract class Exporter {
    *          Keep function, if this function returns `true` for an entry then it will be kept
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-      List<ClaimItem> claimItems, long cutoffDate, long endTime, Predicate<E> keepFunction) {
+      List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime, Predicate<E> keepFunction) {
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
     while (iterator.hasNext()) {
@@ -231,7 +230,7 @@ public abstract class Exporter {
           && (keepFunction == null || !keepFunction.test(entry))) {
         iterator.remove();
         
-        claimItems.removeIf(ci -> ci.entry == entry); 
+        claimItems.removeIf(ci -> ci == entry); 
         // compare with == because we only care if it's the actual same object
       }
     }
