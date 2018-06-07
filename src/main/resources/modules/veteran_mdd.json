@@ -232,8 +232,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 36923009,
-          "display": "major depression, single episode"
+          "code": 718347000,
+          "display": "Mental health care plan"
         }
       ],
       "assign_to_attribute": "MDD care plan",
@@ -457,8 +457,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370143000,
-          "display": "major depression disorder"
+          "code": 718347000,
+          "display": "Mental health care plan"
         }
       ],
       "conditional_transition": [
