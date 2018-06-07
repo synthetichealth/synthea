@@ -38,7 +38,6 @@ public class Costs {
   
   private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = 
       parseAdjustmentFactors(); 
-  // Note that this file will have headers CODE and COST for simplicity
   
   /**
    * Load all cost data needed by the system.
