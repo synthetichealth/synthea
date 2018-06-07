@@ -457,8 +457,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
-          "display": "Mental health care plan"
+          "code": 737434004,
+          "display": "Major depressive disorder clinical management plan"
         }
       ],
       "conditional_transition": [
