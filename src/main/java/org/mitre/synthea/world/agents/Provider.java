@@ -6,8 +6,10 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -183,12 +185,21 @@ public class Provider implements QuadTreeData {
     try {
       String abbreviation = Location.getAbbreviation(state);
 
+      Set<String> servicesProvided = new HashSet<String>();
+      servicesProvided.add(Provider.AMBULATORY);
+      servicesProvided.add(Provider.INPATIENT);
+      servicesProvided.add(Provider.WELLNESS);
+
       String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-      loadProviders(state, abbreviation, hospitalFile);
+      loadProviders(state, abbreviation, hospitalFile, servicesProvided);
+
       String vaFile = Config.get("generate.providers.veterans.default_file");
-      loadProviders(state, abbreviation, vaFile);
+      loadProviders(state, abbreviation, vaFile, servicesProvided);
+
+      servicesProvided.clear();
+      servicesProvided.add(Provider.URGENTCARE);
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-      loadProviders(state, abbreviation, urgentcareFile);
+      loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
 
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
@@ -202,9 +213,11 @@ public class Provider implements QuadTreeData {
    * @param state Name of the current state, ex "Massachusetts"
    * @param abbreviation State abbreviation, ex "MA"
    * @param filename Location of the file, relative to src/main/resources
+   * @param servicesProvided Set of services provided by these facilities
    * @throws IOException if the file cannot be read
    */
-  public static void loadProviders(String state, String abbreviation, String filename)
+  public static void loadProviders(String state, String abbreviation, String filename,
+      Set<String> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
@@ -217,19 +230,12 @@ public class Provider implements QuadTreeData {
           || (state != null && state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
         Provider parsed = csvLineToProvider(row);
-        
 
-        if (filename.equals("providers/hospitals.csv")
-               || filename.equals("providers/va_facilities.csv")) {
-          parsed.servicesProvided.add(Provider.AMBULATORY);
-          parsed.servicesProvided.add(Provider.INPATIENT);
-          parsed.servicesProvided.add(Provider.WELLNESS);
-          if ("Yes".equals(row.remove("emergency"))) {
-            parsed.servicesProvided.add(Provider.EMERGENCY);
-          }
-        } else if (filename.equals("providers/urgent_care_facilities.csv")) {
-          parsed.servicesProvided.add(Provider.URGENTCARE);
+        parsed.servicesProvided.addAll(servicesProvided);
+        if ("Yes".equals(row.remove("emergency"))) {
+          parsed.servicesProvided.add(Provider.EMERGENCY);
         }
+
         // add any remaining columns we didn't explicitly map to first-class fields
         // into the attributes table
         for (Map.Entry<String, String> e : row.entrySet()) {

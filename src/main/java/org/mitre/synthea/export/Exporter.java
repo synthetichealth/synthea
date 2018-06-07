@@ -282,7 +282,8 @@ public abstract class Exporter {
       return person.attributes.get(Person.ID) + "." + extension;
     } else {
       // ensure unique filenames for now
-      return person.attributes.get(Person.NAME) + "_" + person.attributes.get(Person.ID) + "."
+      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
+          + person.attributes.get(Person.ID) + "."
           + extension;
     }
   }
