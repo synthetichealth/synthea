@@ -524,7 +524,8 @@ public class CSVExporter {
     
     if (dispenses < 1) {
       // integer division could leave us with 0, 
-      // if the active time is less than the 
+      // ex. if the active time (start->stop) is less than the provided duration
+      // or less than a month if no duration provided
       dispenses = 1;
     }
 

@@ -169,6 +169,12 @@ public class Costs {
     return baseCost * locationAdjustment;
   }
   
+  /**
+   * Helper class to store a grouping of cost data for a single concept.
+   * Currently cost data includes a minimum, maximum, and mode (most common value).
+   * Selection of individual prices based on this cost data should be done
+   * using the chooseCost(Random) method.
+   */
   private static class CostData {
     private double min;
     private double mode;
@@ -180,17 +186,31 @@ public class Costs {
       this.max = max;
     }
     
+    /**
+     * Select an individual cost based on this cost data. Uses a triangular distribution
+     * to pick a randomized value.
+     * @param random Source of randomness
+     * @return Single cost within the range this set of cost data represents
+     */
     private double chooseCost(Random random) {
       return triangularDistribution(min, max, mode, random.nextDouble());
     }
     
-    // https://en.wikipedia.org/wiki/Triangular_distribution
-    public static double triangularDistribution(double a, double b, double c, double rand) {
-      double f = (c - a) / (b - a);
+    /**
+     * Pick a single value based on a triangular distribution. 
+     * See: https://en.wikipedia.org/wiki/Triangular_distribution
+     * @param min Lower limit of the distribution
+     * @param max Upper limit of the distribution
+     * @param mode Most common value
+     * @param rand A random value between 0-1
+     * @return a single value from the distribution
+     */
+    public static double triangularDistribution(double min, double max, double mode, double rand) {
+      double f = (mode - min) / (max - min);
       if (rand < f) {
-        return a + Math.sqrt(rand * (b - a) * (c - a));
+        return min + Math.sqrt(rand * (max - min) * (mode - min));
       } else {
-        return b - Math.sqrt((1 - rand) * (b - a) * (b - c));
+        return max - Math.sqrt((1 - rand) * (max - min) * (max - mode));
       }
     }
   }
