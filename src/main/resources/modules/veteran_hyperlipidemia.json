@@ -164,7 +164,7 @@
           "display": "Basic Metabolic Panel"
         }
       ],
-      "direct_transition": "Initial Workup labs for hyperlipidemia"
+      "direct_transition": "initial encounter end"
     },
     "initial encounter end": {
       "type": "EncounterEnd",
@@ -193,7 +193,7 @@
     },
     "Hyperlipidemia Condition Start": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "Hyperlipidemia",
+      "assign_to_attribute": "hyperlipidemia",
       "target_encounter": "Hyperlipidemia initial workup encounter",
       "codes": [
         {
@@ -207,7 +207,7 @@
     "Hyperlipidemia initial workup encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "Hyperlipidemia",
+      "reason": "hyperlipidemia",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -297,22 +297,6 @@
       ],
       "direct_transition": "Record_Glucose"
     },
-    "Initial Workup labs for hyperlipidemia": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "24320-4",
-          "display": "basic metabolic panel"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "initial encounter end"
-    },
     "followup_hyperlipidemia_encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -373,7 +357,7 @@
         {
           "system": "SNOMED-CT",
           "code": 55822004,
-          "display": "hyperlipidemia"
+          "display": "Hyperlipidemia clinical management plan"
         }
       ],
       "direct_transition": "Hyperlipidemia medication start",
