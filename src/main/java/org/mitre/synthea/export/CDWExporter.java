@@ -836,7 +836,7 @@ public class CDWExporter {
             "Itchy Watery Eyes", "Difficulty Breathing"});
     s.setLength(0);
     int allergyreactionSID = getNextKey(allergicreaction);
-    s.append(allergyreactionSID);
+    s.append(allergyreactionSID).append(',');
     s.append(allergySID).append(',');
     s.append(allergySID).append(',');
     if (encounter.provider != null) {
