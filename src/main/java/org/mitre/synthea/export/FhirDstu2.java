@@ -127,6 +127,8 @@ public class FhirDstu2 {
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
 
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
     String filename = "race_ethnicity_codes.json";
@@ -382,7 +384,10 @@ public class FhirDstu2 {
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState(state).setCountry("US");
+        .setState(state);
+    if (COUNTRY_CODE != null) {
+      addrResource.setCountry(COUNTRY_CODE);
+    }
 
     DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
     if (coord != null) {
@@ -400,8 +405,10 @@ public class FhirDstu2 {
     }
 
     AddressDt birthplace = new AddressDt();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
-        .setCountry("US");
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state);
+    if (COUNTRY_CODE != null) {
+      birthplace.setCountry(COUNTRY_CODE);
+    }
     ExtensionDt birthplaceExtension = new ExtensionDt();
     birthplaceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
@@ -1247,8 +1254,10 @@ public class FhirDstu2 {
         .addLine(provider.address)
         .setCity(provider.city)
         .setPostalCode(provider.zip)
-        .setState(provider.state)
-        .setCountry("US");
+        .setState(provider.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     if (provider.phone != null && !provider.phone.isEmpty()) {

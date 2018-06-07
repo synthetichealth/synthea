@@ -37,6 +37,8 @@ public abstract class HospitalDSTU2Exporter {
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
 
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_dstu2.export"))) {
       
@@ -90,6 +92,9 @@ public abstract class HospitalDSTU2Exporter {
     address.setCity(h.city);
     address.setPostalCode(h.zip);
     address.setState(h.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
