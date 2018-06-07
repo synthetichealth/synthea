@@ -342,7 +342,13 @@
     },
     "Aggressive_Therapy_Careplan": {
       "type": "CarePlanStart",
-      "codes": [],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736252007,
+          "display": "Cancer care plan"
+        }
+      ],
       "direct_transition": "Chemotherapy_Hormone Order",
       "activities": [
         {
@@ -360,7 +366,13 @@
     },
     "Watchful_Waiting_Careplan": {
       "type": "CarePlanStart",
-      "codes": [],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736252007,
+          "display": "Cancer care plan"
+        }
+      ],
       "direct_transition": "end_cancer_therapy encounter",
       "assign_to_attribute": "watchful_waiting",
       "reason": "prostate_cancer"
