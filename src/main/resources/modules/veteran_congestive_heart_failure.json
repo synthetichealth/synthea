@@ -129,7 +129,16 @@
             "code": "XX",
             "display": "DICOM Modality Code"
           },
-          "instances": []
+          "instances": [
+            {
+              "title": "dummy instance",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "dummy code"
+              }
+            }
+          ]
         }
       ],
       "direct_transition": "CHF careplan"
