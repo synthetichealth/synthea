@@ -293,8 +293,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 88805009,
-          "display": "congestive heart failure"
+          "code": 735984001,
+          "display": "Heart failure self management plan"
         }
       ],
       "direct_transition": "CHF Medication Start 1",
