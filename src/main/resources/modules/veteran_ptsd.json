@@ -203,8 +203,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47505003,
-          "display": "Posttrumatic stress disorder"
+          "code": 736254008,
+          "display": "Psychiatry care plan"
         }
       ],
       "reason": "ptsd",
@@ -284,7 +284,8 @@
           "code": 406185000,
           "display": "Trauma Therapy"
         }
-      ]
+      ],
+      "assign_to_attribute": "ptsd_careplan"
     },
     "PTSD_Careplan_Psych": {
       "type": "CarePlanStart",
@@ -311,7 +312,8 @@
         }
       ],
       "direct_transition": "end_Psych_encounter",
-      "reason": "ptsd"
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan"
     },
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
@@ -346,7 +348,8 @@
           }
         }
       ],
-      "reason": "ptsd"
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan"
     },
     "PTSD Diagnosis": {
       "type": "ConditionOnset",
@@ -517,8 +520,7 @@
     "end_follow_up_careplan": {
       "type": "CarePlanEnd",
       "direct_transition": "Terminal",
-      "referenced_by_attribute": "ptsd",
-      "careplan": "text"
+      "referenced_by_attribute": "ptsd_careplan"
     },
     "time gate": {
       "type": "Delay",
