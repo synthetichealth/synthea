@@ -129,18 +129,34 @@ public class GeneratorTest {
     for (int i = 0; i < numberOfPeople; i++) {
       Person person = generator.generatePerson(i);
       
-      for (int j = 0; j < generator.internalStore.size(); j++) {
+      // the person returned will be last in the internalStore
+      int personIndex = generator.internalStore.size() - 1;
+      
+      for (int j = personIndex - 1; j >= 0; j--) { //
         Person compare = generator.internalStore.get(j);
         
+        // basic demographics should always be exactly the same
         assertEquals(person.attributes.get(Person.CITY), compare.attributes.get(Person.CITY));
         assertEquals(person.attributes.get(Person.RACE), compare.attributes.get(Person.RACE));
         
-        if (j < 10) {
-          // only the first 10 attempts keep the same birthdate.
-          // after that it picks a lower target age
-          assertEquals((long)person.attributes.get(Person.BIRTHDATE), 
-                     (long)compare.attributes.get(Person.BIRTHDATE));
+        long expectedBirthdate;
+        
+        if (personIndex < 10) {
+          // less than 10 attempts were made, so all of them should match exactly
+          expectedBirthdate = (long)person.attributes.get(Person.BIRTHDATE);
+        } else if (j > 10) {
+          // the person we got back (potentially) has the changed target birthdate
+          // and so would any with index > 10
+          // so these should match exactly
+          expectedBirthdate = (long)person.attributes.get(Person.BIRTHDATE);
+        } else {
+          // the person we got back (potentially) has the changed target birthdate
+          // but any with index < 10 might not
+          // in this case, ensure the first 10 match index 0 (which the loop will take care of)
+          expectedBirthdate = (long)generator.internalStore.get(0).attributes.get(Person.BIRTHDATE);
         }
+        
+        assertEquals(expectedBirthdate, (long)compare.attributes.get(Person.BIRTHDATE));
       }
       
       generator.internalStore.clear();
