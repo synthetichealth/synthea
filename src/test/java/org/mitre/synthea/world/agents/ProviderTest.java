@@ -4,6 +4,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -128,6 +130,8 @@ public class ProviderTest {
   public void testAllFiles() throws Exception {
     // just load all files and make sure they don't crash
     URL providersFolder = ClassLoader.getSystemClassLoader().getResource("providers");
+    Set<String> providerServices = new HashSet<String>();
+    providerServices.add(Provider.WELLNESS);
     Path path = Paths.get(providersFolder.toURI());
     Files.walk(path)
          .filter(Files::isReadable)
@@ -135,7 +139,8 @@ public class ProviderTest {
          .filter(p -> p.toString().endsWith(".csv"))
          .forEach(t -> {
            try {
-             Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName());
+             Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName(),
+                 providerServices);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
            }
