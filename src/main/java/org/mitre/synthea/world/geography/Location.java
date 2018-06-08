@@ -3,6 +3,7 @@ package org.mitre.synthea.world.geography;
 import com.google.common.collect.Table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,7 +25,10 @@ public class Location {
   private Map<String, List<Place>> zipCodes;
 
   private String city;
+  private String state;
   private Map<String, Demographics> demographics;
+  
+  private static final Map<String,String> STATE_MUNICIPALITY_LABEL = getStateSpecificLabels();
 
   /**
    * Location is a set of demographic and place information.
@@ -36,6 +40,7 @@ public class Location {
   public Location(String state, String city) {
     try {
       this.city = city;
+      this.state = state;
       
       Table<String,String,Demographics> allDemographics = Demographics.load(state);
       
@@ -89,6 +94,24 @@ public class Location {
     }
   }
   
+  private static Map<String,String> getStateSpecificLabels() {
+    // set of labels that are often appended to municipality names
+    // in each state
+    
+    Map<String,String> labels = new HashMap<>();
+    labels.put("Massachusetts", "Town");
+    // TODO: there are some Villages too in MD, TX, 
+    
+    List<String> statesWithVillages = Arrays.asList("Florida", "Illinois", "Louisiana",
+        "Maryland", "Michigan", "Mississippi", "Missouri", "Nebraska", "New Mexico",
+        "New York", "North Carolina", "Ohio", "Texas", "Vermont", "West Virginia", "Wisconsin");
+    statesWithVillages.forEach(s -> labels.put(s, "village"));
+    
+    List<String> statesWithBoroughs = Arrays.asList("Connecticut", "New Jersey", "Pennsylvania");
+    statesWithBoroughs.forEach(s -> labels.put(s, "borough"));
+    
+    return labels;
+  }
   
   /**
    * Get the zip code for the given city name. 
@@ -98,11 +121,7 @@ public class Location {
    * @return a zip code for the given city
    */
   public String getZipCode(String cityName) {
-    List<Place> zipsForCity = zipCodes.get(cityName);
-    
-    if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
-    }
+    List<Place> zipsForCity = getZipsForCity(cityName);
     
     if (zipsForCity == null || zipsForCity.isEmpty()) {
       return "00000"; // if we don't have the city, just use a dummy
@@ -162,16 +181,15 @@ public class Location {
    *          Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
-    List<Place> zipsForCity = null;
-
     if (cityName == null) {
       int size = zipCodes.keySet().size();
       cityName = (String) zipCodes.keySet().toArray()[person.randInt(size)];
     }
-    zipsForCity = zipCodes.get(cityName);
 
+    List<Place> zipsForCity = getZipsForCity(cityName);
     if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
+      throw new RuntimeException("Unable to find zipcodes entry for " 
+          + cityName + ", " + state);
     }
     
     Place place = null;
@@ -185,6 +203,23 @@ public class Location {
     if (place != null) {
       person.attributes.put(Person.COORDINATE, place.getLatLon());
     }
+  }
+  
+  private List<Place> getZipsForCity(String cityName) {
+    if (zipCodes.containsKey(cityName)) {
+      return zipCodes.get(cityName);
+    }
+    
+    // try adding/removing an extra label, ex Town, village, borough, etc
+    String extraLabel = STATE_MUNICIPALITY_LABEL.get(state);
+    
+    if (cityName.endsWith(extraLabel)) {
+      cityName = cityName.substring(0, cityName.length() - extraLabel.length() - 1);
+    } else {
+      cityName = cityName + " " + extraLabel;
+    }
+    
+    return zipCodes.get(cityName);
   }
 
   private static Map<String, String> loadAbbreviations() {
