@@ -135,6 +135,8 @@ public class FhirStu3 {
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
 
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   private static final Table<String,String,String> SHR_MAPPING = loadSHRMapping();
 
   @SuppressWarnings("rawtypes")
@@ -442,11 +444,16 @@ public class FhirStu3 {
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState(state).setCountry("US");
+        .setState(state);
+    if (COUNTRY_CODE != null) {
+      addrResource.setCountry(COUNTRY_CODE);
+    }
 
     Address birthplace = new Address();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
-        .setCountry("US");
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state);
+    if (COUNTRY_CODE != null) {
+      birthplace.setCountry(COUNTRY_CODE);
+    }
     Extension birthplaceExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
@@ -1442,8 +1449,10 @@ public class FhirStu3 {
         .addLine(provider.address)
         .setCity(provider.city)
         .setPostalCode(provider.zip)
-        .setState(provider.state)
-        .setCountry("US");
+        .setState(provider.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     if (provider.phone != null && !provider.phone.isEmpty()) {
