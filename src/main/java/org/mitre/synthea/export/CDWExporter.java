@@ -23,7 +23,6 @@ import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -935,7 +934,7 @@ public class CDWExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", Costs.calculateCost(procedure, true))).append(',');
+    s.append(String.format("%.2f", procedure.cost())).append(',');
 
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
