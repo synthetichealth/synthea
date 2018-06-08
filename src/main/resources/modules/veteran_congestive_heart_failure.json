@@ -6,22 +6,13 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "age guard"
+      "direct_transition": "veteran guard"
     },
     "Terminal": {
       "type": "Terminal"
     },
-    "age guard": {
-      "type": "Delay",
-      "direct_transition": "veteran guard",
-      "range": {
-        "low": 50,
-        "high": 80,
-        "unit": "years"
-      }
-    },
     "veteran guard": {
-      "type": "Simple",
+      "type": "Delay",
       "conditional_transition": [
         {
           "transition": "CHF symptom onset 1",
@@ -39,7 +30,12 @@
             "operator": "is nil"
           }
         }
-      ]
+      ],
+      "range": {
+        "low": 50,
+        "high": 80,
+        "unit": "years"
+      }
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
@@ -61,7 +57,7 @@
     },
     "CHF symptom onset 3": {
       "type": "Symptom",
-      "symptom": "excercise intolerance",
+      "symptom": "exercise intolerance",
       "cause": "",
       "exact": {
         "quantity": 1
@@ -93,22 +89,6 @@
         }
       ],
       "direct_transition": "BNP lab workup"
-    },
-    "Initial Workup labs for CHF": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "24320-4",
-          "display": "basic metabolic panel"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "initial encounter end"
     },
     "inital workup imaging for CHF": {
       "type": "ImagingStudy",
@@ -156,8 +136,8 @@
       ],
       "direct_transition": "Record_Glucose",
       "range": {
-        "low": 100,
-        "high": 2
+        "low": 2,
+        "high": 100
       }
     },
     "Record_Glucose": {
@@ -282,12 +262,12 @@
           "display": "Basic Metabolic Panel"
         }
       ],
-      "direct_transition": "Initial Workup labs for CHF"
+      "direct_transition": "initial encounter end"
     },
     "followup_CHF_encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "chf",
       "codes": [
         {
           "system": "SNOMED-CT",
