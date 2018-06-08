@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.helpers.Config;
 
 public class AppTest {
 
@@ -86,6 +87,18 @@ public class AppTest {
     Assert.assertTrue(output.contains("alive=3"));
     Assert.assertTrue(output.contains("Location: Salt Lake City, Utah"));
     System.setOut(original);
+  }
+  
+  @Test
+  public void testAppWithConfigSetting() throws Exception {
+    TestHelper.exportOff();
+    Config.set("test_key", "pre-test value");
+    String[] args = {"-s", "0", "-p", "0",
+        "--test_key", "changed value", "--exporter.fhir.export=true"};
+    App.main(args);
+    
+    Assert.assertEquals("changed value", Config.get("test_key"));
+    Assert.assertEquals("true", Config.get("exporter.fhir.export"));
   }
   
   @Test
