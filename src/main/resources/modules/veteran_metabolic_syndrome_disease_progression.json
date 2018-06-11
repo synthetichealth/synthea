@@ -25,14 +25,13 @@
       "direct_transition": "Age_Guard"
     },
     "Age_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Age",
-        "operator": ">=",
-        "quantity": 21,
+      "type": "Delay",
+      "direct_transition": "Chance_to_Onset_Hypertension",
+      "range": {
+        "low": 30,
+        "high": 65,
         "unit": "years"
-      },
-      "direct_transition": "Chance_to_Onset_Hypertension"
+      }
     },
     "Chance_to_Onset_Hypertension": {
       "type": "Simple",
@@ -247,7 +246,7 @@
       "type": "Delay",
       "range": {
         "low": 0,
-        "high": 37,
+        "high": 20,
         "unit": "years"
       },
       "remarks": [
@@ -259,7 +258,7 @@
       "type": "Delay",
       "range": {
         "low": 0,
-        "high": 30,
+        "high": 15,
         "unit": "years"
       },
       "remarks": [
@@ -1042,11 +1041,11 @@
       "distributed_transition": [
         {
           "transition": "Onset_Hypertension",
-          "distribution": 0.306
+          "distribution": 0.25
         },
         {
           "transition": "No_Hypertension",
-          "distribution": 0.694
+          "distribution": 0.75
         }
       ]
     },
