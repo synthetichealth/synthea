@@ -13,29 +13,21 @@
     },
     "veteran guard": {
       "type": "Delay",
-      "conditional_transition": [
-        {
-          "transition": "CHF symptom onset 1",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
-        }
-      ],
       "range": {
         "low": 50,
         "high": 80,
         "unit": "years"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "CHF symptom onset 1",
+          "distribution": 0.011
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.989
+        }
+      ]
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
