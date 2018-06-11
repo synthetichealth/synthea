@@ -91,7 +91,7 @@
         "high": 17,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis_Symptom1"
     },
 
     "Ages_18_44": {
@@ -101,7 +101,7 @@
         "high": 44,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis_Symptom1"
     },
 
     "Ages_45_64": {
@@ -111,7 +111,7 @@
         "high": 64,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis_Symptom1"
     },
 
     "Ages_65_Plus": {
@@ -120,6 +120,78 @@
         "low": 65,
         "high": 99,
         "unit": "years"
+      },
+      "direct_transition": "Appendicitis_Symptom1"
+    },
+    "Appendicitis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Appendicitis_Symptom2"
+    },
+    "Appendicitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "Appendicitis_Symptom3"
+    },
+    "Appendicitis_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Loss of Appetite",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "Appendicitis_Symptom4"
+    },
+    "Appendicitis_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Appendicitis_Symptom5"
+    },
+    "Appendicitis_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Appendicitis_Symptom6"
+    },
+    "Appendicitis_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Bloating/Gas",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Appendicitis_Symptom7"
+    },
+    "Appendicitis_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Symptom_Delay"
+    },
+     "Symptom_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
       },
       "direct_transition": "Appendicitis"
     },
@@ -225,9 +297,64 @@
       "duration" : { "low" : 40, "high" : 70, "unit" : "minutes" },
       "remarks" : ["Avg operative time is ~55 minutes",
                    "https://www.ncbi.nlm.nih.gov/pubmed/17658102"],
+      "direct_transition": "Appendicitis_Symptom1_Ends"
+    },
+"Appendicitis_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom2_Ends"
+    },
+    "Appendicitis_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom3_Ends"
+    },
+    "Appendicitis_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Loss of Appetite",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom4_Ends"
+    },
+    "Appendicitis_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom5_Ends"
+    },
+    "Appendicitis_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom6_Ends"
+    },
+    "Appendicitis_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Bloating/Gas",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom7_Ends"
+    },
+    "Appendicitis_Symptom7_Ends": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Recovery"
     },
-
     "Recovery" : {
       "type" : "Delay",
       "range" : { "low" : 1, "high" : 5, "unit" : "days" },

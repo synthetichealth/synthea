@@ -100,6 +100,42 @@
       ],
       "direct_transition": "Lupus_CarePlan"
     },
+     "Lupus_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Lupus_Symptom2"
+    },
+    "Lupus_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Lupus_Symptom3"
+    },
+    "Lupus_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Rash",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Lupus_Symptom4"
+    },
+    "Lupus_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "Lupus_CarePlan"
+    },
 
     "Lupus_CarePlan": {
       "type": "CarePlanStart",

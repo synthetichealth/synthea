@@ -197,6 +197,33 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "Dermatitis_Symptom1"
+    },
+     "Dermatitis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Itchiness",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "Dermatitis_Symptom2"
+    },
+    "Dermatitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Red Skin",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "Dermatitis_Symptom3"
+    },
+    "Dermatitis_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Rash",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
       "direct_transition": "Dermatitis_Careplan"
     },
     "Dermatitis_Careplan": {
@@ -623,8 +650,33 @@
     "End_Dermatitis_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "Dermatitis_Careplan",
+      "direct_transition": "Dermatitis_Symptom1_Ends"
+    },
+    "Dermatitis_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Itchiness",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Dermatitis_Symptom2_Ends"
+    },
+     "Dermatitis_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Red Skin",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Dermatitis_Symptom3_Ends"
+    },
+     "Dermatitis_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Rash",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Terminal"
     },
+  
     "Terminal": {
       "type": "Terminal"
     }

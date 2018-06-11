@@ -182,6 +182,70 @@
           "display": "Encounter for symptom"
         }
       ],
+      "direct_transition": "UTI_Symptom1"
+    },
+
+     "UTI_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Dysuria",
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "UTI_Symptom2"
+    },
+    "UTI_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Urgent Desire to Urinate",
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "UTI_Symptom3"
+    },
+    "UTI_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "UTI_Symptom4"
+    },
+    "UTI_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Discolored Urine",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "UTI_Symptom5"
+    },
+    "UTI_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Odor of Urine",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "UTI_Symptom6"
+    },
+    "UTI_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Pelvic Pain",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "UTI_Symptom7"
+    },
+    "UTI_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
       "direct_transition": "Prescribe_UTI_Antibiotic"
     },
 
@@ -328,6 +392,62 @@
     "End_Urinary_Tract_Infection": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "uti",
+      "direct_transition": "UTI_Symptom1_Ends"
+    },
+    "UTI_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Dysuria",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom2_Ends"
+    },
+     "UTI_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Urgent Desire to Urinate",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom3_Ends"
+    },
+     "UTI_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom4_Ends"
+    },
+     "UTI_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Discolored Urine",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom5_Ends"
+    },
+     "UTI_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Odor of Urine",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Asthma_Symptom6_Ends"
+    },
+     "UTI_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Pelvic Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom7_Ends"
+    },
+     "UTI_Symptom7_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "End_OTC_Painkiller"
     },
 

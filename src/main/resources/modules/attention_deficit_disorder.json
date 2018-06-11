@@ -82,6 +82,51 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "ADD_Symptom1"
+    },
+    "ADD_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Poor Eye Contact",
+      "range": {
+        "low": 0,
+        "high": 30
+      },
+      "direct_transition": "ADD_Symptom2"
+    },
+    "ADD_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Delayed Verbal/Language Skills",
+      "range": {
+        "low": 0,
+        "high": 30
+      },
+      "direct_transition": "ADD_Symptom3"
+    },
+    "ADD_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Hyperactive Behavior",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "ADD_Symptom4"
+    },
+    "ADD_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Inability to Focus/Concentrate",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "ADD_Symptom5"
+    },
+    "ADD_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Poor Socialization",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
       "direct_transition": "ADHD_CarePlan"
     },
 
@@ -362,6 +407,46 @@
     "ADHD_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "ADHD",
+      "direct_transition": "ADD_Symptom1_Ends"
+    },
+    "ADD_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Poor Eye Contact",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom2_Ends"
+    },
+    "ADD_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Delayed Verbal/Language Skills",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom3_Ends"
+    },
+    "ADD_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Hyperactive Behavior",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom4_Ends"
+    },
+    "ADD_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Inability to Focus/Concentrate",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom5_Ends"
+    },
+    "ADD_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Poor Socialization",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "ADHD_CarePlan_Ends"
     },
 

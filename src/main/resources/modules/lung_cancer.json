@@ -95,15 +95,86 @@
         "low": 50,
         "high": 100
       },
+      "direct_transition": "Bloody Cough"
+    },
+    "Bloody Cough": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 100,
+        "high": 350
+      },
+      "direct_transition": "Shortness of Breath"
+    },
+    "Shortness of Breath": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 100,
+        "high": 350
+      },
+      "direct_transition": "Fever"
+    },
+    "Fever": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 50,
+        "high": 250
+      },
+      "direct_transition": "Head and neck swelling"
+    },
+    "Head and neck swelling": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 50,
+        "high": 250
+      },
+      "direct_transition": "Fatigue"
+    },
+    "Sweats": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 50,
+        "high": 250
+      },
+      "direct_transition": "Fatigue"
+    },
+    "Fatigue": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 50,
+        "high": 250
+      },
+      "direct_transition": "Decrease in appetite"
+    },
+    "Decrease in appetite": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "Decrease in weight"
+    },
+    "Decrease in weight": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
       "direct_transition": "Chest Pain"
     },
-
     "Chest Pain": {
       "type": "Symptom",
       "symptom": "Chest Pain",
       "range": {
         "low": 50,
-        "high": 100
+        "high": 250
       },
       "direct_transition": "Suspected Lung Cancer"
     },

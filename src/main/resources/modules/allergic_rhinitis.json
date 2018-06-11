@@ -170,6 +170,51 @@
           "display": "Encounter for symptom"
         }
       ],
+      "direct_transition": "Allergic_Rhinitis_Symptom1"
+    },
+    "Allergic_Rhinitis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom2"
+    },
+    "Allergic_Rhinitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Nasal Discharge",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom3"
+    },
+    "Allergic_Rhinitis_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Itching",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom4"
+    },
+    "Allergic_Rhinitis_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Sneezing Fits",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom5"
+    },
+    "Allergic_Rhinitis_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Ear Pressure",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
       "direct_transition": "Prescribe_OTC_Antihistamine"
     },
 
@@ -277,8 +322,49 @@
     "Allergic_Rhinitis_Subsides": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "allergic_rhinitis",
+      "direct_transition": "Allergic_Rhinitis_Symptom1_Ends"
+    },
+    "Allergic_Rhinitis_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom2_Ends"
+    },
+    "Allergic_Rhinitis_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Nasal Discharge",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom3_Ends"
+    },
+    "Allergic_Rhinitis_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Itching",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom4_Ends"
+    },
+    "Allergic_Rhinitis_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Sneezing Fits",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom4_Ends"
+    },
+    "Allergic_Rhinitis_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Ear Pressure",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Terminal"
     },
+   
 
     "Terminal": {
       "type": "Terminal"
