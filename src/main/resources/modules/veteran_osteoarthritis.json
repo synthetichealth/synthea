@@ -23,40 +23,7 @@
         " | Osteoarthritis |   0.34000  |    2:1    | ",
         " ------------------------------------------- "
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "distribution": 0.113,
-              "transition": "Delay_Until_Arthritis"
-            },
-            {
-              "distribution": 0.887,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "distribution": 0.2267,
-              "transition": "Delay_Until_Arthritis"
-            },
-            {
-              "distribution": 0.7733,
-              "transition": "Terminal"
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Delay_Until_Arthritis"
     },
     "Delay_Until_Arthritis": {
       "type": "Delay",
