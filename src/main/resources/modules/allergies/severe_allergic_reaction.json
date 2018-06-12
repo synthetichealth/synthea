@@ -9,12 +9,10 @@
     "5. A short prescription for oral steroids, usually prednisone "
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "ED_Visit_For_Allergic_Reaction"
     },
-
     "ED_Visit_For_Allergic_Reaction": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -27,7 +25,6 @@
       ],
       "direct_transition": "Acute_Allergic_Reaction"
     },
-
     "Acute_Allergic_Reaction": {
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Allergic_Reaction",
@@ -40,7 +37,6 @@
       ],
       "direct_transition": "Administer_Epinephrine"
     },
-
     "Administer_Epinephrine": {
       "type": "Procedure",
       "codes": [
@@ -52,7 +48,6 @@
       ],
       "direct_transition": "Observation_Period"
     },
-
     "Observation_Period": {
       "type": "Delay",
       "range": {
@@ -62,7 +57,6 @@
       },
       "direct_transition": "Mild_Steroid"
     },
-
     "Mild_Steroid": {
       "type": "MedicationOrder",
       "remarks": [
@@ -91,24 +85,20 @@
       },
       "direct_transition": "End_Mild_Steroid"
     },
-
     "End_Mild_Steroid": {
       "type": "MedicationEnd",
       "medication_order": "Mild_Steroid",
       "direct_transition": "End_Acute_Reaction"
     },
-
     "End_Acute_Reaction": {
       "type": "ConditionEnd",
       "condition_onset": "Acute_Allergic_Reaction",
       "direct_transition": "Discharge"
     },
-
     "Discharge": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

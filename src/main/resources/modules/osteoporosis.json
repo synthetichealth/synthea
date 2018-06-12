@@ -1,12 +1,13 @@
 {
-  "name" : "Osteoporosis",
-  "remarks" : ["This very basic module uses pure prevalence stats to just set osteoporosis on patients based on age/sex",
-               "https://www.iofbonehealth.org/facts-statistics",
-               "In reality osteoporosis is progressive and gets worse over time, it doesn't suddenly onset one day"],
-  "states" : {
-
-    "Initial" : {
-      "type" : "Initial",
+  "name": "Osteoporosis",
+  "remarks": [
+    "This very basic module uses pure prevalence stats to just set osteoporosis on patients based on age/sex",
+    "https://www.iofbonehealth.org/facts-statistics",
+    "In reality osteoporosis is progressive and gets worse over time, it doesn't suddenly onset one day"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
       "conditional_transition": [
         {
           "condition": {
@@ -24,60 +25,102 @@
         }
       ]
     },
-
-    "Female" : {
-      "type" : "Simple",
-      "remarks" : ["Osteoporosis is estimated to affect 200 million women worldwide",
-                   "approximately one-tenth of women aged 60, one-fifth of women aged 70, ",
-                   "two-fifths of women aged 80 and two-thirds of women aged 90",
-                   "https://www.iofbonehealth.org/facts-statistics"],
-      "distributed_transition" : [
-        { "distribution" : 0.1, "transition" : "Onset_Age_60" },
-        { "distribution" : 0.1, "transition" : "Onset_Age_70", "remarks" : "== 1/5 minus the 1/10 from the previous entry" },
-        { "distribution" : 0.2, "transition" : "Onset_Age_80", "remarks" : "== 2/5 minus the 1/5 from the previous entry"  },
-        { "distribution" : 0.2667, "transition" : "Onset_Age_90", "remarks" : "== 2/3 minus the 2/5 from the previous entry"  },
-        { "distribution" : 0.3333, "transition" : "Terminal" }
+    "Female": {
+      "type": "Simple",
+      "remarks": [
+        "Osteoporosis is estimated to affect 200 million women worldwide",
+        "approximately one-tenth of women aged 60, one-fifth of women aged 70, ",
+        "two-fifths of women aged 80 and two-thirds of women aged 90",
+        "https://www.iofbonehealth.org/facts-statistics"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.1,
+          "transition": "Onset_Age_60"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Onset_Age_70",
+          "remarks": "== 1/5 minus the 1/10 from the previous entry"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Onset_Age_80",
+          "remarks": "== 2/5 minus the 1/5 from the previous entry"
+        },
+        {
+          "distribution": 0.2667,
+          "transition": "Onset_Age_90",
+          "remarks": "== 2/3 minus the 2/5 from the previous entry"
+        },
+        {
+          "distribution": 0.3333,
+          "transition": "Terminal"
+        }
       ]
     },
-
-    "Male" : {
-      "type" : "Simple",
-      "remarks" : ["statistics for men are not as easy to find as for women",
-                  "Worldwide, 1 in 3 women over age 50 will experience osteoporotic fractures, as will 1 in 5 men aged over 50",
-                  "so for this model we scale the %s for women by .6 (.333 * .6 = .2)"],
-      "distributed_transition" : [
-        { "distribution" : 0.06, "transition" : "Onset_Age_60" },
-        { "distribution" : 0.06, "transition" : "Onset_Age_70" },
-        { "distribution" : 0.12, "transition" : "Onset_Age_80" },
-        { "distribution" : 0.16, "transition" : "Onset_Age_90" },
-        { "distribution" : 0.44, "transition" : "Terminal" }
+    "Male": {
+      "type": "Simple",
+      "remarks": [
+        "statistics for men are not as easy to find as for women",
+        "Worldwide, 1 in 3 women over age 50 will experience osteoporotic fractures, as will 1 in 5 men aged over 50",
+        "so for this model we scale the %s for women by .6 (.333 * .6 = .2)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.06,
+          "transition": "Onset_Age_60"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Onset_Age_70"
+        },
+        {
+          "distribution": 0.12,
+          "transition": "Onset_Age_80"
+        },
+        {
+          "distribution": 0.16,
+          "transition": "Onset_Age_90"
+        },
+        {
+          "distribution": 0.44,
+          "transition": "Terminal"
+        }
       ]
     },
-
-    "Onset_Age_60" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 60, "unit" : "years" },
-      "direct_transition" : "Onset_Osteoporosis"
+    "Onset_Age_60": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 60,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Osteoporosis"
     },
-
-    "Onset_Age_70" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 70, "unit" : "years" },
-      "direct_transition" : "Onset_Osteoporosis"
+    "Onset_Age_70": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 70,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Osteoporosis"
     },
-
-    "Onset_Age_80" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 80, "unit" : "years" },
-      "direct_transition" : "Onset_Osteoporosis"
+    "Onset_Age_80": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 80,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Osteoporosis"
     },
-
-    "Onset_Age_90" : {
-      "type" : "Delay",
-      "exact" : { "quantity" : 90, "unit" : "years" },
-      "direct_transition" : "Onset_Osteoporosis"
+    "Onset_Age_90": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 90,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Osteoporosis"
     },
-
     "Onset_Osteoporosis" : {
       "type" : "SetAttribute",
       "attribute" : "osteoporosis",
@@ -93,94 +136,101 @@
       },
       "direct_transition": "Wellness_Encounter"
     },
-
-    "Wellness_Encounter" : {
-      "type" : "Encounter",
-      "wellness" : true,
-      "conditional_transition" : [
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "conditional_transition": [
         {
-          "condition" : {
-            "condition_type" : "Active Condition",
-            "codes" : [{
-              "system" : "SNOMED-CT",
-              "code" : "64859006",
-              "display" : "Osteoporosis (disorder)"
-            }]
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "64859006",
+                "display": "Osteoporosis (disorder)"
+              }
+            ]
           },
-          "transition" : "Consider_Medication"
+          "transition": "Consider_Medication"
         },
         {
-          "transition" : "Osteoporosis_Workup"
+          "transition": "Osteoporosis_Workup"
         }
       ]
     },
-
-    "Osteoporosis_Workup" : {
-      "type" : "Procedure",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "312681000",
-        "display" : "Bone density scan (procedure)"
-      }],
-      "direct_transition" : "Bone_Density"
-    },
-
-    "Bone_Density" : {
-      "type" : "Observation",
-      "category" : "procedure",
-      "codes" : [{
-        "system" : "LOINC",
-        "code" : "38265-5",
-        "display" : "DXA [T-score] Bone density"
-      }],
-      "range" : { "low" :  -3.8, "high" : -2.5 },
-      "unit" : "{T-score}",
-      "remarks" : ["WHO definition of osteoporosis is a T-score < 2.5",
-                   "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1963365/"],
-      "direct_transition" : "Diagnose_Osteoporosis"
-    },
-
-    "Diagnose_Osteoporosis" : {
-      "type" : "ConditionOnset",
-      "codes" : [{
-        "system" : "SNOMED-CT",
-        "code" : "64859006",
-        "display" : "Osteoporosis (disorder)"
-      }],
-      "direct_transition" : "Consider_Medication"
-    },
-
-    "Consider_Medication" : {
-      "type" : "Simple",
-      "conditional_transition" : [
+    "Osteoporosis_Workup": {
+      "type": "Procedure",
+      "codes": [
         {
-          "condition" : {
+          "system": "SNOMED-CT",
+          "code": "312681000",
+          "display": "Bone density scan (procedure)"
+        }
+      ],
+      "direct_transition": "Bone_Density"
+    },
+    "Bone_Density": {
+      "type": "Observation",
+      "category": "procedure",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38265-5",
+          "display": "DXA [T-score] Bone density"
+        }
+      ],
+      "range": {
+        "low": -3.8,
+        "high": -2.5
+      },
+      "unit": "{T-score}",
+      "remarks": [
+        "WHO definition of osteoporosis is a T-score < 2.5",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1963365/"
+      ],
+      "direct_transition": "Diagnose_Osteoporosis"
+    },
+    "Diagnose_Osteoporosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "64859006",
+          "display": "Osteoporosis (disorder)"
+        }
+      ],
+      "direct_transition": "Consider_Medication"
+    },
+    "Consider_Medication": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
             "condition_type": "Date",
             "operator": ">=",
             "year": 1995
           },
-          "transition" : "Prescribe_Bisphosphate"
+          "transition": "Prescribe_Bisphosphate"
         },
         {
-          "transition" : "Terminal",
-          "remarks" : "bisphosphates are the best medicine for osteoporosis, but not available until ~1995"
+          "transition": "Terminal",
+          "remarks": "bisphosphates are the best medicine for osteoporosis, but not available until ~1995"
         }
       ]
     },
-
-    "Prescribe_Bisphosphate" : {
-      "type" : "MedicationOrder",
-      "codes" : [{
-        "system" : "RxNorm",
-        "code" : "904420",
-        "display" : "Alendronic acid 10 MG [Fosamax]"
-      }],
-      "direct_transition" : "Terminal"
+    "Prescribe_Bisphosphate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "904420",
+          "display": "Alendronic acid 10 MG [Fosamax]"
+        }
+      ],
+      "direct_transition": "Terminal"
     },
-
-    "Terminal" : {
-      "type" : "Terminal"
+    "Terminal": {
+      "type": "Terminal"
     }
-
   }
 }

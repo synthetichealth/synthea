@@ -8,12 +8,10 @@
     "Source: https://www.healthit.gov/providers-professionals/achieve-meaningful-use/core-measures-2/medication-reconciliation"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Wellness_Encounter"
     },
-
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
@@ -28,7 +26,6 @@
         }
       ]
     },
-    
     "Med_Rec": {
       "type": "Procedure",
       "target_encounter": "Wellness_Encounter",

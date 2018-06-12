@@ -14,7 +14,6 @@
     "https://www.hsph.harvard.edu/means-matter/means-matter/survival/"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -175,7 +174,6 @@
         }
       ]
     },
-
     "Attempted_Suicide_Incidence_By_Age": {
       "type": "Simple",
       "remarks": [
@@ -217,7 +215,6 @@
         }
       ]
     },
-
     "Delay_Until_Teens": {
       "type": "Delay",
       "range": {
@@ -227,7 +224,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Delay_Until_20_34": {
       "type": "Delay",
       "range": {
@@ -237,7 +233,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Delay_Until_35_44": {
       "type": "Delay",
       "range": {
@@ -247,7 +242,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Delay_Until_45_64": {
       "type": "Delay",
       "range": {
@@ -257,7 +251,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Delay_Until_65_84": {
       "type": "Delay",
       "range": {
@@ -267,7 +260,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Delay_Until_85_Plus": {
       "type": "Delay",
       "range": {
@@ -277,7 +269,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Attempts_Suicide": {
       "type": "Simple",
       "remarks": [
@@ -321,7 +312,6 @@
         }
       ]
     },
-
     "Non_Fatal_Attempt": {
       "type": "Simple",
       "remarks": [
@@ -348,7 +338,6 @@
         }
       ]
     },
-
     "Attempt_By_Poisoning": {
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
@@ -362,7 +351,6 @@
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
     },
-
     "Attempt_By_Cutting": {
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
@@ -376,7 +364,6 @@
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
     },
-
     "Attempt_By_Suffocation": {
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
@@ -390,7 +377,6 @@
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
     },
-
     "ED_Visit_For_Attempted_Suicide": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -404,7 +390,6 @@
       ],
       "direct_transition": "Psychiatric_Evaluation"
     },
-
     "Psychiatric_Evaluation": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
@@ -418,7 +403,6 @@
       ],
       "direct_transition": "Short_Hospital_Stay"
     },
-
     "Short_Hospital_Stay": {
       "type": "Procedure",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
@@ -430,21 +414,22 @@
           "display": "Hospital admission, short-term, 24 hours"
         }
       ],
-      "duration" : { "low" : 24, "high" : 72, "unit": "hours" },
+      "duration": {
+        "low": 24,
+        "high": 72,
+        "unit": "hours"
+      },
       "direct_transition": "End_Attempted_Suicide_Observation_Period"
     },
-
     "End_Attempted_Suicide_Observation_Period": {
       "type": "EncounterEnd",
       "direct_transition": "End_Suicide_Attempt"
     },
-
     "End_Suicide_Attempt": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "suicide_attempt",
       "direct_transition": "Delay_Until_Outpatient_Followup"
     },
-
     "Delay_Until_Outpatient_Followup": {
       "type": "Delay",
       "range": {
@@ -454,7 +439,6 @@
       },
       "direct_transition": "Attempted_Suicide_Followup"
     },
-
     "Attempted_Suicide_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -468,7 +452,6 @@
       ],
       "direct_transition": "Suicide_CarePlan_Selector"
     },
-
     "Suicide_CarePlan_Selector": {
       "type": "Simple",
       "conditional_transition": [
@@ -485,7 +468,6 @@
         }
       ]
     },
-
     "Suicide_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Attempted_Suicide_Followup",
@@ -517,7 +499,6 @@
       ],
       "direct_transition": "Followup_Psychiatric_Evaluation"
     },
-
     "Followup_Psychiatric_Evaluation": {
       "type": "Procedure",
       "target_encounter": "Attempted_Suicide_Followup",
@@ -529,11 +510,10 @@
           "display": "Psychiatric follow-up"
         }
       ],
-      "direct_transition" : "End_Followup_Encounter"
+      "direct_transition": "End_Followup_Encounter"
     },
-
-    "End_Followup_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
       "remarks": [
         "From the Harvard University study on suicide attempts: ",
         " 7% are fatal ",
@@ -551,7 +531,6 @@
         }
       ]
     },
-
     "Delay_Until_Next_Attempt": {
       "type": "Delay",
       "remarks": [
@@ -565,7 +544,6 @@
       },
       "direct_transition": "Attempts_Suicide"
     },
-
     "Fatal_Attempt": {
       "type": "Simple",
       "remarks": [
@@ -597,7 +575,6 @@
         }
       ]
     },
-
     "Suicide_By_Firearm": {
       "type": "ConditionOnset",
       "target_encounter": "Autopsy_Encounter",
@@ -611,7 +588,6 @@
       ],
       "direct_transition": "Death"
     },
-
     "Suicide_By_Suffocation": {
       "type": "ConditionOnset",
       "target_encounter": "Autopsy_Encounter",
@@ -625,7 +601,6 @@
       ],
       "direct_transition": "Death"
     },
-
     "Suicide_By_Poisoning": {
       "type": "ConditionOnset",
       "target_encounter": "Autopsy_Encounter",
@@ -639,7 +614,6 @@
       ],
       "direct_transition": "Death"
     },
-
     "Suicide_By_Other_Means": {
       "type": "ConditionOnset",
       "target_encounter": "Autopsy_Encounter",
@@ -653,13 +627,11 @@
       ],
       "direct_transition": "Death"
     },
-
     "Death": {
       "type": "Death",
       "referenced_by_attribute": "suicide",
       "direct_transition": "Autopsy_Encounter"
     },
-
     "Autopsy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -673,7 +645,6 @@
       ],
       "direct_transition": "Autopsy_Examination"
     },
-
     "Autopsy_Examination": {
       "type": "Procedure",
       "target_encounter": "Autopsy_Encounter",
@@ -687,13 +658,11 @@
       ],
       "direct_transition": "End_Suicide"
     },
-
     "End_Suicide": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "suicide",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

@@ -1,7 +1,6 @@
 {
   "name": "Appendicitis",
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -24,7 +23,6 @@
         }
       ]
     },
-
     "Male": {
       "type": "Simple",
       "distributed_transition": [
@@ -41,7 +39,6 @@
         "Men have an approx lifetime risk of appendicitis of 8.6%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
       ]
     },
-
     "Female": {
       "type": "Simple",
       "distributed_transition": [
@@ -58,7 +55,6 @@
         "Women have an approx lifetime risk of appendicitis of 6.7%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
       ]
     },
-
     "Pre_appendicitis": {
       "type": "Simple",
       "distributed_transition": [
@@ -83,7 +79,6 @@
         "Age distribution of appendicitis from https://www.ncbi.nlm.nih.gov/books/NBK169006/ , Table 1"
       ]
     },
-
     "Ages_1_17": {
       "type": "Delay",
       "range": {
@@ -93,7 +88,6 @@
       },
       "direct_transition": "Appendicitis_Symptom1"
     },
-
     "Ages_18_44": {
       "type": "Delay",
       "range": {
@@ -103,7 +97,6 @@
       },
       "direct_transition": "Appendicitis_Symptom1"
     },
-
     "Ages_45_64": {
       "type": "Delay",
       "range": {
@@ -113,7 +106,6 @@
       },
       "direct_transition": "Appendicitis_Symptom1"
     },
-
     "Ages_65_Plus": {
       "type": "Delay",
       "range": {
@@ -195,7 +187,6 @@
       },
       "direct_transition": "Appendicitis"
     },
-
     "Appendicitis": {
       "type": "ConditionOnset",
       "target_encounter": "Appendicitis_Encounter",
@@ -224,7 +215,6 @@
         "For simplicity here I just round to 30% for all age groups."
       ]
     },
-
     "Rupture": {
       "type": "ConditionOnset",
       "target_encounter": "Appendicitis_Encounter",
@@ -237,7 +227,6 @@
       ],
       "direct_transition": "Appendicitis_Encounter"
     },
-
     "Appendicitis_Encounter": {
       "type": "Encounter",
       "wellness": false,
@@ -255,7 +244,6 @@
       ],
       "direct_transition": "History_of_Appendectomy"
     },
-
     "History_of_Appendectomy": {
       "type": "ConditionOnset",
       "target_encounter": "Appendectomy_Encounter",
@@ -268,7 +256,6 @@
       ],
       "direct_transition": "Appendectomy_Encounter"
     },
-
     "Appendectomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -282,7 +269,6 @@
       ],
       "direct_transition": "Appendectomy"
     },
-
     "Appendectomy": {
       "type": "Procedure",
       "target_encounter": "Appendectomy_Encounter",
@@ -299,7 +285,7 @@
                    "https://www.ncbi.nlm.nih.gov/pubmed/17658102"],
       "direct_transition": "Appendicitis_Symptom1_Ends"
     },
-"Appendicitis_Symptom1_Ends": {
+    "Appendicitis_Symptom1_Ends": {
       "type": "Symptom",
       "symptom": "Abdominal Pain",
       "exact": {
@@ -372,9 +358,8 @@
         "code" : "01",
         "display" : "Discharged to home care or self care (routine discharge)"
       },
-      "direct_transition" : "Terminal"
+      "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

@@ -12,7 +12,6 @@
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -59,7 +58,6 @@
         }
       ]
     },
-
     "Delay_Until_Symptoms": {
       "type": "Delay",
       "range": {
@@ -87,7 +85,6 @@
       },
       "direct_transition": "Delay_Until_Arthritis"
     },
-
     "Delay_Until_Arthritis": {
       "type": "Delay",
       "range": {
@@ -116,7 +113,6 @@
       },
       "direct_transition": "Osteoarthritis"
     },
-
     "Osteoarthritis": {
       "type": "Simple",
       "remarks": [
@@ -140,7 +136,6 @@
         }
       ]
     },
-
     "OA_Of_The_Hand": {
       "type": "ConditionOnset",
       "target_encounter": "OA_Diagnosis",
@@ -154,7 +149,6 @@
       ],
       "direct_transition": "OA_Diagnosis"
     },
-
     "OA_Of_The_Knee": {
       "type": "ConditionOnset",
       "target_encounter": "OA_Diagnosis",
@@ -168,7 +162,6 @@
       ],
       "direct_transition": "OA_Diagnosis"
     },
-
     "OA_Of_The_Hip": {
       "type": "ConditionOnset",
       "target_encounter": "OA_Diagnosis",
@@ -182,7 +175,6 @@
       ],
       "direct_transition": "OA_Diagnosis"
     },
-
     "OA_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -196,8 +188,6 @@
       ],
       "direct_transition": "OA_CarePlan"
     },
-
-
     "OA_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "OA_Diagnosis",
@@ -224,7 +214,6 @@
       ],
       "direct_transition": "OA_Pain_Medication"
     },
-
     "OA_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "OA_Diagnosis",
@@ -291,21 +280,18 @@
         }
       ]
     },
-
     "Setup_Knee_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "knee",
       "direct_transition": "End_Encounter"
     },
-
     "Setup_Hip_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "hip",
       "direct_transition": "End_Encounter"
     },
-
     "End_Encounter" : {
       "type" : "EncounterEnd",
       "direct_transition" : "OA_Symptom1_Ends"
@@ -326,7 +312,6 @@
       },
       "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

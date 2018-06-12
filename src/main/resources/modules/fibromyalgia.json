@@ -12,7 +12,6 @@
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -59,7 +58,6 @@
         }
       ]
     },
-
     "Delay_Until_Fibromyalgia": {
       "type": "Delay",
       "range": {
@@ -69,7 +67,6 @@
       },
       "direct_transition": "Fibromyalgia_Guard"
     },
-
     "Fibromyalgia_Guard": {
       "type": "Guard",
       "remarks": [
@@ -83,7 +80,6 @@
       },
       "direct_transition": "Fibromyalgia"
     },
-
     "Fibromyalgia": {
       "type": "ConditionOnset",
       "remarks": [
@@ -104,7 +100,6 @@
       ],
       "direct_transition": "Fibromyalgia_Diagnosis"
     },
-
     "Fibromyalgia_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -172,7 +167,6 @@
       },
       "direct_transition": "Fibromyalgia_CarePlan"
     },
-
     "Fibromyalgia_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Fibromyalgia_Diagnosis",
@@ -199,7 +193,6 @@
       ],
       "direct_transition": "Strong_NSAID"
     },
-
     "Strong_NSAID": {
       "type": "MedicationOrder",
       "target_encounter": "Fibromyalgia_Diagnosis",
@@ -216,12 +209,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
-    "End_Diagnosis_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Delay_Until_Fibromyalgia_Episode"
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_Until_Fibromyalgia_Episode"
     },
-
     "Delay_Until_Fibromyalgia_Episode": {
       "type": "Delay",
       "range": {
@@ -231,7 +222,6 @@
       },
       "direct_transition": "Fibromyalgia_Episode"
     },
-
     "Fibromyalgia_Episode": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -306,7 +296,6 @@
         }
       ]
     },
-
     "Prescribe_Lyrica": {
       "type": "MedicationOrder",
       "target_encounter": "Fibromyalgia_Episode",
@@ -321,7 +310,6 @@
       ],
       "direct_transition": "End_Episode_Encounter"
     },
-
     "Prescribe_Cymbalta": {
       "type": "MedicationOrder",
       "target_encounter": "Fibromyalgia_Episode",
@@ -336,7 +324,6 @@
       ],
       "direct_transition": "End_Episode_Encounter"
     },
-
     "Prescribe_Savella": {
       "type": "MedicationOrder",
       "target_encounter": "Fibromyalgia_Episode",
@@ -351,7 +338,6 @@
       ],
       "direct_transition": "End_Episode_Encounter"
     },
-
     "Prescribe_Opioid": {
       "type": "MedicationOrder",
       "target_encounter": "Fibromyalgia_Episode",
@@ -369,24 +355,22 @@
       ],
       "direct_transition": "End_Episode_Encounter"
     },
-
-    "End_Episode_Encounter" : {
-      "type" : "EncounterEnd",
-      "conditional_transition" : [
+    "End_Episode_Encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
         {
-          "condition" : {
+          "condition": {
             "condition_type": "Attribute",
             "attribute": "fibromyalgia_prescription",
             "operator": "is not nil"
           },
-          "transition" : "Take_Prescription"
+          "transition": "Take_Prescription"
         },
         {
-          "transition" : "Delay_Until_Fibromyalgia_Episode"
+          "transition": "Delay_Until_Fibromyalgia_Episode"
         }
       ]
     },
-
     "Take_Prescription": {
       "type": "Delay",
       "exact": {
@@ -395,13 +379,11 @@
       },
       "direct_transition": "End_Fibromyalgia_Prescription"
     },
-
     "End_Fibromyalgia_Prescription": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "fibromyalgia_prescription",
       "direct_transition": "Delay_Until_Fibromyalgia_Episode"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

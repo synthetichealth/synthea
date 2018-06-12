@@ -205,7 +205,7 @@ public class ExporterTest {
     assertEquals(1, filtered.record.encounters.get(0).conditions.size());
     assertEquals("something_permanent", filtered.record.encounters.get(0).conditions.get(0).type);
     assertEquals(1, record.encounters.get(0).claim.items.size());
-    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).entry.type);
+    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).type);
   }
   
   private static long years(long numYears) {

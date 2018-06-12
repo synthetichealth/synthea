@@ -5,17 +5,14 @@
     "allergic diseases. After the initial series of AllergyOnset states, the ",
     "module waits for an allergic condition (as a result of a person's allergies)",
     "to prompt treatment.",
-
     "Primary reference for allergy statistics: ",
     "https://web.archive.org/web/20100407195412/http://www.niaid.nih.gov/topics/foodAllergy/understanding/Pages/quickFacts.aspx"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Delay_For_Atopy"
     },
-
     "Delay_For_Atopy": {
       "type": "Delay",
       "remarks": [
@@ -29,7 +26,6 @@
       },
       "direct_transition": "Allergy_Incidence_Submodule"
     },
-
     "Allergy_Incidence_Submodule": {
       "type": "CallSubmodule",
       "remarks": [
@@ -40,7 +36,6 @@
       "submodule": "allergies/allergy_incidence",
       "direct_transition": "Allergist_Guard"
     },
-
     "Allergist_Guard": {
       "type": "Guard",
       "remarks": [
@@ -49,13 +44,11 @@
         "======================================================================",
         "Now that the patient is suspected to have an allergy, we refer them to ",
         "an allergist for specialized treatment.",
-
         "The following can prompt a visit to the allergist: ",
         "- Asthma attack ",
         "- Moderate to severe eczema ",
         "- Any allergic reaction to food ",
         "- Moderate to severe allergic rhinitis symptoms ",
-
         "The asthma, eczema, and allergic rhinitis submodules set the 'visit_allergist' ",
         "attribute to trigger the visit. At the first visit to an allergist an ",
         "allergy panel is always performed."
@@ -67,7 +60,6 @@
       },
       "direct_transition": "Delay_For_Allergist_Initial_Visit"
     },
-
     "Delay_For_Allergist_Initial_Visit": {
       "type": "Delay",
       "remarks": [
@@ -81,7 +73,6 @@
       },
       "direct_transition": "Allergist_Initial_Visit"
     },
-
     "Allergist_Initial_Visit": {
       "type": "Encounter",
       "remarks": [
@@ -110,7 +101,6 @@
         }
       ]
     },
-
     "Administer_Allergy_Test": {
       "type": "Procedure",
       "duration": {
@@ -127,13 +117,11 @@
       ],
       "direct_transition": "Allergy_Panel"
     },
-
     "Allergy_Panel": {
       "type": "CallSubmodule",
       "submodule": "allergies/allergy_panel",
       "direct_transition": "Prescribe_OTC_Antihistamine"
     },
-
     "Prescribe_OTC_Antihistamine": {
       "type": "CallSubmodule",
       "remarks": [
@@ -143,7 +131,6 @@
       "submodule": "medications/otc_antihistamine",
       "direct_transition": "General_Allergy_CarePlan"
     },
-
     "General_Allergy_CarePlan": {
       "type": "CarePlanStart",
       "remarks": [
@@ -177,7 +164,6 @@
         }
       ]
     },
-
     "Prescribe_Epipen": {
       "type": "MedicationOrder",
       "remarks": [
@@ -197,12 +183,10 @@
       },
       "direct_transition": "End_Allergist_Initial_Visit"
     },
-
     "End_Allergist_Initial_Visit": {
       "type": "EncounterEnd",
       "direct_transition": "Living_With_Allergies"
     },
-
     "Living_With_Allergies": {
       "type": "Guard",
       "remarks": [
@@ -213,7 +197,6 @@
         "live with them until an allergic condition or a severe reaction ",
         "prompts a visit to their PCP and a referral to an allergist. Allergies ",
         "aren't officially diagnosed until after an allergy test is performed.",
-
         "For patient's 12 or older we can consider immunotherapy. This will ",
         "not work for everyone but it's worth discussing. Immunotherapy is not ",
         "an option before 1990."
@@ -241,7 +224,6 @@
       },
       "direct_transition": "Immunotherapy_Submodule"
     },
-
     "Immunotherapy_Submodule": {
       "type": "CallSubmodule",
       "remarks": [
