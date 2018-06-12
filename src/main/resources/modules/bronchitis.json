@@ -75,8 +75,8 @@
       "type": "Symptom",
       "symptom": "Cough",
       "range": {
-        "low": 50,
-        "high": 150
+        "low": 25,
+        "high": 75
       },
       "direct_transition": "Bronchitis_Symptom2"
     },
@@ -84,8 +84,8 @@
       "type": "Symptom",
       "symptom": "Mucus",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Bronchitis_Symptom3"
     },
@@ -93,8 +93,8 @@
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "range": {
-        "low": 50,
-        "high": 150
+        "low": 25,
+        "high": 75
       },
       "direct_transition": "Bronchitis_Symptom4"
     },
@@ -102,8 +102,8 @@
       "type": "Symptom",
       "symptom": "Sore Throat",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Bronchitis_Symptom5"
     },
@@ -111,8 +111,8 @@
       "type": "Symptom",
       "symptom": "Fatigue",
       "range": {
-        "low": 50,
-        "high": 150
+        "low": 25,
+        "high": 75
       },
       "direct_transition": "Bronchitis_Symptom6"
     },
@@ -120,8 +120,8 @@
       "type": "Symptom",
       "symptom": "Fever",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Bronchitis_Symptom7"
     },
@@ -129,8 +129,8 @@
       "type": "Symptom",
       "symptom": "Body Aches",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 0,
+        "high": 25
       },
       "direct_transition": "Bronchitis_Symptom8"
     },
@@ -138,8 +138,8 @@
       "type": "Symptom",
       "symptom": "Nasal Congestion",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Bronchitis_Symptom9"
     },
@@ -147,8 +147,8 @@
       "type": "Symptom",
       "symptom": "Nausea/Vomiting",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 0,
+        "high": 25
       },
       "direct_transition": "Bronchitis_Symptom10"
     },
@@ -156,8 +156,8 @@
       "type": "Symptom",
       "symptom": "Diarrhea",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 0,
+        "high": 25
       },
       "direct_transition": "Symptoms_Dont_improve"
     },

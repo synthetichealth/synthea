@@ -13,14 +13,22 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
+
+
 public final class EncounterModule extends Module {
 
   public static final String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
   public static final String ACTIVE_URGENT_CARE_ENCOUNTER = "active_urgent_care_encounter";
   public static final String ACTIVE_EMERGENCY_ENCOUNTER = "active_emergency_encounter";
-  public static final int PCP_SYMPTOM_THRESHOLD = 400;
-  public static final int URGENT_CARE_SYMPTOM_THRESHOLD = 500;
-  public static final int EMERGENCY_SYMPTOM_THRESHOLD = 800;
+  /**
+  * These are thresholds for patients to seek symptom-driven care - they'll go to 
+  * the appropriate provider based on which threshold they meet. Using CDC statistics (https://www.cdc.gov/nchs/data/ahcd/namcs_summary/2015_namcs_web_tables.pdf),
+  * a person goes to an average of 24,904,00/(US adult population = 249485228) = .0998 urgent visits per year.
+  * The goal for the number of symptom-driven encounters (urgent care, PCP, and ER) is .0998 * age.
+  */
+  public static final int PCP_SYMPTOM_THRESHOLD = 300;
+  public static final int URGENT_CARE_SYMPTOM_THRESHOLD = 350;
+  public static final int EMERGENCY_SYMPTOM_THRESHOLD = 500;
   public static final String LAST_VISIT_SYMPTOM_TOTAL = "last_visit_symptom_total";
 
   public static final Code ENCOUNTER_CHECKUP = new Code("SNOMED-CT", "185349003",
@@ -55,8 +63,8 @@ public final class EncounterModule extends Module {
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
       encounter.reason = ENCOUNTER_CHECKUP;
       startedEncounter = true;
-      person.printSymptoms();
-      System.out.println( " and here's my encounter details " + encounter + " reason " + encounter.reason);
+      //person.printSymptoms();
+      System.out.println( " and here's my encounter details " + person.symptomTotal() + " reason " + encounter.reason);
       
     } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
         if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
@@ -68,7 +76,7 @@ public final class EncounterModule extends Module {
           System.out.println("check total = " + person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) + " and the total rn is " + person.symptomTotal());
         
           System.out.println("time for ERRRRR");
-          person.printSymptoms();
+          // person.printSymptoms();
           // add a symptom driven encounter to urgent care (RIGHT NOW, add emergency later) if symptoms are severe
           System.out.println("I feel like crap");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
@@ -122,7 +130,7 @@ public final class EncounterModule extends Module {
           System.out.println("I feel like crap");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
           person.addressLargestSymptom();
-          Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
+          Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString()+'1');
           encounter.name = "Encounter Module Symptom Driven";
           encounter.provider = person.getUrgentCareProvider(time);
           encounter.reason = ENCOUNTER_CHECKUP;

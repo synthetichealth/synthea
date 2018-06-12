@@ -184,9 +184,9 @@
         "low": 0,
         "high": 50
       },
-      "direct_transition": "Symptom_Delay"
+      "direct_transition": "Symptom_Period"
     },
-     "Symptom_Delay": {
+     "Symptom_Period": {
       "type": "Delay",
       "range": {
         "low": 1,

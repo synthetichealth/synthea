@@ -182,7 +182,6 @@ public class Module {
       // System.out.println(" Transitioning to " + nextStateName);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
-      System.out.println("current is " + current);
       if (exited != null && exited < time) {
         // This must be a delay state that expired between cycles, so temporarily rewind time
         process(person, exited);

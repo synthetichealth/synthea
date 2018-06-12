@@ -215,6 +215,15 @@
         "low": 0,
         "high": 25
       },
+      "direct_transition": "Symptom_Period"
+    },
+    "Symptom_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      },
       "direct_transition": "Prescribe_OTC_Antihistamine"
     },
 

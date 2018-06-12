@@ -98,7 +98,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Lupus_CarePlan"
+      "direct_transition": "Lupus_Symptom1"
     },
      "Lupus_Symptom1": {
       "type": "Symptom",

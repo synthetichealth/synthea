@@ -212,10 +212,7 @@ public class Person implements Serializable, QuadTreeData {
         }
       }
     }
-    System.out.println("highest status before " + symptomStatuses.get(highestType).get(highestCause));
     symptomStatuses.get(highestType).put(highestCause, true);
-    System.out.println("highest status " + symptomStatuses.get(highestType).get(highestCause));
-    System.out.println("highest symptom " + symptoms.get(highestType).get(highestCause));
   }
 
   public Double getVitalSign(VitalSign vitalSign) {

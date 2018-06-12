@@ -92,7 +92,7 @@
       "symptom": "Sinus Pain",
       "range": {
         "low": 30,
-        "high": 100
+        "high": 50
       },
       "direct_transition": "Common_Symptom"
     },
@@ -101,7 +101,7 @@
       "symptom": "Nasal Congestion",
       "range": {
         "low": 0,
-        "high": 50
+        "high": 25
       },
       "direct_transition": "Common_Symptom1"
     },
@@ -110,7 +110,7 @@
       "symptom": "Fever",
       "range": {
         "low": 0,
-        "high": 50
+        "high": 25
       },
       "direct_transition": "Common_Symptom2"
     },
@@ -119,7 +119,7 @@
       "symptom": "Headache",
       "range": {
         "low": 0,
-        "high": 100
+        "high": 50
       },
       "direct_transition": "Common_Symptom3"
     },
@@ -163,8 +163,8 @@
       "type": "Symptom",
       "symptom": "Pain with Bright Lights",
       "range": {
-        "low": 60,
-        "high": 90
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Wait_to_see_Dr"
     },

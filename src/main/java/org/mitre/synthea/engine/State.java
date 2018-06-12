@@ -487,7 +487,7 @@ public abstract class State implements Cloneable {
           return false;
         }
       } else {
-
+        System.out.println("encounterClass is " + encounterClass + " and the reason is " + reason + " and code is " + codes);
         HealthRecord.Encounter encounter = person.record.encounterStart(time, encounterClass);
         if (codes != null) {
           encounter.codes.addAll(codes);
