@@ -54,6 +54,7 @@ public class CDWExporter {
    * Table key sequence generators.
    */
   private Map<FileWriter,AtomicInteger> sids;
+  private int sidStart = 1;
 
   private FactTable sstaff = new FactTable();
   private FactTable maritalStatus = new FactTable();
@@ -163,7 +164,6 @@ public class CDWExporter {
       cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
 
       writeCSVHeaders();
-      generateClinicians();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -283,7 +283,7 @@ public class CDWExporter {
    */
   private void generateClinicians() {
     Random random = new Random(999L);
-    for (int i=0; i < CLINICIANS; i++) {
+    for (int i = 0; i < CLINICIANS; i++) {
       Person clinician = new Person(random.nextLong());
       if (random.nextBoolean()) {
         clinician.attributes.put(Person.GENDER, "M");
@@ -294,7 +294,7 @@ public class CDWExporter {
       LifecycleModule.birth(clinician, 0L);
       String name = "Dr. " + clinician.attributes.get(Person.FIRST_NAME);
       name += " " + clinician.attributes.get(Person.LAST_NAME);
-      sstaff.addFact(""+i, clean(name));
+      sstaff.addFact("" + i, clean(name));
     }
   }
 
@@ -315,6 +315,33 @@ public class CDWExporter {
    */
   public static CDWExporter getInstance() {
     return SingletonHolder.instance;
+  }
+
+  /**
+   * Set the sequence generator key starting values.
+   * Useful to ensure states do not generate
+   * overlapping or colliding values.
+   * @param id The start of the sequence generators.
+   */
+  public void setKeyStart(int id) {
+    sidStart = id;
+
+    sstaff.setNextId(id);
+    generateClinicians();
+    maritalStatus.setNextId(id);
+    sta3n.setNextId(id);
+    location.setNextId(id);
+    // appointmentStatus.setNextId(id);
+    // appointmentType.setNextId(id);
+    immunizationName.setNextId(id);
+    reaction.setNextId(id);
+    providerNarrative.setNextId(id);
+    localDrug.setNextId(id);
+    nationalDrug.setNextId(id);
+    dosageForm.setNextId(id);
+    pharmacyOrderableItem.setNextId(id);
+    orderStatus.setNextId(id);
+    vistaPackage.setNextId(id);
   }
 
   /**
@@ -1261,7 +1288,7 @@ public class CDWExporter {
 
   private int getNextKey(FileWriter table) {
     synchronized (sids) {
-      return sids.computeIfAbsent(table, k -> new AtomicInteger(1)).getAndIncrement();
+      return sids.computeIfAbsent(table, k -> new AtomicInteger(sidStart)).getAndIncrement();
     }
   }
   

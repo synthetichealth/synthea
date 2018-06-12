@@ -35,6 +35,14 @@ public class FactTable {
     keys = new HashMap<String,Integer>();
     facts = new HashMap<Integer,String>();
   }
+
+  /**
+   * Set the next ID.
+   * @param id The value of the next ID.
+   */
+  public void setNextId(int id) {
+    this.id = new AtomicInteger(id);
+  }
   
   /**
    * Set the column headers of the fact table.

@@ -238,7 +238,8 @@ public abstract class Exporter {
    *          Keep function, if this function returns `true` for an entry then it will be kept
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-      List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime, Predicate<E> keepFunction) {
+      List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime,
+      Predicate<E> keepFunction) {
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
     while (iterator.hasNext()) {
