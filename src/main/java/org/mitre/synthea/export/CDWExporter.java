@@ -326,6 +326,9 @@ public class CDWExporter {
   public void setKeyStart(int id) {
     sidStart = id;
 
+    // Dim tables have smaller key ranges: only a 2 byte integer -- max of 32K
+    id = (id / 10_000);
+
     sstaff.setNextId(id);
     generateClinicians();
     maritalStatus.setNextId(id);
