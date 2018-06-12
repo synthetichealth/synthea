@@ -123,10 +123,10 @@ public class Provider implements QuadTreeData {
     // for now assume every provider accepts every patient
     // UNLESS it's a VA facility and the person is not a veteran
     // eventually we may want to expand this (ex. capacity?)
-    if ("VA Facility".equals(this.type) && !person.attributes.containsKey("veteran")) {
-      // this could be made a one-liner but i think this is more clear
-      return false;
-    }
+//    if ("VA Facility".equals(this.type) && !person.attributes.containsKey("veteran")) {
+//      // this could be made a one-liner but i think this is more clear
+//      return false;
+//    }
     return true;
   }
 
@@ -189,18 +189,20 @@ public class Provider implements QuadTreeData {
       servicesProvided.add(Provider.AMBULATORY);
       servicesProvided.add(Provider.INPATIENT);
       servicesProvided.add(Provider.WELLNESS);
+      servicesProvided.add(Provider.EMERGENCY);
+      servicesProvided.add(Provider.URGENTCARE);
 
-      String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-      loadProviders(state, abbreviation, hospitalFile, servicesProvided);
+      //String hospitalFile = Config.get("generate.providers.hospitals.default_file");
+      //loadProviders(state, abbreviation, hospitalFile, servicesProvided);
 
       String vaFile = Config.get("generate.providers.veterans.default_file");
       loadProviders(state, abbreviation, vaFile, servicesProvided);
-
+/*
       servicesProvided.clear();
       servicesProvided.add(Provider.URGENTCARE);
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
       loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
-
+*/
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
