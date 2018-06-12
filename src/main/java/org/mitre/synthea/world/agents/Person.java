@@ -250,18 +250,7 @@ public class Person implements Serializable, QuadTreeData {
     return total;
   }
 
-  public void printSymptoms() {
-    for (String type : symptoms.keySet()) {
-      Map<String, Integer> typedSymptoms = symptoms.get(type);
-      for (String cause : typedSymptoms.keySet()) {
-        System.out.println("Type is " + type + " and cause is " + cause + " and value is " + typedSymptoms.get(cause));      
-      }
-    }
-  }
-
   public void resetSymptoms() {
-    System.out.println(symptomTotal());
-    this.printSymptoms();
     symptoms.clear();
   }
 

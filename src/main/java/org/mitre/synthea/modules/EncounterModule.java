@@ -59,26 +59,15 @@ public final class EncounterModule extends Module {
       encounter.codes.add(ENCOUNTER_CHECKUP);
       encounter.provider = person.getAmbulatoryProvider(time);
       encounter.codes.add(getWellnessVisitCode(person, time));
-      //System.out.println("the encounter codes for check up " + encounter.codes);
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
       encounter.reason = ENCOUNTER_CHECKUP;
       startedEncounter = true;
-      //person.printSymptoms();
-      System.out.println( " and here's my encounter details " + person.symptomTotal() + " reason " + encounter.reason);
-      
+
     } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
         if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
-          System.out.println("it was null and is no longer");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
         }
-        
         if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-          System.out.println("check total = " + person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) + " and the total rn is " + person.symptomTotal());
-        
-          System.out.println("time for ERRRRR");
-          // person.printSymptoms();
-          // add a symptom driven encounter to urgent care (RIGHT NOW, add emergency later) if symptoms are severe
-          System.out.println("I feel like crap");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
           person.addressLargestSymptom();
           Encounter encounter = person.record.encounterStart(time, EncounterType.EMERGENCY.toString());
@@ -88,22 +77,13 @@ public final class EncounterModule extends Module {
           encounter.codes.add(ENCOUNTER_EMERGENCY);
           person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
           startedEncounter = true;
-          System.out.println("ahh much better" + " and here's my encounter details " + encounter);
-
+          
       }
     } else if (person.symptomTotal() > URGENT_CARE_SYMPTOM_THRESHOLD) {
         if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
-          System.out.println("it was null and is no longer");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
         }
-        
         if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-          System.out.println("check total = " + person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) + " and the total rn is " + person.symptomTotal());
-        
-          System.out.println("time for UCCCCC");
-          person.printSymptoms();
-          // add a symptom driven encounter to urgent care (RIGHT NOW, add emergency later) if symptoms are severe
-          System.out.println("I feel like crap");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
           person.addressLargestSymptom();
           Encounter encounter = person.record.encounterStart(time, EncounterType.URGENTCARE.toString());
@@ -113,32 +93,23 @@ public final class EncounterModule extends Module {
           encounter.codes.add(ENCOUNTER_URGENTCARE);
           person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
           startedEncounter = true;
-          System.out.println("ahh much better" + " and here's my encounter details " + encounter);
-      } 
+        } 
     } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
         if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
-          System.out.println("it was null and is no longer");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
         }
         
         if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-          System.out.println("check total = " + person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) + " and the total rn is " + person.symptomTotal());
-        
-          System.out.println("time for PCPPPPP");
-          person.printSymptoms();
-          // add a symptom driven encounter to urgent care (RIGHT NOW, add emergency later) if symptoms are severe
-          System.out.println("I feel like crap");
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
           person.addressLargestSymptom();
-          Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString()+'1');
+          Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
           encounter.name = "Encounter Module Symptom Driven";
           encounter.provider = person.getUrgentCareProvider(time);
           encounter.reason = ENCOUNTER_CHECKUP;
           encounter.codes.add(ENCOUNTER_CHECKUP);
           person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
           startedEncounter = true;
-          System.out.println("ahh much better" + " and here's my encounter details " + encounter);
-      } 
+        } 
     } 
 
     if (startedEncounter) {

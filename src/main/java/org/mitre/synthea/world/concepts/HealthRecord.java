@@ -524,33 +524,7 @@ public class HealthRecord {
 
   public Encounter encounterStart(long time, String type) {
     Encounter encounter = new Encounter(time, type);
-    System.out.println("JUST ADDED AN ENCOUNTER OF TYPE " + type + " and time is " + encounter);
     encounters.add(encounter);
-    int num_UC = 0;
-    int num_ER = 0;
-    int num_PCP = 0;
-    int num_CU = 0;
-    for (Encounter e: encounters){
-      //System.out.println(e.type)
-      if (e.reason != null){
-        if (e.type.equals(EncounterType.EMERGENCY.toString())){
-          num_ER++;
-        } else if (e.type.equals(EncounterType.URGENTCARE.toString())){
-          num_UC++;
-        } else if (e.type.equals(EncounterType.WELLNESS.toString())){
-          num_CU++;
-        }
-        else if (e.type.equals(EncounterType.WELLNESS.toString()+'1')){
-          num_PCP++;
-        }
-
-        //System.out.println("enc " + e.type);
-      }
-    }
-    System.out.println("Num UC " + num_UC);
-    System.out.println("Num ER " + num_ER);
-    System.out.println("Num PCP " + num_PCP);
-    System.out.println("Num Check up " + num_CU);
     return encounter;
   }
 
