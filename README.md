@@ -1,7 +1,7 @@
 # Synthea Website
 
 ## Making Contributions:
-For those with clinical or domain expertise, visit [our contribution page](https://github.com/synthetichealth/synthea/projects/1) to see a list of modules that need professional review. Developers can visit Synthea's [GitHub page](https://github.com/synthetichealth/synthea) to learn how to build and contribute to the project. Have any feedback on the current Synthea implementation? [Create an issue](https://github.com/synthetichealth/synthea/issues/new) on our github page, or [send us an email](mailto:shr@mitre.org).
+For those with clinical or domain expertise, visit [our contribution page](https://github.com/synthetichealth/synthea/projects/1) to see a list of modules that need professional review. Developers can visit Synthea's [GitHub page](https://github.com/synthetichealth/synthea) to learn how to build and contribute to the project. Have any feedback on the current Synthea implementation? [Create an issue](https://github.com/synthetichealth/synthea/issues/new) on our github page, or [send us an email](mailto:synthea-list@groups.mitre.org).
 
 ## Downloading Project:
 Before getting started on any development, one will need to have the following installed:
