@@ -221,7 +221,7 @@
     "Diabetes_Progression": {
       "type": "Delay",
       "exact": {
-        "quantity": 1,
+        "quantity": 3,
         "unit": "months"
       },
       "direct_transition": "Nephropathy_Progression"
@@ -386,7 +386,7 @@
         "low": 1,
         "high": 100
       },
-      "direct_transition": "Retinopathy_Progression"
+      "direct_transition": "CKD_1 Onset"
     },
     "Set_Moderate_Kidney_Damage": {
       "type": "SetAttribute",
@@ -434,7 +434,7 @@
         "low": 20,
         "high": 100
       },
-      "direct_transition": "Retinopathy_Progression"
+      "direct_transition": "CKD_2 Onset"
     },
     "Set_Severe_Kidney_Damage": {
       "type": "SetAttribute",
@@ -482,7 +482,7 @@
         "low": 40,
         "high": 100
       },
-      "direct_transition": "Retinopathy_Progression"
+      "direct_transition": "CKD_3 Onset"
     },
     "Set_End_Stage_Kidney_Damage": {
       "type": "SetAttribute",
@@ -567,7 +567,7 @@
         "low": 50,
         "high": 100
       },
-      "direct_transition": "Retinopathy_Progression"
+      "direct_transition": "CKD_4 Onset"
     },
     "Retinopathy_Progression": {
       "type": "Simple",
@@ -781,7 +781,7 @@
           "distributions": [
             {
               "distribution": 0.9971,
-              "transition": "Loop_back_to_Start"
+              "transition": "Metabolic Syndrome Check"
             },
             {
               "distribution": 0.0029,
@@ -863,7 +863,7 @@
         "low": 1,
         "high": 80
       },
-      "direct_transition": "Loop_back_to_Start"
+      "direct_transition": "Metabolic Syndrome Check"
     },
     "Set_Moderate_Nerve_Damage": {
       "type": "SetAttribute",
@@ -878,7 +878,7 @@
         "low": 20,
         "high": 100
       },
-      "direct_transition": "Loop_back_to_Start"
+      "direct_transition": "Metabolic Syndrome Check"
     },
     "Set_Severe_Nerve_Damage": {
       "type": "SetAttribute",
@@ -893,7 +893,7 @@
         "low": 50,
         "high": 100
       },
-      "direct_transition": "Loop_back_to_Start"
+      "direct_transition": "Metabolic Syndrome Check"
     },
     "Loop_back_to_Start": {
       "type": "Simple",
@@ -1114,6 +1114,74 @@
           "distribution": 0.34
         }
       ]
+    },
+    "CKD_1 Onset": {
+      "type": "ConditionOnset",
+      "target_encounter": "Metabolic Syndrome Check",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431855005,
+          "display": "Chronic kidney disease stage 1"
+        }
+      ],
+      "direct_transition": "Retinopathy_Progression"
+    },
+    "CKD_2 Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Metabolic Syndrome Check",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431856006,
+          "display": "Chronic kidney disease stage 2"
+        }
+      ],
+      "direct_transition": "Retinopathy_Progression"
+    },
+    "CKD_3 Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Metabolic Syndrome Check",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433144002,
+          "display": "Chronic kidney disease stage 3"
+        }
+      ],
+      "direct_transition": "Retinopathy_Progression"
+    },
+    "CKD_4 Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Metabolic Syndrome Check",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431857002,
+          "display": "hronic kidney disease stage 4"
+        }
+      ],
+      "direct_transition": "Retinopathy_Progression"
+    },
+    "Metabolic Syndrome Check": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "encounter_end"
+    },
+    "encounter_end": {
+      "type": "EncounterEnd",
+      "direct_transition": "Loop_back_to_Start"
     }
   }
 }
