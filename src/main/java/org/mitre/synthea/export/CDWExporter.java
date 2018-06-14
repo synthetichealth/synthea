@@ -69,6 +69,7 @@ public class CDWExporter {
   private FactTable nationalDrug = new FactTable();
   private FactTable dosageForm = new FactTable();
   private FactTable pharmacyOrderableItem = new FactTable();
+  private FactTable orderableItem = new FactTable();
   private FactTable orderStatus = new FactTable();
   private FactTable vistaPackage = new FactTable();
 
@@ -114,6 +115,7 @@ public class CDWExporter {
   private FileWriter rxoutpatient;
   private FileWriter nonvamed;
   private FileWriter cprsorder;
+  private FileWriter ordereditem;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -162,6 +164,7 @@ public class CDWExporter {
       rxoutpatient = openFileWriter(outputDirectory, "rxoutpatient.csv");
       nonvamed = openFileWriter(outputDirectory, "nonvamed.csv");
       cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
+      ordereditem = openFileWriter(outputDirectory, "ordereditem.csv");
 
       writeCSVHeaders();
     } catch (IOException e) {
@@ -196,6 +199,7 @@ public class CDWExporter {
         + "InactivationDate,VUID");
     dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
     pharmacyOrderableItem.setHeader("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
+    orderableItem.setHeader("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
     orderStatus.setHeader("OrderStatusSID,OrderStatus");
     vistaPackage.setHeader("VistaPackageSID,VistaPackage");
 
@@ -274,6 +278,8 @@ public class CDWExporter {
         + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
         + "PackageReference");
     cprsorder.write(NEWLINE);
+    ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
+    ordereditem.write(NEWLINE);
   }
 
   /**
@@ -343,6 +349,7 @@ public class CDWExporter {
     nationalDrug.setNextId(id);
     dosageForm.setNextId(id);
     pharmacyOrderableItem.setNextId(id);
+    orderableItem.setNextId(id);
     orderStatus.setNextId(id);
     vistaPackage.setNextId(id);
   }
@@ -439,19 +446,20 @@ public class CDWExporter {
       File output = Exporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
-      sstaff.write(openFileWriter(outputDirectory,"sstaff.csv"));
-      maritalStatus.write(openFileWriter(outputDirectory,"maritalstatus.csv"));
-      sta3n.write(openFileWriter(outputDirectory,"sta3n.csv"));
-      location.write(openFileWriter(outputDirectory,"location.csv"));
-      immunizationName.write(openFileWriter(outputDirectory,"immunizationname.csv"));
-      reaction.write(openFileWriter(outputDirectory,"reaction.csv"));
+      sstaff.write(openFileWriter(outputDirectory, "sstaff.csv"));
+      maritalStatus.write(openFileWriter(outputDirectory, "maritalstatus.csv"));
+      sta3n.write(openFileWriter(outputDirectory, "sta3n.csv"));
+      location.write(openFileWriter(outputDirectory, "location.csv"));
+      immunizationName.write(openFileWriter(outputDirectory, "immunizationname.csv"));
+      reaction.write(openFileWriter(outputDirectory, "reaction.csv"));
       providerNarrative.write(openFileWriter(outputDirectory, "providernarrative.csv"));
-      localDrug.write(openFileWriter(outputDirectory,"localdrug.csv"));
-      nationalDrug.write(openFileWriter(outputDirectory,"nationaldrug.csv"));
-      dosageForm.write(openFileWriter(outputDirectory,"dosageform.csv"));
-      pharmacyOrderableItem.write(openFileWriter(outputDirectory,"pharmacyorderableitem.csv"));
-      orderStatus.write(openFileWriter(outputDirectory,"orderstatus.csv"));
-      vistaPackage.write(openFileWriter(outputDirectory,"vistapackage.csv"));
+      localDrug.write(openFileWriter(outputDirectory, "localdrug.csv"));
+      nationalDrug.write(openFileWriter(outputDirectory, "nationaldrug.csv"));
+      dosageForm.write(openFileWriter(outputDirectory, "dosageform.csv"));
+      pharmacyOrderableItem.write(openFileWriter(outputDirectory, "pharmacyorderableitem.csv"));
+      orderableItem.write(openFileWriter(outputDirectory, "orderableitem.csv"));
+      orderStatus.write(openFileWriter(outputDirectory, "orderstatus.csv"));
+      vistaPackage.write(openFileWriter(outputDirectory, "vistapackage.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -1004,6 +1012,9 @@ public class CDWExporter {
     // pharmacyOrderableItem ("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
     int pharmSID = pharmacyOrderableItem.addFact(code.code, clean(code.display) + ",1");
 
+    // orderableItem ("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
+    int orderSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
+
     // dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
     Integer dosageSID = null;
     if (medication.prescriptionDetails != null
@@ -1118,6 +1129,13 @@ public class CDWExporter {
     s.append("OUTPATIENT PHARMACY");
     s.append(NEWLINE);
     write(s.toString(), cprsorder);
+
+    // ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
+    s.setLength(0);
+    s.append(cprsSID).append(",");
+    s.append(cprsSID).append(",");
+    s.append(orderSID).append(NEWLINE);
+    write(s.toString(), ordereditem);
 
     // nonvamed.write("NonVAMedSID,PatientSID,NonVAMedIEN,Sta3n,LocalDrugSID,Dosage,"
     //    + "MedicationRoute,Schedule,NonVAMedStatus,CPRSOrderSID,StartDateTime,"
