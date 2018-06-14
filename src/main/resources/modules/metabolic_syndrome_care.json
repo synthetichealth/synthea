@@ -751,7 +751,7 @@
     },
     "Check_Complications": {
       "type": "Simple",
-      "direct_transition": "Check_Nephropathy"
+      "direct_transition": "check CKD"
     },
     "Check_Nephropathy": {
       "type": "Simple",
@@ -2266,6 +2266,99 @@
           }
         }
       ]
+    },
+    "check CKD": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CKD1 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "CKD2 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "CKD3 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "CKD4 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ]
+    },
+    "CKD1 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
+    },
+    "CKD2 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
+    },
+    "CKD3 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
+    },
+    "CKD4 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
     }
   }
 }
