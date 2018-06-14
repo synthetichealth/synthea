@@ -719,7 +719,7 @@ public class CDWExporter {
     if (locationSid != null) {
       s.append(locationSid).append(',');
     } else {
-      s.append(",");
+      s.append(primarySta3n).append(",");
     }
     s.append("3,"); // 3:SCHEDULED VISIT
     s.append(person.rand(new String[] {"N", "C", "P", "W", "M", "A", "O"})).append(',');
