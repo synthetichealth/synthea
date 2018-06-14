@@ -49,7 +49,7 @@ public class BirthStatistics {
    * @param mother The baby's mother.
    * @param time The time.
    */
-  public void setBirthStatistics(Person mother, long time) {
+  public static void setBirthStatistics(Person mother, long time) {
     // Ignore men, they cannot become pregnant.
     if (mother.attributes.get(Person.GENDER) == "M") {
       return;
@@ -68,10 +68,10 @@ public class BirthStatistics {
     } else {
       baby_sex = "F";
     }
+    mother.attributes.put(BIRTH_SEX, baby_sex);
 
     // If there was no weight data, set some default values.
     if (WEIGHT_DATA == null) {
-      mother.attributes.put(BIRTH_SEX, baby_sex);
       mother.attributes.put(BIRTH_WEEK, 40);
       mother.attributes.put(BIRTH_HEIGHT, DEFAULT_HEIGHT);
       mother.attributes.put(BIRTH_WEIGHT, DEFAULT_WEIGHT);
@@ -131,11 +131,12 @@ public class BirthStatistics {
 
     for (String weight : weights) {
       x = Double.parseDouble(data.get(weight));
-      if (roll > x) {
-        break;
-      }
+      roll = roll - x;
       x = Double.parseDouble(weight) / 1000; // convert from grams to kilograms
       mother.attributes.put(BIRTH_WEIGHT, x);
+      if (roll < 0) {
+        break;
+      }
     }
     
     // How long will the baby be?
@@ -147,7 +148,7 @@ public class BirthStatistics {
    * @param mother The baby's mother.
    * @return True if the mother is hispanic, otherwise false.
    */
-  private boolean isHispanic(Person mother) {
+  private static boolean isHispanic(Person mother) {
     String race = (String) mother.attributes.get(Person.RACE);
     String ethnicity = (String) mother.attributes.get(Person.ETHNICITY);
     return (race.equalsIgnoreCase("hispanic") || ethnicity.equalsIgnoreCase("hispanic"));
