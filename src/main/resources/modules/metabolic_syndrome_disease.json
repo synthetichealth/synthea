@@ -240,7 +240,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "diabetic_kidney_damage",
+            "attribute": "ckd",
             "operator": "==",
             "value": 0
           },
@@ -255,14 +255,14 @@
             },
             {
               "distribution": 0.0018,
-              "transition": "Set_Mild_Kidney_Damage"
+              "transition": "Set_CKD_1 Damage"
             }
           ]
         },
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "diabetic_kidney_damage",
+            "attribute": "ckd",
             "operator": "==",
             "value": 1
           },
@@ -276,18 +276,18 @@
           "distributions": [
             {
               "distribution": 0.9865,
-              "transition": "Set_Mild_Kidney_Damage"
+              "transition": "Set_CKD_1 Damage"
             },
             {
               "distribution": 0.0135,
-              "transition": "Set_Moderate_Kidney_Damage"
+              "transition": "Set_CKD_2 Damage"
             }
           ]
         },
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "diabetic_kidney_damage",
+            "attribute": "ckd",
             "operator": "==",
             "value": 2
           },
@@ -299,18 +299,18 @@
           "distributions": [
             {
               "distribution": 0.994,
-              "transition": "Set_Moderate_Kidney_Damage"
+              "transition": "Set_CKD_2 Damage"
             },
             {
               "distribution": 0.006,
-              "transition": "Set_Severe_Kidney_Damage"
+              "transition": "Set_CKD_3 Damage"
             }
           ]
         },
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "diabetic_kidney_damage",
+            "attribute": "ckd",
             "operator": "==",
             "value": 3
           },
@@ -321,193 +321,61 @@
           "distributions": [
             {
               "distribution": 0.9994,
-              "transition": "Set_Severe_Kidney_Damage"
+              "transition": "Set_CKD_3 Damage"
             },
             {
               "distribution": 0.0006,
-              "transition": "Set_End_Stage_Kidney_Damage"
+              "transition": "Set_CKD_4 Damage"
             }
           ]
         },
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "diabetic_kidney_damage",
+            "attribute": "ckd",
             "operator": "==",
             "value": 4
           },
-          "transition": "Set_End_Stage_Kidney_Damage"
+          "distributions": [
+            {
+              "distribution": 0.9994,
+              "transition": "Set_CKD_4 Damage"
+            },
+            {
+              "transition": "Expected_Lifespan_for_ESRD",
+              "distribution": 0.0006
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [],
+          "transition": "Expected_Lifespan_for_ESRD"
         }
       ]
-    },
-    "Set_Mild_Kidney_Damage": {
-      "type": "SetAttribute",
-      "attribute": "diabetic_kidney_damage",
-      "value": 1,
-      "direct_transition": "Set_Nephropathy"
     },
     "Set_Nephropathy": {
       "type": "SetAttribute",
       "attribute": "nephropathy",
       "value": true,
-      "direct_transition": "Mild_Kidney_Damage_Symptom_1"
-    },
-    "Mild_Kidney_Damage_Symptom_1": {
-      "type": "Symptom",
-      "symptom": "Hunger",
-      "range": {
-        "low": 1,
-        "high": 100
-      },
-      "direct_transition": "Mild_Kidney_Damage_Symptom_2"
-    },
-    "Mild_Kidney_Damage_Symptom_2": {
-      "type": "Symptom",
-      "symptom": "Fatigue",
-      "range": {
-        "low": 1,
-        "high": 100
-      },
-      "direct_transition": "Mild_Kidney_Damage_Symptom_3"
-    },
-    "Mild_Kidney_Damage_Symptom_3": {
-      "type": "Symptom",
-      "symptom": "Frequent Urination",
-      "range": {
-        "low": 1,
-        "high": 100
-      },
-      "direct_transition": "Mild_Kidney_Damage_Symptom_4"
-    },
-    "Mild_Kidney_Damage_Symptom_4": {
-      "type": "Symptom",
-      "symptom": "Thirst",
-      "range": {
-        "low": 1,
-        "high": 100
-      },
-      "direct_transition": "CKD_1 Onset"
-    },
-    "Set_Moderate_Kidney_Damage": {
-      "type": "SetAttribute",
-      "attribute": "diabetic_kidney_damage",
-      "value": 2,
-      "direct_transition": "Set_Microalbuminuria"
+      "direct_transition": "CKD1_Symptom_1"
     },
     "Set_Microalbuminuria": {
       "type": "SetAttribute",
       "attribute": "microalbuminuria",
       "value": true,
-      "direct_transition": "Moderate_Kidney_Damage_Symptom_1"
-    },
-    "Moderate_Kidney_Damage_Symptom_1": {
-      "type": "Symptom",
-      "symptom": "Hunger",
-      "range": {
-        "low": 20,
-        "high": 100
-      },
-      "direct_transition": "Moderate_Kidney_Damage_Symptom_2"
-    },
-    "Moderate_Kidney_Damage_Symptom_2": {
-      "type": "Symptom",
-      "symptom": "Fatigue",
-      "range": {
-        "low": 20,
-        "high": 100
-      },
-      "direct_transition": "Moderate_Kidney_Damage_Symptom_3"
-    },
-    "Moderate_Kidney_Damage_Symptom_3": {
-      "type": "Symptom",
-      "symptom": "Frequent Urination",
-      "range": {
-        "low": 20,
-        "high": 100
-      },
-      "direct_transition": "Moderate_Kidney_Damage_Symptom_4"
-    },
-    "Moderate_Kidney_Damage_Symptom_4": {
-      "type": "Symptom",
-      "symptom": "Thirst",
-      "range": {
-        "low": 20,
-        "high": 100
-      },
-      "direct_transition": "CKD_2 Onset"
-    },
-    "Set_Severe_Kidney_Damage": {
-      "type": "SetAttribute",
-      "attribute": "diabetic_kidney_damage",
-      "value": 3,
-      "direct_transition": "Set_Proteinuria"
+      "direct_transition": "CKD2_Symptom_1"
     },
     "Set_Proteinuria": {
       "type": "SetAttribute",
       "attribute": "proteinuria",
       "value": true,
-      "direct_transition": "Severe_Kidney_Damage_Symptom_1"
-    },
-    "Severe_Kidney_Damage_Symptom_1": {
-      "type": "Symptom",
-      "symptom": "Hunger",
-      "range": {
-        "low": 40,
-        "high": 100
-      },
-      "direct_transition": "Severe_Kidney_Damage_Symptom_2"
-    },
-    "Severe_Kidney_Damage_Symptom_2": {
-      "type": "Symptom",
-      "symptom": "Fatigue",
-      "range": {
-        "low": 40,
-        "high": 100
-      },
-      "direct_transition": "Severe_Kidney_Damage_Symptom_3"
-    },
-    "Severe_Kidney_Damage_Symptom_3": {
-      "type": "Symptom",
-      "symptom": "Frequent Urination",
-      "range": {
-        "low": 40,
-        "high": 100
-      },
-      "direct_transition": "Severe_Kidney_Damage_Symptom_4"
-    },
-    "Severe_Kidney_Damage_Symptom_4": {
-      "type": "Symptom",
-      "symptom": "Thirst",
-      "range": {
-        "low": 40,
-        "high": 100
-      },
-      "direct_transition": "CKD_3 Onset"
-    },
-    "Set_End_Stage_Kidney_Damage": {
-      "type": "SetAttribute",
-      "attribute": "diabetic_kidney_damage",
-      "value": 4,
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "end_stage_renal_disease",
-            "operator": "==",
-            "value": true
-          },
-          "transition": "End_Stage_Kidney_Damage_Symptom_1"
-        },
-        {
-          "transition": "Set_End_Stage_Renal_Disease"
-        }
-      ]
-    },
-    "Set_End_Stage_Renal_Disease": {
-      "type": "SetAttribute",
-      "attribute": "end_stage_renal_disease",
-      "value": true,
-      "direct_transition": "Expected_Lifespan_for_ESRD"
+      "direct_transition": "CKD3_Symptom_1"
     },
     "Expected_Lifespan_for_ESRD": {
       "type": "Death",
@@ -527,47 +395,7 @@
         "Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
         "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"
       ],
-      "direct_transition": "End_Stage_Kidney_Damage_Symptom_1"
-    },
-    "End_Stage_Kidney_Damage_Symptom_1": {
-      "type": "Symptom",
-      "symptom": "Hunger",
-      "range": {
-        "low": 50,
-        "high": 100
-      },
-      "remarks": [
-        "Without intervention, 20-40 percent of patients with type 2 diabetes/microalbuminuria, will evolve to macroalbuminuria.",
-        "Shlipak, Michael. 'Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician'. www.aafp.org."
-      ],
-      "direct_transition": "End_Stage_Kidney_Damage_Symptom_2"
-    },
-    "End_Stage_Kidney_Damage_Symptom_2": {
-      "type": "Symptom",
-      "symptom": "Fatigue",
-      "range": {
-        "low": 50,
-        "high": 100
-      },
-      "direct_transition": "End_Stage_Kidney_Damage_Symptom_3"
-    },
-    "End_Stage_Kidney_Damage_Symptom_3": {
-      "type": "Symptom",
-      "symptom": "Frequent Urination",
-      "range": {
-        "low": 50,
-        "high": 100
-      },
-      "direct_transition": "End_Stage_Kidney_Damage_Symptom_4"
-    },
-    "End_Stage_Kidney_Damage_Symptom_4": {
-      "type": "Symptom",
-      "symptom": "Thirst",
-      "range": {
-        "low": 50,
-        "high": 100
-      },
-      "direct_transition": "CKD_4 Onset"
+      "direct_transition": "Set_CKD_5 Damage"
     },
     "Retinopathy_Progression": {
       "type": "Simple",
@@ -781,7 +609,7 @@
           "distributions": [
             {
               "distribution": 0.9971,
-              "transition": "Metabolic Syndrome Check"
+              "transition": "Loop_back_to_Start"
             },
             {
               "distribution": 0.0029,
@@ -863,7 +691,7 @@
         "low": 1,
         "high": 80
       },
-      "direct_transition": "Metabolic Syndrome Check"
+      "direct_transition": "Loop_back_to_Start"
     },
     "Set_Moderate_Nerve_Damage": {
       "type": "SetAttribute",
@@ -878,7 +706,7 @@
         "low": 20,
         "high": 100
       },
-      "direct_transition": "Metabolic Syndrome Check"
+      "direct_transition": "Loop_back_to_Start"
     },
     "Set_Severe_Nerve_Damage": {
       "type": "SetAttribute",
@@ -893,7 +721,7 @@
         "low": 50,
         "high": 100
       },
-      "direct_transition": "Metabolic Syndrome Check"
+      "direct_transition": "Loop_back_to_Start"
     },
     "Loop_back_to_Start": {
       "type": "Simple",
@@ -1115,73 +943,223 @@
         }
       ]
     },
-    "CKD_1 Onset": {
-      "type": "ConditionOnset",
-      "target_encounter": "Metabolic Syndrome Check",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 431855005,
-          "display": "Chronic kidney disease stage 1"
-        }
-      ],
+    "Set_CKD_1 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "Set_Nephropathy",
+      "value": 1
+    },
+    "Set_CKD_2 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "Set_Microalbuminuria",
+      "value": 2
+    },
+    "Set_CKD_3 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "value": 3,
+      "direct_transition": "Set_Proteinuria"
+    },
+    "Set_CKD_4 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "value": 4,
+      "direct_transition": "CKD4_Symptom_1"
+    },
+    "Set_CKD_5 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "CKD5_Symptom_1",
+      "value": 5
+    },
+    "CKD1_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "CKD1_Symptom_2"
+    },
+    "CKD2_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "CKD2_Symptom_2"
+    },
+    "CKD2_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "CKD2_Symptom_3"
+    },
+    "CKD2_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "CKD2_Symptom_4"
+    },
+    "CKD2_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
       "direct_transition": "Retinopathy_Progression"
     },
-    "CKD_2 Onset": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "Metabolic Syndrome Check",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 431856006,
-          "display": "Chronic kidney disease stage 2"
-        }
-      ],
+    "CKD1_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "CKD1_Symptom_3"
+    },
+    "CKD1_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "CKD1_Symptom_4"
+    },
+    "CKD1_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
       "direct_transition": "Retinopathy_Progression"
     },
-    "CKD_3 Onset": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "Metabolic Syndrome Check",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 433144002,
-          "display": "Chronic kidney disease stage 3"
-        }
-      ],
+    "CKD3_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "CKD3_Symptom_2"
+    },
+    "CKD3_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "CKD3_Symptom_3"
+    },
+    "CKD3_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "CKD3_Symptom_4"
+    },
+    "CKD3_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
       "direct_transition": "Retinopathy_Progression"
     },
-    "CKD_4 Onset": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "Metabolic Syndrome Check",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 431857002,
-          "display": "hronic kidney disease stage 4"
-        }
+    "CKD5_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "remarks": [
+        "Without intervention, 20-40 percent of patients with type 2 diabetes/microalbuminuria, will evolve to macroalbuminuria.",
+        "Shlipak, Michael. 'Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician'. www.aafp.org."
       ],
+      "direct_transition": "CKD5_Symptom_2"
+    },
+    "CKD5_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "CKD5_Symptom_3"
+    },
+    "CKD5_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "CKD5_Symptom_4"
+    },
+    "CKD5_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
       "direct_transition": "Retinopathy_Progression"
     },
-    "Metabolic Syndrome Check": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom"
-        }
-      ],
-      "direct_transition": "encounter_end"
+    "CKD4_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "cause": "",
+      "direct_transition": "CKD4_Symptom_2",
+      "range": {
+        "low": 45,
+        "high": 2
+      }
     },
-    "encounter_end": {
-      "type": "EncounterEnd",
-      "direct_transition": "Loop_back_to_Start"
+    "CKD4_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "cause": "",
+      "direct_transition": "CKD4_Symptom_3",
+      "range": {
+        "low": 45,
+        "high": 100
+      }
+    },
+    "CKD4_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "cause": "",
+      "direct_transition": "CKD4_Symptom_4",
+      "range": {
+        "low": 45,
+        "high": 100
+      }
+    },
+    "CKD4_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "cause": "",
+      "direct_transition": "Retinopathy_Progression",
+      "range": {
+        "low": 45,
+        "high": 100
+      }
     }
   }
 }
