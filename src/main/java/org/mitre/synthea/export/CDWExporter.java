@@ -677,7 +677,7 @@ public class CDWExporter {
 
     // visit.write("VisitSID,VisitDateTime,CreatedByStaffSID,LocationSID,PatientSID");
     int visitSid = getNextKey(visit);
-    int staffSid = person.randInt(CLINICIANS);
+    int staffSid = person.randInt(CLINICIANS) + (sidStart / 10_000) + 1;
     if (encounter.provider != null) {
       encounter.provider.attributes.put(CLINICIAN_SID, staffSid);
     }
@@ -756,7 +756,7 @@ public class CDWExporter {
       Entry condition, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
     Integer sta3nValue = null;
-    Integer providerSID = 0;
+    Integer providerSID = (sidStart / 10_000) + 1;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
@@ -834,7 +834,7 @@ public class CDWExporter {
     StringBuilder s = new StringBuilder();
 
     Integer sta3nValue = null;
-    Integer providerSID = 0;
+    Integer providerSID = (sidStart / 10_000) + 1;;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
@@ -1018,7 +1018,7 @@ public class CDWExporter {
     StringBuilder s = new StringBuilder();
 
     Integer sta3nValue = null;
-    Integer providerSID = 0;
+    Integer providerSID = (sidStart / 10_000) + 1;;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
@@ -1212,7 +1212,7 @@ public class CDWExporter {
     int immunizationSid = getNextKey(immunization);
     s.append(immunizationSid).append(',');
     s.append(immunizationSid).append(','); // ImmunizationIEN
-    Integer providerSID = 0;
+    Integer providerSID = (sidStart / 10_000) + 1;;
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
