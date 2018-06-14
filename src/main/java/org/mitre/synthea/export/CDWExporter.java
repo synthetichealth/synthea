@@ -194,10 +194,11 @@ public class CDWExporter {
     reaction.setHeader("ReactionSID,Reaction,VUID");
     providerNarrative.setHeader("ProviderNarrativeSID,ProviderNarrative");
     localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
-        + "NationalDrugSID,NationalDrugNameWithDose");
+        + "NationalDrugSID,NationalDrugNameWithDose,PharmacyOrderableItemSID");
     nationalDrug.setHeader("NationalDrugSID,DrugNameWithDose,DosageFormSID,"
         + "InactivationDate,VUID");
     dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
+    dosageForm.addFact("1", "1,Once per day."); // Default Dosage
     pharmacyOrderableItem.setHeader("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
     orderableItem.setHeader("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
     orderStatus.setHeader("OrderStatusSID,OrderStatus");
@@ -376,14 +377,14 @@ public class CDWExporter {
     int personID = patient(person, primarySta3n, time);
 
     for (Encounter encounter : person.record.encounters) {
-      int encounterID = encounter(personID, person, encounter);
+      int encounterID = encounter(personID, person, encounter, primarySta3n);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
-        condition(personID, encounterID, encounter, condition);
+        condition(personID, encounterID, encounter, condition, primarySta3n);
       }
 
       for (HealthRecord.Entry allergy : encounter.allergies) {
-        allergy(personID, person, encounterID, encounter, allergy);
+        allergy(personID, person, encounterID, encounter, allergy, primarySta3n);
       }
 
       for (Observation observation : encounter.observations) {
@@ -395,11 +396,11 @@ public class CDWExporter {
       }
 
       for (Medication medication : encounter.medications) {
-        medication(personID, encounterID, encounter, medication);
+        medication(personID, encounterID, encounter, medication, primarySta3n);
       }
 
       for (Immunization immunization : encounter.immunizations) {
-        immunization(personID, person, encounterID, encounter, immunization);
+        immunization(personID, person, encounterID, encounter, immunization, primarySta3n);
       }
 
       for (CarePlan careplan : encounter.careplans) {
@@ -661,10 +662,12 @@ public class CDWExporter {
    * @param personID The ID of the person that had this encounter
    * @param person The person attending the encounter
    * @param encounter The encounter itself
+   * @param primarySta3n The primary home sta3n for the patient
    * @return The encounter ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
-  private int encounter(int personID, Person person, Encounter encounter) throws IOException {
+  private int encounter(int personID, Person person, Encounter encounter, int primarySta3n)
+      throws IOException {
     StringBuilder s = new StringBuilder();
 
     // consult.write("ConsultSID,ToRequestServiceSID");
@@ -688,7 +691,7 @@ public class CDWExporter {
       locationSid = location.addFact(encounter.provider.id, clean(encounter.provider.name));
       s.append(locationSid).append(',');
     } else {
-      s.append(',');
+      s.append(primarySta3n).append(',');
     }
     s.append(personID);
     s.append(NEWLINE);
@@ -704,6 +707,8 @@ public class CDWExporter {
       String state = Location.getStateName(encounter.provider.state);
       String tz = Location.getTimezoneByState(state);
       s.append(sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz));
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(personID).append(',');
@@ -744,10 +749,11 @@ public class CDWExporter {
    * @param encounterID ID of the encounter where the condition was diagnosed
    * @param encounter The encounter
    * @param condition The condition itself
+   * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
   private void condition(int personID, int encounterID, Encounter encounter,
-      Entry condition) throws IOException {
+      Entry condition, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
     Integer sta3nValue = null;
     Integer providerSID = 0;
@@ -768,6 +774,8 @@ public class CDWExporter {
     s.append(problemListSid).append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(",,"); // skip icd 9 and icd 10
@@ -793,6 +801,8 @@ public class CDWExporter {
     s.append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(",,"); // skip icd 9 and icd 10
@@ -816,10 +826,11 @@ public class CDWExporter {
    * @param encounterID ID of the encounter where the allergy was diagnosed
    * @param encounter The encounter
    * @param allergyEntry The allergy itself
+   * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
   private void allergy(int personID, Person person, int encounterID, Encounter encounter,
-      Entry allergyEntry) throws IOException {
+      Entry allergyEntry, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
 
     Integer sta3nValue = null;
@@ -842,6 +853,8 @@ public class CDWExporter {
     s.append(allergySID).append(',');
     if (encounter.provider != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(personID).append(',');
@@ -878,6 +891,8 @@ public class CDWExporter {
     s.append(allergySID).append(',');
     if (encounter.provider != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(reaction.addFact(reactionDisplay, reactionDisplay + "," + allergyreactionSID));
@@ -893,6 +908,8 @@ public class CDWExporter {
     s.append(allergySID).append(',');
     if (encounter.provider != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(personID).append(',');
@@ -993,10 +1010,11 @@ public class CDWExporter {
    * @param encounterID ID of the encounter where the medication was prescribed
    * @param encounter The encounter
    * @param medication The medication itself
+   * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
   private void medication(int personID, int encounterID, Encounter encounter,
-      Medication medication) throws IOException {
+      Medication medication, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
 
     Integer sta3nValue = null;
@@ -1016,7 +1034,7 @@ public class CDWExporter {
     int orderSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
 
     // dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
-    Integer dosageSID = null;
+    Integer dosageSID = 1; // Default Dosage SID
     if (medication.prescriptionDetails != null
         && medication.prescriptionDetails.has("dosage")) {
       JsonObject dosage = medication.prescriptionDetails.get("dosage").getAsJsonObject();
@@ -1036,24 +1054,25 @@ public class CDWExporter {
     s.setLength(0);
     s.append(clean(code.display));
     s.append(',');
-    if (dosageSID != null) {
-      s.append(dosageSID);
-    }
+    s.append(dosageSID);
     s.append(",,");
     s.append(code.code);
     int ndrugSID = nationalDrug.addFact(code.code, s.toString());
 
     // localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
-    //    + "NationalDrugSID,NationalDrugNameWithDose");
+    //    + "NationalDrugSID,NationalDrugNameWithDose,PharmacyOrderableItemSID");
     s.setLength(0);
     s.append(ndrugSID).append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(clean(code.display)).append(',');
     s.append(ndrugSID).append(',');
-    s.append(clean(code.display));
+    s.append(clean(code.display)).append(',');
+    s.append(pharmSID);
     int ldrugSID = localDrug.addFact(code.code, s.toString());
 
     // rxoutpatient.write("RxOutpatSID,Sta3n,RxNumber,IssueDate,CancelDate,FinishingDateTime,"
@@ -1064,6 +1083,8 @@ public class CDWExporter {
     s.append(rxNum).append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(rxNum).append(',');
@@ -1107,6 +1128,8 @@ public class CDWExporter {
     s.append(cprsSID).append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(personID).append(',');
@@ -1147,6 +1170,8 @@ public class CDWExporter {
     s.append(nonvamedSID).append(',');
     if (sta3nValue != null) {
       s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(ldrugSID).append(',');
@@ -1174,10 +1199,11 @@ public class CDWExporter {
    * @param encounterID ID of the encounter where the immunization was performed
    * @param encounter The encounter itself
    * @param immunization The immunization itself
+   * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
   private void immunization(int personID, Person person, int encounterID, Encounter encounter,
-      Immunization immunizationEntry) throws IOException  {
+      Immunization immunizationEntry, int primarySta3n) throws IOException  {
     StringBuilder s = new StringBuilder();
 
     // immunization.write("ImmunizationSID,ImmunizationIEN,Sta3n,PatientSID,ImmunizationNameSID,"
@@ -1192,6 +1218,8 @@ public class CDWExporter {
       String tz = Location.getTimezoneByState(state);
       s.append(sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz));
       providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
+    } else {
+      s.append(primarySta3n);
     }
     s.append(',');
     s.append(personID).append(',');
