@@ -3,10 +3,12 @@ package org.mitre.synthea.world.concepts;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -33,8 +35,11 @@ public class BirthStatistics {
   private static FileWriter openFile() {
     FileWriter fw = null;
     try {
-      String filename = Config.get("exporter.baseDirectory") + "birth_statistics.csv";
-      fw = new FileWriter(filename);
+      File output = Exporter.getOutputFolder("", null);
+      output.mkdirs();
+      Path outputDirectory = output.toPath();
+      File file = outputDirectory.resolve("birth_statistics.csv").toFile();
+      fw = new FileWriter(file);
     } catch (IOException e) {
       System.err.println("Failed to open birth statistics report file!");
       e.printStackTrace();
