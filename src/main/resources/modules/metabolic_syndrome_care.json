@@ -2315,7 +2315,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": "999999",
           "display": "SNOMED Code"
         }
       ],
@@ -2328,7 +2328,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": "987654321",
           "display": "SNOMED Code"
         }
       ],
@@ -2341,7 +2341,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": "123456789",
           "display": "SNOMED Code"
         }
       ],
@@ -2354,7 +2354,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": "1223334444",
           "display": "SNOMED Code"
         }
       ],

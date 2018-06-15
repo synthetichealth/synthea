@@ -474,7 +474,19 @@
     },
     "end_PTSD_Re_evaluation_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "end_follow_up_careplan"
+      "conditional_transition": [
+        {
+          "transition": "end_follow_up_careplan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd_careplan",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
     },
     "age guard": {
       "type": "Delay",
