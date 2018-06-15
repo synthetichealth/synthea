@@ -8,7 +8,7 @@
     },
     "Initial_Kidney_Health": {
       "type": "SetAttribute",
-      "attribute": "diabetic_kidney_damage",
+      "attribute": "ckd",
       "value": 0,
       "direct_transition": "Initial_Eye_Health"
     },
@@ -221,7 +221,7 @@
     "Diabetes_Progression": {
       "type": "Delay",
       "exact": {
-        "quantity": 3,
+        "quantity": 1,
         "unit": "months"
       },
       "direct_transition": "Nephropathy_Progression"
