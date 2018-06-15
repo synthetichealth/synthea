@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.concepts;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,21 @@ public class BirthStatistics {
   /** Default birth height. */
   public static final double DEFAULT_HEIGHT = 51.0; // centimeters (cm)
 
+  private static FileWriter OUTPUT = openFile();
+
+  private static FileWriter openFile() {
+    FileWriter fw = null;
+    try {
+      String filename = Config.get("exporter.baseDirectory")
+          + System.lineSeparator() + "birth_statistics.csv";
+      fw = new FileWriter(filename);
+    } catch (IOException e) {
+      System.err.println("Failed to open birth statistics report file!");
+      e.printStackTrace();
+    }
+    return fw;
+  }
+
   private static List<? extends Map<String,String>> WEIGHT_DATA = loadData();
 
   private static List<? extends Map<String,String>> loadData() {
@@ -38,6 +55,19 @@ public class BirthStatistics {
       e.printStackTrace();
     }
     return csv;
+  }
+
+  /**
+   * Clear birth statistics of mothers newborn. Call this method
+   * after the mother gives birth.
+   * @param mother The baby's mother.
+   */
+  public static void clearBirthStatistics(Person mother) {
+    mother.attributes.remove(BIRTH_DATE);
+    mother.attributes.remove(BIRTH_HEIGHT);
+    mother.attributes.remove(BIRTH_SEX);
+    mother.attributes.remove(BIRTH_WEEK);
+    mother.attributes.remove(BIRTH_WEIGHT);
   }
 
   /**
@@ -63,10 +93,14 @@ public class BirthStatistics {
 
     // Boy or Girl?
     String baby_sex = null;
-    if (mother.random.nextBoolean()) {
-      baby_sex = "M";
+    if (mother.attributes.containsKey(BIRTH_SEX)) {
+      baby_sex = (String) mother.attributes.get(BIRTH_SEX);
     } else {
-      baby_sex = "F";
+      if (mother.random.nextBoolean()) {
+        baby_sex = "M";
+      } else {
+        baby_sex = "F";
+      }
     }
     mother.attributes.put(BIRTH_SEX, baby_sex);
 
@@ -141,6 +175,23 @@ public class BirthStatistics {
     
     // How long will the baby be?
     mother.attributes.put(BIRTH_HEIGHT, DEFAULT_HEIGHT);
+
+    // Record the statistics
+    synchronized(OUTPUT) {
+      try {
+        OUTPUT.write(""+hispanic);
+        OUTPUT.write(',');
+        OUTPUT.write(baby_sex);
+        OUTPUT.write(',');
+        OUTPUT.write(""+(long) mother.attributes.get(BIRTH_WEEK));
+        OUTPUT.write(',');
+        OUTPUT.write(""+(double) mother.attributes.get(BIRTH_WEIGHT));
+        OUTPUT.write(System.lineSeparator());
+        OUTPUT.flush();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
