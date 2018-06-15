@@ -1,5 +1,6 @@
 package org.mitre.synthea.world.concepts;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class BirthStatistics {
     FileWriter fw = null;
     try {
       String filename = Config.get("exporter.baseDirectory")
-          + System.lineSeparator() + "birth_statistics.csv";
+          + File.pathSeparator + "birth_statistics.csv";
       fw = new FileWriter(filename);
     } catch (IOException e) {
       System.err.println("Failed to open birth statistics report file!");
