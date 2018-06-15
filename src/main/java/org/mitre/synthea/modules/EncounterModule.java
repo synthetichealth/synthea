@@ -14,7 +14,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 
-
 public final class EncounterModule extends Module {
 
   public static final String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
@@ -22,8 +21,10 @@ public final class EncounterModule extends Module {
   public static final String ACTIVE_EMERGENCY_ENCOUNTER = "active_emergency_encounter";
   /**
   * These are thresholds for patients to seek symptom-driven care - they'll go to 
-  * the appropriate provider based on which threshold they meet. Using CDC statistics (https://www.cdc.gov/nchs/data/ahcd/namcs_summary/2015_namcs_web_tables.pdf),
-  * a person goes to an average of 24,904,00/(US adult population = 249485228) = .0998 urgent visits per year.
+  * the appropriate provider based on which threshold they meet. 
+  * By CDC statistics (https://www.cdc.gov/nchs/data/ahcd/namcs_summary/2015_namcs_web_tables.pdf),
+  * a person goes to an average of 
+  * 24,904,00/(US adult population = 249485228) = .0998 urgent visits per year.
   * The goal for the number of symptom-driven encounters (urgent care, PCP, and ER) is .0998 * age.
   */
   public static final int PCP_SYMPTOM_THRESHOLD = 300;
@@ -60,9 +61,7 @@ public final class EncounterModule extends Module {
       encounter.provider = person.getAmbulatoryProvider(time);
       encounter.codes.add(getWellnessVisitCode(person, time));
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
-      encounter.reason = ENCOUNTER_CHECKUP;
       startedEncounter = true;
-
     } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
         if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
@@ -73,43 +72,39 @@ public final class EncounterModule extends Module {
           Encounter encounter = person.record.encounterStart(time, EncounterType.EMERGENCY.toString());
           encounter.name = "Encounter Module Symptom Driven";
           encounter.provider = person.getEmergencyProvider(time);
-          encounter.reason = ENCOUNTER_EMERGENCY;
           encounter.codes.add(ENCOUNTER_EMERGENCY);
           person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
           startedEncounter = true;
           
       }
     } else if (person.symptomTotal() > URGENT_CARE_SYMPTOM_THRESHOLD) {
-        if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
-          person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-        }
-        if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-          person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
-          person.addressLargestSymptom();
-          Encounter encounter = person.record.encounterStart(time, EncounterType.URGENTCARE.toString());
-          encounter.name = "Encounter Module Symptom Driven";
-          encounter.provider = person.getUrgentCareProvider(time);
-          encounter.reason = ENCOUNTER_URGENTCARE;
-          encounter.codes.add(ENCOUNTER_URGENTCARE);
-          person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
-          startedEncounter = true;
-        } 
+      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
+        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
+      }
+      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
+        person.addressLargestSymptom();
+        Encounter encounter = person.record.encounterStart(time, EncounterType.URGENTCARE.toString());
+        encounter.name = "Encounter Module Symptom Driven";
+        encounter.provider = person.getUrgentCareProvider(time);
+        encounter.codes.add(ENCOUNTER_URGENTCARE);
+        person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
+        startedEncounter = true;
+      } 
     } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
-        if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
+      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
           person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-        }
-        
-        if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-          person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
-          person.addressLargestSymptom();
-          Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
-          encounter.name = "Encounter Module Symptom Driven";
-          encounter.provider = person.getUrgentCareProvider(time);
-          encounter.reason = ENCOUNTER_CHECKUP;
-          encounter.codes.add(ENCOUNTER_CHECKUP);
-          person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
-          startedEncounter = true;
-        } 
+      } 
+      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
+        person.addressLargestSymptom();
+        Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
+        encounter.name = "Encounter Module Symptom Driven";
+        encounter.provider = person.getAmbulatoryProvider(time);
+        encounter.codes.add(ENCOUNTER_CHECKUP);
+        person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
+        startedEncounter = true;
+      } 
     } 
 
     if (startedEncounter) {
@@ -180,7 +175,7 @@ public final class EncounterModule extends Module {
     Encounter encounter = person.record.encounterStart(time, "urgent_care");
     encounter.codes.add(ENCOUNTER_URGENTCARE);
     // assume people will be in urgent care for one hour
-    person.record.encounterEnd(time + TimeUnit.HOURS.toMillis(1), "emergency");
+    person.record.encounterEnd(time + TimeUnit.HOURS.toMillis(1), "urgent_care");
   }
 
 
