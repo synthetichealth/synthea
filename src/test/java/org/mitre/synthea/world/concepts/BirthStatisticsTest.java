@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.concepts;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;

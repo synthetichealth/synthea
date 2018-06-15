@@ -73,9 +73,8 @@ public class BirthStatistics {
   /**
    * Sets attributes on the mother on when her baby will be born,
    * the baby sex, and the birth height and weight.
-   * 
+   * <p/>
    * These attributes will be overridden on subsequent pregnancies.
-   * 
    * @param mother The baby's mother.
    * @param time The time.
    */
@@ -86,23 +85,23 @@ public class BirthStatistics {
     }
 
     // Ignore women who are not pregnant.
-    if (!mother.attributes.containsKey("pregnant") ||
-        ((Boolean) mother.attributes.get("pregnant")) == false) {
+    if (!mother.attributes.containsKey("pregnant")
+        || ((Boolean) mother.attributes.get("pregnant")) == false) {
       return;
     }
 
     // Boy or Girl?
-    String baby_sex = null;
+    String babySex = null;
     if (mother.attributes.containsKey(BIRTH_SEX)) {
-      baby_sex = (String) mother.attributes.get(BIRTH_SEX);
+      babySex = (String) mother.attributes.get(BIRTH_SEX);
     } else {
       if (mother.random.nextBoolean()) {
-        baby_sex = "M";
+        babySex = "M";
       } else {
-        baby_sex = "F";
+        babySex = "F";
       }
     }
-    mother.attributes.put(BIRTH_SEX, baby_sex);
+    mother.attributes.put(BIRTH_SEX, babySex);
 
     // If there was no weight data, set some default values.
     if (WEIGHT_DATA == null) {
@@ -127,9 +126,9 @@ public class BirthStatistics {
       rsex = row.get("baby_sex");
       x = Double.parseDouble(row.get("sum"));
       
-      if (rhispanic == hispanic &&
-          rsex.equals(baby_sex) &&
-          x > max) {
+      if (rhispanic == hispanic
+          && rsex.equals(babySex)
+          && x > max) {
         max = x;
       }
     }
@@ -142,9 +141,9 @@ public class BirthStatistics {
       rsex = row.get("baby_sex");
       x = Double.parseDouble(row.get("sum"));
       
-      if (rhispanic == hispanic &&
-          rsex.equals(baby_sex) &&
-          x < roll) {
+      if (rhispanic == hispanic
+          && rsex.equals(babySex)
+          && x < roll) {
         data = row;
       }
     }
@@ -177,15 +176,15 @@ public class BirthStatistics {
     mother.attributes.put(BIRTH_HEIGHT, DEFAULT_HEIGHT);
 
     // Record the statistics
-    synchronized(OUTPUT) {
+    synchronized (OUTPUT) {
       try {
-        OUTPUT.write(""+hispanic);
+        OUTPUT.write("" + hispanic);
         OUTPUT.write(',');
-        OUTPUT.write(baby_sex);
+        OUTPUT.write(babySex);
         OUTPUT.write(',');
-        OUTPUT.write(""+(long) mother.attributes.get(BIRTH_WEEK));
+        OUTPUT.write("" + (long) mother.attributes.get(BIRTH_WEEK));
         OUTPUT.write(',');
-        OUTPUT.write(""+(double) mother.attributes.get(BIRTH_WEIGHT));
+        OUTPUT.write("" + (double) mother.attributes.get(BIRTH_WEIGHT));
         OUTPUT.write(System.lineSeparator());
         OUTPUT.flush();
       } catch (IOException e) {
