@@ -1113,9 +1113,9 @@ public class CDWExporter {
     }
     s.append(',');
     if (medication.stop == 0L) {
-      s.append("0,"); // Active
+      s.append("ACTIVE,");
     } else {
-      s.append("10,"); // Done
+      s.append("EXPIRED,");
     }
     s.append(NEWLINE);
     write(s.toString(), rxoutpatient);
