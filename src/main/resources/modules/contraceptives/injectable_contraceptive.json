@@ -5,16 +5,13 @@
     "available for the current year of the simulation. The first injectable ",
     "contraceptive was available in 1992, marketed as Depo-Provera. Depo remains ",
     "the only available injectable option in the U.S.",
-
     "Injectables must be readministered once every 3 months. The Contraceptive ",
     "Maintenance module handles that.",
-
     "Sources for historical availability: ",
     "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
     "http://www.pbs.org/wnet/need-to-know/health/a-brief-history-of-the-birth-control-pill/480/"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -51,14 +48,12 @@
         }
       ]
     },
-
     "Set_Contraceptive_Type": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "injectable",
       "direct_transition": "Injectable_Contraceptive_Encounter"
     },
-
     "Injectable_Contraceptive_Encounter": {
       "type": "Encounter",
       "remarks": [
@@ -76,7 +71,6 @@
       ],
       "direct_transition": "Prescribe_Injectable_Contraceptive"
     },
-
     "Prescribe_Injectable_Contraceptive": {
       "type": "Simple",
       "remarks": [
@@ -112,7 +106,6 @@
         }
       ]
     },
-
     "Prescribe_Depo_Provera": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -125,7 +118,6 @@
       ],
       "direct_transition": "Initial_Injection_By_Physician"
     },
-
     "Prescribe_Depo_SubQ": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -138,7 +130,6 @@
       ],
       "direct_transition": "Initial_Injection_By_Physician"
     },
-
     "Initial_Injection_By_Physician": {
       "type": "Procedure",
       "duration": {
@@ -155,12 +146,10 @@
       ],
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "End_Consultation_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

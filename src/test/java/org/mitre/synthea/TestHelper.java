@@ -4,6 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.function.Function;
+
+import org.junit.Assert;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;

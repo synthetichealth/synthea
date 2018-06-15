@@ -47,8 +47,8 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
-import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.ContactPoint;
+import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
@@ -87,8 +87,8 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing;
+import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
@@ -102,7 +102,6 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
-import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
@@ -135,6 +134,8 @@ public class FhirStu3 {
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static final Table<String,String,String> SHR_MAPPING = loadSHRMapping();
 
@@ -443,11 +444,16 @@ public class FhirStu3 {
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState(state).setCountry("US");
+        .setState(state);
+    if (COUNTRY_CODE != null) {
+      addrResource.setCountry(COUNTRY_CODE);
+    }
 
     Address birthplace = new Address();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
-        .setCountry("US");
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state);
+    if (COUNTRY_CODE != null) {
+      birthplace.setCountry(COUNTRY_CODE);
+    }
     Extension birthplaceExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
@@ -742,8 +748,8 @@ public class FhirStu3 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (ClaimItem item : claim.items) {
-      if (Costs.hasCost(item.entry)) {
+    for (HealthRecord.Entry item : claim.items) {
+      if (Costs.hasCost(item)) {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
 
@@ -755,15 +761,15 @@ public class FhirStu3 {
         claimItem.setNet(moneyResource);
         claimResource.addItem(claimItem);
 
-        if (item.entry instanceof HealthRecord.Procedure) {
-          Type procedureReference = new Reference(item.entry.fullUrl);
+        if (item instanceof HealthRecord.Procedure) {
+          Type procedureReference = new Reference(item.fullUrl);
           ProcedureComponent claimProcedure = new ProcedureComponent(
               new PositiveIntType(procedureSequence), procedureReference);
           claimResource.addProcedure(claimProcedure);
           claimItem.addProcedureLinkId(procedureSequence);
           procedureSequence++;
         } else {
-          Reference informationReference = new Reference(item.entry.fullUrl);
+          Reference informationReference = new Reference(item.fullUrl);
           SpecialConditionComponent informationComponent = new SpecialConditionComponent();
           informationComponent.setSequence(informationSequence);
           informationComponent.setValue(informationReference);
@@ -779,7 +785,7 @@ public class FhirStu3 {
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
-        Reference diagnosisReference = new Reference(item.entry.fullUrl);
+        Reference diagnosisReference = new Reference(item.fullUrl);
         org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diagnosisComponent =
             new org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent(
                 new PositiveIntType(conditionSequence), diagnosisReference);
@@ -1443,8 +1449,10 @@ public class FhirStu3 {
         .addLine(provider.address)
         .setCity(provider.city)
         .setPostalCode(provider.zip)
-        .setState(provider.state)
-        .setCountry("US");
+        .setState(provider.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     if (provider.phone != null && !provider.phone.isEmpty()) {

@@ -218,13 +218,13 @@ public class LogicTest {
     obs.codes.add(mmseCode);
     assertFalse(doTest("mmseObservationGt22"));
 
-    person.record = new HealthRecord(); // clear it out
+    person.record = new HealthRecord(person); // clear it out
 
     obs = person.record.observation(time, mmseCode.code, 29);
     obs.codes.add(mmseCode);
     assertTrue(doTest("mmseObservationGt22"));
 
-    person.record = new HealthRecord(); // clear it out
+    person.record = new HealthRecord(person); // clear it out
     assertFalse(doTest("hasDiabetesObservation"));
 
     obs = person.record.observation(time, "Blood Panel", "blah blah");
@@ -238,7 +238,7 @@ public class LogicTest {
 
   @Test
   public void test_condition_condition() {
-    person.record = new HealthRecord();
+    person.record = new HealthRecord(person);
     assertFalse(doTest("diabetesConditionTest"));
     assertFalse(doTest("alzheimersConditionTest"));
 
@@ -269,7 +269,7 @@ public class LogicTest {
     HealthRecord.Code diabetesCode = new HealthRecord.Code("SNOMED-CT", "698360004",
         "Diabetes self management plan");
 
-    person.record = new HealthRecord();
+    person.record = new HealthRecord(person);
     assertFalse(doTest("diabetesCarePlanTest"));
     assertFalse(doTest("anginaCarePlanTest"));
 

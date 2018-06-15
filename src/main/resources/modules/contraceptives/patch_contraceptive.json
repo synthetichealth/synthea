@@ -3,13 +3,11 @@
   "remarks": [
     "This module prescribes a hormonal patch if one is available ",
     "for the current year of the simulation.",
-
     "Sources for historical availability: ",
     "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
     "http://www.pbs.org/wnet/need-to-know/health/a-brief-history-of-the-birth-control-pill/480/"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -46,14 +44,12 @@
         }
       ]
     },
-
     "Set_Contraceptive_Type": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "patch",
       "direct_transition": "Patch_Contraceptive_Consultation"
     },
-
     "Patch_Contraceptive_Consultation": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -66,7 +62,6 @@
       ],
       "direct_transition": "Prescribe_Xulane"
     },
-
     "Prescribe_Xulane": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -79,12 +74,10 @@
       ],
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "End_Consultation_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

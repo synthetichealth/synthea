@@ -8,12 +8,10 @@
     "http://www.aafp.org/afp/1998/0315/p1270.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Potential_Infection"
     },
-
     "Potential_Infection": {
       "type": "Delay",
       "exact": {
@@ -61,7 +59,6 @@
         }
       ]
     },
-
     "Bronchitis_Infection": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -74,7 +71,6 @@
       ],
       "direct_transition": "Bronchitis_Symptom1"
     },
-
     "Bronchitis_Symptom1": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -84,7 +80,6 @@
       },
       "direct_transition": "Bronchitis_Symptom2"
     },
-
     "Bronchitis_Symptom2": {
       "type": "Symptom",
       "symptom": "Mucus",
@@ -94,7 +89,6 @@
       },
       "direct_transition": "Bronchitis_Symptom3"
     },
-
     "Bronchitis_Symptom3": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
@@ -171,7 +165,6 @@
       },
       "direct_transition": "Symptoms_Dont_improve"
     },
-
     "Symptoms_Dont_improve": {
       "type": "Delay",
       "range": {
@@ -181,7 +174,6 @@
       },
       "direct_transition": "Doctor_Visit"
     },
-
     "Doctor_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -216,7 +208,6 @@
         }
       ]
     },
-    
     "Chest_Xray": {
       "type": "Procedure",
       "reason": "Bronchitis_Infection",

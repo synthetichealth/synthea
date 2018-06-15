@@ -5,33 +5,27 @@
     "for the current year of the simulation. There are 2 classes of oral contraceptives: ",
     "1. Combination (estrogen, progestin), either monophasic and triphasic ",
     "2. Minipill (progestin-only)",
-
     "Combination pills may be either monophasic (same dosage, all month long) or triphasic ",
     "(dosage increases progressively throughout the month). Potential side-effects of oral ",
     "contraceptives include nausea, breast tenderness, mood swings, headaches, weight gain, ",
     "spotting, and decreased libido. None of these side-effects are currently modeled.",
-
     "Smoking, especially over the age of 35, significantly increases the risk of: ",
     "1. Blood clots (1.6x with minipill, 2x with estrogen) ",
     "2. Myocardial Infarction (1.6x) ",
     "3. Ischemic Stroke (1.7x) ",
     "Source: https://www.ncbi.nlm.nih.gov/pubmedhealth/PMH0079002/",
     "No changes were made to the cardiovascular disease module.",
-
     "Minipill (progestin-only) contraceptives are safe for smokers, those at risk of ",
     "heart disease, and new mothers who are breastfeeding. They carry a slightly elevated ",
     "risk of ectopic pregnancy, are less effective than combination pills (91 - 99% effective), ",
     "and must be taken very consistently to be effective. Source: ",
     "http://www.feministcenter.org/en/health-wellness-services/comprehensive-gyn/birth-control-options/birth-control-information/101-mini-pills",
-
     "The majority of women taking oral contraceptives take the combination pill.",
-
     "Sources for historical availability: ",
     "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
     "http://www.pbs.org/wnet/need-to-know/health/a-brief-history-of-the-birth-control-pill/480/"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -68,14 +62,12 @@
         }
       ]
     },
-
     "Set_Contraceptive_Type": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "pill",
       "direct_transition": "Encounter_For_Oral_Contraceptive"
     },
-
     "Encounter_For_Oral_Contraceptive": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -88,14 +80,12 @@
       ],
       "direct_transition": "Combination_Or_Minipill"
     },
-
     "Combination_Or_Minipill": {
       "type": "Simple",
       "remarks": [
         "If the patient has a high BMI (>30), was recently pregnant (w/in 6 months), smokes, ",
         "or has high blood pressure (systolic > 130) the minipill is prescribed. Otherwise, a ",
         "combination pill is prescribed.",
-
         "TODO: Check if the patient was recently pregnant. We need a 'Prior Condition', or ",
         "'Prior Event' condition to check for this. If the mother is breastfeeding, the ",
         "combination pill should not be used."
@@ -132,7 +122,6 @@
         }
       ]
     },
-
     "Prescribe_Minipill": {
       "type": "Simple",
       "remarks": [
@@ -192,7 +181,6 @@
         }
       ]
     },
-
     "Prescribe_Camila": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -205,7 +193,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Errin": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -218,7 +205,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Jolivette": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -231,7 +217,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Combination_Pill": {
       "type": "Simple",
       "remarks": [
@@ -402,7 +387,6 @@
         }
       ]
     },
-
     "Prescribe_Enovid": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -415,7 +399,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Norinyl": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -428,7 +411,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Estrostep": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -441,7 +423,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Ortho_Tri_Cyclen": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -454,7 +435,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Trinessa": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -467,7 +447,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Seasonique": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -483,7 +462,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Yaz": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -496,7 +474,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Natazia": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -509,7 +486,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Levora": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -522,12 +498,10 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "End_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

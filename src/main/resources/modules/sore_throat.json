@@ -8,12 +8,10 @@
     "http://emedicine.medscape.com/article/225362-overview"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Potential_Infection"
     },
-
     "Potential_Infection": {
       "type": "Delay",
       "exact": {
@@ -74,7 +72,6 @@
         }
       ]
     },
-
     "Acquire_Viral_Infection": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -88,7 +85,6 @@
       ],
       "direct_transition": "Viral_Symptom_1"
     },
-
     "Viral_Symptom_1": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -98,7 +94,6 @@
       },
       "direct_transition": "Viral_Symptom_2"
     },
-
     "Viral_Symptom_2": {
       "type": "Symptom",
       "symptom": "Swollen Lymph Nodes",
@@ -108,7 +103,6 @@
       },
       "direct_transition": "Viral_Symptom_3"
     },
-
     "Viral_Symptom_3": {
       "type": "Symptom",
       "symptom": "Swollen Tonsils",
@@ -181,7 +175,6 @@
       },
       "direct_transition": "Symptoms_dont_resolve"
     },
-
     "Acquire_Bacterial_Infection": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -195,7 +188,6 @@
       ],
       "direct_transition": "Bacterial_Symptom_1"
     },
-
     "Bacterial_Symptom_1": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -207,7 +199,6 @@
       ],
       "direct_transition": "Bacterial_Symptom_2"
     },
-
     "Bacterial_Symptom_2": {
       "type": "Symptom",
       "symptom": "Swollen Lymph Nodes",
@@ -220,7 +211,6 @@
       ],
       "direct_transition": "Bacterial_Symptom_3"
     },
-
     "Bacterial_Symptom_3": {
       "type": "Symptom",
       "symptom": "Swollen Tonsils",
@@ -230,7 +220,6 @@
       },
       "direct_transition": "Common_Symptom_1"
     },
-
     "Symptoms_dont_resolve": {
       "type": "Delay",
       "range": {
@@ -240,7 +229,6 @@
       },
       "direct_transition": "Doctor_Visit"
     },
-
     "Doctor_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -274,10 +262,9 @@
         }
       ]
     },
-
     "Take_Temperature_High": {
       "type": "Observation",
-      "category" : "vital-signs",
+      "category": "vital-signs",
       "range": {
         "low": 37.2,
         "high": 39.4
@@ -295,10 +282,9 @@
       ],
       "direct_transition": "Determine_if_Bacterial"
     },
-
     "Take_Temperature_Low": {
       "type": "Observation",
-      "category" : "vital-signs",
+      "category": "vital-signs",
       "range": {
         "low": 37,
         "high": 38
@@ -316,7 +302,6 @@
       ],
       "direct_transition": "Determine_if_Bacterial"
     },
-
     "Determine_if_Bacterial": {
       "type": "Simple",
       "remarks": [
@@ -433,7 +418,6 @@
         }
       ]
     },
-
     "Prescribe_Antibiotics": {
       "type": "Simple",
       "conditional_transition": [
@@ -451,7 +435,6 @@
         }
       ]
     },
-
     "Prescribe_Antibiotics_Child": {
       "type": "MedicationOrder",
       "target_encounter": "Doctor_Visit",
@@ -469,7 +452,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Antibiotics_Adult": {
       "type": "MedicationOrder",
       "target_encounter": "Doctor_Visit",
@@ -484,7 +466,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Throat_Culture": {
       "type": "Procedure",
       "target_encounter": "Doctor_Visit",
@@ -518,12 +499,10 @@
         }
       ]
     },
-
-    "End_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Time_Passes"
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Time_Passes"
     },
-
     "Time_Passes": {
       "type": "Delay",
       "range": {
@@ -533,7 +512,6 @@
       },
       "direct_transition": "Symptom_1_Ends"
     },
-
     "Symptom_1_Ends": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -542,7 +520,6 @@
       },
       "direct_transition": "Symptom_2_Ends"
     },
-
     "Symptom_2_Ends": {
       "type": "Symptom",
       "symptom": "Swollen Lymph Nodes",
@@ -616,7 +593,6 @@
       },
       "direct_transition": "Condition_Resolves"
     },
-
     "Condition_Resolves": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "Sore Throat Condition",
@@ -633,7 +609,6 @@
         }
       ]
     },
-    
     "End_Antibiotics": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "Sore Throat Antibiotic",

@@ -6,12 +6,10 @@
     "nuts, fish, and shellfish are rarely outgrown."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Wheat_Allergy"
     },
-
     "Wheat_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -52,7 +50,6 @@
         }
       ]
     },
-
     "Outgrow_Wheat_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -64,7 +61,6 @@
       ],
       "direct_transition": "Dairy_Allergy"
     },
-
     "Dairy_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -105,7 +101,6 @@
         }
       ]
     },
-
     "Outgrow_Dairy_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -117,7 +112,6 @@
       ],
       "direct_transition": "Eggs_Allergy"
     },
-
     "Eggs_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -158,7 +152,6 @@
         }
       ]
     },
-
     "Outgrow_Eggs_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -170,7 +163,6 @@
       ],
       "direct_transition": "Soy_Allergy"
     },
-
     "Soy_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -211,7 +203,6 @@
         }
       ]
     },
-
     "Outgrow_Soy_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -223,7 +214,6 @@
       ],
       "direct_transition": "Latex_Allergy"
     },
-
     "Latex_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -264,7 +254,6 @@
         }
       ]
     },
-
     "Outgrow_Latex_Allergy": {
       "type": "ConditionEnd",
       "codes": [
@@ -276,7 +265,6 @@
       ],
       "direct_transition": "Check_For_Other_Food_Allergies"
     },
-
     "Check_For_Other_Food_Allergies": {
       "type": "Simple",
       "conditional_transition": [
@@ -333,21 +321,18 @@
         }
       ]
     },
-
     "Still_Has_Some_Food_Allergies": {
       "type": "SetAttribute",
       "attribute": "outgrew_food_allergies",
       "value": "false",
       "direct_transition": "Terminal"
     },
-
     "No_Food_Allergies_Here": {
       "type": "SetAttribute",
       "attribute": "outgrew_food_allergies",
       "value": "true",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

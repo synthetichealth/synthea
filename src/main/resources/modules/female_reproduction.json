@@ -5,17 +5,14 @@
     "reach reproductive age, this module operates on a monthly cycle. Each month, ",
     "a sexually active female has a non-zero chance of becoming pregnant. This ",
     "chance is greatly reduced by taking a contraceptive.",
-
     "If a female becomes pregnant, the monthly cycles are suspended until the ",
     "pregnancy terminates. The monthly reproductive cycles permanently end once ",
     "a female reaches menopause at age 50.",
-
     "This module of course operates on several assumptions: ",
     "1. All females have regular, monthly reproductive cycles (some don't) ",
     "2. All females reach menopause at age 50 "
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -31,7 +28,6 @@
         }
       ]
     },
-
     "Delay_For_Reproductive_Age": {
       "type": "Delay",
       "exact": {
@@ -40,7 +36,6 @@
       },
       "direct_transition": "Female_Reproductive_Cycle"
     },
-
     "Female_Reproductive_Cycle": {
       "type": "Delay",
       "remarks": [
@@ -76,7 +71,6 @@
         }
       ]
     },
-
     "Menopause_Reached": {
       "type": "Simple",
       "remarks": [
@@ -85,7 +79,6 @@
       ],
       "direct_transition": "Terminal"
     },
-
     "Pregnancy_Guard": {
       "type": "Guard",
       "allow": {
@@ -96,7 +89,6 @@
       },
       "direct_transition": "Female_Reproductive_Cycle"
     },
-
     "Reproductive_Cycle_Outcome": {
       "type": "Simple",
       "remarks": [
@@ -131,12 +123,10 @@
         }
       ]
     },
-
     "Sexually_Active": {
       "type": "Simple",
       "direct_transition": "Contraceptive_Incidence"
     },
-
     "Contraceptive_Incidence": {
       "type": "Simple",
       "remarks": [
@@ -147,7 +137,6 @@
         "indicate the number out of 100 women who experience planned or unplanned ",
         "pregnancy within the first year of use. These percentages are scaled for ",
         "a monthly time step: ",
-
         "| Method         | Annual Chance of Pregnancy | Monthly Chance of Pregnancy | ",
         "|----------------|----------------------------|-----------------------------| ",
         "| none           |             85%            |            19.3%            | ",
@@ -161,9 +150,7 @@
         "| sterilization  |         0.15 - 0.5%        |       0.0125 - 0.0418%      | ",
         "| implant        |            0.05%           |           0.00417%          | ",
         "'---------------------------------------------------------------------------' ",
-
         "Source: https://www.cdc.gov/reproductivehealth/unintendedpregnancy/pdf/contraceptive_methods_508.pdf"
-
       ],
       "complex_transition": [
         {
@@ -348,12 +335,10 @@
         }
       ]
     },
-
     "Not_Sexually_Active": {
       "type": "Simple",
       "direct_transition": "Next_Reproductive_Cycle"
     },
-
     "Become_Pregnant": {
       "type": "SetAttribute",
       "remarks": [
@@ -364,12 +349,10 @@
       "value": true,
       "direct_transition": "Pregnancy_Guard"
     },
-
     "Next_Reproductive_Cycle": {
       "type": "Simple",
       "direct_transition": "Female_Reproductive_Cycle"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

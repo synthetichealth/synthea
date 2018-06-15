@@ -6,16 +6,13 @@
     "contraceptive was available in 1990, marketed as Norplant. Norplant was ",
     "discontinued in 2002 in favor of newer alternatives, but implants remain ",
     "available today.",
-
     "Implants must be readministered once every 3-4 years. The Contraceptive ",
     "Maintenance module handles that.",
-
     "Sources for historical availability: ",
     "http://www.ourbodiesourselves.org/health-info/a-brief-history-of-birth-control/",
     "http://www.pbs.org/wnet/need-to-know/health/a-brief-history-of-the-birth-control-pill/480/"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -52,14 +49,12 @@
         }
       ]
     },
-
     "Set_Contraceptive_Type": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "implant",
       "direct_transition": "Implant_Contraceptive_Encounter"
     },
-
     "Implant_Contraceptive_Encounter": {
       "type": "Encounter",
       "remarks": [
@@ -77,7 +72,6 @@
       ],
       "direct_transition": "Prescribe_Implant_Contraceptive"
     },
-
     "Prescribe_Implant_Contraceptive": {
       "type": "Simple",
       "remarks": [
@@ -86,7 +80,6 @@
         "in 2006 and an improvement, Nexplanon, in 2011. Implanon was taken off the ",
         "market in 2012, so Nexplanon remains the only currently available implant ",
         "in the United States.",
-
         "While not *technically* historically accurate, the use of Norplant is stretched ",
         "until 2006 to maintain continuity."
       ],
@@ -144,7 +137,6 @@
         }
       ]
     },
-
     "Prescribe_Norplant": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -157,7 +149,6 @@
       ],
       "direct_transition": "Initial_Implant"
     },
-
     "Prescribe_Implanon": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -170,7 +161,6 @@
       ],
       "direct_transition": "Initial_Implant"
     },
-
     "Prescribe_Nexplanon": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -183,7 +173,6 @@
       ],
       "direct_transition": "Initial_Implant"
     },
-
     "Initial_Implant": {
       "type": "Procedure",
       "codes": [
@@ -200,12 +189,10 @@
       },
       "direct_transition": "End_Initial_Encounter"
     },
-
     "End_Initial_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

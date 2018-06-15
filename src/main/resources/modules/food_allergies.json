@@ -5,12 +5,10 @@
     "Food allergies are onset by the 'allergies.json' module."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Delay_For_Allergic_Reaction_To_Food"
     },
-
     "Delay_For_Allergic_Reaction_To_Food": {
       "type": "Delay",
       "remarks": [
@@ -37,7 +35,6 @@
         }
       ]
     },
-
     "Allergic_Reaction_To_Food": {
       "type": "Simple",
       "complex_transition": [
@@ -80,7 +77,6 @@
         }
       ]
     },
-
     "Moderate_Reaction_To_Food": {
       "type": "Simple",
       "remarks": [
@@ -89,7 +85,6 @@
       ],
       "direct_transition": "Delay_For_PCP_Visit"
     },
-
     "Severe_Reaction_To_Food": {
       "type": "CallSubmodule",
       "remarks": [
@@ -99,7 +94,6 @@
       "submodule": "allergies/severe_allergic_reaction",
       "direct_transition": "Delay_For_PCP_Visit"
     },
-
     "Delay_For_PCP_Visit": {
       "type": "Delay",
       "remarks": [
@@ -113,7 +107,6 @@
       },
       "direct_transition": "PCP_Visit_For_Food_Allergy"
     },
-
     "PCP_Visit_For_Food_Allergy": {
       "type": "Encounter",
       "remarks": [
@@ -144,7 +137,6 @@
         }
       ]
     },
-
     "Food_Allergy_CarePlan": {
       "type": "CarePlanStart",
       "assign_to_attribute": "food_allergy_careplan",
@@ -172,14 +164,12 @@
       ],
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Advise_To_Visit_Allergist": {
       "type": "SetAttribute",
       "attribute": "visit_allergist",
       "value": true,
       "direct_transition": "End_PCP_Visit_For_Food_Allergy"
     },
-
     "End_PCP_Visit_For_Food_Allergy": {
       "type": "EncounterEnd",
       "remarks": [
@@ -188,7 +178,6 @@
       ],
       "direct_transition": "Living_With_Food_Allergies"
     },
-
     "Living_With_Food_Allergies": {
       "type": "Delay",
       "range": {
@@ -221,7 +210,6 @@
         }
       ]
     },
-
     "Potential_To_Outgrow_Allergies": {
       "type": "CallSubmodule",
       "remarks": [
@@ -245,16 +233,13 @@
         }
       ]
     },
-
     "Potential_Allergic_Reaction_To_Food": {
       "type": "Simple",
       "remarks": [
         "Children with food allergies typically show sensitivity at a young age.",
         "Many will end up outgrowing their food allergies by adolesence or adulthood.",
-
         "About 200,000 ED visits each year for a food allergy:",
         "https://www.foodallergy.org/file/facts-stats.pdf",
-
         "Most likely to have an allergic reaction requiring medical attention are ",
         "children and young adults."
       ],
@@ -291,7 +276,6 @@
         }
       ]
     },
-
     "Terminal": {
       "type": "Terminal"
     }

@@ -5,12 +5,10 @@
     "by the main allergies module."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Chance_of_Peanut_Allergy"
     },
-
     "Chance_of_Peanut_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -52,7 +50,6 @@
         }
       ]
     },
-
     "Peanut_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -66,7 +63,6 @@
       ],
       "direct_transition": "Chance_of_TreeNut_Allergy"
     },
-
     "Chance_of_TreeNut_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -108,7 +104,6 @@
         }
       ]
     },
-
     "TreeNut_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -122,7 +117,6 @@
       ],
       "direct_transition": "Chance_of_Fish_Allergy"
     },
-
     "Chance_of_Fish_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -164,7 +158,6 @@
         }
       ]
     },
-
     "Fish_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -178,7 +171,6 @@
       ],
       "direct_transition": "Chance_of_Shellfish_Allergy"
     },
-
     "Chance_of_Shellfish_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -220,7 +212,6 @@
         }
       ]
     },
-
     "Shellfish_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -232,10 +223,8 @@
           "display": "Shellfish allergy"
         }
       ],
-
       "direct_transition": "Chance_of_Wheat_Allergy"
     },
-
     "Chance_of_Wheat_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -246,7 +235,6 @@
         "A recent study 0.4% of US adults reported an allergy to wheat diagnosed via a doctor [6]. The prevalence ",
         "of wheat allergy is highest amongst children in the US, ranging from 0.4% to 1.0% of the population.",
         "http://www.drschaer-institute.com/us/wheat-allergy/epidemiology-1043.html",
-
         "Wheat allergy is typically outgrown by adulthood — about 65 percent of children with a wheat allergy ",
         "will outgrow it by the time they are 12. Based on prevalences we assume that adult onset of ",
         "the allergy is rare enough to ignore."
@@ -283,7 +271,6 @@
         }
       ]
     },
-
     "Wheat_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -297,7 +284,6 @@
       ],
       "direct_transition": "Chance_of_Eggs_Allergy"
     },
-
     "Chance_of_Eggs_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -307,7 +293,6 @@
         "Experts estimate that as many as 2 percent of children are allergic to eggs. ",
         "Fortunately, studies show that about 70 percent of children with an egg allergy ",
         "will outgrow the condition by age 16.",
-
         "http://acaai.org/allergies/types/food-allergies/types-food-allergy/egg-allergy",
         "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore."
       ],
@@ -343,7 +328,6 @@
         }
       ]
     },
-
     "Eggs_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -357,7 +341,6 @@
       ],
       "direct_transition": "Chance_of_Soy_Allergy"
     },
-
     "Chance_of_Soy_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -399,7 +382,6 @@
         }
       ]
     },
-
     "Soy_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -413,7 +395,6 @@
       ],
       "direct_transition": "Chance_of_Dairy_Allergy"
     },
-
     "Chance_of_Dairy_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -457,7 +438,6 @@
         }
       ]
     },
-
     "Dairy_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -471,7 +451,6 @@
       ],
       "direct_transition": "Chance_of_Tree_Pollen_Allergy"
     },
-
     "Chance_of_Tree_Pollen_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -515,7 +494,6 @@
         }
       ]
     },
-
     "Tree_Pollen_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -528,7 +506,6 @@
       ],
       "direct_transition": "Chance_of_Grass_Pollen_Allergy"
     },
-
     "Chance_of_Grass_Pollen_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -572,7 +549,6 @@
         }
       ]
     },
-
     "Grass_Pollen_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -585,7 +561,6 @@
       ],
       "direct_transition": "Chance_of_Pet_Dander_Allergy"
     },
-
     "Chance_of_Pet_Dander_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -625,7 +600,6 @@
         }
       ]
     },
-
     "Pet_Dander_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -638,7 +612,6 @@
       ],
       "direct_transition": "Chance_of_Dust_Mite_Allergy"
     },
-
     "Chance_of_Dust_Mite_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -680,7 +653,6 @@
         }
       ]
     },
-
     "Dust_Mite_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -693,7 +665,6 @@
       ],
       "direct_transition": "Chance_of_Mold_Allergy"
     },
-
     "Chance_of_Mold_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -731,7 +702,6 @@
         }
       ]
     },
-
     "Mold_Allergy": {
       "type": "AllergyOnset",
       "remarks": [
@@ -747,7 +717,6 @@
       ],
       "direct_transition": "Chance_of_Bee_Allergy"
     },
-
     "Chance_of_Bee_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -789,7 +758,6 @@
         }
       ]
     },
-
     "Bee_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -802,7 +770,6 @@
       ],
       "direct_transition": "Chance_of_Latex_Allergy"
     },
-
     "Chance_of_Latex_Allergy": {
       "type": "Simple",
       "remarks": [
@@ -845,7 +812,6 @@
         }
       ]
     },
-
     "Latex_Allergy": {
       "type": "AllergyOnset",
       "target_encounter": "Allergist_Initial_Visit",
@@ -858,7 +824,6 @@
       ],
       "direct_transition": "Allergy_Incidence_Terminal"
     },
-
     "Allergy_Incidence_Terminal": {
       "type": "Terminal"
     }
