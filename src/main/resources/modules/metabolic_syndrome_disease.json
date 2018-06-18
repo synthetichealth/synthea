@@ -239,15 +239,39 @@
       "complex_transition": [
         {
           "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "veteran",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "==",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.97,
+              "transition": "Retinopathy_Progression"
+            },
+            {
+              "distribution": 0.03,
+              "transition": "Set_CKD_1 Damage"
+            }
+          ]
+        },
+        {
+          "condition": {
             "condition_type": "Attribute",
             "attribute": "ckd",
             "operator": "==",
             "value": 0
           },
-          "remarks": [
-            "we want ~ 35% of patients to hit mild kidney disease",
-            "assuming roughly 20 yrs, 0.18% / month ~~> 35% over 20 yrs "
-          ],
           "distributions": [
             {
               "distribution": 0.9982,
@@ -266,13 +290,6 @@
             "operator": "==",
             "value": 1
           },
-          "remarks": [
-            "moderate damage == microalbuminuria",
-            "we want ~ 28.8% of patients to hit moderate, with ~35% hitting mild",
-            "so 28.8% / 35% == 82%.  1.35% / month ~~> 83% over 10 yrs",
-            "10 yrs because kidney damage accelerates as is it increases -",
-            "http://www.edren.org/pages/edreninfo/ckd-chronic-renal-failure-and-its-progression.php"
-          ],
           "distributions": [
             {
               "distribution": 0.9865,
@@ -291,11 +308,6 @@
             "operator": "==",
             "value": 2
           },
-          "remarks": [
-            "limited data on prevalence of proteinuria, so we assume roughly 14%",
-            "(midway between the 28.8% of microalbuminuria and end-stage)",
-            "so we want ~ 50% of patients with moderate damage to progress to severe"
-          ],
           "distributions": [
             {
               "distribution": 0.994,
@@ -314,10 +326,6 @@
             "operator": "==",
             "value": 3
           },
-          "remarks": [
-            "Prevalence of end_stage_renal_disease is 0.78%",
-            "where ~14% make it to severe, so we want 0.78/14 = ~ 6% of patients to progress to end-stage"
-          ],
           "distributions": [
             {
               "distribution": 0.9994,
@@ -342,8 +350,8 @@
               "transition": "Set_CKD_4 Damage"
             },
             {
-              "transition": "Expected_Lifespan_for_ESRD",
-              "distribution": 0.0006
+              "distribution": 0.0006,
+              "transition": "Expected_Lifespan_for_ESRD"
             }
           ]
         },
