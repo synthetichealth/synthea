@@ -30,19 +30,23 @@ public class BirthStatistics {
   /** Default birth height. */
   public static final double DEFAULT_HEIGHT = 51.0; // centimeters (cm)
 
+  private static final boolean LOG_OUTPUT = Boolean.parseBoolean(
+      Config.get("generate.birthweights.logging", "false"));
   private static FileWriter OUTPUT = openFile();
 
   private static FileWriter openFile() {
     FileWriter fw = null;
-    try {
-      File output = Exporter.getOutputFolder("", null);
-      output.mkdirs();
-      Path outputDirectory = output.toPath();
-      File file = outputDirectory.resolve("birth_statistics.csv").toFile();
-      fw = new FileWriter(file);
-    } catch (IOException e) {
-      System.err.println("Failed to open birth statistics report file!");
-      e.printStackTrace();
+    if (LOG_OUTPUT) {
+      try {
+        File output = Exporter.getOutputFolder("", null);
+        output.mkdirs();
+        Path outputDirectory = output.toPath();
+        File file = outputDirectory.resolve("birth_statistics.csv").toFile();
+        fw = new FileWriter(file);
+      } catch (IOException e) {
+        System.err.println("Failed to open birth statistics report file!");
+        e.printStackTrace();
+      }
     }
     return fw;
   }
@@ -181,19 +185,21 @@ public class BirthStatistics {
     mother.attributes.put(BIRTH_HEIGHT, DEFAULT_HEIGHT);
 
     // Record the statistics
-    synchronized (OUTPUT) {
-      try {
-        OUTPUT.write("" + hispanic);
-        OUTPUT.write(',');
-        OUTPUT.write(babySex);
-        OUTPUT.write(',');
-        OUTPUT.write("" + (long) mother.attributes.get(BIRTH_WEEK));
-        OUTPUT.write(',');
-        OUTPUT.write("" + (double) mother.attributes.get(BIRTH_WEIGHT));
-        OUTPUT.write(System.lineSeparator());
-        OUTPUT.flush();
-      } catch (IOException e) {
-        e.printStackTrace();
+    if (LOG_OUTPUT) {
+      synchronized (OUTPUT) {
+        try {
+          OUTPUT.write("" + hispanic);
+          OUTPUT.write(',');
+          OUTPUT.write(babySex);
+          OUTPUT.write(',');
+          OUTPUT.write("" + (long) mother.attributes.get(BIRTH_WEEK));
+          OUTPUT.write(',');
+          OUTPUT.write("" + (double) mother.attributes.get(BIRTH_WEIGHT));
+          OUTPUT.write(System.lineSeparator());
+          OUTPUT.flush();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
   }
