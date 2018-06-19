@@ -1,5 +1,5 @@
 {
-  "name": "Veteran Osteoarthritis",
+  "name": "Osteoarthritis",
   "remarks": [
     "Osteoarthritis (OA) is a breakdown of cartilage in the joints. It is a chronic condition ",
     "that only worsens with time. OA is more likely in females (2:1) and the risk of OA increases ",
@@ -27,21 +27,31 @@
     },
     "Delay_Until_Arthritis": {
       "type": "Delay",
-      "range": {
-        "low": 25,
-        "high": 80,
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Non_Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "exact": {
+        "quantity": 25,
         "unit": "years"
-      },
-      "direct_transition": "Veteran Status Guard"
+      }
     },
     "Osteoarthritis": {
-      "type": "Simple",
-      "remarks": [
-        "======================================================================",
-        " OSTEOARTHRITIS                                                       ",
-        "======================================================================",
-        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
-      ],
+      "type": "Delay",
       "distributed_transition": [
         {
           "distribution": 0.234,
@@ -55,7 +65,18 @@
           "distribution": 0.205,
           "transition": "OA_Of_The_Hip"
         }
-      ]
+      ],
+      "remarks": [
+        "======================================================================",
+        " OSTEOARTHRITIS                                                       ",
+        "======================================================================",
+        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
+      ],
+      "range": {
+        "low": 0,
+        "high": 55,
+        "unit": "years"
+      }
     },
     "OA_Of_The_Hand": {
       "type": "ConditionOnset",
@@ -220,7 +241,7 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Veteran Status Guard": {
+    "Veteran": {
       "type": "Simple",
       "complex_transition": [
         {
@@ -271,6 +292,43 @@
             {
               "transition": "Terminal",
               "distribution": 0.78
+            }
+          ]
+        }
+      ]
+    },
+    "Non_Veteran": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.21
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.79
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.2267
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7733
             }
           ]
         }
