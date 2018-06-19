@@ -27,11 +27,6 @@
     },
     "Delay_Until_Arthritis": {
       "type": "Delay",
-      "range": {
-        "low": 25,
-        "high": 80,
-        "unit": "years"
-      },
       "conditional_transition": [
         {
           "transition": "Veteran",
@@ -49,16 +44,14 @@
             "operator": "is nil"
           }
         }
-      ]
+      ],
+      "exact": {
+        "quantity": 25,
+        "unit": "years"
+      }
     },
     "Osteoarthritis": {
-      "type": "Simple",
-      "remarks": [
-        "======================================================================",
-        " OSTEOARTHRITIS                                                       ",
-        "======================================================================",
-        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
-      ],
+      "type": "Delay",
       "distributed_transition": [
         {
           "distribution": 0.234,
@@ -72,7 +65,18 @@
           "distribution": 0.205,
           "transition": "OA_Of_The_Hip"
         }
-      ]
+      ],
+      "remarks": [
+        "======================================================================",
+        " OSTEOARTHRITIS                                                       ",
+        "======================================================================",
+        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
+      ],
+      "range": {
+        "low": 0,
+        "high": 55,
+        "unit": "years"
+      }
     },
     "OA_Of_The_Hand": {
       "type": "ConditionOnset",
@@ -239,14 +243,57 @@
     },
     "Veteran": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Osteoarthritis",
-          "distribution": 0.21
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Vietnam_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
         },
         {
-          "transition": "Terminal",
-          "distribution": 0.79
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Early_Gulf_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.2642
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7358
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Late_Gulf_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Osteoarthritis",
+              "distribution": 0.22
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.78
+            }
+          ]
         }
       ]
     },
