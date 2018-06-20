@@ -38,38 +38,6 @@
         "Two different subscales are scored separately: Global Mental Health and Global Physical Health. Each have a score between 4 - 20."
       ]
     },
-    "VR12_Total_Assessment_2": {
-      "type": "MultiObservation",
-      "category": "survey",
-      "number_of_observations": 8,
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "71934-4",
-          "display": "Veterans Rand health survey - 12 item (VR-12)"
-        }
-      ],
-      "direct_transition": "VR12_Attribute_Set_2",
-      "remarks": [
-        "Eight different subscales are scored separately: Mental Health, Role Emotion, Social Functioning, Vitality, General Health, Bodily Pain, Role Physical, and Physical Functioning. Each have a score between 4 - 20."
-      ]
-    },
-    "PROMIS10_Total_Assessment_2": {
-      "type": "MultiObservation",
-      "category": "survey",
-      "number_of_observations": 2,
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "61576-5",
-          "display": "PROMIS short form - global - version 1.1"
-        }
-      ],
-      "direct_transition": "PROMIS10_Attribute_Set_2",
-      "remarks": [
-        "Two different subscales are scored separately: Global Mental Health and Global Physical Health. Each have a score between 4 - 20."
-      ]
-    },
     "HOOS_Total_Assessment": {
       "type": "MultiObservation",
       "category": "survey",
@@ -88,26 +56,7 @@
       ]
     },
     "Joint_Replacement_Assessment_Terminal": {
-      "type": "Terminal",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "joint_replacement",
-            "operator": "==",
-            "value": "knee"
-          }
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "joint_replacement",
-            "operator": "==",
-            "value": "hip"
-          }
-        },
-        {}
-      ]
+      "type": "Terminal"
     },
     "VR36_Total_Assessment": {
       "type": "MultiObservation",
@@ -224,7 +173,7 @@
           }
         },
         {
-          "transition": "PROMIS10_GPH_2",
+          "transition": "PROMIS10_GPH",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "assessment_done",
@@ -242,7 +191,7 @@
           }
         },
         {
-          "transition": "VR12_Mental_Health_2",
+          "transition": "VR12_Mental_Health",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "assessment_done",
@@ -292,12 +241,6 @@
       "direct_transition": "FSA_Performed",
       "value": "PROMIS-10"
     },
-    "PROMIS10_Attribute_Set_2": {
-      "type": "SetAttribute",
-      "attribute": "assessment_done",
-      "direct_transition": "FSA_Performed",
-      "value": "PROMIS-10"
-    },
     "PROMIS29_Attribute_Set": {
       "type": "SetAttribute",
       "attribute": "assessment_done",
@@ -305,12 +248,6 @@
       "value": "PROMIS-29"
     },
     "VR12_Attribute_Set": {
-      "type": "SetAttribute",
-      "attribute": "assessment_done",
-      "direct_transition": "FSA_Performed",
-      "value": "VR-12"
-    },
-    "VR12_Attribute_Set_2": {
       "type": "SetAttribute",
       "attribute": "assessment_done",
       "direct_transition": "FSA_Performed",
@@ -361,39 +298,6 @@
         }
       ],
       "direct_transition": "PROMIS10_Total_Assessment",
-      "range": {
-        "low": 4,
-        "high": 20
-      }
-    },
-    "PROMIS10_GPH_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "71972-4",
-          "display": "PROMIS-10 Global Physical Health (GPH) score"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "PROMIS10_GMH_2"
-    },
-    "PROMIS10_GMH_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "71970-8",
-          "display": "PROMIS-10 Global Mental Health (GMH) score"
-        }
-      ],
-      "direct_transition": "PROMIS10_Total_Assessment_2",
       "range": {
         "low": 4,
         "high": 20
@@ -705,142 +609,6 @@
         "high": 6
       }
     },
-    "VR12_Mental_Health_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72009-4",
-          "display": "VR-12 Mental health (MH) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 2,
-        "high": 12
-      },
-      "direct_transition": "VR12_Role_Emotion_2"
-    },
-    "VR12_Role_Emotion_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72010-2",
-          "display": "VR-12 Role emotion (RE) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 2,
-        "high": 10
-      },
-      "direct_transition": "VR12_Social_Functioning_2"
-    },
-    "VR12_Social_Functioning_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72011-0",
-          "display": "VR-12 Social functioning (SF) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 1,
-        "high": 5
-      },
-      "direct_transition": "VR12_Vitality_2"
-    },
-    "VR12_Vitality_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72012-8",
-          "display": "VR-12 Vitality (VT) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 1,
-        "high": 6
-      },
-      "direct_transition": "VR12_General_Health_2"
-    },
-    "VR12_General_Health_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72013-6",
-          "display": "VR-12 General health (GH) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 1,
-        "high": 5
-      },
-      "direct_transition": "VR12_Bodily_Pain_2"
-    },
-    "VR12_Bodily_Pain_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72014-4",
-          "display": "VR-12 Bodily pain (BP) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 1,
-        "high": 5
-      },
-      "direct_transition": "VR12_Role_Physical_2"
-    },
-    "VR12_Role_Physical_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72015-1",
-          "display": "VR-12 Role physical (RP) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 2,
-        "high": 10
-      },
-      "direct_transition": "VR12_Physical_Functioning_2"
-    },
-    "VR12_Physical_Functioning_2": {
-      "type": "Observation",
-      "category": "survey",
-      "unit": "units",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72016-9",
-          "display": "VR-12 Physical functioning (PF) score - oblique method"
-        }
-      ],
-      "range": {
-        "low": 2,
-        "high": 6
-      },
-      "direct_transition": "VR12_Total_Assessment_2"
-    },
     "VR36_Mental_Health": {
       "type": "Observation",
       "category": "survey",
@@ -1120,7 +888,7 @@
           "distribution": 0.2
         },
         {
-          "transition": "PROMIS10_GPH_2",
+          "transition": "PROMIS10_GPH",
           "distribution": 0.2
         },
         {
@@ -1128,7 +896,7 @@
           "distribution": 0.2
         },
         {
-          "transition": "VR12_Mental_Health_2",
+          "transition": "VR12_Mental_Health",
           "distribution": 0.2
         },
         {
