@@ -39,6 +39,51 @@
         "high": 80,
         "unit": "years"
       },
+      "direct_transition": "RA_Symptom1"
+    },
+     "RA_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "RA_Symptom2"
+    },
+     "RA_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "RA_Symptom3"
+    },
+    "RA_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Joint Swelling",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "RA_Symptom4"
+    },
+    "RA_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "RA_Symptom5"
+    },
+    "RA_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
       "direct_transition": "Rheumatoid_Arthritis"
     },
     "Rheumatoid_Arthritis": {
@@ -283,6 +328,46 @@
     "End_RA_Nonopioid": {
       "type": "MedicationEnd",
       "medication_order": "RA_Nonopioid_Pain_Medication",
+      "direct_transition": "RA_Symptom1_Ends"
+    },
+    "RA_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "RA_Symptom2_Ends"
+    },
+     "RA_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "RA_Symptom3_Ends"
+    },
+     "RA_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Swelling",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "RA_Symptom4_Ends"
+    },
+     "RA_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "RA_Symptom5_Ends"
+    },
+     "RA_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Terminal"
     },
     "Terminal": {

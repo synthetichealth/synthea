@@ -164,6 +164,60 @@
           "display": "Encounter for symptom"
         }
       ],
+      "direct_transition": "Asthma_Symptom1"
+    },
+     "Asthma_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Wheezing",
+      "range": {
+        "low": 25,
+        "high": 75
+      },
+      "direct_transition": "Asthma_Symptom2"
+    },
+    "Asthma_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Shortness of Breath",
+      "range": {
+        "low": 25,
+        "high": 75
+      },
+      "direct_transition": "Asthma_Symptom3"
+    },
+    "Asthma_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Chest Pressure",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Asthma_Symptom4"
+    },
+    "Asthma_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Asthma_Symptom5"
+    },
+    "Asthma_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Asthma_Symptom6"
+    },
+    "Asthma_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Mucus Secretion",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
       "direct_transition": "Asthma_Screening"
     },
     "Asthma_Screening": {
@@ -491,6 +545,54 @@
     "Childhood_Asthma_Subsides": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "asthma_condition",
+      "direct_transition": "Asthma_Symptom1_Ends"
+    },
+    "Asthma_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Wheezing",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Asthma_Symptom2_Ends"
+    },
+     "Asthma_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Shortness of Breath",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Asthma_Symptom3_Ends"
+    },
+     "Asthma_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Chest Pressure",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Asthma_Symptom4_Ends"
+    },
+     "Asthma_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Asthma_Symptom5_Ends"
+    },
+     "Asthma_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Asthma_Symptom6_Ends"
+    },
+     "Asthma_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Mucus Secretion",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "End_Asthma_CarePlan"
     },
     "End_Asthma_CarePlan": {

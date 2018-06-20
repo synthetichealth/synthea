@@ -1,3 +1,4 @@
+
 {
   "name": "Dementia",
   "remarks": [
@@ -130,13 +131,58 @@
       "remarks": [
         "2. Very mild decline, also considered normal aged forgetfulness"
       ],
+      "direct_transition": "DecreasedCommunication"
+    },
+    "DecreasedCommunication": {
+      "type": "Symptom",
+      "symptom": "Decreased Communication",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "DecreasedAttentiveness"
+    },
+    "DecreasedAttentiveness": {
+      "type": "Symptom",
+      "symptom": "Decreased Attentiveness",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "DecreasedJudgment"
+    },
+    "DecreasedJudgment": {
+      "type": "Symptom",
+      "symptom": "Decreased in Judgement",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "DecreasedVisualPerception"
+    },
+    "DecreasedVisualPerception": {
+      "type": "Symptom",
+      "symptom": "Decreased Visual Perception",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Confusion"
+    },
+    "Confusion": {
+      "type": "Symptom",
+      "symptom": "Confusion",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
       "direct_transition": "MildMemoryLoss"
     },
     "MildMemoryLoss": {
       "type": "Symptom",
       "symptom": "Memory Loss",
       "range": {
-        "low": 1,
+        "low": 0,
         "high": 50
       },
       "direct_transition": "MildDecline"
@@ -370,8 +416,8 @@
       "type": "Symptom",
       "symptom": "Memory Loss",
       "range": {
-        "low": 40,
-        "high": 80
+        "low": 50,
+        "high": 100
       },
       "remarks": [
         "These numbers do not map to any real data, they are just picked mathematically to get the %s right"

@@ -121,10 +121,19 @@
       },
       "direct_transition": "Onset_Osteoporosis"
     },
-    "Onset_Osteoporosis": {
-      "type": "SetAttribute",
-      "attribute": "osteoporosis",
-      "value": true,
+    "Onset_Osteoporosis" : {
+      "type" : "SetAttribute",
+      "attribute" : "osteoporosis",
+      "value" : true,
+      "direct_transition" : "Osteoporosis_Symptom1"
+    },
+     "Osteoporosis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Decrease in Height",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
       "direct_transition": "Wellness_Encounter"
     },
     "Wellness_Encounter": {

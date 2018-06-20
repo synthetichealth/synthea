@@ -1,3 +1,4 @@
+
 {
   "name": "COPD",
   "remarks": [
@@ -207,8 +208,8 @@
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "range": {
-        "low": 70,
-        "high": 100
+        "low": 50,
+        "high": 550
       },
       "direct_transition": "Emphysema_Symptom2"
     },
@@ -216,21 +217,48 @@
       "type": "Symptom",
       "symptom": "Cough",
       "range": {
-        "low": 10,
-        "high": 60
+        "low": 50,
+        "high": 150
       },
-      "direct_transition": "DiagnosisEncounter"
+      "direct_transition": "Common_Symptom1"
     },
     "Bronchitis_Symptom1": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "range": {
         "low": 0,
-        "high": 40
+        "high": 250
       },
       "direct_transition": "Bronchitis_Symptom2"
     },
     "Bronchitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 150,
+        "high": 250
+      },
+      "direct_transition": "Common_Symptom1"
+    },
+    "Common_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 70,
+        "high": 100
+      },
+      "direct_transition": "Common_Symptom2"
+    },
+    "Common_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 70,
+        "high": 100
+      },
+      "direct_transition": "Common_Symptom3"
+    },
+    "Common_Symptom3": {
       "type": "Symptom",
       "symptom": "Cough",
       "range": {

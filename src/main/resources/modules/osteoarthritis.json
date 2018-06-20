@@ -32,7 +32,7 @@
           "distributions": [
             {
               "distribution": 0.113,
-              "transition": "Delay_Until_Arthritis"
+              "transition": "Delay_Until_Symptoms"
             },
             {
               "distribution": 0.887,
@@ -48,7 +48,7 @@
           "distributions": [
             {
               "distribution": 0.2267,
-              "transition": "Delay_Until_Arthritis"
+              "transition": "Delay_Until_Symptoms"
             },
             {
               "distribution": 0.7733,
@@ -58,12 +58,58 @@
         }
       ]
     },
+    "Delay_Until_Symptoms": {
+      "type": "Delay",
+      "range": {
+        "low": 10,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "OA_Symptom1"
+    },
+     "OA_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "OA_Symptom2"
+    },
+    "OA_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "Delay_Until_Arthritis"
+    },
     "Delay_Until_Arthritis": {
       "type": "Delay",
       "range": {
-        "low": 25,
-        "high": 80,
+        "low": 15,
+        "high": 40,
         "unit": "years"
+      },
+      "direct_transition": "OA_Symptom1_Advances"
+    },
+
+    "OA_Symptom1_Advances": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "OA_Symptom2_Advances"
+    },
+    "OA_Symptom2_Advances": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "range": {
+        "low": 0,
+        "high": 50
       },
       "direct_transition": "Osteoarthritis"
     },
@@ -246,8 +292,24 @@
       "value": "hip",
       "direct_transition": "End_Encounter"
     },
-    "End_Encounter": {
-      "type": "EncounterEnd",
+    "End_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "OA_Symptom1_Ends"
+    },
+    "OA_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "OA_Symptom2_Ends"
+    },
+     "OA_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Terminal"
     },
     "Terminal": {

@@ -75,8 +75,8 @@
       "type": "Symptom",
       "symptom": "Cough",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 25,
+        "high": 75
       },
       "direct_transition": "Bronchitis_Symptom2"
     },
@@ -84,8 +84,8 @@
       "type": "Symptom",
       "symptom": "Mucus",
       "range": {
-        "low": 0,
-        "high": 100
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Bronchitis_Symptom3"
     },
@@ -93,8 +93,75 @@
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "range": {
-        "low": 50,
-        "high": 100
+        "low": 25,
+        "high": 75
+      },
+      "direct_transition": "Bronchitis_Symptom4"
+    },
+
+    "Bronchitis_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Sore Throat",
+      "range": {
+        "low": 25,
+        "high": 50
+      },
+      "direct_transition": "Bronchitis_Symptom5"
+    },
+
+    "Bronchitis_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 25,
+        "high": 75
+      },
+      "direct_transition": "Bronchitis_Symptom6"
+    },
+
+    "Bronchitis_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 25,
+        "high": 50
+      },
+      "direct_transition": "Bronchitis_Symptom7"
+    },
+
+    "Bronchitis_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Body Aches",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Bronchitis_Symptom8"
+    },
+    "Bronchitis_Symptom8": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "range": {
+        "low": 25,
+        "high": 50
+      },
+      "direct_transition": "Bronchitis_Symptom9"
+    },
+    "Bronchitis_Symptom9": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Bronchitis_Symptom10"
+    },
+    "Bronchitis_Symptom10": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "range": {
+        "low": 0,
+        "high": 25
       },
       "direct_transition": "Symptoms_Dont_improve"
     },
@@ -287,7 +354,7 @@
             "condition_type": "Symptom",
             "symptom": "Mucus",
             "operator": "<",
-            "value": 20
+            "value": 30
           },
           "distributions": [
             {
@@ -372,6 +439,62 @@
     "Bronchitis_Symptom2_Subsides": {
       "type": "Symptom",
       "symptom": "Mucus",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom4_Subsides"
+    },
+    "Bronchitis_Symptom4_Subsides": {
+      "type": "Symptom",
+      "symptom": "Sore Throat",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom5_Subsides"
+    },
+    "Bronchitis_Symptom5_Subsides": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom6_Subsides"
+    },
+    "Bronchitis_Symptom6_Subsides": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom7_Subsides"
+    },
+    "Bronchitis_Symptom7_Subsides": {
+      "type": "Symptom",
+      "symptom": "Body Aches",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom8_Subsides"
+    },
+    "Bronchitis_Symptom8_Subsides": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom9_Subsides"
+    },
+    "Bronchitis_Symptom9_Subsides": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Bronchitis_Symptom10_Subsides"
+    },
+    "Bronchitis_Symptom10_Subsides": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
       "exact": {
         "quantity": 0
       },

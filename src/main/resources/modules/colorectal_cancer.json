@@ -653,8 +653,53 @@
       ],
       "direct_transition": "End_Symptom_Encounter"
     },
-    "End_Symptom_Encounter": {
-      "type": "EncounterEnd",
+    "End_Symptom_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition" : "Colorectal_Cancer_Symptom_3"
+    },
+    "Colorectal_Cancer_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_4"
+    },
+    "Colorectal_Cancer_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Cramping",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_5"
+    },
+    "Colorectal_Cancer_Symptom_5": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_6"
+    },
+    "Colorectal_Cancer_Symptom_6": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_7"
+    },
+    "Colorectal_Cancer_Symptom_7": {
+      "type": "Symptom",
+      "symptom": "Weight Loss",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
       "direct_transition": "Wait_For_Diagnostic_Colonoscopy"
     },
     "Wait_For_Diagnostic_Colonoscopy": {
@@ -1424,8 +1469,49 @@
       "referenced_by_attribute": "colorectal_cancer",
       "direct_transition": "End_Remission_Encounter"
     },
-    "End_Remission_Encounter": {
-      "type": "EncounterEnd",
+    "End_Remission_Encounter" : {
+      "type" : "EncounterEnd",
+      "direct_transition": "Colorectal_Cancer_Symptom3_Ends"
+    },
+
+    "Colorectal_Cancer_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom4_Ends"
+    },
+     "Colorectal_Cancer_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Cramping",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom5_Ends"
+    },
+     "Colorectal_Cancer_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom6_Ends"
+    },
+     "Colorectal_Cancer_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom7_Ends"
+    },
+     "Colorectal_Cancer_Symptom7_Ends": {
+      "type": "Symptom",
+      "symptom": "Weight Loss",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Terminal"
     },
     "Terminal": {

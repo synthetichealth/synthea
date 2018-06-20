@@ -72,6 +72,7 @@ public class Person implements Serializable, QuadTreeData {
   public Map<String, Object> attributes;
   public Map<VitalSign, Double> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
+  private Map<String, Map<String, Boolean>> symptomStatuses;
   public EventList events;
   public HealthRecord record;
   /** history of the currently active module. */
@@ -83,6 +84,7 @@ public class Person implements Serializable, QuadTreeData {
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, Double>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
+    symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
     events = new EventList();
     record = new HealthRecord(this);
   }
@@ -171,24 +173,46 @@ public class Person implements Serializable, QuadTreeData {
     return (events.event(Event.BIRTH) != null && events.before(time, Event.DEATH).isEmpty());
   }
 
-  public void setSymptom(String cause, String type, int value) {
+  public void setSymptom(String cause, String type, int value, Boolean addressed) {
     if (!symptoms.containsKey(type)) {
       symptoms.put(type, new ConcurrentHashMap<String, Integer>());
+      symptomStatuses.put(type, new ConcurrentHashMap<String, Boolean>());
     }
     symptoms.get(type).put(cause, value);
+    symptomStatuses.get(type).put(cause, addressed);
   }
 
   public int getSymptom(String type) {
     int max = 0;
-    if (symptoms.containsKey(type)) {
+    if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
       Map<String, Integer> typedSymptoms = symptoms.get(type);
       for (String cause : typedSymptoms.keySet()) {
-        if (typedSymptoms.get(cause) > max) {
+        if (typedSymptoms.get(cause) > max && !symptomStatuses.get(type).get(cause)) {
           max = typedSymptoms.get(cause);
         }
       }
     }
     return max;
+  }
+
+  //Mark the largest valued symptom as addressed.
+  public void addressLargestSymptom() {
+    String highestType = "";
+    String highestCause = "";
+    int maxValue = 0;
+    for (String type : symptoms.keySet()) {
+      if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
+        Map<String, Integer> typedSymptoms = symptoms.get(type);
+        for (String cause : typedSymptoms.keySet()) {
+          if (typedSymptoms.get(cause) > maxValue && !symptomStatuses.get(type).get(cause)) {
+            maxValue = typedSymptoms.get(cause);
+            highestCause = cause;
+            highestType = type;
+          }
+        }
+      }
+    }
+    symptomStatuses.get(highestType).put(highestCause, true);
   }
 
   public Double getVitalSign(VitalSign vitalSign) {
@@ -215,7 +239,7 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * The total number of all symptom severities.
+   * The total number of all unaddressed symptom severities.
    * @return total : sum of all the symptom severities. This number drives care-seeking behaviors.
    */
   public int symptomTotal() {

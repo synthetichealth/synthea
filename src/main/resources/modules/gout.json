@@ -81,6 +81,42 @@
           "display": "Gout"
         }
       ],
+      "direct_transition": "Gout_Symptom1"
+    },
+     "Gout_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Gout_Symptom2"
+    },
+    "Gout_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Joint Swelling",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Gout_Symptom3"
+    },
+    "Gout_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Joint Redness",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Gout_Symptom4"
+    },
+    "Gout_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
       "direct_transition": "Gout_Diagnosis"
     },
     "Gout_Diagnosis": {

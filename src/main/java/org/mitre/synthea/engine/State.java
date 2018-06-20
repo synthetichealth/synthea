@@ -487,7 +487,6 @@ public abstract class State implements Cloneable {
           return false;
         }
       } else {
-
         HealthRecord.Encounter encounter = person.record.encounterStart(time, encounterClass);
         if (codes != null) {
           encounter.codes.addAll(codes);
@@ -1273,6 +1272,7 @@ public abstract class State implements Cloneable {
     private String cause;
     private Range<Integer> range;
     private Exact<Integer> exact;
+    public boolean addressed;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
@@ -1280,6 +1280,7 @@ public abstract class State implements Cloneable {
       if (cause == null) {
         cause = module.name;
       }
+      addressed = false;
     }
 
     @Override
@@ -1289,17 +1290,18 @@ public abstract class State implements Cloneable {
       clone.cause = cause;
       clone.range = range;
       clone.exact = exact;
+      clone.addressed = addressed;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
       if (exact != null) {
-        person.setSymptom(cause, symptom, exact.quantity);
+        person.setSymptom(cause, symptom, exact.quantity, addressed);
       } else if (range != null) {
-        person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high));
+        person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high), addressed);
       } else {
-        person.setSymptom(cause, symptom, 0);
+        person.setSymptom(cause, symptom, 0, addressed);
       }
       return true;
     }

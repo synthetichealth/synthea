@@ -111,6 +111,60 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "Fibromyalgia_Symptom1"
+    },
+     "Fibromyalgia_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Muscle Pain",
+      "range": {
+        "low": 25,
+        "high": 100
+      },
+      "direct_transition": "Fibromyalgia_Symptom2"
+    },
+    "Fibromyalgia_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Muscle Tenderness",
+      "range": {
+        "low": 25,
+        "high": 100
+      },
+      "direct_transition": "Fibromyalgia_Symptom3"
+    },
+    "Fibromyalgia_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Fibromyalgia_Symptom4"
+    },
+     "Fibromyalgia_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Sleep Disturbances",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Fibromyalgia_Symptom5"
+    },
+    "Fibromyalgia_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Cognitive Difficulties",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Fibromyalgia_Symptom6"
+    },
+    "Fibromyalgia_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Stiffness",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
       "direct_transition": "Fibromyalgia_CarePlan"
     },
     "Fibromyalgia_CarePlan": {

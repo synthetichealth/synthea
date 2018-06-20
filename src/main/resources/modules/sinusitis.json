@@ -1,3 +1,4 @@
+
 {
   "name": "Sinusitis",
   "states": {
@@ -68,8 +69,8 @@
       "type": "Symptom",
       "symptom": "Sinus Pain",
       "range": {
-        "low": 40,
-        "high": 60
+        "low": 50,
+        "high": 80
       },
       "direct_transition": "Common_Symptom"
     },
@@ -90,8 +91,8 @@
       "type": "Symptom",
       "symptom": "Sinus Pain",
       "range": {
-        "low": 20,
-        "high": 80
+        "low": 30,
+        "high": 50
       },
       "direct_transition": "Common_Symptom"
     },
@@ -99,8 +100,71 @@
       "type": "Symptom",
       "symptom": "Nasal Congestion",
       "range": {
-        "low": 60,
-        "high": 90
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Common_Symptom1"
+    },
+    "Common_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Common_Symptom2"
+    },
+    "Common_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Headache",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom3"
+    },
+    "Common_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Nasal Discharge",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom4"
+    },
+    "Common_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Sore Throat",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom5"
+    },
+    "Common_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom6"
+    },
+    "Common_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Facial Swelling",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom7"
+    },
+    "Common_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Pain with Bright Lights",
+      "range": {
+        "low": 25,
+        "high": 50
       },
       "direct_transition": "Wait_to_see_Dr"
     },
@@ -253,6 +317,62 @@
       "exact": {
         "quantity": 0
       },
+      "direct_transition": "Symptom3_Subsides"
+    },
+    "Symptom3_Subsides": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom4_Subsides"
+    },
+    "Symptom4_Subsides": {
+      "type": "Symptom",
+      "symptom": "Headache",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom5_Subsides"
+    },
+    "Symptom5_Subsides": {
+      "type": "Symptom",
+      "symptom": "Nasal Discharge",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom6_Subsides"
+    },
+    "Symptom6_Subsides": {
+      "type": "Symptom",
+      "symptom": "Sore Throat",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom7_Subsides"
+    },
+    "Symptom7_Subsides": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom8_Subsides"
+    },
+    "Symptom8_Subsides": {
+      "type": "Symptom",
+      "symptom": "Facial Swelling",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom9_Subsides"
+    },
+    "Symptom9_Subsides": {
+      "type": "Symptom",
+      "symptom": "Pain with Bright Lights",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Potential_Onset"
     },
     "Chronic_Sinusitis_Continues": {
@@ -280,8 +400,8 @@
       "type": "Symptom",
       "symptom": "Sinus Pain",
       "range": {
-        "low": 60,
-        "high": 100
+        "low": 70,
+        "high": 130
       },
       "direct_transition": "Chronic_Sinusitis_Followup"
     },
