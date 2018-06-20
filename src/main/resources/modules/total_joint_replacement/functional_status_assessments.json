@@ -13,31 +13,6 @@
           "system": "LOINC",
           "code": "72091-2",
           "display": "Knee injury and Osteoarthritis Outcome Score [KOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72101-9",
-          "display": "Symptoms score [KOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72102-7",
-          "display": "Pain score [KOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72100-1",
-          "display": "Activities of daily living score [KOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72099-5",
-          "display": "Sport-recreation score [KOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72098-7",
-          "display": "Quality of life score [KOOS]"
         }
       ],
       "direct_transition": "KOOS_Attribute_Set",
@@ -56,16 +31,6 @@
           "system": "LOINC",
           "code": "61576-5",
           "display": "PROMIS short form - global - version 1.1"
-        },
-        {
-          "system": "LOINC",
-          "code": "71972-4",
-          "display": "PROMIS-10 Global Physical Health (GPH) score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71970-8",
-          "display": "PROMIS-10 Global Mental Health (GMH) score"
         }
       ],
       "direct_transition": "PROMIS10_Attribute_Set",
@@ -82,46 +47,6 @@
           "system": "LOINC",
           "code": "71934-4",
           "display": "Veterans Rand health survey - 12 item (VR-12)"
-        },
-        {
-          "system": "LOINC",
-          "code": "72009-4",
-          "display": "VR-12 Mental health (MH) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72010-2",
-          "display": "VR-12 Role emotion (RE) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72011-0",
-          "display": "VR-12 Social functioning (SF) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72012-8",
-          "display": "VR-12 Vitality (VT) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72013-6",
-          "display": "VR-12 General health (GH) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72014-4",
-          "display": "VR-12 Bodily pain (BP) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72015-1",
-          "display": "VR-12 Role physical (RP) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72016-9",
-          "display": "VR-12 Physical functioning (PF) score - oblique method"
         }
       ],
       "direct_transition": "VR12_Attribute_Set_2",
@@ -138,16 +63,6 @@
           "system": "LOINC",
           "code": "61576-5",
           "display": "PROMIS short form - global - version 1.1"
-        },
-        {
-          "system": "LOINC",
-          "code": "71972-4",
-          "display": "PROMIS-10 Global Physical Health (GPH) score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71970-8",
-          "display": "PROMIS-10 Global Mental Health (GMH) score"
         }
       ],
       "direct_transition": "PROMIS10_Attribute_Set_2",
@@ -164,31 +79,6 @@
           "system": "LOINC",
           "code": "72092-0",
           "display": "Hip Dysfunction and Osteoarthritis Outcome Score [HOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72096-1",
-          "display": "Symptoms score [HOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72097-9",
-          "display": "Pain score [HOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72095-3",
-          "display": "Activities of daily living score [HOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72094-6",
-          "display": "Sport-recreation score [HOOS]"
-        },
-        {
-          "system": "LOINC",
-          "code": "72093-8",
-          "display": "Quality of life score [HOOS]"
         }
       ],
       "direct_transition": "HOOS_Attribute_Set",
@@ -228,46 +118,6 @@
           "system": "LOINC",
           "code": "71933-6",
           "display": "Veterans Rand health survey - 36 item (VR-36)"
-        },
-        {
-          "system": "LOINC",
-          "code": "71973-2",
-          "display": "VR-36 Mental health (MH) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71974-0",
-          "display": "VR-36 Role emotion (RE) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71975-7",
-          "display": "VR-36 Social functioning (SF) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71976-5",
-          "display": "VR-36 Vitality (VT) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71977-3",
-          "display": "VR-36 General health (GH) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71978-1",
-          "display": "VR-36 Bodily pain (BP) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71979-9",
-          "display": "VR-36 Role physical (RP) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "71980-7",
-          "display": "VR-36 Physical functioning (PF) score - oblique method"
         }
       ],
       "direct_transition": "VR36_Attribute_Set",
@@ -284,41 +134,6 @@
           "system": "LOINC",
           "code": "62337-1",
           "display": "PROMIS item bank - 29 profile"
-        },
-        {
-          "system": "LOINC",
-          "code": "71956-7",
-          "display": "PROMIS-29 Sleep disturbance score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71958-3",
-          "display": "PROMIS-29 Satisfaction with participation in social roles score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71960-9",
-          "display": "PROMIS-29 Physical function score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71962-5",
-          "display": "PROMIS-29 Pain interference score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71964-1",
-          "display": "PROMIS-29 Fatigue score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71966-6",
-          "display": "PROMIS-29 Depression score"
-        },
-        {
-          "system": "LOINC",
-          "code": "71968-2",
-          "display": "PROMIS-29 Anxiety score"
         }
       ],
       "direct_transition": "PROMIS29_Attribute_Set",
@@ -388,7 +203,7 @@
           }
         },
         {
-          "transition": "FSA_Attribute_Knee"
+          "transition": "First_FSA_Knee"
         }
       ]
     },
@@ -445,7 +260,7 @@
           }
         },
         {
-          "transition": "FSA_Attribute_Hip"
+          "transition": "First_FSA_Hip"
         }
       ]
     },
@@ -458,46 +273,6 @@
           "system": "LOINC",
           "code": "71934-4",
           "display": "Veterans Rand health survey - 12 item (VR-12)"
-        },
-        {
-          "system": "LOINC",
-          "code": "72009-4",
-          "display": "VR-12 Mental health (MH) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72010-2",
-          "display": "VR-12 Role emotion (RE) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72011-0",
-          "display": "VR-12 Social functioning (SF) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72012-8",
-          "display": "VR-12 Vitality (VT) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72013-6",
-          "display": "VR-12 General health (GH) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72014-4",
-          "display": "VR-12 Bodily pain (BP) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72015-1",
-          "display": "VR-12 Role physical (RP) score - oblique method"
-        },
-        {
-          "system": "LOINC",
-          "code": "72016-9",
-          "display": "VR-12 Physical functioning (PF) score - oblique method"
         }
       ],
       "direct_transition": "VR12_Attribute_Set",
@@ -553,56 +328,8 @@
       "direct_transition": "FSA_Performed",
       "value": "HOOS"
     },
-    "FSA_Attribute_Knee": {
-      "type": "SetAttribute",
-      "attribute": "functional_status_assessments",
-      "distributed_transition": [
-        {
-          "transition": "KOOS_Symptoms",
-          "distribution": 0.34
-        },
-        {
-          "transition": "PROMIS10_GPH",
-          "distribution": 0.33
-        },
-        {
-          "transition": "VR12_Mental_Health",
-          "distribution": 0.33
-        }
-      ],
-      "value": 0
-    },
-    "FSA_Attribute_Hip": {
-      "type": "SetAttribute",
-      "attribute": "functional_status_assessments",
-      "distributed_transition": [
-        {
-          "transition": "HOOS_Symptoms",
-          "distribution": 0.2
-        },
-        {
-          "transition": "PROMIS10_GPH_2",
-          "distribution": 0.2
-        },
-        {
-          "transition": "PROMIS29_Sleep_Disturbance",
-          "distribution": 0.2
-        },
-        {
-          "transition": "VR12_Mental_Health_2",
-          "distribution": 0.2
-        },
-        {
-          "transition": "VR36_Mental_Health",
-          "distribution": 0.2
-        }
-      ],
-      "value": 0
-    },
     "FSA_Performed": {
-      "type": "Counter",
-      "attribute": "functional_status_assessments",
-      "action": "increment",
+      "type": "Simple",
       "direct_transition": "Joint_Replacement_Assessment_Terminal"
     },
     "PROMIS10_GPH": {
@@ -1367,6 +1094,48 @@
         "low": 4,
         "high": 20
       }
+    },
+    "First_FSA_Knee": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "KOOS_Symptoms",
+          "distribution": 0.34
+        },
+        {
+          "transition": "PROMIS10_GPH",
+          "distribution": 0.33
+        },
+        {
+          "transition": "VR12_Mental_Health",
+          "distribution": 0.33
+        }
+      ]
+    },
+    "First_FSA_Hip": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "HOOS_Symptoms",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PROMIS10_GPH_2",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PROMIS29_Sleep_Disturbance",
+          "distribution": 0.2
+        },
+        {
+          "transition": "VR12_Mental_Health_2",
+          "distribution": 0.2
+        },
+        {
+          "transition": "VR36_Mental_Health",
+          "distribution": 0.2
+        }
+      ]
     }
   }
 }
