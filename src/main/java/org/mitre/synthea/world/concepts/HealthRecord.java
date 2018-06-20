@@ -96,7 +96,8 @@ public class HealthRecord {
    * associated codes.
    */
   public class Entry {
-    private HealthRecord record = HealthRecord.this; // reference to the HealthRecord this entry belongs to
+    /** reference to the HealthRecord this entry belongs to. */
+    private HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
     public long start;
@@ -276,6 +277,7 @@ public class HealthRecord {
       return total;
     }
   }
+
   public enum EncounterType {
     WELLNESS, EMERGENCY, INPATIENT, AMBULATORY, URGENTCARE
   }
