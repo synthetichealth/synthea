@@ -257,7 +257,7 @@ public class Provider implements QuadTreeData {
         String city = parsed.city;
         int population = (int) location.getPopulation(city);
         //TODO - determine how many clinicians based off the population
-        parsed.attributes.put("numClinicians", 0);
+        parsed.attributes.put("numClinicians", 1);
         //System.out.println("name "+ parsed.name + " and num " + parsed.attributes.get("numClinicians").getClass());
         parsed.clinicians = generateClinicianList(population, (int) parsed.attributes.get("numClinicians"));
         System.out.println("clincians are " + parsed.clinicians); 
