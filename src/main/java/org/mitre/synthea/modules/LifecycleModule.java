@@ -19,10 +19,12 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
@@ -105,6 +107,28 @@ public final class LifecycleModule extends Module {
 
     // java modules will never "finish"
     return false;
+  }
+  
+  /**
+   * Create a clinician
+   * @param clinician The clinician
+   * @param 
+   */
+  public static void createClinician(Location location, Clinician clinician, long clinicianSeed) {
+	  Map<String, Object> attributes = clinician.attributes;
+	  
+	  String gender = (String) attributes.get(Clinician.GENDER);
+	  String language = (String) attributes.get(Clinician.FIRST_LANGUAGE);
+	  System.out.println("gender is " + gender + " and lang is " + language + " and rand is " + clinician.random);
+	  String firstName = fakeFirstName(gender, language, clinician.random);
+	  String lastName = fakeLastName(language, clinician.random);
+	  if (appendNumbersToNames) {
+	    firstName = addHash(firstName);
+	    lastName = addHash(lastName);
+	  }
+	  attributes.put(Clinician.FIRST_NAME, firstName);
+	  attributes.put(Clinician.LAST_NAME, lastName);
+	  attributes.put(Clinician.NAME, firstName + " " + lastName);
   }
 
   /**

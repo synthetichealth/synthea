@@ -23,8 +23,10 @@ public class Location {
   private Map<String, Long> populationByCity;
   private Map<String, List<Place>> zipCodes;
 
-  private String city;
+  public final String city;
+  public final String state;
   private Map<String, Demographics> demographics;
+
 
   /**
    * Location is a set of demographic and place information.
@@ -36,6 +38,7 @@ public class Location {
   public Location(String state, String city) {
     try {
       this.city = city;
+      this.state= state;
       
       Table<String,String,Demographics> allDemographics = Demographics.load(state);
       

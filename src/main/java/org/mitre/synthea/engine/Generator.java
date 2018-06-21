@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -159,7 +160,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(o.state);
+    Provider.loadProviders(this.location, o.seed);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
@@ -252,6 +253,7 @@ public class Generator {
       Demographics city = location.randomCity(randomForDemographics);
       
       Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
+      System.out.println("demoAtt " + demoAttributes);
       long start = (long) demoAttributes.get(Person.BIRTHDATE);
 
       do {
@@ -355,7 +357,53 @@ public class Generator {
     }
     return person;
   }
+  
+  /**
+   * Generate a completely random Clinician. 
+   * The seed used to generate the person is randomized as well.
+   * 
+   * @param index Target index in the whole set of people to generate
+   * @return generated Person
+   */
+  public Clinician generateClinician(int index) {
+    // System.currentTimeMillis is not unique enough
+    long clinicianSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+    return generateClinician(index, clinicianSeed);
+  }
 
+  /**
+   * Generate a random clinician, from the given seed. 
+   * 
+   * @param index
+   *          Target index in the whole set of people to generate
+   * @param personSeed
+   *          Seed for the random clinician
+   * @return generated Clinician
+   */
+  public Clinician generateClinician(int index, long clinicianSeed) {
+    Clinician clinician = null;
+    try {
+      Random randomForDemographics = new Random(clinicianSeed);
+      Demographics city = location.randomCity(randomForDemographics);
+      
+      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
+      System.out.println("demoAtt " + demoAttributes);
+
+        clinician = new Clinician(clinicianSeed);
+        clinician.populationSeed = this.options.seed;
+        clinician.attributes.putAll(demoAttributes);
+        clinician.attributes.put(Person.LOCATION, location);
+
+        LifecycleModule.createClinician(location, clinician, clinicianSeed);
+        
+    } catch (Throwable e) {
+      // lots of fhir things throw errors for some reason
+      e.printStackTrace();
+      throw e;
+    }
+    return clinician;
+  }
+  
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
     // this is synchronized to ensure all lines for a single person are always printed 
     // consecutively

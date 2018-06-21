@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,9 +17,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.sis.geometry.DirectPosition2D;
 import org.apache.sis.index.tree.QuadTree;
 import org.apache.sis.index.tree.QuadTreeData;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.geography.Location;
 
 public class Provider implements QuadTreeData {
@@ -49,6 +52,8 @@ public class Provider implements QuadTreeData {
   public String type;
   public String ownership;
   public int quality;
+  public static String numClinicians;
+  public ArrayList<Clinician> clinicians;
   private DirectPosition2D coordinates;
   private ArrayList<String> servicesProvided;
   // row: year, column: type, value: count
@@ -58,6 +63,7 @@ public class Provider implements QuadTreeData {
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<String>();
+    clinicians = new ArrayList<Clinician>();
   }
 
   public String getResourceID() {
@@ -138,7 +144,7 @@ public class Provider implements QuadTreeData {
     while (provider == null && distance <= maxDistance) {
       provider = findService(person, service, distance, time);
       if (provider != null) {
-        return provider;
+    	return provider;
       }
       distance += step;
     }
@@ -181,28 +187,33 @@ public class Provider implements QuadTreeData {
    * Load into cache the list of providers for a state.
    * @param state name or abbreviation.
    */
-  public static void loadProviders(String state) {
+  public static void loadProviders(Location location, long seed) {
     try {
+      String state = location.state;
+      String city = location.city;
       String abbreviation = Location.getAbbreviation(state);
 
       Set<String> servicesProvided = new HashSet<String>();
       servicesProvided.add(Provider.AMBULATORY);
       servicesProvided.add(Provider.INPATIENT);
       servicesProvided.add(Provider.WELLNESS);
+      servicesProvided.add(Provider.URGENTCARE);
 
       String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-      loadProviders(state, abbreviation, hospitalFile, servicesProvided);
+      loadProviders(location, abbreviation, hospitalFile, servicesProvided, seed);
 
       String vaFile = Config.get("generate.providers.veterans.default_file");
-      loadProviders(state, abbreviation, vaFile, servicesProvided);
-
-      servicesProvided.clear();
-      servicesProvided.add(Provider.URGENTCARE);
+      loadProviders(location, abbreviation, vaFile, servicesProvided, seed);
+      
+      String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
+      loadProviders(location, abbreviation, primaryCareFile, servicesProvided, seed);
+      
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-      loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
-
+      loadProviders(location, abbreviation, urgentcareFile, servicesProvided, seed);
+      
+      servicesProvided.clear();
     } catch (IOException e) {
-      System.err.println("ERROR: unable to load providers for state: " + state);
+      System.err.println("ERROR: unable to load providers for state: " + location.state);
       e.printStackTrace();
     }
   }
@@ -216,12 +227,13 @@ public class Provider implements QuadTreeData {
    * @param servicesProvided Set of services provided by these facilities
    * @throws IOException if the file cannot be read
    */
-  public static void loadProviders(String state, String abbreviation, String filename,
-      Set<String> servicesProvided)
+  public static void loadProviders(Location location, String abbreviation, String filename,
+      Set<String> servicesProvided, long seed)
       throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
-
+    String state = location.state;
+    
     for (Map<String,String> row : csv) {
       String currState = row.get("state");
 
@@ -229,19 +241,26 @@ public class Provider implements QuadTreeData {
       if ((state == null)
           || (state != null && state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
-        Provider parsed = csvLineToProvider(row);
+    	  Provider parsed = csvLineToProvider(row);
 
         parsed.servicesProvided.addAll(servicesProvided);
         if ("Yes".equals(row.remove("emergency"))) {
           parsed.servicesProvided.add(Provider.EMERGENCY);
         }
-
+        
         // add any remaining columns we didn't explicitly map to first-class fields
         // into the attributes table
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsed.attributes.put(e.getKey(), e.getValue());
         }
-        
+        // TODO - add the number of clinicians for a provider and generate the list
+        String city = parsed.city;
+        int population = (int) location.getPopulation(city);
+        //TODO - determine how many clinicians based off the population
+        parsed.attributes.put("numClinicians", 0);
+        //System.out.println("name "+ parsed.name + " and num " + parsed.attributes.get("numClinicians").getClass());
+        parsed.clinicians = generateClinicianList(population, (int) parsed.attributes.get("numClinicians"));
+        System.out.println("clincians are " + parsed.clinicians); 
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
         if (!inserted) {
@@ -251,7 +270,19 @@ public class Provider implements QuadTreeData {
       }
     }
   }
-
+  public static ArrayList<Clinician> generateClinicianList(int population, int numClinicians){
+	//generate the correct number of random Clinicians
+	 Generator generator = new Generator(population);
+	 ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
+	 for (int i = 0; i < numClinicians; i++) {
+	   Clinician clinician = null;
+	   clinician = generator.generateClinician(i);
+	   clinicians.add(clinician);
+	 }
+	 return clinicians;
+  
+  }
+ 
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
     d.uuid = UUID.randomUUID().toString();
@@ -270,9 +301,16 @@ public class Provider implements QuadTreeData {
     } catch (Exception e) {
       // Swallow invalid format data
     }
-    double lat = Double.parseDouble(line.remove("LAT"));
-    double lon = Double.parseDouble(line.remove("LON"));
-    d.coordinates = new DirectPosition2D(lat, lon);
+    try {
+    	double lat = Double.parseDouble(line.remove("LAT"));
+        double lon = Double.parseDouble(line.remove("LON"));
+        d.coordinates = new DirectPosition2D(lat, lon);
+      } catch (Exception e) {
+    	  double lat = 0.0;
+          double lon = 0.0;
+          d.coordinates = new DirectPosition2D(lat, lon);
+      }
+    
     return d;
   }
 

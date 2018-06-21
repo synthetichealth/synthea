@@ -230,6 +230,10 @@ public class TextExporter {
     if (prov != null) {
       textRecord.add("Outpatient Provider: " + prov.name);
     }
+    Provider primaryProv = person.getWellnessProvider(endTime);
+    if (primaryProv != null) {
+      textRecord.add("Primary Care Provider: " + prov.address);
+    }
   }
 
   /**
