@@ -1,7 +1,5 @@
 package org.mitre.synthea.export;
 
-import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
