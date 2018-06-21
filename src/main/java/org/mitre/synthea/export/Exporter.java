@@ -1,5 +1,7 @@
 package org.mitre.synthea.export;
 
+import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -80,6 +82,14 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
         TextExporter.export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (Boolean.parseBoolean(Config.get("exporter.text.export2"))) {
+      try {
+        TextExporter2.export2(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -284,6 +294,15 @@ public abstract class Exporter {
       return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
           + person.attributes.get(Person.ID) + "."
           + extension;
+    }
+  }
+
+  public static String filename2(Person person, String encounterNumber, String extension) {
+    if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
+      return person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
+    } else {
+      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
+          + person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
     }
   }
 }
