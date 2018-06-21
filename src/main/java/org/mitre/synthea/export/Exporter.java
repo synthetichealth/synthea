@@ -79,7 +79,7 @@ public abstract class Exporter {
 
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
-        TextExporter.export(person, stopTime);
+        TextExporter.exportAll(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -87,7 +87,7 @@ public abstract class Exporter {
 
     if (Boolean.parseBoolean(Config.get("exporter.text.export2"))) {
       try {
-        TextExporter2.export2(person, stopTime);
+        TextExporter.exportEncounter(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
