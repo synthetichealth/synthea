@@ -256,11 +256,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.97,
+              "distribution": 0.99,
               "transition": "Retinopathy_Progression"
             },
             {
-              "distribution": 0.03,
+              "distribution": 0.01,
               "transition": "Set_CKD_1 Damage"
             }
           ]
