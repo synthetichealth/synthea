@@ -6,28 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "veteran guard"
+      "direct_transition": "age delay"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "veteran guard": {
-      "type": "Delay",
-      "range": {
-        "low": 50,
-        "high": 80,
-        "unit": "years"
-      },
-      "distributed_transition": [
-        {
-          "transition": "CHF symptom onset 1",
-          "distribution": 0.011
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.989
-        }
-      ]
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
@@ -357,7 +339,411 @@
     },
     "end_followup_encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "distributed_transition": [
+        {
+          "transition": "stable CHF",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Potential CHF Flare",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "age delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 50,
+        "unit": "years"
+      },
+      "direct_transition": "chance of CHF"
+    },
+    "chance of CHF": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.99954
+        },
+        {
+          "transition": "CHF symptom onset 1",
+          "distribution": 0.00046
+        }
+      ]
+    },
+    "Maintaining CHF": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Potential CHF Flare"
+    },
+    "Potential CHF Flare": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "acute inpatient CHF flare",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Maintaining CHF",
+          "distribution": 0.99
+        }
+      ]
+    },
+    "acute inpatient CHF flare": {
+      "type": "Simple",
+      "direct_transition": "CHF ED Visit"
+    },
+    "CHF ED Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for Problem"
+        }
+      ],
+      "direct_transition": "Labs_BMP_ED"
+    },
+    "CXR_ED": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": []
+        }
+      ],
+      "direct_transition": "ED_End"
+    },
+    "Labs_BMP_ED": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "LOINC Code"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CXR_ED"
+    },
+    "ED_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admit_Discharge Transition"
+    },
+    "Admit_Discharge Transition": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": "<",
+                "value": 0
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Sodium",
+                "operator": "<",
+                "value": 135
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Inpatient_admittance",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Potential CHF Flare",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Inpatient_admittance": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308540004,
+          "display": "Inpatient stay (finding)"
+        }
+      ],
+      "direct_transition": "Inpatient CarePlan"
+    },
+    "stable CHF": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "followup_CHF_encounter"
+    },
+    "Inpatient CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736353004,
+          "display": "Inpatient care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "Lasix IV",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385715006,
+          "display": "Cardiac care (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 386619000,
+          "display": "Low sodium diet (finding)"
+        }
+      ],
+      "goals": [
+        {
+          "addresses": [
+            "blood pressure"
+          ],
+          "text": "improved systolic function"
+        },
+        {
+          "addresses": [
+            "blood pressure"
+          ],
+          "text": "improved diastolic function"
+        },
+        {
+          "addresses": [
+            "text"
+          ],
+          "observation": {
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "59408-5",
+                "display": "oxygen saturation in arterial blood by pulse oximetry"
+              }
+            ],
+            "operator": ">",
+            "value": 85
+          }
+        }
+      ]
+    },
+    "Lasix IV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "XXXX",
+          "display": "Lasix IV"
+        }
+      ],
+      "reason": "chf",
+      "conditional_transition": [
+        {
+          "transition": "Inpatient 3D Echo",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "3decho",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "O2 Vitals"
+        }
+      ]
+    },
+    "Inpatient 3D Echo": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "1234",
+        "display": "SNOMED Code"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "1234",
+            "display": "SNOMED Code"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "XX",
+            "display": "DICOM Modality Code"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "DICOM Subject-Object Pair Code"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "CXR_Inpt_daily"
+    },
+    "O2 Vitals": {
+      "type": "VitalSign",
+      "vital_sign": "Oxygen Saturation",
+      "unit": "%",
+      "direct_transition": "CXR_Inpt_daily",
+      "range": {
+        "low": 65,
+        "high": 85
+      }
+    },
+    "CXR_Inpt_daily": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "1234",
+        "display": "SNOMED Code"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "1234",
+            "display": "SNOMED Code"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "XX",
+            "display": "DICOM Modality Code"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.3.4.5.6.7.8",
+                "display": "DICOM Subject-Object Pair Code"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "daily inpt labs"
+    },
+    "daily inpt labs": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "LOINC Code"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Inpatient Daily Transition"
+    },
+    "Inpatient Daily Transition": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": ">",
+                "value": 120
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Sodium",
+                "operator": ">",
+                "value": 135
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Inpatient Discharge",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Lasix IV",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Inpatient Discharge": {
+      "type": "Simple",
+      "direct_transition": "End Inpatient Care Plan"
+    },
+    "End Inpatient Care Plan": {
+      "type": "CarePlanEnd",
+      "direct_transition": "End Inpatient Encounter",
+      "careplan": "Inpatient CarePlan"
+    },
+    "End Inpatient Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Potential CHF Flare",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "1234",
+        "display": "NUBC Code"
+      }
     }
   }
 }
