@@ -187,7 +187,7 @@ public class Provider implements QuadTreeData {
    * Load into cache the list of providers for a state.
    * @param state name or abbreviation.
    */
-  public static void loadProviders(Location location, long seed) {
+  public static void loadProviders(Location location, long seed, Generator generator) {
     try {
       String state = location.state;
       String city = location.city;
@@ -200,16 +200,16 @@ public class Provider implements QuadTreeData {
       servicesProvided.add(Provider.URGENTCARE);
 
       String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-      loadProviders(location, abbreviation, hospitalFile, servicesProvided, seed);
+      loadProviders(location, abbreviation, hospitalFile, servicesProvided, seed, generator);
 
       String vaFile = Config.get("generate.providers.veterans.default_file");
-      loadProviders(location, abbreviation, vaFile, servicesProvided, seed);
+      loadProviders(location, abbreviation, vaFile, servicesProvided, seed, generator);
       
       String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-      loadProviders(location, abbreviation, primaryCareFile, servicesProvided, seed);
+      loadProviders(location, abbreviation, primaryCareFile, servicesProvided, seed, generator);
       
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-      loadProviders(location, abbreviation, urgentcareFile, servicesProvided, seed);
+      loadProviders(location, abbreviation, urgentcareFile, servicesProvided, seed, generator);
       
       servicesProvided.clear();
     } catch (IOException e) {
@@ -228,7 +228,7 @@ public class Provider implements QuadTreeData {
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String abbreviation, String filename,
-      Set<String> servicesProvided, long seed)
+      Set<String> servicesProvided, long seed, Generator generator)
       throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
@@ -259,8 +259,7 @@ public class Provider implements QuadTreeData {
         //TODO - determine how many clinicians based off the population
         parsed.attributes.put("numClinicians", 1);
         //System.out.println("name "+ parsed.name + " and num " + parsed.attributes.get("numClinicians").getClass());
-        parsed.clinicians = generateClinicianList(population, (int) parsed.attributes.get("numClinicians"));
-        System.out.println("clincians are " + parsed.clinicians); 
+        parsed.clinicians = generateClinicianList(population, location, (int) parsed.attributes.get("numClinicians"), seed, generator); 
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
         if (!inserted) {
@@ -270,13 +269,14 @@ public class Provider implements QuadTreeData {
       }
     }
   }
-  public static ArrayList<Clinician> generateClinicianList(int population, int numClinicians){
+  public static ArrayList<Clinician> generateClinicianList(int population, Location location, int numClinicians, long clinicianSeed, Generator generator){
 	//generate the correct number of random Clinicians
-	 Generator generator = new Generator(population);
+	 
 	 ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
 	 for (int i = 0; i < numClinicians; i++) {
 	   Clinician clinician = null;
 	   clinician = generator.generateClinician(i);
+	   System.out.println("this one is " + clinician.attributes.get(Clinician.NAME_PREFIX) + clinician.attributes.get(Clinician.NAME));
 	   clinicians.add(clinician);
 	 }
 	 return clinicians;

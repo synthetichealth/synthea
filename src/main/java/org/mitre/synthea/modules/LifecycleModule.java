@@ -119,7 +119,6 @@ public final class LifecycleModule extends Module {
 	  
 	  String gender = (String) attributes.get(Clinician.GENDER);
 	  String language = (String) attributes.get(Clinician.FIRST_LANGUAGE);
-	  System.out.println("gender is " + gender + " and lang is " + language + " and rand is " + clinician.random);
 	  String firstName = fakeFirstName(gender, language, clinician.random);
 	  String lastName = fakeLastName(language, clinician.random);
 	  if (appendNumbersToNames) {
@@ -129,6 +128,7 @@ public final class LifecycleModule extends Module {
 	  attributes.put(Clinician.FIRST_NAME, firstName);
 	  attributes.put(Clinician.LAST_NAME, lastName);
 	  attributes.put(Clinician.NAME, firstName + " " + lastName);
+	  attributes.put(Clinician.NAME_PREFIX, "Dr.");
   }
 
   /**

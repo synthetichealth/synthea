@@ -160,7 +160,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(this.location, o.seed);
+    Provider.loadProviders(this.location, o.seed, this);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
@@ -253,7 +253,6 @@ public class Generator {
       Demographics city = location.randomCity(randomForDemographics);
       
       Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
-      System.out.println("demoAtt " + demoAttributes);
       long start = (long) demoAttributes.get(Person.BIRTHDATE);
 
       do {
@@ -387,7 +386,10 @@ public class Generator {
       Demographics city = location.randomCity(randomForDemographics);
       
       Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
-      System.out.println("demoAtt " + demoAttributes);
+      long start = (long) demoAttributes.get(Person.BIRTHDATE);
+
+
+        List<Module> modules = Module.getModules();
 
         clinician = new Clinician(clinicianSeed);
         clinician.populationSeed = this.options.seed;
