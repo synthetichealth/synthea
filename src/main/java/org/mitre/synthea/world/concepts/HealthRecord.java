@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
@@ -294,6 +295,7 @@ public class HealthRecord {
     public Code reason;
     public Code discharge;
     public Provider provider;
+    public Clinician clinician;
     public boolean ended;
 
     public Encounter(long time, String type) {

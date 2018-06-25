@@ -38,7 +38,7 @@ public final class LifecycleModule extends Module {
   public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
-  private static final boolean appendNumbersToNames =
+  public static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
   
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
@@ -107,28 +107,6 @@ public final class LifecycleModule extends Module {
 
     // java modules will never "finish"
     return false;
-  }
-  
-  /**
-   * Create a clinician
-   * @param clinician The clinician
-   * @param 
-   */
-  public static void createClinician(Location location, Clinician clinician, long clinicianSeed) {
-	  Map<String, Object> attributes = clinician.attributes;
-	  
-	  String gender = (String) attributes.get(Clinician.GENDER);
-	  String language = (String) attributes.get(Clinician.FIRST_LANGUAGE);
-	  String firstName = fakeFirstName(gender, language, clinician.random);
-	  String lastName = fakeLastName(language, clinician.random);
-	  if (appendNumbersToNames) {
-	    firstName = addHash(firstName);
-	    lastName = addHash(lastName);
-	  }
-	  attributes.put(Clinician.FIRST_NAME, firstName);
-	  attributes.put(Clinician.LAST_NAME, lastName);
-	  attributes.put(Clinician.NAME, firstName + " " + lastName);
-	  attributes.put(Clinician.NAME_PREFIX, "Dr.");
   }
 
   /**
@@ -219,7 +197,7 @@ public final class LifecycleModule extends Module {
   }
   
   @SuppressWarnings("unchecked")
-  private static String fakeFirstName(String gender, String language, Random random) {
+  public static String fakeFirstName(String gender, String language, Random random) {
     List<String> choices;
     if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish." + gender);
@@ -231,7 +209,7 @@ public final class LifecycleModule extends Module {
   }
   
   @SuppressWarnings("unchecked")
-  private static String fakeLastName(String language, Random random) {
+  public static String fakeLastName(String language, Random random) {
     List<String> choices;
     if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish.family");
@@ -243,7 +221,7 @@ public final class LifecycleModule extends Module {
   }
   
   @SuppressWarnings("unchecked")
-  private static String fakeAddress(boolean includeLine2, Random random) {
+  public static String fakeAddress(boolean includeLine2, Random random) {
     int number = random.nextInt(1000) + 100;
     List<String> n = (List<String>)names.get("english.family");
     // for now just use family names as the street name. 
@@ -267,7 +245,7 @@ public final class LifecycleModule extends Module {
    * @param name Person's name
    * @return The name with a hash appended, ex "John123" or "Smith22"
    */
-  private static String addHash(String name) {
+  public static String addHash(String name) {
     // note that this value should be deterministic
     // It cannot be a random number. It needs to be a hash value or something deterministic.
     // We do not want John10 and John52 -- we want all the Johns to have the SAME numbers. e.g. All

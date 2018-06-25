@@ -58,27 +58,31 @@ public final class EncounterModule extends Module {
       Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
       encounter.name = "Encounter Module Scheduled Wellness";
       encounter.codes.add(ENCOUNTER_CHECKUP);
-      encounter.provider = person.getAmbulatoryProvider(time);
+      Provider prov = person.getAmbulatoryProvider(time);
+      encounter.provider = prov;
+      encounter.clinician = prov.chooseClinicianList(prov.clinicians, prov.seed);
       encounter.codes.add(getWellnessVisitCode(person, time));
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
       startedEncounter = true;
     } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
-        if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
-          person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-        }
-        if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-          person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
-          person.addressLargestSymptom();
-          Encounter encounter = person.record.encounterStart(time, EncounterType.EMERGENCY.toString());
-          encounter.name = "Encounter Module Symptom Driven";
-          encounter.provider = person.getEmergencyProvider(time);
-          encounter.codes.add(ENCOUNTER_EMERGENCY);
-          person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
-          startedEncounter = true;
+      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null) {
+        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
+      }
+      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
+        person.addressLargestSymptom();
+        Encounter encounter = person.record.encounterStart(time, EncounterType.EMERGENCY.toString());
+        encounter.name = "Encounter Module Symptom Driven";
+        Provider prov = person.getEmergencyProvider(time);
+        encounter.provider = prov;
+        encounter.clinician = prov.chooseClinicianList(prov.clinicians, prov.seed);
+        encounter.codes.add(ENCOUNTER_EMERGENCY);
+        person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
+        startedEncounter = true;
           
       }
     } else if (person.symptomTotal() > URGENT_CARE_SYMPTOM_THRESHOLD) {
-      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
+      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
       }
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
@@ -86,21 +90,25 @@ public final class EncounterModule extends Module {
         person.addressLargestSymptom();
         Encounter encounter = person.record.encounterStart(time, EncounterType.URGENTCARE.toString());
         encounter.name = "Encounter Module Symptom Driven";
-        encounter.provider = person.getUrgentCareProvider(time);
+        Provider prov = person.getUrgentCareProvider(time);
+        encounter.provider = prov;
+        encounter.clinician = prov.chooseClinicianList(prov.clinicians, prov.seed);
         encounter.codes.add(ENCOUNTER_URGENTCARE);
         person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
         startedEncounter = true;
       } 
     } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
-      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null){
-          person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
+      if (person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL) == null) {
+        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
       } 
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
         Encounter encounter = person.record.encounterStart(time, EncounterType.WELLNESS.toString());
         encounter.name = "Encounter Module Symptom Driven";
-        encounter.provider = person.getAmbulatoryProvider(time);
+        Provider prov = person.getAmbulatoryProvider(time);
+        encounter.provider = prov;
+        encounter.clinician = prov.chooseClinicianList(prov.clinicians, prov.seed);
         encounter.codes.add(ENCOUNTER_CHECKUP);
         person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
         startedEncounter = true;

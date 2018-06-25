@@ -58,12 +58,16 @@ public class Provider implements QuadTreeData {
   private ArrayList<String> servicesProvided;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
+  public long seed;
+
+  
 
   protected Provider() {
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<String>();
     clinicians = new ArrayList<Clinician>();
+    
   }
 
   public String getResourceID() {
@@ -260,6 +264,7 @@ public class Provider implements QuadTreeData {
         parsed.attributes.put("numClinicians", 1);
         //System.out.println("name "+ parsed.name + " and num " + parsed.attributes.get("numClinicians").getClass());
         parsed.clinicians = generateClinicianList(population, location, (int) parsed.attributes.get("numClinicians"), seed, generator); 
+        parsed.seed = seed;
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
         if (!inserted) {
@@ -269,7 +274,8 @@ public class Provider implements QuadTreeData {
       }
     }
   }
-  public static ArrayList<Clinician> generateClinicianList(int population, Location location, int numClinicians, long clinicianSeed, Generator generator){
+  public static ArrayList<Clinician> generateClinicianList(int population, 
+		  Location location, int numClinicians, long clinicianSeed, Generator generator){
 	//generate the correct number of random Clinicians
 	 
 	 ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
@@ -283,6 +289,10 @@ public class Provider implements QuadTreeData {
   
   }
  
+  public Clinician chooseClinicianList(ArrayList<Clinician> clinicians, long clinicianSeed) {
+	  Random random = new Random(clinicianSeed);
+	  return clinicians.get(random.nextInt(clinicians.size()));
+  }
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
     d.uuid = UUID.randomUUID().toString();

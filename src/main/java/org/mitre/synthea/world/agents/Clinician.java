@@ -33,6 +33,13 @@ public class Clinician implements Serializable, QuadTreeData {
   public static final String NAME = "name";
   public static final String FIRST_LANGUAGE = "first_language";
   public static final String GENDER = "gender";
+  public static final String SPECIALTY = "specialty";
+  
+  public static final String ADDRESS = "address";
+  public static final String CITY = "city";
+  public static final String STATE = "state";
+  public static final String ZIP = "zip";
+  public static final String LOCATION = "location";
   
   
   public final Random random;
@@ -59,6 +66,14 @@ public class Clinician implements Serializable, QuadTreeData {
   public boolean hasService(String service) {
 	    return servicesProvided.contains(service);
 	  }
+  
+  public int randInt() {
+	    return random.nextInt();
+	  }
+
+  public int randInt(int bound) {
+    return random.nextInt(bound);
+    }
 @Override
 public double getX() {
 	// TODO Auto-generated method stub

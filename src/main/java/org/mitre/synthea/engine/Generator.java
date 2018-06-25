@@ -395,8 +395,36 @@ public class Generator {
         clinician.populationSeed = this.options.seed;
         clinician.attributes.putAll(demoAttributes);
         clinician.attributes.put(Person.LOCATION, location);
+        
+        Map<String, Object> attributes = clinician.attributes;
+  	  
+	  	  String gender = (String) attributes.get(Clinician.GENDER);
+	  	  String language = (String) attributes.get(Clinician.FIRST_LANGUAGE);
+	  	  String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
+	  	  String lastName = LifecycleModule.fakeLastName(language, clinician.random);
+	  	  
+	  	  if (LifecycleModule.appendNumbersToNames) {
+	  	    firstName = LifecycleModule.addHash(firstName);
+	  	    lastName = LifecycleModule.addHash(lastName);
+	  	  }
+	  	  attributes.put(Clinician.FIRST_NAME, firstName);
+	  	  attributes.put(Clinician.LAST_NAME, lastName);
+	  	  attributes.put(Clinician.NAME, firstName + " " + lastName);
+	  	  attributes.put(Clinician.NAME_PREFIX, "Dr.");
+	  	  //using the location's city and state, assign a random street address for this person
+	  	  
+	  	String clinicianCity = (String) attributes.get(Person.CITY);
+	    Location location = (Location) attributes.get(Person.LOCATION);
+	    if (location != null) {
+	      // should never happen in practice, but can happen in unit tests
+	      location.assignPoint(clinician, clinicianCity);
+	      clinician.attributes.put(Person.ZIP, location.getZipCode(clinicianCity));
+	      attributes.put(Person.BIRTHPLACE, location.randomCityName(clinician.random));
+	    }
+	    
+	    boolean hasStreetAddress2 = clinician.rand() < 0.5;
+	    attributes.put(Person.ADDRESS, LifecycleModule.fakeAddress(hasStreetAddress2, clinician.random));
 
-        LifecycleModule.createClinician(location, clinician, clinicianSeed);
         
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
