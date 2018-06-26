@@ -391,6 +391,7 @@ public class Graphviz {
 
         details.append("SNOMED-CT[").append(bodySiteCode).append("] Body Site: ")
             .append(bodySiteDisplay).append(NEWLINE);
+        break;
       default:
         // no special description
     }

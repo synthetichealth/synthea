@@ -1,0 +1,909 @@
+{
+  "name": "Functional Status Assessments",
+  "remarks": [
+    "This is a submodule that includes the possible assessments a patient will go through prior to and following either a total knee replacement or a total hip replacement.\n"
+  ],
+  "states": {
+    "KOOS_Total_Assessment": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 5,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72091-2",
+          "display": "Knee injury and Osteoarthritis Outcome Score [KOOS]"
+        }
+      ],
+      "direct_transition": "KOOS_Attribute_Set",
+      "remarks": [
+        "Five different subscales are scored separately: KOOS Pain (9 items); KOOS Symptoms (7 items); KOOS ADL (17 items); KOOS Sport/Rec (5 items); KOOS QOL (4 items). Each item has five possible answer options scored from 0 (No Problems) to 4 (Extreme Problems), and the scores are transformed to a 0–100 scale, with zero representing extreme knee problems and 100 representing no knee problems.",
+        "http://www.koos.nu",
+        ""
+      ]
+    },
+    "PROMIS10_Total_Assessment": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 2,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "61576-5",
+          "display": "PROMIS short form - global - version 1.1"
+        }
+      ],
+      "direct_transition": "PROMIS10_Attribute_Set",
+      "remarks": [
+        "Two different subscales are scored separately: Global Mental Health and Global Physical Health. Each have a score between 4 - 20."
+      ]
+    },
+    "HOOS_Total_Assessment": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 5,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72092-0",
+          "display": "Hip Dysfunction and Osteoarthritis Outcome Score [HOOS]"
+        }
+      ],
+      "direct_transition": "HOOS_Attribute_Set",
+      "remarks": [
+        "Five different subscales are scored separately: HOOS Pain (9 items); HOOS Symptoms (7 items); HOOS ADL (17 items); HOOS Sport/Rec (5 items); HOOS QOL (4 items). The scores are transformed to a 0–100 scale, with zero representing extreme knee problems and 100 representing no knee problems.",
+        "http://www.koos.nu"
+      ]
+    },
+    "Joint_Replacement_Assessment_Terminal": {
+      "type": "Terminal"
+    },
+    "VR36_Total_Assessment": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 8,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71933-6",
+          "display": "Veterans Rand health survey - 36 item (VR-36)"
+        }
+      ],
+      "direct_transition": "VR36_Attribute_Set",
+      "remarks": [
+        "Eight different subscales are scored separately: Mental Health, Role Emotion, Social Functioning, Vitality, General Health, Bodily Pain, Role Physical, and Physical Functioning. Each have a score between 4 - 20."
+      ]
+    },
+    "PROMIS29_Total_Assessment": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 7,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "62337-1",
+          "display": "PROMIS item bank - 29 profile"
+        }
+      ],
+      "direct_transition": "PROMIS29_Attribute_Set",
+      "remarks": [
+        "Seven different subscales are scored separately: Sleep Disturbance, Satisfaction with Participation in Social Roles,",
+        "Physical Function, Pain Interference, Fatigue, Depression, and Anxiety. Each have a score between 4 - 20."
+      ]
+    },
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Perform_Functional_Status_Assessment_Knee",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "knee"
+          }
+        },
+        {
+          "transition": "Perform_Functional_Status_Assessment_Hip",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "hip"
+          }
+        },
+        {
+          "transition": "Joint_Replacement_Assessment_Terminal"
+        }
+      ]
+    },
+    "Perform_Functional_Status_Assessment_Knee": {
+      "type": "Simple",
+      "remarks": [
+        "Possible assessment options obtained from:",
+        "https://ecqi.healthit.gov/ecqm/measures/cms066v7"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "KOOS_Symptoms",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "KOOS"
+          }
+        },
+        {
+          "transition": "PROMIS10_GPH",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "PROMIS-10"
+          }
+        },
+        {
+          "transition": "VR12_Mental_Health",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "VR-12"
+          }
+        },
+        {
+          "transition": "First_FSA_Knee"
+        }
+      ]
+    },
+    "Perform_Functional_Status_Assessment_Hip": {
+      "type": "Simple",
+      "remarks": [
+        "Possible assessment options obtained from:",
+        "https://ecqi.healthit.gov/ecqm/measures/cms056v5"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "HOOS_Symptoms",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "HOOS"
+          }
+        },
+        {
+          "transition": "PROMIS10_GPH",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "PROMIS-10"
+          }
+        },
+        {
+          "transition": "PROMIS29_Sleep_Disturbance",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "PROMIS-29"
+          }
+        },
+        {
+          "transition": "VR12_Mental_Health",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "VR-12"
+          }
+        },
+        {
+          "transition": "VR36_Mental_Health",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "assessment_done",
+            "operator": "==",
+            "value": "VR-36"
+          }
+        },
+        {
+          "transition": "First_FSA_Hip"
+        }
+      ]
+    },
+    "VR12_Total_Assessment": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 8,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71934-4",
+          "display": "Veterans Rand health survey - 12 item (VR-12)"
+        }
+      ],
+      "direct_transition": "VR12_Attribute_Set",
+      "remarks": [
+        "Eight different subscales are scored separately: Mental Health, Role Emotion, Social Functioning, Vitality, General Health, Bodily Pain, Role Physical, and Physical Functioning. Each have a score between 4 - 20."
+      ]
+    },
+    "KOOS_Attribute_Set": {
+      "type": "SetAttribute",
+      "attribute": "assessment_done",
+      "direct_transition": "FSA_Performed",
+      "value": "KOOS"
+    },
+    "PROMIS10_Attribute_Set": {
+      "type": "SetAttribute",
+      "attribute": "assessment_done",
+      "direct_transition": "FSA_Performed",
+      "value": "PROMIS-10"
+    },
+    "PROMIS29_Attribute_Set": {
+      "type": "SetAttribute",
+      "attribute": "assessment_done",
+      "direct_transition": "FSA_Performed",
+      "value": "PROMIS-29"
+    },
+    "VR12_Attribute_Set": {
+      "type": "SetAttribute",
+      "attribute": "assessment_done",
+      "direct_transition": "FSA_Performed",
+      "value": "VR-12"
+    },
+    "VR36_Attribute_Set": {
+      "type": "SetAttribute",
+      "attribute": "assessment_done",
+      "direct_transition": "FSA_Performed",
+      "value": "VR-36"
+    },
+    "HOOS_Attribute_Set": {
+      "type": "SetAttribute",
+      "attribute": "assessment_done",
+      "direct_transition": "FSA_Performed",
+      "value": "HOOS"
+    },
+    "FSA_Performed": {
+      "type": "Simple",
+      "direct_transition": "Joint_Replacement_Assessment_Terminal"
+    },
+    "PROMIS10_GPH": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71972-4",
+          "display": "PROMIS-10 Global Physical Health (GPH) score"
+        }
+      ],
+      "direct_transition": "PROMIS10_GMH",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "PROMIS10_GMH": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71970-8",
+          "display": "PROMIS-10 Global Mental Health (GMH) score"
+        }
+      ],
+      "direct_transition": "PROMIS10_Total_Assessment",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "KOOS_Symptoms": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72101-9",
+          "display": "Symptoms score [KOOS]"
+        }
+      ],
+      "direct_transition": "KOOS_Pain",
+      "range": {
+        "low": 0,
+        "high": 100
+      }
+    },
+    "KOOS_Pain": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72102-7",
+          "display": "Pain score [KOOS]"
+        }
+      ],
+      "direct_transition": "KOOS_ADL",
+      "range": {
+        "low": 0,
+        "high": 100
+      }
+    },
+    "KOOS_ADL": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72100-1",
+          "display": "Activities of daily living score [KOOS]"
+        }
+      ],
+      "direct_transition": "KOOS_Sport/Recreation",
+      "range": {
+        "low": 0,
+        "high": 100
+      }
+    },
+    "KOOS_Sport/Recreation": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72099-5",
+          "display": "Sport-recreation score [KOOS]"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 100
+      },
+      "direct_transition": "KOOS_QOL"
+    },
+    "KOOS_QOL": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72098-7",
+          "display": "Quality of life score [KOOS]"
+        }
+      ],
+      "direct_transition": "KOOS_Total_Assessment",
+      "range": {
+        "low": 0,
+        "high": 100
+      }
+    },
+    "HOOS_Symptoms": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72096-1",
+          "display": "Symptoms score [HOOS]"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 100
+      },
+      "direct_transition": "HOOS_Pain"
+    },
+    "HOOS_Pain": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72097-9",
+          "display": "Pain score [HOOS]"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 100
+      },
+      "direct_transition": "HOOS_ADL"
+    },
+    "HOOS_ADL": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72095-3",
+          "display": "Activities of daily living score [HOOS]"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 100
+      },
+      "direct_transition": "HOOS_Sport/Recreation"
+    },
+    "HOOS_Sport/Recreation": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72094-6",
+          "display": "Sport-recreation score [HOOS]"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 100
+      },
+      "direct_transition": "HOOS_QOL"
+    },
+    "HOOS_QOL": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72093-8",
+          "display": "Quality of life score [HOOS]"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 100
+      },
+      "direct_transition": "HOOS_Total_Assessment"
+    },
+    "VR12_Mental_Health": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72009-4",
+          "display": "VR-12 Mental health (MH) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Role_Emotion",
+      "range": {
+        "low": 2,
+        "high": 12
+      }
+    },
+    "VR12_Role_Emotion": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72010-2",
+          "display": "VR-12 Role emotion (RE) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Social_Functioning",
+      "range": {
+        "low": 2,
+        "high": 10
+      }
+    },
+    "VR12_Social_Functioning": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72011-0",
+          "display": "VR-12 Social functioning (SF) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Vitality",
+      "range": {
+        "low": 1,
+        "high": 5
+      }
+    },
+    "VR12_Vitality": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72012-8",
+          "display": "VR-12 Vitality (VT) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_General_Health",
+      "range": {
+        "low": 1,
+        "high": 6
+      }
+    },
+    "VR12_General_Health": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72013-6",
+          "display": "VR-12 General health (GH) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Bodily_Pain",
+      "range": {
+        "low": 1,
+        "high": 5
+      }
+    },
+    "VR12_Bodily_Pain": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72014-4",
+          "display": "VR-12 Bodily pain (BP) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Role_Physical",
+      "range": {
+        "low": 1,
+        "high": 5
+      }
+    },
+    "VR12_Role_Physical": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72015-1",
+          "display": "VR-12 Role physical (RP) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Physical_Functioning",
+      "range": {
+        "low": 2,
+        "high": 10
+      }
+    },
+    "VR12_Physical_Functioning": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72016-9",
+          "display": "VR-12 Physical functioning (PF) score - oblique method"
+        }
+      ],
+      "direct_transition": "VR12_Total_Assessment",
+      "range": {
+        "low": 2,
+        "high": 6
+      }
+    },
+    "VR36_Mental_Health": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71973-2",
+          "display": "VR-36 Mental health (MH) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 30
+      },
+      "direct_transition": "VR36_Role_Emotion"
+    },
+    "VR36_Role_Emotion": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71974-0",
+          "display": "VR-36 Role emotion (RE) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 3,
+        "high": 15
+      },
+      "direct_transition": "VR36_Social_Functioning"
+    },
+    "VR36_Social_Functioning": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71975-7",
+          "display": "VR-36 Social functioning (SF) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 10
+      },
+      "direct_transition": "VR36_Vitality"
+    },
+    "VR36_Vitality": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71976-5",
+          "display": "VR-36 Vitality (VT) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 24
+      },
+      "direct_transition": "VR36_General_Health"
+    },
+    "VR36_General_Health": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71977-3",
+          "display": "VR-36 General health (GH) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "VR36_Bodily_Pain"
+    },
+    "VR36_Bodily_Pain": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71978-1",
+          "display": "VR-36 Bodily pain (BP) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 12
+      },
+      "direct_transition": "VR36_Role_Physical"
+    },
+    "VR36_Role_Physical": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71979-9",
+          "display": "VR-36 Role physical (RP) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 20
+      },
+      "direct_transition": "VR36_Physical_Functioning"
+    },
+    "VR36_Physical_Functioning": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71980-7",
+          "display": "VR-36 Physical functioning (PF) score - oblique method"
+        }
+      ],
+      "range": {
+        "low": 10,
+        "high": 30
+      },
+      "direct_transition": "VR36_Total_Assessment"
+    },
+    "PROMIS29_Sleep_Disturbance": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71956-7",
+          "display": "PROMIS-29 Sleep disturbance score"
+        }
+      ],
+      "direct_transition": "PROMIS29_Satisfaction_With_Participation_In_Social_Roles",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "PROMIS29_Satisfaction_With_Participation_In_Social_Roles": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71958-3",
+          "display": "PROMIS-29 Satisfaction with participation in social roles score"
+        }
+      ],
+      "direct_transition": "PROMIS29_Physical_Function",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "PROMIS29_Physical_Function": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71960-9",
+          "display": "PROMIS-29 Physical function score"
+        }
+      ],
+      "direct_transition": "PROMIS29_Pain_Interference",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "PROMIS29_Pain_Interference": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71962-5",
+          "display": "PROMIS-29 Pain interference score"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "PROMIS29_Fatigue"
+    },
+    "PROMIS29_Fatigue": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71964-1",
+          "display": "PROMIS-29 Fatigue score"
+        }
+      ],
+      "direct_transition": "PROMIS29_Depression",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "PROMIS29_Depression": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71966-6",
+          "display": "PROMIS-29 Depression score"
+        }
+      ],
+      "direct_transition": "PROMIS29_Anxiety",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "PROMIS29_Anxiety": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "units",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71968-2",
+          "display": "PROMIS-29 Anxiety score"
+        }
+      ],
+      "direct_transition": "PROMIS29_Total_Assessment",
+      "range": {
+        "low": 4,
+        "high": 20
+      }
+    },
+    "First_FSA_Knee": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "KOOS_Symptoms",
+          "distribution": 0.34
+        },
+        {
+          "transition": "PROMIS10_GPH",
+          "distribution": 0.33
+        },
+        {
+          "transition": "VR12_Mental_Health",
+          "distribution": 0.33
+        }
+      ]
+    },
+    "First_FSA_Hip": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "HOOS_Symptoms",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PROMIS10_GPH",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PROMIS29_Sleep_Disturbance",
+          "distribution": 0.2
+        },
+        {
+          "transition": "VR12_Mental_Health",
+          "distribution": 0.2
+        },
+        {
+          "transition": "VR36_Mental_Health",
+          "distribution": 0.2
+        }
+      ]
+    }
+  }
+}

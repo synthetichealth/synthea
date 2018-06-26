@@ -8,12 +8,10 @@
     "http://emedicine.medscape.com/article/225362-overview"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Potential_Infection"
     },
-
     "Potential_Infection": {
       "type": "Delay",
       "exact": {
@@ -74,7 +72,6 @@
         }
       ]
     },
-
     "Acquire_Viral_Infection": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -88,37 +85,96 @@
       ],
       "direct_transition": "Viral_Symptom_1"
     },
-
     "Viral_Symptom_1": {
       "type": "Symptom",
       "symptom": "Cough",
       "range": {
-        "low": 40,
-        "high": 100
+        "low": 0,
+        "high": 50
       },
       "direct_transition": "Viral_Symptom_2"
     },
-
     "Viral_Symptom_2": {
       "type": "Symptom",
       "symptom": "Swollen Lymph Nodes",
       "range": {
         "low": 0,
-        "high": 60
+        "high": 50
       },
       "direct_transition": "Viral_Symptom_3"
     },
-
     "Viral_Symptom_3": {
       "type": "Symptom",
       "symptom": "Swollen Tonsils",
       "range": {
         "low": 0,
-        "high": 60
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_1"
+    },
+    "Common_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Sore Throat",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_2"
+    },
+    "Common_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Difficulty Swallowing",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_3"
+    },
+    "Common_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Runny/Stuffy Nose",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_4"
+    },
+    "Common_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_5"
+    },
+    "Common_Symptom_5": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_6"
+    },
+    "Common_Symptom_6": {
+      "type": "Symptom",
+      "symptom": "Body Aches",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Common_Symptom_7"
+    },
+    "Common_Symptom_7": {
+      "type": "Symptom",
+      "symptom": "Decreased Appetite",
+      "range": {
+        "low": 0,
+        "high": 50
       },
       "direct_transition": "Symptoms_dont_resolve"
     },
-
     "Acquire_Bacterial_Infection": {
       "type": "ConditionOnset",
       "target_encounter": "Doctor_Visit",
@@ -132,7 +188,6 @@
       ],
       "direct_transition": "Bacterial_Symptom_1"
     },
-
     "Bacterial_Symptom_1": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -144,30 +199,27 @@
       ],
       "direct_transition": "Bacterial_Symptom_2"
     },
-
     "Bacterial_Symptom_2": {
       "type": "Symptom",
       "symptom": "Swollen Lymph Nodes",
       "range": {
-        "low": 40,
-        "high": 100
+        "low": 20,
+        "high": 70
       },
       "remarks": [
         "Strep generally presents with swollen lymph nodes"
       ],
       "direct_transition": "Bacterial_Symptom_3"
     },
-
     "Bacterial_Symptom_3": {
       "type": "Symptom",
       "symptom": "Swollen Tonsils",
       "range": {
-        "low": 40,
-        "high": 100
+        "low": 20,
+        "high": 70
       },
-      "direct_transition": "Symptoms_dont_resolve"
+      "direct_transition": "Common_Symptom_1"
     },
-
     "Symptoms_dont_resolve": {
       "type": "Delay",
       "range": {
@@ -177,7 +229,6 @@
       },
       "direct_transition": "Doctor_Visit"
     },
-
     "Doctor_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -211,10 +262,9 @@
         }
       ]
     },
-
     "Take_Temperature_High": {
       "type": "Observation",
-      "category" : "vital-signs",
+      "category": "vital-signs",
       "range": {
         "low": 37.2,
         "high": 39.4
@@ -232,10 +282,9 @@
       ],
       "direct_transition": "Determine_if_Bacterial"
     },
-
     "Take_Temperature_Low": {
       "type": "Observation",
-      "category" : "vital-signs",
+      "category": "vital-signs",
       "range": {
         "low": 37,
         "high": 38
@@ -253,7 +302,6 @@
       ],
       "direct_transition": "Determine_if_Bacterial"
     },
-
     "Determine_if_Bacterial": {
       "type": "Simple",
       "remarks": [
@@ -272,19 +320,19 @@
                 "condition_type": "Symptom",
                 "symptom": "Cough",
                 "operator": "<",
-                "value": 50
+                "value": 30
               },
               {
                 "condition_type": "Symptom",
                 "symptom": "Swollen Lymph Nodes",
                 "operator": ">",
-                "value": 50
+                "value": 30
               },
               {
                 "condition_type": "Symptom",
                 "symptom": "Swollen Tonsils",
                 "operator": ">",
-                "value": 50
+                "value": 30
               },
               {
                 "condition_type": "Observation",
@@ -323,19 +371,19 @@
                 "condition_type": "Symptom",
                 "symptom": "Cough",
                 "operator": "<",
-                "value": 50
+                "value": 30
               },
               {
                 "condition_type": "Symptom",
                 "symptom": "Swollen Lymph Nodes",
                 "operator": ">",
-                "value": 50
+                "value": 30
               },
               {
                 "condition_type": "Symptom",
                 "symptom": "Swollen Tonsils",
                 "operator": ">",
-                "value": 50
+                "value": 30
               },
               {
                 "condition_type": "Observation",
@@ -370,7 +418,6 @@
         }
       ]
     },
-
     "Prescribe_Antibiotics": {
       "type": "Simple",
       "conditional_transition": [
@@ -388,7 +435,6 @@
         }
       ]
     },
-
     "Prescribe_Antibiotics_Child": {
       "type": "MedicationOrder",
       "target_encounter": "Doctor_Visit",
@@ -406,7 +452,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Prescribe_Antibiotics_Adult": {
       "type": "MedicationOrder",
       "target_encounter": "Doctor_Visit",
@@ -421,7 +466,6 @@
       ],
       "direct_transition": "End_Encounter"
     },
-
     "Throat_Culture": {
       "type": "Procedure",
       "target_encounter": "Doctor_Visit",
@@ -455,12 +499,10 @@
         }
       ]
     },
-
-    "End_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Time_Passes"
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Time_Passes"
     },
-
     "Time_Passes": {
       "type": "Delay",
       "range": {
@@ -470,7 +512,6 @@
       },
       "direct_transition": "Symptom_1_Ends"
     },
-
     "Symptom_1_Ends": {
       "type": "Symptom",
       "symptom": "Cough",
@@ -479,7 +520,6 @@
       },
       "direct_transition": "Symptom_2_Ends"
     },
-
     "Symptom_2_Ends": {
       "type": "Symptom",
       "symptom": "Swollen Lymph Nodes",
@@ -488,16 +528,71 @@
       },
       "direct_transition": "Symptom_3_Ends"
     },
-
     "Symptom_3_Ends": {
       "type": "Symptom",
       "symptom": "Swollen Tonsils",
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Condition_Resolves"
+      "direct_transition": "Symptom_4_Ends"
     },
 
+    "Symptom_4_Ends": {
+      "type": "Symptom",
+      "symptom": "Difficulty Swallowing",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom_5_Ends"
+    },
+    "Symptom_5_Ends": {
+      "type": "Symptom",
+      "symptom": "Sore Throat",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom_6_Ends"
+    },
+    "Symptom_6_Ends": {
+      "type": "Symptom",
+      "symptom": "Runny/Stuffy Nose",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom_7_Ends"
+    },
+    "Symptom_7_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom_8_Ends"
+    },
+    "Symptom_8_Ends": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom_9_Ends"
+    },
+    "Symptom_9_Ends": {
+      "type": "Symptom",
+      "symptom": "Body Aches",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Symptom_10_Ends"
+    },
+    "Symptom_10_Ends": {
+      "type": "Symptom",
+      "symptom": "Decreased Appetite",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Condition_Resolves"
+    },
     "Condition_Resolves": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "Sore Throat Condition",
@@ -514,7 +609,6 @@
         }
       ]
     },
-    
     "End_Antibiotics": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "Sore Throat Antibiotic",

@@ -4,6 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.function.Function;
+
+import org.junit.Assert;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
@@ -33,6 +36,7 @@ public abstract class TestHelper {
     Config.set("exporter.ccda.export", "false");
     Config.set("exporter.fhir.export", "false");
     Config.set("exporter.fhir_dstu2.export", "false");
+    Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.hospital.fhir.export", "false");

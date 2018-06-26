@@ -4,12 +4,10 @@
     "This submodule performs a male sterilization (vasectomy) procedure."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Consultation_Encounter"
     },
-
     "Consultation_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -22,12 +20,10 @@
       ],
       "direct_transition": "End_Consultation"
     },
-
     "End_Consultation": {
       "type": "EncounterEnd",
       "direct_transition": "Delay_For_Procedure"
     },
-
     "Delay_For_Procedure": {
       "type": "Delay",
       "range": {
@@ -37,7 +33,6 @@
       },
       "direct_transition": "Vasectomy_Encounter"
     },
-
     "Vasectomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -55,7 +50,6 @@
       ],
       "direct_transition": "Vasectomy"
     },
-
     "Vasectomy": {
       "type": "Procedure",
       "codes": [
@@ -72,14 +66,12 @@
       },
       "direct_transition": "Become_Infertile"
     },
-
     "Become_Infertile": {
       "type": "SetAttribute",
       "attribute": "infertile",
       "value": true,
       "direct_transition": "Post_Procedure_Care"
     },
-
     "Post_Procedure_Care": {
       "type": "CarePlanStart",
       "codes": [
@@ -103,12 +95,10 @@
       ],
       "direct_transition": "End_Vasectomy_Encounter"
     },
-
     "End_Vasectomy_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Delay_For_Recovery"
     },
-
     "Delay_For_Recovery": {
       "type": "Delay",
       "range": {
@@ -118,13 +108,11 @@
       },
       "direct_transition": "End_Vasectomy_Care"
     },
-
     "End_Vasectomy_Care": {
       "type": "CarePlanEnd",
       "careplan": "Post_Procedure_Care",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

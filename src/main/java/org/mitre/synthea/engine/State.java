@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
@@ -472,7 +473,7 @@ public abstract class State implements Cloneable {
           person.setCurrentEncounter(module, encounter);
 
           // find closest provider and increment encounters count
-          Provider provider = person.getAmbulatoryProvider();
+          Provider provider = person.getAmbulatoryProvider(time);
           person.addCurrentProvider(module.name, provider);
           int year = Utilities.getYear(time);
           provider.incrementEncounters("wellness", year);
@@ -486,7 +487,6 @@ public abstract class State implements Cloneable {
           return false;
         }
       } else {
-
         HealthRecord.Encounter encounter = person.record.encounterStart(time, encounterClass);
         if (codes != null) {
           encounter.codes.addAll(codes);
@@ -494,7 +494,7 @@ public abstract class State implements Cloneable {
         person.setCurrentEncounter(module, encounter);
 
         // find closest provider and increment encounters count
-        Provider provider = person.getProvider(encounterClass);
+        Provider provider = person.getProvider(encounterClass, time);
         person.addCurrentProvider(module.name, provider);
         int year = Utilities.getYear(time);
         provider.incrementEncounters(encounterClass, year);
@@ -563,7 +563,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
       if (encounter.type != EncounterType.WELLNESS.toString()) {
-        encounter.stop = time;
+        person.record.encounterEnd(time, encounter.type);
       }
 
       encounter.discharge = dischargeDisposition;
@@ -804,7 +804,7 @@ public abstract class State implements Cloneable {
       Provider medicationProvider = person.getCurrentProvider(module.name);
       if (medicationProvider == null) {
         // no provider associated with encounter or medication order
-        medicationProvider = person.getAmbulatoryProvider();
+        medicationProvider = person.getAmbulatoryProvider(time);
       }
 
       int year = Utilities.getYear(time);
@@ -1010,7 +1010,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getAmbulatoryProvider();
+        provider = person.getAmbulatoryProvider(time);
       }
       int year = Utilities.getYear(time);
       provider.incrementProcedures(year);
@@ -1214,7 +1214,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getAmbulatoryProvider();
+        provider = person.getAmbulatoryProvider(time);
       }
       int year = Utilities.getYear(time);
       provider.incrementLabs(year);
@@ -1256,6 +1256,7 @@ public abstract class State implements Cloneable {
       HealthRecord.Procedure procedure = person.record.procedure(time, primaryProcedureCode);
       procedure.name = this.name;
       procedure.codes.add(procedureCode);
+      procedure.stop = procedure.start + TimeUnit.MINUTES.toMillis(30);
       return true;
     }
   }
@@ -1271,6 +1272,7 @@ public abstract class State implements Cloneable {
     private String cause;
     private Range<Integer> range;
     private Exact<Integer> exact;
+    public boolean addressed;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
@@ -1278,6 +1280,7 @@ public abstract class State implements Cloneable {
       if (cause == null) {
         cause = module.name;
       }
+      addressed = false;
     }
 
     @Override
@@ -1287,17 +1290,18 @@ public abstract class State implements Cloneable {
       clone.cause = cause;
       clone.range = range;
       clone.exact = exact;
+      clone.addressed = addressed;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
       if (exact != null) {
-        person.setSymptom(cause, symptom, exact.quantity);
+        person.setSymptom(cause, symptom, exact.quantity, addressed);
       } else if (range != null) {
-        person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high));
+        person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high), addressed);
       } else {
-        person.setSymptom(cause, symptom, 0);
+        person.setSymptom(cause, symptom, 0, addressed);
       }
       return true;
     }

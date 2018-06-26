@@ -1,7 +1,6 @@
 {
   "name": "Appendicitis",
   "states": {
-
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -24,7 +23,6 @@
         }
       ]
     },
-
     "Male": {
       "type": "Simple",
       "distributed_transition": [
@@ -41,7 +39,6 @@
         "Men have an approx lifetime risk of appendicitis of 8.6%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
       ]
     },
-
     "Female": {
       "type": "Simple",
       "distributed_transition": [
@@ -58,7 +55,6 @@
         "Women have an approx lifetime risk of appendicitis of 6.7%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
       ]
     },
-
     "Pre_appendicitis": {
       "type": "Simple",
       "distributed_transition": [
@@ -83,7 +79,6 @@
         "Age distribution of appendicitis from https://www.ncbi.nlm.nih.gov/books/NBK169006/ , Table 1"
       ]
     },
-
     "Ages_1_17": {
       "type": "Delay",
       "range": {
@@ -91,9 +86,8 @@
         "high": 17,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis_Symptom1"
     },
-
     "Ages_18_44": {
       "type": "Delay",
       "range": {
@@ -101,9 +95,8 @@
         "high": 44,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis_Symptom1"
     },
-
     "Ages_45_64": {
       "type": "Delay",
       "range": {
@@ -111,9 +104,8 @@
         "high": 64,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis_Symptom1"
     },
-
     "Ages_65_Plus": {
       "type": "Delay",
       "range": {
@@ -121,9 +113,80 @@
         "high": 99,
         "unit": "years"
       },
+      "direct_transition": "Appendicitis_Symptom1"
+    },
+    "Appendicitis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Appendicitis_Symptom2"
+    },
+    "Appendicitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "Appendicitis_Symptom3"
+    },
+    "Appendicitis_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Loss of Appetite",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "Appendicitis_Symptom4"
+    },
+    "Appendicitis_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Appendicitis_Symptom5"
+    },
+    "Appendicitis_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Appendicitis_Symptom6"
+    },
+    "Appendicitis_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Bloating/Gas",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Appendicitis_Symptom7"
+    },
+    "Appendicitis_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Symptom_Period"
+    },
+     "Symptom_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
       "direct_transition": "Appendicitis"
     },
-
     "Appendicitis": {
       "type": "ConditionOnset",
       "target_encounter": "Appendicitis_Encounter",
@@ -152,7 +215,6 @@
         "For simplicity here I just round to 30% for all age groups."
       ]
     },
-
     "Rupture": {
       "type": "ConditionOnset",
       "target_encounter": "Appendicitis_Encounter",
@@ -165,7 +227,6 @@
       ],
       "direct_transition": "Appendicitis_Encounter"
     },
-
     "Appendicitis_Encounter": {
       "type": "Encounter",
       "wellness": false,
@@ -183,7 +244,6 @@
       ],
       "direct_transition": "History_of_Appendectomy"
     },
-
     "History_of_Appendectomy": {
       "type": "ConditionOnset",
       "target_encounter": "Appendectomy_Encounter",
@@ -196,7 +256,6 @@
       ],
       "direct_transition": "Appendectomy_Encounter"
     },
-
     "Appendectomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -210,7 +269,6 @@
       ],
       "direct_transition": "Appendectomy"
     },
-
     "Appendectomy": {
       "type": "Procedure",
       "target_encounter": "Appendectomy_Encounter",
@@ -225,9 +283,64 @@
       "duration" : { "low" : 40, "high" : 70, "unit" : "minutes" },
       "remarks" : ["Avg operative time is ~55 minutes",
                    "https://www.ncbi.nlm.nih.gov/pubmed/17658102"],
+      "direct_transition": "Appendicitis_Symptom1_Ends"
+    },
+    "Appendicitis_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom2_Ends"
+    },
+    "Appendicitis_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom3_Ends"
+    },
+    "Appendicitis_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Loss of Appetite",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom4_Ends"
+    },
+    "Appendicitis_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom5_Ends"
+    },
+    "Appendicitis_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom6_Ends"
+    },
+    "Appendicitis_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Bloating/Gas",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Appendicitis_Symptom7_Ends"
+    },
+    "Appendicitis_Symptom7_Ends": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Recovery"
     },
-
     "Recovery" : {
       "type" : "Delay",
       "range" : { "low" : 1, "high" : 5, "unit" : "days" },
@@ -245,9 +358,8 @@
         "code" : "01",
         "display" : "Discharged to home care or self care (routine discharge)"
       },
-      "direct_transition" : "Terminal"
+      "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

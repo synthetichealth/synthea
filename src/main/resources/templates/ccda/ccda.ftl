@@ -52,10 +52,10 @@
       </assignedAuthoringDevice>
       <representedOrganization>
         <id nullFlavor="NA"/>
-        <name>${preferredAmbulatoryProvider.name}</name>
+        <name>${preferredAmbulatoryProvider.name?replace("&", "&amp;")}</name>
         <telecom nullFlavor="NA"/>
         <addr>
-          <streetAddressLine>${preferredAmbulatoryProvider.address}</streetAddressLine>
+          <streetAddressLine>${preferredAmbulatoryProvider.address?replace("&", "&amp;")}</streetAddressLine>
           <city>${preferredAmbulatoryProvider.city}</city>
           <state>${preferredAmbulatoryProvider.state}</state>
           <postalCode>${preferredAmbulatoryProvider.zip}</postalCode>
@@ -67,10 +67,10 @@
     <assignedCustodian>
       <representedCustodianOrganization>
         <id nullFlavor="NA"/>
-        <name>${preferredAmbulatoryProvider.name}</name>
+        <name>${preferredAmbulatoryProvider.name?replace("&", "&amp;")}</name>
         <telecom nullFlavor="NA"/>
         <addr>
-          <streetAddressLine>${preferredAmbulatoryProvider.address}</streetAddressLine>
+          <streetAddressLine>${preferredAmbulatoryProvider.address?replace("&", "&amp;")}</streetAddressLine>
           <city>${preferredAmbulatoryProvider.city}</city>
           <state>${preferredAmbulatoryProvider.state}</state>
           <postalCode>${preferredAmbulatoryProvider.zip}</postalCode>

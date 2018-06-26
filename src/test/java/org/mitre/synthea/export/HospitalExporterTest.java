@@ -35,6 +35,7 @@ public class HospitalExporterTest {
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir.export", "true");
+    Config.set("exporter.fhir.transaction_bundle", "true");
     Provider.loadProviders("Massachusetts");
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());

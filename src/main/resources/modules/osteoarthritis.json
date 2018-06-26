@@ -23,35 +23,10 @@
         " | Osteoarthritis |   0.34000  |    2:1    | ",
         " ------------------------------------------- "
       ],
-      "direct_transition": "Delay_Until_Arthritis"
-    },
-    "Delay_Until_Arthritis": {
-      "type": "Delay",
-      "conditional_transition": [
-        {
-          "transition": "Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Non_Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
-        }
-      ],
-      "exact": {
-        "quantity": 25,
-        "unit": "years"
-      }
+      "direct_transition": "Delay_Pre_Arthritis"
     },
     "Osteoarthritis": {
-      "type": "Delay",
+      "type": "Simple",
       "distributed_transition": [
         {
           "distribution": 0.234,
@@ -71,12 +46,7 @@
         " OSTEOARTHRITIS                                                       ",
         "======================================================================",
         "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
-      ],
-      "range": {
-        "low": 0,
-        "high": 55,
-        "unit": "years"
-      }
+      ]
     },
     "OA_Of_The_Hand": {
       "type": "ConditionOnset",
@@ -236,7 +206,7 @@
     },
     "End_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "OA_Symptom1_Ends"
     },
     "Terminal": {
       "type": "Terminal"
@@ -252,7 +222,7 @@
           },
           "distributions": [
             {
-              "transition": "Osteoarthritis",
+              "transition": "Delay_Until_Symptoms",
               "distribution": 0.2
             },
             {
@@ -269,7 +239,7 @@
           },
           "distributions": [
             {
-              "transition": "Osteoarthritis",
+              "transition": "Delay_Until_Symptoms",
               "distribution": 0.2642
             },
             {
@@ -286,7 +256,7 @@
           },
           "distributions": [
             {
-              "transition": "Osteoarthritis",
+              "transition": "Delay_Until_Symptoms",
               "distribution": 0.22
             },
             {
@@ -307,7 +277,7 @@
           },
           "distributions": [
             {
-              "transition": "Osteoarthritis",
+              "transition": "Delay_Until_Symptoms",
               "distribution": 0.21
             },
             {
@@ -323,7 +293,7 @@
           },
           "distributions": [
             {
-              "transition": "Osteoarthritis",
+              "transition": "Delay_Until_Symptoms",
               "distribution": 0.2267
             },
             {
@@ -333,6 +303,107 @@
           ]
         }
       ]
+    },
+    "OA_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "cause": "",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "OA_Symptom2_Ends"
+    },
+    "OA_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "cause": "",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Terminal"
+    },
+    "Delay_Until_Symptoms": {
+      "type": "Delay",
+      "direct_transition": "OA_Symptom1",
+      "range": {
+        "low": 0,
+        "high": 15,
+        "unit": "years"
+      }
+    },
+    "OA_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "cause": "",
+      "direct_transition": "OA_Symptom2",
+      "range": {
+        "low": 0,
+        "high": 20
+      }
+    },
+    "OA_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "cause": "",
+      "direct_transition": "Delay_Until_Arthritis",
+      "range": {
+        "low": 0,
+        "high": 20
+      }
+    },
+    "Delay_Pre_Arthritis": {
+      "type": "Delay",
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Non_Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "exact": {
+        "quantity": 25,
+        "unit": "years"
+      }
+    },
+    "Delay_Until_Arthritis": {
+      "type": "Delay",
+      "direct_transition": "OA_Symptom1_Advances",
+      "range": {
+        "low": 5,
+        "high": 30,
+        "unit": "years"
+      }
+    },
+    "OA_Symptom1_Advances": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "cause": "",
+      "direct_transition": "OA_Symptom2_Advances",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
+    },
+    "OA_Symptom2_Advances": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "cause": "",
+      "direct_transition": "Osteoarthritis",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
     }
   }
 }

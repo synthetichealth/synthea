@@ -72,6 +72,7 @@ public class Person implements Serializable, QuadTreeData {
   public Map<String, Object> attributes;
   public Map<VitalSign, Double> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
+  private Map<String, Map<String, Boolean>> symptomStatuses;
   public EventList events;
   public HealthRecord record;
   /** history of the currently active module. */
@@ -83,8 +84,9 @@ public class Person implements Serializable, QuadTreeData {
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, Double>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
+    symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
     events = new EventList();
-    record = new HealthRecord();
+    record = new HealthRecord(this);
   }
 
   public double rand() {
@@ -171,24 +173,46 @@ public class Person implements Serializable, QuadTreeData {
     return (events.event(Event.BIRTH) != null && events.before(time, Event.DEATH).isEmpty());
   }
 
-  public void setSymptom(String cause, String type, int value) {
+  public void setSymptom(String cause, String type, int value, Boolean addressed) {
     if (!symptoms.containsKey(type)) {
       symptoms.put(type, new ConcurrentHashMap<String, Integer>());
+      symptomStatuses.put(type, new ConcurrentHashMap<String, Boolean>());
     }
     symptoms.get(type).put(cause, value);
+    symptomStatuses.get(type).put(cause, addressed);
   }
 
   public int getSymptom(String type) {
     int max = 0;
-    if (symptoms.containsKey(type)) {
+    if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
       Map<String, Integer> typedSymptoms = symptoms.get(type);
       for (String cause : typedSymptoms.keySet()) {
-        if (typedSymptoms.get(cause) > max) {
+        if (typedSymptoms.get(cause) > max && !symptomStatuses.get(type).get(cause)) {
           max = typedSymptoms.get(cause);
         }
       }
     }
     return max;
+  }
+
+  //Mark the largest valued symptom as addressed.
+  public void addressLargestSymptom() {
+    String highestType = "";
+    String highestCause = "";
+    int maxValue = 0;
+    for (String type : symptoms.keySet()) {
+      if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
+        Map<String, Integer> typedSymptoms = symptoms.get(type);
+        for (String cause : typedSymptoms.keySet()) {
+          if (typedSymptoms.get(cause) > maxValue && !symptomStatuses.get(type).get(cause)) {
+            maxValue = typedSymptoms.get(cause);
+            highestCause = cause;
+            highestType = type;
+          }
+        }
+      }
+    }
+    symptomStatuses.get(highestType).put(highestCause, true);
   }
 
   public Double getVitalSign(VitalSign vitalSign) {
@@ -215,7 +239,7 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * The total number of all symptom severities.
+   * The total number of all unaddressed symptom severities.
    * @return total : sum of all the symptom severities. This number drives care-seeking behaviors.
    */
   public int symptomTotal() {
@@ -288,31 +312,34 @@ public class Person implements Serializable, QuadTreeData {
   public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
   public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
+  public static final String PREFERREDURGENTCAREPROVIDER = "preferredUrgentCareProvider";
 
-  public Provider getProvider(String encounterClass) {
+  public Provider getProvider(String encounterClass, long time) {
     switch (encounterClass) {
       case Provider.AMBULATORY:
-        return this.getAmbulatoryProvider();
+        return this.getAmbulatoryProvider(time);
       case Provider.EMERGENCY:
-        return this.getEmergencyProvider();
+        return this.getEmergencyProvider(time);
       case Provider.INPATIENT:
-        return this.getInpatientProvider();
+        return this.getInpatientProvider(time);
       case Provider.WELLNESS:
-        return this.getAmbulatoryProvider();
+        return this.getAmbulatoryProvider(time);
+      case Provider.URGENTCARE:
+        return this.getUrgentCareProvider(time);
       default:
-        return this.getAmbulatoryProvider();
+        return this.getAmbulatoryProvider(time);
     }
   }
 
-  public Provider getAmbulatoryProvider() {
+  public Provider getAmbulatoryProvider(long time) {
     if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER)) {
-      setAmbulatoryProvider();
+      setAmbulatoryProvider(time);
     }
     return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
   }
 
-  private void setAmbulatoryProvider() {
-    Provider provider = Provider.findClosestService(this, Provider.AMBULATORY);
+  private void setAmbulatoryProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.AMBULATORY, time);
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
@@ -320,15 +347,15 @@ public class Person implements Serializable, QuadTreeData {
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
-  public Provider getInpatientProvider() {
+  public Provider getInpatientProvider(long time) {
     if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER)) {
-      setInpatientProvider();
+      setInpatientProvider(time);
     }
     return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
   }
 
-  private void setInpatientProvider() {
-    Provider provider = Provider.findClosestService(this, Provider.INPATIENT);
+  private void setInpatientProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.INPATIENT, time);
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
@@ -336,23 +363,36 @@ public class Person implements Serializable, QuadTreeData {
     attributes.put(PREFERREDINPATIENTPROVIDER, provider);
   }
 
-  public Provider getEmergencyProvider() {
+  public Provider getEmergencyProvider(long time) {
     if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER)) {
-      setEmergencyProvider();
+      setEmergencyProvider(time);
     }
     return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
   }
 
-  private void setEmergencyProvider() {
-    Provider provider = Provider.findClosestService(this, Provider.EMERGENCY);
+  private void setEmergencyProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.EMERGENCY, time);
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
   }
 
   public void setEmergencyProvider(Provider provider) {
-    if (provider == null) {
-      provider = Provider.findClosestService(this, Provider.EMERGENCY);
-    }
     attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
+  }
+
+  public Provider getUrgentCareProvider(long time) {
+    if (!attributes.containsKey(PREFERREDURGENTCAREPROVIDER)) {
+      setUrgentCareProvider(time);
+    }
+    return (Provider) attributes.get(PREFERREDURGENTCAREPROVIDER);
+  }
+
+  private void setUrgentCareProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.URGENTCARE, time);
+    attributes.put(PREFERREDURGENTCAREPROVIDER, provider);
+  }
+
+  public void setUrgentCareProvider(Provider provider) {
+    attributes.put(PREFERREDURGENTCAREPROVIDER, provider);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

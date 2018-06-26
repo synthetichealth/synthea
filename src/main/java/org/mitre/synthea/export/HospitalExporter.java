@@ -17,7 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.Organization;
@@ -31,11 +33,20 @@ public abstract class HospitalExporter {
 
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
+  protected static boolean TRANSACTION_BUNDLE =
+      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
 
       Bundle bundle = new Bundle();
-      bundle.setType(BundleType.COLLECTION);
+      if (TRANSACTION_BUNDLE) {
+        bundle.setType(BundleType.TRANSACTION);
+      } else {
+        bundle.setType(BundleType.COLLECTION);
+      }
       for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
 
@@ -80,6 +91,9 @@ public abstract class HospitalExporter {
     address.setCity(h.city);
     address.setPostalCode(h.zip);
     address.setState(h.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
@@ -132,6 +146,14 @@ public abstract class HospitalExporter {
     entry.setFullUrl("urn:uuid:" + resourceID);
 
     entry.setResource(resource);
+
+    if (TRANSACTION_BUNDLE) {
+      BundleEntryRequestComponent request = entry.getRequest();
+      request.setMethod(HTTPVerb.POST);
+      request.setUrl(resource.getResourceType().name());
+      entry.setRequest(request);
+    }
+
     return entry;
   }
 }

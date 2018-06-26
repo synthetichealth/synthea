@@ -6,8 +6,10 @@ import ca.uhn.fhir.model.dstu2.composite.AddressDt;
 import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
 import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
+import ca.uhn.fhir.model.dstu2.valueset.HTTPVerbEnum;
 import ca.uhn.fhir.model.primitive.IntegerDt;
 
 import com.google.common.collect.Table;
@@ -32,11 +34,20 @@ public abstract class HospitalDSTU2Exporter {
 
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
+  protected static boolean TRANSACTION_BUNDLE =
+      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_dstu2.export"))) {
       
       Bundle bundle = new Bundle();
-      bundle.setType(BundleTypeEnum.COLLECTION);
+      if (TRANSACTION_BUNDLE) {
+        bundle.setType(BundleTypeEnum.TRANSACTION);
+      } else {
+        bundle.setType(BundleTypeEnum.COLLECTION);
+      }
       for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
 
@@ -81,6 +92,9 @@ public abstract class HospitalDSTU2Exporter {
     address.setCity(h.city);
     address.setPostalCode(h.zip);
     address.setState(h.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
@@ -137,6 +151,14 @@ public abstract class HospitalDSTU2Exporter {
     entry.setFullUrl("urn:uuid:" + resourceID);
 
     entry.setResource(resource);
+
+    if (TRANSACTION_BUNDLE) {
+      EntryRequest request = entry.getRequest();
+      request.setMethod(HTTPVerbEnum.POST);
+      request.setUrl(resource.getResourceName());
+      entry.setRequest(request);
+    }
+
     return entry;
   }
 }

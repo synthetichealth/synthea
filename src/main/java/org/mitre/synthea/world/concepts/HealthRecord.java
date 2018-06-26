@@ -13,8 +13,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
 /**
@@ -94,17 +96,31 @@ public class HealthRecord {
    * associated codes.
    */
   public class Entry {
+    /** reference to the HealthRecord this entry belongs to. */
+    private HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
     public long start;
     public long stop;
     public String type;
     public List<Code> codes;
+    private BigDecimal cost;
 
     public Entry(long start, String type) {
       this.start = start;
       this.type = type;
       this.codes = new ArrayList<Code>();
+    }
+
+    public BigDecimal cost() {
+      if (cost == null) {
+        Person patient = record.person;
+        Provider provider = null;
+        String payer = null;
+        cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
+        cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+      }
+      return cost;
     }
 
     public String toString() {
@@ -160,6 +176,7 @@ public class HealthRecord {
     public Procedure(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
+      this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
     }
   }
 
@@ -225,7 +242,7 @@ public class HealthRecord {
     public double baseCost;
     public Encounter encounter;
     public Medication medication;
-    public List<ClaimItem> items;
+    public List<Entry> items;
 
     public Claim(Encounter encounter) {
       // Encounter inpatient
@@ -248,39 +265,21 @@ public class HealthRecord {
     }
 
     public void addItem(Entry entry) {
-      items.add(new ClaimItem(entry, null));
+      items.add(entry);
     }
 
     public BigDecimal total() {
       BigDecimal total = BigDecimal.valueOf(baseCost);
 
-      for (ClaimItem lineItem : items) {
+      for (Entry lineItem : items) {
         total = total.add(lineItem.cost());
       }
       return total;
     }
   }
 
-  public class ClaimItem {
-    public Entry entry;
-    private BigDecimal cost;
-
-    public ClaimItem(Entry entry, BigDecimal cost) {
-      this.entry = entry;
-      this.cost = cost;
-    }
-
-    public BigDecimal cost() {
-      if (cost == null) {
-        cost = BigDecimal.valueOf(Costs.calculateCost(entry, true));
-        cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
-      }
-      return cost;
-    }
-  }
-
   public enum EncounterType {
-    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY
+    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY, URGENTCARE
   }
 
   public class Encounter extends Entry {
@@ -297,9 +296,21 @@ public class HealthRecord {
     public Code reason;
     public Code discharge;
     public Provider provider;
+    public boolean ended;
 
     public Encounter(long time, String type) {
       super(time, type);
+      if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
+        // Emergency encounters should take at least an hour.
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(60);
+      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
+        // Inpatient encounters should last at least a day (1440 minutes).
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(1440);
+      } else {
+        // Other encounters will default to 15 minutes.
+        this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
+      }
+      ended = false;
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
@@ -313,12 +324,14 @@ public class HealthRecord {
     }
   }
 
+  private Person person;
   public List<Encounter> encounters;
   public Map<String, Entry> present;
   /** recorded death date/time. */
   public Long death;
 
-  public HealthRecord() {
+  public HealthRecord(Person person) {
+    this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
   }
@@ -517,8 +530,20 @@ public class HealthRecord {
   public void encounterEnd(long time, String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equals(type) && encounter.stop == 0L) {
-        encounter.stop = time;
+      if (encounter.type.equalsIgnoreCase(type) && !encounter.ended) {
+        encounter.ended = true;
+        // Only override the stop time if it is longer than the default.
+        if (time > encounter.stop) {
+          encounter.stop = time;
+        }
+        // Now, add time for each procedure.
+        long procedureTime;
+        for (Procedure p : encounter.procedures) {
+          procedureTime = (p.stop - p.start);
+          if (procedureTime > 0) {
+            encounter.stop += procedureTime;
+          }
+        }
         return;
       }
     }

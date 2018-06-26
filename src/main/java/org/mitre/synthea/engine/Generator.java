@@ -34,8 +34,7 @@ public class Generator {
   public static final long ONE_HUNDRED_YEARS = 100L * TimeUnit.DAYS.toMillis(365);
   public static final int MAX_TRIES = 10;
   public DataStore database;
-  public long numberOfPeople;
-  public long seed;
+  public GeneratorOptions options;
   private Random random;
   public long timestep;
   public long stop;
@@ -49,12 +48,29 @@ public class Generator {
   public static final String DEFAULT_STATE = "Massachusetts";
 
   /**
+   * Used only for testing and debugging. Populate this field to keep track of all patients
+   * generated, living or dead, during a simulation. Note that this may result in significantly
+   * increased memory usage as patients cannot be GC'ed.
+   */
+  List<Person> internalStore;
+  
+  private static final String TARGET_AGE = "target_age";
+  
+  /**
    * Helper class following the "Parameter Object" pattern.
    * This class provides the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
+    /** Gender to be generated. M for Male, F for Female, null for any. */
+    public String gender;
+    /** Age range applies. */
+    public boolean ageSpecified = false;
+    /** Minimum age of people to be generated. Defaults to zero. */
+    public int minAge = 0;
+    /** Maximum age of people to be generated. Defaults to 140. */
+    public int maxAge = 140;
     public String city;
     public String state;
   }
@@ -73,7 +89,9 @@ public class Generator {
    * @param population Target population size
    */
   public Generator(int population) {
-    init(population, System.currentTimeMillis(), DEFAULT_STATE, null);
+    GeneratorOptions options = new GeneratorOptions();
+    options.population = population;
+    init(options);
   }
   
   /**
@@ -84,7 +102,10 @@ public class Generator {
    * @param seed Seed used for randomness
    */
   public Generator(int population, long seed) {
-    init(population, seed, DEFAULT_STATE, null);
+    GeneratorOptions options = new GeneratorOptions();
+    options.population = population;
+    options.seed = seed;
+    init(options);
   }
 
   /**
@@ -92,11 +113,10 @@ public class Generator {
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
-    String state = o.state == null ? DEFAULT_STATE : o.state;
-    init(o.population, o.seed, state, o.city);
+    init(o);
   }
 
-  private void init(int population, long seed, String state, String city) {
+  private void init(GeneratorOptions o) {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -115,13 +135,16 @@ public class Generator {
                 + "' . Valid values are file, in-memory, or none.");
     }
 
-    this.numberOfPeople = population;
-    this.seed = seed;
-    this.random = new Random(seed);
+    if (o.state == null) {
+      o.state = DEFAULT_STATE;
+    }
+    
+    this.options = o;
+    this.random = new Random(o.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
     this.stop = System.currentTimeMillis();
 
-    this.location = new Location(state, city);
+    this.location = new Location(o.state, o.city);
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
@@ -137,19 +160,24 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(state);
+    Provider.loadProviders(o.state);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
     String locationName;
-    if (city == null) {
-      locationName = state;
+    if (o.city == null) {
+      locationName = o.state;
     } else {
-      locationName = city + ", " + state;
+      locationName = o.city + ", " + o.state;
     }
     System.out.println("Running with options:");
-    System.out.println(String.format("Population: %d\nSeed: %d\nLocation: %s\n", 
-        this.numberOfPeople, this.seed, locationName));
+    System.out.println(String.format("Population: %d\nSeed: %d\nLocation: %s",
+        o.population, o.seed, locationName));
+    System.out.println(String.format("Min Age: %d\nMax Age: %d",
+        o.minAge, o.maxAge));
+    if (o.gender != null) {
+      System.out.println(String.format("Gender: %s", o.gender));
+    }
   }
 
   /**
@@ -158,7 +186,7 @@ public class Generator {
   public void run() {
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
-    for (int i = 0; i < this.numberOfPeople; i++) {
+    for (int i = 0; i < this.options.population; i++) {
       final int index = i;
       final long seed = this.random.nextLong();
       threadPool.submit(() -> generatePerson(index, seed));
@@ -220,20 +248,19 @@ public class Generator {
     Person person = null;
     try {
       boolean isAlive = true;
-
-      Demographics city = location.randomCity(new Random(personSeed));
+      int tryNumber = 0; // number of tries to create these demographics
+      Random randomForDemographics = new Random(personSeed);
+      Demographics city = location.randomCity(randomForDemographics);
+      
+      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
+      long start = (long) demoAttributes.get(Person.BIRTHDATE);
 
       do {
         List<Module> modules = Module.getModules();
 
         person = new Person(personSeed);
-        person.populationSeed = this.seed;
-
-        // TODO - this is quick & easy to implement,
-        // but we need to adapt the ruby method of pre-defining all the demographic buckets
-        // and then putting people into those
-        // -- but: how will that work with seeds?
-        long start = setDemographics(person, city);
+        person.populationSeed = this.options.seed;
+        person.attributes.putAll(demoAttributes);
         person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
@@ -272,6 +299,10 @@ public class Generator {
           database.store(person);
         }
 
+        if (internalStore != null) {
+          internalStore.add(person);
+        }
+        
         if (this.metrics != null) {
           metrics.recordStats(person, time);
         }
@@ -287,9 +318,25 @@ public class Generator {
 
         totalGeneratedPopulation.incrementAndGet();
         
+        tryNumber++;
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
+          
+          // if we've tried and failed > 10 times to generate someone over age 90
+          // and the options allow for ages as low as 85
+          // reduce the age to increase the likelihood of success
+          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
+              && (!options.ageSpecified || options.minAge <= 85)) {
+            // pick a new target age between 85 and 90
+            int newTargetAge = randomForDemographics.nextInt(5) + 85;
+            // the final age bracket is 85-110, but our patients rarely break 100
+            // so reducing a target age to 85-90 shouldn't affect numbers too much
+            demoAttributes.put(TARGET_AGE, newTargetAge);
+            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
+            demoAttributes.put(Person.BIRTHDATE, birthdate);
+            start = birthdate;
+          }
         }
 
         // TODO - export is DESTRUCTIVE when it filters out data
@@ -314,8 +361,9 @@ public class Generator {
     // this is synchronized to ensure all lines for a single person are always printed 
     // consecutively
     String deceased = isAlive ? "" : "DECEASED";
-    System.out.format("%d -- %s (%d y/o) %s, %s %s\n", index + 1, 
-        person.attributes.get(Person.NAME), person.ageInYears(time), 
+    System.out.format("%d -- %s (%d y/o %s) %s, %s %s\n", index + 1,
+        person.attributes.get(Person.NAME), person.ageInYears(time),
+        person.attributes.get(Person.GENDER),
         person.attributes.get(Person.CITY), person.attributes.get(Person.STATE),
         deceased);
 
@@ -335,56 +383,72 @@ public class Generator {
     }
   }
 
-  private long setDemographics(Person person, Demographics city) {
-    person.attributes.put(Person.CITY, city.city);
-    person.attributes.put(Person.STATE, city.state);
+  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+    Map<String, Object> out = new HashMap<>();
+    out.put(Person.CITY, city.city);
+    out.put(Person.STATE, city.state);
     
-    String race = city.pickRace(person.random);
-    person.attributes.put(Person.RACE, race);
-    String ethnicity = city.ethnicityFromRace((String)person.attributes.get(Person.RACE), person);
-    person.attributes.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromEthnicity((String) person.attributes.get(Person.ETHNICITY),
-        person);
-    person.attributes.put(Person.FIRST_LANGUAGE, language);
+    String race = city.pickRace(random);
+    out.put(Person.RACE, race);
+    String ethnicity = city.ethnicityFromRace(race, random);
+    out.put(Person.ETHNICITY, ethnicity);
+    String language = city.languageFromEthnicity(ethnicity, random);
+    out.put(Person.FIRST_LANGUAGE, language);
 
-    String gender = city.pickGender(person.random);
-    if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
-      gender = "M";
+    String gender = null;
+    if (options.gender != null) {
+      gender = options.gender;
     } else {
-      gender = "F";
+      gender = city.pickGender(random);
+      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
+        gender = "M";
+      } else {
+        gender = "F";
+      }
     }
-    person.attributes.put(Person.GENDER, gender);
+    out.put(Person.GENDER, gender);
 
     // Socioeconomic variables of education, income, and education are set.
-    String education = city.pickEducation(person.random);
-    person.attributes.put(Person.EDUCATION, education);
-    double educationLevel = city.educationLevel(education, person);
-    person.attributes.put(Person.EDUCATION_LEVEL, educationLevel);
+    String education = city.pickEducation(random);
+    out.put(Person.EDUCATION, education);
+    double educationLevel = city.educationLevel(education, random);
+    out.put(Person.EDUCATION_LEVEL, educationLevel);
 
-    int income = city.pickIncome(person.random);
-    person.attributes.put(Person.INCOME, income);
+    int income = city.pickIncome(random);
+    out.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
-    person.attributes.put(Person.INCOME_LEVEL, incomeLevel);
+    out.put(Person.INCOME_LEVEL, incomeLevel);
 
-    double occupation = person.rand();
-    person.attributes.put(Person.OCCUPATION_LEVEL, occupation);
+    double occupation = random.nextDouble();
+    out.put(Person.OCCUPATION_LEVEL, occupation);
 
     double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-    person.attributes.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-    person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+    out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+    out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 
     if (this.onlyVeterans) {
-      person.attributes.put("veteran_population_override", Boolean.TRUE);
+      out.put("veteran_population_override", Boolean.TRUE);
     }
-    
-    long targetAge = city.pickAge(person.random);
 
-    // TODO this is terrible date handling, figure out how to use the java time library
+    int targetAge;
+    if (options.ageSpecified) {
+      targetAge = 
+          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
+    } else {
+      targetAge = city.pickAge(random);
+    }
+    out.put(TARGET_AGE, targetAge);
+
+    long birthdate = birthdateFromTargetAge(targetAge, random);
+    out.put(Person.BIRTHDATE, birthdate);
+    
+    return out;
+  }
+  
+  private long birthdateFromTargetAge(long targetAge, Random random) {
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
-
-    long birthdate = (long) person.rand(earliestBirthdate, latestBirthdate);
-
-    return birthdate;
+    return 
+        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
   }
 }

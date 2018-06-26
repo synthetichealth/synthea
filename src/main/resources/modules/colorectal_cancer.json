@@ -6,7 +6,6 @@
     "136,000 new cases are diagnosed and 51,300 people die from colorectal cancer in the U.S.",
     "The lifetime risk of developing colorectal cancer is 4.7% for men, 4.4% for women.",
     "source: http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-key-statistics",
-
     "Some things not modeled in this module: ",
     "1. Colorectal cancer in children. Although possible it's highly unlikely. ",
     "2. Diabetes, obesity, and poor diet as risk factors. I could not find any ",
@@ -16,12 +15,10 @@
     "   is initially diagnosed at they remain at."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Delay_For_Smoking_History"
     },
-
     "Delay_For_Smoking_History": {
       "type": "Delay",
       "remarks": [
@@ -78,7 +75,6 @@
         }
       ]
     },
-
     "Delay_Until_Symptoms_Start": {
       "type": "Delay",
       "remarks": [
@@ -93,7 +89,6 @@
       },
       "direct_transition": "Colorectal_Cancer_Symptom_1"
     },
-
     "Routine_Colonoscopy_Guard": {
       "type": "Guard",
       "remarks": [
@@ -109,7 +104,6 @@
       },
       "direct_transition": "Routine_Colonoscopy_Encounter"
     },
-
     "Routine_Colonoscopy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -122,7 +116,6 @@
       ],
       "direct_transition": "Routine_Colonoscopy_Procedure"
     },
-
     "Routine_Colonoscopy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Routine_Colonoscopy_Encounter",
@@ -140,7 +133,11 @@
           "display": "Colonoscopy"
         }
       ],
-      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
+      "duration": {
+        "low": 25,
+        "high": 45,
+        "unit": "minutes"
+      },
       "complex_transition": [
         {
           "condition": {
@@ -198,12 +195,10 @@
         }
       ]
     },
-
-    "End_Routine_Colonoscopy_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Wait_For_Next_Routine_Colonoscopy"
+    "End_Routine_Colonoscopy_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_For_Next_Routine_Colonoscopy"
     },
-
     "Wait_For_Next_Routine_Colonoscopy": {
       "type": "Delay",
       "remarks": [
@@ -230,7 +225,6 @@
         }
       ]
     },
-
     "Detect_Adenoma": {
       "type": "ConditionOnset",
       "remarks": [
@@ -260,10 +254,9 @@
         }
       ]
     },
-
     "Benign_Adenoma": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "range": {
         "low": 2,
         "high": 7
@@ -278,10 +271,9 @@
       ],
       "direct_transition": "Fecal_Test"
     },
-
     "Malignant_Adenoma": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "range": {
         "low": 10,
         "high": 25
@@ -296,7 +288,6 @@
       ],
       "direct_transition": "Fecal_Test"
     },
-
     "Fecal_Test": {
       "type": "Procedure",
       "remarks": [
@@ -306,7 +297,6 @@
         "This test is used to detect trace amounts of blood in the stool that ",
         "is indicative of colorectal cancer. The estimated cutoff level for this ",
         "test is 100 ng/mL. Source: http://cebp.aacrjournals.org/content/20/2/272",
-
         "Interestingly, if the patient previously had a positive test result (from ",
         "a malignant adenoma) the 'Malignant_Adenoma' PriorState will remain true. ",
         "If the patient is then later diagnosed with a benign adenoma the fecal test ",
@@ -335,10 +325,9 @@
         }
       ]
     },
-
     "Fecal_Test_Positive_Result": {
       "type": "Observation",
-      "category" : "laboratory",
+      "category": "laboratory",
       "range": {
         "low": 150,
         "high": 500
@@ -353,10 +342,9 @@
       ],
       "direct_transition": "Adenoma_Removal"
     },
-
     "Fecal_Test_Negative_Result": {
       "type": "Observation",
-      "category" : "laboratory",
+      "category": "laboratory",
       "range": {
         "low": 0,
         "high": 25
@@ -371,7 +359,6 @@
       ],
       "direct_transition": "Adenoma_Removal"
     },
-
     "Adenoma_Removal": {
       "type": "Procedure",
       "remarks": [
@@ -404,12 +391,10 @@
         }
       ]
     },
-
-    "End_Routine_Colonoscopy_with_Benign_Adenoma" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Wait_For_Followup_Colonoscopy"
+    "End_Routine_Colonoscopy_with_Benign_Adenoma": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_For_Followup_Colonoscopy"
     },
-
     "Adenoma_Biopsy": {
       "type": "Procedure",
       "target_encounter": "Routine_Colonoscopy_Encounter",
@@ -423,12 +408,10 @@
       ],
       "direct_transition": "End_Routine_Colonoscopy_with_Malignant_Adenoma"
     },
-
-    "End_Routine_Colonoscopy_with_Malignant_Adenoma" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Wait_For_Biopsy_Followup"
+    "End_Routine_Colonoscopy_with_Malignant_Adenoma": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_For_Biopsy_Followup"
     },
-
     "Wait_For_Biopsy_Followup": {
       "type": "Delay",
       "range": {
@@ -438,7 +421,6 @@
       },
       "direct_transition": "Biopsy_Followup"
     },
-
     "Biopsy_Followup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -450,11 +432,10 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition" : "End_Biopsy_Followup"
+      "direct_transition": "End_Biopsy_Followup"
     },
-
-    "End_Biopsy_Followup" : {
-      "type" : "EncounterEnd",
+    "End_Biopsy_Followup": {
+      "type": "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.4,
@@ -470,7 +451,6 @@
         }
       ]
     },
-
     "Wait_For_Followup_Colonoscopy": {
       "type": "Delay",
       "remarks": [
@@ -488,7 +468,6 @@
       },
       "direct_transition": "Followup_Colonoscopy_Encounter"
     },
-
     "Followup_Colonoscopy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -501,7 +480,6 @@
       ],
       "direct_transition": "Followup_Colonoscopy_Procedure"
     },
-
     "Followup_Colonoscopy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Followup_Colonoscopy_Encounter",
@@ -516,7 +494,11 @@
           "display": "Colonoscopy"
         }
       ],
-      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
+      "duration": {
+        "low": 25,
+        "high": 45,
+        "unit": "minutes"
+      },
       "complex_transition": [
         {
           "condition": {
@@ -544,7 +526,6 @@
         },
         {
           "distributions": [
-
             {
               "distribution": 0.75,
               "transition": "End_Colorectal_Adenoma"
@@ -557,7 +538,6 @@
         }
       ]
     },
-
     "End_Colorectal_Adenoma": {
       "type": "ConditionEnd",
       "remarks": [
@@ -568,12 +548,10 @@
       "referenced_by_attribute": "colorectal_adenoma",
       "direct_transition": "End_Followup_Encounter_Clean"
     },
-
-    "End_Followup_Encounter_Clean" : {
-      "type" : "EncounterEnd",
+    "End_Followup_Encounter_Clean": {
+      "type": "EncounterEnd",
       "direct_transition": "Wait_For_Next_Routine_Colonoscopy"
     },
-
     "Recurrent_Colorectal_Adenoma": {
       "type": "ConditionOnset",
       "remarks": [
@@ -596,7 +574,6 @@
       ],
       "direct_transition": "Recurrent_Adenoma_Removal"
     },
-
     "Recurrent_Adenoma_Removal": {
       "type": "Procedure",
       "target_encounter": "Followup_Colonoscopy_Encounter",
@@ -608,11 +585,10 @@
           "display": "Rectal polypectomy"
         }
       ],
-      "direct_transition" : "End_Followup_Encounter_After_Adenoma_Removal"
+      "direct_transition": "End_Followup_Encounter_After_Adenoma_Removal"
     },
-
-    "End_Followup_Encounter_After_Adenoma_Removal" : {
-      "type" : "EncounterEnd",
+    "End_Followup_Encounter_After_Adenoma_Removal": {
+      "type": "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.3,
@@ -628,13 +604,11 @@
         }
       ]
     },
-
     "End_Recurrent_Adenoma": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "recurrent_colorectal_adenoma",
       "direct_transition": "End_Colorectal_Adenoma"
     },
-
     "Colorectal_Cancer_Symptom_1": {
       "type": "ConditionOnset",
       "remarks": [
@@ -654,7 +628,6 @@
       ],
       "direct_transition": "Colorectal_Cancer_Symptom_2"
     },
-
     "Colorectal_Cancer_Symptom_2": {
       "type": "ConditionOnset",
       "target_encounter": "Symptom_Encounter",
@@ -667,7 +640,6 @@
       ],
       "direct_transition": "Symptom_Encounter"
     },
-
     "Symptom_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -681,12 +653,55 @@
       ],
       "direct_transition": "End_Symptom_Encounter"
     },
-
     "End_Symptom_Encounter" : {
       "type" : "EncounterEnd",
-      "direct_transition" : "Wait_For_Diagnostic_Colonoscopy"
+      "direct_transition" : "Colorectal_Cancer_Symptom_3"
     },
-
+    "Colorectal_Cancer_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_4"
+    },
+    "Colorectal_Cancer_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Cramping",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_5"
+    },
+    "Colorectal_Cancer_Symptom_5": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "range": {
+        "low": 50,
+        "high": 150
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_6"
+    },
+    "Colorectal_Cancer_Symptom_6": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom_7"
+    },
+    "Colorectal_Cancer_Symptom_7": {
+      "type": "Symptom",
+      "symptom": "Weight Loss",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Wait_For_Diagnostic_Colonoscopy"
+    },
     "Wait_For_Diagnostic_Colonoscopy": {
       "type": "Delay",
       "remarks": [
@@ -700,7 +715,6 @@
       },
       "direct_transition": "Diagnostic_Colonoscopy_Encounter"
     },
-
     "Diagnostic_Colonoscopy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -713,7 +727,6 @@
       ],
       "direct_transition": "Diagnostic_Colonoscopy_Procedure"
     },
-
     "Diagnostic_Colonoscopy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Diagnostic_Colonoscopy_Encounter",
@@ -728,12 +741,15 @@
           "display": "Colonoscopy"
         }
       ],
-      "duration" : { "low" : 25, "high" : 45, "unit" : "minutes" },
-      "direct_transition" : "End_Diagnostic_Colonoscopy_Encounter"
+      "duration": {
+        "low": 25,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Diagnostic_Colonoscopy_Encounter"
     },
-
-    "End_Diagnostic_Colonoscopy_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Diagnostic_Colonoscopy_Encounter": {
+      "type": "EncounterEnd",
       "distributed_transition": [
         {
           "distribution": 0.5,
@@ -745,41 +761,35 @@
         }
       ]
     },
-
     "Colorectal_Cancer_Diagnose_Stage_I": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 1,
       "direct_transition": "Colorectal_Cancer"
     },
-
     "Colorectal_Cancer_Diagnose_Stage_II": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 2,
       "direct_transition": "Colorectal_Cancer"
     },
-
     "Colorectal_Cancer_Diagnose_Stage_III": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 3,
       "direct_transition": "Colorectal_Cancer"
     },
-
     "Colorectal_Cancer_Diagnose_Stage_IV": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 4,
       "direct_transition": "Colorectal_Cancer"
     },
-
     "Colorectal_Cancer": {
       "type": "Simple",
       "remarks": [
         "This state mainly exists to isolate the colonoscopy and diagnosis ",
         "portion of the module from the portion devoted to cancer treatment.",
-
         "======================================================================",
         " COLORECTAL CANCER                                                    ",
         "======================================================================",
@@ -830,7 +840,6 @@
         }
       ]
     },
-
     "Colorectal_Cancer_Stage_I": {
       "type": "ConditionOnset",
       "target_encounter": "Oncologist_Encounter",
@@ -853,7 +862,6 @@
         }
       ]
     },
-
     "Colorectal_Cancer_Stage_II": {
       "type": "ConditionOnset",
       "target_encounter": "Oncologist_Encounter",
@@ -876,7 +884,6 @@
         }
       ]
     },
-
     "Colorectal_Cancer_Stage_III": {
       "type": "ConditionOnset",
       "target_encounter": "Oncologist_Encounter",
@@ -899,7 +906,6 @@
         }
       ]
     },
-
     "Colorectal_Cancer_Stage_IV": {
       "type": "ConditionOnset",
       "target_encounter": "Oncologist_Encounter",
@@ -922,7 +928,6 @@
         }
       ]
     },
-
     "Eventual_Death": {
       "type": "Death",
       "referenced_by_attribute": "colorectal_cancer",
@@ -936,7 +941,6 @@
       },
       "direct_transition": "Wait_For_Oncologist_Encounter"
     },
-
     "Wait_For_Oncologist_Encounter": {
       "type": "Delay",
       "range": {
@@ -946,7 +950,6 @@
       },
       "direct_transition": "Oncologist_Encounter"
     },
-
     "Oncologist_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -964,7 +967,6 @@
       ],
       "direct_transition": "Colorectal_Cancer_CarePlan"
     },
-
     "Colorectal_Cancer_CarePlan": {
       "type": "CarePlanStart",
       "remarks": [
@@ -1000,12 +1002,11 @@
           "display": "Cancer education"
         }
       ],
-      "direct_transition" : "End_Oncologist_Encounter"
+      "direct_transition": "End_Oncologist_Encounter"
     },
-
-    "End_Oncologist_Encounter" : {
-      "type" : "EncounterEnd",
-       "complex_transition": [
+    "End_Oncologist_Encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
@@ -1092,7 +1093,6 @@
         }
       ]
     },
-
     "Wait_For_Partial_Colectomy": {
       "type": "Delay",
       "remarks": [
@@ -1108,7 +1108,6 @@
       },
       "direct_transition": "Partial_Colectomy_Encounter"
     },
-
     "Partial_Colectomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -1122,7 +1121,6 @@
       ],
       "direct_transition": "Partial_Colectomy_Procedure"
     },
-
     "Partial_Colectomy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Partial_Colectomy_Encounter",
@@ -1136,7 +1134,6 @@
       ],
       "direct_transition": "Partial_Colectomy_CarePlan"
     },
-
     "Partial_Colectomy_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Partial_Colectomy_Encounter",
@@ -1162,12 +1159,10 @@
       ],
       "direct_transition": "End_Partial_Colectomy_Encounter"
     },
-
-    "End_Partial_Colectomy_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Partial_Colectomy_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Delay_For_Partial_Colectomy_Recovery"
     },
-
     "Delay_For_Partial_Colectomy_Recovery": {
       "type": "Delay",
       "range": {
@@ -1177,7 +1172,6 @@
       },
       "direct_transition": "End_Partial_Colectomy_CarePlan"
     },
-
     "End_Partial_Colectomy_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "Partial_Colectomy_CarePlan",
@@ -1224,7 +1218,6 @@
         }
       ]
     },
-
     "Wait_For_Diverting_Colostomy": {
       "type": "Delay",
       "remarks": [
@@ -1242,7 +1235,6 @@
       },
       "direct_transition": "Diverting_Colostomy_Encounter"
     },
-
     "Diverting_Colostomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -1256,7 +1248,6 @@
       ],
       "direct_transition": "Diverting_Colostomy_Procedure"
     },
-
     "Diverting_Colostomy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Diverting_Colostomy_Encounter",
@@ -1270,7 +1261,6 @@
       ],
       "direct_transition": "Diverting_Colostomy_CarePlan"
     },
-
     "Diverting_Colostomy_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Diverting_Colostomy_Encounter",
@@ -1296,12 +1286,10 @@
       ],
       "direct_transition": "End_Diverting_Colostomy_Encounter"
     },
-
-    "End_Diverting_Colostomy_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Diverting_Colostomy_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Delay_For_Diverting_Colostomy_Recovery"
     },
-
     "Delay_For_Diverting_Colostomy_Recovery": {
       "type": "Delay",
       "range": {
@@ -1311,7 +1299,6 @@
       },
       "direct_transition": "End_Diverting_Colostomy_CarePlan"
     },
-
     "End_Diverting_Colostomy_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "Diverting_Colostomy_CarePlan",
@@ -1320,7 +1307,6 @@
       ],
       "direct_transition": "Wait_For_Initial_Chemotherapy_Treatment"
     },
-
     "Wait_For_Initial_Chemotherapy_Treatment": {
       "type": "Delay",
       "range": {
@@ -1330,14 +1316,12 @@
       },
       "direct_transition": "Initialize_Chemo_Counter"
     },
-
     "Initialize_Chemo_Counter": {
       "type": "SetAttribute",
       "attribute": "cr_chemo_count",
       "value": 0,
       "direct_transition": "Chemotherapy_Treatment_Path"
     },
-
     "Chemotherapy_Treatment_Path": {
       "type": "Simple",
       "remarks": [
@@ -1348,7 +1332,6 @@
         "FOLFOX: leucovorin, 5-FU, and oxaliplatin (Eloxatin) ",
         "FOLFIRI: leucovorin, 5-FU, and irinotecan (Camptosar) ",
         "CapeOX: capecitabine (Xeloda) and oxaliplatin",
-
         "Chemotherapy treatment is typically given for about 6 months. This ",
         "equates to 6 chemo treatments."
       ],
@@ -1367,7 +1350,6 @@
         }
       ]
     },
-
     "Chemotherapy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -1381,7 +1363,6 @@
       ],
       "direct_transition": "Chemotherapy_Drugs_I"
     },
-
     "Chemotherapy_Drugs_I": {
       "type": "MedicationOrder",
       "target_encounter": "Chemotherapy_Encounter",
@@ -1395,7 +1376,6 @@
       ],
       "direct_transition": "Chemotherapy_Drugs_II"
     },
-
     "Chemotherapy_Drugs_II": {
       "type": "MedicationOrder",
       "target_encounter": "Chemotherapy_Encounter",
@@ -1409,7 +1389,6 @@
       ],
       "direct_transition": "Chemotherapy_Procedure"
     },
-
     "Chemotherapy_Procedure": {
       "type": "Procedure",
       "target_encounter": "Chemotherapy_Encounter",
@@ -1423,19 +1402,16 @@
       ],
       "direct_transition": "End_Chemotherapy_Encounter"
     },
-
-    "End_Chemotherapy_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Chemotherapy_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Count_A_Chemo_Treatment"
     },
-
     "Count_A_Chemo_Treatment": {
       "type": "Counter",
       "action": "increment",
       "attribute": "cr_chemo_count",
       "direct_transition": "Chemotherapy_Treatment_Delay"
     },
-
     "Chemotherapy_Treatment_Delay": {
       "type": "Delay",
       "range": {
@@ -1445,7 +1421,6 @@
       },
       "direct_transition": "Chemotherapy_Treatment_Path"
     },
-
     "Remission_Period": {
       "type": "Delay",
       "remarks": [
@@ -1471,7 +1446,6 @@
         }
       ]
     },
-
     "Remission_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -1485,24 +1459,61 @@
       ],
       "direct_transition": "End_Colorectal_Cancer_CarePlan"
     },
-
     "End_Colorectal_Cancer_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "Colorectal_Cancer_CarePlan",
       "direct_transition": "End_Colorectal_Cancer"
     },
-
     "End_Colorectal_Cancer": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "colorectal_cancer",
       "direct_transition": "End_Remission_Encounter"
     },
-
     "End_Remission_Encounter" : {
       "type" : "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "Colorectal_Cancer_Symptom3_Ends"
     },
 
+    "Colorectal_Cancer_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom4_Ends"
+    },
+     "Colorectal_Cancer_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Cramping",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom5_Ends"
+    },
+     "Colorectal_Cancer_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Abdominal Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom6_Ends"
+    },
+     "Colorectal_Cancer_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Colorectal_Cancer_Symptom7_Ends"
+    },
+     "Colorectal_Cancer_Symptom7_Ends": {
+      "type": "Symptom",
+      "symptom": "Weight Loss",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Terminal"
+    },
     "Terminal": {
       "type": "Terminal"
     }

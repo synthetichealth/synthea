@@ -8,12 +8,10 @@
     "http://www.aafa.org/page/allergy-facts.aspx"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Delay_For_Atopy"
     },
-
     "Delay_For_Atopy": {
       "type": "Delay",
       "remarks": [
@@ -39,7 +37,6 @@
         }
       ]
     },
-
     "Atopic": {
       "type": "Simple",
       "remarks": [
@@ -56,7 +53,6 @@
         }
       ]
     },
-
     "Not_Atopic": {
       "type": "Simple",
       "remarks": [
@@ -75,7 +71,6 @@
         }
       ]
     },
-
     "Delay_Until_Early_Mid_Childhood": {
       "type": "Delay",
       "range": {
@@ -85,7 +80,6 @@
       },
       "direct_transition": "Has_Allergic_Rhinitis"
     },
-
     "Has_Allergic_Rhinitis": {
       "type": "Simple",
       "distributed_transition": [
@@ -116,7 +110,6 @@
         }
       ]
     },
-
     "Has_Seasonal_Allergic_Rhinitis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "allergic_rhinitis",
@@ -130,7 +123,6 @@
       ],
       "direct_transition": "Allergic_Rhinitis_Diagnosis"
     },
-
     "Has_Perennial_Allergic_Rhinitis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "allergic_rhinitis",
@@ -144,7 +136,6 @@
       ],
       "direct_transition": "Allergic_Rhinitis_Diagnosis"
     },
-
     "Has_Perennial_And_Seasonal_Allergic_Rhinitis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "allergic_rhinitis",
@@ -158,7 +149,6 @@
       ],
       "direct_transition": "Allergic_Rhinitis_Diagnosis"
     },
-
     "Allergic_Rhinitis_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -170,9 +160,62 @@
           "display": "Encounter for symptom"
         }
       ],
+      "direct_transition": "Allergic_Rhinitis_Symptom1"
+    },
+    "Allergic_Rhinitis_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom2"
+    },
+    "Allergic_Rhinitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Nasal Discharge",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom3"
+    },
+    "Allergic_Rhinitis_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Itching",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom4"
+    },
+    "Allergic_Rhinitis_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Sneezing Fits",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom5"
+    },
+    "Allergic_Rhinitis_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Ear Pressure",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Symptom_Period"
+    },
+    "Symptom_Period": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      },
       "direct_transition": "Prescribe_OTC_Antihistamine"
     },
-
     "Prescribe_OTC_Antihistamine": {
       "type": "CallSubmodule",
       "remarks": [
@@ -182,19 +225,16 @@
       "submodule": "medications/otc_antihistamine",
       "direct_transition": "Advise_To_Visit_Allergist"
     },
-
     "Advise_To_Visit_Allergist": {
       "type": "SetAttribute",
       "attribute": "visit_allergist",
       "value": true,
       "direct_transition": "End_Allergic_Rhinitis_Diagnosis"
     },
-
     "End_Allergic_Rhinitis_Diagnosis": {
       "type": "EncounterEnd",
       "direct_transition": "Living_With_Allergic_Rhinitis"
     },
-
     "Living_With_Allergic_Rhinitis": {
       "type": "Guard",
       "allow": {
@@ -205,7 +245,6 @@
       },
       "direct_transition": "Outgrow_Allergic_Rhinitis?"
     },
-
     "Outgrow_Allergic_Rhinitis?": {
       "type": "Guard",
       "remarks": [
@@ -273,13 +312,51 @@
       },
       "direct_transition": "Allergic_Rhinitis_Subsides"
     },
-
     "Allergic_Rhinitis_Subsides": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "allergic_rhinitis",
+      "direct_transition": "Allergic_Rhinitis_Symptom1_Ends"
+    },
+    "Allergic_Rhinitis_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Nasal Congestion",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom2_Ends"
+    },
+    "Allergic_Rhinitis_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Nasal Discharge",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom3_Ends"
+    },
+    "Allergic_Rhinitis_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Itching",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom4_Ends"
+    },
+    "Allergic_Rhinitis_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Sneezing Fits",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Allergic_Rhinitis_Symptom4_Ends"
+    },
+    "Allergic_Rhinitis_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Ear Pressure",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

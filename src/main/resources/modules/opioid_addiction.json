@@ -388,6 +388,98 @@
         }
       ]
     },
+
+     "Opioid_Addiction_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Anxiety",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "Opioid_Addiction_Symptom2"
+    },
+    "Opioid_Addiction_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Confusion",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Opioid_Addiction_Symptom3"
+    },
+    "Opioid_Addiction_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Cognitive Difficulties",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
+      "direct_transition": "Opioid_Addiction_Symptom4"
+    },
+    "Opioid_Addiction_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Opioid_Addiction_Symptom5"
+    },
+    "Opioid_Addiction_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Shortness Constipation Breath",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Opioid_Addiction_Symptom6"
+    },
+    "Opioid_Addiction_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Pain Sensitivity",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Opioid_Addiction_Symptom7"
+    },
+    "Opioid_Addiction_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Reduced Sex Drive",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Opioid_Addiction_Symptom8"
+    },
+    "Opioid_Addiction_Symptom8": {
+      "type": "Symptom",
+      "symptom": "Slurred Speech",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "Opioid_Addiction_Symptom9"
+    },
+    "Opioid_Addiction_Symptom9": {
+      "type": "Symptom",
+      "symptom": "Shallow Breathing",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "Opioid_Addiction_Symptom10"
+    },
+    "Opioid_Addiction_Symptom10": {
+      "type": "Symptom",
+      "symptom": "Mood Swing",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Active_Addiction"
+    },
+    
     "Active_Addiction": {
       "type": "Delay",
       "exact": {
@@ -530,7 +622,7 @@
     },
     "Directed_Use_Overdose_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "emergency",
       "reason": "Directed_Use_Overdose",
       "codes": [
         {
@@ -568,7 +660,7 @@
     },
     "Misuse_Overdose_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "emergency",
       "reason": "Misuse_Overdose",
       "codes": [
         {
@@ -606,7 +698,7 @@
     },
     "Addiction_Overdose_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "emergency",
       "reason": "Addiction_Overdose",
       "codes": [
         {

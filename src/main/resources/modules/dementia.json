@@ -1,10 +1,10 @@
+
 {
   "name": "Dementia",
   "remarks": [
     "right now this is just Alzheimer's but there are other dementias that could be adapted into this model"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "distributed_transition": [
@@ -26,7 +26,6 @@
         "38% of people over age 85 have alzheimer's. ( http://www.alzheimers.net/resources/alzheimers-statistics/ )"
       ]
     },
-
     "AlzheimersGene": {
       "type": "Simple",
       "distributed_transition": [
@@ -43,7 +42,6 @@
         "Early onset Alzheimers affects roughly 5% of people with Alzheimer's. http://www.mayoclinic.org/diseases-conditions/alzheimers-disease/in-depth/alzheimers/art-20048356"
       ]
     },
-
     "PreAlzheimers": {
       "type": "Delay",
       "range": {
@@ -67,7 +65,6 @@
         }
       ]
     },
-
     "EducationDelay": {
       "type": "Delay",
       "range": {
@@ -77,7 +74,6 @@
       },
       "direct_transition": "AlzheimersOnset"
     },
-
     "AlzheimersOnset": {
       "type": "ConditionOnset",
       "target_encounter": "DiagnosisEncounter",
@@ -91,7 +87,6 @@
       ],
       "direct_transition": "NoImpairment"
     },
-
     "PreEarlyOnsetAlzheimers": {
       "type": "Delay",
       "range": {
@@ -101,7 +96,6 @@
       },
       "direct_transition": "EarlyOnsetAlzheimersOnset"
     },
-
     "EarlyOnsetAlzheimersOnset": {
       "type": "ConditionOnset",
       "target_encounter": "DiagnosisEncounter",
@@ -115,7 +109,6 @@
       ],
       "direct_transition": "NoImpairment"
     },
-
     "NoImpairment": {
       "type": "Delay",
       "range": {
@@ -128,7 +121,6 @@
       ],
       "direct_transition": "VeryMildDecline"
     },
-
     "VeryMildDecline": {
       "type": "Delay",
       "range": {
@@ -139,19 +131,62 @@
       "remarks": [
         "2. Very mild decline, also considered normal aged forgetfulness"
       ],
+      "direct_transition": "DecreasedCommunication"
+    },
+    "DecreasedCommunication": {
+      "type": "Symptom",
+      "symptom": "Decreased Communication",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "DecreasedAttentiveness"
+    },
+    "DecreasedAttentiveness": {
+      "type": "Symptom",
+      "symptom": "Decreased Attentiveness",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "DecreasedJudgment"
+    },
+    "DecreasedJudgment": {
+      "type": "Symptom",
+      "symptom": "Decreased in Judgement",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "DecreasedVisualPerception"
+    },
+    "DecreasedVisualPerception": {
+      "type": "Symptom",
+      "symptom": "Decreased Visual Perception",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Confusion"
+    },
+    "Confusion": {
+      "type": "Symptom",
+      "symptom": "Confusion",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
       "direct_transition": "MildMemoryLoss"
     },
-
     "MildMemoryLoss": {
       "type": "Symptom",
       "symptom": "Memory Loss",
       "range": {
-        "low": 1,
+        "low": 0,
         "high": 50
       },
       "direct_transition": "MildDecline"
     },
-
     "MildDecline": {
       "type": "Delay",
       "range": {
@@ -191,7 +226,6 @@
         }
       ]
     },
-
     "DiagnosisEncounter": {
       "type": "Encounter",
       "wellness": true,
@@ -203,7 +237,7 @@
     },
     "Diagnosis_MMSE_Score": {
       "type": "Observation",
-      "category" : "survey",
+      "category": "survey",
       "range": {
         "low": 18,
         "high": 25
@@ -225,7 +259,6 @@
       ],
       "direct_transition": "Dementia_CarePlan"
     },
-
     "Dementia_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "DiagnosisEncounter",
@@ -256,7 +289,6 @@
       ],
       "direct_transition": "FirstPrescription"
     },
-
     "FirstPrescription": {
       "type": "Simple",
       "conditional_transition": [
@@ -301,7 +333,6 @@
         }
       ]
     },
-
     "FirstPrescription1": {
       "type": "MedicationOrder",
       "target_encounter": "DiagnosisEncounter",
@@ -316,7 +347,6 @@
       ],
       "direct_transition": "ModerateDecline"
     },
-
     "FirstPrescription2": {
       "type": "MedicationOrder",
       "target_encounter": "DiagnosisEncounter",
@@ -331,7 +361,6 @@
       ],
       "direct_transition": "ModerateDecline"
     },
-
     "FirstPrescription3": {
       "type": "MedicationOrder",
       "target_encounter": "DiagnosisEncounter",
@@ -346,7 +375,6 @@
       ],
       "direct_transition": "ModerateDecline"
     },
-
     "ModerateDecline": {
       "type": "Delay",
       "range": {
@@ -384,20 +412,18 @@
         }
       ]
     },
-
     "ModerateMemoryLoss": {
       "type": "Symptom",
       "symptom": "Memory Loss",
       "range": {
-        "low": 40,
-        "high": 80
+        "low": 50,
+        "high": 100
       },
       "remarks": [
         "These numbers do not map to any real data, they are just picked mathematically to get the %s right"
       ],
       "direct_transition": "ModerateDecline"
     },
-
     "ModeratelySevere_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -411,10 +437,9 @@
       ],
       "direct_transition": "ModeratelySevere_MMSE_Score"
     },
-
     "ModeratelySevere_MMSE_Score": {
       "type": "Observation",
-      "category" : "survey",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -446,13 +471,11 @@
         }
       ]
     },
-
     "EndFirstPrescription": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "Alzheimer's Medication",
       "direct_transition": "SecondPrescription"
     },
-
     "SecondPrescription": {
       "type": "Simple",
       "conditional_transition": [
@@ -494,7 +517,6 @@
         }
       ]
     },
-
     "SecondPrescription1": {
       "type": "MedicationOrder",
       "target_encounter": "ModeratelySevere_Encounter",
@@ -508,7 +530,6 @@
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
     },
-
     "SecondPrescription2": {
       "type": "MedicationOrder",
       "target_encounter": "ModeratelySevere_Encounter",
@@ -522,7 +543,6 @@
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
     },
-
     "SecondPrescription3": {
       "type": "MedicationOrder",
       "target_encounter": "ModeratelySevere_Encounter",
@@ -536,12 +556,10 @@
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
     },
-
-    "End_ModeratelySevere_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "ModeratelySevereDecline"
+    "End_ModeratelySevere_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "ModeratelySevereDecline"
     },
-
     "ModeratelySevereDecline": {
       "type": "Delay",
       "range": {
@@ -555,7 +573,6 @@
       ],
       "direct_transition": "Severe_Encounter"
     },
-
     "Severe_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -569,10 +586,9 @@
       ],
       "direct_transition": "Severe_MMSE_Score"
     },
-
     "Severe_MMSE_Score": {
       "type": "Observation",
-      "category" : "survey",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -592,12 +608,10 @@
       "unit": "(score)",
       "direct_transition": "End_Severe_Encounter"
     },
-
-    "End_Severe_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Severe_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "SevereDecline"
     },
-    
     "SevereDecline": {
       "type": "Delay",
       "range": {
@@ -610,7 +624,6 @@
       ],
       "direct_transition": "VerySevere_Encounter"
     },
-
     "VerySevere_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -624,10 +637,9 @@
       ],
       "direct_transition": "VerySevere_MMSE_Score"
     },
-
     "VerySevere_MMSE_Score": {
       "type": "Observation",
-      "category" : "survey",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -647,13 +659,10 @@
       "unit": "(score)",
       "direct_transition": "End_VerySevere_Encounter"
     },
-
-    "End_VerySevere_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_VerySevere_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "VerySevereDecline"
     },
-    
-
     "VerySevereDecline": {
       "type": "Delay",
       "range": {
@@ -680,7 +689,6 @@
         }
       ]
     },
-
     "Pneumonia": {
       "type": "ConditionOnset",
       "target_encounter": "PneumoniaEncounter",
@@ -696,7 +704,6 @@
       ],
       "direct_transition": "PneumoniaEncounter"
     },
-
     "PneumoniaEncounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -704,13 +711,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "34285007",
+          "code": "32485007",
           "display": "Hospital admission"
         }
       ],
       "direct_transition": "PneumoniaDeath"
     },
-
     "PneumoniaDeath": {
       "type": "Death",
       "range": {
@@ -721,13 +727,11 @@
       "condition_onset": "Pneumonia",
       "direct_transition": "Terminal"
     },
-
     "Death": {
       "type": "Death",
       "referenced_by_attribute": "Type of Alzheimer's",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

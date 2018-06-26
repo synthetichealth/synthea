@@ -10,7 +10,6 @@
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -57,7 +56,6 @@
         }
       ]
     },
-
     "Delay_Until_Gout": {
       "type": "Delay",
       "range": {
@@ -67,7 +65,6 @@
       },
       "direct_transition": "Gout"
     },
-
     "Gout": {
       "type": "ConditionOnset",
       "remarks": [
@@ -84,9 +81,44 @@
           "display": "Gout"
         }
       ],
+      "direct_transition": "Gout_Symptom1"
+    },
+     "Gout_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Gout_Symptom2"
+    },
+    "Gout_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Joint Swelling",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Gout_Symptom3"
+    },
+    "Gout_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Joint Redness",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
+      "direct_transition": "Gout_Symptom4"
+    },
+    "Gout_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 25
+      },
       "direct_transition": "Gout_Diagnosis"
     },
-
     "Gout_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -112,7 +144,6 @@
         }
       ]
     },
-
     "Gout_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Gout_Diagnosis",
@@ -144,7 +175,6 @@
       ],
       "direct_transition": "Gout_Nonopioid_Pain_Medication"
     },
-
     "Gout_Nonopioid_Pain_Medication": {
       "type": "Simple",
       "remarks": [
@@ -161,7 +191,6 @@
         }
       ]
     },
-
     "Strong_NSAID": {
       "type": "MedicationOrder",
       "target_encounter": "Gout_Diagnosis",
@@ -179,7 +208,6 @@
       ],
       "direct_transition": "Uric_Acid_Reducer"
     },
-
     "Colchicine": {
       "type": "MedicationOrder",
       "target_encounter": "Gout_Diagnosis",
@@ -197,7 +225,6 @@
       ],
       "direct_transition": "Uric_Acid_Reducer"
     },
-
     "Uric_Acid_Reducer": {
       "type": "MedicationOrder",
       "target_encounter": "Gout_Diagnosis",
@@ -211,12 +238,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
-    "End_Diagnosis_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Gout_Treatment_Period"
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Gout_Treatment_Period"
     },
-
     "Gout_Treatment_Period": {
       "type": "Delay",
       "range": {
@@ -226,19 +251,16 @@
       },
       "direct_transition": "End_Gout_Nonopioid"
     },
-
     "End_Gout_Nonopioid": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "gout_nsaid",
       "direct_transition": "End_Uric_Acid_Reducer"
     },
-
     "End_Uric_Acid_Reducer": {
       "type": "MedicationEnd",
       "medication_order": "Uric_Acid_Reducer",
       "direct_transition": "Wait_For_Next_Gout_Attack"
     },
-
     "Wait_For_Next_Gout_Attack": {
       "type": "Delay",
       "range": {
@@ -261,7 +283,6 @@
         }
       ]
     },
-
     "Terminal": {
       "type": "Terminal"
     }

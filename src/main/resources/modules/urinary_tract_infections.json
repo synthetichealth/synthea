@@ -16,7 +16,6 @@
     "the risk for a UTI in women. For now these are not represented in this module."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -68,7 +67,6 @@
         }
       ]
     },
-
     "Wait_For_Old_Age": {
       "type": "Guard",
       "allow": {
@@ -79,7 +77,6 @@
       },
       "direct_transition": "Wait_For_Next_UTI"
     },
-
     "Delay_Until_Right_Age": {
       "type": "Delay",
       "remarks": [
@@ -92,7 +89,6 @@
       },
       "direct_transition": "Wait_For_Next_UTI"
     },
-
     "Wait_For_Next_UTI": {
       "type": "Delay",
       "remarks": [
@@ -110,7 +106,6 @@
       },
       "direct_transition": "Urinary_Tract_Infection"
     },
-
     "Urinary_Tract_Infection": {
       "type": "Simple",
       "distributed_transition": [
@@ -128,7 +123,6 @@
         }
       ]
     },
-
     "Urethritis": {
       "type": "ConditionOnset",
       "target_encounter": "UTI_Diagnosis",
@@ -142,7 +136,6 @@
       ],
       "direct_transition": "UTI_Diagnosis"
     },
-
     "Cystitis": {
       "type": "ConditionOnset",
       "target_encounter": "UTI_Diagnosis",
@@ -156,7 +149,6 @@
       ],
       "direct_transition": "UTI_Diagnosis"
     },
-
     "Pyelonephritis": {
       "type": "ConditionOnset",
       "target_encounter": "UTI_Diagnosis",
@@ -170,7 +162,6 @@
       ],
       "direct_transition": "UTI_Diagnosis"
     },
-
     "UTI_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -182,9 +173,80 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "Prescribe_UTI_Antibiotic"
+      "direct_transition": "UTI_Symptom1"
     },
-
+    "UTI_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Dysuria",
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "UTI_Symptom2"
+    },
+    "UTI_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Urgent Desire to Urinate",
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "UTI_Symptom3"
+    },
+    "UTI_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 5,
+        "high": 25
+      },
+      "direct_transition": "UTI_Symptom4"
+    },
+    "UTI_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Discolored Urine",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "UTI_Symptom5"
+    },
+    "UTI_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Odor of Urine",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "UTI_Symptom6"
+    },
+    "UTI_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Pelvic Pain",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "UTI_Symptom7"
+    },
+    "UTI_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 10
+      },
+      "direct_transition": "Symptom_Period"
+    },
+    "Symptom_Period": {
+      "type": "Delay",
+      "range" : {
+        "low" : 24,
+        "high" : 48,
+        "unit" : "days"
+      },
+      "direct_transition" : "Prescribe_UTI_Antibiotic"
+    },
     "Prescribe_UTI_Antibiotic": {
       "type": "MedicationOrder",
       "target_encounter": "UTI_Diagnosis",
@@ -201,7 +263,6 @@
       ],
       "direct_transition": "Prescribe_OTC_Painkiller_For_UTIs"
     },
-
     "Prescribe_OTC_Painkiller_For_UTIs": {
       "type": "MedicationOrder",
       "target_encounter": "UTI_Diagnosis",
@@ -218,7 +279,6 @@
       ],
       "direct_transition": "UTI_CarePlan"
     },
-
     "UTI_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "UTI_Diagnosis",
@@ -244,12 +304,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
-    "End_Diagnosis_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Take_Antibiotics"
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Take_Antibiotics"
     },
-
     "Take_Antibiotics": {
       "type": "Delay",
       "exact": {
@@ -258,7 +316,6 @@
       },
       "direct_transition": "End_First_Round_Of_Antibiotics"
     },
-
     "End_First_Round_Of_Antibiotics": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_UTI_Antibiotic",
@@ -273,7 +330,6 @@
         }
       ]
     },
-
     "Followup_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -287,7 +343,6 @@
       ],
       "direct_transition": "Prescribe_Second_Round_Of_Antibiotics"
     },
-
     "Prescribe_Second_Round_Of_Antibiotics": {
       "type": "MedicationOrder",
       "target_encounter": "Followup_Encounter",
@@ -304,12 +359,10 @@
       ],
       "direct_transition": "End_Followup"
     },
-
-    "End_Followup" : {
-      "type" : "EncounterEnd",
+    "End_Followup": {
+      "type": "EncounterEnd",
       "direct_transition": "Take_More_Antibiotics"
     },
-
     "Take_More_Antibiotics": {
       "type": "Delay",
       "exact": {
@@ -318,31 +371,82 @@
       },
       "direct_transition": "End_Second_Round_Of_Antibiotics"
     },
-
     "End_Second_Round_Of_Antibiotics": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_Second_Round_Of_Antibiotics",
       "direct_transition": "End_Urinary_Tract_Infection"
     },
-
     "End_Urinary_Tract_Infection": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "uti",
+      "direct_transition": "UTI_Symptom1_Ends"
+    },
+    "UTI_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Dysuria",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom2_Ends"
+    },
+    "UTI_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Urgent Desire to Urinate",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom3_Ends"
+    },
+    "UTI_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom4_Ends"
+    },
+    "UTI_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Discolored Urine",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom5_Ends"
+    },
+    "UTI_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Odor of Urine",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom6_Ends"
+    },
+    "UTI_Symptom6_Ends": {
+      "type": "Symptom",
+      "symptom": "Pelvic Pain",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "UTI_Symptom7_Ends"
+    },
+    "UTI_Symptom7_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "End_OTC_Painkiller"
     },
-
     "End_OTC_Painkiller": {
       "type": "MedicationEnd",
       "medication_order": "Prescribe_OTC_Painkiller_For_UTIs",
       "direct_transition": "End_UTI_CarePlan"
     },
-
     "End_UTI_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "UTI_CarePlan",
       "direct_transition": "Get_Additional_UTIs"
     },
-
     "Get_Additional_UTIs": {
       "type": "Simple",
       "distributed_transition": [
@@ -367,7 +471,6 @@
         }
       ]
     },
-
     "Recurrent_Urinary_Tract_Infections": {
       "type": "ConditionOnset",
       "target_encounter": "UTI_Diagnosis",
@@ -380,7 +483,6 @@
       ],
       "direct_transition": "Wait_For_Recurring_UTI"
     },
-
     "Wait_For_Recurring_UTI": {
       "type": "Delay",
       "range": {
@@ -390,7 +492,6 @@
       },
       "direct_transition": "Urinary_Tract_Infection"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

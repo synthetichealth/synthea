@@ -7,19 +7,15 @@
     "was problematic - the Dalkon Shield caused infections in 200k women and 10 ",
     "deaths. It was discontinued in 1974. This caused widespread abandonment and ",
     "distrust of IUDs in the 1980's.",
-
     "Modern IUDs are again becoming popular. They are copper or combine low-dose ",
     "hormones with plastic.",
-
     "IUDs must be removed or replaced every 5-10 years. This is handled by the ",
     "Contraceptive Maintenance module.",
-
     "Sources for availability: ",
     "https://www.wired.com/2011/07/ff_iud/",
     "http://kff.org/womens-health-policy/fact-sheet/intrauterine-devices-iuds-access-for-women-in-the-u-s/"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -56,14 +52,12 @@
         }
       ]
     },
-
     "Set_Contraceptive_Type": {
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "iud",
       "direct_transition": "IUD_Consultation_Encounter"
     },
-
     "IUD_Consultation_Encounter": {
       "type": "Encounter",
       "remarks": [
@@ -81,13 +75,11 @@
       ],
       "direct_transition": "Prescribe_IUD"
     },
-
     "Prescribe_IUD": {
       "type": "Simple",
       "remarks": [
         "Unfortunately, RxNorm codes are not available for: ",
         "Lippes Lopp, Safe-T-Coil, Copper 7, Dalkon Shield, or Paragard ",
-
         "However, the contraceptive_type attribute remains set and the ",
         "incidence of pregnancy will reflect that the woman is using an IUD."
       ],
@@ -231,32 +223,26 @@
         }
       ]
     },
-
     "Prescribe_Lippes_Loop": {
       "type": "Simple",
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Safe_T_Coil": {
       "type": "Simple",
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Dalkon_Shield": {
       "type": "Simple",
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Copper_7": {
       "type": "Simple",
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Paragard": {
       "type": "Simple",
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Mirena": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -269,7 +255,6 @@
       ],
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Liletta": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -282,7 +267,6 @@
       ],
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "Prescribe_Kyleena": {
       "type": "MedicationOrder",
       "assign_to_attribute": "contraceptive",
@@ -295,12 +279,10 @@
       ],
       "direct_transition": "End_Consultation_Encounter"
     },
-
     "End_Consultation_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Delay_For_IUD_Insertion"
     },
-
     "Delay_For_IUD_Insertion": {
       "type": "Delay",
       "range": {
@@ -310,7 +292,6 @@
       },
       "direct_transition": "Initial_IUD_Insertion_Encounter"
     },
-
     "Initial_IUD_Insertion_Encounter": {
       "type": "Encounter",
       "encounter_class": "outpatient",
@@ -323,7 +304,6 @@
       ],
       "direct_transition": "IUD_Insertion"
     },
-
     "IUD_Insertion": {
       "type": "Procedure",
       "codes": [
@@ -340,12 +320,10 @@
       },
       "direct_transition": "End_IUD_Insertion_Encounter"
     },
-
     "End_IUD_Insertion_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
-
     "Terminal": {
       "type": "Terminal"
     }

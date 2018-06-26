@@ -14,12 +14,13 @@ import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
-import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt;
+import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.Activity;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.ActivityDetail;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
@@ -52,6 +53,7 @@ import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
 import ca.uhn.fhir.model.dstu2.valueset.GoalStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.HTTPVerbEnum;
 import ca.uhn.fhir.model.dstu2.valueset.IdentifierTypeCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.InstanceAvailabilityEnum;
 import ca.uhn.fhir.model.dstu2.valueset.MaritalStatusCodesEnum;
@@ -85,9 +87,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.sis.geometry.DirectPosition2D;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -95,7 +97,6 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
-import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
@@ -121,6 +122,11 @@ public class FhirDstu2 {
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
+
+  protected static boolean TRANSACTION_BUNDLE =
+      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
@@ -163,7 +169,11 @@ public class FhirDstu2 {
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
-    bundle.setType(BundleTypeEnum.COLLECTION);
+    if (TRANSACTION_BUNDLE) {
+      bundle.setType(BundleTypeEnum.TRANSACTION);
+    } else {
+      bundle.setType(BundleTypeEnum.COLLECTION);
+    }
 
     Entry personEntry = basicInfo(person, bundle, stopTime);
 
@@ -373,7 +383,10 @@ public class FhirDstu2 {
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState(state).setCountry("US");
+        .setState(state);
+    if (COUNTRY_CODE != null) {
+      addrResource.setCountry(COUNTRY_CODE);
+    }
 
     DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
     if (coord != null) {
@@ -391,8 +404,10 @@ public class FhirDstu2 {
     }
 
     AddressDt birthplace = new AddressDt();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
-        .setCountry("US");
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state);
+    if (COUNTRY_CODE != null) {
+      birthplace.setCountry(COUNTRY_CODE);
+    }
     ExtensionDt birthplaceExtension = new ExtensionDt();
     birthplaceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
@@ -478,11 +493,9 @@ public class FhirDstu2 {
     }
 
     encounterResource.setClassElement(EncounterClassEnum.forCode(encounter.type));
-    long encounterEnd = encounter.stop > 0 ? encounter.stop
-        : encounter.start + TimeUnit.MINUTES.toMillis(15);
-
-    encounterResource.setPeriod(new PeriodDt().setStart(new DateTimeDt(new Date(encounter.start)))
-        .setEnd(new DateTimeDt(new Date(encounterEnd))));
+    encounterResource.setPeriod(new PeriodDt()
+        .setStart(new DateTimeDt(new Date(encounter.start)))
+        .setEnd(new DateTimeDt(new Date(encounter.stop))));
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
@@ -500,7 +513,7 @@ public class FhirDstu2 {
             .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getAmbulatoryProvider();
+      Provider provider = person.getAmbulatoryProvider(encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {
@@ -630,8 +643,8 @@ public class FhirDstu2 {
 
     int itemSequence = 2;
     int conditionSequence = 1;
-    for (ClaimItem item : claim.items) {
-      if (Costs.hasCost(item.entry)) {
+    for (HealthRecord.Entry item : claim.items) {
+      if (Costs.hasCost(item)) {
         // update claimItems list
         ca.uhn.fhir.model.dstu2.resource.Claim.Item procedureItem =
             new ca.uhn.fhir.model.dstu2.resource.Claim.Item();
@@ -653,9 +666,9 @@ public class FhirDstu2 {
 
         // item service should match the entry code
         itemService = new CodingDt();
-        itemService.setSystem(item.entry.codes.get(0).system)
-            .setCode(item.entry.codes.get(0).code)
-            .setDisplay(item.entry.codes.get(0).display);
+        itemService.setSystem(item.codes.get(0).system)
+            .setCode(item.codes.get(0).code)
+            .setDisplay(item.codes.get(0).display);
         procedureItem.setService(itemService);
 
         claimResource.addItem(procedureItem);
@@ -665,10 +678,10 @@ public class FhirDstu2 {
         ca.uhn.fhir.model.dstu2.resource.Claim.Diagnosis diagnosisComponent =
             new ca.uhn.fhir.model.dstu2.resource.Claim.Diagnosis();
         diagnosisComponent.setSequence(new PositiveIntDt(conditionSequence));
-        if (item.entry.codes.size() > 0) {
+        if (item.codes.size() > 0) {
           // use first code
           diagnosisComponent.setDiagnosis(
-              new CodingDt(item.entry.codes.get(0).system, item.entry.codes.get(0).code));
+              new CodingDt(item.codes.get(0).system, item.codes.get(0).code));
         }
         claimResource.addDiagnosis(diagnosisComponent);
         conditionSequence++;
@@ -925,14 +938,9 @@ public class FhirDstu2 {
 
     medicationResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     medicationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
-    ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
-        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
-    medicationResource.setPrescriber(encounter.getServiceProvider());
-
     medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
-
     if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationOrderStatusEnum.STOPPED);
     } else {
@@ -1245,8 +1253,10 @@ public class FhirDstu2 {
         .addLine(provider.address)
         .setCity(provider.city)
         .setPostalCode(provider.zip)
-        .setState(provider.state)
-        .setCountry("US");
+        .setState(provider.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     if (provider.phone != null && !provider.phone.isEmpty()) {
@@ -1415,6 +1425,13 @@ public class FhirDstu2 {
     entry.setFullUrl("urn:uuid:" + resourceID);
 
     entry.setResource(resource);
+
+    if (TRANSACTION_BUNDLE) {
+      EntryRequest request = entry.getRequest();
+      request.setMethod(HTTPVerbEnum.POST);
+      request.setUrl(resource.getResourceName());
+      entry.setRequest(request);
+    }
 
     return entry;
   }

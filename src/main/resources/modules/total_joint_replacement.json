@@ -7,12 +7,10 @@
     "'hip' and 'knee'."
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Joint_Replacement_Guard"
     },
-
     "Joint_Replacement_Guard": {
       "type": "Guard",
       "remarks": [
@@ -38,7 +36,6 @@
       },
       "direct_transition": "Delay_For_Joint_Replacement"
     },
-
     "Delay_For_Joint_Replacement": {
       "type": "Delay",
       "remarks": [
@@ -49,9 +46,8 @@
         "high": 12,
         "unit": "months"
       },
-      "direct_transition": "Joint_Replacement_Encounter"
+      "direct_transition": "Pre_Procedure_Encounter"
     },
-
     "Joint_Replacement_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -86,7 +82,6 @@
         }
       ]
     },
-
     "Knee_Replacement_Procedure": {
       "type": "Procedure",
       "target_encounter": "Joint_Replacement_Encounter",
@@ -99,7 +94,6 @@
       ],
       "direct_transition": "Post_Op_CarePlan"
     },
-
     "Hip_Replacement_Procedure": {
       "type": "Procedure",
       "target_encounter": "Joint_Replacement_Encounter",
@@ -112,7 +106,6 @@
       ],
       "direct_transition": "Post_Op_CarePlan"
     },
-
     "Post_Op_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Joint_Replacement_Encounter",
@@ -137,24 +130,24 @@
       ],
       "direct_transition": "Post_Op_Prescribe_Pain_Reliever"
     },
-
     "Post_Op_Prescribe_Pain_Reliever": {
       "type": "CallSubmodule",
       "submodule": "medications/moderate_opioid_pain_reliever",
       "direct_transition": "In_Hospital_Post_Surgery_Recovery"
     },
-
-    "In_Hospital_Post_Surgery_Recovery" : {
-      "type" : "Delay",
-      "range" : { "low" : 3, "high" : 5, "unit" : "days" },
-      "direct_transition" : "End_Encounter"
+    "In_Hospital_Post_Surgery_Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 5,
+        "unit": "days"
+      },
+      "direct_transition": "End_Encounter"
     },
-
-    "End_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Delay_For_Recovery"
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_For_Recovery"
     },
-
     "Delay_For_Recovery": {
       "type": "Delay",
       "exact": {
@@ -163,13 +156,30 @@
       },
       "direct_transition": "End_Post_Op_CarePlan"
     },
-
     "End_Post_Op_CarePlan": {
       "type": "CarePlanEnd",
       "careplan": "Post_Op_CarePlan",
-      "direct_transition": "Delay_Until_New_Replacement_Needed"
+      "conditional_transition": [
+        {
+          "transition": "Delay_For_Post_Assessment_Knee",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "knee"
+          }
+        },
+        {
+          "transition": "Delay_For_Post_Assessment_Hip",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "hip"
+          }
+        }
+      ]
     },
-
     "Delay_Until_New_Replacement_Needed": {
       "type": "Delay",
       "remarks": [
@@ -192,9 +202,118 @@
         }
       ]
     },
-
     "Terminal": {
       "type": "Terminal"
+    },
+    "Delay_After_Assessments": {
+      "type": "Delay",
+      "direct_transition": "Joint_Replacement_Encounter",
+      "range": {
+        "low": 0,
+        "high": 90,
+        "unit": "days"
+      }
+    },
+    "Delay_After_Assessments_2": {
+      "type": "Delay",
+      "direct_transition": "Joint_Replacement_Encounter",
+      "range": {
+        "low": 0,
+        "high": 180,
+        "unit": "days"
+      }
+    },
+    "Pre_Procedure_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Functional_Status_Assessments"
+    },
+    "Pre_Procedure_Encounter_End": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Delay_After_Assessments",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "knee"
+          }
+        },
+        {
+          "transition": "Delay_After_Assessments_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "hip"
+          }
+        }
+      ]
+    },
+    "Functional_Status_Assessments": {
+      "type": "CallSubmodule",
+      "submodule": "total_joint_replacement/functional_status_assessments",
+      "direct_transition": "Pre_Procedure_Encounter_End"
+    },
+    "Post_Procedure_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Functional_Status_Assessments_2"
+    },
+    "Delay_For_Post_Assessment_Hip": {
+      "type": "Delay",
+      "direct_transition": "Post_Procedure_Encounter",
+      "range": {
+        "low": 30,
+        "high": 150,
+        "unit": "days"
+      },
+      "remarks": [
+        "Obtained from:",
+        "https://ecqi.healthit.gov/system/files/ecqm/measures/CMS56v5_2.html",
+        "1 month recovery subtracted from overall delay time"
+      ]
+    },
+    "Delay_For_Post_Assessment_Knee": {
+      "type": "Delay",
+      "direct_transition": "Post_Procedure_Encounter",
+      "range": {
+        "low": 240,
+        "high": 335,
+        "unit": "days"
+      },
+      "remarks": [
+        "Obtained from:",
+        "https://ecqi.healthit.gov/ecqm/measures/cms066v7",
+        "1 month recovery time subtracted from overall delay time",
+        ""
+      ]
+    },
+    "Functional_Status_Assessments_2": {
+      "type": "CallSubmodule",
+      "submodule": "total_joint_replacement/functional_status_assessments",
+      "direct_transition": "Post_Procedure_Encounter_End"
+    },
+    "Post_Procedure_Encounter_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_Until_New_Replacement_Needed"
     }
   }
 }

@@ -6,7 +6,6 @@
     "Source: http://www.cdc.gov/ncbddd/adhd/data.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -47,7 +46,6 @@
         }
       ]
     },
-
     "Delay_Until_ADHD": {
       "type": "Delay",
       "range": {
@@ -57,7 +55,6 @@
       },
       "direct_transition": "ADHD"
     },
-
     "ADHD": {
       "type": "ConditionOnset",
       "target_encounter": "ADHD_Diagnosis",
@@ -70,7 +67,6 @@
       ],
       "direct_transition": "ADHD_Diagnosis"
     },
-
     "ADHD_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -82,9 +78,53 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "ADD_Symptom1"
+    },
+    "ADD_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Poor Eye Contact",
+      "range": {
+        "low": 0,
+        "high": 30
+      },
+      "direct_transition": "ADD_Symptom2"
+    },
+    "ADD_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Delayed Verbal/Language Skills",
+      "range": {
+        "low": 0,
+        "high": 30
+      },
+      "direct_transition": "ADD_Symptom3"
+    },
+    "ADD_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Hyperactive Behavior",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "ADD_Symptom4"
+    },
+    "ADD_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Inability to Focus/Concentrate",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "ADD_Symptom5"
+    },
+    "ADD_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Poor Socialization",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
       "direct_transition": "ADHD_CarePlan"
     },
-
     "ADHD_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "ADHD_Diagnosis",
@@ -134,7 +174,6 @@
         }
       ]
     },
-
     "Behavior_Therapy": {
       "type": "Delay",
       "remarks": [
@@ -148,7 +187,6 @@
       },
       "direct_transition": "Behavior_Treatment_Encounter"
     },
-
     "Behavior_Treatment_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -162,7 +200,6 @@
       ],
       "direct_transition": "Behavior_Treatment_Procedure"
     },
-
     "Behavior_Treatment_Procedure": {
       "type": "Procedure",
       "target_encounter": "Behavior_Treatment_Encounter",
@@ -174,12 +211,15 @@
           "display": "Cognitive and behavioral therapy"
         }
       ],
-      "duration" : { "low" : 1, "high" : 1, "unit" : "hours" },
-      "direct_transition" : "End_Behavior_Treatment_Encounter"
+      "duration": {
+        "low": 1,
+        "high": 1,
+        "unit": "hours"
+      },
+      "direct_transition": "End_Behavior_Treatment_Encounter"
     },
-
-    "End_Behavior_Treatment_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Behavior_Treatment_Encounter": {
+      "type": "EncounterEnd",
       "complex_transition": [
         {
           "condition": {
@@ -214,7 +254,6 @@
         }
       ]
     },
-
     "ADHD_Medication_Selection": {
       "type": "Simple",
       "remarks": [
@@ -288,7 +327,6 @@
         }
       ]
     },
-
     "Ritalin": {
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
@@ -312,7 +350,6 @@
         }
       ]
     },
-
     "Strattera": {
       "type": "MedicationOrder",
       "target_encounter": "ADHD_Diagnosis",
@@ -336,18 +373,14 @@
         }
       ]
     },
-
-    "End_Diagnosis_Encounter_without_BT" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Age_Guard"
+    "End_Diagnosis_Encounter_without_BT": {
+      "type": "EncounterEnd",
+      "direct_transition": "Age_Guard"
     },
-
-    "End_Diagnosis_Encounter_with_BT" : 
-    {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Behavior_Therapy"
+    "End_Diagnosis_Encounter_with_BT": {
+      "type": "EncounterEnd",
+      "direct_transition": "Behavior_Therapy"
     },
-
     "Age_Guard": {
       "type": "Guard",
       "allow": {
@@ -358,13 +391,51 @@
       },
       "direct_transition": "ADHD_Ends"
     },
-
     "ADHD_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "ADHD",
+      "direct_transition": "ADD_Symptom1_Ends"
+    },
+    "ADD_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Poor Eye Contact",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom2_Ends"
+    },
+    "ADD_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Delayed Verbal/Language Skills",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom3_Ends"
+    },
+    "ADD_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Hyperactive Behavior",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom4_Ends"
+    },
+    "ADD_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Inability to Focus/Concentrate",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "ADD_Symptom5_Ends"
+    },
+    "ADD_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Poor Socialization",
+      "exact": {
+        "quantity": 0
+      },
       "direct_transition": "ADHD_CarePlan_Ends"
     },
-
     "ADHD_CarePlan_Ends": {
       "type": "CarePlanEnd",
       "careplan": "ADHD_CarePlan",
@@ -382,13 +453,11 @@
         }
       ]
     },
-
     "End_ADHD_Medication": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "adhd_medication",
       "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

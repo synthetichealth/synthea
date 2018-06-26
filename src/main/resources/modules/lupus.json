@@ -10,7 +10,6 @@
     "http://www.cdc.gov/arthritis/data_statistics/national-statistics.html"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "remarks": [
@@ -57,7 +56,6 @@
         }
       ]
     },
-
     "Delay_Until_Lupus": {
       "type": "Delay",
       "range": {
@@ -67,7 +65,6 @@
       },
       "direct_transition": "Lupus"
     },
-
     "Lupus": {
       "type": "ConditionOnset",
       "remarks": [
@@ -86,7 +83,6 @@
       ],
       "direct_transition": "Lupus_Diagnosis"
     },
-
     "Lupus_Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -98,9 +94,44 @@
           "display": "Encounter for problem"
         }
       ],
+      "direct_transition": "Lupus_Symptom1"
+    },
+     "Lupus_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Lupus_Symptom2"
+    },
+    "Lupus_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Lupus_Symptom3"
+    },
+    "Lupus_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Rash",
+      "range": {
+        "low": 0,
+        "high": 50
+      },
+      "direct_transition": "Lupus_Symptom4"
+    },
+    "Lupus_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "range": {
+        "low": 0,
+        "high": 20
+      },
       "direct_transition": "Lupus_CarePlan"
     },
-
     "Lupus_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "Lupus_Diagnosis",
@@ -127,7 +158,6 @@
       ],
       "direct_transition": "Lupus_Nonopioid_Pain_Medication"
     },
-
     "Lupus_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
@@ -141,7 +171,6 @@
       ],
       "direct_transition": "Corticosteroid"
     },
-
     "Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Diagnosis",
@@ -161,12 +190,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
-    "End_Diagnosis_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Corticosteroid_Treatment"
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Corticosteroid_Treatment"
     },
-
     "Corticosteroid_Treatment": {
       "type": "Delay",
       "range": {
@@ -176,7 +203,6 @@
       },
       "direct_transition": "End_Corticosteroid"
     },
-
     "End_Corticosteroid": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "lupus_corticosteroid",
@@ -193,7 +219,6 @@
         }
       ]
     },
-
     "Wait_For_Lupus_Flareup": {
       "type": "Delay",
       "remarks": [
@@ -215,7 +240,6 @@
         }
       ]
     },
-
     "Lupus_Flareup": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -229,7 +253,6 @@
       ],
       "direct_transition": "Immune_Suppressant"
     },
-
     "Immune_Suppressant": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Flareup",
@@ -246,7 +269,6 @@
       ],
       "direct_transition": "Flareup_Corticosteroid"
     },
-
     "Flareup_Corticosteroid": {
       "type": "MedicationOrder",
       "target_encounter": "Lupus_Flareup",
@@ -266,18 +288,15 @@
       ],
       "direct_transition": "End_Flareup_Encounter"
     },
-
-    "End_Flareup_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Corticosteroid_Treatment"
+    "End_Flareup_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Corticosteroid_Treatment"
     },
-
     "End_Immune_Suppressant": {
       "type": "MedicationEnd",
       "medication_order": "Immune_Suppressant",
       "direct_transition": "Wait_For_Lupus_Flareup"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

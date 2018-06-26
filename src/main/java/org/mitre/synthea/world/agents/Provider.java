@@ -6,8 +6,10 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,6 +27,7 @@ public class Provider implements QuadTreeData {
   public static final String AMBULATORY = "ambulatory";
   public static final String INPATIENT = "inpatient";
   public static final String EMERGENCY = "emergency";
+  public static final String URGENTCARE = "urgent care";
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
   public static final String LABS = "labs";
@@ -109,14 +112,31 @@ public class Provider implements QuadTreeData {
       return null;
     }
   }
+  
+  /**
+   * Will this provider accept the given person as a patient at the given time?.
+   * @param person Person to consider
+   * @param time Time the person seeks care
+   * @return whether or not the person can receive care by this provider
+   */
+  public boolean accepts(Person person, long time) {
+    // for now assume every provider accepts every patient
+    // UNLESS it's a VA facility and the person is not a veteran
+    // eventually we may want to expand this (ex. capacity?)
+    if ("VA Facility".equals(this.type) && !person.attributes.containsKey("veteran")) {
+      // this could be made a one-liner but i think this is more clear
+      return false;
+    }
+    return true;
+  }
 
-  public static Provider findClosestService(Person person, String service) {
+  public static Provider findClosestService(Person person, String service, long time) {
     double maxDistance = 500;
     double distance = 100;
     double step = 100;
     Provider provider = null;
     while (provider == null && distance <= maxDistance) {
-      provider = findService(person.getLatLon(), service, distance);
+      provider = findService(person, service, distance, time);
       if (provider != null) {
         return provider;
       }
@@ -132,8 +152,9 @@ public class Provider implements QuadTreeData {
    * @param searchDistance in kilometers
    * @return Service provider or null if none is available.
    */
-  private static Provider findService(DirectPosition2D coord,
-      String service, double searchDistance) {
+  private static Provider findService(Person person,
+      String service, double searchDistance, long time) {
+    DirectPosition2D coord = person.getLatLon();
     List<QuadTreeData> results = providerMap.queryByPointRadius(coord, searchDistance);
 
     Provider closest = null;
@@ -143,10 +164,12 @@ public class Provider implements QuadTreeData {
 
     for (QuadTreeData item : results) {
       provider = (Provider) item;
-      if (provider.hasService(service) || service == null) {
+      if (provider.accepts(person, time)
+          && (provider.hasService(service) || service == null)) {
         distance = item.getLatLon().distance(coord);
         if (distance < minDistance) {
           closest = (Provider) item;
+          minDistance = distance;
         }
       }
     }
@@ -161,15 +184,41 @@ public class Provider implements QuadTreeData {
   public static void loadProviders(String state) {
     try {
       String abbreviation = Location.getAbbreviation(state);
-      loadHospitals(state, abbreviation);
+
+      Set<String> servicesProvided = new HashSet<String>();
+      servicesProvided.add(Provider.AMBULATORY);
+      servicesProvided.add(Provider.INPATIENT);
+      servicesProvided.add(Provider.WELLNESS);
+
+      String hospitalFile = Config.get("generate.providers.hospitals.default_file");
+      loadProviders(state, abbreviation, hospitalFile, servicesProvided);
+
+      String vaFile = Config.get("generate.providers.veterans.default_file");
+      loadProviders(state, abbreviation, vaFile, servicesProvided);
+
+      servicesProvided.clear();
+      servicesProvided.add(Provider.URGENTCARE);
+      String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
+      loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
+
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
     }
   }
 
-  private static void loadHospitals(String state, String abbreviation) throws IOException {
-    String filename = Config.get("generate.providers.hospitals.default_file");
+  /**
+   * Read the providers from the given resource file, only importing the ones for the given state.
+   * 
+   * @param state Name of the current state, ex "Massachusetts"
+   * @param abbreviation State abbreviation, ex "MA"
+   * @param filename Location of the file, relative to src/main/resources
+   * @param servicesProvided Set of services provided by these facilities
+   * @throws IOException if the file cannot be read
+   */
+  public static void loadProviders(String state, String abbreviation, String filename,
+      Set<String> servicesProvided)
+      throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
 
@@ -181,12 +230,18 @@ public class Provider implements QuadTreeData {
           || (state != null && state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
         Provider parsed = csvLineToProvider(row);
-        parsed.servicesProvided.add(Provider.AMBULATORY);
-        parsed.servicesProvided.add(Provider.INPATIENT);
-        parsed.servicesProvided.add(Provider.WELLNESS);
-        if (row.get("emergency").equals("Yes")) {
+
+        parsed.servicesProvided.addAll(servicesProvided);
+        if ("Yes".equals(row.remove("emergency"))) {
           parsed.servicesProvided.add(Provider.EMERGENCY);
         }
+
+        // add any remaining columns we didn't explicitly map to first-class fields
+        // into the attributes table
+        for (Map.Entry<String, String> e : row.entrySet()) {
+          parsed.attributes.put(e.getKey(), e.getValue());
+        }
+        
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
         if (!inserted) {
@@ -200,22 +255,23 @@ public class Provider implements QuadTreeData {
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
     d.uuid = UUID.randomUUID().toString();
-    d.id = line.get("id");
-    d.name = line.get("name");
-    d.address = line.get("address");
-    d.city = line.get("city");
-    d.state = line.get("state");
-    d.zip = line.get("zip");
-    d.phone = line.get("phone");
-    d.type = line.get("type");
-    d.ownership = line.get("ownership");
+    // using remove instead of get here so that we can iterate over the remaining keys later
+    d.id = line.remove("id");
+    d.name = line.remove("name");
+    d.address = line.remove("address");
+    d.city = line.remove("city");
+    d.state = line.remove("state");
+    d.zip = line.remove("zip");
+    d.phone = line.remove("phone");
+    d.type = line.remove("type");
+    d.ownership = line.remove("ownership");
     try {
-      d.quality = Integer.parseInt(line.get("quality"));
+      d.quality = Integer.parseInt(line.remove("quality"));
     } catch (Exception e) {
       // Swallow invalid format data
     }
-    double lat = Double.parseDouble(line.get("LAT"));
-    double lon = Double.parseDouble(line.get("LON"));
+    double lat = Double.parseDouble(line.remove("LAT"));
+    double lon = Double.parseDouble(line.remove("LON"));
     d.coordinates = new DirectPosition2D(lat, lon);
     return d;
   }

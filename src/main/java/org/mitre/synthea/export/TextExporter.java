@@ -226,7 +226,7 @@ public class TextExporter {
     textRecord.add("Marital Status:      "
         + person.attributes.getOrDefault(Person.MARITAL_STATUS, "S"));
 
-    Provider prov = person.getAmbulatoryProvider();
+    Provider prov = person.getAmbulatoryProvider(endTime);
     if (prov != null) {
       textRecord.add("Outpatient Provider: " + prov.name);
     }
@@ -243,10 +243,15 @@ public class TextExporter {
   private static void encounter(List<String> textRecord, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
 
-    if (encounter.reason == null) {
+    if (encounter.reason == null && encounter.provider == null) {
       textRecord.add(encounterTime + " : " + encounter.codes.get(0).display);
-    } else {
+    } else if (encounter.reason == null && encounter.provider != null) {
+      textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name);
+    } else if (encounter.reason != null && encounter.provider == null) {
       textRecord.add(encounterTime + " : Encounter for " + encounter.reason.display);
+    } else {
+      textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name
+          + " : Encounter for " + encounter.reason.display);
     }
   }
 

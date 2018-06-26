@@ -1,3 +1,4 @@
+
 {
   "name": "COPD",
   "remarks": [
@@ -5,25 +6,21 @@
     "COPD is a blanket term for 2 types of lung diseases: ",
     "Chronic Bronchitis (inflammation of bronchi) and Emphysema (damage to alveoli)",
     "2011 prevalence stats: http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6146a2.htm?s_cid=mm6146a2_w",
-
     "Some #s that stand out: MA overall % = 5.4%,",
     "By age (US overall) 18-44 = 3.2%, 45-54 = 6.6%, 55-64 = 9.2%, 65-74 = 12.1%, 75+ = 11.6%",
     "By education (US) some HS or less = 9.5%, HS = 6.8%, some college or more = 4.6%",
     "By income (US) <25k = 9.9%, <50k = 5.7%, <75k = 4.2%, >75k = 2.8%",
     "By whether they ever had asthma: Yes = 20.3%, No = 3.8%",
-
     "The National Health Interview Survey reports the prevalence of emphysema",
     "at 18 cases per 1000 persons and chronic bronchitis at 34 cases per 1000 persons",
     "The term COPD was first used in the 1960s https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2706597/ ",
     "the terms bronchitis and emphysema have been around longer"
   ],
   "states": {
-
     "Initial": {
       "type": "Initial",
       "direct_transition": "Age_Guard"
     },
-
     "Age_Guard": {
       "type": "Guard",
       "allow": {
@@ -47,7 +44,6 @@
         }
       ]
     },
-
     "Potential_COPD_Nonsmoker": {
       "type": "Delay",
       "exact": {
@@ -87,7 +83,6 @@
         }
       ]
     },
-
     "Potential_COPD_Smoker": {
       "type": "Delay",
       "exact": {
@@ -183,7 +178,6 @@
         }
       ]
     },
-
     "Emphysema": {
       "type": "ConditionOnset",
       "target_encounter": "DiagnosisEncounter",
@@ -197,7 +191,6 @@
       ],
       "direct_transition": "Emphysema_Symptom1"
     },
-
     "Chronic_Bronchitis": {
       "type": "ConditionOnset",
       "target_encounter": "DiagnosisEncounter",
@@ -211,38 +204,61 @@
       ],
       "direct_transition": "Bronchitis_Symptom1"
     },
-
     "Emphysema_Symptom1": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "range": {
-        "low": 70,
-        "high": 100
+        "low": 50,
+        "high": 550
       },
       "direct_transition": "Emphysema_Symptom2"
     },
-
     "Emphysema_Symptom2": {
       "type": "Symptom",
       "symptom": "Cough",
       "range": {
-        "low": 10,
-        "high": 60
+        "low": 50,
+        "high": 150
       },
-      "direct_transition": "DiagnosisEncounter"
+      "direct_transition": "Common_Symptom1"
     },
-
     "Bronchitis_Symptom1": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "range": {
         "low": 0,
-        "high": 40
+        "high": 250
       },
       "direct_transition": "Bronchitis_Symptom2"
     },
-
     "Bronchitis_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 150,
+        "high": 250
+      },
+      "direct_transition": "Common_Symptom1"
+    },
+    "Common_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 70,
+        "high": 100
+      },
+      "direct_transition": "Common_Symptom2"
+    },
+    "Common_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "range": {
+        "low": 70,
+        "high": 100
+      },
+      "direct_transition": "Common_Symptom3"
+    },
+    "Common_Symptom3": {
       "type": "Symptom",
       "symptom": "Cough",
       "range": {
@@ -251,13 +267,11 @@
       },
       "direct_transition": "DiagnosisEncounter"
     },
-
     "DiagnosisEncounter": {
       "type": "Encounter",
       "wellness": true,
       "direct_transition": "Initial_FEV_Test"
     },
-
     "Initial_FEV_Test": {
       "type": "Procedure",
       "target_encounter": "DiagnosisEncounter",
@@ -271,10 +285,9 @@
       ],
       "direct_transition": "Initial_FEV_Result"
     },
-
     "Initial_FEV_Result": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "codes": [
         {
           "system": "LOINC",
@@ -305,7 +318,6 @@
         }
       ]
     },
-
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "DiagnosisEncounter",
@@ -331,7 +343,6 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
       "target_encounter": "DiagnosisEncounter",
@@ -357,12 +368,10 @@
       ],
       "direct_transition": "End_Diagnosis_Encounter"
     },
-
-    "End_Diagnosis_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "Living_with_COPD"
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_with_COPD"
     },
-
     "Living_with_COPD": {
       "type": "Simple",
       "remarks": [
@@ -385,7 +394,6 @@
         }
       ]
     },
-
     "Living_with_COPD_Active_Smoker": {
       "type": "Simple",
       "remarks": [
@@ -491,7 +499,6 @@
         }
       ]
     },
-
     "Living_with_COPD_Nonsmoker": {
       "type": "Simple",
       "remarks": [
@@ -588,7 +595,6 @@
         }
       ]
     },
-
     "COPD_Followup_Encounter": {
       "type": "Encounter",
       "wellness": true,
@@ -680,10 +686,9 @@
         }
       ]
     },
-
     "Stage1_FEV_Result": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "range": {
         "low": 75,
         "high": 90
@@ -701,10 +706,9 @@
       ],
       "direct_transition": "Loop_back_to_Living_with_COPD"
     },
-
     "Stage2_FEV_Result": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "range": {
         "low": 48,
         "high": 79
@@ -722,10 +726,9 @@
       ],
       "direct_transition": "Check_Medication"
     },
-
     "Stage3_FEV_Result": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "range": {
         "low": 26,
         "high": 49
@@ -743,10 +746,9 @@
       ],
       "direct_transition": "Check_Medication"
     },
-
     "Stage4_FEV_Result": {
       "type": "Observation",
-      "category" : "procedure",
+      "category": "procedure",
       "range": {
         "low": 10,
         "high": 29
@@ -761,7 +763,6 @@
       ],
       "direct_transition": "Pulmonary_Rehab"
     },
-
     "Check_Medication": {
       "type": "Simple",
       "conditional_transition": [
@@ -783,7 +784,6 @@
         }
       ]
     },
-
     "Prescribe_Medication": {
       "type": "MedicationOrder",
       "target_encounter": "COPD_Followup_Encounter",
@@ -797,7 +797,6 @@
       ],
       "direct_transition": "Consider_Surgery"
     },
-
     "Consider_Surgery": {
       "type": "Simple",
       "complex_transition": [
@@ -866,7 +865,6 @@
         }
       ]
     },
-
     "Wait_for_Surgery": {
       "type": "Delay",
       "range": {
@@ -876,7 +874,6 @@
       },
       "direct_transition": "Surgery_Encounter"
     },
-
     "Surgery_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -912,7 +909,6 @@
         }
       ]
     },
-
     "Lung_Transplant": {
       "type": "Procedure",
       "target_encounter": "Surgery_Encounter",
@@ -924,10 +920,13 @@
           "display": "Transplant of lung (procedure)"
         }
       ],
-      "duration" : { "low" : 5, "high" : 7, "unit" : "hours" },
+      "duration": {
+        "low": 5,
+        "high": 7,
+        "unit": "hours"
+      },
       "direct_transition": "End_Surgery_Encounter"
     },
-
     "Lung_Volume_Reduction": {
       "type": "Procedure",
       "target_encounter": "Surgery_Encounter",
@@ -941,12 +940,10 @@
       ],
       "direct_transition": "End_Surgery_Encounter"
     },
-
-    "End_Surgery_Encounter" : {
-      "type" : "EncounterEnd",
+    "End_Surgery_Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Loop_back_to_Living_with_COPD"
     },
-
     "Pulmonary_Rehab": {
       "type": "Procedure",
       "target_encounter": "COPD_Followup_Encounter",
@@ -960,7 +957,6 @@
       ],
       "direct_transition": "Check_Medication"
     },
-
     "Loop_back_to_Living_with_COPD": {
       "type": "Simple",
       "remarks": [
@@ -968,13 +964,11 @@
       ],
       "direct_transition": "Living_with_COPD"
     },
-
     "Death": {
       "type": "Death",
       "referenced_by_attribute": "copd_variant",
       "direct_transition": "Terminal"
     },
-    
     "Terminal": {
       "type": "Terminal"
     }

@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.hl7.fhir.dstu3.model.Address;
@@ -30,7 +29,9 @@ import org.hl7.fhir.dstu3.model.Basic;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityComponent;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityDetailComponent;
 import org.hl7.fhir.dstu3.model.CarePlan.CarePlanActivityStatus;
@@ -46,8 +47,8 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
-import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.ContactPoint;
+import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
@@ -86,8 +87,8 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing;
+import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
@@ -101,7 +102,6 @@ import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
-import org.mitre.synthea.world.concepts.HealthRecord.ClaimItem;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
@@ -132,6 +132,10 @@ public class FhirStu3 {
 
   private static final boolean USE_SHR_EXTENSIONS =
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
+  protected static boolean TRANSACTION_BUNDLE =
+      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static final Table<String,String,String> SHR_MAPPING = loadSHRMapping();
 
@@ -203,7 +207,11 @@ public class FhirStu3 {
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
-    bundle.setType(BundleType.COLLECTION);
+    if (TRANSACTION_BUNDLE) {
+      bundle.setType(BundleType.TRANSACTION);
+    } else {
+      bundle.setType(BundleType.COLLECTION);
+    }
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 
@@ -436,11 +444,16 @@ public class FhirStu3 {
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
         .setPostalCode((String) person.attributes.get(Person.ZIP))
-        .setState(state).setCountry("US");
+        .setState(state);
+    if (COUNTRY_CODE != null) {
+      addrResource.setCountry(COUNTRY_CODE);
+    }
 
     Address birthplace = new Address();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state)
-        .setCountry("US");
+    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state);
+    if (COUNTRY_CODE != null) {
+      birthplace.setCountry(COUNTRY_CODE);
+    }
     Extension birthplaceExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
@@ -577,11 +590,10 @@ public class FhirStu3 {
     }
 
     encounterResource.setClass_(new Coding().setCode(encounter.type));
-    long encounterEnd = encounter.stop > 0 ? encounter.stop
-        : encounter.start + TimeUnit.MINUTES.toMillis(15);
-
     encounterResource
-        .setPeriod(new Period().setStart(new Date(encounter.start)).setEnd(new Date(encounterEnd)));
+        .setPeriod(new Period()
+            .setStart(new Date(encounter.start))
+            .setEnd(new Date(encounter.stop)));
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
@@ -598,7 +610,7 @@ public class FhirStu3 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getAmbulatoryProvider();
+      Provider provider = person.getAmbulatoryProvider(encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {
@@ -736,8 +748,8 @@ public class FhirStu3 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (ClaimItem item : claim.items) {
-      if (Costs.hasCost(item.entry)) {
+    for (HealthRecord.Entry item : claim.items) {
+      if (Costs.hasCost(item)) {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
 
@@ -749,15 +761,15 @@ public class FhirStu3 {
         claimItem.setNet(moneyResource);
         claimResource.addItem(claimItem);
 
-        if (item.entry instanceof HealthRecord.Procedure) {
-          Type procedureReference = new Reference(item.entry.fullUrl);
+        if (item instanceof HealthRecord.Procedure) {
+          Type procedureReference = new Reference(item.fullUrl);
           ProcedureComponent claimProcedure = new ProcedureComponent(
               new PositiveIntType(procedureSequence), procedureReference);
           claimResource.addProcedure(claimProcedure);
           claimItem.addProcedureLinkId(procedureSequence);
           procedureSequence++;
         } else {
-          Reference informationReference = new Reference(item.entry.fullUrl);
+          Reference informationReference = new Reference(item.fullUrl);
           SpecialConditionComponent informationComponent = new SpecialConditionComponent();
           informationComponent.setSequence(informationSequence);
           informationComponent.setValue(informationReference);
@@ -773,7 +785,7 @@ public class FhirStu3 {
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
-        Reference diagnosisReference = new Reference(item.entry.fullUrl);
+        Reference diagnosisReference = new Reference(item.fullUrl);
         org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diagnosisComponent =
             new org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent(
                 new PositiveIntType(conditionSequence), diagnosisReference);
@@ -1437,8 +1449,10 @@ public class FhirStu3 {
         .addLine(provider.address)
         .setCity(provider.city)
         .setPostalCode(provider.zip)
-        .setState(provider.state)
-        .setCountry("US");
+        .setState(provider.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
     organizationResource.addAddress(address);
 
     if (provider.phone != null && !provider.phone.isEmpty()) {
@@ -1638,6 +1652,13 @@ public class FhirStu3 {
     entry.setFullUrl("urn:uuid:" + resourceID);
 
     entry.setResource(resource);
+
+    if (TRANSACTION_BUNDLE) {
+      BundleEntryRequestComponent request = entry.getRequest();
+      request.setMethod(HTTPVerb.POST);
+      request.setUrl(resource.getResourceType().name());
+      entry.setRequest(request);
+    }
 
     return entry;
   }
