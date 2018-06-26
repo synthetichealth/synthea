@@ -56,7 +56,8 @@ public class Immunizations {
     }
 
     for (String immunization : immunizationSchedule.keySet()) {
-      if (immunizationDue(immunization, person, time, immunizationsGiven)) {
+      int series = immunizationDue(immunization, person, time, immunizationsGiven);
+      if (series > 0) {
         List<Long> history = immunizationsGiven.get(immunization);
         history.add(time);
         HealthRecord.Immunization entry = person.record.immunization(time, immunization);
@@ -64,12 +65,24 @@ public class Immunizations {
         HealthRecord.Code immCode = new HealthRecord.Code(code.get("system").toString(),
             code.get("code").toString(), code.get("display").toString());
         entry.codes.add(immCode);
+        entry.series = series;
       }
     }
   }
 
+  /**
+   * Return whether or not the specified immunization is due.
+   *
+   * @param immunization The immunization to give
+   * @param person The person to receive the immunization
+   * @param time The time the immunization would be given
+   * @param immunizationsGiven The history of immunizations
+   * @return -1 if the immunization should not be given, otherwise a positive integer,
+   *     where the value is the series. For example, 1 if this is the first time the
+   *     vaccine was administered; 2 if this is the second time, et cetera.
+   */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public static boolean immunizationDue(String immunization, Person person, long time,
+  public static int immunizationDue(String immunization, Person person, long time,
       Map<String, List<Long>> immunizationsGiven) {
     int ageInMonths = person.ageInMonths(time);
 
@@ -86,13 +99,13 @@ public class Immunizations {
     Map schedule = immunizationSchedule.get(immunization);
     Double firstAvailable = (Double) schedule.getOrDefault("first_available", 1900);
     if (time < Utilities.convertCalendarYearsToTime(firstAvailable.intValue())) {
-      return false;
+      return -1;
     }
 
     // Don't administer if all recommended doses have already been given
     List atMonths = new ArrayList((List) schedule.get("at_months"));
     if (history.size() >= atMonths.size()) {
-      return false;
+      return -1;
     }
 
     // See if the patient should receive a dose based on their current age and the recommended dose
@@ -113,7 +126,7 @@ public class Immunizations {
     Predicate<Double> notWithinFourYears = p -> ((ageInMonths - p) >= 48);
     atMonths.removeIf(notWithinFourYears);
     if (atMonths.isEmpty()) {
-      return false;
+      return -1;
     }
 
     // 2) eliminate recommended doses that were actually administered
@@ -123,13 +136,16 @@ public class Immunizations {
       if (ageAtDate >= recommendedAge && ((ageAtDate - recommendedAge) < 48)) {
         atMonths.remove(0);
         if (atMonths.isEmpty()) {
-          return false;
+          return -1;
         }
       }
     }
 
     // 3) see if there are any recommended doses remaining that this patient is old enough for
-    return !atMonths.isEmpty() && ageInMonths >= (double) atMonths.get(0);
+    if (!atMonths.isEmpty() && ageInMonths >= (double) atMonths.get(0)) {
+      return history.size() + 1;
+    }
+    return -1;
   }
 
   /**
@@ -153,5 +169,22 @@ public class Immunizations {
     }
 
     return convertedCodes;
+  }
+
+  /**
+   * Get the maximum number of vaccine doses for a particular code.
+   * @param code The vaccine code.
+   * @return The maximum number of doses to be administered.
+   */
+  @SuppressWarnings("rawtypes")
+  public static int getMaximumDoses(String code) {
+    for (String immunization : immunizationSchedule.keySet()) {
+      Map icode = (Map) immunizationSchedule.get(immunization).get("code");
+      if (icode.get("code").equals(code)) {
+        List doses = (List) immunizationSchedule.get(immunization).get("at_months");
+        return doses.size();
+      }
+    }
+    return 1;
   }
 }

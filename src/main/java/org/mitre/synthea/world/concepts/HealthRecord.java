@@ -165,6 +165,8 @@ public class HealthRecord {
   }
 
   public class Immunization extends Entry {
+    public int series = -1;
+
     public Immunization(long start, String type) {
       super(start, type);
     }
@@ -288,7 +290,7 @@ public class HealthRecord {
     public List<Entry> conditions;
     public List<Entry> allergies;
     public List<Procedure> procedures;
-    public List<Entry> immunizations;
+    public List<Immunization> immunizations;
     public List<Medication> medications;
     public List<CarePlan> careplans;
     public List<ImagingStudy> imagingStudies;
@@ -316,7 +318,7 @@ public class HealthRecord {
       conditions = new ArrayList<Entry>();
       allergies = new ArrayList<Entry>();
       procedures = new ArrayList<Procedure>();
-      immunizations = new ArrayList<Entry>();
+      immunizations = new ArrayList<Immunization>();
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();

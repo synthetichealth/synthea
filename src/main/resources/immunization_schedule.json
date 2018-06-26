@@ -12,6 +12,20 @@
     ],
     "first_available": 1981
   },
+  "hepb_adult": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "43",
+      "display": "Hep B, adult"
+    },
+    "remark": "Hepatitis B vaccine is made from parts of the hepatitis B virus. It cannot cause hepatitis B infection. The vaccine is usually given as 3 or 4 shots over a 6-month period.",
+    "at_months": [
+      240,
+      241,
+      246
+    ],
+    "first_available": 1981
+  },
   "rv_mono": {
     "code": {
       "system": "http://hl7.org/fhir/sid/cvx",
@@ -233,6 +247,19 @@
     ],
     "first_available": 1995
   },
+  "hepa_adult": {
+    "code": {
+      "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "52",
+      "display": "Hep A, adult"
+    },
+    "remark": "Hepatitis A vaccine is an inactivated (killed) vaccine. You will need 2 doses for long-lasting protection. These doses should be given at least 6 months apart.",
+    "at_months": [
+      480,
+      486
+    ],
+    "first_available": 1996
+  },
   "men": {
     "remark": "MenACWY can be Menactra (114) or Menveo (136).  Arbitrarily chose Menactra. Other types of meningococcal vaccines were available earlier",
     "code": {
@@ -240,9 +267,11 @@
       "code": "114",
       "display": "meningococcal MCV4P"
     },
+    "remark": "Revaccinate every 5 years for foreign travel, military recruits, college students.",
     "at_months": [
       132,
-      192
+      192,
+      252
     ],
     "first_available": 2005
   },
@@ -297,7 +326,8 @@
       "display": "zoster"
     },
     "at_months": [
-      720
+      600,
+      606
     ],
     "first_available": 2006
   },
