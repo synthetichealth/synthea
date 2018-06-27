@@ -702,14 +702,19 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  private static final boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
+      Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
+  
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
 
   private static void death(Person person, long time) {
-    double roll = person.rand();
-    double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
-    if (roll < likelihoodOfDeath) {
-      person.recordDeath(time, NATURAL_CAUSES, "death");
+    if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
+      double roll = person.rand();
+      double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
+      if (roll < likelihoodOfDeath) {
+        person.recordDeath(time, NATURAL_CAUSES, "death");
+      }
     }
   }
 
