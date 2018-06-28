@@ -160,7 +160,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(this.location, o.seed, this);
+    Provider.loadProviders(o.state);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
@@ -364,10 +364,10 @@ public class Generator {
    * @param index Target index in the whole set of people to generate
    * @return generated Person
    */
-  public Clinician generateClinician(int index) {
+  public static Clinician generateClinician(int index, Provider provider) {
     // System.currentTimeMillis is not unique enough
     long clinicianSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    return generateClinician(index, clinicianSeed);
+    return generateClinician(index, clinicianSeed, provider);
   }
 
   /**
@@ -375,56 +375,61 @@ public class Generator {
    * 
    * @param index
    *          Target index in the whole set of people to generate
-   * @param personSeed
+   * @param clinicianSeed
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  public Clinician generateClinician(int index, long clinicianSeed) {
+  public static Clinician generateClinician(int index, long clinicianSeed, Provider provider) {
     Clinician clinician = null;
     try {
-      Random randomForDemographics = new Random(clinicianSeed);
-      Demographics city = location.randomCity(randomForDemographics);
       
-      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
-      long start = (long) demoAttributes.get(Person.BIRTHDATE);
+      // NOTE: Currently used default demographics for clinicians
+      
+      //Random randomForDemographics = new Random(clinicianSeed);
+      //Demographics city = location.randomCity(randomForDemographics);
+      Map<String, Object> out = new HashMap<>();
 
+      
+      //String race = city.pickRace(randomForDemographics);
+      String race = "other";
+      out.put(Person.RACE, race);
+      //String ethnicity = city.ethnicityFromRace(race, randomForDemographics);
+      String ethnicity = "arab";
+      out.put(Person.ETHNICITY, ethnicity);
+      //String language = city.languageFromEthnicity(ethnicity, randomForDemographics);
+      String language = "english";
+      out.put(Person.FIRST_LANGUAGE, language);
+      /*String gender = city.pickGender(randomForDemographics);
+      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
+        gender = "M";
+      } else {
+        gender = "F";
+      }
+    */
+      String gender = "F";
+      out.put(Person.GENDER, gender);
+      Map<String, Object> demoAttributes = out;
+      
 
-        List<Module> modules = Module.getModules();
-
-        clinician = new Clinician(clinicianSeed);
-        clinician.populationSeed = this.options.seed;
-        clinician.attributes.putAll(demoAttributes);
-        clinician.attributes.put(Person.LOCATION, location);
+      clinician = new Clinician(clinicianSeed);
+      clinician.attributes.putAll(demoAttributes);
+      clinician.attributes.put(Person.ADDRESS, provider.address);
+      clinician.attributes.put(Person.CITY, provider.city);
+      clinician.attributes.put(Person.STATE, provider.state);
+      clinician.attributes.put(Person.ZIP, provider.zip);
         
-        Map<String, Object> attributes = clinician.attributes;
-  	  
-	  	  String gender = (String) attributes.get(Clinician.GENDER);
-	  	  String language = (String) attributes.get(Clinician.FIRST_LANGUAGE);
-	  	  String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
-	  	  String lastName = LifecycleModule.fakeLastName(language, clinician.random);
-	  	  
-	  	  if (LifecycleModule.appendNumbersToNames) {
-	  	    firstName = LifecycleModule.addHash(firstName);
-	  	    lastName = LifecycleModule.addHash(lastName);
-	  	  }
-	  	  attributes.put(Clinician.FIRST_NAME, firstName);
-	  	  attributes.put(Clinician.LAST_NAME, lastName);
-	  	  attributes.put(Clinician.NAME, firstName + " " + lastName);
-	  	  attributes.put(Clinician.NAME_PREFIX, "Dr.");
-	  	  //using the location's city and state, assign a random street address for this person
-	  	  
-	  	String clinicianCity = (String) attributes.get(Person.CITY);
-	    Location location = (Location) attributes.get(Person.LOCATION);
-	    if (location != null) {
-	      // should never happen in practice, but can happen in unit tests
-	      location.assignPoint(clinician, clinicianCity);
-	      clinician.attributes.put(Person.ZIP, location.getZipCode(clinicianCity));
-	      attributes.put(Person.BIRTHPLACE, location.randomCityName(clinician.random));
-	    }
-	    
-	    boolean hasStreetAddress2 = clinician.rand() < 0.5;
-	    attributes.put(Person.ADDRESS, LifecycleModule.fakeAddress(hasStreetAddress2, clinician.random));
+      String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
+      String lastName = LifecycleModule.fakeLastName(language, clinician.random);
 
+      if (LifecycleModule.appendNumbersToNames) {
+        firstName = LifecycleModule.addHash(firstName);
+        lastName = LifecycleModule.addHash(lastName);
+      }
+      clinician.attributes.put(Clinician.FIRST_NAME, firstName);
+      clinician.attributes.put(Clinician.LAST_NAME, lastName);
+      clinician.attributes.put(Clinician.NAME, firstName + " " + lastName);
+      clinician.attributes.put(Clinician.NAME_PREFIX, "Dr.");
+      clinician.attributes.put(Clinician.EDUCATION, "bs_degree");
         
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason

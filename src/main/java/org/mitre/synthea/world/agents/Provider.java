@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sis.geometry.DirectPosition2D;
 import org.apache.sis.index.tree.QuadTree;
 import org.apache.sis.index.tree.QuadTreeData;
@@ -22,6 +24,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 public class Provider implements QuadTreeData {
@@ -56,6 +59,8 @@ public class Provider implements QuadTreeData {
   public ArrayList<Clinician> clinicians;
   private DirectPosition2D coordinates;
   private ArrayList<String> servicesProvided;
+  private Map<String,Integer> specialtyInfo;
+  public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
   public long seed;
@@ -67,6 +72,8 @@ public class Provider implements QuadTreeData {
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<String>();
     clinicians = new ArrayList<Clinician>();
+    specialtyInfo = new HashMap<String, Integer>();
+    clinicianMap = new HashMap<String, ArrayList<Clinician>>();
     
   }
 
@@ -191,39 +198,43 @@ public class Provider implements QuadTreeData {
    * Load into cache the list of providers for a state.
    * @param state name or abbreviation.
    */
-  public static void loadProviders(Location location, long seed, Generator generator) {
+  public static void loadProviders(String state) {
     try {
-      String state = location.state;
-      String city = location.city;
+      
       String abbreviation = Location.getAbbreviation(state);
 
       Set<String> servicesProvided = new HashSet<String>();
       servicesProvided.add(Provider.AMBULATORY);
       servicesProvided.add(Provider.INPATIENT);
-      servicesProvided.add(Provider.WELLNESS);
-      servicesProvided.add(Provider.URGENTCARE);
-
+      
       String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-      loadProviders(location, abbreviation, hospitalFile, servicesProvided, seed, generator);
+      loadProviders(state, abbreviation, hospitalFile, servicesProvided);
 
       String vaFile = Config.get("generate.providers.veterans.default_file");
-      loadProviders(location, abbreviation, vaFile, servicesProvided, seed, generator);
+      loadProviders(state, abbreviation, vaFile, servicesProvided);
       
+      servicesProvided.add(Provider.WELLNESS);
       String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-      loadProviders(location, abbreviation, primaryCareFile, servicesProvided, seed, generator);
+      String primaryCareSpecialties = 
+          Config.get("generate.providers.primarycarespecialties.default_file");
+      System.out.println("pcs" + primaryCareSpecialties);
+      loadProviders(state, abbreviation, primaryCareFile, 
+          primaryCareSpecialties, servicesProvided);
       
+      servicesProvided.add(Provider.URGENTCARE);
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-      loadProviders(location, abbreviation, urgentcareFile, servicesProvided, seed, generator);
+      loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
       
       servicesProvided.clear();
     } catch (IOException e) {
-      System.err.println("ERROR: unable to load providers for state: " + location.state);
+      System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
     }
   }
 
   /**
    * Read the providers from the given resource file, only importing the ones for the given state.
+   * This method loads one of each specialty for provider types without specialty info
    * 
    * @param state Name of the current state, ex "Massachusetts"
    * @param abbreviation State abbreviation, ex "MA"
@@ -231,21 +242,23 @@ public class Provider implements QuadTreeData {
    * @param servicesProvided Set of services provided by these facilities
    * @throws IOException if the file cannot be read
    */
-  public static void loadProviders(Location location, String abbreviation, String filename,
-      Set<String> servicesProvided, long seed, Generator generator)
+
+public static void loadProviders(String state, String abbreviation, String filename,
+      Set<String> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
-    String state = location.state;
+    
     
     for (Map<String,String> row : csv) {
       String currState = row.get("state");
-
+      
+      
       // for now, only allow one state at a time
       if ((state == null)
           || (state != null && state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
-    	  Provider parsed = csvLineToProvider(row);
+        Provider parsed = csvLineToProvider(row);
 
         parsed.servicesProvided.addAll(servicesProvided);
         if ("Yes".equals(row.remove("emergency"))) {
@@ -257,14 +270,32 @@ public class Provider implements QuadTreeData {
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsed.attributes.put(e.getKey(), e.getValue());
         }
-        // TODO - add the number of clinicians for a provider and generate the list
-        String city = parsed.city;
-        int population = (int) location.getPopulation(city);
+       /*Table<String,String,Demographics> allDemographics = Demographics.load(state);
+        Map<String, Demographics> demo = allDemographics.row(state);
+        String city = StringUtils.capitalize(StringUtils.lowerCase(parsed.city));
+        
+        
+        Location location1 = null;
+        if (!demo.containsKey(city)) {
+      	  System.out.println("not here" + parsed.city);
+      	  continue;
+        } else {
+          System.out.println("its here" + city);
+          System.out.println(demo.get(city));
+      	  location1 = new Location(currState, city);
+        }
+        */
+        String city1 = parsed.city;
+        String address = parsed.address;
+        //int population = (int) location1.getPopulation(city1);
         //TODO - determine how many clinicians based off the population
+        parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
+        parsed.clinicianMap.put("GENERAL PRACTICE", 
+            generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
         parsed.attributes.put("numClinicians", 1);
-        //System.out.println("name "+ parsed.name + " and num " + parsed.attributes.get("numClinicians").getClass());
-        parsed.clinicians = generateClinicianList(population, location, (int) parsed.attributes.get("numClinicians"), seed, generator); 
-        parsed.seed = seed;
+        parsed.clinicians = generateClinicianList(parsed, (int) parsed.attributes.get("numClinicians"), "GENERAL PRACTICE"); 
+        
+        //TODO - create a map of specialty:#
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
         if (!inserted) {
@@ -274,25 +305,144 @@ public class Provider implements QuadTreeData {
       }
     }
   }
-  public static ArrayList<Clinician> generateClinicianList(int population, 
-		  Location location, int numClinicians, long clinicianSeed, Generator generator){
-	//generate the correct number of random Clinicians
-	 
-	 ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
-	 for (int i = 0; i < numClinicians; i++) {
-	   Clinician clinician = null;
-	   clinician = generator.generateClinician(i);
-	   System.out.println("this one is " + clinician.attributes.get(Clinician.NAME_PREFIX) + clinician.attributes.get(Clinician.NAME));
-	   clinicians.add(clinician);
-	 }
-	 return clinicians;
+  
+  /**
+   * Read the providers from the given resource file, only importing the ones for the given state.
+   * THIS method is for loading providers and generating clinicians with specific specialties
+   * 
+   * @param state Name of the current state, ex "Massachusetts"
+   * @param abbreviation State abbreviation, ex "MA"
+   * @param filename Location of the file, relative to src/main/resources
+   * @param servicesProvided Set of services provided by these facilities
+   * @throws IOException if the file cannot be read
+   */
+  public static void loadProviders(String state, String abbreviation, String filename, String specialtyFilename,
+      Set<String> servicesProvided)
+      throws IOException {
+    String resource = Utilities.readResource(filename);
+    List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
+
+    String resourceSpecialties = Utilities.readResource(specialtyFilename);
+    List<? extends Map<String, String>> csvSpecialties = SimpleCSV.parse(resourceSpecialties);
+    int count = 0;
+    for (Map<String,String> row : csv) {
+      String currState = row.get("state");
+      //Location location1 = new Location(currState,row.get("city"));
+      
+      // for now, only allow one state at a time
+      if ((state == null)
+          || (state != null && state.equalsIgnoreCase(currState))
+          || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
+        Provider parsed = csvLineToProvider(row);
+
+        parsed.servicesProvided.addAll(servicesProvided);
+        if ("Yes".equals(row.remove("emergency"))) {
+          parsed.servicesProvided.add(Provider.EMERGENCY);
+        }
+        
+        // add any remaining columns we didn't explicitly map to first-class fields
+        // into the attributes table
+        for (Map.Entry<String, String> e : row.entrySet()) {
+          parsed.attributes.put(e.getKey(), e.getValue());
+        }
+        
+        String city = parsed.city;
+        String address = parsed.address;
+        count++;
+        //System.out.println(" address is " + address + " and count is " + count);
+        //int population = (int) location1.getPopulation(city);
+        
+        //TODO - create a map of specialty:#
+        
+        boolean found = false;
+        //only enter this if THERE IS AN INFO FILE
+        for (Map<String,String> rowSpecialty : csvSpecialties) {
+          if (rowSpecialty.get("address").equals(address) && rowSpecialty.get("city").equals(city)
+              && rowSpecialty.get("state").equals(abbreviation)) {
+            //System.out.println("TRUEEE");
+            for (Map.Entry<String, String> e : rowSpecialty.entrySet()) {
+              // if the field is not any of the provider info
+              if (!e.getKey().equals("address") && !e.getKey().equals("city") 
+                  && !e.getKey().equals("state")
+                  && !e.getKey().equals("zip")) {
+                if (!e.getValue().equals("0")) {
+                  parsed.specialtyInfo.put(e.getKey(), Integer.parseInt(e.getValue()));
+                  parsed.clinicianMap.put(e.getKey(), 
+                      generateClinicianList(parsed, Integer.parseInt(e.getValue()), e.getKey()));
+                }
+              }
+            }
+            //System.out.println(address + city + state);
+            //System.out.println("cl " + parsed.specialtyInfo);
+            if (!parsed.specialtyInfo.containsKey("GENERAL PRACTICE")) {
+              parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
+              parsed.clinicianMap.put("GENERAL PRACTICE", 
+                  generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
+            }
+            found = true;
+            break;
+          }
+        }
+        //if there is no info file or if the provider is not found in the info file
+        // make them one general clinician that's always chosen
+        if (csvSpecialties == null || !found) {
+          parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
+          parsed.clinicianMap.put("GENERAL PRACTICE", 
+              generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
+        }
+        //TODO - determine how many clinicians based off the population
+        parsed.attributes.put("numClinicians", 1);
+        parsed.clinicians = generateClinicianList(parsed, (int) parsed.attributes.get("numClinicians"), "GENERAL PRACTICE"); 
+        parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
+        parsed.clinicianMap.put("GENERAL PRACTICE", 
+            generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
+
+        providerList.add(parsed);
+        boolean inserted = providerMap.insert(parsed);
+        if (!inserted) {
+          System.err.println("Provider QuadTree Full! Dropping "
+              + parsed.name + " @ " + parsed.city);
+        }
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param population - the population of the provider's city
+   * @param provider - the provider generating clinicians
+   * @param numClinicians - the number of clinicians to generate
+   * @param specialty - which specialty clinicians to generate
+   * @param location - where the clinicians are based
+   * @return
+   */
+  public static ArrayList<Clinician> generateClinicianList(
+      Provider provider, int numClinicians, String specialty) {
+    ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
+    for (int i = 0; i < numClinicians; i++) {
+      Clinician clinician = null;
+      clinician = Generator.generateClinician(i, provider);
+      clinician.attributes.put(Clinician.SPECIALTY, specialty);
+      clinicians.add(clinician);
+    }
+    return clinicians;
   
   }
- 
+  /**
+   * 
+   * @param clinicians
+   * @param clinicianSeed
+   * @return
+   */
   public Clinician chooseClinicianList(ArrayList<Clinician> clinicians, long clinicianSeed) {
 	  Random random = new Random(clinicianSeed);
 	  return clinicians.get(random.nextInt(clinicians.size()));
   }
+  /**
+   * 
+   * @param line - read a csv line to a provider's attributes
+   * @return
+   */
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
     d.uuid = UUID.randomUUID().toString();
@@ -312,14 +462,14 @@ public class Provider implements QuadTreeData {
       // Swallow invalid format data
     }
     try {
-    	double lat = Double.parseDouble(line.remove("LAT"));
-        double lon = Double.parseDouble(line.remove("LON"));
-        d.coordinates = new DirectPosition2D(lat, lon);
-      } catch (Exception e) {
-    	  double lat = 0.0;
-          double lon = 0.0;
-          d.coordinates = new DirectPosition2D(lat, lon);
-      }
+      double lat = Double.parseDouble(line.remove("LAT"));
+      double lon = Double.parseDouble(line.remove("LON"));
+      d.coordinates = new DirectPosition2D(lat, lon);
+    } catch (Exception e) {
+      double lat = 0.0;
+      double lon = 0.0;
+      d.coordinates = new DirectPosition2D(lat, lon);
+    }
     
     return d;
   }

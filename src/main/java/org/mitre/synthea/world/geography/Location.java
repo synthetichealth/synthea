@@ -39,7 +39,7 @@ public class Location {
   public Location(String state, String city) {
     try {
       this.city = city;
-      this.state= state;
+      this.state = state;
       
       Table<String,String,Demographics> allDemographics = Demographics.load(state);
       
@@ -266,7 +266,7 @@ public class Location {
     }
     
     if (place != null) {
-    	clinician.attributes.put(Person.COORDINATE, place.getLatLon());
+      clinician.attributes.put(Person.COORDINATE, place.getLatLon());
     }
   }
 

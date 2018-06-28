@@ -4,7 +4,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -28,7 +30,30 @@ public class ProviderTest {
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
   }
-
+  
+  @Test
+  public void testGenerateClinicianByAbbreviation() {
+    Provider.getProviderList().clear();
+    Provider.loadProviders("MA");
+    Assert.assertNotNull(Provider.getProviderList());
+    Assert.assertFalse(Provider.getProviderList().isEmpty());
+    Provider provider = Provider.getProviderList().get(0);
+    Assert.assertNotNull(provider.clinicianMap);
+    Map<String, ArrayList<Clinician>> clinicianMap = provider.clinicianMap;
+    Assert.assertNotNull(clinicianMap.get("GENERAL PRACTICE"));
+  }
+  @Test
+  public void testGenerateClinicianByState() {
+    Provider.getProviderList().clear();
+    Provider.loadProviders("Massachusetts");
+    Assert.assertNotNull(Provider.getProviderList());
+    Assert.assertFalse(Provider.getProviderList().isEmpty());
+    Provider provider = Provider.getProviderList().get(0);
+    Assert.assertNotNull(provider.clinicianMap);
+    Map<String, ArrayList<Clinician>> clinicianMap = provider.clinicianMap;
+    Assert.assertNotNull(clinicianMap.get("GENERAL PRACTICE"));
+  }
+  
   @Test
   public void testNearestInpatientInState() {
     Provider.loadProviders("Massachusetts");
