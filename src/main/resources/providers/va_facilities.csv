@@ -1480,4 +1480,3 @@ id,name,address,city,state,zip,phone,type,ownership,emergency,quality,LAT,LON,EB
 0425V,"Sioux Falls Vet Center","3200 W 49th Street","Sioux Falls",SD,57106,"605-330-4552 Or 605-330-4552","VA Facility",Government,no,"Not Available",43.50762,-96.765205,,,,,,,,,
 0416V,"St. Paul Vet Center","550 County Road D West, Suite 10","New Brighton",MN,55112,"651-644-4022 Or 651-644-4022","VA Facility",Government,no,"Not Available",40.7531,-80.2419,,,,,,,,,
 438GE,"Wagner Outreach Clinic","400 West Hwy 46",Wagner,SD,57380,605-384-2340,"VA Facility",Government,no,"Not Available",43.0401,-98.2874,,,,,,,,,
-
