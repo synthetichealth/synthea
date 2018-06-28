@@ -228,16 +228,7 @@
         }
       ],
       "reason": "ptsd",
-      "distributed_transition": [
-        {
-          "transition": "PTSD Diagnosis",
-          "distribution": 0.9
-        },
-        {
-          "transition": "Change_Dx_Not_PTSD",
-          "distribution": 0.1
-        }
-      ]
+      "direct_transition": "PHQ2_Q9 Assessment"
     },
     "PTSD_Careplan_Psych_and_Rx": {
       "type": "CarePlanStart",
@@ -541,6 +532,62 @@
         "unit": "weeks"
       },
       "direct_transition": "Initial_Psychiatric_PTSD_Encounter"
+    },
+    "Columbia Suicide Risk Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "PTSD Diagnosis",
+      "reason": "ptsd"
+    },
+    "PHQ2_Q9 Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 715252007,
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "distributed_transition": [
+        {
+          "transition": "Columbia Suicide Risk Assessment",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Change_Dx_Not_PTSD",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "At Risk for suicide": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "suicide_risk",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225444004,
+          "display": "At risk for suicide (finding)"
+        }
+      ],
+      "direct_transition": "At Risk for suicide"
     }
   }
 }
