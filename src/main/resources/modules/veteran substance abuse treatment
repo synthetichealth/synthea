@@ -158,6 +158,14 @@
             "attribute": "smoking",
             "operator": "is nil"
           }
+        },
+        {
+          "transition": "Opioid Addiction Care Plan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opiod_abuse",
+            "operator": "is not nil"
+          }
         }
       ]
     },
@@ -249,6 +257,38 @@
       "attribute": "alcoholism",
       "direct_transition": "Wellness Encounter",
       "value": 0
+    },
+    "new_state": {
+      "type": "Simple",
+      "direct_transition": "new_state"
+    },
+    "Opioid Addiction Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "Alcoholism encounter check",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313071005,
+          "display": "Counseling for substance abuse (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 408935001,
+          "display": "Substance abuse prevention education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 408936000,
+          "display": "Substance abuse prevention management (procedure)"
+        }
+      ]
     }
   }
 }
