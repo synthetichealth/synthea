@@ -402,7 +402,7 @@
       "distributed_transition": [
         {
           "transition": "Change_Dx_Not_PTSD",
-          "distribution": 0.5
+          "distribution": 0.48
         },
         {
           "transition": "PTSD_Careplan_Psych",
@@ -415,6 +415,10 @@
         {
           "transition": "PTSD_Careplan_Psych_and_Rx",
           "distribution": 0.15
+        },
+        {
+          "transition": "Inpatient Suicide Assessment",
+          "distribution": 0.02
         }
       ],
       "reason": "ptsd"
@@ -547,8 +551,17 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "PTSD Diagnosis",
-      "reason": "ptsd"
+      "reason": "ptsd",
+      "distributed_transition": [
+        {
+          "transition": "PTSD Diagnosis",
+          "distribution": 0.98
+        },
+        {
+          "transition": "At Risk for suicide",
+          "distribution": 0.02
+        }
+      ]
     },
     "PHQ2_Q9 Assessment": {
       "type": "Procedure",
@@ -579,7 +592,7 @@
     "At Risk for suicide": {
       "type": "ConditionOnset",
       "assign_to_attribute": "suicide_risk",
-      "target_encounter": "",
+      "target_encounter": "Initial_Psychiatric_PTSD_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -587,7 +600,116 @@
           "display": "At risk for suicide (finding)"
         }
       ],
-      "direct_transition": "At Risk for suicide"
+      "direct_transition": "Inpatient Suicide Assessment"
+    },
+    "Inpatient Suicide Assessment": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "suicide_risk",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Inpatient Suicide Risk Assessment"
+    },
+    "Inpatient_admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183801001,
+          "display": "Inpatient stay 3 days"
+        }
+      ],
+      "direct_transition": "Inpatient Suicide Care Plan",
+      "reason": "suicide_risk"
+    },
+    "Inpatient Suicide Risk Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "direct_transition": "emergency_encounter end"
+    },
+    "": {
+      "type": "Simple",
+      "direct_transition": ""
+    },
+    "emergency_encounter end": {
+      "type": "EncounterEnd",
+      "direct_transition": "Inpatient_admission"
+    },
+    "Inpatient Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "suicide_risk",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Inpatient Admission"
+    },
+    "new_state": {
+      "type": "Simple",
+      "direct_transition": "new_state"
+    },
+    "new_state_2": {
+      "type": "Simple",
+      "direct_transition": "new_state_2"
+    },
+    "Inpatient Suicide Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736353004,
+          "display": "Inpatient care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "time delay",
+      "reason": "suicide_risk",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183402001,
+          "display": "Potential suicide care (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183401008,
+          "display": "Anti-suicide psychotherapy (regime/therapy)"
+        }
+      ]
+    },
+    "time delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Inpatient Suicide Care Plan_2"
+    },
+    "Inpatient Suicide Care Plan_2": {
+      "type": "CarePlanEnd",
+      "direct_transition": "PTSD_Re_evaluation Encounter",
+      "careplan": "Inpatient Suicide Care Plan"
     }
   }
 }
