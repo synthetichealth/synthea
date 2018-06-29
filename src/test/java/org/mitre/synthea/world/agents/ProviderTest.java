@@ -42,6 +42,7 @@ public class ProviderTest {
     Map<String, ArrayList<Clinician>> clinicianMap = provider.clinicianMap;
     Assert.assertNotNull(clinicianMap.get("GENERAL PRACTICE"));
   }
+  
   @Test
   public void testGenerateClinicianByState() {
     Provider.getProviderList().clear();

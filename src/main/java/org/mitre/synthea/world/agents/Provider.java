@@ -155,7 +155,7 @@ public class Provider implements QuadTreeData {
     while (provider == null && distance <= maxDistance) {
       provider = findService(person, service, distance, time);
       if (provider != null) {
-    	return provider;
+        return provider;
       }
       distance += step;
     }
@@ -324,7 +324,6 @@ public static void loadProviders(String state, String abbreviation, String filen
 
     String resourceSpecialties = Utilities.readResource(specialtyFilename);
     List<? extends Map<String, String>> csvSpecialties = SimpleCSV.parse(resourceSpecialties);
-    int count = 0;
     for (Map<String,String> row : csv) {
       String currState = row.get("state");
       //Location location1 = new Location(currState,row.get("city"));
@@ -348,8 +347,7 @@ public static void loadProviders(String state, String abbreviation, String filen
         
         String city = parsed.city;
         String address = parsed.address;
-        count++;
-        //System.out.println(" address is " + address + " and count is " + count);
+
         //int population = (int) location1.getPopulation(city);
         
         //TODO - create a map of specialty:#
@@ -391,8 +389,6 @@ public static void loadProviders(String state, String abbreviation, String filen
               generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
         }
         //TODO - determine how many clinicians based off the population
-        parsed.attributes.put("numClinicians", 1);
-        parsed.clinicians = generateClinicianList(parsed, (int) parsed.attributes.get("numClinicians"), "GENERAL PRACTICE"); 
         parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
         parsed.clinicianMap.put("GENERAL PRACTICE", 
             generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
@@ -408,12 +404,10 @@ public static void loadProviders(String state, String abbreviation, String filen
   }
 
   /**
-   * 
-   * @param population - the population of the provider's city
+   * Generates a list of clinicians, given the number to generate and the specialty.
    * @param provider - the provider generating clinicians
    * @param numClinicians - the number of clinicians to generate
    * @param specialty - which specialty clinicians to generate
-   * @param location - where the clinicians are based
    * @return
    */
   public static ArrayList<Clinician> generateClinicianList(
@@ -428,16 +422,18 @@ public static void loadProviders(String state, String abbreviation, String filen
     return clinicians;
   
   }
+  
   /**
-   * 
-   * @param clinicians
-   * @param clinicianSeed
+   * Randomly chooses a clinician out of a given clinician list.
+   * @param clinicians - the list of clinicians to choose from
+   * @param clinicianSeed - seed to help randomly choose a clinician
    * @return
    */
   public Clinician chooseClinicianList(ArrayList<Clinician> clinicians, long clinicianSeed) {
-	  Random random = new Random(clinicianSeed);
-	  return clinicians.get(random.nextInt(clinicians.size()));
+    Random random = new Random(clinicianSeed);
+    return clinicians.get(random.nextInt(clinicians.size()));
   }
+  
   /**
    * 
    * @param line - read a csv line to a provider's attributes
