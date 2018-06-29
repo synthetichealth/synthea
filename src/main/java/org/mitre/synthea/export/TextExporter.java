@@ -250,16 +250,18 @@ public class TextExporter {
     
     String clinician = "";
     if (encounter.clinician != null) {
-      clinician = "(" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) + " " + encounter.clinician.attributes.get(Clinician.NAME) + ")";
+      clinician = "(" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) 
+          + " " + encounter.clinician.attributes.get(Clinician.NAME) + ")";
     }
     if (encounter.reason == null && encounter.provider == null) {
       textRecord.add(encounterTime + clinician + " : " + encounter.codes.get(0).display);
-    } else if  (encounter.reason == null && encounter.provider != null){
+    } else if  (encounter.reason == null && encounter.provider != null) {
       textRecord.add(encounterTime + clinician + " : Encounter at " + encounter.provider.name);
-    } else if  (encounter.reason != null && encounter.provider == null){
-      textRecord.add(encounterTime + clinician + " : Encounter for " + encounter.reason.display );
+    } else if  (encounter.reason != null && encounter.provider == null) {
+      textRecord.add(encounterTime + clinician + " : Encounter for " + encounter.reason.display);
     } else {
-      textRecord.add(encounterTime + clinician + " : Encounter at " + encounter.provider.name + " : Encounter for " + encounter.reason.display);
+      textRecord.add(encounterTime + clinician + " : Encounter at " 
+          + encounter.provider.name + " : Encounter for " + encounter.reason.display);
     }
   }
 

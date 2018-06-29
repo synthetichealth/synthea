@@ -272,7 +272,8 @@ public class Provider implements QuadTreeData {
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsed.attributes.put(e.getKey(), e.getValue());
         }
-        /*Table<String,String,Demographics> allDemographics = Demographics.load(state);
+        /*NOTE: Ignore for now, kept in comments for a future version
+         * Table<String,String,Demographics> allDemographics = Demographics.load(state);
         Map<String, Demographics> demo = allDemographics.row(state);
         String city = StringUtils.capitalize(StringUtils.lowerCase(parsed.city));
         
@@ -295,7 +296,8 @@ public class Provider implements QuadTreeData {
         parsed.clinicianMap.put("GENERAL PRACTICE", 
             generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
         parsed.attributes.put("numClinicians", 1);
-        parsed.clinicians = generateClinicianList(parsed, (int) parsed.attributes.get("numClinicians"), "GENERAL PRACTICE"); 
+        parsed.clinicians = generateClinicianList(parsed, 
+            (int) parsed.attributes.get("numClinicians"), "GENERAL PRACTICE"); 
         
         //TODO - create a map of specialty:#
         providerList.add(parsed);
@@ -318,8 +320,8 @@ public class Provider implements QuadTreeData {
    * @param servicesProvided Set of services provided by these facilities
    * @throws IOException if the file cannot be read
    */
-  public static void loadProviders(String state, String abbreviation, String filename, String specialtyFilename,
-      Set<String> servicesProvided)
+  public static void loadProviders(String state, String abbreviation, String filename, 
+      String specialtyFilename, Set<String> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
     List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
