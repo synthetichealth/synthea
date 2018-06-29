@@ -41,7 +41,7 @@ public class Provider implements QuadTreeData {
 
   // ArrayList of all providers imported
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
-  private static QuadTree providerMap = new QuadTree(500, 500); // node capacity, depth
+  private static QuadTree providerMap = new QuadTree(1400, 1400); // node capacity, depth
 
   public Map<String, Object> attributes;
   public String uuid;
@@ -58,7 +58,7 @@ public class Provider implements QuadTreeData {
   public static String numClinicians;
   public ArrayList<Clinician> clinicians;
   private DirectPosition2D coordinates;
-  private ArrayList<String> servicesProvided;
+  public ArrayList<String> servicesProvided;
   private Map<String,Integer> specialtyInfo;
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
@@ -212,6 +212,7 @@ public class Provider implements QuadTreeData {
 
       String vaFile = Config.get("generate.providers.veterans.default_file");
       loadProviders(state, abbreviation, vaFile, servicesProvided);
+      servicesProvided.clear();
       
       servicesProvided.add(Provider.WELLNESS);
       String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
@@ -221,6 +222,7 @@ public class Provider implements QuadTreeData {
       loadProviders(state, abbreviation, primaryCareFile, 
           primaryCareSpecialties, servicesProvided);
       
+      servicesProvided.clear();
       servicesProvided.add(Provider.URGENTCARE);
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
       loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
@@ -243,7 +245,7 @@ public class Provider implements QuadTreeData {
    * @throws IOException if the file cannot be read
    */
 
-public static void loadProviders(String state, String abbreviation, String filename,
+  public static void loadProviders(String state, String abbreviation, String filename,
       Set<String> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
@@ -270,14 +272,14 @@ public static void loadProviders(String state, String abbreviation, String filen
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsed.attributes.put(e.getKey(), e.getValue());
         }
-       /*Table<String,String,Demographics> allDemographics = Demographics.load(state);
+        /*Table<String,String,Demographics> allDemographics = Demographics.load(state);
         Map<String, Demographics> demo = allDemographics.row(state);
         String city = StringUtils.capitalize(StringUtils.lowerCase(parsed.city));
         
         
         Location location1 = null;
         if (!demo.containsKey(city)) {
-      	  System.out.println("not here" + parsed.city);
+      System.out.println("not here" + parsed.city);
       	  continue;
         } else {
           System.out.println("its here" + city);
@@ -389,6 +391,7 @@ public static void loadProviders(String state, String abbreviation, String filen
               generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
         }
         //TODO - determine how many clinicians based off the population
+
         parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
         parsed.clinicianMap.put("GENERAL PRACTICE", 
             generateClinicianList(parsed, 1, "GENERAL PRACTICE"));

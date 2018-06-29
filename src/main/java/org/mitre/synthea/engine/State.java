@@ -478,7 +478,8 @@ public abstract class State implements Cloneable {
           int year = Utilities.getYear(time);
           provider.incrementEncounters("wellness", year);
           encounter.provider = provider;
-
+          encounter.clinician = provider.chooseClinicianList(
+              provider.clinicianMap.get("GENERAL PRACTICE"), provider.seed);
           diagnosePastConditions(person, time);
 
           return true;
@@ -499,6 +500,8 @@ public abstract class State implements Cloneable {
         int year = Utilities.getYear(time);
         provider.incrementEncounters(encounterClass, year);
         encounter.provider = provider;
+        encounter.clinician = provider.chooseClinicianList(
+                provider.clinicianMap.get("GENERAL PRACTICE"), provider.seed);
 
         encounter.name = this.name;
 

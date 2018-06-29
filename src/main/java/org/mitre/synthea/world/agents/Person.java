@@ -350,9 +350,9 @@ public class Person implements Serializable, QuadTreeData {
 
   public Provider getWellnessProvider(long time) {
     if (!attributes.containsKey(PREFERREDWELLNESSPROVIDER)) {
-	  setWellnessProvider(time);
-	}
-	return (Provider) attributes.get(PREFERREDWELLNESSPROVIDER);
+      setWellnessProvider(time);
+    }
+    return (Provider) attributes.get(PREFERREDWELLNESSPROVIDER);
   }
 
   private void setWellnessProvider(long time) {

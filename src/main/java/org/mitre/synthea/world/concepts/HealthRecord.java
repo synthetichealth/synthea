@@ -172,6 +172,8 @@ public class HealthRecord {
 
   public class Procedure extends Entry {
     public List<Code> reasons;
+    public Provider provider;
+    public Clinician clinician;
 
     public Procedure(long time, String type) {
       super(time, type);
@@ -277,6 +279,7 @@ public class HealthRecord {
       return total;
     }
   }
+  
   public enum EncounterType {
     WELLNESS, EMERGENCY, INPATIENT, AMBULATORY, URGENTCARE
   }
