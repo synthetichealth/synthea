@@ -367,11 +367,11 @@
       "distributed_transition": [
         {
           "transition": "chance of CHF",
-          "distribution": 0.99954
+          "distribution": 0.99904
         },
         {
           "transition": "CHF symptom onset 1",
-          "distribution": 0.00046
+          "distribution": 0.00096
         }
       ]
     },
