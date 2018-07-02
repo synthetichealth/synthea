@@ -117,16 +117,12 @@
     "Alcohol Dependence": {
       "type": "SetAttribute",
       "attribute": "alcoholism",
-      "direct_transition": "Substance Abuse Condition Check",
-      "value": true
+      "value": true,
+      "direct_transition": "Terminal"
     },
     "No Alcohol Dependence": {
       "type": "SetAttribute",
       "attribute": "alcoholism",
-      "direct_transition": "Substance Abuse Condition Check"
-    },
-    "Substance Abuse Condition Check": {
-      "type": "Simple",
       "direct_transition": "Terminal"
     }
   }
