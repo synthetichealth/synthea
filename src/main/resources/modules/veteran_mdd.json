@@ -13,35 +13,113 @@
     },
     "Female": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Onset_age_18_to_29_Female",
-          "distribution": 0.15
-        },
-        {
-          "transition": "Onset_age_30_to_39_Female",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Onset_age_40_to_49_Female",
-          "distribution": 0.23
-        },
-        {
-          "transition": "Onset_age_50_to_59_Female",
-          "distribution": 0.16
-        },
-        {
-          "transition": "Onset_age_60_to_69_Female",
-          "distribution": 0.15
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.06
-        }
-      ],
       "remarks": [
         "Females suffer depression at rates 2x than males (www.americanhealthrankings.com), cited by VA",
         "Age related and War Era related distributions of MDD provided by "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Late_Gulf_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.85
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Early_Gulf_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.75
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Between_VW_and_GW",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.23
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.77
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Vietnam_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.16
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.84
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Between_KW_and_VW",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.85
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Korean_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.06
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.94
+            }
+          ]
+        }
       ]
     },
     "Male": {
