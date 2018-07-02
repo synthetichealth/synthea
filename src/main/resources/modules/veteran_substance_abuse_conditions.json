@@ -118,12 +118,37 @@
       "type": "SetAttribute",
       "attribute": "alcoholism",
       "value": true,
-      "direct_transition": "Terminal"
+      "direct_transition": "Opioid Abuse check"
     },
     "No Alcohol Dependence": {
       "type": "SetAttribute",
       "attribute": "alcoholism",
-      "direct_transition": "Terminal"
+      "direct_transition": "Opioid Abuse check"
+    },
+    "Opioid Abuse check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Opioid Dependance",
+          "distribution": 0.13
+        },
+        {
+          "transition": "No Opioid Dependence",
+          "distribution": 0.87
+        }
+      ]
+    },
+    "Opioid Dependance": {
+      "type": "SetAttribute",
+      "attribute": "opioid_prescription",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "No Opioid Dependence": {
+      "type": "SetAttribute",
+      "attribute": "opioid prescription",
+      "direct_transition": "Terminal",
+      "value": "nil"
     }
   }
 }
