@@ -12,8 +12,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "smoking",
-            "operator": ">=",
-            "value": 1
+            "operator": "is not nil"
           }
         },
         {
@@ -47,7 +46,7 @@
           "display": "Care Plan"
         }
       ],
-      "reason": "smoking",
+      "reason": "Smoking_Condition",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -94,7 +93,7 @@
         }
       ],
       "direct_transition": "Alcoholism encounter check",
-      "reason": "smoking",
+      "reason": "Smoking_Condition",
       "assign_to_attribute": "smoking_medication"
     },
     "Alcohol Check": {
@@ -105,8 +104,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "alcoholism",
-            "operator": ">=",
-            "value": 1
+            "operator": "is not nil"
           }
         },
         {
@@ -223,7 +221,6 @@
     "smoking symptom post treatment": {
       "type": "SetAttribute",
       "attribute": "smoking",
-      "value": 0,
       "direct_transition": "alcoholism post treatment"
     },
     "alcoholism post treatment": {
@@ -255,8 +252,7 @@
     "alcoholism symptom post treatment": {
       "type": "SetAttribute",
       "attribute": "alcoholism",
-      "direct_transition": "Wellness Encounter",
-      "value": 0
+      "direct_transition": "Wellness Encounter"
     },
     "new_state": {
       "type": "Simple",

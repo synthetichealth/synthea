@@ -23,14 +23,13 @@
     "smoker": {
       "type": "SetAttribute",
       "attribute": "smoking",
-      "value": 1,
+      "value": true,
       "direct_transition": "Alcohol Check"
     },
     "non_smoker": {
       "type": "SetAttribute",
       "attribute": "smoking",
-      "direct_transition": "Alcohol Check",
-      "value": 0
+      "direct_transition": "Alcohol Check"
     },
     "Age_Guard": {
       "type": "Delay",
@@ -119,13 +118,12 @@
       "type": "SetAttribute",
       "attribute": "alcoholism",
       "direct_transition": "Substance Abuse Condition Check",
-      "value": 1
+      "value": true
     },
     "No Alcohol Dependence": {
       "type": "SetAttribute",
       "attribute": "alcoholism",
-      "direct_transition": "Substance Abuse Condition Check",
-      "value": 0
+      "direct_transition": "Substance Abuse Condition Check"
     },
     "Substance Abuse Condition Check": {
       "type": "Simple",
