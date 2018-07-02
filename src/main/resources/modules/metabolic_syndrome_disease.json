@@ -939,7 +939,7 @@
       "distributed_transition": [
         {
           "transition": "Eventual_Diabetes",
-          "distribution": 0.21
+          "distribution": 0.25
         },
         {
           "transition": "Eventual_Prediabetes",
@@ -947,7 +947,7 @@
         },
         {
           "transition": "No_Diabetes",
-          "distribution": 0.34
+          "distribution": 0.3
         }
       ]
     },
