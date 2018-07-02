@@ -46,30 +46,142 @@
     },
     "Male": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Onset_age_18_to_29_Male",
-          "distribution": 0.156
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Late_Gulf_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.156
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.844
+            }
+          ]
         },
         {
-          "transition": "Onset_age_30_to_39_Male",
-          "distribution": 0.155
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.155
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.845
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Early_Gulf_War",
+            "operator": "is not nil"
+          }
         },
         {
-          "transition": "Onset_age_40_to_49_Male",
-          "distribution": 0.13
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Between_VW_and_GW",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.225
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.775
+            }
+          ]
         },
         {
-          "transition": "Onset_age_50_to_59_Male",
-          "distribution": 0.095
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Vietnam_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.09
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.91
+            }
+          ]
         },
         {
-          "transition": "Onset_age_60_to_69_Male",
-          "distribution": 0.09
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Between_KW_and_VW",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.07
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.93
+            }
+          ]
         },
         {
-          "transition": "Terminal",
-          "distribution": 0.374
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Korean_War",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.95
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Between_WW2_and_KW",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.03
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.97
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "WW2",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.98
+            }
+          ]
         }
       ]
     },
