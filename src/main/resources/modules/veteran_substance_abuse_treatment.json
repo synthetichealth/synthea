@@ -161,7 +161,7 @@
           "transition": "Opioid Addiction Care Plan",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "opioid_prescription",
+            "attribute": "opioid_addiction",
             "operator": "is not nil"
           }
         }

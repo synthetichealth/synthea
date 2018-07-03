@@ -140,13 +140,13 @@
     },
     "Opioid Dependance": {
       "type": "SetAttribute",
-      "attribute": "opioid_prescription",
+      "attribute": "opioid_addiction",
       "direct_transition": "Terminal",
       "value": true
     },
     "No Opioid Dependence": {
       "type": "SetAttribute",
-      "attribute": "opioid prescription",
+      "attribute": "opioid_addiction",
       "direct_transition": "Terminal",
       "value": "nil"
     }
