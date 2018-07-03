@@ -525,9 +525,17 @@ public abstract class State implements Cloneable {
     }
 
     private void diagnosePastConditions(Person person, long time) {
+      // reminder: history[0] is current state, history[size-1] is Initial
       for (State state : person.history) {
-        if (state instanceof OnsetState && !((OnsetState) state).diagnosed) {
-          ((OnsetState) state).diagnose(person, time);
+        if (state instanceof OnsetState) {
+          OnsetState onset = (OnsetState) state;
+          
+          if (!onset.diagnosed && this.name.equals(onset.targetEncounter)) {
+            onset.diagnose(person, time);
+          }
+        } else if (state instanceof Encounter && state.name.equals(this.name)) {
+          // a prior instance of hitting this same state. no need to go back any further
+          break;
         }
       }
     }
