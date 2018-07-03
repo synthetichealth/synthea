@@ -411,7 +411,6 @@ public class TextExporter {
       textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name
           + " : Encounter for " + encounter.reason.display);
     }
-    textRecord.add("   ");
   } 
 
   /**
