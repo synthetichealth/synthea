@@ -189,13 +189,89 @@ public class TextExporter {
   }
     
   /**
-   * Produce and export a person's record by encounter in the text format.
-   *
-   * @param person Person to export
+   * Chia293 Rohan584
+   * ================
+   * Race:                White
+   * Ethnicity:           Non-Hispanic
+   * Gender:              F
+   * Age:                 4
+   * Birth Date:          2014-04-12
+   * Marital Status:      S
+   * Outpatient Provider: BEVERLY HOSPITAL CORPORATION
+   * --------------------------------------------------------------------------------
+   * ALLERGIES:
+   *  2015-01-27 : Allergy to wheat
+   *  2015-01-27 : Allergy to tree pollen
+   *  2015-01-27 : Allergy to grass pollen
+   *  2015-01-27 : Dander (animal) allergy
+   *  2015-01-27 : Allergy to mould
+   *  2015-01-27 : Allergy to bee venom
+   * --------------------------------------------------------------------------------
+   * ENCOUNTER
+   * 2016-06-01 : Encounter for Acute bronchitis (disorder)
+   * Location: BEVERLY HOSPITAL CORPORATION
+   * Type: ambulatory
+   *   
+   *  MEDICATIONS:
+   *  2016-06-01 : Acetaminophen 160 MG for Acute bronchitis (disorder)
+   *   
+   *  CONDITIONS:
+   *  2016-06-01 : Acute bronchitis (disorder)
+   *  
+   *  CARE PLANS:
+   *  2016-06-01 : Respiratory therapy
+   *                        Reason: Acute bronchitis (disorder)
+   *                        Activity: Recommendation to avoid exercise
+   *                        Activity: Deep breathing and coughing exercises
+   *  
+   *  OBSERVATIONS:
+   *   
+   *  PROCEDURES:
+   *  2016-06-01 : Measurement of respiratory function (procedure) for Acute bronchitis (disorder)
+   *   
+   *  IMMUNIZATIONS:
+   *   
+   *  IMAGING STUDIES:
+   *   
+   * --------------------------------------------------------------------------------
+   * CONTINUING
+   *   
+   *  CONDITIONS:
+   *  2015-01-14 : Atopic dermatitis
+   *  2016-04-18 : Childhood asthma
+   *  
+   *  MEDICATIONS:
+   *  2015-01-27 : 0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector
+   *  2015-01-27 : Loratadine 5 MG Chewable Tablet
+   *  2016-04-18 + 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
+   *  2016-04-18 + 120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
+   *   
+   *  CAREPLANS:
+   *  2015-01-14 : Skin condition care
+   *                        Reason: Atopic dermatitis
+   *                        Activity: Application of moisturizer to skin
+   *  2015-01-27 : Self care
+   *                        Activity: Allergy education
+   *                        Activity: Food allergy diet
+   *                        Activity: Allergy education
+   *  2016-04-18 : Asthma self management
+   *                        Reason: Childhood asthma
+   *                        Activity: Inhaled steroid therapy
+   *                        Activity: Home nebulizer therapy
+   *                        Activity: Breathing control
+   *   
+   * --------------------------------------------------------------------------------
+   */
+  
+  public static void exportEncounter(Person person, long time) throws IOException {
+  
+  /**
+   * Produce and export a person's record in text format
+   * 
+   * @param person Person
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
    */
-  public static void exportEncounter(Person person, long time) throws IOException {
 
     List<Encounter> encounters = person.record.encounters;
     List<Entry> conditions = new ArrayList<>();
@@ -216,6 +292,7 @@ public class TextExporter {
     Collections.reverse(allergies);
     Collections.reverse(medications);
     Collections.reverse(careplans);
+    
     //set an integer that will be used as a counter for file naming purposes
     int encounterNumber = 0;
 
@@ -271,9 +348,6 @@ public class TextExporter {
     }      
   }  
   
-  
-  
-
   /**
    * Add the basic information to the record.
    *
@@ -353,6 +427,23 @@ public class TextExporter {
     } else {
       textRecord.add(encounterTime + " : Encounter for " + encounter.reason.display);
     }
+
+    Provider provider;
+    switch (encounter.type){
+      case "inpatient" : provider = person.getInpatientProvider(encounter.start);
+      break;
+      case "ambulatory" : provider = person.getAmbulatoryProvider(encounter.start);
+      break;
+      case "emergency" : provider = person.getEmergencyProvider(encounter.start);
+      break;
+      case "WELLNESS" : provider = person.getAmbulatoryProvider(encounter.start);
+      break;
+      default : provider = person.getAmbulatoryProvider(encounter.start);
+      break;
+    }
+    
+    textRecord.add("Location: " + provider.name);
+    textRecord.add("Type: " + encounter.type);
     textRecord.add("   ");
 
     //Create lists for only the items that occurred at the encounter
@@ -363,6 +454,7 @@ public class TextExporter {
     List<Entry> encounterImmunizations = new ArrayList<>();
     List<CarePlan> encounterCareplans = new ArrayList<>();
     List<ImagingStudy> encounterImagingStudies = new ArrayList<>();
+
     encounterConditions.addAll(encounter.conditions);
     encounterObservations.addAll(encounter.observations);
     encounterProcedures.addAll(encounter.procedures);
@@ -370,6 +462,7 @@ public class TextExporter {
     encounterImmunizations.addAll(encounter.immunizations);
     encounterCareplans.addAll(encounter.careplans);
     encounterImagingStudies.addAll(encounter.imagingStudies);
+
     Collections.reverse(encounterConditions);
     Collections.reverse(encounterObservations);
     Collections.reverse(encounterProcedures);
