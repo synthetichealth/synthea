@@ -85,7 +85,7 @@ public abstract class Exporter {
       }
     }
 
-    if (Boolean.parseBoolean(Config.get("exporter.text.export2"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.text.per_encounter_export"))) {
       try {
         TextExporter.exportEncounter(person, stopTime);
       } catch (IOException e) {

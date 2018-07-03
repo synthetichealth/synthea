@@ -27,7 +27,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 /**
- * Exporter for a simple human-readable text format.
+ * Exporter for a simple human-readable text format per person.
  * Sample: <pre>
  * Colleen Wilkinson
  * =================
@@ -74,7 +74,85 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * 2016-12-28 : Encounter for Viral sinusitis (disorder)
  * 2016-10-26 : Encounter for check up (procedure)
  * </pre>
+
+ * Exporter for a simple human-readable text format per encounter.
+ * Sample: <pre> 
+ * Chia293 Rohan584
+ * ================
+ * Race:                White
+ * Ethnicity:           Non-Hispanic
+ * Gender:              F
+ * Age:                 4
+ * Birth Date:          2014-04-12
+ * Marital Status:      S
+ * Outpatient Provider: BEVERLY HOSPITAL CORPORATION
+ * --------------------------------------------------------------------------------
+ * ALLERGIES:
+ *  2015-01-27 : Allergy to wheat
+ *  2015-01-27 : Allergy to tree pollen
+ *  2015-01-27 : Allergy to grass pollen
+ *  2015-01-27 : Dander (animal) allergy
+ *  2015-01-27 : Allergy to mould
+ *  2015-01-27 : Allergy to bee venom
+ * --------------------------------------------------------------------------------
+ * ENCOUNTER
+ * 2016-06-01 : Encounter for Acute bronchitis (disorder)
+ * Location: BEVERLY HOSPITAL CORPORATION
+ * Type: ambulatory
+ *   
+ *  MEDICATIONS:
+ *  2016-06-01 : Acetaminophen 160 MG for Acute bronchitis (disorder)
+ *   
+ *  CONDITIONS:
+ *  2016-06-01 : Acute bronchitis (disorder)
+ *  
+ *  CARE PLANS:
+ *  2016-06-01 : Respiratory therapy
+ *                        Reason: Acute bronchitis (disorder)
+ *                        Activity: Recommendation to avoid exercise
+ *                        Activity: Deep breathing and coughing exercises
+ *  
+ *  OBSERVATIONS:
+ *   
+ *  PROCEDURES:
+ *  2016-06-01 : Measurement of respiratory function (procedure) for Acute bronchitis (disorder)
+ *   
+ *  IMMUNIZATIONS:
+ *   
+ *  IMAGING STUDIES:
+ *   
+ * --------------------------------------------------------------------------------
+ * CONTINUING
+ *   
+ *  CONDITIONS:
+ *  2015-01-14 : Atopic dermatitis
+ *  2016-04-18 : Childhood asthma
+ *  
+ *  MEDICATIONS:
+ *  2015-01-27 : 0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector
+ *  2015-01-27 : Loratadine 5 MG Chewable Tablet
+ *  2016-04-18 + 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
+ *  2016-04-18 + 120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose
+ *              Inhaler for Childhood asthma
+ *   
+ *  CAREPLANS:
+ *  2015-01-14 : Skin condition care
+ *                        Reason: Atopic dermatitis
+ *                        Activity: Application of moisturizer to skin
+ *  2015-01-27 : Self care
+ *                        Activity: Allergy education
+ *                        Activity: Food allergy diet
+ *                        Activity: Allergy education
+ *  2016-04-18 : Asthma self management
+ *                        Reason: Childhood asthma
+ *                        Activity: Inhaled steroid therapy
+ *                        Activity: Home nebulizer therapy
+ *                        Activity: Breathing control
+ *   
+ * --------------------------------------------------------------------------------
+ * </pre>
  */
+
 public class TextExporter {
 
   /**
@@ -187,92 +265,15 @@ public class TextExporter {
     Path outFilePath = outDirectory.toPath().resolve(Exporter.filename(person, "txt"));
     Files.write(outFilePath, textRecord, StandardOpenOption.CREATE_NEW);
   }
-    
+
   /**
-   * Chia293 Rohan584
-   * ================
-   * Race:                White
-   * Ethnicity:           Non-Hispanic
-   * Gender:              F
-   * Age:                 4
-   * Birth Date:          2014-04-12
-   * Marital Status:      S
-   * Outpatient Provider: BEVERLY HOSPITAL CORPORATION
-   * --------------------------------------------------------------------------------
-   * ALLERGIES:
-   *  2015-01-27 : Allergy to wheat
-   *  2015-01-27 : Allergy to tree pollen
-   *  2015-01-27 : Allergy to grass pollen
-   *  2015-01-27 : Dander (animal) allergy
-   *  2015-01-27 : Allergy to mould
-   *  2015-01-27 : Allergy to bee venom
-   * --------------------------------------------------------------------------------
-   * ENCOUNTER
-   * 2016-06-01 : Encounter for Acute bronchitis (disorder)
-   * Location: BEVERLY HOSPITAL CORPORATION
-   * Type: ambulatory
-   *   
-   *  MEDICATIONS:
-   *  2016-06-01 : Acetaminophen 160 MG for Acute bronchitis (disorder)
-   *   
-   *  CONDITIONS:
-   *  2016-06-01 : Acute bronchitis (disorder)
-   *  
-   *  CARE PLANS:
-   *  2016-06-01 : Respiratory therapy
-   *                        Reason: Acute bronchitis (disorder)
-   *                        Activity: Recommendation to avoid exercise
-   *                        Activity: Deep breathing and coughing exercises
-   *  
-   *  OBSERVATIONS:
-   *   
-   *  PROCEDURES:
-   *  2016-06-01 : Measurement of respiratory function (procedure) for Acute bronchitis (disorder)
-   *   
-   *  IMMUNIZATIONS:
-   *   
-   *  IMAGING STUDIES:
-   *   
-   * --------------------------------------------------------------------------------
-   * CONTINUING
-   *   
-   *  CONDITIONS:
-   *  2015-01-14 : Atopic dermatitis
-   *  2016-04-18 : Childhood asthma
-   *  
-   *  MEDICATIONS:
-   *  2015-01-27 : 0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector
-   *  2015-01-27 : Loratadine 5 MG Chewable Tablet
-   *  2016-04-18 + 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
-   *  2016-04-18 + 120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
-   *   
-   *  CAREPLANS:
-   *  2015-01-14 : Skin condition care
-   *                        Reason: Atopic dermatitis
-   *                        Activity: Application of moisturizer to skin
-   *  2015-01-27 : Self care
-   *                        Activity: Allergy education
-   *                        Activity: Food allergy diet
-   *                        Activity: Allergy education
-   *  2016-04-18 : Asthma self management
-   *                        Reason: Childhood asthma
-   *                        Activity: Inhaled steroid therapy
-   *                        Activity: Home nebulizer therapy
-   *                        Activity: Breathing control
-   *   
-   * --------------------------------------------------------------------------------
-   */
-  
-  public static void exportEncounter(Person person, long time) throws IOException {
-  
-  /**
-   * Produce and export a person's record in text format
+   * Produce and export a person's record in text format.
    * 
    * @param person Person
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
    */
-
+  public static void exportEncounter(Person person, long time) throws IOException {
     List<Encounter> encounters = person.record.encounters;
     List<Entry> conditions = new ArrayList<>();
     List<Entry> allergies = new ArrayList<>();
@@ -333,17 +334,18 @@ public class TextExporter {
       textRecord.add("   ");
 
       textRecord.add("   CAREPLANS:");
-      for (CarePlan careplan : careplans){
+      for (CarePlan careplan : careplans) {
         careplanpast(textRecord, careplan, encounter);
       }
       textRecord.add("   ");
       breakline(textRecord);
 
-      encounterNumber ++;
+      encounterNumber++;
 
       //write to the file
       File outDirectory2 = Exporter.getOutputFolder("text2", person);
-      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename2(person, Integer.toString(encounterNumber), "txt"));
+      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename2(person, 
+          Integer.toString(encounterNumber), "txt"));
       Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
     }      
   }  
@@ -401,7 +403,7 @@ public class TextExporter {
    */
   private static void encounter(List<String> textRecord, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
-    if (encounter.reason == null){
+    if (encounter.reason == null && encounter.provider == null) {
       textRecord.add(encounterTime + " : " + encounter.codes.get(0).display);
     } else if (encounter.reason == null && encounter.provider != null) {
       textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name);
@@ -426,7 +428,7 @@ public class TextExporter {
   private static void encounterReport(List<String> textRecord, Person person, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
 
-    if (encounter.reason == null){
+    if (encounter.reason == null && encounter.provider == null) {
       textRecord.add(encounterTime + " : " + encounter.codes.get(0).display);
     } else if (encounter.reason == null && encounter.provider != null) {
       textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name);
@@ -437,21 +439,6 @@ public class TextExporter {
           + " : Encounter for " + encounter.reason.display);
     }
 
-    Provider provider;
-    switch (encounter.type){
-      case "inpatient" : provider = person.getInpatientProvider(encounter.start);
-      break;
-      case "ambulatory" : provider = person.getAmbulatoryProvider(encounter.start);
-      break;
-      case "emergency" : provider = person.getEmergencyProvider(encounter.start);
-      break;
-      case "WELLNESS" : provider = person.getAmbulatoryProvider(encounter.start);
-      break;
-      default : provider = person.getAmbulatoryProvider(encounter.start);
-      break;
-    }
-    
-    textRecord.add("Location: " + provider.name);
     textRecord.add("Type: " + encounter.type);
     textRecord.add("   ");
 
@@ -500,25 +487,25 @@ public class TextExporter {
 
     textRecord.add("   OBSERVATIONS:");
     for (Observation observation : encounterObservations) {
-        observation(textRecord, observation);
+      observation(textRecord, observation);
     }
     textRecord.add("   ");
 
     textRecord.add("   PROCEDURES:");
     for (Procedure procedure : encounterProcedures) {
-        procedure(textRecord, procedure);
+      procedure(textRecord, procedure);
     }
     textRecord.add("   ");
 
     textRecord.add("   IMMUNIZATIONS:");
     for (Entry immunization : encounterImmunizations) {
-        immunization(textRecord, immunization);
+      immunization(textRecord, immunization);
     }
     textRecord.add("   ");
 
     textRecord.add("   IMAGING STUDIES:");
     for (ImagingStudy imagingStudy : encounterImagingStudies) {
-        imagingStudy(textRecord, imagingStudy);
+      imagingStudy(textRecord, imagingStudy);
     }
     textRecord.add("   ");
   }
@@ -543,8 +530,7 @@ public class TextExporter {
         stop = dateFromTimestamp(condition.stop);
       }
       textRecord.add("  " + start + " - " + stop + " : " + description);
-    }
-    else {
+    } else {
       textRecord.add("  " + start + " : " + description);
     }
   }
@@ -561,13 +547,12 @@ public class TextExporter {
    */
   private static void conditionpast(List<String> textRecord, Entry condition, Encounter encounter) {
     String start = dateFromTimestamp(condition.start);
-    if ((condition.stop == 0L || condition.stop > encounter.stop) && (condition.start < encounter.start)) {
+    if ((condition.stop == 0L || condition.stop > encounter.stop)
+        && (condition.start < encounter.start)) {
       //checks that the condition hasn't ended by the time of the encounter
       //and began prior to the encounter
       String description = condition.codes.get(0).display;
-        textRecord.add("  " + start + " : " + description);
-    } else {
-      return;
+      textRecord.add("  " + start + " : " + description);
     }
   }
 
@@ -597,7 +582,8 @@ public class TextExporter {
 
     String unit = observation.unit != null ? observation.unit : "";
 
-    textRecord.add("  " + obsTime + " : " + Strings.padEnd(obsDesc, 40, ' ') + " " + value + " " + unit);
+    textRecord.add("  " + obsTime + " : " + Strings.padEnd(obsDesc, 40, ' ') + " " 
+        + value + " " + unit);
   }
 
   /**
@@ -681,10 +667,12 @@ public class TextExporter {
    * @param encounter
    *          The encounter at which the continuing medication is reported
    */
-  private static void medicationpast(List<String> textRecord, Medication medication, Encounter encounter) {
+  private static void medicationpast(List<String> textRecord, Medication medication,
+      Encounter encounter) {
     String medTime = dateFromTimestamp(medication.start);
     String medDesc = medication.codes.get(0).display;
-    if ((medication.stop == 0L || medication.stop > encounter.stop) && (medication.start < encounter.start)) {
+    if ((medication.stop == 0L || medication.stop > encounter.stop) 
+        && (medication.start < encounter.start)) {
       //checks that the medication is still being taken at the time of the encounter
       //and began prior to the encounter
       if (medication.reasons == null || medication.reasons.isEmpty()) {
@@ -693,8 +681,6 @@ public class TextExporter {
         String reason = medication.reasons.get(0).display;
         textRecord.add("  " + medTime + " + " + medDesc  + " for " + reason);
       }
-    } else {
-      return;
     }
   }
 
@@ -754,10 +740,12 @@ public class TextExporter {
    * @param encounter
    *          The encounter at which the continuing careplan is reported
    */
-  private static void careplanpast(List<String> textRecord, CarePlan careplan, Encounter encounter) {
+  private static void careplanpast(List<String> textRecord, CarePlan careplan,
+      Encounter encounter) {
     String cpTime = dateFromTimestamp(careplan.start);
     String cpDesc = careplan.codes.get(0).display;
-    if ((careplan.stop == 0L || careplan.stop > encounter.stop) && (careplan.start < encounter.start)){
+    if ((careplan.stop == 0L || careplan.stop > encounter.stop)
+        && (careplan.start < encounter.start)) {
       //checks that the careplan is still being followed at the time of the encounter
       //and began prior to the encounter
       textRecord.add("  " + cpTime + " : " + cpDesc);
@@ -771,8 +759,6 @@ public class TextExporter {
           textRecord.add("                         Activity: " + activity.display);
         }   
       }
-    } else {
-      return;
     }
   }
 
