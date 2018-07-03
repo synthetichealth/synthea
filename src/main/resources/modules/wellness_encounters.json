@@ -116,94 +116,7 @@
         }
       ],
       "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_1_HA1C"
-    },
-    "Lab_1_HA1C": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "44054006",
-                    "display": "Diabetes"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
-                  }
-                ]
-              }
-            ]
-          },
-          "transition": "Record_HA1C"
-        },
-        {
-          "transition": "Lab_2_MetabolicPanel"
-        }
-      ]
-    },
-    "Record_HA1C": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Blood Glucose",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "4548-4",
-          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
-        }
-      ],
-      "unit": "%",
-      "direct_transition": "Lab_2_MetabolicPanel"
-    },
-    "Lab_2_MetabolicPanel": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "44054006",
-                    "display": "Diabetes"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
-                  }
-                ]
-              }
-            ]
-          },
-          "transition": "Record_Glucose"
-        },
-        {
-          "transition": "Lab_3_LipidPanel"
-        }
-      ]
+      "direct_transition": "Lab_MetabolicPanel"
     },
     "Record_Glucose": {
       "type": "Observation",
@@ -336,55 +249,7 @@
         }
       ],
       "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_3_LipidPanel"
-    },
-    "Lab_3_LipidPanel": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "44054006",
-                    "display": "Diabetes"
-                  }
-                ]
-              },
-              {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Not",
-                    "condition": {
-                      "condition_type": "PriorState",
-                      "name": "Record_Cholesterol",
-                      "within": {
-                        "quantity": 3,
-                        "unit": "years"
-                      }
-                    }
-                  },
-                  {
-                    "condition_type": "Age",
-                    "operator": ">=",
-                    "quantity": 30,
-                    "unit": "years"
-                  }
-                ]
-              }
-            ]
-          },
-          "transition": "Record_Cholesterol"
-        },
-        {
-          "transition": "Lab_4_ACR"
-        }
-      ]
+      "direct_transition": "Lab_LipidPanel"
     },
     "Record_Cholesterol": {
       "type": "Observation",
@@ -457,9 +322,123 @@
         }
       ],
       "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_4_ACR"
+      "direct_transition": "Lab_ACR"
     },
-    "Lab_4_ACR": {
+    "Record_ACR": {
+      "type": "Observation",
+      "target_encounter": "Wellness_Encounter",
+      "vital_sign": "Microalbumin Creatinine Ratio",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "14959-1",
+          "display": "Microalbumin Creatinine Ratio"
+        }
+      ],
+      "unit": "mg/g",
+      "direct_transition": "Lab_EGFR"
+    },
+    "Record_EGFR": {
+      "type": "Observation",
+      "target_encounter": "Wellness_Encounter",
+      "category": "laboratory",
+      "vital_sign": "EGFR",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33914-3",
+          "display": "Estimated Glomerular Filtration Rate"
+        }
+      ],
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Lab_MetabolicPanel": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "44054006",
+                    "display": "Diabetes"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "15777000",
+                    "display": "Prediabetes"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Record_Glucose"
+        },
+        {
+          "transition": "Lab_LipidPanel"
+        }
+      ]
+    },
+    "Lab_LipidPanel": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "44054006",
+                    "display": "Diabetes"
+                  }
+                ]
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Not",
+                    "condition": {
+                      "condition_type": "PriorState",
+                      "name": "Record_Cholesterol",
+                      "within": {
+                        "quantity": 3,
+                        "unit": "years"
+                      }
+                    }
+                  },
+                  {
+                    "condition_type": "Age",
+                    "operator": ">=",
+                    "quantity": 30,
+                    "unit": "years"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Record_Cholesterol"
+        },
+        {
+          "transition": "Lab_ACR"
+        }
+      ]
+    },
+    "Lab_ACR": {
       "type": "Simple",
       "conditional_transition": [
         {
@@ -476,26 +455,11 @@
           "transition": "Record_ACR"
         },
         {
-          "transition": "Lab_5_EGFR"
+          "transition": "Lab_EGFR"
         }
       ]
     },
-    "Record_ACR": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "vital_sign": "Microalbumin Creatinine Ratio",
-      "category": "laboratory",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "14959-1",
-          "display": "Microalbumin Creatinine Ratio"
-        }
-      ],
-      "unit": "mg/g",
-      "direct_transition": "Lab_5_EGFR"
-    },
-    "Lab_5_EGFR": {
+    "Lab_EGFR": {
       "type": "Simple",
       "conditional_transition": [
         {
@@ -530,21 +494,6 @@
           "transition": "Wellness_Encounter"
         }
       ]
-    },
-    "Record_EGFR": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "EGFR",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "33914-3",
-          "display": "Estimated Glomerular Filtration Rate"
-        }
-      ],
-      "unit": "mL/min/{1.73_m2}",
-      "direct_transition": "Wellness_Encounter"
     }
   }
 }
