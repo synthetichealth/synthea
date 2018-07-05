@@ -1160,22 +1160,21 @@ public abstract class State implements Cloneable {
    */
   private abstract static class ObservationGroup extends State {
     protected List<Code> codes;
-    protected int numberOfObservations;
+    protected List<Observation> observations;
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();
       clone.codes = codes;
-      clone.numberOfObservations = numberOfObservations;
+      clone.observations = observations;
       return clone;
     }
   }
 
   /**
-   * The MultiObservation state indicates that some number of prior Observation states should be
+   * The MultiObservation state indicates that some number of Observations should be
    * grouped together as a single observation. This can be necessary when one observation records
    * multiple values, for example in the case of Blood Pressure, which is really 2 values, Systolic
-   * and Diastolic Blood Pressure. This state must occur directly after the relevant Observation
-   * states, otherwise unexpected behavior can occur. MultiObservation states may only be processed
+   * and Diastolic Blood Pressure.  MultiObservation states may only be processed
    * during an Encounter, and so must occur after the target Encounter state and before the
    * EncounterEnd. See the Encounter section above for more details.
    */
@@ -1191,9 +1190,12 @@ public abstract class State implements Cloneable {
 
     @Override
     public boolean process(Person person, long time) {
+      for (Observation o : observations) {
+        o.process(person, time);
+      }
       String primaryCode = codes.get(0).code;
-      HealthRecord.Observation observation = person.record.multiObservation(time, primaryCode,
-          numberOfObservations);
+      HealthRecord.Observation observation =
+          person.record.multiObservation(time, primaryCode, observations.size());
       observation.name = this.name;
       observation.codes.addAll(codes);
       observation.category = category;
@@ -1203,7 +1205,7 @@ public abstract class State implements Cloneable {
   }
 
   /**
-   * The DiagnosticReport state indicates that some number of prior Observation states should be
+   * The DiagnosticReport state indicates that some number of Observations should be
    * grouped together within a single Diagnostic Report. This can be used when multiple observations
    * are part of a single panel. DiagnosticReport states may only be processed during an Encounter,
    * and so must occur after the target Encounter state and before the EncounterEnd. See the
@@ -1212,8 +1214,11 @@ public abstract class State implements Cloneable {
   public static class DiagnosticReport extends ObservationGroup {
     @Override
     public boolean process(Person person, long time) {
+      for (Observation o : observations) {
+        o.process(person, time);
+      }
       String primaryCode = codes.get(0).code;
-      Report report = person.record.report(time, primaryCode, numberOfObservations);
+      Report report = person.record.report(time, primaryCode, observations.size());
       report.name = this.name;
       report.codes.addAll(codes);
 

@@ -59,7 +59,6 @@
     },
     "Hypothyroid Condition Onset": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Hypothyroidism encounter",
       "codes": [
         {
@@ -73,40 +72,6 @@
     "encounter end": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
-    },
-    "fT4 panel results": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "ng/dl",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "3024-7",
-          "display": "Thyroxine (T4) free [Mass/​volume] in Serum or Plasma"
-        }
-      ],
-      "direct_transition": "TSH panel result",
-      "range": {
-        "low": 0.1,
-        "high": 0.4
-      }
-    },
-    "TSH panel result": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "m[IU]/L",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "3016-3",
-          "display": "Thyrotropin [Units/​volume] in Serum or Plasma"
-        }
-      ],
-      "direct_transition": "Label Panel Results",
-      "range": {
-        "low": 2,
-        "high": 5
-      }
     },
     "Synthroid Medication Order": {
       "type": "MedicationOrder",
@@ -132,14 +97,45 @@
         "refills": 6
       }
     },
-    "Label Panel Results": {
+    "Lab Panel Results": {
       "type": "DiagnosticReport",
-      "number_of_observations": 2,
       "codes": [
         {
           "system": "LOINC",
           "code": "24348-5",
           "display": "Free T4 and TSH panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "ng/dl",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3024-7",
+              "display": "Thyroxine (T4) free [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0.1,
+            "high": 0.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "m[IU]/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3016-3",
+              "display": "Thyrotropin [Units/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 5
+          }
         }
       ],
       "direct_transition": "Synthroid Medication Order"
@@ -195,7 +191,7 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "fT4 panel results"
+      "direct_transition": "Lab Panel Results"
     }
   }
 }

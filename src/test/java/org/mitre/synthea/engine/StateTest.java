@@ -1387,4 +1387,51 @@ public class StateTest {
       modules.remove("submodules/medication_submodule");
     }
   }
+  
+  @Test
+  public void testDiagnosticReport() {
+    Module module = getModule("observation_groups.json");
+
+    State condition = module.getState("Record_MetabolicPanel");
+    assertTrue(condition.process(person, time));
+
+    // for a DiagnosticReport, we expect the report as well as the individual observations
+    // to be added to the record
+    Encounter e = person.record.encounters.get(0);
+    
+    assertEquals(1, e.reports.size());
+    HealthRecord.Report report = e.reports.get(0);
+    assertEquals(8, report.observations.size());
+    assertEquals(8, e.observations.size());
+    
+    String[] codes =
+        {"2339-0", "6299-2", "38483-4", "49765-1", "2947-0", "6298-4", "2069-3", "20565-8"};
+    // Glucose, Urea Nitrogen, Creatinine, Calcium, Sodium, Potassium, Chloride, Carbon Dioxide
+    
+    for (int i = 0; i < 8; i++) {
+      HealthRecord.Observation o = e.observations.get(i);
+      
+      assertEquals(codes[i], o.codes.get(0).code);
+      assertEquals(report, o.report);
+    }
+  }
+  
+  @Test
+  public void testMultiObservation() {
+    Module module = getModule("observation_groups.json");
+
+    State condition = module.getState("Record_BP");
+    assertTrue(condition.process(person, time));
+
+    // for a MultiObservation, we expect only the MultiObs to be added to the record,
+    // not the child observations, which get added as components of the parent observation
+    Encounter e = person.record.encounters.get(0);
+    assertEquals(1, e.observations.size());
+    
+    HealthRecord.Observation o = e.observations.get(0);
+    assertEquals("55284-4", o.codes.get(0).code);
+    assertEquals(2, o.observations.size());
+    assertEquals("8462-4", o.observations.get(0).codes.get(0).code); // diastolic
+    assertEquals("8480-6", o.observations.get(1).codes.get(0).code); // systolic
+  }
 }
