@@ -517,6 +517,8 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param condition
    *          The condition to add to the export
+   * @param end
+   *          Whether or not the condition end date will be displayed
    */
   private static void condition(List<String> textRecord, Entry condition, Boolean end) {
     String start = dateFromTimestamp(condition.start);
@@ -635,12 +637,14 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param medication
    *          The Medication to add to the export
+   * @param status
+   *          Whether or not the medication status will be displayed
    */
-  private static void medication(List<String> textRecord, Medication medication, Boolean end) {
+  private static void medication(List<String> textRecord, Medication medication, Boolean status) {
     String medTime = dateFromTimestamp(medication.start);
     String medDesc = medication.codes.get(0).display;
     String status = (medication.stop == 0L) ? "CURRENT" : "STOPPED";
-    if (end) {
+    if (status) {
       if (medication.reasons == null || medication.reasons.isEmpty()) {
         textRecord.add("  " + medTime + "[" + status + "] : " + medDesc);
       } else {
@@ -705,12 +709,14 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param careplan
    *          The CarePlan to add to the export
+   * @param status
+   *          Whether or not the careplan status will be displayed
    */
-  private static void careplan(List<String> textRecord, CarePlan careplan, Boolean end) {
+  private static void careplan(List<String> textRecord, CarePlan careplan, Boolean status) {
     String cpTime = dateFromTimestamp(careplan.start);
     String cpDesc = careplan.codes.get(0).display;
     String status = (careplan.stop == 0L) ? "CURRENT" : "STOPPED";
-    if (end) {
+    if (status) {
       textRecord.add("  " + cpTime + "[" + status + "] : " + cpDesc);
     } else {
       textRecord.add("  " + cpTime + " : " + cpDesc);
