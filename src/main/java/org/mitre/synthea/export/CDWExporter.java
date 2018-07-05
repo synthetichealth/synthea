@@ -1180,8 +1180,8 @@ public class CDWExporter {
       s.append(fact.substring(fact.indexOf(',') + 1));
     }
     s.append(',');
-    s.append(','); // MedicationRoute
-    s.append(','); // Schedule
+    s.append("As directed by physician.,"); // MedicationRoute
+    s.append("As directed by physician.,"); // Schedule
     s.append(orderStatus.getFactById(orderStatusSID)).append(',');
     s.append(cprsSID).append(',');
     s.append(iso8601Timestamp(medication.start)).append(',');
