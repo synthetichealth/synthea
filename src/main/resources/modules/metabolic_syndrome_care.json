@@ -2427,7 +2427,7 @@
         {
           "system": "SNOMED-CT",
           "code": "999999",
-          "display": "SNOMED Code"
+          "display": "Chronic kidney disease stage 1 (disorder)"
         }
       ],
       "direct_transition": "Check_Nephropathy"
@@ -2439,8 +2439,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "987654321",
-          "display": "SNOMED Code"
+          "code": 431856006,
+          "display": "Chronic kidney disease stage 2 (disorder)"
         }
       ],
       "direct_transition": "Check_Nephropathy"
@@ -2452,8 +2452,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "123456789",
-          "display": "SNOMED Code"
+          "code": 433144002,
+          "display": "Chronic kidney disease stage 3 (disorder)"
         }
       ],
       "direct_transition": "Check_Nephropathy"
@@ -2465,8 +2465,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1223334444",
-          "display": "SNOMED Code"
+          "code": 431857002,
+          "display": "Chronic kidney disease stage 4 (disorder)"
         }
       ],
       "direct_transition": "Check_Nephropathy"
@@ -2535,10 +2535,6 @@
         }
       ],
       "direct_transition": "Dialysis"
-    },
-    "new_state": {
-      "type": "Simple",
-      "direct_transition": "new_state"
     }
   }
 }
