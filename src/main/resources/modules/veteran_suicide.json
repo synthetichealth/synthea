@@ -1,0 +1,597 @@
+{
+  "name": "Veteran Self Harm",
+  "remarks": [
+    "In the U.S., suicides occur at a rate of 12.93/100k people. However, suicide attempts occur \nat approximately 12x this rate. Veteran Incident rates are 21% more frequent than the US general population.\n\n\n\n"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": "",
+      "conditional_transition": [
+        {
+          "transition": "Vetean Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "Attempts_Suicide": {
+      "type": "Simple",
+      "remarks": [
+        "It's difficult to find accurate statistics for how many people actually attempt suicide since ",
+        "those who attempt suicide often don't seek medical attention afterwards. Therefore, the attempts ",
+        "modeled in this module are considered severe enough to merit medical attention.",
+        "Males COMPLETE suicide 3.5x as often as females do. Suicides have a 7% completion rate overall."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0546,
+              "transition": "Fatal_Attempt"
+            },
+            {
+              "distribution": 0.9454,
+              "transition": "Non_Fatal_Attempt"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0156,
+              "transition": "Fatal_Attempt"
+            },
+            {
+              "distribution": 0.9844,
+              "transition": "Non_Fatal_Attempt"
+            }
+          ]
+        }
+      ]
+    },
+    "Non_Fatal_Attempt": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " NON-FATAL                                                            ",
+        "======================================================================",
+        "Most commonly this is from poisoning (overdose), suffocation, or cutting. Less than 1% of all ",
+        "non-fatal attempts involve firearms, so omitting that option altogether. The distributions here ",
+        "are based on the Harvard University study, see: ",
+        "https://www.hsph.harvard.edu/means-matter/basic-suicide-facts/how/"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.64,
+          "transition": "Attempt_By_Poisoning"
+        },
+        {
+          "distribution": 0.19,
+          "transition": "Attempt_By_Cutting"
+        },
+        {
+          "distribution": 0.17,
+          "transition": "Attempt_By_Suffocation"
+        }
+      ]
+    },
+    "Attempt_By_Poisoning": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86849004",
+          "display": "Suicidal deliberate poisoning"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+    "Attempt_By_Cutting": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287185009",
+          "display": "Attempted suicide - cut/stab"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+    "Attempt_By_Suffocation": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287182007",
+          "display": "Attempted suicide - suffocation"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+    "ED_Visit_For_Attempted_Suicide": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission"
+        }
+      ],
+      "direct_transition": "Psychiatric_Evaluation"
+    },
+    "Psychiatric_Evaluation": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90407005",
+          "display": "Evaluation of psychiatric state of patient"
+        }
+      ],
+      "direct_transition": "Short_Hospital_Stay"
+    },
+    "Short_Hospital_Stay": {
+      "type": "Procedure",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "74857009",
+          "display": "Hospital admission, short-term, 24 hours"
+        }
+      ],
+      "duration": {
+        "low": 24,
+        "high": 72,
+        "unit": "hours"
+      },
+      "direct_transition": "End_Attempted_Suicide_Observation_Period"
+    },
+    "End_Attempted_Suicide_Observation_Period": {
+      "type": "EncounterEnd",
+      "direct_transition": "End_Suicide_Attempt"
+    },
+    "End_Suicide_Attempt": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "suicide_attempt",
+      "direct_transition": "Delay_Until_Outpatient_Followup"
+    },
+    "Delay_Until_Outpatient_Followup": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Attempted_Suicide_Followup"
+    },
+    "Attempted_Suicide_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Suicide_CarePlan_Selector"
+    },
+    "Suicide_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "suicide_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Suicide_CarePlan"
+        },
+        {
+          "transition": "Followup_Psychiatric_Evaluation"
+        }
+      ]
+    },
+    "Suicide_CarePlan": {
+      "type": "CarePlanStart",
+      "target_encounter": "Attempted_Suicide_Followup",
+      "assign_to_attribute": "suicide_careplan",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183401008",
+          "display": "Anti-suicide psychotherapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "784051000000106",
+          "display": "Depression care management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "415665002",
+          "display": "Suicide prevention"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "10029008",
+          "display": "Suicide precautions"
+        }
+      ],
+      "direct_transition": "Followup_Psychiatric_Evaluation"
+    },
+    "Followup_Psychiatric_Evaluation": {
+      "type": "Procedure",
+      "target_encounter": "Attempted_Suicide_Followup",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "88848003",
+          "display": "Psychiatric follow-up"
+        }
+      ],
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "From the Harvard University study on suicide attempts: ",
+        " 7% are fatal ",
+        "70% do not attempt suicide again ",
+        "23% reattempt at some point "
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.753,
+          "transition": "Terminal"
+        },
+        {
+          "distribution": 0.247,
+          "transition": "Delay_Until_Next_Attempt"
+        }
+      ]
+    },
+    "Delay_Until_Next_Attempt": {
+      "type": "Delay",
+      "remarks": [
+        "It's unclear what a typical amount of time is between suicide attempts. Leaving  this as ",
+        "a broad range from 0.5 - 3 years."
+      ],
+      "range": {
+        "low": 6,
+        "high": 36,
+        "unit": "months"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Fatal_Attempt": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FATAL                                                                ",
+        "======================================================================",
+        "The most common methods of fatal suicide are: ",
+        "49.9% by firearms ",
+        "26.7% by suffocation or hanging (includes CO from motor vehicles)",
+        "15.9% by poisoning ",
+        " 7.5% by other means (vehicular, drowning, falls, etc.)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.499,
+          "transition": "Suicide_By_Firearm"
+        },
+        {
+          "distribution": 0.267,
+          "transition": "Suicide_By_Suffocation"
+        },
+        {
+          "distribution": 0.159,
+          "transition": "Suicide_By_Poisoning"
+        },
+        {
+          "distribution": 0.075,
+          "transition": "Suicide_By_Other_Means"
+        }
+      ]
+    },
+    "Suicide_By_Firearm": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287193009",
+          "display": "Suicide - firearms"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Suicide_By_Suffocation": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287191006",
+          "display": "Suicide - suffocation"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Suicide_By_Poisoning": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86849004",
+          "display": "Suicidal deliberate poisoning"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Suicide_By_Other_Means": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44301001",
+          "display": "Suicide"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Death": {
+      "type": "Death",
+      "referenced_by_attribute": "suicide",
+      "direct_transition": "Autopsy_Encounter"
+    },
+    "Autopsy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Autopsy_Examination"
+    },
+    "Autopsy_Examination": {
+      "type": "Procedure",
+      "target_encounter": "Autopsy_Encounter",
+      "reason": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "29240004",
+          "display": "Autopsy examination"
+        }
+      ],
+      "direct_transition": "End_Suicide"
+    },
+    "End_Suicide": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "suicide",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "new_state_3": {
+      "type": "Simple",
+      "direct_transition": "new_state_3"
+    },
+    "Veteran Guard": {
+      "type": "Simple",
+      "direct_transition": "Veteran Guard"
+    },
+    "Vetean Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Attempted_Suicide_Incidence_By_Age"
+    },
+    "Attempted_Suicide_Incidence_By_Age": {
+      "type": "Simple",
+      "remarks": "",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 18 to 34 years old",
+              "distribution": 0.00453
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99547
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 18 to 34 years old",
+              "distribution": 0.00135
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99865
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 35 to 54 years old",
+              "distribution": 0.00375
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99625
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 35 to 54 years old",
+              "distribution": 0.00187
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99813
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 55 to 74 years old",
+              "distribution": 0.00267
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99733
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 55 to 74 years old",
+              "distribution": 0.00148
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99852
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Delay 75 to 110 years old",
+              "distribution": 0.00278
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99722
+            }
+          ]
+        }
+      ]
+    },
+    "Delay 55 to 74 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 37,
+        "high": 56,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Delay 35 to 54 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 17,
+        "high": 36,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Delay 75 to 110 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 57,
+        "high": 92,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Delay 18 to 34 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 16,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    }
+  }
+}
