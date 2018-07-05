@@ -343,7 +343,7 @@ public class TextExporter {
       encounterNumber++;
 
       //write to the file
-      File outDirectory2 = Exporter.getOutputFolder("text2", person);
+      File outDirectory2 = Exporter.getOutputFolder("text_encounters", person);
       Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename_per_encounter(person, 
           Integer.toString(encounterNumber), "txt"));
       Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
