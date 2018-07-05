@@ -637,14 +637,14 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param medication
    *          The Medication to add to the export
-   * @param status
+   * @param stat
    *          Whether or not the medication status will be displayed
    */
-  private static void medication(List<String> textRecord, Medication medication, Boolean status) {
+  private static void medication(List<String> textRecord, Medication medication, Boolean stat) {
     String medTime = dateFromTimestamp(medication.start);
     String medDesc = medication.codes.get(0).display;
     String status = (medication.stop == 0L) ? "CURRENT" : "STOPPED";
-    if (status) {
+    if (stat) {
       if (medication.reasons == null || medication.reasons.isEmpty()) {
         textRecord.add("  " + medTime + "[" + status + "] : " + medDesc);
       } else {
@@ -709,14 +709,14 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param careplan
    *          The CarePlan to add to the export
-   * @param status
+   * @param stat
    *          Whether or not the careplan status will be displayed
    */
-  private static void careplan(List<String> textRecord, CarePlan careplan, Boolean status) {
+  private static void careplan(List<String> textRecord, CarePlan careplan, Boolean stat) {
     String cpTime = dateFromTimestamp(careplan.start);
     String cpDesc = careplan.codes.get(0).display;
     String status = (careplan.stop == 0L) ? "CURRENT" : "STOPPED";
-    if (status) {
+    if (stat) {
       textRecord.add("  " + cpTime + "[" + status + "] : " + cpDesc);
     } else {
       textRecord.add("  " + cpTime + " : " + cpDesc);
