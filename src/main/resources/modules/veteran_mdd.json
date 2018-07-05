@@ -337,8 +337,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 36923009,
-          "display": "major depression, single episode"
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "MDD_Initial_Careplan"
