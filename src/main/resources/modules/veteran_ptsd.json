@@ -235,13 +235,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
-          "display": "Psychiatric Follow-up"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 225337009,
-          "display": "Suicide Risk Assessment"
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -274,6 +269,16 @@
           "system": "SNOMED-CT",
           "code": 406185000,
           "display": "Trauma Therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
         }
       ],
       "assign_to_attribute": "ptsd_careplan"
@@ -283,13 +288,18 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
-          "display": "Psychiatric Follow-up"
-        },
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan",
+      "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
-          "display": "Coping Support Management"
+          "code": 406185000,
+          "display": "Trauma Therapy"
         },
         {
           "system": "SNOMED-CT",
@@ -298,13 +308,15 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": 406185000,
-          "display": "Trauma Therapy"
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
         }
-      ],
-      "direct_transition": "end_Psych_encounter",
-      "reason": "ptsd",
-      "assign_to_attribute": "ptsd_careplan"
+      ]
     },
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
@@ -316,8 +328,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "conditional_transition": [
