@@ -113,6 +113,7 @@ public class CDWExporter {
    * Writers for medications data.
    */
   private FileWriter rxoutpatient;
+  private FileWriter rxoutpatfill;
   private FileWriter nonvamed;
   private FileWriter cprsorder;
   private FileWriter ordereditem;
@@ -162,6 +163,7 @@ public class CDWExporter {
 
       // Medications Data
       rxoutpatient = openFileWriter(outputDirectory, "rxoutpatient.csv");
+      rxoutpatfill = openFileWriter(outputDirectory, "rxoutpatfill.csv");
       nonvamed = openFileWriter(outputDirectory, "nonvamed.csv");
       cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
       ordereditem = openFileWriter(outputDirectory, "ordereditem.csv");
@@ -271,6 +273,8 @@ public class CDWExporter {
         + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
         + "PharmacyOrderableItemSID,MaxRefills,RxStatus,OrderedQuantity");
     rxoutpatient.write(NEWLINE);
+    rxoutpatfill.write("RxOutpatFillSID,RxOutpatSID,Qty,DaysSupply");
+    rxoutpatfill.write(NEWLINE);
     nonvamed.write("NonVAMedSID,PatientSID,NonVAMedIEN,Sta3n,LocalDrugSID,Dosage,"
         + "MedicationRoute,Schedule,NonVAMedStatus,CPRSOrderSID,StartDateTime,"
         + "DocumentedDateTime,NonVAMedComments");
@@ -362,10 +366,10 @@ public class CDWExporter {
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
-    // TODO Ignore civilians, only consider the veteran population.
-    //    if (!person.attributes.containsKey("veteran")) {
-    //      return;
-    //    }
+    // Ignore civilians, only consider the veteran population.
+    if (!person.attributes.containsKey("veteran")) {
+      return;
+    }
     int primarySta3n = -1;
     Provider provider = person.getAmbulatoryProvider(time);
     if (provider != null) {
@@ -1119,6 +1123,14 @@ public class CDWExporter {
     }
     s.append(NEWLINE);
     write(s.toString(), rxoutpatient);
+
+    // rxoutpatfill.write("RxOutpatFillSID,RxOutpatSID,Qty,DaysSupply");
+    s.setLength(0);
+    s.append(rxNum).append(',');
+    s.append(rxNum).append(',');
+    s.append("1,30");
+    s.append(NEWLINE);
+    write(s.toString(), rxoutpatfill);
 
     // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
     //    + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
