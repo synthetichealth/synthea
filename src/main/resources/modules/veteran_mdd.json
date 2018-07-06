@@ -21,8 +21,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Late_Gulf_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Late_Gulf_War"
           },
           "distributions": [
             {
@@ -38,8 +39,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Early_Gulf_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Early_Gulf_War"
           },
           "distributions": [
             {
@@ -55,8 +57,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Between_VW_and_GW",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_VW_and_GW"
           },
           "distributions": [
             {
@@ -72,8 +75,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Vietnam_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Vietnam_War"
           },
           "distributions": [
             {
@@ -89,8 +93,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Between_KW_and_VW",
-            "operator": "is not nil"
+            "attribute": "vetreran",
+            "operator": "==",
+            "value": "Between_KW_and_VW"
           },
           "distributions": [
             {
@@ -106,8 +111,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Korean_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Korean_War"
           },
           "distributions": [
             {
@@ -128,8 +134,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Late_Gulf_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Late_Gulf_War"
           },
           "distributions": [
             {
@@ -155,15 +162,17 @@
           ],
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Early_Gulf_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Early_Gulf_War"
           }
         },
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Between_VW_and_GW",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_VW_and_GW"
           },
           "distributions": [
             {
@@ -179,8 +188,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Vietnam_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Vietnam_War"
           },
           "distributions": [
             {
@@ -196,8 +206,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Between_KW_and_VW",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_KW_and_VW"
           },
           "distributions": [
             {
@@ -213,8 +224,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Korean_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Korean_War"
           },
           "distributions": [
             {
@@ -230,8 +242,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Between_WW2_and_KW",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_WW2_and_KW"
           },
           "distributions": [
             {
@@ -247,8 +260,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "WW2",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "WW2"
           },
           "distributions": [
             {
@@ -316,26 +330,13 @@
       ],
       "direct_transition": "Time Gate"
     },
-    "MDD_Encouter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "mdd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 36923009,
-          "display": "major depression, single episode"
-        }
-      ],
-      "direct_transition": "MDD_Initial_Careplan"
-    },
     "Time Gate": {
       "type": "Delay",
       "exact": {
         "quantity": 6,
         "unit": "weeks"
       },
-      "direct_transition": "MDD_Encouter"
+      "direct_transition": "MDD_Encounter"
     },
     "MDD_Initial_Careplan": {
       "type": "CarePlanStart",
@@ -396,7 +397,7 @@
     "MDD Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "mdd_psych",
-      "target_encounter": "initial_Psychiatric_MDD_Encounter",
+      "target_encounter": "Initial_Psychiatric_MDD_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -661,7 +662,7 @@
       "allow": {
         "condition_type": "Age",
         "operator": ">",
-        "quantity": 21,
+        "quantity": 18,
         "unit": "years"
       },
       "direct_transition": "veteran guard"
@@ -686,6 +687,19 @@
           }
         }
       ]
+    },
+    "MDD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "MDD_Initial_Careplan"
     }
   }
 }

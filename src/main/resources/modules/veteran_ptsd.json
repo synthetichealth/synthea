@@ -15,7 +15,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Onset_age_18_to_29_Female",
+          "transition": "Onset_age_21_to_29_Female",
           "distribution": 0.0315
         },
         {
@@ -31,7 +31,7 @@
           "distribution": 0.014
         },
         {
-          "transition": "Onset_age_60_to_69_Female",
+          "transition": "Onset_age_60_to_99_Female",
           "distribution": 0.0084
         },
         {
@@ -44,7 +44,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Onset_age_18_to_29_Male",
+          "transition": "Onset_age_21_to_29_Male",
           "distribution": 0.049
         },
         {
@@ -60,7 +60,7 @@
           "distribution": 0.014
         },
         {
-          "transition": "Onset_age_60_to_69_Male",
+          "transition": "Onset_age_60_to_99_Male",
           "distribution": 0.007
         },
         {
@@ -92,85 +92,59 @@
       "type": "Simple",
       "direct_transition": "Terminal"
     },
-    "Onset_age_18_to_29_Male": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 18,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
-    "Onset_age_18_to_29_Female": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 18,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
     "Onset_age_30_to_39_Male": {
       "type": "Delay",
-      "exact": {
-        "quantity": 30,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 9,
+        "high": 18,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_30_to_39_Female": {
       "type": "Delay",
-      "exact": {
-        "quantity": 30,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 9,
+        "high": 18,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_40_to_49_Male": {
       "type": "Delay",
-      "exact": {
-        "quantity": 40,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 19,
+        "high": 28,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_40_to_49_Female": {
       "type": "Delay",
-      "exact": {
-        "quantity": 40,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 19,
+        "high": 28,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_50_to_59_Female": {
       "type": "Delay",
-      "exact": {
-        "quantity": 50,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 29,
+        "high": 38,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
-    "Onset_age_60_to_69_Female": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 60,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_50_to_59_Male": {
       "type": "Delay",
-      "exact": {
-        "quantity": 50,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 29,
+        "high": 38,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
-    "Onset_age_60_to_69_Male": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 60,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "PTSD Episode": {
       "type": "ConditionOnset",
@@ -183,20 +157,7 @@
           "display": "Posttraumatic stress disorder"
         }
       ],
-      "direct_transition": "PTSD_Encouter"
-    },
-    "PTSD_Encouter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "ptsd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom"
-        }
-      ],
-      "direct_transition": "PTSD_Initial_Careplan"
+      "direct_transition": "PTSD_Encounter"
     },
     "PTSD_Initial_Careplan": {
       "type": "CarePlanStart",
@@ -235,13 +196,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
-          "display": "Psychiatric Follow-up"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 225337009,
-          "display": "Suicide Risk Assessment"
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -274,6 +230,16 @@
           "system": "SNOMED-CT",
           "code": 406185000,
           "display": "Trauma Therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
         }
       ],
       "assign_to_attribute": "ptsd_careplan"
@@ -283,13 +249,18 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
-          "display": "Psychiatric Follow-up"
-        },
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan",
+      "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
-          "display": "Coping Support Management"
+          "code": 406185000,
+          "display": "Trauma Therapy"
         },
         {
           "system": "SNOMED-CT",
@@ -298,13 +269,15 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": 406185000,
-          "display": "Trauma Therapy"
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
         }
-      ],
-      "direct_transition": "end_Psych_encounter",
-      "reason": "ptsd",
-      "assign_to_attribute": "ptsd_careplan"
+      ]
     },
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
@@ -316,8 +289,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -345,7 +318,7 @@
     "PTSD Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "initial_Psychiatric_PTSD_Encounter",
+      "target_encounter": "Initial_Psychiatric_PTSD_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -645,34 +618,9 @@
       "reason": "ptsd",
       "direct_transition": "emergency_encounter end"
     },
-    "": {
-      "type": "Simple",
-      "direct_transition": ""
-    },
     "emergency_encounter end": {
       "type": "EncounterEnd",
       "direct_transition": "Inpatient_admission"
-    },
-    "Inpatient Admission": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "reason": "suicide_risk",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "direct_transition": "Inpatient Admission"
-    },
-    "new_state": {
-      "type": "Simple",
-      "direct_transition": "new_state"
-    },
-    "new_state_2": {
-      "type": "Simple",
-      "direct_transition": "new_state_2"
     },
     "Inpatient Suicide Care Plan": {
       "type": "CarePlanStart",
@@ -710,6 +658,55 @@
       "type": "CarePlanEnd",
       "direct_transition": "PTSD_Re_evaluation Encounter",
       "careplan": "Inpatient Suicide Care Plan"
+    },
+    "Onset_age_21_to_29_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Onset_age_60_to_99_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 39,
+        "high": 68,
+        "unit": "years"
+      }
+    },
+    "Onset_age_21_to_29_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Onset_age_60_to_99_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 39,
+        "high": 68,
+        "unit": "years"
+      }
+    },
+    "PTSD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "PTSD_Initial_Careplan"
     }
   }
 }
