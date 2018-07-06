@@ -19,6 +19,7 @@ import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
@@ -34,6 +35,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 
 /**
@@ -72,6 +74,11 @@ public class CDWExporter {
   private FactTable orderableItem = new FactTable();
   private FactTable orderStatus = new FactTable();
   private FactTable vistaPackage = new FactTable();
+  private FactTable collectionsample = new FactTable();
+  private FactTable labchemtest = new FactTable();
+  private FactTable topography = new FactTable();
+  private FactTable institution = new FactTable();
+  private FactTable loinc = new FactTable();
 
   /**
    * Writers for patient data.
@@ -115,8 +122,16 @@ public class CDWExporter {
   private FileWriter rxoutpatient;
   private FileWriter rxoutpatfill;
   private FileWriter nonvamed;
-  private FileWriter cprsorder;
-  private FileWriter ordereditem;
+  private FileWriter cprsorder; // also required for labs
+  private FileWriter ordereditem; // also required for labs
+
+  /**
+   * Writers for diagnostic report data (i.e. labs).
+   */
+  private FileWriter labchem;
+  private FileWriter labpanel;
+  private FileWriter patientlabchem;
+  private FileWriter vprocedure;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -168,6 +183,12 @@ public class CDWExporter {
       cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
       ordereditem = openFileWriter(outputDirectory, "ordereditem.csv");
 
+      // Diagnotic Report (i.e. Labs) Data
+      labchem = openFileWriter(outputDirectory, "labchem.csv");
+      labpanel = openFileWriter(outputDirectory, "labpanel.csv");
+      patientlabchem = openFileWriter(outputDirectory, "patientlabchem.csv");
+      vprocedure = openFileWriter(outputDirectory, "vprocedure.csv");
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -205,6 +226,11 @@ public class CDWExporter {
     orderableItem.setHeader("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
     orderStatus.setHeader("OrderStatusSID,OrderStatus");
     vistaPackage.setHeader("VistaPackageSID,VistaPackage");
+    collectionsample.setHeader("CollectionSampleSID,CollectionSample");
+    labchemtest.setHeader("LabChemTestSID,LabChemTestName,CollectionSampleSID");
+    topography.setHeader("TopographySID,Topography");
+    institution.setHeader("InstitutionSID,Sta3n,InstitutionName,InstitutionCode");
+    loinc.setHeader("LOINCSID,LOINC,Component");
 
     // Patient Tables
     lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
@@ -285,6 +311,18 @@ public class CDWExporter {
     cprsorder.write(NEWLINE);
     ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
     ordereditem.write(NEWLINE);
+
+    // Diagnostic Report Tables
+    labchem.write("LabChemSID,Sta3n,LabPanelSID,LabChemTestSID,PatientSID,StaffSID,"
+        + "LabChemSpecimenDateTime,LabChemResultValue,LOINCSID,Units,Abnormal,RefHigh,RefLow");
+    labchem.write(NEWLINE);
+    labpanel.write("LabPanelSID,LabPanelIEN,PatientSID");
+    labpanel.write(NEWLINE);
+    patientlabchem.write("LabChemSID,Sta3n,LabPanelSID,PatientSID,LabChemSpecimenDateTime,"
+        + "LabChemCompleteDateTime,TopographySID,AccessionInstitutionSID");
+    patientlabchem.write(NEWLINE);
+    vprocedure.write("VProcedureSID,PatientSID,VisitSID,CPRSOrderSID");
+    vprocedure.write(NEWLINE);
   }
 
   /**
@@ -359,6 +397,11 @@ public class CDWExporter {
     orderableItem.setNextId(id);
     orderStatus.setNextId(id);
     vistaPackage.setNextId(id);
+    collectionsample.setNextId(id);
+    labchemtest.setNextId(id);
+    topography.setNextId(id);
+    institution.setNextId(id);
+    loinc.setNextId(id);
   }
 
   /**
@@ -392,6 +435,13 @@ public class CDWExporter {
 
       for (HealthRecord.Entry allergy : encounter.allergies) {
         allergy(personID, person, encounterID, encounter, allergy, primarySta3n);
+      }
+
+      for (HealthRecord.Report report : encounter.reports) {
+        // Ignore death certificates
+        if (!DeathModule.DEATH_CERTIFICATE.equals(report.codes.get(0))) {
+          report(personID, encounterID, encounter, primarySta3n, report);
+        }
       }
 
       for (Observation observation : encounter.observations) {
@@ -468,6 +518,11 @@ public class CDWExporter {
       orderableItem.write(openFileWriter(outputDirectory, "orderableitem.csv"));
       orderStatus.write(openFileWriter(outputDirectory, "orderstatus.csv"));
       vistaPackage.write(openFileWriter(outputDirectory, "vistapackage.csv"));
+      collectionsample.write(openFileWriter(outputDirectory, "collectionsample.csv"));
+      labchemtest.write(openFileWriter(outputDirectory, "labchemtest.csv"));
+      topography.write(openFileWriter(outputDirectory, "topography.csv"));
+      institution.write(openFileWriter(outputDirectory, "institution.csv"));
+      loinc.write(openFileWriter(outputDirectory, "loinc.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -664,7 +719,7 @@ public class CDWExporter {
   }
 
   /**
-   * Write a single Encounter line to encounters.csv.
+   * Write a single Encounter to the tables.
    *
    * @param personID The ID of the person that had this encounter
    * @param person The person attending the encounter
@@ -750,7 +805,7 @@ public class CDWExporter {
   }
 
   /**
-   * Write a single Condition to conditions.csv.
+   * Write a single Condition to the tables.
    *
    * @param personID ID of the person that has the condition.
    * @param encounterID ID of the encounter where the condition was diagnosed
@@ -826,7 +881,7 @@ public class CDWExporter {
   }
 
   /**
-   * Write a single Allergy to allergies.csv.
+   * Write a single Allergy to the tables.
    *
    * @param personID ID of the person that has the allergy.
    * @param person The person
@@ -929,6 +984,169 @@ public class CDWExporter {
   }
 
   /**
+   * Write a DiagnosticReport to the tables.
+   *
+   * @param personID The ID of the person that had this encounter
+   * @param encounterID The ID of the encounter
+   * @param encounter The encounter
+   * @param primarySta3n The primary home sta3n for the patient
+   * @param report The diagnostic lab report
+   * @throws IOException if any IO error occurs
+   */
+  private void report(int personID, int encounterID, Encounter encounter,
+      int primarySta3n, Report report) throws IOException {
+    StringBuilder s = new StringBuilder();
+
+    Integer sta3nValue = null;
+    Integer providerSID = (sidStart / 10_000);
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
+    }
+    Code code = report.codes.get(0);
+
+    // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
+    //   + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+    //   + "PackageReference");
+    int cprsSID = getNextKey(cprsorder);
+    s.setLength(0);
+    s.append(cprsSID).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
+    }
+    s.append(',');
+    s.append(personID).append(',');
+    s.append(providerSID).append(","); // OrderStaffSID
+    s.append(providerSID).append(","); // EnteredByStaffSID
+    s.append(iso8601Timestamp(report.start)).append(',');
+    int orderStatusSID = orderStatus.addFact("COMPLETED", "COMPLETED");
+    s.append(orderStatusSID).append(',');
+    int vistaPackageSID = vistaPackage.addFact("DIAGNOSTIC LABORATORY", "DIAGNOSTIC LABORATORY");
+    s.append(vistaPackageSID).append(',');
+    s.append(iso8601Timestamp(report.start)).append(',');
+    if (report.stop != 0L) {
+      s.append(iso8601Timestamp(report.stop));
+    }
+    s.append(',');
+    s.append(clean(code.display));
+    s.append(NEWLINE);
+    write(s.toString(), cprsorder);
+
+    // orderableItem.setHeader("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
+    int orderableItemSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
+
+    // ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
+    s.setLength(0);
+    s.append(cprsSID).append(",");
+    s.append(cprsSID).append(",");
+    s.append(orderableItemSID).append(NEWLINE);
+    write(s.toString(), ordereditem);
+
+    // vprocedure.write("VProcedureSID,PatientSID,VisitSID,CPRSOrderSID");
+    s.setLength(0);
+    s.append(getNextKey(vprocedure)).append(',');
+    s.append(personID).append(',');
+    s.append(encounterID).append(',');
+    s.append(cprsSID);
+    s.append(NEWLINE);
+    write(s.toString(), vprocedure);
+
+    // loinc.setHeader("LOINCSID,LOINC,Component");
+    loinc.addFact(code.code, code.code + "," + clean(code.display));
+
+    // labpanel.write("LabPanelSID,LabPanelIEN,PatientSID");
+    s.setLength(0);
+    int labpanelSID = getNextKey(labpanel);
+    s.append(labpanelSID).append(',');
+    s.append(clean(code.display)).append(',');
+    s.append(personID);
+    s.append(NEWLINE);
+    write(s.toString(), labpanel);
+
+    // collectionsample.setHeader("CollectionSampleSID,CollectionSample");
+    int sampleSID = collectionsample.addFact(code.code, clean(code.display) + " Sample");
+
+    // labchemtest.setHeader("LabChemTestSID,LabChemTestName,CollectionSampleSID");
+    int labchemtestSID = labchemtest.addFact(code.code, clean(code.display) + "," + sampleSID);
+
+    // labchem.write("LabChemSID,Sta3n,LabPanelSID,LabChemTestSID,PatientSID,StaffSID,"
+    // + "LabChemSpecimenDateTime,LabChemResultValue,LOINCSID,Units,Abnormal,RefHigh,RefLow");
+    for (Observation observation : report.observations) {
+      int labchemSID = getNextKey(labchem);
+      if (observation.value == null && !observation.observations.isEmpty()) {
+        System.out.println("Fuck");
+      }
+      s.setLength(0);
+      s.append(labchemSID).append(',');
+      if (sta3nValue != null) {
+        s.append(sta3nValue);
+      } else {
+        s.append(primarySta3n);
+      }
+      s.append(',');
+      s.append(labpanelSID).append(',');
+      s.append(labchemtestSID).append(',');
+      s.append(personID).append(',');
+      s.append(providerSID).append(","); // StaffSID
+      s.append(iso8601Timestamp(observation.start)).append(',');
+      s.append(observation.value).append(',');
+      Code obscode = observation.codes.get(0);
+      int loincSID = loinc.addFact(obscode.code, obscode.code + "," + clean(obscode.display));
+      s.append(loincSID).append(',');
+      s.append(observation.unit).append(',');
+      s.append(','); // Abnormal
+      s.append(','); // RefHigh, RefLow
+      s.append(NEWLINE);
+      write(s.toString(), labchem);
+    }
+
+    // institution.setHeader("InstitutionSID,Sta3n,InstitutionName,InstitutionCode");
+    int institutionSID = 0;
+    s.setLength(0);
+    if (sta3nValue != null) {
+      s.append(sta3nValue).append(',');
+      s.append("Diagnostic Laboratory").append(',');
+      s.append(sta3nValue);
+      institutionSID = institution.addFact("" + sta3nValue, s.toString());
+    } else {
+      s.append(primarySta3n).append(',');
+      s.append("Diagnostic Laboratory").append(',');
+      s.append(primarySta3n);
+      institutionSID = institution.addFact("" + primarySta3n, s.toString());
+    }
+
+    // topography.setHeader("TopographySID,Topography");
+    int topographySID = topography.addFact(code.code, clean(code.display) + " Specimen");
+
+    // patientlabchem.write("LabChemSID,Sta3n,LabPanelSID,PatientSID,LabChemSpecimenDateTime,"
+    // + "LabChemCompleteDateTime,TopographySID,AccessionInstitutionSID");
+    s.setLength(0);
+    int patientlabchemSID = getNextKey(patientlabchem);
+    s.append(patientlabchemSID).append(',');
+    if (sta3nValue != null) {
+      s.append(sta3nValue);
+    } else {
+      s.append(primarySta3n);
+    }
+    s.append(',');
+    s.append(labpanelSID).append(',');
+    s.append(personID).append(',');
+    s.append(iso8601Timestamp(report.start)).append(',');
+    if (report.stop != 0L) {
+      s.append(iso8601Timestamp(report.stop));
+    }
+    s.append(',');
+    s.append(topographySID).append(',');
+    s.append(institutionSID);
+    s.append(NEWLINE);
+    write(s.toString(), patientlabchem);
+  }
+
+  /**
    * Write a single Observation to observations.csv.
    *
    * @param personID ID of the person to whom the observation applies.
@@ -1011,7 +1229,7 @@ public class CDWExporter {
   }
 
   /**
-   * Write a single Medication to medications.csv.
+   * Write a single Medication to the tables.
    *
    * @param personID ID of the person prescribed the medication.
    * @param encounterID ID of the encounter where the medication was prescribed
@@ -1207,7 +1425,7 @@ public class CDWExporter {
   }
 
   /**
-   * Write a single Immunization to immunizations.csv.
+   * Write a single Immunization to the tables.
    *
    * @param personID ID of the person on whom the immunization was performed.
    * @param person The person
