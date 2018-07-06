@@ -23,6 +23,8 @@ public class TransitionMetricsTest {
   
   @Test public void testExampleModule() throws Exception {
     Person person = new Person(0L);
+    person.attributes.put(Person.RACE, "black");
+    person.attributes.put(Person.ETHNICITY, "nonhispanic");
     person.attributes.put(Person.GENDER, "F");
     long time = System.currentTimeMillis();
     LifecycleModule.birth(person, time);
