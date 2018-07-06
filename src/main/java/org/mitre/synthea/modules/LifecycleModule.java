@@ -21,6 +21,7 @@ import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
+import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
@@ -175,8 +176,20 @@ public final class LifecycleModule extends Module {
     double weightPercentile = person.rand();
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
-    person.setVitalSign(VitalSign.HEIGHT, 51.0); // cm
-    person.setVitalSign(VitalSign.WEIGHT, 3.5); // kg
+
+    // Temporarily generate a mother
+    Person mother = new Person(person.random.nextLong());
+    mother.attributes.put(Person.GENDER, "F");
+    mother.attributes.put("pregnant", true);
+    mother.attributes.put(Person.RACE, person.attributes.get(Person.RACE));
+    mother.attributes.put(Person.ETHNICITY, person.attributes.get(Person.ETHNICITY));
+    mother.attributes.put(BirthStatistics.BIRTH_SEX, person.attributes.get(Person.GENDER));
+    BirthStatistics.setBirthStatistics(mother, time);
+
+    person.setVitalSign(VitalSign.HEIGHT,
+        (double) mother.attributes.get(BirthStatistics.BIRTH_HEIGHT)); // cm
+    person.setVitalSign(VitalSign.WEIGHT,
+        (double) mother.attributes.get(BirthStatistics.BIRTH_WEIGHT)); // kg
 
     attributes.put(AGE, 0);
     attributes.put(AGE_MONTHS, 0);
