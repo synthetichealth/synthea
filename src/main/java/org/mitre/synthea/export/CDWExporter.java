@@ -301,6 +301,8 @@ public class CDWExporter {
       } else {
         clinician.attributes.put(Person.GENDER, "F");
       }
+      clinician.attributes.put(Person.RACE, "unknown");
+      clinician.attributes.put(Person.ETHNICITY, "unknown");
       clinician.attributes.put(Person.FIRST_LANGUAGE, "English");
       LifecycleModule.birth(clinician, 0L);
       String name = "Dr. " + clinician.attributes.get(Person.FIRST_NAME);
