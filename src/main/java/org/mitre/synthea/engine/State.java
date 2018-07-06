@@ -533,7 +533,7 @@ public abstract class State implements Cloneable {
           if (!onset.diagnosed && this.name.equals(onset.targetEncounter)) {
             onset.diagnose(person, time);
           }
-        } else if (state instanceof Encounter && state.name.equals(this.name)) {
+        } else if (state instanceof Encounter && state != this && state.name.equals(this.name)) {
           // a prior instance of hitting this same state. no need to go back any further
           break;
         }

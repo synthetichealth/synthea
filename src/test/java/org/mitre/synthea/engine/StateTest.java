@@ -157,14 +157,13 @@ public class StateTest {
     
     State condition = module.getState("Diabetes");
     // Should pass through this state immediately without calling the record
-    assertTrue(condition.process(person, time));
     person.history.add(0, condition);
-    
+    assertTrue(condition.process(person, time));
+
     // The encounter comes next (and add it to history);
     State encounter = module.getState("ED_Visit");
-
+    person.history.add(0, encounter); // states are added to history before being processed
     assertTrue(encounter.process(person, time));
-    person.history.add(0, encounter);
 
     assertEquals(1, person.record.encounters.size());
     Encounter enc = person.record.encounters.get(0);
