@@ -330,26 +330,13 @@
       ],
       "direct_transition": "Time Gate"
     },
-    "MDD_Encouter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "mdd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom (procedure)"
-        }
-      ],
-      "direct_transition": "MDD_Initial_Careplan"
-    },
     "Time Gate": {
       "type": "Delay",
       "exact": {
         "quantity": 6,
         "unit": "weeks"
       },
-      "direct_transition": "MDD_Encouter"
+      "direct_transition": "MDD_Encounter"
     },
     "MDD_Initial_Careplan": {
       "type": "CarePlanStart",
@@ -700,6 +687,19 @@
           }
         }
       ]
+    },
+    "MDD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "MDD_Initial_Careplan"
     }
   }
 }
