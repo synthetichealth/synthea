@@ -2426,7 +2426,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "999999",
+          "code": 431855005,
           "display": "Chronic kidney disease stage 1 (disorder)"
         }
       ],
