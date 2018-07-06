@@ -157,20 +157,7 @@
           "display": "Posttraumatic stress disorder"
         }
       ],
-      "direct_transition": "PTSD_Encouter"
-    },
-    "PTSD_Encouter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "ptsd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom"
-        }
-      ],
-      "direct_transition": "PTSD_Initial_Careplan"
+      "direct_transition": "PTSD_Encounter"
     },
     "PTSD_Initial_Careplan": {
       "type": "CarePlanStart",
@@ -707,6 +694,19 @@
         "high": 68,
         "unit": "years"
       }
+    },
+    "PTSD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "PTSD_Initial_Careplan"
     }
   }
 }
