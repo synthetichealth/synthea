@@ -15,7 +15,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Onset_age_18_to_29_Female",
+          "transition": "Onset_age_21_to_29_Female",
           "distribution": 0.0315
         },
         {
@@ -31,7 +31,7 @@
           "distribution": 0.014
         },
         {
-          "transition": "Onset_age_60_to_69_Female",
+          "transition": "Onset_age_60_to_99_Female",
           "distribution": 0.0084
         },
         {
@@ -44,7 +44,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Onset_age_18_to_29_Male",
+          "transition": "Onset_age_21_to_29_Male",
           "distribution": 0.049
         },
         {
@@ -60,7 +60,7 @@
           "distribution": 0.014
         },
         {
-          "transition": "Onset_age_60_to_69_Male",
+          "transition": "Onset_age_60_to_99_Male",
           "distribution": 0.007
         },
         {
@@ -92,85 +92,59 @@
       "type": "Simple",
       "direct_transition": "Terminal"
     },
-    "Onset_age_18_to_29_Male": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 18,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
-    "Onset_age_18_to_29_Female": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 18,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
     "Onset_age_30_to_39_Male": {
       "type": "Delay",
-      "exact": {
-        "quantity": 30,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 9,
+        "high": 18,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_30_to_39_Female": {
       "type": "Delay",
-      "exact": {
-        "quantity": 30,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 9,
+        "high": 18,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_40_to_49_Male": {
       "type": "Delay",
-      "exact": {
-        "quantity": 40,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 19,
+        "high": 28,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_40_to_49_Female": {
       "type": "Delay",
-      "exact": {
-        "quantity": 40,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 19,
+        "high": 28,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_50_to_59_Female": {
       "type": "Delay",
-      "exact": {
-        "quantity": 50,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 29,
+        "high": 38,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
-    "Onset_age_60_to_69_Female": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 60,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "Onset_age_50_to_59_Male": {
       "type": "Delay",
-      "exact": {
-        "quantity": 50,
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 29,
+        "high": 38,
         "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
-    },
-    "Onset_age_60_to_69_Male": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 60,
-        "unit": "years"
-      },
-      "direct_transition": "PTSD Episode"
+      }
     },
     "PTSD Episode": {
       "type": "ConditionOnset",
@@ -701,6 +675,42 @@
       "type": "CarePlanEnd",
       "direct_transition": "PTSD_Re_evaluation Encounter",
       "careplan": "Inpatient Suicide Care Plan"
+    },
+    "Onset_age_21_to_29_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Onset_age_60_to_99_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 39,
+        "high": 68,
+        "unit": "years"
+      }
+    },
+    "Onset_age_21_to_29_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Onset_age_60_to_99_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 39,
+        "high": 68,
+        "unit": "years"
+      }
     }
   }
 }
