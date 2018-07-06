@@ -217,8 +217,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Vietnam_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Vietnam_War"
           },
           "distributions": [
             {
@@ -234,8 +235,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Early_Gulf_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Early_Gulf_War"
           },
           "distributions": [
             {
@@ -251,8 +253,9 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Late_Gulf_War",
-            "operator": "is not nil"
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Late_Gulf_War"
           },
           "distributions": [
             {
@@ -264,6 +267,10 @@
               "distribution": 0.78
             }
           ]
+        },
+        {
+          "distributions": [],
+          "transition": "Non_Veteran"
         }
       ]
     },

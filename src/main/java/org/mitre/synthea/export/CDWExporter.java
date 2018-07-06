@@ -250,7 +250,7 @@ public class CDWExporter {
     allergy.write("AllergySID,AllergyIEN,Sta3n,PatientSID,AllergyType,AllergicReactant,"
         + "LocalDrugSID,DrugNameWithoutDoseSID,DrugClassSID,ReactantSID,DrugIngredientSID,"
         + "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
-        + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
+        + "VerificationDateTime,VerifyingStaffSID,EnteredInErrorFlag");
     allergy.write(NEWLINE);
     allergicreaction.write("AllergicReactionSID,AllergySID,AllergyIEN,Sta3n,ReactionSID");
     allergicreaction.write(NEWLINE);
@@ -368,16 +368,17 @@ public class CDWExporter {
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
-    // Ignore civilians, only consider the veteran population.
-    if (!person.attributes.containsKey("veteran")) {
-      return;
-    }
+    // TODO Ignore civilians, only consider the veteran population.
+//    if (!person.attributes.containsKey("veteran")) {
+//      return;
+//    }
     int primarySta3n = -1;
     Provider provider = person.getAmbulatoryProvider(time);
     if (provider != null) {
       String state = Location.getStateName(provider.state);
       String tz = Location.getTimezoneByState(state);
       primarySta3n = sta3n.addFact(provider.id, clean(provider.name) + "," + tz);
+      location.addFact(provider.id,  clean(provider.name));
     }
 
     int personID = patient(person, primarySta3n, time);
