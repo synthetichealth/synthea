@@ -665,27 +665,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Inpatient_admission"
     },
-    "Inpatient Admission": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "reason": "suicide_risk",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "direct_transition": "Inpatient Admission"
-    },
-    "new_state": {
-      "type": "Simple",
-      "direct_transition": "new_state"
-    },
-    "new_state_2": {
-      "type": "Simple",
-      "direct_transition": "new_state_2"
-    },
     "Inpatient Suicide Care Plan": {
       "type": "CarePlanStart",
       "codes": [
