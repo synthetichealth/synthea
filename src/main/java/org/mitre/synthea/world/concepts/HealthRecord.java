@@ -511,8 +511,8 @@ public class HealthRecord {
     Encounter encounter = currentEncounter(time);
     List<Observation> observations = new ArrayList<Observation>();
     if (encounter.observations.size() > numberOfObservations) {
-      int fromIndex = encounter.observations.size() - numberOfObservations - 1;
-      int toIndex = encounter.observations.size() - 1;
+      int fromIndex = encounter.observations.size() - numberOfObservations;
+      int toIndex = encounter.observations.size();
       observations.addAll(encounter.observations.subList(fromIndex, toIndex));
     } else {
       observations.addAll(encounter.observations);
