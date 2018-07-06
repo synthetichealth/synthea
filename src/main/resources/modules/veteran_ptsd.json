@@ -631,10 +631,6 @@
       "reason": "ptsd",
       "direct_transition": "emergency_encounter end"
     },
-    "": {
-      "type": "Simple",
-      "direct_transition": ""
-    },
     "emergency_encounter end": {
       "type": "EncounterEnd",
       "direct_transition": "Inpatient_admission"
