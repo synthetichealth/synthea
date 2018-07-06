@@ -373,8 +373,18 @@ public class Graphviz {
         break;
       case "MultiObservation":
       case "DiagnosticReport":
-        details.append("Group the last ").append(state.get("number_of_observations").getAsString())
-            .append(" Observations").append(NEWLINE);
+        JsonArray observations = state.get("observations").getAsJsonArray();
+
+        for (int i = 0; i < observations.size(); i++) {
+          JsonObject obs = observations.get(i).getAsJsonObject();
+
+          // force the sub-observations to Observations so we can re-use this description logic
+          obs.addProperty("type", "Observation");
+
+          String desc = getStateDescription(obs).replace(NEWLINE, NEWLINE + "   ");
+          details.append(i + 1).append(". ").append(desc).append(NEWLINE);
+        }
+        details.append(NEWLINE); // extra space between sub-obs and details of this state
         break;
       case "ImagingStudy":
         JsonArray series = state.get("series").getAsJsonArray();

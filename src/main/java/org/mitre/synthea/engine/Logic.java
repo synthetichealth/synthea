@@ -111,7 +111,7 @@ public abstract class Logic {
 
     @Override
     public boolean test(Person person, long time) {
-      return race.equals(person.attributes.get(Person.RACE));
+      return race.equalsIgnoreCase((String) person.attributes.get(Person.RACE));
     }
   }
 

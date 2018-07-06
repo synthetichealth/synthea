@@ -119,10 +119,10 @@ public class LogicTest {
 
   @Test
   public void test_race_exists() {
-    person.attributes.put(Person.RACE, "White");
+    person.attributes.put(Person.RACE, "white");
     assertTrue(doTest("raceExistsTest"));
 
-    person.attributes.put(Person.RACE, "Native");
+    person.attributes.put(Person.RACE, "native");
     assertFalse(doTest("raceDoesNotExistTest"));
   }
 
