@@ -1,0 +1,376 @@
+{
+  "name": "Veteran",
+  "remarks": [
+    "Sources:\n[1] https://factfinder.census.gov/bkmk/table/1.0/en/ACS/16_1YR/B21002\n[2] https://www.benefits.va.gov/pension/wartimeperiod.asp\n\nRelevant conflicts\n    World War II (December 7, 1941 – December 31, 1946)\n    Korean conflict (June 27, 1950 – January 31, 1955)\n    Vietnam era (February 28, 1961 – May 7, 1975)\n    Gulf War (August 2, 1990 – through a future date to be set by law or Presidential Proclamation)\n\nPer [1] , only about 3% of living veterans in 2016 were involved in more than 1 of these conflict, so for simplicity we assume a veteran was only involved in 1."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_Until_18"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Wait_Until_18": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Late_Gulf_War",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 2001
+          }
+        },
+        {
+          "transition": "Early_Gulf_War",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1990
+          }
+        },
+        {
+          "transition": "Between_VW_and_GW",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1975
+          }
+        },
+        {
+          "transition": "Vietnam_War",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1961,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Between_KW_and_VW",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1955
+          }
+        },
+        {
+          "transition": "Korean_War",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1950
+          }
+        },
+        {
+          "transition": "Between_WW2_and_KW",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1946
+          }
+        },
+        {
+          "transition": "WW2",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1941
+          }
+        },
+        {
+          "transition": "Pre_WW2",
+          "condition": {
+            "condition_type": "True"
+          }
+        }
+      ]
+    },
+    "Pre_WW2": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Pre_WW2"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Pre_WW2",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Pre_WW2": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Pre_WW2",
+      "direct_transition": "Terminal"
+    },
+    "WW2": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_WW2"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_WW2",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_WW2": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "WW2",
+      "direct_transition": "Terminal"
+    },
+    "Between_WW2_and_KW": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Between_WW2_and_KW"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Between_WW2_and_KW",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Between_WW2_and_KW": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Between_WW2_and_KW",
+      "direct_transition": "Terminal"
+    },
+    "Korean_War": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Korean_War"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Korean_War",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Korean_War": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Korean_War",
+      "direct_transition": "Terminal"
+    },
+    "Between_KW_and_VW": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Between_KW_and_VW"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Between_KW_and_VW",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Between_KW_and_VW": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Between_KW_and_VW",
+      "direct_transition": "Terminal"
+    },
+    "Vietnam_War": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Vietnam_War"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Vietnam_War",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Vietnam_War": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Vietnam_War",
+      "direct_transition": "Terminal"
+    },
+    "Between_VW_and_GW": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Between_VW_and_GW"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Between_VW_and_GW",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Between_VW_and_GW": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Between_VW_and_GW",
+      "direct_transition": "Terminal"
+    },
+    "Early_Gulf_War": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Early_Gulf_War"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Early_Gulf_War",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Early_Gulf_War": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Early_Gulf_War",
+      "direct_transition": "Terminal"
+    },
+    "Late_Gulf_War": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran_population_override",
+            "operator": "is not nil"
+          },
+          "transition": "Set_Veteran_Late_Gulf_War"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_Veteran_Late_Gulf_War",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Set_Veteran_Late_Gulf_War": {
+      "type": "SetAttribute",
+      "attribute": "veteran",
+      "value": "Late_Gulf_War",
+      "direct_transition": "Terminal"
+    }
+  }
+}

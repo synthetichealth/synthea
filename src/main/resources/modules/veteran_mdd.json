@@ -1,0 +1,705 @@
+{
+  "name": "Veteran MDD",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "age guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Female": {
+      "type": "Simple",
+      "remarks": [
+        "Females suffer depression at rates 2x than males (www.americanhealthrankings.com), cited by VA",
+        "Age related and War Era related distributions of MDD provided by "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Late_Gulf_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.85
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Early_Gulf_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.75
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_VW_and_GW"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.23
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.77
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Vietnam_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.16
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.84
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "vetreran",
+            "operator": "==",
+            "value": "Between_KW_and_VW"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.85
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Korean_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.06
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.94
+            }
+          ]
+        }
+      ]
+    },
+    "Male": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Late_Gulf_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.156
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.844
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.155
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.845
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Early_Gulf_War"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_VW_and_GW"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.225
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.775
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Vietnam_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.09
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.91
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_KW_and_VW"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.07
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.93
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Korean_War"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.95
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Between_WW2_and_KW"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.03
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.97
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "WW2"
+          },
+          "distributions": [
+            {
+              "transition": "MDD Episode",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.98
+            }
+          ]
+        }
+      ]
+    },
+    "Veteran": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Non_Veteran": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Evaluation Gate delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "months"
+      },
+      "direct_transition": "MDD_Re_evaluation Encounter"
+    },
+    "end_Psych_encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Evaluation Gate delay"
+    },
+    "end re_evaluation_medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "MDD Medication Order",
+      "referenced_by_attribute": "ssri"
+    },
+    "MDD Episode": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "mdd",
+      "target_encounter": "MDD_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 36923009,
+          "display": "major depression, single episode"
+        }
+      ],
+      "direct_transition": "Time Gate"
+    },
+    "Time Gate": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "MDD_Encounter"
+    },
+    "MDD_Initial_Careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718347000,
+          "display": "Mental health care plan"
+        }
+      ],
+      "assign_to_attribute": "MDD care plan",
+      "reason": "mdd",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 79094001,
+          "display": "Initial psychiatric interview with mental status and evaluation"
+        }
+      ],
+      "direct_transition": "end_MDD_Encounter"
+    },
+    "end_MDD_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Initial_Psychiatric_MDD_Encounter",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 1,
+        "display": "Discharged home safe"
+      }
+    },
+    "Initial_Psychiatric_MDD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370143000,
+          "display": "major depression disorder"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 79094001,
+          "display": "Initial Psychiatric Interview with mental status evaluation"
+        }
+      ],
+      "reason": "mdd",
+      "distributed_transition": [
+        {
+          "transition": "Positive_PHQ9",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Negative_PHQ9",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "MDD Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "mdd_psych",
+      "target_encounter": "Initial_Psychiatric_MDD_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370143000,
+          "display": "major depression disorder"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Change_Dx_Not_MDD",
+          "distribution": 0.1
+        },
+        {
+          "transition": "MDD_Careplan_Psych",
+          "distribution": 0.2
+        },
+        {
+          "transition": "MDD_Careplan_Psych_and_Rx",
+          "distribution": 0.4
+        },
+        {
+          "transition": "MDD_Careplan_Rx_ONLY",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Change_Dx_Not_MDD": {
+      "type": "ConditionEnd",
+      "direct_transition": "end_MDD_Re_evaluation Encounter",
+      "referenced_by_attribute": "mdd"
+    },
+    "end_MDD_Re_evaluation Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "MDD_Careplan_Psych_and_Rx": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 425680009,
+          "display": "Cognitive behavioral therapy by multidisciplinary team"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 304822001,
+          "display": "Psychodynamic Interpersonal Therapy"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ssri",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "MDD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ssri",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "reason": "mdd_psych"
+    },
+    "MDD_Careplan_Psych": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "reason": "mdd_psych",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        }
+      ]
+    },
+    "MDD_Re_evaluation Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "mdd_psych",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370143000,
+          "display": "major depression disorder"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "negative_re_eval_phq9",
+          "distribution": 0.5
+        },
+        {
+          "transition": "positive_re_eval_phq9",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "MDD Medication Order": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 406022,
+          "display": "Fluoxetine 25MG"
+        }
+      ],
+      "assign_to_attribute": "ssri",
+      "reason": "mdd",
+      "distributed_transition": [
+        {
+          "transition": "end_Psych_encounter",
+          "distribution": 0.5
+        },
+        {
+          "transition": "MDD Chronic Pain Med",
+          "distribution": 0.5
+        }
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 60,
+          "unit": "days"
+        },
+        "refills": 12
+      }
+    },
+    "MDD_Careplan_Rx_ONLY": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 737434004,
+          "display": "Major depressive disorder clinical management plan"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ssri",
+            "operator": "is not nil",
+            "value": 0
+          }
+        },
+        {
+          "transition": "MDD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ssri",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "reason": "mdd_psych"
+    },
+    "Positive_PHQ9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112001000119100,
+          "display": "positive screening for PHQ-9"
+        }
+      ],
+      "direct_transition": "MDD Diagnosis",
+      "reason": "mdd"
+    },
+    "Negative_PHQ9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112011000119102,
+          "display": "negative screening for PHQ9"
+        }
+      ],
+      "direct_transition": "Change_Dx_Not_MDD",
+      "reason": "mdd"
+    },
+    "positive_re_eval_phq9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112001000119100,
+          "display": "positive screening for depression on phq9"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "MDD_Careplan_Psych_and_Rx",
+          "distribution": 0.3
+        },
+        {
+          "transition": "MDD_Careplan_Psych",
+          "distribution": 0.3
+        },
+        {
+          "transition": "MDD_Careplan_Rx_ONLY",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "negative_re_eval_phq9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112011000119102,
+          "display": "negative screening for depression on phq9"
+        }
+      ],
+      "direct_transition": "Change_Dx_Not_MDD"
+    },
+    "MDD Chronic Pain Med": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "end_Psych_encounter"
+    },
+    "age guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "veteran guard"
+    },
+    "veteran guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Non_Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "MDD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "MDD_Initial_Careplan"
+    }
+  }
+}

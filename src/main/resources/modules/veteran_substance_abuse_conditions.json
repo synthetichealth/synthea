@@ -1,0 +1,154 @@
+{
+  "name": "Veteran Substance Abuse Conditions",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_Guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Veteran_Status": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "veteran",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Smoking Check"
+    },
+    "smoker": {
+      "type": "SetAttribute",
+      "attribute": "smoking",
+      "value": true,
+      "direct_transition": "Alcohol Check"
+    },
+    "non_smoker": {
+      "type": "SetAttribute",
+      "attribute": "smoking",
+      "direct_transition": "Alcohol Check"
+    },
+    "Age_Guard": {
+      "type": "Delay",
+      "direct_transition": "Veteran_Status",
+      "range": {
+        "low": 18,
+        "high": 65,
+        "unit": "years"
+      }
+    },
+    "Smoking Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "smoker",
+              "distribution": 0.2
+            },
+            {
+              "transition": "non_smoker",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "smoker",
+              "distribution": 0.241
+            },
+            {
+              "transition": "non_smoker",
+              "distribution": 0.759
+            }
+          ]
+        }
+      ]
+    },
+    "Alcohol Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Alcohol Dependence",
+              "distribution": 0.152
+            },
+            {
+              "transition": "No Alcohol Dependence",
+              "distribution": 0.848
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Alcohol Dependence",
+              "distribution": 0.175
+            },
+            {
+              "transition": "No Alcohol Dependence",
+              "distribution": 0.825
+            }
+          ]
+        }
+      ]
+    },
+    "Alcohol Dependence": {
+      "type": "SetAttribute",
+      "attribute": "alcoholism",
+      "value": true,
+      "direct_transition": "Opioid Abuse check"
+    },
+    "No Alcohol Dependence": {
+      "type": "SetAttribute",
+      "attribute": "alcoholism",
+      "direct_transition": "Opioid Abuse check"
+    },
+    "Opioid Abuse check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Opioid Dependance",
+          "distribution": 0.13
+        },
+        {
+          "transition": "No Opioid Dependence",
+          "distribution": 0.87
+        }
+      ]
+    },
+    "Opioid Dependance": {
+      "type": "SetAttribute",
+      "attribute": "opioid_addiction",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "No Opioid Dependence": {
+      "type": "SetAttribute",
+      "attribute": "opioid_addiction",
+      "direct_transition": "Terminal",
+      "value": "nil"
+    }
+  }
+}

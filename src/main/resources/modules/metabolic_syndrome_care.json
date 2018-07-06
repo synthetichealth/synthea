@@ -22,23 +22,31 @@
             "condition_type": "And",
             "conditions": [
               {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 18,
-                "unit": "years"
-              },
-              {
                 "condition_type": "Attribute",
                 "attribute": "hypertension",
                 "operator": "==",
                 "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_dx",
+                "operator": "is nil"
               }
             ]
           },
           "transition": "Diagnose_Hypertension"
         },
         {
-          "transition": "Check_Diabetes"
+          "transition": "Check_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "!=",
+            "value": true
+          }
+        },
+        {
+          "transition": "Check_Hypertension_BP"
         }
       ]
     },
@@ -51,7 +59,8 @@
           "display": "Hypertension"
         }
       ],
-      "direct_transition": "Check_Diabetes"
+      "assign_to_attribute": "hypertension_dx",
+      "direct_transition": "Check_Hypertension_BP"
     },
     "Check_Diabetes": {
       "type": "Simple",
@@ -92,6 +101,119 @@
       ],
       "unit": "%",
       "direct_transition": "Blood_Sugar_Check"
+    },
+    "Blood_Sugar_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Hyperglycemia",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Glucose",
+            "operator": ">=",
+            "value": 130
+          }
+        },
+        {
+          "transition": "Triglyceride_Check"
+        }
+      ]
+    },
+    "Hyperglycemia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hyperglycemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 80394007,
+          "display": "Hyperglycemia (disorder)"
+        }
+      ],
+      "direct_transition": "Triglyceride_Check"
+    },
+    "Triglyceride_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Hypertriglyceridemia",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Triglycerides",
+            "operator": ">=",
+            "value": 150
+          }
+        },
+        {
+          "transition": "Metabolic_Check"
+        }
+      ]
+    },
+    "Hypertriglyceridemia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hypertriglyceridemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 302870006,
+          "display": "Hypertriglyceridemia (disorder)"
+        }
+      ],
+      "direct_transition": "Metabolic_Check"
+    },
+    "Metabolic_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Metabolic_Syndrome",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 3,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "obesity",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperglycemia",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertriglyceridemia",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "HDL",
+                "operator": "<",
+                "value": 50
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Diagnosis"
+        }
+      ]
+    },
+    "Metabolic_Syndrome": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "metabolic_syndrome",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 237602007,
+          "display": "Metabolic syndrome X (disorder)"
+        }
+      ],
+      "direct_transition": "Diagnosis"
     },
     "Diagnosis": {
       "type": "Simple",
@@ -742,7 +864,7 @@
     },
     "Check_Complications": {
       "type": "Simple",
-      "direct_transition": "Check_Nephropathy"
+      "direct_transition": "check CKD"
     },
     "Check_Nephropathy": {
       "type": "Simple",
@@ -990,8 +1112,9 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "end_stage_renal_disease",
-                "operator": "is not nil"
+                "attribute": "ckd",
+                "operator": "==",
+                "value": 5
               },
               {
                 "condition_type": "Not",
@@ -1543,16 +1666,12 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": "46177005",
-                "display": "End stage renal disease (disorder)"
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 4
           },
-          "transition": "Dialysis"
+          "transition": "Dialysis Encounter"
         },
         {
           "transition": "Potential_Amputation"
@@ -2068,14 +2187,10 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": "46177005",
-                "display": "End stage renal disease (disorder)"
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 4
           },
           "transition": "Delay_Before_Next_Dialysis_Encounter"
         },
@@ -2092,7 +2207,7 @@
     "Delay_Before_Next_Dialysis_Encounter": {
       "type": "Delay",
       "exact": {
-        "quantity": 3,
+        "quantity": 2,
         "unit": "days"
       },
       "direct_transition": "Dialysis_Encounter"
@@ -2110,29 +2225,251 @@
       "reason": "Diagnose_End_Stage_Renal_Disease",
       "direct_transition": "Record_HA1C"
     },
-    "Obesity": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "obesity",
+    "Hypertension_Medication_Low": {
+      "type": "MedicationOrder",
       "codes": [
         {
-          "system": "SNOMED-CT",
-          "code": 162864005,
-          "display": "Body mass index 30+ - obesity (finding)"
+          "system": "RxNorm",
+          "code": 316052,
+          "display": "Hydrochlorothiazide 6.25 MG"
         }
       ],
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Check_Diabetes",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx"
     },
-    "Severe Obesity": {
+    "Hypertension_Medication_High": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 316049,
+          "display": "Hydrochlorothiazide 25 MG"
+        }
+      ],
+      "direct_transition": "Check_Diabetes",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx"
+    },
+    "End_Hypertension_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hypertension_medication",
+      "conditional_transition": [
+        {
+          "transition": "Hypertension_Medication_Low",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 160
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_High",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        }
+      ]
+    },
+    "Check_Hypertension_BP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_Low_Dose",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 160
+          }
+        },
+        {
+          "transition": "Check_High_Dose",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        }
+      ]
+    },
+    "Check_Low_Dose": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_Diabetes",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316052,
+                "display": "Hydrochlorothiazide 6.25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Hypertension_Medication",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316049,
+                "display": "Hydrochlorothiazide 25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_Low",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          }
+        }
+      ]
+    },
+    "Check_High_Dose": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_Diabetes",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316049,
+                "display": "Hydrochlorothiazide 25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Hypertension_Medication",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 316052,
+                "display": "Hydrochlorothiazide 6.25 MG"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_High",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          }
+        }
+      ]
+    },
+    "check CKD": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CKD1 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "CKD2 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "CKD3 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "CKD4 Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ]
+    },
+    "CKD1 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "obesity",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408512008,
-          "display": "Body mass index 40+ - severely obese (finding)"
+          "code": 431855005,
+          "display": "Chronic kidney disease stage 1 (disorder)"
         }
       ],
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Check_Nephropathy"
+    },
+    "CKD2 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431856006,
+          "display": "Chronic kidney disease stage 2 (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
+    },
+    "CKD3 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433144002,
+          "display": "Chronic kidney disease stage 3 (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
+    },
+    "CKD4 Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431857002,
+          "display": "Chronic kidney disease stage 4 (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nephropathy"
     },
     "Obese_Check": {
       "type": "Simple",
@@ -2160,118 +2497,44 @@
         }
       ]
     },
-    "Blood_Sugar_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Hyperglycemia",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Glucose",
-            "operator": ">=",
-            "value": 130
-          }
-        },
-        {
-          "transition": "Triglyceride_Check"
-        }
-      ]
-    },
-    "Hyperglycemia": {
+    "Obesity": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "hyperglycemia",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 80394007,
-          "display": "Hyperglycemia (disorder)"
+          "code": 162864005,
+          "display": "Body mass index 30+ - obesity (finding)"
         }
       ],
-      "direct_transition": "Triglyceride_Check"
+      "direct_transition": "Wellness_Encounter",
+      "assign_to_attribute": "obesity"
     },
-    "Triglyceride_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Hypertriglyceridemia",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Triglycerides",
-            "operator": ">=",
-            "value": 150
-          }
-        },
-        {
-          "transition": "Metabolic_Check"
-        }
-      ]
-    },
-    "Hypertriglyceridemia": {
+    "Severe Obesity": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "hypertriglyceridemia",
+      "assign_to_attribute": "obesity",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 302870006,
-          "display": "Hypertriglyceridemia (disorder)"
+          "code": 408512008,
+          "display": "Body mass index 40+ - severely obese (finding)"
         }
       ],
-      "direct_transition": "Metabolic_Check"
+      "direct_transition": "Wellness_Encounter"
     },
-    "Metabolic_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Metabolic_Syndrome",
-          "condition": {
-            "condition_type": "At Least",
-            "minimum": 3,
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "obesity",
-                "operator": "is not nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "hypertension",
-                "operator": "is not nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "hyperglycemia",
-                "operator": "is not nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "hypertriglyceridemia",
-                "operator": "is not nil"
-              },
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "HDL",
-                "operator": "<",
-                "value": 50
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Diagnosis"
-        }
-      ]
-    },
-    "Metabolic_Syndrome": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "metabolic_syndrome",
+    "Dialysis Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 237602007,
-          "display": "Metabolic syndrome X (disorder)"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Diagnosis"
+      "direct_transition": "Dialysis"
     }
   }
 }

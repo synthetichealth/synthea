@@ -115,21 +115,18 @@
         },
         {
           "condition": {
-            "condition_type": "Socioeconomic Status",
-            "category": "Low"
+            "condition_type": "Attribute",
+            "attribute": "ptsd",
+            "operator": "is not nil"
           },
           "distributions": [
             {
-              "distribution": 0.0001,
-              "transition": "Enter_Directed_Use"
+              "transition": "Enter_Directed_Use",
+              "distribution": 0.5
             },
             {
-              "distribution": 0.000008,
-              "transition": "Misuse"
-            },
-            {
-              "distribution": 0.999892,
-              "transition": "General_Population"
+              "transition": "General_Population",
+              "distribution": 0.5
             }
           ]
         }
@@ -152,6 +149,10 @@
         {
           "distribution": 0.334,
           "transition": "Enter_Directed_Use_Condition3"
+        },
+        {
+          "transition": "Initial",
+          "distribution": 1
         }
       ]
     },
@@ -388,8 +389,7 @@
         }
       ]
     },
-
-     "Opioid_Addiction_Symptom1": {
+    "Opioid_Addiction_Symptom1": {
       "type": "Symptom",
       "symptom": "Anxiety",
       "range": {
@@ -479,7 +479,6 @@
       },
       "direct_transition": "Active_Addiction"
     },
-    
     "Active_Addiction": {
       "type": "Delay",
       "exact": {
