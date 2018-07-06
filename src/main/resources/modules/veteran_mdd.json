@@ -397,7 +397,7 @@
     "MDD Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "mdd_psych",
-      "target_encounter": "initial_Psychiatric_MDD_Encounter",
+      "target_encounter": "Initial_Psychiatric_MDD_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",

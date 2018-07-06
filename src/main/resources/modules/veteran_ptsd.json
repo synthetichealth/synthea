@@ -318,7 +318,7 @@
     "PTSD Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "initial_Psychiatric_PTSD_Encounter",
+      "target_encounter": "Initial_Psychiatric_PTSD_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
