@@ -1,0 +1,273 @@
+{
+  "name": "General Anesthesia",
+  "remarks": [
+    "Prior to surgery, patients are commonly placed under general anesthesia. This model attempts to capture the most common case for general anesthesia, based in part on this discussion of the most common case:",
+    "https://www.reddit.com/r/askscience/comments/1v1ei5/most_descriptions_of_general_anesthesia_as_used/",
+    "",
+    "This article may be helpful for future efforts, but it is not open access: https://www.nejm.org/doi/full/10.1056/Nejmra0808281",
+    "",
+    "This article was helpful in determining current clinical guidelines for surgery, though it did not focus on general anesthesia: https://journals.lww.com/anesthesia-analgesia/Fulltext/2014/01000/Consensus_Guidelines_for_the_Management_of.13.aspx",
+    "",
+    "Known model limitations:",
+    "- Anesthesiology is a complex, complicated field with many edge cases. A patient's medication 'cocktail' will differ based on facility limitations, the type of surgery, and age/weight/allergies of the patient.  Greater variability in this model would help it to reflect reality.",
+    "- This assumes the patient is undergoing surgery in the 21st century (after propofol gained wide use) - historical anesthesia techniques are not modeled",
+    "- New anesthetics are actively being tested and used: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3642742/"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Antiemetic"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Induction_Medication": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1808217,
+          "display": "100 ML Propofol 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Paralytic",
+      "remarks": [
+        "TODO: look into Phenobarbital (can cause apnea), Etomidate (risk of nausea), Ketamine (increased secretions, risk of laryngospasm and hallucinations), Dexmedetomidine",
+        "https://www.ncbi.nlm.nih.gov/books/NBK493199/"
+      ]
+    },
+    "Intubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 52765003,
+          "display": "Intubation"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Volatile_Anesthetic"
+    },
+    "Midazolam": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 311700,
+          "display": "Midazolam 1 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Induction_Medication",
+      "remarks": ""
+    },
+    "Anxiolytic": {
+      "type": "Simple",
+      "remarks": [
+        "Benzodiazepines (e.g. Midazolam, Diazepam, Lorazepam) are administered to reduce anxiety and inhibit the formation of memories",
+        "94% of patients receive Midazolam",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5509245/"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Midazolam",
+          "distribution": 0.94
+        },
+        {
+          "transition": "Diazepam",
+          "distribution": 0.03
+        },
+        {
+          "transition": "Lorazepam",
+          "distribution": 0.03
+        }
+      ]
+    },
+    "Diazepam": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309845,
+          "display": "Diazepam 5 MG/ML Injectable Solution"
+        }
+      ],
+      "remarks": "",
+      "direct_transition": "Induction_Medication"
+    },
+    "Lorazepam": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 238100,
+          "display": "Lorazepam 2 MG/ML Injectable Solution"
+        }
+      ],
+      "remarks": "",
+      "direct_transition": "Induction_Medication"
+    },
+    "Antiemetic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1740467,
+          "display": "2 ML Ondansetron 2 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Anxiolytic",
+      "remarks": [
+        "4mg is the most common dose for Ondansetron and virtually all anesthesia patients receive it prior to general anesthesia.",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5509245/"
+      ]
+    },
+    "Paralytic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1234995,
+          "display": "Rocuronium bromide 10 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Intubation",
+      "remarks": [
+        "Paralytics are administered to prevent patients from moving around during surgery and to assist in intubation.",
+        "Succinylcholine, Rocuronium, and Vecuronium are possible paralytics but Succinylcholine has considerable side effects. ",
+        "Source: http://go.galegroup.com/ps/anonymous?id=GALE%7CA470367351",
+        "",
+        "In one study of general anesthetics, Rocuronium was used in 96.7% of cases",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5500064/"
+      ]
+    },
+    "Fentanyl": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 4337,
+          "display": "Fentanyl"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Analgesic": {
+      "type": "Simple",
+      "remarks": [
+        "Fentanyl, alfentanil, sufentanil, remifentanil are all used.",
+        "TODO: determine actual prevalence of usage.  Many studies mentioned remifentanil so it is given the highest prevalence in this model."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Remifentanil",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Fentanyl",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Alfentanil",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Sufentanil",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Remifentanil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 73032,
+          "display": "Remifentanil"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Alfentanil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 480,
+          "display": "Alfentanil"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Sufentanil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 56795,
+          "display": "Sufentanil"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Isoflurane": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 542347,
+          "display": "Isoflurane 999 MG/ML Inhalant Solution"
+        }
+      ],
+      "direct_transition": "Analgesic"
+    },
+    "Volatile_Anesthetic": {
+      "type": "Simple",
+      "remarks": [
+        "Isoflurane, Sevoflurane, and Desflurane are all used. Isoflurane is the least expensive. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5735481/",
+        "TODO: Isoflurane seems to be the most common choice in the literature, but I haven't found explicit drug utilization studies.",
+        "TODO: Halothane was used historically https://www.ncbi.nlm.nih.gov/books/NBK493199/",
+        "TODO: this article may be useful but it's not open-access: https://onlinelibrary.wiley.com/doi/full/10.1592/phco.2005.25.12.1773"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Isoflurane",
+          "distribution": 0.7
+        },
+        {
+          "transition": "Desflurane",
+          "distribution": 0.15
+        },
+        {
+          "transition": "Sevoflurane",
+          "distribution": 0.15
+        }
+      ]
+    },
+    "Desflurane": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200252,
+          "display": "desflurane 990 MG/ML Inhalant Solution"
+        }
+      ],
+      "direct_transition": "Analgesic"
+    },
+    "Sevoflurane": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200243,
+          "display": "sevoflurane 1000 MG/ML Inhalant Solution"
+        }
+      ],
+      "direct_transition": "Analgesic"
+    }
+  }
+}
