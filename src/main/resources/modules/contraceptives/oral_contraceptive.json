@@ -52,7 +52,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1960
           },
@@ -136,7 +136,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 2002
           },
@@ -155,7 +155,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 2003
           },
@@ -233,7 +233,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1974
           },
@@ -251,7 +251,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1988
           },
@@ -274,7 +274,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1989
           },
@@ -291,7 +291,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1998
           },
@@ -312,7 +312,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 2003
           },
@@ -337,7 +337,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 2010
           },

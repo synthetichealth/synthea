@@ -78,10 +78,11 @@ public abstract class Logic {
   /**
    * The Date condition type tests the current year, month, or date being simulated.
    * For example, this may be used to drive different logic depending on the suggested
-   * medications or procedures of different time periods, or model different frequency of conditions.
+   * medications or procedures of different time periods, or model different frequency
+   * of conditions.
    */
   public static class Date extends Logic {
-    private String type;
+    private String datetype;
     private int year;
     private int month;
     private String date; //must be in format yyyy-MM-dd HH:mm:ss.SSS 
@@ -92,28 +93,33 @@ public abstract class Logic {
 
     @Override
     public boolean test(Person person, long time) {
-      switch (type) {
-        case "Year":
-          currentyear = Utilities.getYear(time);
-          return Utilities.compare(currentyear, year, operator);
-        case "Month":
-          currentmonth = Utilities.getMonth(time);
-          return Utilities.compare(currentmonth, month, operator);
-        case "Date":
-          DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-          java.util.Date testdate = new java.util.Date();
-          java.util.Date currentdate = new java.util.Date();
-          current = Utilities.getDate(time);
-          try {
-            testdate = sdf.parse(date);
-            currentdate = sdf.parse(current);
-          } catch (ParseException e) {
-            e.printStackTrace();
-          }
-          return Utilities.compare(testdate, currentdate, operator);
-        default:
-          throw new UnsupportedOperationException("Date type '" + type
-            + "' not currently supported in Date logic.");
+      if (datetype != null) {
+        switch (datetype) {
+          case "Year":
+            currentyear = Utilities.getYear(time);
+            return Utilities.compare(currentyear, year, operator);
+          case "Month":
+            currentmonth = Utilities.getMonth(time);
+            return Utilities.compare(currentmonth, month, operator);
+          case "Date":
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            java.util.Date testdate = new java.util.Date();
+            java.util.Date currentdate = new java.util.Date();
+            current = Utilities.getDate(time);
+            try {
+              testdate = sdf.parse(date);
+              currentdate = sdf.parse(current);
+            } catch (ParseException e) {
+              e.printStackTrace();
+            }
+            return Utilities.compare(testdate, currentdate, operator);
+          default:
+            throw new UnsupportedOperationException("Date type '" + datetype
+              + "' not currently supported in Date logic.");
+        }
+      } else {
+        throw new UnsupportedOperationException("Condition type Date requires a value "
+            + "for variable datetype");
       }
     }
   }

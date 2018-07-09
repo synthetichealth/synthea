@@ -38,7 +38,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1992
           },
@@ -83,7 +83,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 2005
           },

@@ -67,11 +67,13 @@
   },
   "before2016Test" : {
     "condition_type" : "Date",
+    "datetype" : "Year",
     "operator" : "<",
     "year" : 2016
   },
   "after2000Test" : {
     "condition_type" : "Date",
+    "datetype" : "Year",
     "operator" : ">=",
     "year" : 2000
   },

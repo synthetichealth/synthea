@@ -46,7 +46,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1899
           },
@@ -60,7 +60,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1950
           },
@@ -74,7 +74,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1974
           },
@@ -92,7 +92,7 @@
         {
           "condition": {
             "condition_type": "Date",
-            "type": "Year",
+            "datetype": "Year",
             "operator": "<",
             "year": 1994
           },
