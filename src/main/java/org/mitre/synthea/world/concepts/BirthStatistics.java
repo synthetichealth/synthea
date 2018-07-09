@@ -152,7 +152,7 @@ public class BirthStatistics {
       
       if (rhispanic == hispanic
           && rsex.equals(babySex)
-          && x < roll) {
+          && ((x < roll) || (data == null))) {
         data = row;
       }
     }
