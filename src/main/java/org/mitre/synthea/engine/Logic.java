@@ -86,21 +86,18 @@ public abstract class Logic {
     private Integer month;
     private String date; //must be in format yyyy-MM-dd HH:mm:ss.SSS 
     private String operator;
-    private int currentyear;
-    private int currentmonth;
-    private String current;
 
     @Override
     public boolean test(Person person, long time) {
       if (year != null) {
-        currentyear = Utilities.getYear(time);
+        int currentyear = Utilities.getYear(time);
         return Utilities.compare(currentyear, year, operator);
       } else if (month != null) {
-        currentmonth = Utilities.getMonth(time);
+        int currentmonth = Utilities.getMonth(time);
         return Utilities.compare(currentmonth, month, operator);
       } else if (date != null) {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        java.util.Date testdate = new java.util.Date();
+        java.util.Date testdate;
         try {
           testdate = sdf.parse(date);
         } catch (ParseException e) {
