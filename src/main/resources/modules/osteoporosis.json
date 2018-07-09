@@ -207,6 +207,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">=",
             "year": 1995
           },

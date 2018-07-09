@@ -39,6 +39,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": "<",
             "year": 1991
           },
@@ -87,6 +88,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": "<",
             "year": 2006
           },
@@ -100,6 +102,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": "<",
             "year": 2011
           },
@@ -113,6 +116,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": "<",
             "year": 2012
           },

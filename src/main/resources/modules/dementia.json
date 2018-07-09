@@ -295,6 +295,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">",
             "year": 2001
           },
@@ -306,6 +307,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">",
             "year": 1996
           },
@@ -317,6 +319,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">",
             "year": 1993
           },
@@ -482,6 +485,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">",
             "year": 2014
           },
@@ -493,6 +497,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">",
             "year": 2003
           },
@@ -504,6 +509,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">",
             "year": 1996
           },

@@ -75,6 +75,7 @@
       ],
       "allow": {
         "condition_type": "Date",
+        "type": "Year",
         "operator": ">=",
         "year": 1987
       },
@@ -237,6 +238,7 @@
         {
           "condition": {
             "condition_type": "Date",
+            "type": "Year",
             "operator": ">=",
             "year": 2008
           },
@@ -261,6 +263,7 @@
             "conditions": [
               {
                 "condition_type": "Date",
+                "type": "Year",
                 "operator": ">=",
                 "year": 1990
               },
