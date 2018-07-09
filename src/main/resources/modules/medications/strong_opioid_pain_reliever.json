@@ -52,7 +52,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1920
           },
@@ -66,7 +65,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1947
           },

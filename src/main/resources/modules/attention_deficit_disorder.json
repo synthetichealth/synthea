@@ -264,7 +264,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1955
           },
@@ -286,7 +285,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 2006
           },

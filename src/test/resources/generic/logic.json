@@ -67,15 +67,33 @@
   },
   "before2016Test" : {
     "condition_type" : "Date",
-    "datetype" : "Year",
     "operator" : "<",
     "year" : 2016
   },
   "after2000Test" : {
     "condition_type" : "Date",
-    "datetype" : "Year",
     "operator" : ">=",
     "year" : 2000
+  },
+  "beforeSeptemberTest" : {
+    "condition_type" : "Date",
+    "operator" : "<=",
+    "month" : 9
+  },
+  "afterAprilTest" : {
+    "condition_type" : "Date",
+    "operator" : ">=",
+    "month" : 4
+  },
+  "beforeHalloween2016Test" : {
+    "condition_type" : "Date",
+    "operator" : "<=",
+    "date" : "2016-10-31 00:00:00.000"
+  },
+  "afterIndependenceDay2000Test" : {
+    "condition_type" : "Date",
+    "operator" : ">=",
+    "date" : "2000-07-04 00:00:00.000"
   },
   "attributeEqualTo_TestValue_Test" : {
     "condition_type" : "Attribute",

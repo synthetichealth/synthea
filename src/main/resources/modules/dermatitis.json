@@ -537,7 +537,6 @@
               },
               {
                 "condition_type": "Date",
-                "datetype": "Year",
                 "operator": ">=",
                 "year": 1983
               }

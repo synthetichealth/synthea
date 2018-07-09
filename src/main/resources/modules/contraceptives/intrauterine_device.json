@@ -42,7 +42,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1968
           },
@@ -88,7 +87,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1971
           },
@@ -106,7 +104,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1975
           },
@@ -128,7 +125,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 1986
           },
@@ -150,7 +146,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 2001
           },
@@ -168,7 +163,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 2015
           },
@@ -186,7 +180,6 @@
         {
           "condition": {
             "condition_type": "Date",
-            "datetype": "Year",
             "operator": "<",
             "year": 2016
           },

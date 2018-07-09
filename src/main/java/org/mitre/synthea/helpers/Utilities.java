@@ -65,20 +65,6 @@ public class Utilities {
     return calendar.get(Calendar.MONTH);
   }
 
-  public static String getDate(long time) {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-    calendar.setTimeInMillis(time);
-    int year = calendar.get(Calendar.YEAR);
-    int month = calendar.get(Calendar.MONTH);
-    int day = calendar.get(Calendar.DAY_OF_MONTH);
-    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-    int minute = calendar.get(Calendar.MINUTE);
-    int second = calendar.get(Calendar.SECOND);
-    int millisecond = calendar.get(Calendar.MILLISECOND);
-    return (year + "-" + month + "-" + day + " " + hour + ":" + minute + ":"
-        + second + "." + millisecond);
-  }
-
   /**
    * Converts a JsonPrimitive into a primitive Boolean, Double, or String.
    *
@@ -202,20 +188,20 @@ public class Utilities {
     }
   }
 
-  public static boolean compare(Date lhs, Date rhs, String operator) {
+  public static boolean compare(Integer lhs, Integer rhs, String operator) {
     switch (operator) {
       case "<":
-        return lhs.before(rhs);
+        return lhs < rhs;
       case "<=":
-        return lhs.before(rhs);
+        return lhs <= rhs;
       case "==":
-        return lhs.equals(rhs);
+        return lhs.intValue() == rhs.intValue();
       case ">=":
-        return lhs.after(rhs) || lhs.equals(rhs);
+        return lhs >= rhs;
       case ">":
-        return lhs.after(rhs);
+        return lhs > rhs;
       case "!=":
-        return !lhs.equals(rhs);
+        return lhs.intValue() != rhs.intValue();
       case "is nil":
         return lhs == null;
       case "is not nil":

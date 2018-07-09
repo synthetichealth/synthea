@@ -139,6 +139,30 @@ public class LogicTest {
     time = TestHelper.timestamp(2002, 2, 22, 0, 0, 0);
     assertTrue(doTest("before2016Test"));
     assertTrue(doTest("after2000Test"));
+
+    time = TestHelper.timestamp(2000, 12, 10, 0, 0, 0);
+    assertFalse(doTest("beforeSeptemberTest"));
+    assertTrue(doTest("afterAprilTest"));
+
+    time = TestHelper.timestamp(2004, 2, 8, 0, 0, 0);
+    assertTrue(doTest("beforeSeptemberTest"));
+    assertFalse(doTest("afterAprilTest"));
+
+    time = TestHelper.timestamp(2012, 7, 17, 0, 0, 0);
+    assertTrue(doTest("beforeSeptemberTest"));
+    assertTrue(doTest("afterAprilTest"));
+
+    time = TestHelper.timestamp(2016, 12, 30, 0, 0, 0);
+    assertFalse(doTest("beforeHalloween2016Test"));
+    assertTrue(doTest("afterIndependenceDay2000Test"));
+
+    time = TestHelper.timestamp(2000, 4, 4, 0, 0, 0);
+    assertTrue(doTest("beforeHalloween2016Test"));
+    assertFalse(doTest("afterIndependenceDay2000Test"));
+
+    time = TestHelper.timestamp(2007, 9, 20, 0, 0, 0);
+    assertTrue(doTest("beforeHalloween2016Test"));
+    assertTrue(doTest("afterIndependenceDay2000Test"));
   }
 
   @Test
