@@ -10,6 +10,7 @@ import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +57,26 @@ public class Utilities {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.YEAR);
+  }
+
+  public static int getMonth(long time) {
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    calendar.setTimeInMillis(time);
+    return calendar.get(Calendar.MONTH);
+  }
+
+  public static String getDate(long time) {
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    calendar.setTimeInMillis(time);
+    int year = calendar.get(Calendar.YEAR);
+    int month = calendar.get(Calendar.MONTH);
+    int day = calendar.get(Calendar.DAY_OF_MONTH);
+    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+    int minute = calendar.get(Calendar.MINUTE);
+    int second = calendar.get(Calendar.SECOND);
+    int millisecond = calendar.get(Calendar.MILLISECOND);
+    return (year + "-" + month + "-" + day + " " + hour + ":" + minute + ":"
+        + second + "." + millisecond);
   }
 
   /**
@@ -171,6 +192,30 @@ public class Utilities {
         return lhs.compareTo(rhs) > 0;
       case "!=":
         return lhs != rhs;
+      case "is nil":
+        return lhs == null;
+      case "is not nil":
+        return lhs != null;
+      default:
+        System.err.format("Unsupported operator: %s\n", operator);
+        return false;
+    }
+  }
+
+  public static boolean compare(Date lhs, Date rhs, String operator) {
+    switch (operator) {
+      case "<":
+        return lhs.before(rhs);
+      case "<=":
+        return lhs.before(rhs);
+      case "==":
+        return lhs.equals(rhs);
+      case ">=":
+        return lhs.after(rhs) || lhs.equals(rhs);
+      case ">":
+        return lhs.after(rhs);
+      case "!=":
+        return !lhs.equals(rhs);
       case "is nil":
         return lhs == null;
       case "is not nil":
