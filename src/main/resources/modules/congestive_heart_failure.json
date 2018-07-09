@@ -417,7 +417,16 @@
             "code": "CR",
             "display": "Computed Radiography"
           },
-          "instances": []
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
         }
       ],
       "direct_transition": "ED_End"
