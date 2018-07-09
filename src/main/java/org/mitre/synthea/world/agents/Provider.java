@@ -105,6 +105,10 @@ public class Provider implements QuadTreeData {
     return utilization;
   }
 
+  /**
+   * Get the bed count for this Provider facility.
+   * @return The number of beds, if they exist, otherwise null.
+   */
   public Integer getBedCount() {
     if (attributes.containsKey("bed_count")) {
       return Integer.parseInt(attributes.get("bed_count").toString());
@@ -130,6 +134,13 @@ public class Provider implements QuadTreeData {
     return true;
   }
 
+  /**
+   * Find specific service closest to the person, with a maximum distance of 500 kilometers.
+   * @param person The patient who requires the service.
+   * @param service The service required. For example, Provider.AMBULATORY.
+   * @param time The date/time within the simulated world, in milliseconds.
+   * @return Service provider or null if none is available.
+   */
   public static Provider findClosestService(Person person, String service, long time) {
     double maxDistance = 500;
     double distance = 100;
@@ -147,9 +158,10 @@ public class Provider implements QuadTreeData {
 
   /**
    * Find a service around a given point.
-   * @param coord The location to search near
+   * @param person The patient who requires the service.
    * @param service e.g. Provider.AMBULATORY
    * @param searchDistance in kilometers
+   * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
   private static Provider findService(Person person,
@@ -192,11 +204,14 @@ public class Provider implements QuadTreeData {
       servicesProvided.add(Provider.EMERGENCY);
       servicesProvided.add(Provider.URGENTCARE);
 
+      // TODO Do not merge to master like this.
       //String hospitalFile = Config.get("generate.providers.hospitals.default_file");
       //loadProviders(state, abbreviation, hospitalFile, servicesProvided);
 
       String vaFile = Config.get("generate.providers.veterans.default_file");
       loadProviders(state, abbreviation, vaFile, servicesProvided);
+
+      // TODO Do not merge to master like this.
 /*
       servicesProvided.clear();
       servicesProvided.add(Provider.URGENTCARE);
