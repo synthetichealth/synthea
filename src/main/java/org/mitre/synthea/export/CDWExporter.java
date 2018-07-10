@@ -1070,16 +1070,14 @@ public class CDWExporter {
     // collectionsample.setHeader("CollectionSampleSID,CollectionSample");
     int sampleSID = collectionsample.addFact(code.code, clean(code.display) + " Sample");
 
-    // labchemtest.setHeader("LabChemTestSID,LabChemTestName,CollectionSampleSID");
-    int labchemtestSID = labchemtest.addFact(code.code, clean(code.display) + "," + sampleSID);
-
     // labchem.write("LabChemSID,Sta3n,LabPanelSID,LabChemTestSID,PatientSID,StaffSID,"
     // + "LabChemSpecimenDateTime,LabChemResultValue,LOINCSID,Units,Abnormal,RefHigh,RefLow");
     for (Observation observation : report.observations) {
+      Code obscode = observation.codes.get(0);
+      // labchemtest.setHeader("LabChemTestSID,LabChemTestName,CollectionSampleSID");
+      int labchemtestSID = labchemtest.addFact(obscode.code,
+          clean(obscode.display) + "," + sampleSID);
       int labchemSID = getNextKey(labchem);
-      if (observation.value == null && !observation.observations.isEmpty()) {
-        System.out.println("Fuck");
-      }
       s.setLength(0);
       s.append(labchemSID).append(',');
       if (sta3nValue != null) {
@@ -1094,7 +1092,6 @@ public class CDWExporter {
       s.append(providerSID).append(","); // StaffSID
       s.append(iso8601Timestamp(observation.start)).append(',');
       s.append(observation.value).append(',');
-      Code obscode = observation.codes.get(0);
       int loincSID = loinc.addFact(obscode.code, obscode.code + "," + clean(obscode.display));
       s.append(loincSID).append(',');
       s.append(observation.unit).append(',');
