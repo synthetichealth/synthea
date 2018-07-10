@@ -62,7 +62,7 @@ public class Utilities {
   public static int getMonth(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
-    return calendar.get(Calendar.MONTH);
+    return calendar.get(Calendar.MONTH) + 1;
   }
 
   /**

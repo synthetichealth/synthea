@@ -143,14 +143,17 @@ public class LogicTest {
     time = TestHelper.timestamp(2000, 12, 10, 0, 0, 0);
     assertFalse(doTest("beforeSeptemberTest"));
     assertTrue(doTest("afterAprilTest"));
+    assertFalse(doTest("inJulyTest"));
 
     time = TestHelper.timestamp(2004, 2, 8, 0, 0, 0);
     assertTrue(doTest("beforeSeptemberTest"));
     assertFalse(doTest("afterAprilTest"));
+    assertFalse(doTest("inJulyTest"));
 
     time = TestHelper.timestamp(2012, 7, 17, 0, 0, 0);
     assertTrue(doTest("beforeSeptemberTest"));
     assertTrue(doTest("afterAprilTest"));
+    assertTrue(doTest("inJulyTest"));
 
     time = TestHelper.timestamp(2016, 12, 30, 0, 0, 0);
     assertFalse(doTest("beforeHalloween2016Test"));

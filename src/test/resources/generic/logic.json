@@ -85,6 +85,11 @@
     "operator" : ">=",
     "month" : 4
   },
+  "inJulyTest" : {
+    "condition_type" : "Date",
+    "operator" : "==",
+    "month" : 7
+  },
   "beforeHalloween2016Test" : {
     "condition_type" : "Date",
     "operator" : "<=",
