@@ -1032,7 +1032,7 @@ public class CDWExporter {
       s.append(iso8601Timestamp(report.stop));
     }
     s.append(',');
-    s.append(clean(code.display));
+    s.append("LAB_" + cprsSID); // PackageReference joins to LabPanel.LabPanelIEN
     s.append(NEWLINE);
     write(s.toString(), cprsorder);
 
@@ -1062,7 +1062,7 @@ public class CDWExporter {
     s.setLength(0);
     int labpanelSID = getNextKey(labpanel);
     s.append(labpanelSID).append(',');
-    s.append(clean(code.display)).append(',');
+    s.append("LAB_" + cprsSID).append(','); // LabPanelIEN joins to CPRSOrder.PackageReference
     s.append(personID);
     s.append(NEWLINE);
     write(s.toString(), labpanel);
