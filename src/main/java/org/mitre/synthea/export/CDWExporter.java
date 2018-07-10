@@ -1135,10 +1135,8 @@ public class CDWExporter {
     s.append(',');
     s.append(labpanelSID).append(',');
     s.append(personID).append(',');
-    s.append(iso8601Timestamp(report.start)).append(',');
-    if (report.stop != 0L) {
-      s.append(iso8601Timestamp(report.stop));
-    }
+    s.append(iso8601Timestamp(report.start)).append(','); // LabChemSpecimenDateTime
+    s.append(iso8601Timestamp(report.start)).append(','); // LabChemCompleteDateTime
     s.append(',');
     s.append(topographySID).append(',');
     s.append(institutionSID);
