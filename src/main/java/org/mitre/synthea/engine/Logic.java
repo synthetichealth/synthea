@@ -1,5 +1,8 @@
 package org.mitre.synthea.engine;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -73,18 +76,40 @@ public abstract class Logic {
   }
   
   /**
-   * The Date condition type tests the current year being simulated. For example, this may be used
-   * to drive different logic depending on the suggested medications or procedures of different time
-   * periods, or model different frequency of conditions.
+   * The Date condition type tests the current year, month, or date being simulated.
+   * For example, this may be used to drive different logic depending on the suggested
+   * medications or procedures of different time periods, or model different frequency
+   * of conditions.
    */
   public static class Date extends Logic {
-    private int year;
+    private Integer year;
+    private Integer month;
+    private String date; //must be in format yyyy-MM-dd HH:mm:ss.SSS 
     private String operator;
 
     @Override
     public boolean test(Person person, long time) {
-      int current = Utilities.getYear(time);
-      return Utilities.compare(current, year, operator);
+      if (year != null) {
+        int currentyear = Utilities.getYear(time);
+        return Utilities.compare(currentyear, year, operator);
+      } else if (month != null) {
+        int currentmonth = Utilities.getMonth(time);
+        return Utilities.compare(currentmonth, month, operator);
+      } else if (date != null) {
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        java.util.Date testdate;
+        try {
+          testdate = sdf.parse(date);
+        } catch (ParseException e) {
+          throw new IllegalArgumentException("Invalid date format provided to Date logic,"
+              + " required: yyyy-MM-dd HH:mm:ss.SSS, given: " + date, e);
+        }
+        long testtime = testdate.getTime();
+        return Utilities.compare(time, testtime, operator);
+      } else {
+        throw new UnsupportedOperationException("Date type "
+            + "not currently supported in Date logic.");
+      }
     }
   }
 
