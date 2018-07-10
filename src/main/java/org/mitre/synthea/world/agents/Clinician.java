@@ -1,14 +1,14 @@
 package org.mitre.synthea.world.agents;
 
+import com.google.common.collect.HashBasedTable;     
+import com.google.common.collect.Table;              
+import com.google.gson.internal.LinkedTreeMap;       
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.google.common.collect.HashBasedTable; 
-import com.google.common.collect.Table;          
-import com.google.gson.internal.LinkedTreeMap;   
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.apache.sis.index.tree.QuadTree;

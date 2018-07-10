@@ -191,6 +191,42 @@ public class Location {
     }
   }
 
+  /**
+   * Assign a geographic location to the given Clinician. Location includes City, State, Zip, and
+   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
+   * that city. If cityName is not given, then picks a random city from the list of all cities.
+   * 
+   * @param clinician
+   *          Clinician to assign location information
+   * @param cityName
+   *          Name of the city, or null to choose one randomly
+   */
+  public void assignPoint(Clinician clinician, String cityName) {
+    List<Place> zipsForCity = null;
+
+    if (cityName == null) {
+      int size = zipCodes.keySet().size();
+      cityName = (String) zipCodes.keySet().toArray()[clinician.randInt(size)];
+    }
+    zipsForCity = zipCodes.get(cityName);
+
+    if (zipsForCity == null) {
+      zipsForCity = zipCodes.get(cityName + " Town");
+    }
+    
+    Place place = null;
+    if (zipsForCity.size() == 1) {
+      place = zipsForCity.get(0);
+    } else {
+      // pick a random one
+      place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
+    }
+    
+    if (place != null) {
+      clinician.attributes.put(Person.COORDINATE, place.getLatLon());
+    }
+  }
+  
   private static Map<String, String> loadAbbreviations() {
     Map<String, String> abbreviations = new HashMap<String, String>();
     String filename = null;
@@ -232,42 +268,6 @@ public class Location {
       }
     }
     return null;
-  }
-
-  /**
-   * Assign a geographic location to the given Person. Location includes City, State, Zip, and
-   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
-   * that city. If cityName is not given, then picks a random city from the list of all cities.
-   * 
-   * @param person
-   *          Person to assign location information
-   * @param cityName
-   *          Name of the city, or null to choose one randomly
-   */
-  public void assignPoint(Clinician clinician, String cityName) {
-    List<Place> zipsForCity = null;
-
-    if (cityName == null) {
-      int size = zipCodes.keySet().size();
-      cityName = (String) zipCodes.keySet().toArray()[clinician.randInt(size)];
-    }
-    zipsForCity = zipCodes.get(cityName);
-
-    if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
-    }
-    
-    Place place = null;
-    if (zipsForCity.size() == 1) {
-      place = zipsForCity.get(0);
-    } else {
-      // pick a random one
-      place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
-    }
-    
-    if (place != null) {
-      clinician.attributes.put(Person.COORDINATE, place.getLatLon());
-    }
   }
 
 }
