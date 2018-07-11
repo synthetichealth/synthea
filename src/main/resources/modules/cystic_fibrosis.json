@@ -1,0 +1,1665 @@
+{
+  "name": "Cystic Fibrosis",
+  "remarks": [
+    "Cystic Fibrosis, or mucoviscidosis, is an autosomal recessive genetic disorder which is named after that scarring (fibrosis) and cyst formation in the pancreas.  It is characterized by thick, viscous secretions such as thickening of mucus which causes many respiratory problems.  Statistics and information were gathered from the pages and information available at:\nhttps://www.cff.org\n\nSome data and statistic came from:\nhttps://www.sciencedirect.com/science/article/pii/S1569199315002106?viewFullText=true#f0015\n\n\n\n\n\n"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Potential_Onset"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Potential_Onset": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "white"
+          },
+          "distributions": [
+            {
+              "transition": "Cystic_Fibrosis",
+              "distribution": 0.0003333333
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.9996666667
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "black"
+          },
+          "distributions": [
+            {
+              "transition": "Cystic_Fibrosis",
+              "distribution": 0.000066225
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.999933775
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Cystic_Fibrosis",
+              "distribution": 0.000028571
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.999971429
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "asian"
+          }
+        }
+      ],
+      "remarks": [
+        "https://ghr.nlm.nih.gov/condition/cystic-fibrosis#statistics",
+        "",
+        "The frequency dropdown shows statistics about fibrosis prevalence by race."
+      ]
+    },
+    "Cystic_Fibrosis": {
+      "type": "ConditionOnset",
+      "target_encounter": "Fibrosis_Screening",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 190905008,
+          "display": "Cystic Fibrosis"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Male_Infertility",
+              "distribution": 0.98
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Female_Infertility",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "chronic_cough"
+        }
+      ]
+    },
+    "Age <1": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "distributed_transition": [
+        {
+          "transition": "symptoms_dont_improve",
+          "distribution": 0.82
+        },
+        {
+          "transition": "Meconium Ileus",
+          "distribution": 0.18
+        }
+      ]
+    },
+    "Age 1": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "symptoms_dont_improve"
+    },
+    "Ages_2_15": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 15,
+        "unit": "years"
+      },
+      "direct_transition": "symptoms_dont_improve"
+    },
+    "16_plus": {
+      "type": "Delay",
+      "range": {
+        "low": 16,
+        "high": 50,
+        "unit": "years"
+      },
+      "direct_transition": "symptoms_dont_improve"
+    },
+    "Fibrosis_Screening": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 67799006,
+          "display": "Diagnosis of cystic fibrosis using sweat test and gene test"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Neonatal_screening",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Age <1"
+          }
+        },
+        {
+          "transition": "Sweat_Test"
+        }
+      ],
+      "remarks": [
+        "https://www.cff.org/What-is-CF/Testing/"
+      ]
+    },
+    "Sweat_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 86964003,
+          "display": "Sweat Test"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 2,
+        "unit": "hours"
+      },
+      "direct_transition": "Gene_mutation_test",
+      "remarks": [
+        "Salty sweat indicates CF",
+        "https://www.cff.org/What-is-CF/Testing/Sweat-Test/"
+      ]
+    },
+    "Gene_mutation_test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 444260001,
+          "display": "20 Gene mutation test"
+        }
+      ],
+      "duration": {
+        "low": 0.5,
+        "high": 1,
+        "unit": "hours"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Prescribe_Mucus_Thinner",
+          "distribution": 0.96
+        },
+        {
+          "transition": "Set_Gene_Mutation",
+          "distribution": 0.04
+        }
+      ],
+      "remarks": [
+        "CF is a genetic disease",
+        "https://www.cff.org/What-is-CF/Testing/",
+        ""
+      ]
+    },
+    "End_Screening": {
+      "type": "EncounterEnd",
+      "direct_transition": "Life_With_Cystic_Fibrosis"
+    },
+    "Set_Gene_Mutation": {
+      "type": "SetAttribute",
+      "attribute": "G155D Mutation",
+      "direct_transition": "Prescribe_Ivacaftor",
+      "value": true,
+      "remarks": [
+        "Around 4% of CF patients have a gene mutation that causes the disease but can be treated with a different drug."
+      ]
+    },
+    "chronic_cough": {
+      "type": "Symptom",
+      "symptom": "Chronic Cough",
+      "cause": "",
+      "direct_transition": "Salty_Skin",
+      "range": {
+        "low": 50,
+        "high": 100
+      }
+    },
+    "Meconium Ileus": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Fibrosis_Screening",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 206523001,
+          "display": "Meconium Ileus"
+        }
+      ],
+      "direct_transition": "Fibrosis_Screening",
+      "remarks": [
+        "http://www.hopkinscf.org/what-is-cf/diagnosis/presentations/meconium-illeus/"
+      ]
+    },
+    "Enema": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385186005,
+          "display": "Enema"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 2,
+        "unit": "hours"
+      },
+      "direct_transition": "Meconium_Ileus_Resolved",
+      "remarks": [
+        "http://www.seattlechildrens.org/medical-conditions/digestive-gastrointestinal-conditions/meconium-ileus/"
+      ]
+    },
+    "Male_Infertility": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Fibrosis_Screening",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 427089005,
+          "display": "Male Infertility"
+        }
+      ],
+      "direct_transition": "chronic_cough"
+    },
+    "Female_Infertility": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Fibrosis_Screening",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 707577004,
+          "display": "Female Infertility"
+        }
+      ],
+      "direct_transition": "chronic_cough",
+      "remarks": [
+        "https://thorax.bmj.com/content/56/8/649"
+      ]
+    },
+    "Neonatal_screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 60151004,
+          "display": "Neonatal Screening"
+        }
+      ],
+      "duration": {
+        "low": 12,
+        "high": 24,
+        "unit": "hours"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Enema",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Meconium Ileus"
+          }
+        },
+        {
+          "transition": "Sweat_Test"
+        }
+      ],
+      "remarks": [
+        "https://www.cff.org/What-is-CF/Testing/Newborn-Screening-for-CF/"
+      ]
+    },
+    "symptoms_dont_improve": {
+      "type": "Delay",
+      "direct_transition": "Fibrosis_Screening",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      }
+    },
+    "Meconium_Ileus_Resolved": {
+      "type": "ConditionEnd",
+      "direct_transition": "Sweat_Test",
+      "condition_onset": "Meconium_Ileus"
+    },
+    "CF_CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "End_Screening",
+      "reason": "Cystic_Fibrosis",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 710971000,
+          "display": "Airway Clearance"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 56251003,
+          "display": "Nebulizer Therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 392020005,
+          "display": "PICC care"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 226029000,
+          "display": "Exercise Therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 386373004,
+          "display": "Nutrition Plan"
+        }
+      ],
+      "remarks": [
+        "A CF careplan is characterized here:",
+        "",
+        "https://www.cff.org/Life-With-CF/Treatments-and-Therapies/Treatment-Plan/Managing-Your-Treatment-Plan/"
+      ]
+    },
+    "Pancreatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 210856,
+          "display": "Pancreatin 4X 600 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "CF_CarePlan",
+      "reason": "Cystic_Fibrosis",
+      "remarks": [
+        "https://www.cff.org/Life-With-CF/Daily-Life/Fitness-and-Nutrition/Nutrition/Taking-Care-of-Your-Digestive-System/Enzymes/",
+        "",
+        "\"Between 85 and 90% of CF patients have pancreatic insufficiency."
+      ]
+    },
+    "Life_With_Cystic_Fibrosis": {
+      "type": "Delay",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 30,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "startDiseaseChain",
+              "distribution": 0.982
+            },
+            {
+              "transition": "patient_dies",
+              "distribution": 0.013
+            },
+            {
+              "transition": "patient_lives",
+              "distribution": 0.005
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 30,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "patient_dies",
+              "distribution": 0.035
+            },
+            {
+              "transition": "startDiseaseChain",
+              "distribution": 0.935
+            },
+            {
+              "transition": "patient_lives",
+              "distribution": 0.03
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_transplant",
+            "operator": "==",
+            "value": "denied"
+          },
+          "distributions": [
+            {
+              "distribution": 0.049,
+              "transition": "patient_dies"
+            },
+            {
+              "distribution": 0.931,
+              "transition": "startDiseaseChain"
+            },
+            {
+              "distribution": 0.02,
+              "transition": "patient_lives"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_transplant",
+            "operator": "==",
+            "value": "accepted"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0204,
+              "transition": "patient_dies"
+            },
+            {
+              "distribution": 0.9696,
+              "transition": "startDiseaseChain"
+            },
+            {
+              "distribution": 0.01,
+              "transition": "patient_lives"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 20,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.021,
+              "transition": "patient_dies"
+            },
+            {
+              "distribution": 0.969,
+              "transition": "startDiseaseChain"
+            },
+            {
+              "distribution": 0.01,
+              "transition": "patient_lives"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 20,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "distribution": 0.996,
+              "transition": "startDiseaseChain"
+            },
+            {
+              "distribution": 0.002,
+              "transition": "patient_dies"
+            },
+            {
+              "distribution": 0.002,
+              "transition": "patient_lives"
+            }
+          ]
+        }
+      ],
+      "range": {
+        "low": 12,
+        "high": 14,
+        "unit": "weeks"
+      }
+    },
+    "Getting_Diagnosed": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Age <1",
+          "distribution": 0.657
+        },
+        {
+          "transition": "Age 1",
+          "distribution": 0.066
+        },
+        {
+          "transition": "Ages_2_15",
+          "distribution": 0.208
+        },
+        {
+          "transition": "16_plus",
+          "distribution": 0.068
+        }
+      ],
+      "remarks": [
+        "https://www.cff.org/uploadedImages/Content/What_is_CF/age-at-diagnosis.jpg"
+      ]
+    },
+    "Prescribe_Ivacaftor": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1655927,
+          "display": "Ivacaftor"
+        }
+      ],
+      "direct_transition": "Prescribe_Mucus_Thinner",
+      "reason": "Cystic Fibrosis",
+      "remarks": [
+        "https://www.cff.org/About-Us/Media-Center/Press-Releases/The-Cystic-Fibrosis-Foundation-Applauds-FDA-Approval-of-Kalydeco/"
+      ]
+    },
+    "Prescribe_Mucus_Thinner": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 205532,
+          "display": "Pulmozyme (Dornase Alfa)"
+        }
+      ],
+      "reason": "Cystic_Fibrosis",
+      "distributed_transition": [
+        {
+          "transition": "Pancreatin",
+          "distribution": 0.9
+        },
+        {
+          "transition": "CF_CarePlan",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Salty_Skin": {
+      "type": "Symptom",
+      "symptom": "Salty_Skin",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Getting_Diagnosed"
+    },
+    "Quarterly_Checkup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for check up"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "GlucoseTest",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Not",
+                    "condition": {
+                      "condition_type": "PriorState",
+                      "name": "GlucoseTest",
+                      "within": {
+                        "quantity": 1,
+                        "unit": "years"
+                      }
+                    }
+                  },
+                  {
+                    "condition_type": "Age",
+                    "operator": ">=",
+                    "quantity": 10,
+                    "unit": "years"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "PriorState",
+                  "name": "DiabetesCarePlan"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Chest_XRay",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "PriorState",
+              "name": "Chest_XRay",
+              "within": {
+                "quantity": 2,
+                "unit": "years"
+              }
+            }
+          }
+        },
+        {
+          "transition": "Oropharyngeal_Culture"
+        }
+      ],
+      "remarks": [
+        "http://pediatrics.aappublications.org/content/early/2016/03/22/peds.2015-1784",
+        "",
+        "Overview of the standard of care per quarter"
+      ]
+    },
+    "Chest_XRay": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399208008,
+          "display": "Chest X-ray"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 2,
+        "unit": "hours"
+      },
+      "conditional_transition": [
+        {
+          "transition": "GlucoseTest",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "PriorState",
+              "name": "DiabetesCarePlan"
+            }
+          }
+        }
+      ],
+      "remarks": [
+        "Chest X-rays should be done at least every other year, as shown in the link at \"Quarterly Checkup\""
+      ]
+    },
+    "Oropharyngeal_Culture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 104173009,
+          "display": "Sputum Culture"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_1"
+          },
+          "distributions": [
+            {
+              "transition": "Prescribe_Ciprofloxacin",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Pulmonary_Function_Test",
+              "distribution": 0.75
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Prescribe_Vancomycin",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Pulmonary_Function_Test",
+              "distribution": 0.75
+            }
+          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_2"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Pulmonary_Function_Test",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Develop_Diabetes": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Quarterly_Checkup",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 427089005,
+          "display": "Diabetes from Cystic Fibrosis"
+        }
+      ],
+      "direct_transition": "diatbetesState",
+      "remarks": [
+        "Development of diabetes with cystic fibrosis is relatively common.  ",
+        "",
+        "https://www.ncbi.nlm.nih.gov/pubmed/19542209",
+        ""
+      ]
+    },
+    "GlucoseTest": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 113076002,
+          "display": "Oral Glucose Tolerance Test"
+        }
+      ],
+      "duration": {
+        "low": 120,
+        "high": 150,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "DiabetesCarePlan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetes",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Oropharyngeal_Culture"
+        }
+      ],
+      "remarks": [
+        "https://www.cff.org/Life-With-CF/Daily-Life/Cystic-Fibrosis-related-Diabetes/Managing-CFRD.pdf",
+        "\"The glucose test is recommended to be done at least annually\""
+      ]
+    },
+    "diatbetesState": {
+      "type": "SetAttribute",
+      "attribute": "diabetes",
+      "direct_transition": "diseaseSupplier",
+      "value": true
+    },
+    "DiabetesCarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 703040004,
+          "display": "Agreeing on diabetes care plan"
+        }
+      ],
+      "direct_transition": "Oropharyngeal_Culture",
+      "reason": "Develop_Diabetes",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308113006,
+          "display": "Self Monitoring of Blood Glucose"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225302006,
+          "display": "Insulin Therapy"
+        }
+      ]
+    },
+    "EndCheckup": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "PriorState",
+              "name": "Lung_Transplant"
+            }
+          },
+          "distributions": [
+            {
+              "transition": "Lung_Transplant_Considered",
+              "distribution": 0.007
+            },
+            {
+              "transition": "Life_With_Cystic_Fibrosis",
+              "distribution": 0.993
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Life_With_Cystic_Fibrosis",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Lung_Transplant_Considered": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Lung_Transplant_Wait",
+          "distribution": 0.69
+        },
+        {
+          "transition": "Lung_Transplant_Denied",
+          "distribution": 0.31
+        }
+      ],
+      "remarks": [
+        "https://www.sciencedirect.com/science/article/pii/S1569199315002106?viewFullText=true#f0015",
+        "Values for percent denied/accepted and disease related to lung transplant were taken from the link above.  The statistics are from the French registry so it might be a bit off from US stats"
+      ]
+    },
+    "Lung_Transplant_Denied": {
+      "type": "SetAttribute",
+      "attribute": "lung_transplant",
+      "direct_transition": "Life_With_Cystic_Fibrosis",
+      "value": "denied"
+    },
+    "Lung_Transplant": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232657004,
+          "display": "Lung Transplant"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 5,
+        "unit": "days"
+      },
+      "direct_transition": "Lung_Transplant_End",
+      "reason": "Cystic_Fibrosis"
+    },
+    "setTransplant": {
+      "type": "SetAttribute",
+      "attribute": "lung_transplant",
+      "direct_transition": "Life_With_Cystic_Fibrosis",
+      "value": "accepted"
+    },
+    "Take_Blood_Sample": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 82078001,
+          "display": "Take blood sample"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "EndCheckup"
+    },
+    "Pulmonary_Function_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23426006,
+          "display": "Pulmonary Function Test"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Take_Blood_Sample"
+    },
+    "startDiseaseChain": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 0,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 8,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Diabetes_Guard",
+              "distribution": 0.005
+            },
+            {
+              "transition": "diseaseSupplier",
+              "distribution": 0.995
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 8,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Diabetes_Guard",
+              "distribution": 0.052
+            },
+            {
+              "transition": "diseaseSupplier",
+              "distribution": 0.948
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Diabetes_Guard",
+              "distribution": 0.067
+            },
+            {
+              "transition": "diseaseSupplier",
+              "distribution": 0.933
+            }
+          ]
+        }
+      ]
+    },
+    "diseaseSupplier": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "no_double_infection",
+          "distribution": 0.0058
+        },
+        {
+          "transition": "no_double_infection_2",
+          "distribution": 0.0032
+        },
+        {
+          "transition": "Quarterly_Checkup",
+          "distribution": 0.991
+        }
+      ],
+      "remarks": [
+        "https://www.cff.org/Research/Researcher-Resources/Patient-Registry/2017-Cystic-Fibrosis-Foundation-Patient-Registry-Highlights.pdf",
+        "Statistics for infections are taken from the 2017 registry",
+        ""
+      ]
+    },
+    "Develop_Infection_1": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Quarterly_Checkup",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 11218009,
+          "display": "Infection caused by Pseudomonas aeruginosa"
+        }
+      ],
+      "direct_transition": "Quarterly_Checkup"
+    },
+    "Develop_Infection_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Quarterly_Checkup",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 406602003,
+          "display": "Infection caused by Staphylococcus aureus"
+        }
+      ],
+      "direct_transition": "Quarterly_Checkup"
+    },
+    "Prescribe_Ciprofloxacin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 998755,
+          "display": "Ciprofloxacin 10MG/ML"
+        }
+      ],
+      "direct_transition": "Pulmonary_Function_Test",
+      "reason": "Develop_Infection_1",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pubmed/2941289"
+      ]
+    },
+    "Prescribe_Vancomycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1160499,
+          "display": "IV antibiotic Vancomycin"
+        }
+      ],
+      "direct_transition": "Pulmonary_Function_Test",
+      "remarks": [
+        "https://www.mayoclinic.org/diseases-conditions/staph-infections/diagnosis-treatment/drc-20356227"
+      ],
+      "reason": "Develop_Infection_2"
+    },
+    "patient_dies": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Develop_Infection_1"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Prescribe_Ciprofloxacin",
+                "since": "Develop_Infection_1",
+                "within": {
+                  "quantity": 6,
+                  "unit": "months"
+                }
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Sepsis_Of_Paeruginosa",
+              "distribution": 0.4
+            },
+            {
+              "transition": "patient_lives",
+              "distribution": 0.6
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Develop_Infection_2"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Prescribe_Vancomycin",
+                "since": "Develop_Infection_2",
+                "within": {
+                  "quantity": 6,
+                  "unit": "months"
+                }
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Sepsis_of_Staphylococcus_aureus",
+              "distribution": 0.4
+            },
+            {
+              "transition": "patient_lives",
+              "distribution": 0.6
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_1"
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "Sepsis_Of_Paeruginosa"
+            },
+            {
+              "transition": "pulmonary_exacerbation",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_2"
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "Sepsis_of_Staphylococcus_aureus"
+            },
+            {
+              "transition": "pulmonary_exacerbation",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "pulmonary_exacerbation"
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "https://www.sciencedirect.com/science/article/pii/S1569199315002106?viewFullText=true#f0015"
+      ]
+    },
+    "Sepsis_Of_Paeruginosa": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "CF_Complication",
+      "target_encounter": "Emergency_Room",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448813005,
+          "display": "Sepsis caused by Pseudomonas (disorder)"
+        }
+      ],
+      "direct_transition": "low_blood_pressure"
+    },
+    "Emergency_Room": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency room admission"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Antibiotic_Therapy",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Sepsis_Of_Paeruginosa",
+            "within": {
+              "quantity": 1,
+              "unit": "days"
+            }
+          }
+        },
+        {
+          "transition": "Antibiotic_Therapy",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Sepsis_of_Staphylococcus_aureus",
+            "within": {
+              "quantity": 1,
+              "unit": "days"
+            }
+          }
+        },
+        {
+          "transition": "Tracheostomy",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "pulmonary_infective_exacerbation",
+            "within": {
+              "quantity": 1,
+              "unit": "days"
+            }
+          }
+        }
+      ],
+      "reason": "CF_Complication",
+      "remarks": [
+        "For Sepsis",
+        "https://www.mayoclinic.org/diseases-conditions/sepsis/diagnosis-treatment/drc-20351219",
+        "For Respiratory Failure",
+        "https://emedicine.medscape.com/article/167981-treatment"
+      ]
+    },
+    "Intravenous_Infusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 14152002,
+          "display": "Intravenous infusion (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "conditional_transition": [
+        {
+          "transition": "death",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "patient_dies"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Sepsis_Of_Paeruginosa"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "death_2",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "patient_dies"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Sepsis_of_Staphylococcus_aureus"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Release_From_Hospital"
+        }
+      ]
+    },
+    "Antibiotic_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 281790008,
+          "display": "Intravenous antibiotic therapy"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Intravenous_Infusion"
+    },
+    "death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "condition_onset": "Sepsis_Of_Paeruginosa",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448813005,
+          "display": "Sepsis of Pseudomonas"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "days"
+      }
+    },
+    "Sepsis_of_Staphylococcus_aureus": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "CF_Complication",
+      "target_encounter": "Emergency_Room",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448417001,
+          "display": "Sepsis caused by Staphylococcus aureus"
+        }
+      ],
+      "direct_transition": "low_blood_pressure"
+    },
+    "fever": {
+      "type": "Symptom",
+      "symptom": "fever",
+      "cause": "Sepsis_Of_Paeruginosa",
+      "direct_transition": "Emergency_Room",
+      "range": {
+        "low": 70,
+        "high": 100
+      }
+    },
+    "difficulty_breathing": {
+      "type": "Symptom",
+      "symptom": "difficulty breathing",
+      "cause": "Sepsis_of_Paeruginosa",
+      "direct_transition": "fever",
+      "range": {
+        "low": 60,
+        "high": 90
+      }
+    },
+    "low_blood_pressure": {
+      "type": "Symptom",
+      "symptom": "low blood pressure",
+      "cause": "",
+      "direct_transition": "difficulty_breathing",
+      "range": {
+        "low": 40,
+        "high": 80
+      }
+    },
+    "death_2": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "condition_onset": "Sepsis_of_Staphylococcus_aureus",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448813005,
+          "display": "Sepsis caused by Staphylococcus aureus"
+        }
+      ]
+    },
+    "Tracheostomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48387007,
+          "display": "Incision of trachea (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Oxygen_Therapy"
+    },
+    "wheezing": {
+      "type": "Symptom",
+      "symptom": "wheezing",
+      "cause": "",
+      "direct_transition": "Emergency_Room",
+      "range": {
+        "low": 70,
+        "high": 100
+      }
+    },
+    "death_3": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65710008,
+          "display": "Death due to acute respiratory failure"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "days"
+      }
+    },
+    "Oxygen_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65710008,
+          "display": "Oxygen Therapy"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "death_3",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "patient_dies"
+          }
+        },
+        {
+          "transition": "Release_From_Hospital"
+        }
+      ]
+    },
+    "Release_From_Hospital": {
+      "type": "EncounterEnd",
+      "direct_transition": "Recovery"
+    },
+    "patient_lives": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Sepsis_Of_Paeruginosa",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_1"
+          }
+        },
+        {
+          "transition": "Sepsis_of_Staphylococcus_aureus",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_2"
+          }
+        },
+        {
+          "transition": "pulmonary_exacerbation"
+        }
+      ]
+    },
+    "pulmonary_exacerbation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "CF_Complication",
+      "target_encounter": "Emergency_Room",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65710008,
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "direct_transition": "wheezing"
+    },
+    "Diabetes_Guard": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "diseaseSupplier",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Diabetes"
+          }
+        },
+        {
+          "transition": "Develop_Diabetes"
+        }
+      ]
+    },
+    "no_double_infection": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Quarterly_Checkup",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_1"
+          }
+        },
+        {
+          "transition": "Develop_Infection_1"
+        }
+      ]
+    },
+    "no_double_infection_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Quarterly_Checkup",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Develop_Infection_2"
+          }
+        },
+        {
+          "transition": "Develop_Infection_2"
+        }
+      ]
+    },
+    "Lung_Transplant_Wait": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 16602611000119108,
+          "display": "Awaiting transplantation of lung (situation)"
+        }
+      ],
+      "direct_transition": "Lung_Transplant"
+    },
+    "Lung_Transplant_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "setTransplant"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "direct_transition": "startDiseaseChain",
+      "range": {
+        "low": 6,
+        "high": 14,
+        "unit": "weeks"
+      }
+    }
+  }
+}
