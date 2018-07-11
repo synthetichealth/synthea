@@ -441,9 +441,12 @@ public class StateTest {
 
     HealthRecord.Observation codeObservation = person.record.encounters.get(0).observations.get(1);
     assertEquals("procedure", codeObservation.category);
+    //assertEquals("LOINC", codeObservation.value.system);
+    //assertEquals("25428-4", codeObservation.value.code);
+    //assertEquals("Glucose [Presence] in Urine by Test strip", codeObservation.value.system);
     
     Code testCode = new Code("LOINC", "25428-4", "Glucose [Presence] in Urine by Test strip");
-    assertEquals(testCode, codeObservation.value);
+    assertEquals(testCode.toString(), codeObservation.value.toString());
 
     Code codeObsCode = codeObservation.codes.get(0);
     assertEquals("24356-8", codeObsCode.code);

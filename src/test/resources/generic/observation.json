@@ -51,7 +51,7 @@
             "remarks": [
                 "This is a test observation"
             ],
-            "valueCode" : {
+            "value_code" : {
                 "system": "LOINC",
                 "code": "25428-4",
                 "display": "Glucose [Presence] in Urine by Test strip"
