@@ -57,6 +57,9 @@ dependencies {
   compile "org.slf4j:slf4j-api:1.6.1"
   compile "org.slf4j:slf4j-nop:1.6.1"
 
+  compile 'com.squareup.okhttp3:okhttp:3.10.0'
+  implementation 'com.squareup.okio:okio:1.14.1'
+
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
   testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
