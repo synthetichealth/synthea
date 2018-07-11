@@ -1104,6 +1104,7 @@ public abstract class State implements Cloneable {
     private List<Code> codes;
     private Range<Double> range;
     private Exact<Object> exact;
+    private Code valueCode;
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
@@ -1115,6 +1116,7 @@ public abstract class State implements Cloneable {
       clone.codes = codes;
       clone.range = range;
       clone.exact = exact;
+      clone.valueCode = valueCode;
       clone.attribute = attribute;
       clone.vitalSign = vitalSign;
       clone.category = category;
@@ -1134,6 +1136,8 @@ public abstract class State implements Cloneable {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
         value = person.getVitalSign(vitalSign);
+      } else if (valueCode != null) {
+        value = valueCode;
       }
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       observation.name = this.name;
