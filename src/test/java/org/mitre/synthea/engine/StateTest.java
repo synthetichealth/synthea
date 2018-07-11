@@ -345,7 +345,7 @@ public class StateTest {
     // In this case, the record shouldn't be called at all
     person.record = Mockito.mock(HealthRecord.class);
 
-    Module module = getModule("vitalsign_observation.json");
+    Module module = getModule("observation.json");
 
     State vitalsign = module.getState("VitalSign").clone();
     assertTrue(vitalsign.process(person, time));
@@ -439,7 +439,7 @@ public class StateTest {
 
   @Test
   public void observation() {
-    Module module = getModule("vitalsign_observation.json");
+    Module module = getModule("observation.json");
 
     State vitalsign = module.getState("VitalSign");
     assertTrue(vitalsign.process(person, time));
@@ -449,17 +449,33 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
-    State obs = module.getState("SomeObservation");
-    assertTrue(obs.process(person, time));
+    State vitalObs = module.getState("VitalSignObservation");
+    assertTrue(vitalObs.process(person, time));
 
-    HealthRecord.Observation observation = person.record.encounters.get(0).observations.get(0);
-    assertEquals(120.0, observation.value);
-    assertEquals("vital-signs", observation.category);
-    assertEquals("mmHg", observation.unit);
+    State codeObs = module.getState("CodeObservation");
+    assertTrue(codeObs.process(person, time));
 
-    Code code = observation.codes.get(0);
-    assertEquals("8480-6", code.code);
-    assertEquals("Systolic Blood Pressure", code.display);
+    HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
+    assertEquals(120.0, vitalObservation.value);
+    assertEquals("vital-signs", vitalObservation.category);
+    assertEquals("mmHg", vitalObservation.unit);
+
+    Code vitalObsCode = vitalObservation.codes.get(0);
+    assertEquals("8480-6", vitalObsCode.code);
+    assertEquals("Systolic Blood Pressure", vitalObsCode.display);
+
+    HealthRecord.Observation codeObservation = person.record.encounters.get(0).observations.get(1);
+    assertEquals("procedure", codeObservation.category);
+    //assertEquals("LOINC", codeObservation.value.system);
+    //assertEquals("25428-4", codeObservation.value.code);
+    //assertEquals("Glucose [Presence] in Urine by Test strip", codeObservation.value.system);
+    
+    Code testCode = new Code("LOINC", "25428-4", "Glucose [Presence] in Urine by Test strip");
+    assertEquals(testCode.toString(), codeObservation.value.toString());
+
+    Code codeObsCode = codeObservation.codes.get(0);
+    assertEquals("24356-8", codeObsCode.code);
+    assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
   }
 
   @Test
