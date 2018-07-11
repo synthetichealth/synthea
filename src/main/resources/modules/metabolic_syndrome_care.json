@@ -1659,7 +1659,7 @@
     },
     "Consider_Procedures": {
       "type": "Simple",
-      "direct_transition": "Potential_Dialysis"
+      "direct_transition": "New_State"
     },
     "Potential_Dialysis": {
       "type": "Simple",
@@ -2534,7 +2534,7 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Dialysis"
+      "direct_transition": "Record_MetabolicPanel_6"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -3170,6 +3170,145 @@
         }
       ],
       "direct_transition": "Check_Retinopathy"
+    },
+    "Record_MetabolicPanel_6": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24321-2",
+          "display": "Basic Metabolic 2000 Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2339-0",
+              "display": "Glucose"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea Nitrogen"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "38483-4",
+              "display": "Creatinine"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 1.4,
+            "high": 1.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "49765-1",
+              "display": "Calcium"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2947-0",
+              "display": "Sodium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6298-4",
+              "display": "Potassium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2069-3",
+              "display": "Chloride"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20565-8",
+              "display": "Carbon Dioxide"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+            }
+          ],
+          "range": {
+            "low": 90,
+            "high": 150
+          }
+        }
+      ],
+      "direct_transition": "Dialysis"
+    },
+    "New_State": {
+      "type": "EncounterEnd",
+      "direct_transition": "dialysis delay"
+    },
+    "dialysis delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Potential_Dialysis"
     }
   }
 }
