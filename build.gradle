@@ -57,6 +57,7 @@ dependencies {
   compile "org.slf4j:slf4j-api:1.6.1"
   compile "org.slf4j:slf4j-nop:1.6.1"
 
+  // HTTP for VSAC
   compile 'com.squareup.okhttp3:okhttp:3.10.0'
   implementation 'com.squareup.okio:okio:1.14.1'
 
