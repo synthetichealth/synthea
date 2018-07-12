@@ -184,6 +184,7 @@ public abstract class Logic {
             break;
           }
         }
+        
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
           observation = 

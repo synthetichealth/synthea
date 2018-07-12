@@ -134,7 +134,7 @@
     "operator" : ">",
     "value" : 22
   },
-  "ObservationEqCodeValue" : {
+  "ObservationEqValueCode" : {
     "condition_type" : "Observation",
     "codes" : [{
       "system" : "LOINC",
