@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
   /**
@@ -110,6 +111,8 @@ public class Utilities {
       return compare((Boolean) lhs, (Boolean) rhs, operator);
     } else if (lhs instanceof String && rhs instanceof String) {
       return compare((String) lhs, (String) rhs, operator);
+    } else if (lhs instanceof Code && rhs instanceof Code) {
+      return compare((Code) lhs, (Code) rhs, operator);
     } else {
       throw new RuntimeException(String.format("Cannot compare %s to %s.\n",
           lhs.getClass().getName(), rhs.getClass().getName()));
@@ -206,6 +209,18 @@ public class Utilities {
         return lhs == null;
       case "is not nil":
         return lhs != null;
+      default:
+        System.err.format("Unsupported operator: %s\n", operator);
+        return false;
+    }
+  }
+
+  public static boolean compare(Code lhs, Code rhs, String operator) {
+    switch (operator) {
+      case "==":
+        return lhs.equals(rhs);
+      case "!=":
+        return !lhs.equals(rhs);
       default:
         System.err.format("Unsupported operator: %s\n", operator);
         return false;

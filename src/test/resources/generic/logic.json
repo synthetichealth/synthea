@@ -134,6 +134,20 @@
     "operator" : ">",
     "value" : 22
   },
+  "ObservationEqCodeValue" : {
+    "condition_type" : "Observation",
+    "codes" : [{
+      "system" : "LOINC",
+      "code" : "72107-6",
+      "display" : "Mini Mental State Examination"
+    }],
+    "operator" : "==",
+    "value_code" : {
+      "system" : "LOINC",
+      "code" : "72107-7",
+      "display" : "Some Observation Value"
+    }
+  },
   "hasDiabetesObservation" : {
     "condition_type" : "Observation",
     "referenced_by_attribute" : "Diabetes Test Performed",

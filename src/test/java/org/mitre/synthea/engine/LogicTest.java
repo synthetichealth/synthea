@@ -251,6 +251,22 @@ public class LogicTest {
     obs.codes.add(mmseCode);
     assertTrue(doTest("mmseObservationGt22"));
 
+    HealthRecord.Code valueCodeFalse = new HealthRecord.Code("LOINC", "72107-8",
+        "Other Observation Value");
+
+    Observation obsWithCode = person.record.observation(time, mmseCode.code, valueCodeFalse);
+    obsWithCode.codes.add(mmseCode);
+    assertFalse(doTest("ObservationEqCodeValue"));
+
+    person.record = new HealthRecord(person); // clear it out
+
+    HealthRecord.Code valueCodeTrue = new HealthRecord.Code("LOINC", "72107-7",
+        "Some Observation Value");
+
+    obsWithCode = person.record.observation(time, mmseCode.code, valueCodeTrue);
+    obsWithCode.codes.add(mmseCode);
+    assertTrue(doTest("ObservationEqCodeValue"));
+
     person.record = new HealthRecord(person); // clear it out
     assertFalse(doTest("hasDiabetesObservation"));
 
