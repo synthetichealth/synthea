@@ -28,6 +28,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -1402,7 +1403,36 @@ public class StateTest {
       modules.remove("submodules/medication_submodule");
     }
   }
-  
+
+  @Test
+  public void testSubmoduleDiagnosesAndEndingEncounters() {
+    Map<String, Module> modules =
+        Whitebox.<Map<String, Module>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module subModule = getModule("submodules/admission.json");
+    modules.put("submodules/admission", subModule);
+
+    try {
+      Module module = getModule("encounter_with_submodule.json");
+      while (!module.process(person, time)) {
+        time += Utilities.convertTime("years", 1);
+      }
+
+      assertEquals(12, person.history.size());
+      assertEquals(2, person.record.encounters.size());
+      assertEquals(1, person.record.encounters.get(0).conditions.size());
+      assertEquals(EncounterType.AMBULATORY.toString().toLowerCase(),
+          person.record.encounters.get(0).type);
+      assertEquals(EncounterType.INPATIENT.toString().toLowerCase(),
+          person.record.encounters.get(1).type);
+      // Fake code for condition in the submodule "admission"
+      assertTrue(person.record.conditionActive("5678"));
+    } finally {
+      // always clean these up, to ensure they don't get seen by any other tests
+      modules.remove("submodules/admission");
+    }
+  }
+
   @Test
   public void testDiagnosticReport() {
     Module module = getModule("observation_groups.json");
