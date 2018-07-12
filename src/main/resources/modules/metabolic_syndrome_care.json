@@ -1659,7 +1659,7 @@
     },
     "Consider_Procedures": {
       "type": "Simple",
-      "direct_transition": "New_State"
+      "direct_transition": "Potential_Dialysis"
     },
     "Potential_Dialysis": {
       "type": "Simple",
@@ -1671,7 +1671,7 @@
             "operator": ">=",
             "value": 4
           },
-          "transition": "Dialysis Encounter"
+          "transition": "End Wellness"
         },
         {
           "transition": "Potential_Amputation"
@@ -3298,17 +3298,17 @@
       ],
       "direct_transition": "Dialysis"
     },
-    "New_State": {
+    "End Wellness": {
       "type": "EncounterEnd",
-      "direct_transition": "dialysis delay"
+      "direct_transition": "dialysis_delay"
     },
-    "dialysis delay": {
+    "dialysis_delay": {
       "type": "Delay",
       "exact": {
         "quantity": 2,
         "unit": "weeks"
       },
-      "direct_transition": "Potential_Dialysis"
+      "direct_transition": "Dialysis Encounter"
     }
   }
 }
