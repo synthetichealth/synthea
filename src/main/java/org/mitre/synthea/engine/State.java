@@ -17,6 +17,7 @@ import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
+import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
@@ -338,6 +339,7 @@ public abstract class State implements Cloneable {
   public static class SetAttribute extends State {
     private String attribute;
     private Object value;
+    private String expression;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
@@ -358,11 +360,16 @@ public abstract class State implements Cloneable {
       SetAttribute clone = (SetAttribute) super.clone();
       clone.attribute = attribute;
       clone.value = value;
+      clone.expression = expression;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
+      if (expression != null) {
+        value = ExpressionProcessor.evaluate(expression, person, time);
+      }
+
       if (value != null) {
         person.attributes.put(attribute, value);
       } else if (person.attributes.containsKey(attribute)) {
