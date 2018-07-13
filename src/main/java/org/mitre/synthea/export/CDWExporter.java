@@ -79,6 +79,8 @@ public class CDWExporter {
   private FactTable topography = new FactTable();
   private FactTable institution = new FactTable();
   private FactTable loinc = new FactTable();
+  private FactTable cpt = new FactTable();
+  private FactTable cptModifier = new FactTable();
 
   /**
    * Writers for patient data.
@@ -132,6 +134,15 @@ public class CDWExporter {
   private FileWriter labpanel;
   private FileWriter patientlabchem;
   private FileWriter vprocedure;
+
+  /**
+   * Writers for procedure data.
+   */
+  private FileWriter surgeryProcedureDiagnosisCode;
+  private FileWriter surgeryPRE;
+  private FileWriter surgeryPrincipalAssociatedProcedure;
+  private FileWriter surgeryPrincipalCPTModifier;
+
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -189,6 +200,15 @@ public class CDWExporter {
       patientlabchem = openFileWriter(outputDirectory, "patientlabchem.csv");
       vprocedure = openFileWriter(outputDirectory, "vprocedure.csv");
 
+      // Procedure Data
+      surgeryProcedureDiagnosisCode = openFileWriter(outputDirectory,
+          "surgeryprocedurediagnosiscode.csv");
+      surgeryPRE = openFileWriter(outputDirectory, "surgerypre.csv");
+      surgeryPrincipalAssociatedProcedure = openFileWriter(outputDirectory,
+          "surgeryprincipalassociatedprocedure.csv");
+      surgeryPrincipalCPTModifier = openFileWriter(outputDirectory,
+          "surgeryprincipalcptmodifier.csv");
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -231,6 +251,8 @@ public class CDWExporter {
     topography.setHeader("TopographySID,Topography");
     institution.setHeader("InstitutionSID,Sta3n,InstitutionName,InstitutionCode");
     loinc.setHeader("LOINCSID,LOINC,Component");
+    cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
+    cptModifier.setHeader("CPTModifierSID,CPTModifierName,CPTModifierCode");
 
     // Patient Tables
     lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
@@ -323,6 +345,20 @@ public class CDWExporter {
     patientlabchem.write(NEWLINE);
     vprocedure.write("VProcedureSID,PatientSID,VisitSID,CPRSOrderSID");
     vprocedure.write(NEWLINE);
+
+    // Procedure Tables
+    surgeryProcedureDiagnosisCode.write("SurgeryProcedureDiagnosisCodeSID,SurgerySID,Sta3n,"
+        + "PrincipalCPTSID,PatientSID,SurgeryDateTime,PrincipalPostOpICD9SID,"
+        + "PrincipalPostOpICD10SID,CodingCompleteFlag");
+    surgeryProcedureDiagnosisCode.write(NEWLINE);
+    surgeryPRE.write("SurgerySID,VisitSID,NonORLocationSID,SurgeryCancelReasonSID,CPRSOrderSID");
+    surgeryPRE.write(NEWLINE);
+    surgeryPrincipalAssociatedProcedure.write("SurgeryPrincipalAssociatedProcedureSID,"
+        + "SurgeryProcedureDiagnosisCodeSID,PatientSID,OtherProcedureCPTSID");
+    surgeryPrincipalAssociatedProcedure.write(NEWLINE);
+    surgeryPrincipalCPTModifier.write("SurgeryPrincipalCPTModifierSID,"
+        + "SurgeryPrincipalCPTModifierSID,CPTModifierSID,PatientSID");
+    surgeryPrincipalCPTModifier.write(NEWLINE);
   }
 
   /**
@@ -402,6 +438,8 @@ public class CDWExporter {
     topography.setNextId(id);
     institution.setNextId(id);
     loinc.setNextId(id);
+    cpt.setNextId(id);
+    cptModifier.setNextId(id);
   }
 
   /**
@@ -449,7 +487,7 @@ public class CDWExporter {
       }
 
       for (Procedure procedure : encounter.procedures) {
-        procedure(personID, encounterID, procedure);
+        procedure(personID, encounterID, encounter, procedure, primarySta3n);
       }
 
       for (Medication medication : encounter.medications) {
@@ -523,6 +561,8 @@ public class CDWExporter {
       topography.write(openFileWriter(outputDirectory, "topography.csv"));
       institution.write(openFileWriter(outputDirectory, "institution.csv"));
       loinc.write(openFileWriter(outputDirectory, "loinc.csv"));
+      cpt.write(openFileWriter(outputDirectory, "cpt.csv"));
+      cptModifier.write(openFileWriter(outputDirectory, "cptmodifier.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -1188,39 +1228,95 @@ public class CDWExporter {
   }
 
   /**
-   * Write a single Procedure to procedures.csv.
+   * Write a Procedure to the tables.
    *
    * @param personID ID of the person on whom the procedure was performed.
    * @param encounterID ID of the encounter where the procedure was performed
+   * @param encounter The encounter
    * @param procedure The procedure itself
+   * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
-  private void procedure(int personID, int encounterID,
-      Procedure procedure) throws IOException {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+  private void procedure(int personID, int encounterID, Encounter encounter,
+      Procedure procedure, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(procedure.start)).append(',');
-    s.append(personID).append(',');
-    s.append(encounterID).append(',');
-
-    Code coding = procedure.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display)).append(',');
-
-    s.append(String.format("%.2f", procedure.cost())).append(',');
-
-    if (procedure.reasons.isEmpty()) {
-      s.append(','); // reason code & desc
-    } else {
-      Code reason = procedure.reasons.get(0);
-      s.append(reason.code).append(',');
-      s.append(clean(reason.display));
+    Integer sta3nValue = primarySta3n;
+    Integer providerSID = (sidStart / 10_000);
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
 
+    // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
+    //   + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+    //   + "PackageReference");
+    int cprsSID = getNextKey(cprsorder);
+    s.setLength(0);
+    s.append(cprsSID).append(',');
+    s.append(sta3nValue).append(',');
+    s.append(personID).append(',');
+    s.append(providerSID).append(","); // OrderStaffSID
+    s.append(providerSID).append(","); // EnteredByStaffSID
+    s.append(iso8601Timestamp(procedure.start)).append(',');
+    int orderStatusSID = orderStatus.addFact("COMPLETED", "COMPLETED");
+    s.append(orderStatusSID).append(',');
+    int vistaPackageSID = vistaPackage.addFact("PROCEDURE", "PROCEDURE");
+    s.append(vistaPackageSID).append(',');
+    s.append(iso8601Timestamp(procedure.start)).append(',');
+    if (procedure.stop != 0L) {
+      s.append(iso8601Timestamp(procedure.stop));
+    }
+    s.append(',');
+    s.append("PROCEDURE");
     s.append(NEWLINE);
-    //write(s.toString(), procedures);
+    write(s.toString(), cprsorder);
+
+    //surgeryPRE.write("SurgerySID,VisitSID,NonORLocationSID,SurgeryCancelReasonSID,CPRSOrderSID")
+    int surgerySID = getNextKey(surgeryPRE);
+    s.setLength(0);
+    s.append(surgerySID).append(',');
+    s.append(encounterID).append(',');
+    s.append(sta3nValue).append(',');
+    s.append(','); // SurgeryCancelReasonSID
+    s.append(cprsSID);
+    s.append(NEWLINE);
+    write(s.toString(), surgeryPRE);
+
+    Code code = procedure.codes.get(0);
+    //Code reason = procedure.reasons.get(0);
+    //cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
+    int cptSID = cpt.addFact(code.code, "XXXXX," + clean(code.display) + "," + clean(code.display));
+
+    // TODO Remove?
+    //cptModifier.setHeader("CPTModifierSID,CPTModifierName,CPTModifierCode");
+
+    //surgeryProcedureDiagnosisCode.write("SurgeryProcedureDiagnosisCodeSID,SurgerySID,Sta3n,"
+    //    + "PrincipalCPTSID,PatientSID,SurgeryDateTime,PrincipalPostOpICD9SID,"
+    //    + "PrincipalPostOpICD10SID,CodingCompleteFlag");
+    int spdcSID = getNextKey(surgeryProcedureDiagnosisCode);
+    s.setLength(0);
+    s.append(spdcSID).append(',');
+    s.append(surgerySID).append(',');
+    s.append(sta3nValue).append(',');
+    s.append(cptSID).append(',');
+    s.append(personID).append(',');
+    s.append(iso8601Timestamp(procedure.start)).append(',');
+    s.append(','); // PrincipalPostOpICD9SID
+    s.append(','); // PrincipalPostOpICD10SID
+    s.append('1'); // CodingCompleteFlag
+    s.append(NEWLINE);
+    write(s.toString(), surgeryProcedureDiagnosisCode);
+
+    // TODO Remove?
+    //surgeryPrincipalAssociatedProcedure.write("SurgeryPrincipalAssociatedProcedureSID,"
+    //    + "SurgeryProcedureDiagnosisCodeSID,PatientSID,OtherProcedureCPTSID");
+
+    // TODO Remove?
+    //surgeryPrincipalCPTModifier.write("SurgeryPrincipalCPTModifierSID,"
+    //    + "SurgeryProcedureDiagnosisCodeSID,CPTModifierSID,PatientSID");
   }
 
   /**
