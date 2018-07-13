@@ -1056,6 +1056,7 @@ public abstract class State implements Cloneable {
     private String unit;
     private Range<Double> range;
     private Exact<Double> exact;
+    private String expression;
 
     @Override
     public VitalSign clone() {
@@ -1064,6 +1065,7 @@ public abstract class State implements Cloneable {
       clone.exact = exact;
       clone.vitalSign = vitalSign;
       clone.unit = unit;
+      clone.expression = expression;
       return clone;
     }
 
@@ -1074,6 +1076,9 @@ public abstract class State implements Cloneable {
       } else if (range != null) {
         double value = person.rand(range.low, range.high);
         person.setVitalSign(vitalSign, value);
+      } else if (expression != null) {
+        Number value = (Number) ExpressionProcessor.evaluate(expression, person, time);
+        person.setVitalSign(vitalSign, value.doubleValue());
       } else {
         throw new RuntimeException(
             "VitalSign state has no exact quantity or low/high range: " + this);
@@ -1124,6 +1129,7 @@ public abstract class State implements Cloneable {
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
     private String unit;
+    private String expression;
 
     @Override
     public Observation clone() {
@@ -1136,6 +1142,7 @@ public abstract class State implements Cloneable {
       clone.vitalSign = vitalSign;
       clone.category = category;
       clone.unit = unit;
+      clone.expression = expression;
       return clone;
     }
 
@@ -1153,7 +1160,9 @@ public abstract class State implements Cloneable {
         value = person.getVitalSign(vitalSign);
       } else if (valueCode != null) {
         value = valueCode;
-      }
+      } else if (expression != null) {
+        value = ExpressionProcessor.evaluate(expression, person, time);
+      } 
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       observation.name = this.name;
       observation.codes.addAll(codes);
