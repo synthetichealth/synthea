@@ -237,7 +237,7 @@ public class TerminologyTest {
         if(session.getAuthToken()!=null){
             String token = Terminology.getServiceTicket(session.getAuthToken(), session.getSessionClient());
 
-            String sap = Objects.requireNonNull(Terminology.getValueSet(hello, "2.16.840.1.113883.3.464.1003.103.12.1020", token).body()).string();
+            String sap = Objects.requireNonNull(Terminology.getValueSet(hello, "2.16.840.1.113883.3.464.1003.103.12.1020", token)).body().string();
             assertTrue(sap.contains("190330002"));
             assertTrue(sap.contains("250.23"));
             assertTrue(sap.contains("E10.3219"));

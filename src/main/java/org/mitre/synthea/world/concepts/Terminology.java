@@ -49,7 +49,7 @@ public class Terminology {
 
     private static String PROXY_URL = Config.get("terminology.PROXY_HOSTNAME");
 
-    private static int PROXY_PORT = Integer.parseInt(Config.get("terminology.PORT"));
+    private static Integer PROXY_PORT = Integer.parseInt(Config.get("terminology.PORT"));
 
     private static final String VSAC_USER = Config.get("terminology.username");
     private static final String VSAC_PASS = Config.get("terminology.password");
@@ -77,7 +77,8 @@ public class Terminology {
         private String authToken;
 
         public Session(){
-            if(PROXY_URL!=null){
+            System.out.println(PROXY_URL);
+            if(PROXY_URL!=null & PROXY_PORT!=null){
                 client = getClient(PROXY_URL,PROXY_PORT);
             }else{
                 client = getClient();
@@ -355,7 +356,11 @@ public class Terminology {
 
         try {
             Response response = client.newCall(request).execute();
-            token = response.body().string();
+            if(response.code()==200){
+                token = response.body().string();
+            }else{
+                token=null;
+            }
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             token = null;
