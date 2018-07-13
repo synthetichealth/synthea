@@ -1,5 +1,5 @@
 {
-    "name": "VitalSign_Observation",
+    "name": "Observation",
     "states": {
         "Initial": {
             "type": "Initial",
@@ -22,10 +22,10 @@
                 "code": "32485007",
                 "display": "Hospital admission"
             }],
-            "direct_transition" : "SomeObservation"
+            "direct_transition" : "VitalSignObservation"
         },
 
-        "SomeObservation" : {
+        "VitalSignObservation" : {
             "type" : "Observation",
             "vital_sign" : "Systolic Blood Pressure",
             "category" : "vital-signs",
@@ -35,6 +35,27 @@
               "display" : "Systolic Blood Pressure"
             }],
             "unit" : "mmHg",
+            "direct_transition" : "CodeObservation"
+        },
+
+        "CodeObservation" : {
+            "type" : "Observation",
+            "category" : "procedure",
+            "codes" : [
+                {
+                    "system" : "LOINC",
+                    "code" : "24356-8",
+                    "display" : "Urinalysis complete panel - Urine"
+                }
+            ],
+            "remarks": [
+                "This is a test observation"
+            ],
+            "value_code" : {
+                "system": "LOINC",
+                "code": "25428-4",
+                "display": "Glucose [Presence] in Urine by Test strip"
+            },
             "direct_transition" : "Terminal"
         },
 
