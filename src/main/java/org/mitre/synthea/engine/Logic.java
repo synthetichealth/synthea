@@ -447,7 +447,7 @@ public abstract class Logic {
    * the Symptom State.
    */
   public static class VitalSign extends Logic {
-    private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    private String vitalSign;
     private String operator;
     private double value;
 

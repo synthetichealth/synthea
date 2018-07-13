@@ -70,7 +70,7 @@ public class Person implements Serializable, QuadTreeData {
   public final long seed;
   public long populationSeed;
   public Map<String, Object> attributes;
-  public Map<VitalSign, Double> vitalSigns;
+  public Map<String, Double> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
   public EventList events;
@@ -82,7 +82,7 @@ public class Person implements Serializable, QuadTreeData {
     this.seed = seed; // keep track of seed so it can be exported later
     random = new Random(seed);
     attributes = new ConcurrentHashMap<String, Object>();
-    vitalSigns = new ConcurrentHashMap<VitalSign, Double>();
+    vitalSigns = new ConcurrentHashMap<String, Double>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
     events = new EventList();
@@ -215,11 +215,11 @@ public class Person implements Serializable, QuadTreeData {
     symptomStatuses.get(highestType).put(highestCause, true);
   }
 
-  public Double getVitalSign(VitalSign vitalSign) {
+  public Double getVitalSign(String vitalSign) {
     return vitalSigns.get(vitalSign);
   }
 
-  public void setVitalSign(VitalSign vitalSign, double value) {
+  public void setVitalSign(String vitalSign, double value) {
     vitalSigns.put(vitalSign, value);
   }
 

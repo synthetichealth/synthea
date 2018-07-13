@@ -1054,7 +1054,7 @@ public abstract class State implements Cloneable {
    * not a physical metric, so it should not be stored in a VitalSign.
    */
   public static class VitalSign extends State {
-    private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    private String vitalSign;
     private String unit;
     private Range<Double> range;
     private Exact<Double> exact;
@@ -1123,7 +1123,7 @@ public abstract class State implements Cloneable {
     private Exact<Object> exact;
     private Code valueCode;
     private String attribute;
-    private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    private String vitalSign;
     private String category;
     private String unit;
 

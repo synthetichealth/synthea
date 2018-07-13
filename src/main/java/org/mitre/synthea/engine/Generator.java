@@ -374,7 +374,7 @@ public class Generator {
       System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
       System.out.println(person.record.textSummary());
       System.out.println("VITAL SIGNS");
-      for (VitalSign vitalSign : person.vitalSigns.keySet()) {
+      for (String vitalSign : person.vitalSigns.keySet()) {
         System.out.format("  * %25s = %6.2f\n", vitalSign,
             person.getVitalSign(vitalSign).doubleValue());
       }
