@@ -94,7 +94,7 @@
           {
             "condition_type": "Attribute",
             "attribute": "ckd",
-            "operator": ">",
+            "operator": ">=",
             "value": 4
           }
         ]
