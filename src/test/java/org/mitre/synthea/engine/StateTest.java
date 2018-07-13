@@ -52,6 +52,7 @@ public class StateTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
+    person.attributes.put("age", 35);
     person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 
     time = System.currentTimeMillis();
@@ -349,9 +350,12 @@ public class StateTest {
 
     State vitalsign = module.getState("VitalSign").clone();
     assertTrue(vitalsign.process(person, time));
-
     assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE), 0.0);
 
+    vitalsign = module.getState("ExpressionVitalSign").clone();
+    assertTrue(vitalsign.process(person, time));
+    assertEquals(80.0, person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE), 0.0);
+    
     verifyZeroInteractions(person.record);
   }
 
@@ -370,7 +374,7 @@ public class StateTest {
   }
 
   @Test
-  public void setAttribute_with_value() {
+  public void setAttribute() {
     Module module = getModule("set_attribute.json");
 
     person.attributes.remove("Current Opioid Prescription");
@@ -378,17 +382,16 @@ public class StateTest {
     assertTrue(set1.process(person, time));
 
     assertEquals("Vicodin", person.attributes.get("Current Opioid Prescription"));
-  }
 
-  @Test
-  public void setAttribute_without_value() {
-    Module module = getModule("set_attribute.json");
-
-    person.attributes.put("Current Opioid Prescription", "Vicodin");
     State set2 = module.getState("Set_Attribute_2");
     assertTrue(set2.process(person, time));
 
     assertNull(person.attributes.get("Current Opioid Prescription"));
+
+    State set3 = module.getState("Set_Attribute_3");
+    assertTrue(set3.process(person, time));
+
+    assertEquals(185, person.attributes.get("Maximum Heart Rate"));
   }
 
   @Test
@@ -454,6 +457,12 @@ public class StateTest {
 
     State codeObs = module.getState("CodeObservation");
     assertTrue(codeObs.process(person, time));
+    
+    person.attributes.put("height_in", 64);
+    person.attributes.put("weight_lbs", 128);
+    // note: this expression calculates BMI. for 128 lbs 5'4" BMI == 21.96875
+    State expObs = module.getState("ExpressionObservation");
+    assertTrue(expObs.process(person, time));
 
     HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
     assertEquals(120.0, vitalObservation.value);
@@ -476,6 +485,9 @@ public class StateTest {
     Code codeObsCode = codeObservation.codes.get(0);
     assertEquals("24356-8", codeObsCode.code);
     assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
+
+    HealthRecord.Observation expObservation = person.record.encounters.get(0).observations.get(2);
+    assertEquals(21.96875, expObservation.value);
   }
 
   @Test

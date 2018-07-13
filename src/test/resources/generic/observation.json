@@ -11,6 +11,14 @@
             "vital_sign" : "Systolic Blood Pressure",
             "exact" : { "quantity" : 120 },
             "unit" : "mmHg",
+            "direct_transition" : "ExpressionVitalSign"
+        },
+        
+        "ExpressionVitalSign" : {
+            "type" : "VitalSign",
+            "vital_sign" : "Diastolic Blood Pressure",
+            "expression" : "120 - 40",
+            "unit" : "mmHg",
             "direct_transition" : "SomeEncounter"
         },
 
@@ -56,6 +64,20 @@
                 "code": "25428-4",
                 "display": "Glucose [Presence] in Urine by Test strip"
             },
+            "direct_transition" : "ExpressionObservation"
+        },
+        
+        "ExpressionObservation": {
+        	"type" : "Observation",
+            "category" : "procedure",
+            "codes" : [
+                {
+                    "system" : "LOINC",
+                    "code" : "39156-5",
+                    "display" : "Body mass index (BMI) [Ratio]"
+                }
+            ],
+            "expression" : "(#{weight_lbs} / Power(#{height_in}, 2)) * 703",
             "direct_transition" : "Terminal"
         },
 

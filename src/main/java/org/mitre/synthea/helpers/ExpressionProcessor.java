@@ -2,11 +2,9 @@ package org.mitre.synthea.helpers;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,55 +14,34 @@ import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.elm.execution.ExpressionDef;
 import org.cqframework.cql.elm.execution.Library;
 import org.mitre.synthea.world.agents.Person;
-import org.opencds.cqf.cql.elm.execution.ExpressionDefEvaluator;
 import org.opencds.cqf.cql.execution.Context;
 import org.opencds.cqf.cql.execution.CqlLibraryReader;
 
 public abstract class ExpressionProcessor {
 
-  public static void initialize() {
-
-  }
-
+  /**
+   * Evaluate the given expression, within the context of the given Person and timestamp.
+   * The given expression will be wrapped in CQL and evaluated to produce, ideally, a Number.
+   * Examples:
+   *  - In: "10 + 3", Out: (Integer)13
+   *  - In: "25 / 2", Out: (Double)12.5
+   *  - In: "#{age} / 3", Person{age = 27}, Out: (Integer) 9
+   * 
+   * @param expression "CQL-lite" expression, with attribute references wrapped in "#{ attr }"
+   * @param person Person to evaluate expression against.
+   * @param time Timestamp
+   * @return result of the expression
+   */
   public static Object evaluate(String expression, Person person, long time) {
     try {
-      StringBuilder wrappedExpression = new StringBuilder();
-
-      wrappedExpression.append("library Synthea version '1'\n\ncontext Patient\n\n");
-
-      // identify the attributes that are used
-      Set<String> attributes = new HashSet<>();
-
-      Pattern pattern = Pattern.compile("#\\{.+?\\}");
-
-      Matcher matcher = pattern.matcher(expression);
-
-      while (matcher.find()) {
-        String key = matcher.group();
-        String attr = key.substring(2, key.length() - 1).trim(); // lop off #{ and }
-        attributes.add(attr);
-
-        // clean up the expression so we can plug it in later
-        expression = expression.replace(key, attr);
-      }
-
-      for (String attr : attributes) {
-        Object value = person.attributes.get(attr);
-
-        if (!(value instanceof Number)) {
-          throw new IllegalArgumentException("attempted to use attribute " + attr + " with value "
-              + value + " in calculation but it is not a number.");
-        }
-
-        wrappedExpression.append("\ndefine ").append(attr).append(": ").append(value);
-
-      }
-
-      wrappedExpression.append("\ndefine result: ");
-      wrappedExpression.append(expression);
+      Map<String,String> attributes = new HashMap<>();
+      
+      String cleanExpression = replaceAttributes(expression, person, time, attributes);
+      
+      String wrappedExpression = convertExpressionToCQL(cleanExpression, attributes);
 
       // try and parse it as CQL.
-      String elm = cqlToElm(wrappedExpression.toString());
+      String elm = cqlToElm(wrappedExpression);
 
       Library library = CqlLibraryReader
           .read(new ByteArrayInputStream(elm.getBytes(StandardCharsets.UTF_8)));
@@ -74,16 +51,6 @@ public abstract class ExpressionProcessor {
       Object retVal = null;
 
       for (ExpressionDef statement : library.getStatements().getDef()) {
-        if (!(statement instanceof ExpressionDefEvaluator)) {
-          // This skips over any FunctionDef statements for starters.
-          continue;
-        }
-        // if (!statement.getAccessLevel().value().equals("Public")) {
-        // // Note: It appears that Java interns the string "Public"
-        // // since using != here also seems to work.
-        // continue;
-        // }
-
         retVal = statement.evaluate(context);
       }
 
@@ -93,10 +60,52 @@ public abstract class ExpressionProcessor {
     }
   }
 
+  private static String replaceAttributes(String expression, Person person, long time,
+      Map<String, String> attributes) {
+    String cleanExpression = expression;
+    
+    // identify the attributes that are used
+    // we identify person attributes with #{attr}
+    // TODO: how to handle date logic? ex a formula by year?
+    // TODO: how to handle vital signs?
+    Pattern pattern = Pattern.compile("#\\{.+?\\}");
+    Matcher matcher = pattern.matcher(expression);
+
+    while (matcher.find()) {
+      String key = matcher.group();
+      String attr = key.substring(2, key.length() - 1).trim(); // lop off #{ and }
+      String value = person.attributes.get(attr).toString();
+
+      attributes.put(attr, value);
+
+      // clean up the expression so we can plug it in later
+      cleanExpression = cleanExpression.replace(key, attr);
+    }
+    
+    return cleanExpression;
+  }
+
+  private static String convertExpressionToCQL(String expression, Map<String, String> attributes) {
+    StringBuilder wrappedExpression = new StringBuilder();
+
+    wrappedExpression.append("library Synthea version '1'\n\ncontext Patient\n\n");
+
+    for (Map.Entry<String, String> attr : attributes.entrySet()) {
+      wrappedExpression
+        .append("\ndefine ")
+        .append(attr.getKey())
+        .append(": ")
+        .append(attr.getValue());
+    }
+
+    wrappedExpression.append("\ndefine result: ");
+    wrappedExpression.append(expression);
+    
+    return wrappedExpression.toString();
+  }
+  
   private static Object wrap(Object o) {
-    if (o == null || o instanceof Number || o instanceof String) {
-      return o;
-    } else if (o instanceof BigDecimal) {
+    if (o instanceof BigDecimal) {
       // wrap BigDecimals as Longs or Doubles, to make logic elsewhere in the engine easier
       BigDecimal bd = (BigDecimal) o;
 
@@ -105,9 +114,6 @@ public abstract class ExpressionProcessor {
       } else {
         o = bd.doubleValue();
       }
-    } else if (o instanceof BigInteger) {
-      // wrap BigIntegers as Longs, same reason
-      o = ((BigInteger) o).longValue();
     }
 
     return o;
@@ -122,20 +128,16 @@ public abstract class ExpressionProcessor {
     ModelManager modelManager = new ModelManager();
     LibraryManager libraryManager = new LibraryManager(modelManager);
 
-    ArrayList<CqlTranslator.Options> options = new ArrayList<>();
-    options.add(CqlTranslator.Options.EnableDateRangeOptimization);
-
-    CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, libraryManager,
-        options.toArray(new CqlTranslator.Options[options.size()]));
-
+    CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, libraryManager);
+    
     if (translator.getErrors().size() > 0) {
-      return null;
+      throw translator.getErrors().get(0);
     }
 
     String elm = translator.toXml();
 
     if (translator.getErrors().size() > 0) {
-      return null;
+      throw translator.getErrors().get(0);
     }
 
     return elm;
