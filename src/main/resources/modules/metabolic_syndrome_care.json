@@ -2376,7 +2376,7 @@
     "CKD1 Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "Wellness Encounter",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2389,7 +2389,7 @@
     "CKD2 Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "Wellness Encounter",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2401,8 +2401,7 @@
     },
     "CKD3 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "Wellness Encounter",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2410,12 +2409,13 @@
           "display": "Chronic kidney disease stage 3 (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_3"
+      "direct_transition": "Record_MetabolicPanel_3",
+      "assign_to_attribute": "text"
     },
     "CKD4 Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "Wellness Encounter",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
