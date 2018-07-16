@@ -1,397 +1,313 @@
 {
-  "name": "Veteran Dialysis",
+  "name": "Veteran Substance Abuse Treatment",
   "remarks": [
     "A blank module"
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "CKD guard"
+      "direct_transition": "Wellness Encounter"
     },
-    "3 day delay": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 3,
-        "unit": "days"
-      },
-      "direct_transition": "Dialysis_Encounter"
-    },
-    "Dialysis_Encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
+    "Smoking_Condition": {
+      "type": "ConditionOnset",
+      "target_encounter": "Wellness Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)"
+          "code": 449868002,
+          "display": "Smokes tobacco daily"
         }
       ],
-      "direct_transition": "Dialysis"
+      "direct_transition": "Alcohol Check"
     },
-    "Dialysis": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "265764009",
-          "display": "Renal dialysis (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 2,
-        "high": 4,
-        "unit": "hours"
-      },
-      "direct_transition": "Dialysis weight record"
-    },
-    "end dialysis": {
-      "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "3 day delay",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Physician Monthly Enc",
-            "within": {
-              "quantity": 30,
-              "unit": "days"
-            }
-          }
-        },
-        {
-          "transition": "Physician Monthly Enc"
-        }
-      ]
-    },
-    "Physician Monthly Enc": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)"
-        }
-      ],
-      "direct_transition": "Record_CMP"
-    },
-    "end encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "3 day delay"
-    },
-    "CKD guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "And",
-        "conditions": [
-          {
-            "condition_type": "Attribute",
-            "attribute": "ckd",
-            "operator": "is not nil"
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "ckd",
-            "operator": ">=",
-            "value": 4
-          }
-        ]
-      },
-      "direct_transition": "3 day delay"
-    },
-    "Dialysis weight record": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "kg",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "74006-8",
-          "display": "Weight difference [Mass difference] --pre dialysis - post dialysis"
-        }
-      ],
-      "direct_transition": "end dialysis",
-      "range": {
-        "low": 1,
-        "high": 5
-      }
-    },
-    "Dialysis CarePlan": {
+    "Smoking_Careplan": {
       "type": "CarePlanStart",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736690008,
-          "display": "Dialysis care plan (record artifact)"
+          "code": 734163000,
+          "display": "Care Plan"
         }
       ],
-      "direct_transition": "end encounter",
+      "reason": "Smoking_Condition",
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 183063000,
-          "display": "Low salt diet education (procedure)"
+          "code": 710081004,
+          "display": "smoking cessation therapy"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking_medication",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Alcoholism encounter check",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "system": "SNOMED-CT",
-          "code": 229152003,
-          "display": "Lower limb exercises (regime/therapy)"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 11816003,
-          "display": "Diet education (procedure)"
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking_medication",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "transition": "Smoking Medication",
+              "distribution": 1
+            }
+          ]
         }
       ]
     },
-    "Record_CMP": {
-      "type": "DiagnosticReport",
+    "Smoking Medication": {
+      "type": "MedicationOrder",
       "codes": [
         {
-          "system": "LOINC",
-          "code": "24323-8",
-          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+          "system": "RxNorm",
+          "code": 198031,
+          "display": "24hr nicotine transdermal patch"
         }
       ],
-      "observations": [
+      "direct_transition": "Alcoholism encounter check",
+      "reason": "Smoking_Condition",
+      "assign_to_attribute": "smoking_medication"
+    },
+    "Alcohol Check": {
+      "type": "Simple",
+      "conditional_transition": [
         {
-          "category": "laboratory",
-          "vital_sign": "Glucose",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Urea Nitrogen",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea Nitrogen"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine"
-            }
-          ],
-          "unit": "mg/dL",
-          "range": {
-            "low": 2.5,
-            "high": 3.5
+          "transition": "Alcohol Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is not nil"
           }
         },
         {
-          "category": "laboratory",
-          "vital_sign": "Calcium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Sodium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Potassium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Chloride",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Carbon Dioxide",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon Dioxide"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "unit": "mL/min",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
-            }
-          ],
-          "range": {
-            "low": 4,
-            "high": 29
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "mg/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "17861-6",
-              "display": "Calcium [Mass/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 8.5,
-            "high": 10.2
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2885-2",
-              "display": "Protein [Mass/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 60,
-            "high": 80
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1751-7",
-              "display": "Albumin [Mass/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 3.5,
-            "high": 5.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "10834-0",
-              "display": "Globulin [Mass/​volume] in Serum by calculation"
-            }
-          ],
-          "range": {
-            "low": 2,
-            "high": 3.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "mg/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1975-2",
-              "display": "Bilirubin.total [Mass/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 0.1,
-            "high": 1.2
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6768-6",
-              "display": "Alkaline phosphatase [Enzymatic activity/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 20,
-            "high": 140
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1742-6",
-              "display": "Alanine aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 20,
-            "high": 60
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1920-8",
-              "display": "Aspartate aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 6,
-            "high": 40
+          "transition": "SUD check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is nil"
           }
         }
+      ]
+    },
+    "Alcohol Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 7200002,
+          "display": "Alcoholism"
+        }
       ],
-      "direct_transition": "Dialysis CarePlan"
+      "direct_transition": "SUD check"
+    },
+    "Wellness Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Veteran Guard"
+    },
+    "Alcoholism Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "encounter_end",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 24165007,
+          "display": "Alcoholism counseling"
+        }
+      ]
+    },
+    "Alcoholism encounter check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Alcoholism Care Plan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "encounter_end",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "encounter_end": {
+      "type": "EncounterEnd",
+      "direct_transition": "time_gate"
+    },
+    "time_gate": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "months"
+      },
+      "direct_transition": "smoking post treatment"
+    },
+    "smoking symptom post treatment": {
+      "type": "SetAttribute",
+      "attribute": "smoking",
+      "direct_transition": "alcoholism post treatment"
+    },
+    "alcoholism post treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "alcoholism symptom post treatment",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Wellness Encounter",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "smoking post treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "alcoholism post treatment",
+          "distribution": 0.95
+        },
+        {
+          "transition": "smoking symptom post treatment",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "alcoholism symptom post treatment": {
+      "type": "SetAttribute",
+      "attribute": "alcoholism",
+      "direct_transition": "Wellness Encounter"
+    },
+    "Opioid Addiction Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "Opioid Abuse Diagnosis",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313071005,
+          "display": "Counseling for substance abuse (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 408935001,
+          "display": "Substance abuse prevention education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 408936000,
+          "display": "Substance abuse prevention management (procedure)"
+        }
+      ]
+    },
+    "Veteran Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Smoking_Condition",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcohol Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "SUD check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Smoking_Careplan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcoholism encounter check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Opioid Addiction Care Plan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid addiction",
+            "operator": "is not nil"
+          }
+        }
+      ]
+    },
+    "Opioid Abuse Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5602001,
+          "display": "Opioid abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Alcoholism encounter check"
     }
   }
 }
