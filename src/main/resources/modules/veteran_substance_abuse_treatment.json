@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Veteran Guard"
+      "direct_transition": "Wellness Encounter"
     },
     "Smoking_Condition": {
       "type": "ConditionOnset",
@@ -91,7 +91,7 @@
           }
         },
         {
-          "transition": "Wellness Encounter",
+          "transition": "SUD check",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "alcoholism",
@@ -103,7 +103,7 @@
     "Alcohol Diagnosis": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "Wellness Encounter",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -111,7 +111,7 @@
           "display": "Alcoholism"
         }
       ],
-      "direct_transition": "Wellness Encounter"
+      "direct_transition": "SUD check"
     },
     "Wellness Encounter": {
       "type": "Encounter",
@@ -123,32 +123,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "Smoking_Careplan",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Alcoholism encounter check",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is nil"
-          }
-        },
-        {
-          "transition": "Opioid Addiction Care Plan",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "opioid_addiction",
-            "operator": "is not nil"
-          }
-        }
-      ]
+      "direct_transition": "Veteran Guard"
     },
     "Alcoholism Care Plan": {
       "type": "CarePlanStart",
@@ -246,7 +221,7 @@
           "display": "Care Plan"
         }
       ],
-      "direct_transition": "Alcoholism encounter check",
+      "direct_transition": "Opioid Abuse Diagnosis",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -291,6 +266,48 @@
           }
         }
       ]
+    },
+    "SUD check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Smoking_Careplan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcoholism encounter check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Opioid Addiction Care Plan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid addiction",
+            "operator": "is not nil"
+          }
+        }
+      ]
+    },
+    "Opioid Abuse Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5602001,
+          "display": "Opioid abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Alcoholism encounter check"
     }
   }
 }
