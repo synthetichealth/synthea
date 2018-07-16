@@ -28,7 +28,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 /**
- * Exporter for a simple human-readable text format.
+ * Exporter for a simple human-readable text format per person.
  * Sample: <pre>
  * Colleen Wilkinson
  * =================
@@ -75,8 +75,87 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * 2016-12-28 : Encounter for Viral sinusitis (disorder)
  * 2016-10-26 : Encounter for check up (procedure)
  * </pre>
+
+ * Exporter for a simple human-readable text format per encounter.
+ * Sample: <pre> 
+ * Chia293 Rohan584
+ * ================
+ * Race:                White
+ * Ethnicity:           Non-Hispanic
+ * Gender:              F
+ * Age:                 4
+ * Birth Date:          2014-04-12
+ * Marital Status:      S
+ * Outpatient Provider: BEVERLY HOSPITAL CORPORATION
+ * --------------------------------------------------------------------------------
+ * ALLERGIES:
+ *  2015-01-27 : Allergy to wheat
+ *  2015-01-27 : Allergy to tree pollen
+ *  2015-01-27 : Allergy to grass pollen
+ *  2015-01-27 : Dander (animal) allergy
+ *  2015-01-27 : Allergy to mould
+ *  2015-01-27 : Allergy to bee venom
+ * --------------------------------------------------------------------------------
+ * ENCOUNTER
+ * 2016-06-01 : Encounter for Acute bronchitis (disorder)
+ * Location: BEVERLY HOSPITAL CORPORATION
+ * Type: ambulatory
+ *   
+ *  MEDICATIONS:
+ *  2016-06-01 : Acetaminophen 160 MG for Acute bronchitis (disorder)
+ *   
+ *  CONDITIONS:
+ *  2016-06-01 : Acute bronchitis (disorder)
+ *  
+ *  CARE PLANS:
+ *  2016-06-01 : Respiratory therapy
+ *                        Reason: Acute bronchitis (disorder)
+ *                        Activity: Recommendation to avoid exercise
+ *                        Activity: Deep breathing and coughing exercises
+ *  
+ *  OBSERVATIONS:
+ *   
+ *  PROCEDURES:
+ *  2016-06-01 : Measurement of respiratory function (procedure) for Acute bronchitis (disorder)
+ *   
+ *  IMMUNIZATIONS:
+ *   
+ *  IMAGING STUDIES:
+ *   
+ * --------------------------------------------------------------------------------
+ * CONTINUING
+ *   
+ *  CONDITIONS:
+ *  2015-01-14 : Atopic dermatitis
+ *  2016-04-18 : Childhood asthma
+ *  
+ *  MEDICATIONS:
+ *  2015-01-27 : 0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector
+ *  2015-01-27 : Loratadine 5 MG Chewable Tablet
+ *  2016-04-18 + 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
+ *  2016-04-18 + 120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose
+ *              Inhaler for Childhood asthma
+ *   
+ *  CAREPLANS:
+ *  2015-01-14 : Skin condition care
+ *                        Reason: Atopic dermatitis
+ *                        Activity: Application of moisturizer to skin
+ *  2015-01-27 : Self care
+ *                        Activity: Allergy education
+ *                        Activity: Food allergy diet
+ *                        Activity: Allergy education
+ *  2016-04-18 : Asthma self management
+ *                        Reason: Childhood asthma
+ *                        Activity: Inhaled steroid therapy
+ *                        Activity: Home nebulizer therapy
+ *                        Activity: Breathing control
+ *   
+ * --------------------------------------------------------------------------------
+ * </pre>
  */
+
 public class TextExporter {
+
   /**
    * Produce and export a person's record in the text format.
    *
@@ -84,10 +163,8 @@ public class TextExporter {
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
    */
-  public static void export(Person person, long time) throws IOException {
-    // in the text exporter, items are not grouped by encounter
-    // so we collect them all into lists grouped by type
-    // and then displayed in reverse chronological order
+  public static void exportAll(Person person, long time) throws IOException {
+
     List<Encounter> encounters = person.record.encounters;
     List<Entry> conditions = new ArrayList<>();
     List<Entry> allergies = new ArrayList<>();
@@ -131,26 +208,26 @@ public class TextExporter {
       textRecord.add("No Known Allergies");
     } else {
       for (Entry allergy : allergies) {
-        condition(textRecord, allergy);
+        condition(textRecord, allergy, true);
       }
     }
     breakline(textRecord);
 
     textRecord.add("MEDICATIONS:");
     for (Medication medication : medications) {
-      medication(textRecord, medication);
+      medication(textRecord, medication, true);
     }
     breakline(textRecord);
 
     textRecord.add("CONDITIONS:");
     for (Entry condition : conditions) {
-      condition(textRecord, condition);
+      condition(textRecord, condition, true);
     }
     breakline(textRecord);
 
     textRecord.add("CARE PLANS:");
     for (CarePlan careplan : careplans) {
-      careplan(textRecord, careplan);
+      careplan(textRecord, careplan, true);
     }
     breakline(textRecord);
 
@@ -190,6 +267,90 @@ public class TextExporter {
     Files.write(outFilePath, textRecord, StandardOpenOption.CREATE_NEW);
   }
 
+  /**
+   * Produce and export a person's record in text format.
+   * 
+   * @param person Person
+   * @param time Time the simulation ended
+   * @throws IOException if any error occurs writing to the standard export location
+   */
+  public static void exportEncounter(Person person, long time) throws IOException {
+    List<Encounter> encounters = person.record.encounters;
+    List<Entry> conditions = new ArrayList<>();
+    List<Entry> allergies = new ArrayList<>();
+    List<Medication> medications = new ArrayList<>();
+    List<CarePlan> careplans = new ArrayList<>();
+
+    for (Encounter encounter : person.record.encounters) {
+      conditions.addAll(encounter.conditions);
+      allergies.addAll(encounter.allergies);
+      medications.addAll(encounter.medications);
+      careplans.addAll(encounter.careplans);
+    }
+
+    // reverse these items so they are displayed in reverse chrono order
+    Collections.reverse(encounters);
+    Collections.reverse(conditions);
+    Collections.reverse(allergies);
+    Collections.reverse(medications);
+    Collections.reverse(careplans);
+    
+    //set an integer that will be used as a counter for file naming purposes
+    int encounterNumber = 0;
+
+    for (Encounter encounter : encounters) {
+      //make a record for each encounter to write information
+      List<String> textRecord = new LinkedList<>();
+            
+      basicInfo(textRecord, person, time);
+      breakline(textRecord);
+
+      textRecord.add("ALLERGIES:");
+      if (allergies.isEmpty()) {
+        textRecord.add("No Known Allergies");
+      } else {
+        for (Entry allergy : allergies) {
+          condition(textRecord, allergy, false);
+        }
+      }
+      breakline(textRecord);
+
+      textRecord.add("ENCOUNTER");
+      encounterReport(textRecord, person, encounter);
+      breakline(textRecord);
+
+      textRecord.add("CONTINUING");
+      textRecord.add("   ");
+
+      textRecord.add("   CONDITIONS:");
+      for (Entry condition : conditions) {
+        conditionpast(textRecord, condition, encounter);
+      }
+      textRecord.add("   ");
+
+      textRecord.add("   MEDICATIONS:");
+      for (Medication medication : medications) {
+        medicationpast(textRecord, medication, encounter);
+      }
+      textRecord.add("   ");
+
+      textRecord.add("   CAREPLANS:");
+      for (CarePlan careplan : careplans) {
+        careplanpast(textRecord, careplan, encounter);
+      }
+      textRecord.add("   ");
+      breakline(textRecord);
+
+      encounterNumber++;
+
+      //write to the file
+      File outDirectory2 = Exporter.getOutputFolder("text_encounters", person);
+      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename_per_encounter(person, 
+          Integer.toString(encounterNumber), "txt"));
+      Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
+    }      
+  }  
+  
   /**
    * Add the basic information to the record.
    *
@@ -236,7 +397,7 @@ public class TextExporter {
       textRecord.add("Primary Care Provider: " + prov.address);
     }
   }
-
+  
   /**
    * Write a line for a single Encounter to the exported record.
    *
@@ -247,7 +408,7 @@ public class TextExporter {
    */
   private static void encounter(List<String> textRecord, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
-    
+
     String clinician = "";
     if (encounter.clinician != null) {
       clinician = "(" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) 
@@ -263,6 +424,102 @@ public class TextExporter {
       textRecord.add(encounterTime + clinician + " : Encounter at " 
           + encounter.provider.name + " : Encounter for " + encounter.reason.display);
     }
+  } 
+
+  /**
+   * Add all info from the encounter to the record.
+   *
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param person
+   *          The person to export
+   * @param encounter
+   *          The encounter all of the information refers to
+   */
+  private static void encounterReport(List<String> textRecord, Person person, Encounter encounter) {
+    String encounterTime = dateFromTimestamp(encounter.start);
+
+    if (encounter.reason == null && encounter.provider == null) {
+      textRecord.add(encounterTime + " : " + encounter.codes.get(0).display);
+    } else if (encounter.reason == null && encounter.provider != null) {
+      textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name);
+    } else if (encounter.reason != null && encounter.provider == null) {
+      textRecord.add(encounterTime + " : Encounter for " + encounter.reason.display);
+    } else {
+      textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name
+          + " : Encounter for " + encounter.reason.display);
+
+    }
+
+    textRecord.add("Type: " + encounter.type);
+    textRecord.add("   ");
+
+    //Create lists for only the items that occurred at the encounter
+    List<Entry> encounterConditions = new ArrayList<>();
+    List<Observation> encounterObservations = new ArrayList<>();
+    List<Procedure> encounterProcedures = new ArrayList<>();
+    List<Medication> encounterMedications = new ArrayList<>();
+    List<Entry> encounterImmunizations = new ArrayList<>();
+    List<CarePlan> encounterCareplans = new ArrayList<>();
+    List<ImagingStudy> encounterImagingStudies = new ArrayList<>();
+
+    encounterConditions.addAll(encounter.conditions);
+    encounterObservations.addAll(encounter.observations);
+    encounterProcedures.addAll(encounter.procedures);
+    encounterMedications.addAll(encounter.medications);
+    encounterImmunizations.addAll(encounter.immunizations);
+    encounterCareplans.addAll(encounter.careplans);
+    encounterImagingStudies.addAll(encounter.imagingStudies);
+
+    Collections.reverse(encounterConditions);
+    Collections.reverse(encounterObservations);
+    Collections.reverse(encounterProcedures);
+    Collections.reverse(encounterMedications);
+    Collections.reverse(encounterImmunizations);
+    Collections.reverse(encounterCareplans);
+    Collections.reverse(encounterImagingStudies);
+
+    textRecord.add("   MEDICATIONS:");
+    for (Medication medication : encounterMedications) {
+      medication(textRecord, medication, false);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   CONDITIONS:");
+    for (Entry condition : encounterConditions) {
+      condition(textRecord, condition, false);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   CARE PLANS:");
+    for (CarePlan careplan : encounterCareplans) {
+      careplan(textRecord, careplan, false);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   OBSERVATIONS:");
+    for (Observation observation : encounterObservations) {
+      observation(textRecord, observation);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   PROCEDURES:");
+    for (Procedure procedure : encounterProcedures) {
+      procedure(textRecord, procedure);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   IMMUNIZATIONS:");
+    for (Entry immunization : encounterImmunizations) {
+      immunization(textRecord, immunization);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   IMAGING STUDIES:");
+    for (ImagingStudy imagingStudy : encounterImagingStudies) {
+      imagingStudy(textRecord, imagingStudy);
+    }
+    textRecord.add("   ");
   }
 
   /**
@@ -272,19 +529,45 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param condition
    *          The condition to add to the export
+   * @param end
+   *          Whether or not the condition end date will be displayed
    */
-  private static void condition(List<String> textRecord, Entry condition) {
+  private static void condition(List<String> textRecord, Entry condition, Boolean end) {
     String start = dateFromTimestamp(condition.start);
     String stop;
-    if (condition.stop == 0L) {
-      //     "YYYY-MM-DD"
-      stop = "          ";
-    } else {
-      stop = dateFromTimestamp(condition.stop);
-    }
     String description = condition.codes.get(0).display;
+    if (end) {
+      if (condition.stop == 0L) {
+        //     "YYYY-MM-DD"
+        stop = "          ";
+      } else {
+        stop = dateFromTimestamp(condition.stop);
+      }
+      textRecord.add("  " + start + " - " + stop + " : " + description);
+    } else {
+      textRecord.add("  " + start + " : " + description);
+    }
+  }
 
-    textRecord.add(start + " - " + stop + " : " + description);
+  /**
+   * Write a line for a condition that has not ended at the time of the encounter.
+   *
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param condition
+   *          The condition to add to the export
+   * @param encounter
+   *          The encounter at which the continuing condition is reported
+   */
+  private static void conditionpast(List<String> textRecord, Entry condition, Encounter encounter) {
+    String start = dateFromTimestamp(condition.start);
+    if ((condition.stop == 0L || condition.stop > encounter.stop)
+        && (condition.start < encounter.start)) {
+      //checks that the condition hasn't ended by the time of the encounter
+      //and began prior to the encounter
+      String description = condition.codes.get(0).display;
+      textRecord.add("  " + start + " : " + description);
+    }
   }
 
   /**
@@ -313,7 +596,8 @@ public class TextExporter {
 
     String unit = observation.unit != null ? observation.unit : "";
 
-    textRecord.add(obsTime + " : " + Strings.padEnd(obsDesc, 40, ' ') + " " + value + " " + unit);
+    textRecord.add("  " + obsTime + " : " + Strings.padEnd(obsDesc, 40, ' ') + " " 
+        + value + " " + unit);
   }
 
   /**
@@ -328,7 +612,7 @@ public class TextExporter {
     String obsTime = dateFromTimestamp(observation.start);
     String obsDesc = observation.codes.get(0).display;
 
-    textRecord.add(obsTime + " : " + obsDesc);
+    textRecord.add("  " + obsTime + " : " + obsDesc);
 
     for (Observation subObs : observation.observations) {
       String value = ExportHelper.getObservationValue(subObs);
@@ -351,10 +635,10 @@ public class TextExporter {
     String procedureTime = dateFromTimestamp(procedure.start);
     String procedureDesc = procedure.codes.get(0).display;
     if (procedure.reasons == null || procedure.reasons.isEmpty()) {
-      textRecord.add(procedureTime + " : " + procedureDesc);
+      textRecord.add("  " + procedureTime + " : " + procedureDesc);
     } else {
       String reason = procedure.reasons.get(0).display;
-      textRecord.add(procedureTime + " : " + procedureDesc + " for " + reason);
+      textRecord.add("  " + procedureTime + " : " + procedureDesc + " for " + reason);
     }
   }
 
@@ -365,16 +649,54 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param medication
    *          The Medication to add to the export
+   * @param stat
+   *          Whether or not the medication status will be displayed
    */
-  private static void medication(List<String> textRecord, Medication medication) {
+  private static void medication(List<String> textRecord, Medication medication, Boolean stat) {
     String medTime = dateFromTimestamp(medication.start);
     String medDesc = medication.codes.get(0).display;
     String status = (medication.stop == 0L) ? "CURRENT" : "STOPPED";
-    if (medication.reasons == null || medication.reasons.isEmpty()) {
-      textRecord.add(medTime + "[" + status + "] : " + medDesc);
+    if (stat) {
+      if (medication.reasons == null || medication.reasons.isEmpty()) {
+        textRecord.add("  " + medTime + "[" + status + "] : " + medDesc);
+      } else {
+        String reason = medication.reasons.get(0).display;
+        textRecord.add("  " + medTime + "[" + status + "] : " + medDesc + " for " + reason);
+      }
     } else {
-      String reason = medication.reasons.get(0).display;
-      textRecord.add(medTime + "[" + status + "] : " + medDesc + " for " + reason);
+      if (medication.reasons == null || medication.reasons.isEmpty()) {
+        textRecord.add("  " + medTime + " : " + medDesc);
+      } else {
+        String reason = medication.reasons.get(0).display;
+        textRecord.add("  " + medTime + " : " + medDesc + " for " + reason);
+      }
+    }
+  }
+
+  /**
+   * Write a line for a medication that is still being taken at the time of the encounter.
+   *
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param medication
+   *          The medication to add to the export
+   * @param encounter
+   *          The encounter at which the continuing medication is reported
+   */
+  private static void medicationpast(List<String> textRecord, Medication medication,
+      Encounter encounter) {
+    String medTime = dateFromTimestamp(medication.start);
+    String medDesc = medication.codes.get(0).display;
+    if ((medication.stop == 0L || medication.stop > encounter.stop) 
+        && (medication.start < encounter.start)) {
+      //checks that the medication is still being taken at the time of the encounter
+      //and began prior to the encounter
+      if (medication.reasons == null || medication.reasons.isEmpty()) {
+        textRecord.add("  " + medTime + " : " + medDesc);
+      } else {
+        String reason = medication.reasons.get(0).display;
+        textRecord.add("  " + medTime + " + " + medDesc  + " for " + reason);
+      }
     }
   }
 
@@ -389,7 +711,7 @@ public class TextExporter {
   private static void immunization(List<String> textRecord, Entry immunization) {
     String immTime = dateFromTimestamp(immunization.start);
     String immDesc = immunization.codes.get(0).display;
-    textRecord.add(immTime + " : " + immDesc);
+    textRecord.add("  " + immTime + " : " + immDesc);
   }
 
   /**
@@ -399,12 +721,19 @@ public class TextExporter {
    *          Text format record, as a list of lines
    * @param careplan
    *          The CarePlan to add to the export
+   * @param stat
+   *          Whether or not the careplan status will be displayed
    */
-  private static void careplan(List<String> textRecord, CarePlan careplan) {
+  private static void careplan(List<String> textRecord, CarePlan careplan, Boolean stat) {
     String cpTime = dateFromTimestamp(careplan.start);
     String cpDesc = careplan.codes.get(0).display;
     String status = (careplan.stop == 0L) ? "CURRENT" : "STOPPED";
-    textRecord.add(cpTime + "[" + status + "] : " + cpDesc);
+    if (stat) {
+      textRecord.add("  " + cpTime + "[" + status + "] : " + cpDesc);
+    } else {
+      textRecord.add("  " + cpTime + " : " + cpDesc);
+    }
+    
 
     if (careplan.reasons != null && !careplan.reasons.isEmpty()) {
       for (Code reason : careplan.reasons) {
@@ -420,11 +749,43 @@ public class TextExporter {
   }
 
   /**
-   * Write lines for a single ImagingStudy to the exported record.
+   * Write a line for a careplan that is still being followed at the time of the encounter.
    *
    * @param textRecord
    *          Text format record, as a list of lines
    * @param careplan
+   *          The careplan to add to the export
+   * @param encounter
+   *          The encounter at which the continuing careplan is reported
+   */
+  private static void careplanpast(List<String> textRecord, CarePlan careplan,
+      Encounter encounter) {
+    String cpTime = dateFromTimestamp(careplan.start);
+    String cpDesc = careplan.codes.get(0).display;
+    if ((careplan.stop == 0L || careplan.stop > encounter.stop)
+        && (careplan.start < encounter.start)) {
+      //checks that the careplan is still being followed at the time of the encounter
+      //and began prior to the encounter
+      textRecord.add("  " + cpTime + " : " + cpDesc);
+      if (careplan.reasons != null && !careplan.reasons.isEmpty()) {
+        for (Code reason : careplan.reasons) {
+          textRecord.add("                         Reason: " + reason.display);
+        }
+      }
+      if (careplan.activities != null && !careplan.activities.isEmpty()) {
+        for (Code activity : careplan.activities) {
+          textRecord.add("                         Activity: " + activity.display);
+        }   
+      }
+    }
+  }
+
+  /**
+   * Write lines for a single ImagingStudy to the exported record.
+   *
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param imagingstudy
    *          The ImagingStudy to add to the export
    */
   private static void imagingStudy(List<String> textRecord, ImagingStudy imagingStudy) {
@@ -432,7 +793,7 @@ public class TextExporter {
     String modality = imagingStudy.series.get(0).modality.display;
     String bodySite = imagingStudy.series.get(0).bodySite.display;
 
-    textRecord.add(studyTime + " : " + modality + ", " + bodySite);
+    textRecord.add("  " + studyTime + " : " + modality + ", " + bodySite);
   }
 
   /**

@@ -22,6 +22,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
+import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
@@ -96,7 +97,6 @@ public final class LifecycleModule extends Module {
       grow(person, time);
     }
     startSmoking(person, time);
-    chanceOfLungCancer(person, time);
     startAlcoholism(person, time);
     quitSmoking(person, time);
     quitAlcoholism(person, time);
@@ -177,8 +177,20 @@ public final class LifecycleModule extends Module {
     double weightPercentile = person.rand();
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
-    person.setVitalSign(VitalSign.HEIGHT, 51.0); // cm
-    person.setVitalSign(VitalSign.WEIGHT, 3.5); // kg
+
+    // Temporarily generate a mother
+    Person mother = new Person(person.random.nextLong());
+    mother.attributes.put(Person.GENDER, "F");
+    mother.attributes.put("pregnant", true);
+    mother.attributes.put(Person.RACE, person.attributes.get(Person.RACE));
+    mother.attributes.put(Person.ETHNICITY, person.attributes.get(Person.ETHNICITY));
+    mother.attributes.put(BirthStatistics.BIRTH_SEX, person.attributes.get(Person.GENDER));
+    BirthStatistics.setBirthStatistics(mother, time);
+
+    person.setVitalSign(VitalSign.HEIGHT,
+        (double) mother.attributes.get(BirthStatistics.BIRTH_HEIGHT)); // cm
+    person.setVitalSign(VitalSign.WEIGHT,
+        (double) mother.attributes.get(BirthStatistics.BIRTH_WEIGHT)); // kg
 
     attributes.put(AGE, 0);
     attributes.put(AGE_MONTHS, 0);
@@ -783,58 +795,6 @@ public final class LifecycleModule extends Module {
     }
 
     return ((year * -0.4865) + 996.41) / 100.0;
-  }
-
-  private static void chanceOfLungCancer(Person person, long time) {
-    // TODO - make this calculation more elaborate, based on duration smoking, timestep-dependent
-
-    /*
-     * Overall, the chance that a man will develop lung cancer in his lifetime is about 1 in 14;
-     * for a woman, the risk is about 1 in 17.
-     * http://www.cancer.org/cancer/lungcancer-non-smallcell/detailedguide/non-small-cell-lung-
-     * cancer-key-statistics
-     * 
-     * Men who smoke are 23 times more likely to develop lung cancer.
-     * Women are 13 times more likely, compared to never smokers.
-     * http://www.lung.org/lung-health-and-diseases/lung-disease-lookup/lung-cancer/learn-about-
-     * lung-cancer/lung-cancer-fact-sheet.html
-     * 
-     * In a 2006 European study, the risk of developing lung cancer was:
-     * 0.2 percent for men who never smoked (0.4% for women);
-     * 5.5 percent of male former smokers (2.6% in women);
-     * 15.9 percent of current male smokers (9.5% for women);
-     * 24.4 percent for male "heavy smokers" defined as smoking more than 5 cigarettes per day
-     * (18.5 percent for women) 
-     * https://www.verywell.com/what-percentage-of-smokers-get-lung-cancer-2248868
-     */
-
-    boolean isSmoker = (boolean) person.attributes.getOrDefault(Person.SMOKER, false);
-    boolean quitSmoking = person.attributes.containsKey(QUIT_SMOKING_AGE);
-    boolean isMale = "M".equals(person.attributes.get(Person.GENDER));
-
-    double probabilityOfLungCancer;
-
-    if (isMale) {
-      // male rates
-      if (isSmoker) {
-        probabilityOfLungCancer = 0.244;
-      } else if (quitSmoking) {
-        probabilityOfLungCancer = 0.055;
-      } else {
-        probabilityOfLungCancer = 0.002;
-      }
-    } else {
-      // female rates
-      if (isSmoker) {
-        probabilityOfLungCancer = 0.185;
-      } else if (quitSmoking) {
-        probabilityOfLungCancer = 0.026;
-      } else {
-        probabilityOfLungCancer = 0.004;
-      }
-    }
-
-    person.attributes.put("probability_of_lung_cancer", probabilityOfLungCancer);
   }
 
   private static void startAlcoholism(Person person, long time) {

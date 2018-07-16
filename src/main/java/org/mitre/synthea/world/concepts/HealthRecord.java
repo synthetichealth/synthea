@@ -97,7 +97,10 @@ public class HealthRecord {
    * associated codes.
    */
   public class Entry {
-    private HealthRecord record = HealthRecord.this; // reference to HealthRecord entry belongs to
+
+    /** reference to the HealthRecord this entry belongs to. */
+    private HealthRecord record = HealthRecord.this;
+
     public String fullUrl;
     public String name;
     public long start;
@@ -279,7 +282,7 @@ public class HealthRecord {
       return total;
     }
   }
-  
+
   public enum EncounterType {
     WELLNESS, EMERGENCY, INPATIENT, AMBULATORY, URGENTCARE
   }
@@ -512,8 +515,8 @@ public class HealthRecord {
     Encounter encounter = currentEncounter(time);
     List<Observation> observations = new ArrayList<Observation>();
     if (encounter.observations.size() > numberOfObservations) {
-      int fromIndex = encounter.observations.size() - numberOfObservations - 1;
-      int toIndex = encounter.observations.size() - 1;
+      int fromIndex = encounter.observations.size() - numberOfObservations;
+      int toIndex = encounter.observations.size();
       observations.addAll(encounter.observations.subList(fromIndex, toIndex));
     } else {
       observations.addAll(encounter.observations);

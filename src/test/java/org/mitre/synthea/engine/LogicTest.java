@@ -119,10 +119,10 @@ public class LogicTest {
 
   @Test
   public void test_race_exists() {
-    person.attributes.put(Person.RACE, "White");
+    person.attributes.put(Person.RACE, "white");
     assertTrue(doTest("raceExistsTest"));
 
-    person.attributes.put(Person.RACE, "Native");
+    person.attributes.put(Person.RACE, "native");
     assertFalse(doTest("raceDoesNotExistTest"));
   }
 
@@ -139,6 +139,33 @@ public class LogicTest {
     time = TestHelper.timestamp(2002, 2, 22, 0, 0, 0);
     assertTrue(doTest("before2016Test"));
     assertTrue(doTest("after2000Test"));
+
+    time = TestHelper.timestamp(2000, 12, 10, 0, 0, 0);
+    assertFalse(doTest("beforeSeptemberTest"));
+    assertTrue(doTest("afterAprilTest"));
+    assertFalse(doTest("inJulyTest"));
+
+    time = TestHelper.timestamp(2004, 2, 8, 0, 0, 0);
+    assertTrue(doTest("beforeSeptemberTest"));
+    assertFalse(doTest("afterAprilTest"));
+    assertFalse(doTest("inJulyTest"));
+
+    time = TestHelper.timestamp(2012, 7, 17, 0, 0, 0);
+    assertTrue(doTest("beforeSeptemberTest"));
+    assertTrue(doTest("afterAprilTest"));
+    assertTrue(doTest("inJulyTest"));
+
+    time = TestHelper.timestamp(2016, 12, 30, 0, 0, 0);
+    assertFalse(doTest("beforeHalloween2016Test"));
+    assertTrue(doTest("afterIndependenceDay2000Test"));
+
+    time = TestHelper.timestamp(2000, 4, 4, 0, 0, 0);
+    assertTrue(doTest("beforeHalloween2016Test"));
+    assertFalse(doTest("afterIndependenceDay2000Test"));
+
+    time = TestHelper.timestamp(2007, 9, 20, 0, 0, 0);
+    assertTrue(doTest("beforeHalloween2016Test"));
+    assertTrue(doTest("afterIndependenceDay2000Test"));
   }
 
   @Test

@@ -207,6 +207,10 @@ public abstract class State implements Cloneable {
       // e.g. "submodule": "medications/otc_antihistamine"
       List<State> moduleHistory = person.history;
       Module submod = Module.getModuleByPath(submodule);
+      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
+      if (encounter != null) {
+        person.setCurrentEncounter(submod, encounter);
+      }
       boolean completed = submod.process(person, time);
 
       if (completed) {
@@ -218,6 +222,11 @@ public abstract class State implements Cloneable {
         person.history = moduleHistory;
         // add this state to history to indicate we returned to this module
         person.history.add(0, this);
+        // start using the current encounter, it may have changed
+        encounter = person.getCurrentEncounter(submod);
+        if (encounter != null) {
+          person.setCurrentEncounter(module, encounter);
+        }
 
         return true;
       } else {
@@ -528,9 +537,17 @@ public abstract class State implements Cloneable {
     }
 
     private void diagnosePastConditions(Person person, long time) {
+      // reminder: history[0] is current state, history[size-1] is Initial
       for (State state : person.history) {
-        if (state instanceof OnsetState && !((OnsetState) state).diagnosed) {
-          ((OnsetState) state).diagnose(person, time);
+        if (state instanceof OnsetState) {
+          OnsetState onset = (OnsetState) state;
+          
+          if (!onset.diagnosed && this.name.equals(onset.targetEncounter)) {
+            onset.diagnose(person, time);
+          }
+        } else if (state instanceof Encounter && state != this && state.name.equals(this.name)) {
+          // a prior instance of hitting this same state. no need to go back any further
+          break;
         }
       }
     }
@@ -604,7 +621,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
 
-      if (targetEncounter == null
+      if (targetEncounter == null || targetEncounter.trim().length() == 0
           || (encounter != null && targetEncounter.equals(encounter.name))) {
         diagnose(person, time);
       } else if (assignToAttribute != null && codes != null) {
@@ -1107,6 +1124,7 @@ public abstract class State implements Cloneable {
     private List<Code> codes;
     private Range<Double> range;
     private Exact<Object> exact;
+    private Code valueCode;
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
@@ -1118,6 +1136,7 @@ public abstract class State implements Cloneable {
       clone.codes = codes;
       clone.range = range;
       clone.exact = exact;
+      clone.valueCode = valueCode;
       clone.attribute = attribute;
       clone.vitalSign = vitalSign;
       clone.category = category;
@@ -1137,6 +1156,8 @@ public abstract class State implements Cloneable {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
         value = person.getVitalSign(vitalSign);
+      } else if (valueCode != null) {
+        value = valueCode;
       }
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       observation.name = this.name;
@@ -1155,22 +1176,21 @@ public abstract class State implements Cloneable {
    */
   private abstract static class ObservationGroup extends State {
     protected List<Code> codes;
-    protected int numberOfObservations;
+    protected List<Observation> observations;
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();
       clone.codes = codes;
-      clone.numberOfObservations = numberOfObservations;
+      clone.observations = observations;
       return clone;
     }
   }
 
   /**
-   * The MultiObservation state indicates that some number of prior Observation states should be
+   * The MultiObservation state indicates that some number of Observations should be
    * grouped together as a single observation. This can be necessary when one observation records
    * multiple values, for example in the case of Blood Pressure, which is really 2 values, Systolic
-   * and Diastolic Blood Pressure. This state must occur directly after the relevant Observation
-   * states, otherwise unexpected behavior can occur. MultiObservation states may only be processed
+   * and Diastolic Blood Pressure.  MultiObservation states may only be processed
    * during an Encounter, and so must occur after the target Encounter state and before the
    * EncounterEnd. See the Encounter section above for more details.
    */
@@ -1186,9 +1206,12 @@ public abstract class State implements Cloneable {
 
     @Override
     public boolean process(Person person, long time) {
+      for (Observation o : observations) {
+        o.process(person, time);
+      }
       String primaryCode = codes.get(0).code;
-      HealthRecord.Observation observation = person.record.multiObservation(time, primaryCode,
-          numberOfObservations);
+      HealthRecord.Observation observation =
+          person.record.multiObservation(time, primaryCode, observations.size());
       observation.name = this.name;
       observation.codes.addAll(codes);
       observation.category = category;
@@ -1198,7 +1221,7 @@ public abstract class State implements Cloneable {
   }
 
   /**
-   * The DiagnosticReport state indicates that some number of prior Observation states should be
+   * The DiagnosticReport state indicates that some number of Observations should be
    * grouped together within a single Diagnostic Report. This can be used when multiple observations
    * are part of a single panel. DiagnosticReport states may only be processed during an Encounter,
    * and so must occur after the target Encounter state and before the EncounterEnd. See the
@@ -1207,8 +1230,11 @@ public abstract class State implements Cloneable {
   public static class DiagnosticReport extends ObservationGroup {
     @Override
     public boolean process(Person person, long time) {
+      for (Observation o : observations) {
+        o.process(person, time);
+      }
       String primaryCode = codes.get(0).code;
-      Report report = person.record.report(time, primaryCode, numberOfObservations);
+      Report report = person.record.report(time, primaryCode, observations.size());
       report.name = this.name;
       report.codes.addAll(codes);
 

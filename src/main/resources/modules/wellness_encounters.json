@@ -52,7 +52,7 @@
           "remarks": [
             "BMI is not particularly meaningful for children under 2"
           ],
-          "transition": "Record_Systolic_BP"
+          "transition": "Record_BP"
         },
         {
           "transition": "Record_BMI"
@@ -72,42 +72,11 @@
         }
       ],
       "unit": "kg/m2",
-      "direct_transition": "Record_Systolic_BP"
-    },
-    "Record_Systolic_BP": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "vital-signs",
-      "vital_sign": "Systolic Blood Pressure",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "8480-6",
-          "display": "Systolic Blood Pressure"
-        }
-      ],
-      "unit": "mmHg",
-      "direct_transition": "Record_Diastolic_BP"
-    },
-    "Record_Diastolic_BP": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "vital-signs",
-      "vital_sign": "Diastolic Blood Pressure",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "8462-4",
-          "display": "Diastolic Blood Pressure"
-        }
-      ],
-      "unit": "mmHg",
       "direct_transition": "Record_BP"
     },
     "Record_BP": {
       "type": "MultiObservation",
       "category": "vital-signs",
-      "number_of_observations": 2,
       "codes": [
         {
           "system": "LOINC",
@@ -115,216 +84,36 @@
           "display": "Blood Pressure"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_1_HA1C"
-    },
-    "Lab_1_HA1C": {
-      "type": "Simple",
-      "conditional_transition": [
+      "observations": [
         {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "44054006",
-                    "display": "Diabetes"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
-                  }
-                ]
-              }
-            ]
-          },
-          "transition": "Record_HA1C"
+          "category": "vital-signs",
+          "vital_sign": "Systolic Blood Pressure",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mmHg"
         },
         {
-          "transition": "Lab_2_MetabolicPanel"
-        }
-      ]
-    },
-    "Record_HA1C": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Blood Glucose",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "4548-4",
-          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+          "category": "vital-signs",
+          "vital_sign": "Diastolic Blood Pressure",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mmHg"
         }
       ],
-      "unit": "%",
-      "direct_transition": "Lab_2_MetabolicPanel"
-    },
-    "Lab_2_MetabolicPanel": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "44054006",
-                    "display": "Diabetes"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
-                  }
-                ]
-              }
-            ]
-          },
-          "transition": "Record_Glucose"
-        },
-        {
-          "transition": "Lab_3_LipidPanel"
-        }
-      ]
-    },
-    "Record_Glucose": {
-      "type": "Observation",
       "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Glucose",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2339-0",
-          "display": "Glucose"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_UreaNitrogen"
+      "direct_transition": "Lab_MetabolicPanel"
     },
-    "Record_UreaNitrogen": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Urea Nitrogen",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "6299-2",
-          "display": "Urea Nitrogen"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_Creatinine"
-    },
-    "Record_Creatinine": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Creatinine",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "38483-4",
-          "display": "Creatinine"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_Calcium"
-    },
-    "Record_Calcium": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Calcium",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "49765-1",
-          "display": "Calcium"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_Sodium"
-    },
-    "Record_Sodium": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Sodium",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2947-0",
-          "display": "Sodium"
-        }
-      ],
-      "unit": "mmol/L",
-      "direct_transition": "Record_Potassium"
-    },
-    "Record_Potassium": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Potassium",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "6298-4",
-          "display": "Potassium"
-        }
-      ],
-      "unit": "mmol/L",
-      "direct_transition": "Record_Chloride"
-    },
-    "Record_Chloride": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Chloride",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2069-3",
-          "display": "Chloride"
-        }
-      ],
-      "unit": "mmol/L",
-      "direct_transition": "Record_CO2"
-    },
-    "Record_CO2": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Carbon Dioxide",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "20565-8",
-          "display": "Carbon Dioxide"
-        }
-      ],
-      "unit": "mmol/L",
-      "direct_transition": "Record_MetabolicPanel"
-    },
+
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
       "number_of_observations": 8,
@@ -335,10 +124,237 @@
           "display": "Basic Metabolic Panel"
         }
       ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2339-0",
+              "display": "Glucose"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea Nitrogen"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Creatinine",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "38483-4",
+              "display": "Creatinine"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "49765-1",
+              "display": "Calcium"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2947-0",
+              "display": "Sodium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6298-4",
+              "display": "Potassium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2069-3",
+              "display": "Chloride"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20565-8",
+              "display": "Carbon Dioxide"
+            }
+          ],
+          "unit": "mmol/L"
+        }
+      ],
       "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_3_LipidPanel"
+      "direct_transition": "Lab_LipidPanel"
     },
-    "Lab_3_LipidPanel": {
+    "Record_LipidPanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 4,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57698-3",
+          "display": "Lipid Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Total Cholesterol",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2093-3",
+              "display": "Total Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Triglycerides",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2571-8",
+              "display": "Triglycerides"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "LDL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18262-6",
+              "display": "Low Density Lipoprotein Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "HDL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2085-9",
+              "display": "High Density Lipoprotein Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "target_encounter": "Wellness_Encounter",
+      "direct_transition": "Lab_ACR"
+    },
+    "Record_ACR": {
+      "type": "Observation",
+      "target_encounter": "Wellness_Encounter",
+      "vital_sign": "Microalbumin Creatinine Ratio",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "14959-1",
+          "display": "Microalbumin Creatinine Ratio"
+        }
+      ],
+      "unit": "mg/g",
+      "direct_transition": "Lab_EGFR"
+    },
+    "Record_EGFR": {
+      "type": "Observation",
+      "target_encounter": "Wellness_Encounter",
+      "category": "laboratory",
+      "vital_sign": "EGFR",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33914-3",
+          "display": "Estimated Glomerular Filtration Rate"
+        }
+      ],
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Lab_MetabolicPanel": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "44054006",
+                    "display": "Diabetes"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "15777000",
+                    "display": "Prediabetes"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Record_MetabolicPanel"
+        },
+        {
+          "transition": "Lab_LipidPanel"
+        }
+      ]
+    },
+    "Lab_LipidPanel": {
       "type": "Simple",
       "conditional_transition": [
         {
@@ -362,7 +378,7 @@
                     "condition_type": "Not",
                     "condition": {
                       "condition_type": "PriorState",
-                      "name": "Record_Cholesterol",
+                      "name": "Record_LipidPanel",
                       "within": {
                         "quantity": 3,
                         "unit": "years"
@@ -379,87 +395,14 @@
               }
             ]
           },
-          "transition": "Record_Cholesterol"
+          "transition": "Record_LipidPanel"
         },
         {
-          "transition": "Lab_4_ACR"
+          "transition": "Lab_ACR"
         }
       ]
     },
-    "Record_Cholesterol": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Total Cholesterol",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2093-3",
-          "display": "Total Cholesterol"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_Triglycerides"
-    },
-    "Record_Triglycerides": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "Triglycerides",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2571-8",
-          "display": "Triglycerides"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_LDL"
-    },
-    "Record_LDL": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "LDL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "18262-6",
-          "display": "Low Density Lipoprotein Cholesterol"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_HDL"
-    },
-    "Record_HDL": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "HDL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2085-9",
-          "display": "High Density Lipoprotein Cholesterol"
-        }
-      ],
-      "unit": "mg/dL",
-      "direct_transition": "Record_LipidPanel"
-    },
-    "Record_LipidPanel": {
-      "type": "DiagnosticReport",
-      "number_of_observations": 4,
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "57698-3",
-          "display": "Lipid Panel"
-        }
-      ],
-      "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_4_ACR"
-    },
-    "Lab_4_ACR": {
+    "Lab_ACR": {
       "type": "Simple",
       "conditional_transition": [
         {
@@ -476,26 +419,11 @@
           "transition": "Record_ACR"
         },
         {
-          "transition": "Lab_5_EGFR"
+          "transition": "Lab_EGFR"
         }
       ]
     },
-    "Record_ACR": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "vital_sign": "Microalbumin Creatinine Ratio",
-      "category": "laboratory",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "14959-1",
-          "display": "Microalbumin Creatinine Ratio"
-        }
-      ],
-      "unit": "mg/g",
-      "direct_transition": "Lab_5_EGFR"
-    },
-    "Lab_5_EGFR": {
+    "Lab_EGFR": {
       "type": "Simple",
       "conditional_transition": [
         {
@@ -530,21 +458,6 @@
           "transition": "Wellness_Encounter"
         }
       ]
-    },
-    "Record_EGFR": {
-      "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
-      "category": "laboratory",
-      "vital_sign": "EGFR",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "33914-3",
-          "display": "Estimated Glomerular Filtration Rate"
-        }
-      ],
-      "unit": "mL/min/{1.73_m2}",
-      "direct_transition": "Wellness_Encounter"
     }
   }
 }

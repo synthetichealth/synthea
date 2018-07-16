@@ -79,7 +79,15 @@ public abstract class Exporter {
 
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
-        TextExporter.export(person, stopTime);
+        TextExporter.exportAll(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (Boolean.parseBoolean(Config.get("exporter.text.per_encounter_export"))) {
+      try {
+        TextExporter.exportEncounter(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -218,7 +226,8 @@ public abstract class Exporter {
    *          Keep function, if this function returns `true` for an entry then it will be kept
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-      List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime, Predicate<E> keepFunction) {
+      List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime,
+      Predicate<E> keepFunction) {
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
     while (iterator.hasNext()) {
@@ -284,6 +293,15 @@ public abstract class Exporter {
       return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
           + person.attributes.get(Person.ID) + "."
           + extension;
+    }
+  }
+
+  public static String filename_per_encounter(Person person, String encounterNumber, String extension) {
+    if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
+      return person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
+    } else {
+      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
+          + person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
     }
   }
 }
