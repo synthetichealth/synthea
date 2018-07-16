@@ -196,7 +196,13 @@ public abstract class Logic {
       if (valueCode != null) {
         value = valueCode;
       } 
-      return Utilities.compare(observation.value, this.value, operator);
+      if (operator == "is nil") {
+        return observation == null;
+      } else if (operator == "is not nil") {
+        return observation != null;
+      } else {
+        return Utilities.compare(observation.value, this.value, operator);
+      }
     }
   }
   

@@ -221,6 +221,10 @@ public class Utilities {
         return lhs.equals(rhs);
       case "!=":
         return !lhs.equals(rhs);
+      case "is nil":
+        return lhs == null;
+      case "is not nil":
+        return lhs != null;
       default:
         System.err.format("Unsupported operator: %s\n", operator);
         return false;
