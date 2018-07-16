@@ -6,25 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "remarks": [""],
-      "conditional_transition": [
-        {
-          "transition": "Vetean Delay",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
-        }
-      ]
+      "remarks": [
+        ""
+      ],
+      "direct_transition": "Vetean Delay"
     },
     "Attempts_Suicide": {
       "type": "Simple",
@@ -423,25 +408,28 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "new_state_3": {
-      "type": "Simple",
-      "direct_transition": "new_state_3"
-    },
-    "Veteran Guard": {
-      "type": "Simple",
-      "direct_transition": "Veteran Guard"
-    },
     "Vetean Delay": {
       "type": "Delay",
       "exact": {
         "quantity": 18,
         "unit": "years"
       },
-      "direct_transition": "Attempted_Suicide_Incidence_By_Age"
+      "conditional_transition": [
+        {
+          "transition": "Attempted_Suicide_Incidence_By_Age",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        }
+      ]
     },
     "Attempted_Suicide_Incidence_By_Age": {
       "type": "Simple",
-      "remarks": [""],
+      "remarks": [
+        ""
+      ],
       "complex_transition": [
         {
           "condition": {
