@@ -193,7 +193,7 @@ public class Provider implements QuadTreeData {
 
     return closest;
   }
-
+  
   /**
    * Load into cache the list of providers for a state.
    * @param state name or abbreviation.
