@@ -6,24 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Smoking_Condition",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Alcohol Check",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is nil"
-          }
-        }
-      ]
+      "direct_transition": "Veteran Guard"
     },
     "Smoking_Condition": {
       "type": "ConditionOnset",
@@ -254,10 +237,6 @@
       "attribute": "alcoholism",
       "direct_transition": "Wellness Encounter"
     },
-    "new_state": {
-      "type": "Simple",
-      "direct_transition": "new_state"
-    },
     "Opioid Addiction Care Plan": {
       "type": "CarePlanStart",
       "codes": [
@@ -283,6 +262,33 @@
           "system": "SNOMED-CT",
           "code": 408936000,
           "display": "Substance abuse prevention management (procedure)"
+        }
+      ]
+    },
+    "Veteran Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Smoking_Condition",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcohol Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is nil"
+          }
         }
       ]
     }
