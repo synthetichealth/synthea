@@ -207,6 +207,10 @@ public abstract class State implements Cloneable {
       // e.g. "submodule": "medications/otc_antihistamine"
       List<State> moduleHistory = person.history;
       Module submod = Module.getModuleByPath(submodule);
+      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
+      if (encounter != null) {
+        person.setCurrentEncounter(submod, encounter);
+      }
       boolean completed = submod.process(person, time);
 
       if (completed) {
@@ -218,6 +222,11 @@ public abstract class State implements Cloneable {
         person.history = moduleHistory;
         // add this state to history to indicate we returned to this module
         person.history.add(0, this);
+        // start using the current encounter, it may have changed
+        encounter = person.getCurrentEncounter(submod);
+        if (encounter != null) {
+          person.setCurrentEncounter(module, encounter);
+        }
 
         return true;
       } else {
@@ -609,7 +618,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
 
-      if (targetEncounter == null
+      if (targetEncounter == null || targetEncounter.trim().length() == 0
           || (encounter != null && targetEncounter.equals(encounter.name))) {
         diagnose(person, time);
       } else if (assignToAttribute != null && codes != null) {
@@ -1112,6 +1121,7 @@ public abstract class State implements Cloneable {
     private List<Code> codes;
     private Range<Double> range;
     private Exact<Object> exact;
+    private Code valueCode;
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
@@ -1123,6 +1133,7 @@ public abstract class State implements Cloneable {
       clone.codes = codes;
       clone.range = range;
       clone.exact = exact;
+      clone.valueCode = valueCode;
       clone.attribute = attribute;
       clone.vitalSign = vitalSign;
       clone.category = category;
@@ -1142,6 +1153,8 @@ public abstract class State implements Cloneable {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
         value = person.getVitalSign(vitalSign);
+      } else if (valueCode != null) {
+        value = valueCode;
       }
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       observation.name = this.name;

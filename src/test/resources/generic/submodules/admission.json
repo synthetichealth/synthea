@@ -1,0 +1,53 @@
+{
+  "name": "Admission",
+  "remarks": [
+    "A submodule that diagnoses the patient with a condition, admits them as an inpatient, and allows them to recover for 5 days."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "ConditionOnset"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "ConditionOnset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "condition",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5678,
+          "display": "Condition"
+        }
+      ],
+      "direct_transition": "EndEncounterInside"
+    },
+    "EndEncounterInside": {
+      "type": "EncounterEnd",
+      "direct_transition": "AdmitAsInpatient"
+    },
+    "AdmitAsInpatient": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 9876,
+          "display": "Inpatient"
+        }
+      ],
+      "direct_transition": "Recovery"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 5,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal"
+    }
+  }
+}

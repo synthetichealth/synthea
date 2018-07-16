@@ -28,6 +28,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -345,7 +346,7 @@ public class StateTest {
     // In this case, the record shouldn't be called at all
     person.record = Mockito.mock(HealthRecord.class);
 
-    Module module = getModule("vitalsign_observation.json");
+    Module module = getModule("observation.json");
 
     State vitalsign = module.getState("VitalSign").clone();
     assertTrue(vitalsign.process(person, time));
@@ -439,7 +440,7 @@ public class StateTest {
 
   @Test
   public void observation() {
-    Module module = getModule("vitalsign_observation.json");
+    Module module = getModule("observation.json");
 
     State vitalsign = module.getState("VitalSign");
     assertTrue(vitalsign.process(person, time));
@@ -449,17 +450,33 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
-    State obs = module.getState("SomeObservation");
-    assertTrue(obs.process(person, time));
+    State vitalObs = module.getState("VitalSignObservation");
+    assertTrue(vitalObs.process(person, time));
 
-    HealthRecord.Observation observation = person.record.encounters.get(0).observations.get(0);
-    assertEquals(120.0, observation.value);
-    assertEquals("vital-signs", observation.category);
-    assertEquals("mmHg", observation.unit);
+    State codeObs = module.getState("CodeObservation");
+    assertTrue(codeObs.process(person, time));
 
-    Code code = observation.codes.get(0);
-    assertEquals("8480-6", code.code);
-    assertEquals("Systolic Blood Pressure", code.display);
+    HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
+    assertEquals(120.0, vitalObservation.value);
+    assertEquals("vital-signs", vitalObservation.category);
+    assertEquals("mmHg", vitalObservation.unit);
+
+    Code vitalObsCode = vitalObservation.codes.get(0);
+    assertEquals("8480-6", vitalObsCode.code);
+    assertEquals("Systolic Blood Pressure", vitalObsCode.display);
+
+    HealthRecord.Observation codeObservation = person.record.encounters.get(0).observations.get(1);
+    assertEquals("procedure", codeObservation.category);
+    //assertEquals("LOINC", codeObservation.value.system);
+    //assertEquals("25428-4", codeObservation.value.code);
+    //assertEquals("Glucose [Presence] in Urine by Test strip", codeObservation.value.system);
+    
+    Code testCode = new Code("LOINC", "25428-4", "Glucose [Presence] in Urine by Test strip");
+    assertEquals(testCode.toString(), codeObservation.value.toString());
+
+    Code codeObsCode = codeObservation.codes.get(0);
+    assertEquals("24356-8", codeObsCode.code);
+    assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
   }
 
   @Test
@@ -1386,7 +1403,36 @@ public class StateTest {
       modules.remove("submodules/medication_submodule");
     }
   }
-  
+
+  @Test
+  public void testSubmoduleDiagnosesAndEndingEncounters() {
+    Map<String, Module> modules =
+        Whitebox.<Map<String, Module>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module subModule = getModule("submodules/admission.json");
+    modules.put("submodules/admission", subModule);
+
+    try {
+      Module module = getModule("encounter_with_submodule.json");
+      while (!module.process(person, time)) {
+        time += Utilities.convertTime("years", 1);
+      }
+
+      assertEquals(12, person.history.size());
+      assertEquals(2, person.record.encounters.size());
+      assertEquals(1, person.record.encounters.get(0).conditions.size());
+      assertEquals(EncounterType.AMBULATORY.toString().toLowerCase(),
+          person.record.encounters.get(0).type);
+      assertEquals(EncounterType.INPATIENT.toString().toLowerCase(),
+          person.record.encounters.get(1).type);
+      // Fake code for condition in the submodule "admission"
+      assertTrue(person.record.conditionActive("5678"));
+    } finally {
+      // always clean these up, to ensure they don't get seen by any other tests
+      modules.remove("submodules/admission");
+    }
+  }
+
   @Test
   public void testDiagnosticReport() {
     Module module = getModule("observation_groups.json");

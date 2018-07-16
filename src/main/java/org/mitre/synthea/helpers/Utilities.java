@@ -10,6 +10,7 @@ import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +57,12 @@ public class Utilities {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.YEAR);
+  }
+
+  public static int getMonth(long time) {
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    calendar.setTimeInMillis(time);
+    return calendar.get(Calendar.MONTH) + 1;
   }
 
   /**
@@ -171,6 +178,30 @@ public class Utilities {
         return lhs.compareTo(rhs) > 0;
       case "!=":
         return lhs != rhs;
+      case "is nil":
+        return lhs == null;
+      case "is not nil":
+        return lhs != null;
+      default:
+        System.err.format("Unsupported operator: %s\n", operator);
+        return false;
+    }
+  }
+
+  public static boolean compare(Integer lhs, Integer rhs, String operator) {
+    switch (operator) {
+      case "<":
+        return lhs < rhs;
+      case "<=":
+        return lhs <= rhs;
+      case "==":
+        return lhs.intValue() == rhs.intValue();
+      case ">=":
+        return lhs >= rhs;
+      case ">":
+        return lhs > rhs;
+      case "!=":
+        return lhs.intValue() != rhs.intValue();
       case "is nil":
         return lhs == null;
       case "is not nil":
