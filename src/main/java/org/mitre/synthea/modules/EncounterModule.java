@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import java.util.Arrays;
+
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +14,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 
 
 public final class EncounterModule extends Module {
@@ -62,8 +64,8 @@ public final class EncounterModule extends Module {
       encounter.codes.add(ENCOUNTER_CHECKUP);
       Provider prov = person.getAmbulatoryProvider(time);
       encounter.provider = prov;
-      encounter.clinician = prov.chooseClinicianList(prov.clinicianMap.get("GENERAL PRACTICE"), 
-          prov.seed);
+      encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
+          person.random);
       encounter.codes.add(getWellnessVisitCode(person, time));
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
       startedEncounter = true;
@@ -80,8 +82,8 @@ public final class EncounterModule extends Module {
         encounter.name = "Encounter Module Symptom Driven";
         Provider prov = person.getEmergencyProvider(time);
         encounter.provider = prov;
-        encounter.clinician = prov.chooseClinicianList(prov.clinicianMap.get("GENERAL PRACTICE"), 
-            prov.seed);
+        encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
+            person.random);
         encounter.codes.add(ENCOUNTER_EMERGENCY);
         person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
         startedEncounter = true;
@@ -100,8 +102,8 @@ public final class EncounterModule extends Module {
         encounter.name = "Encounter Module Symptom Driven";
         Provider prov = person.getUrgentCareProvider(time);
         encounter.provider = prov;
-        encounter.clinician = prov.chooseClinicianList(prov.clinicianMap.get("GENERAL PRACTICE"), 
-            prov.seed);
+        encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
+            person.random);
         encounter.codes.add(ENCOUNTER_URGENTCARE);
         person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
         startedEncounter = true;
@@ -118,8 +120,8 @@ public final class EncounterModule extends Module {
         encounter.name = "Encounter Module Symptom Driven";
         Provider prov = person.getAmbulatoryProvider(time);
         encounter.provider = prov;
-        encounter.clinician = prov.chooseClinicianList(prov.clinicianMap.get("GENERAL PRACTICE"), 
-            prov.seed);
+        encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
+            person.random);
         encounter.codes.add(ENCOUNTER_CHECKUP);
         person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
         startedEncounter = true;

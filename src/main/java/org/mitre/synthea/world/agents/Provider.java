@@ -24,8 +24,10 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
+
 
 public class Provider implements QuadTreeData {
 
@@ -55,11 +57,8 @@ public class Provider implements QuadTreeData {
   public String type;
   public String ownership;
   public int quality;
-  public static String numClinicians;
-  public ArrayList<Clinician> clinicians;
   private DirectPosition2D coordinates;
   public ArrayList<String> servicesProvided;
-  private Map<String,Integer> specialtyInfo;
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
@@ -71,8 +70,6 @@ public class Provider implements QuadTreeData {
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<String>();
-    clinicians = new ArrayList<Clinician>();
-    specialtyInfo = new HashMap<String, Integer>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
     
   }
@@ -256,18 +253,14 @@ public class Provider implements QuadTreeData {
       csvSpecialties = SimpleCSV.parse(resourceSpecialties);
     }
     
-   
-    
     for (Map<String,String> row : csv) {
       String currState = row.get("state");
-      //Location location1 = new Location(currState,row.get("city"));
       
       // for now, only allow one state at a time
       if ((state == null)
           || (state != null && state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
         Provider parsed = csvLineToProvider(row);
-
         parsed.servicesProvided.addAll(servicesProvided);
         if ("Yes".equals(row.remove("emergency"))) {
           parsed.servicesProvided.add(Provider.EMERGENCY);
@@ -282,52 +275,43 @@ public class Provider implements QuadTreeData {
         String city = parsed.city;
         String address = parsed.address;
 
-        //int population = (int) location1.getPopulation(city);
         
-        //TODO - create a map of specialty:#
-        
-        boolean found = false;
+
         //only enter this if THERE IS AN INFO FILE
         //if there is no info file or if the provider is not found in the info file
         // make them one general clinician that's always chosen
-        if (csvSpecialties == null || !found) {
-          parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
-          parsed.clinicianMap.put("GENERAL PRACTICE", 
-              generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
+        if (csvSpecialties == null) {
+          parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
+              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
         } else {
+          boolean found = false;
           for (Map<String,String> rowSpecialty : csvSpecialties) {
             if (rowSpecialty.get("address").equals(address) && rowSpecialty.get("city").equals(city)
                     && rowSpecialty.get("state").equals(abbreviation)) {
-              for (Map.Entry<String, String> e : rowSpecialty.entrySet()) {
-                // if the field is not any of the provider info
-                if (!e.getKey().equals("address") && !e.getKey().equals("city") 
-                        && !e.getKey().equals("state")
-                        && !e.getKey().equals("zip")) {
-                  if (!e.getValue().equals("0")) {
-                    parsed.specialtyInfo.put(e.getKey(), Integer.parseInt(e.getValue()));
-                    parsed.clinicianMap.put(e.getKey(), 
-                        generateClinicianList(parsed, Integer.parseInt(e.getValue()), e.getKey()));
+              for (String specialty : ClinicianSpecialty.getSpecialties()) { 
+                if (rowSpecialty.get(specialty) != null) {
+                  if (!rowSpecialty.get(specialty).equals("0")) {
+                    parsed.clinicianMap.put(specialty, 
+                        parsed.generateClinicianList(Integer.parseInt(rowSpecialty.get(specialty)),
+                                specialty));
                   }
                 }
-              }
-
-              if (!parsed.specialtyInfo.containsKey("GENERAL PRACTICE")) {
-                parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
-                parsed.clinicianMap.put("GENERAL PRACTICE", 
-                        generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
               }
               found = true;
               break;
             }
+          }
+          if (!found || !parsed.clinicianMap.containsKey(ClinicianSpecialty.GENERAL_PRACTICE)) {
+            parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
+                      parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
           }
         }
         
         
         //TODO - determine how many clinicians based off the population
 
-        parsed.specialtyInfo.put("GENERAL PRACTICE", 1);
         parsed.clinicianMap.put("GENERAL PRACTICE", 
-            generateClinicianList(parsed, 1, "GENERAL PRACTICE"));
+            parsed.generateClinicianList(1, "GENERAL PRACTICE"));
 
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
@@ -341,17 +325,15 @@ public class Provider implements QuadTreeData {
 
   /**
    * Generates a list of clinicians, given the number to generate and the specialty.
-   * @param provider - the provider generating clinicians
    * @param numClinicians - the number of clinicians to generate
    * @param specialty - which specialty clinicians to generate
    * @return
    */
-  public static ArrayList<Clinician> generateClinicianList(
-      Provider provider, int numClinicians, String specialty) {
+  public ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = Generator.generateClinician(i, provider);
+      clinician = Generator.generateClinician(i, this);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
@@ -365,8 +347,8 @@ public class Provider implements QuadTreeData {
    * @param clinicianSeed - seed to help randomly choose a clinician
    * @return
    */
-  public Clinician chooseClinicianList(ArrayList<Clinician> clinicians, long clinicianSeed) {
-    Random random = new Random(clinicianSeed);
+  public Clinician chooseClinicianList(String specialty, Random random) {
+    ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
     return clinicians.get(random.nextInt(clinicians.size()));
   }
   

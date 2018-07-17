@@ -17,8 +17,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Guard",
-      "name": "Initial"
+      "direct_transition": "Guard"
     },
     "Guard": {
       "type": "Guard",
@@ -42,8 +41,7 @@
           }
         ]
       },
-      "direct_transition": "General_Population",
-      "name": "Guard"
+      "direct_transition": "General_Population"
     },
     "General_Population": {
       "type": "Delay",
@@ -135,8 +133,7 @@
             }
           ]
         }
-      ],
-      "name": "General_Population"
+      ]
     },
     "Enter_Directed_Use": {
       "type": "Simple",
@@ -156,8 +153,7 @@
           "distribution": 0.334,
           "transition": "Enter_Directed_Use_Condition3"
         }
-      ],
-      "name": "Enter_Directed_Use"
+      ]
     },
     "Enter_Directed_Use_Condition1": {
       "type": "ConditionOnset",
@@ -169,8 +165,7 @@
           "display": "Impacted molars"
         }
       ],
-      "direct_transition": "Enter_Directed_Use_Encounter1",
-      "name": "Enter_Directed_Use_Condition1"
+      "direct_transition": "Enter_Directed_Use_Encounter1"
     },
     "Enter_Directed_Use_Encounter1": {
       "type": "Encounter",
@@ -183,8 +178,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Enter_Directed_Use_Procedure1",
-      "name": "Enter_Directed_Use_Encounter1"
+      "direct_transition": "Enter_Directed_Use_Procedure1"
     },
     "Enter_Directed_Use_Procedure1": {
       "type": "Procedure",
@@ -196,8 +190,7 @@
           "display": "Extraction of wisdom tooth"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription1",
-      "name": "Enter_Directed_Use_Procedure1"
+      "direct_transition": "Directed_Use_Prescription1"
     },
     "Directed_Use_Prescription1": {
       "type": "MedicationOrder",
@@ -210,8 +203,7 @@
           "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
         }
       ],
-      "direct_transition": "End_Directed_Use_Encounter",
-      "name": "Directed_Use_Prescription1"
+      "direct_transition": "End_Directed_Use_Encounter"
     },
     "Enter_Directed_Use_Condition2": {
       "type": "ConditionOnset",
@@ -223,8 +215,7 @@
           "display": "Chronic pain"
         }
       ],
-      "direct_transition": "Enter_Directed_Use_Encounter2",
-      "name": "Enter_Directed_Use_Condition2"
+      "direct_transition": "Enter_Directed_Use_Encounter2"
     },
     "Enter_Directed_Use_Encounter2": {
       "type": "Encounter",
@@ -237,8 +228,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription2",
-      "name": "Enter_Directed_Use_Encounter2"
+      "direct_transition": "Directed_Use_Prescription2"
     },
     "Directed_Use_Prescription2": {
       "type": "MedicationOrder",
@@ -251,8 +241,7 @@
           "display": "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
         }
       ],
-      "direct_transition": "End_Directed_Use_Encounter",
-      "name": "Directed_Use_Prescription2"
+      "direct_transition": "End_Directed_Use_Encounter"
     },
     "Enter_Directed_Use_Condition3": {
       "type": "ConditionOnset",
@@ -264,8 +253,7 @@
           "display": "Chronic intractable migraine without aura"
         }
       ],
-      "direct_transition": "Enter_Directed_Use_Encounter3",
-      "name": "Enter_Directed_Use_Condition3"
+      "direct_transition": "Enter_Directed_Use_Encounter3"
     },
     "Enter_Directed_Use_Encounter3": {
       "type": "Encounter",
@@ -278,8 +266,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription3",
-      "name": "Enter_Directed_Use_Encounter3"
+      "direct_transition": "Directed_Use_Prescription3"
     },
     "Directed_Use_Prescription3": {
       "type": "MedicationOrder",
@@ -292,13 +279,11 @@
           "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
         }
       ],
-      "direct_transition": "End_Directed_Use_Encounter",
-      "name": "Directed_Use_Prescription3"
+      "direct_transition": "End_Directed_Use_Encounter"
     },
     "End_Directed_Use_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Directed_Use",
-      "name": "End_Directed_Use_Encounter"
+      "direct_transition": "Directed_Use"
     },
     "Directed_Use": {
       "type": "Delay",
@@ -339,14 +324,12 @@
           "distribution": 0.74037,
           "transition": "Directed_Use"
         }
-      ],
-      "name": "Directed_Use"
+      ]
     },
     "End_Prescription_Towards_Gen_Pop": {
       "type": "MedicationEnd",
       "referenced_by_attribute": "opioid_prescription",
-      "direct_transition": "Reset_Opioid_var_Towards_Gen_Pop",
-      "name": "End_Prescription_Towards_Gen_Pop"
+      "direct_transition": "Reset_Opioid_var_Towards_Gen_Pop"
     },
     "Reset_Opioid_var_Towards_Gen_Pop": {
       "type": "SetAttribute",
@@ -354,8 +337,7 @@
       "remarks": [
         "no value here means the variable is reset to nil"
       ],
-      "direct_transition": "General_Population",
-      "name": "Reset_Opioid_var_Towards_Gen_Pop"
+      "direct_transition": "General_Population"
     },
     "End_Prescription_Towards_Misuse": {
       "type": "MedicationEnd",
@@ -363,8 +345,7 @@
       "remarks": [
         "Note that the variable is not reset on this sequence, because we still want to know which medication they were on"
       ],
-      "direct_transition": "Misuse",
-      "name": "End_Prescription_Towards_Misuse"
+      "direct_transition": "Misuse"
     },
     "Misuse": {
       "type": "Delay",
@@ -405,13 +386,11 @@
           "distribution": 0.681862,
           "transition": "Misuse"
         }
-      ],
-      "name": "Misuse"
+      ]
     },
     "Active_Addiction_Symptom_Onset": {
       "type": "Simple",
-      "direct_transition": "Opioid_Addiction_Symptom1",
-      "name": "Active_Addiction_Symptom_Onset"
+      "direct_transition": "Opioid_Addiction_Symptom1"
     },
     "Opioid_Addiction_Symptom1": {
       "type": "Symptom",
@@ -420,7 +399,6 @@
         "low": 0,
         "high": 15
       },
-      "name": "Opioid_Addiction_Symptom1",
       "direct_transition": "Opioid_Addiction_Symptom2"
     },
     "Opioid_Addiction_Symptom2": {
@@ -430,8 +408,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Opioid_Addiction_Symptom3",
-      "name": "Opioid_Addiction_Symptom2"
+      "direct_transition": "Opioid_Addiction_Symptom3"
     },
     "Opioid_Addiction_Symptom3": {
       "type": "Symptom",
@@ -440,8 +417,7 @@
         "low": 0,
         "high": 20
       },
-      "direct_transition": "Opioid_Addiction_Symptom4",
-      "name": "Opioid_Addiction_Symptom3"
+      "direct_transition": "Opioid_Addiction_Symptom4"
     },
     "Opioid_Addiction_Symptom4": {
       "type": "Symptom",
@@ -450,8 +426,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Opioid_Addiction_Symptom5",
-      "name": "Opioid_Addiction_Symptom4"
+      "direct_transition": "Opioid_Addiction_Symptom5"
     },
     "Opioid_Addiction_Symptom5": {
       "type": "Symptom",
@@ -460,8 +435,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Opioid_Addiction_Symptom6",
-      "name": "Opioid_Addiction_Symptom5"
+      "direct_transition": "Opioid_Addiction_Symptom6"
     },
     "Opioid_Addiction_Symptom6": {
       "type": "Symptom",
@@ -470,8 +444,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Opioid_Addiction_Symptom7",
-      "name": "Opioid_Addiction_Symptom6"
+      "direct_transition": "Opioid_Addiction_Symptom7"
     },
     "Opioid_Addiction_Symptom7": {
       "type": "Symptom",
@@ -480,8 +453,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Opioid_Addiction_Symptom8",
-      "name": "Opioid_Addiction_Symptom7"
+      "direct_transition": "Opioid_Addiction_Symptom8"
     },
     "Opioid_Addiction_Symptom8": {
       "type": "Symptom",
@@ -490,8 +462,7 @@
         "low": 0,
         "high": 15
       },
-      "direct_transition": "Opioid_Addiction_Symptom9",
-      "name": "Opioid_Addiction_Symptom8"
+      "direct_transition": "Opioid_Addiction_Symptom9"
     },
     "Opioid_Addiction_Symptom9": {
       "type": "Symptom",
@@ -500,8 +471,7 @@
         "low": 0,
         "high": 15
       },
-      "direct_transition": "Opioid_Addiction_Symptom10",
-      "name": "Opioid_Addiction_Symptom9"
+      "direct_transition": "Opioid_Addiction_Symptom10"
     },
     "Opioid_Addiction_Symptom10": {
       "type": "Symptom",
@@ -510,8 +480,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Active_Addiction",
-      "name": "Opioid_Addiction_Symptom10"
+      "direct_transition": "Active_Addiction"
     },
     "Active_Addiction": {
       "type": "Delay",
@@ -538,8 +507,7 @@
           "distribution": 0.9483,
           "transition": "Active_Addiction"
         }
-      ],
-      "name": "Active_Addiction"
+      ]
     },
     "Detoxification": {
       "type": "Delay",
@@ -567,8 +535,7 @@
           "distribution": 0.10375,
           "transition": "Recovery_Management"
         }
-      ],
-      "name": "Detoxification"
+      ]
     },
     "Enter_Addiction_Treatment": {
       "type": "Encounter",
@@ -580,13 +547,11 @@
           "display": "Drug rehabilitation and detoxification"
         }
       ],
-      "direct_transition": "End_Addiction_Treatment_Encounter",
-      "name": "Enter_Addiction_Treatment"
+      "direct_transition": "End_Addiction_Treatment_Encounter"
     },
     "End_Addiction_Treatment_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Addiction_Treatment",
-      "name": "End_Addiction_Treatment_Encounter"
+      "direct_transition": "Addiction_Treatment"
     },
     "Addiction_Treatment": {
       "type": "Delay",
@@ -607,8 +572,7 @@
           "distribution": 0.03135,
           "transition": "Recovery_Management"
         }
-      ],
-      "name": "Addiction_Treatment"
+      ]
     },
     "Recovery_Management": {
       "type": "Encounter",
@@ -620,13 +584,11 @@
           "display": "Drug addiction therapy"
         }
       ],
-      "direct_transition": "End_Recovery_Management_Encounter",
-      "name": "Recovery_Management"
+      "direct_transition": "End_Recovery_Management_Encounter"
     },
     "End_Recovery_Management_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Recovery_Management_Delay",
-      "name": "End_Recovery_Management_Encounter"
+      "direct_transition": "Recovery_Management_Delay"
     },
     "Recovery_Management_Delay": {
       "type": "Delay",
@@ -646,8 +608,7 @@
             "Translated from SAMMI's 1-day version of 99% --> 30-days = 74%"
           ]
         }
-      ],
-      "name": "Recovery_Management_Delay"
+      ]
     },
     "Directed_Use_Overdose": {
       "type": "ConditionOnset",
@@ -659,8 +620,7 @@
           "display": "Drug overdose"
         }
       ],
-      "direct_transition": "Directed_Use_Overdose_Encounter",
-      "name": "Directed_Use_Overdose"
+      "direct_transition": "Directed_Use_Overdose_Encounter"
     },
     "Directed_Use_Overdose_Encounter": {
       "type": "Encounter",
@@ -682,13 +642,11 @@
           "distribution": 0.01253,
           "transition": "Death"
         }
-      ],
-      "name": "Directed_Use_Overdose_Encounter"
+      ]
     },
     "End_Directed_Use_Overdose_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Directed_Use",
-      "name": "End_Directed_Use_Overdose_Encounter"
+      "direct_transition": "Directed_Use"
     },
     "Misuse_Overdose": {
       "type": "ConditionOnset",
@@ -700,8 +658,7 @@
           "display": "Drug overdose"
         }
       ],
-      "direct_transition": "Misuse_Overdose_Encounter",
-      "name": "Misuse_Overdose"
+      "direct_transition": "Misuse_Overdose_Encounter"
     },
     "Misuse_Overdose_Encounter": {
       "type": "Encounter",
@@ -723,13 +680,11 @@
           "distribution": 0.01253,
           "transition": "Death"
         }
-      ],
-      "name": "Misuse_Overdose_Encounter"
+      ]
     },
     "End_Misuse_Overdose_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Misuse",
-      "name": "End_Misuse_Overdose_Encounter"
+      "direct_transition": "Misuse"
     },
     "Addiction_Overdose": {
       "type": "ConditionOnset",
@@ -741,8 +696,7 @@
           "display": "Drug overdose"
         }
       ],
-      "direct_transition": "Addiction_Overdose_Encounter",
-      "name": "Addiction_Overdose"
+      "direct_transition": "Addiction_Overdose_Encounter"
     },
     "Addiction_Overdose_Encounter": {
       "type": "Encounter",
@@ -764,8 +718,7 @@
           "distribution": 0.01253,
           "transition": "Death"
         }
-      ],
-      "name": "Addiction_Overdose_Encounter"
+      ]
     },
     "Addiction_CarePlan_Selector": {
       "type": "Simple",
@@ -781,8 +734,7 @@
         {
           "transition": "End_Addiction_Overdose_Encounter"
         }
-      ],
-      "name": "Addiction_CarePlan_Selector"
+      ]
     },
     "Opioid_Addiction_CarePlan": {
       "type": "CarePlanStart",
@@ -808,13 +760,11 @@
           "display": "Drug detoxification"
         }
       ],
-      "direct_transition": "End_Addiction_Overdose_Encounter",
-      "name": "Opioid_Addiction_CarePlan"
+      "direct_transition": "End_Addiction_Overdose_Encounter"
     },
     "End_Addiction_Overdose_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Detoxification",
-      "name": "End_Addiction_Overdose_Encounter"
+      "direct_transition": "Detoxification"
     },
     "Death": {
       "type": "Death",
@@ -825,12 +775,10 @@
           "display": "Drug overdose"
         }
       ],
-      "direct_transition": "Terminal",
-      "name": "Death"
+      "direct_transition": "Terminal"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     }
   }
 }
