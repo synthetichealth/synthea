@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.helpers.Utilities;
@@ -14,6 +16,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.Terminology;
 
 /**
  * Logic represents any portion of a generic module that requires a logical
@@ -353,6 +356,7 @@ public abstract class Logic {
   private abstract static class ActiveLogic extends Logic {
     protected List<Code> codes;
     protected String referencedByAttribute;
+    protected String value_set;
   }
 
   /**
@@ -367,9 +371,35 @@ public abstract class Logic {
   public static class ActiveCondition extends ActiveLogic {
     @Override
     public boolean test(Person person, long time) {
+      if(this.value_set != null){
+
+        Set<String> presentCodes = person.record.present.keySet();
+
+        List<String> valueSetCodes = Terminology.sess.getAllCodes(this.value_set)
+                .stream()
+                .map(code -> {return code.code;})
+                .collect(Collectors.toList());
+
+
+        // Takes intersection of codes in value set and codes present in the record and updates in place.
+        // RetainAll returns true if it changes something, you could use that fact to define a boolean
+        // if you wanted to check if ALL the codes in the value set are present.
+        presentCodes.retainAll(valueSetCodes);
+
+
+        if(presentCodes.isEmpty()){
+          return false;
+        }else{
+          return true;
+        }
+
+      }
+
       if (this.codes != null) {
         for (Code code : this.codes) {
+
           if (person.record.present.containsKey(code.code)) {
+
             return true;
           }
         }

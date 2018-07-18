@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javafx.util.Pair;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
@@ -28,6 +29,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.concepts.Terminology;
 
 public abstract class State implements Cloneable {
   public Module module;
@@ -42,6 +44,7 @@ public abstract class State implements Cloneable {
   private List<DistributedTransitionOption> distributedTransition;
   private List<ComplexTransitionOption> complexTransition;
   public List<String> remarks;
+
 
   protected void initialize(Module module, String name, JsonObject definition) {
     this.module = module;
@@ -596,12 +599,14 @@ public abstract class State implements Cloneable {
     protected List<Code> codes;
     protected String assignToAttribute;
     protected String targetEncounter;
+    protected String valueSet;
 
     public OnsetState clone() {
       OnsetState clone = (OnsetState) super.clone();
       clone.codes = codes;
       clone.assignToAttribute = assignToAttribute;
       clone.targetEncounter = targetEncounter;
+      clone.valueSet = valueSet;
       return clone;
     }
 
@@ -640,6 +645,17 @@ public abstract class State implements Cloneable {
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
+      String primaryDisplay = codes.get(0).display;
+
+      // Value Set Functionality
+      if(valueSet != null){
+        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,primaryCode,primaryDisplay);
+        primaryCode = vsCode.code;
+
+        // Only changes the primary code.
+        codes.set(0,vsCode);
+      }
+
       Entry condition = person.record.conditionStart(time, primaryCode);
       condition.name = this.name;
       if (codes != null) {
@@ -704,6 +720,15 @@ public abstract class State implements Cloneable {
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
+
+      // Value Set Functionality
+//      if(valueSet != null){
+//        Pair<String,String> vsCode = session.getRandomCode(valueSet,codes.get(0).system,primaryCode);
+//        Code valueSetCode = new Code(vsCode.getKey(), vsCode.getValue(),"henlo");
+//        primaryCode = vsCode.getValue();
+//        codes.set(0,valueSetCode);
+//      }
+
       Entry allergy = person.record.allergyStart(time, primaryCode);
       allergy.name = this.name;
       allergy.codes.addAll(codes);
