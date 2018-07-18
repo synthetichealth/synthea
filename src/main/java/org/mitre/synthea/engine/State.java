@@ -489,7 +489,7 @@ public abstract class State implements Cloneable {
           provider.incrementEncounters("wellness", year);
           encounter.provider = provider;
           encounter.clinician = provider.chooseClinicianList(
-        		  ClinicianSpecialty.GENERAL_PRACTICE, person.random);
+              ClinicianSpecialty.GENERAL_PRACTICE, person.random);
           diagnosePastConditions(person, time);
 
           return true;
@@ -511,7 +511,7 @@ public abstract class State implements Cloneable {
         provider.incrementEncounters(encounterClass, year);
         encounter.provider = provider;
         encounter.clinician = provider.chooseClinicianList(
-        		ClinicianSpecialty.GENERAL_PRACTICE, person.random);
+            ClinicianSpecialty.GENERAL_PRACTICE, person.random);
 
         encounter.name = this.name;
 

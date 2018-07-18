@@ -91,7 +91,7 @@ public class ClinicianSpecialty {
   public static final String UROLOGY = "UROLOGY";
   public static final String VASCULAR_SURGERY = "VASCULAR SURGERY";
   
-  public static String[] getSpecialties(){
+  public static String[] getSpecialties() {
     String[] specialtyList = {"ADDICTION MEDICINE", 
       "ADVANCED HEART FAILURE AND TRANSPLANT CARDIOLOGY", "ALLERGY/IMMUNOLOGY", "ANESTHESIOLOGY", 
       "ANESTHESIOLOGY ASSISTANT", "AUDIOLOGIST","CARDIAC ELECTROPHYSIOLOGY","CARDIAC SURGERY",

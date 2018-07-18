@@ -166,7 +166,7 @@ public class ProviderTest {
          .filter(p -> p.toString().endsWith(".csv"))
          .forEach(t -> {
            try {
-             Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName(), null,
+             Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName(), 
                  providerServices);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
