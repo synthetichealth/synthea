@@ -29,6 +29,7 @@ import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.Terminology;
 
 /**
  * Task class to export a report of all clinical concepts
@@ -120,9 +121,14 @@ public class Concepts {
    */
   public static void inventoryState(Map<Code,Set<String>> concepts, JsonObject state,
       String module) {
+
     // TODO - how can we make this more generic
     // and not have to remember to update this if we add new codes in another field?
-
+    if(state.has("value_set")){
+      Terminology.Session s = new Terminology.Session();
+      List<Code> codes = s.getAllCodes(state.get("value_set").getAsString());
+      inventoryCodes(concepts,codes,module);
+    }
     if (state.has("codes")) {
       List<Code> codes = Code.fromJson(state.getAsJsonArray("codes"));
       inventoryCodes(concepts, codes, module);
