@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class Terminology {
 
     private static String PROXY_URL = Config.get("terminology.PROXY_HOSTNAME");
 
-    private static Integer PROXY_PORT = Integer.parseInt(Config.get("terminology.PORT"));
+    private static String PROXY_PORT = Config.get("terminology.PORT");
 
     private static final String VSAC_USER = Config.get("terminology.username");
     private static final String VSAC_PASS = Config.get("terminology.password");
@@ -62,11 +62,11 @@ public class Terminology {
     private static final FhirContext ctx = FhirContext.forDstu3();
     private static final Map<String, ValueSet> valueSets = loadValueSets();
 
-    private static String defaultCode;
-    private static String defaultSystem;
+
 
     final static Logger logger = LoggerFactory.getLogger(Terminology.class);
 
+    public static Session sess = new Session();
 
 
     public static class Session{
@@ -77,9 +77,9 @@ public class Terminology {
         private String authToken;
 
         public Session(){
-            System.out.println(PROXY_URL);
+
             if(PROXY_URL!=null & PROXY_PORT!=null){
-                client = getClient(PROXY_URL,PROXY_PORT);
+                client = getClient(PROXY_URL,Integer.parseInt(PROXY_PORT));
             }else{
                 client = getClient();
 
@@ -89,10 +89,34 @@ public class Terminology {
             }else{
                 authToken = Terminology.getAuthToken(client);
             }
+        }
+        public ValueSet getValueSet(String url){
+            // Call to get valueSet from a Map
+            ValueSet vs = valueSets.get(url);
+            if(vs==null & authToken!=null){
+                String ticket = getServiceTicket(authToken,client);
 
 
+                Response response = Terminology.getValueSet(client,url,ticket);
+                if(response.code()==200){
+                    try{
+                        vs = parseResponse(response.body().string());
+                        valueSets.put(url,vs);
+                        response.close();
 
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    logger.warn("Invalid OID or URL provided");
+                    return null;
+                }
 
+            }else if(vs==null){
+                return null;
+            }
+
+            return vs;
         }
 
 
@@ -101,31 +125,24 @@ public class Terminology {
          * @param url The canonical URL of the ValueSet or a VSAC oid
          * @return A random code from the specified ValueSet as a Pair of form <system:code>
          */
-        public Pair<String,String> getRandomCode(String url){
+        public Code getRandomCode(String url, String defaultSystem, String defaultCode, String defaultDisplay){
 
-            ValueSet vs = Terminology.getValueSet(url);
-            if(vs==null & authToken!=null){
-
-                String ticket = getServiceTicket(authToken,client);
-
-                Response response = Terminology.getValueSet(client,url,ticket);
-                if(response.code()==200){
-                    try{
-                        vs = parseResponse(response.body().string());
-                        valueSets.put(url,vs);
-
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }else{
-                    logger.warn("Invalid OID or URL provided");
-                    return new Pair<>(defaultSystem,defaultCode);
-                }
-            }else if(vs==null){
-                return new Pair<>(defaultSystem,defaultCode);
+            ValueSet vs = getValueSet(url);
+            if(vs==null){
+                return new Code(defaultSystem,defaultCode,defaultDisplay);
             }
             return chooseCode(Terminology.getCodes(vs));
 
+        }
+
+        public List<Code> getAllCodes(String url){
+            // Mainly for use by Concepts.java, doesn't default
+            ValueSet vs = getValueSet(url);
+            if(vs==null){
+                return null;
+            }
+            Multimap<String, Code> codes = getCodes(vs);
+            return new ArrayList<>(codes.values());
         }
 
         /**
@@ -190,7 +207,7 @@ public class Terminology {
 
                 }
                 if(!toggle){
-                    composeComponent.addInclude().setSystem(system).addConcept().setCode(code);
+                    composeComponent.addInclude().setSystem(system).addConcept().setCode(code).setDisplay(display);
                 }
 
             }
@@ -210,7 +227,7 @@ public class Terminology {
                     .findFirst();
         }
 
-        public Pair<String,String> chooseCode(Multimap<String,String> codes){
+        public Code chooseCode(Multimap<String,Code> codes){
             // Chooses a random code by picking a system then picking a code from
             // that system
 
@@ -218,9 +235,7 @@ public class Terminology {
             Random r = new Random();
             String system = keys.get(r.nextInt(keys.size()));
 
-            String code = getRandom(codes.get(system)).get();
-
-            return new Pair<>(system,code);
+            return getRandom(codes.get(system)).get();
         }
 
         public String getAuthToken(){
@@ -292,13 +307,8 @@ public class Terminology {
         return valueset;
     }
 
-    public static ValueSet getValueSet(String url){
-        // Temporary call to get valueSet from a Map
-        return valueSets.get(url);
-    }
 
-
-    public static Multimap<String, String> getCodes(ValueSet vs){
+    public static Multimap<String, Code> getCodes(ValueSet vs){
         /* Gets codes from the provided value set and sorts them by
           system.
 
@@ -307,16 +317,20 @@ public class Terminology {
           either one gets picked is the same.
          */
 
-        Multimap<String,String> retVal = ArrayListMultimap.create();
+        Multimap<String,Code> retVal = ArrayListMultimap.create();
         String system;
         String code;
         List<ValueSet.ConceptSetComponent> concepts = vs.getCompose().getInclude();
         for(ValueSet.ConceptSetComponent concept : concepts){
             system = concept.getSystem();
             for(ValueSet.ConceptReferenceComponent conceptRef : concept.getConcept()){
-                retVal.put(system,conceptRef.getCode());
-            }
+                if(conceptRef.getDisplay()==null){
+                    retVal.put(system,new Code(system,conceptRef.getCode(),system));
+                }else{
+                    retVal.put(system,new Code(system,conceptRef.getCode(),conceptRef.getDisplay()));
+                }
 
+            }
         }
 
         return retVal;
@@ -361,6 +375,7 @@ public class Terminology {
             }else{
                 token=null;
             }
+            response.close();
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             token = null;
@@ -388,6 +403,8 @@ public class Terminology {
         try {
             Response response = client.newCall(request).execute();
             token = response.body().string();
+            response.close();
+
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             token = null;
@@ -434,7 +451,7 @@ public class Terminology {
 
     }
 
-    public static Response getValueSet(OkHttpClient client, String oid, String ticket){
+    private static Response getValueSet(OkHttpClient client, String oid, String ticket){
         Response response=null;
         Map<String,String> parameterMap = new LinkedHashMap<>();
         parameterMap.put("id",oid);
@@ -449,9 +466,6 @@ public class Terminology {
         }
 
         return response;
-
-
-
     }
 
 
@@ -500,22 +514,10 @@ public class Terminology {
         return urlBuilder.build();
     }
 
-    public static void setDefaultCode(String code){
-        defaultCode = code;
-    }
 
-    public static String getDefaultCode(){
-        return defaultCode;
+    public static Map<String, ValueSet> getValueSets(){
+        return valueSets;
     }
-
-    public static void setDefaultSystem(String system){
-        defaultSystem = system;
-    }
-
-    public static String getDefaultSystem(){
-        return defaultSystem;
-    }
-
 
 
 }
