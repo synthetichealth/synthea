@@ -7,7 +7,7 @@ import org.hl7.fhir.dstu3.model.ValueSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
-
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -18,22 +18,21 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class TerminologyTest {
+
     private Terminology.Session session;
 
     @Before
     public void setUp() {
         session = new Terminology.Session();
-        Terminology.setDefaultCode("8675309");
-        Terminology.setDefaultSystem("http://henlo.org/");
-
     }
 
     @Test
     public void testSession() {
         List<String> resultsList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            Pair<String, String> retVal = session.getRandomCode("https://www.hl7.org/fhir/synthea/diabetes");
-            String code = retVal.getValue();
+            Code retVal = session.getRandomCode("https://www.hl7.org/fhir/synthea/diabetes",
+                    "henlo.org","8675309","diabetes mellitus");
+            String code = retVal.code;
             resultsList.add(code);
             assertTrue(code.equals("427089005") || code.equals("E08") || code.equals("250.00"));
         }
@@ -44,27 +43,30 @@ public class TerminologyTest {
 
         if(session.getAuthToken()!=null){
             for (int i = 0; i < 8; i++) {
-                Pair<String, String> retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071");
-                String code = retVal.getValue();
+                Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071","CPT",
+                        "42","display text");
+                String code = retVal.code;
                 resultsList.add(code);
                 assertTrue(code.equals("248802009") || code.equals("V45.71") || code.equals("Z90.10"));
             }
             allEqual = resultsList.isEmpty() || resultsList.stream().allMatch(resultsList.get(0)::equals);
             assertFalse(allEqual);
-            ValueSet va = Terminology.getValueSet("2.16.840.1.113883.3.464.1003.198.12.1071");
+            ValueSet va = Terminology.getValueSets().get("2.16.840.1.113883.3.464.1003.198.12.1071");
             assertNotNull(va);
             String placeholder = session.getAuthToken();
             session.setAuthToken(null);
-            Pair<String, String> cachedResult = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071");
-            assertNotEquals(cachedResult.getKey(), Terminology.getDefaultSystem());
-            assertNotEquals(cachedResult.getValue(), Terminology.getDefaultCode());
+            Code cachedResult = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071","Ow"
+                    ,"wO", "Wo");
+            assertNotEquals(cachedResult.system, "Ow");
+            assertNotEquals(cachedResult.code, "wO");
 
             resultsList.clear();
             session.setAuthToken(placeholder);
 
             for (int i = 0; i < 8; i++) {
-                Pair<String, String> retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.103.12.1001");
-                String code = retVal.getValue();
+                Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.103.12.1001",
+                        "Snomed","340", "poquert");
+                String code = retVal.code;
                 resultsList.add(code);
 
             }
@@ -72,13 +74,15 @@ public class TerminologyTest {
             boolean enoughUniqueCodes = resultsList.stream().distinct().count() > 3;
             assertTrue(enoughUniqueCodes);
         }else{
-            Pair<String,String> retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071");
-            assertEquals(retVal.getKey(), Terminology.getDefaultSystem());
-            assertEquals(retVal.getValue(), Terminology.getDefaultCode());
+            Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071",
+                    "bip","bop","boop");
+            assertEquals(retVal.system, "bip");
+            assertEquals(retVal.code, "bop");
         }
-        Pair<String,String> retVal = session.getRandomCode("1.11.111.1.111111.11.1.111.111.11.111");
-        assertEquals(retVal.getKey(), Terminology.getDefaultSystem());
-        assertEquals(retVal.getValue(), Terminology.getDefaultCode());
+        Code retVal = session.getRandomCode("1.11.111.1.111111.11.1.111.111.11.111",
+                "wishy", "washy","wooshy");
+        assertEquals(retVal.system, "wishy");
+        assertEquals(retVal.code, "washy");
 
 
 
@@ -122,7 +126,7 @@ public class TerminologyTest {
 
     @Test
     public void getValueSet() {
-        ValueSet va = Terminology.getValueSet("https://www.hl7.org/fhir/synthea/diabetes");
+        ValueSet va = Terminology.getValueSets().get("https://www.hl7.org/fhir/synthea/diabetes");
         assertNotNull(va);
         assertTrue(va.hasCompose());
 
@@ -161,15 +165,16 @@ public class TerminologyTest {
         b2.addConcept(c7);
         va.getCompose().addInclude(b1);
         va.getCompose().addInclude(b2);
-        Multimap<String, String> codeMap = Terminology.getCodes(va);
+        Multimap<String, Code> codeMap = Terminology.getCodes(va);
         assertTrue(codeMap.containsKey("skadoosh"));
-        assertTrue(codeMap.get("skadoosh").contains("4"));
-        assertTrue(codeMap.get("skadoosh").contains("5"));
-        assertTrue(codeMap.get("skadoosh").contains("6"));
-        assertTrue(codeMap.get("skadoosh").contains("7"));
-        assertTrue(codeMap.get("jimbo").contains("2"));
-        assertFalse(codeMap.get("skadoosh").contains("3"));
-        assertFalse(codeMap.get("jimbo").contains("5"));
+        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("4")));
+        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("5")));
+        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("6")));
+        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("7")));
+        assertFalse(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("3")));
+
+        assertTrue(codeMap.get("jimbo").stream().anyMatch(code -> code.code.equals("2")));
+        assertFalse(codeMap.get("jimbo").stream().anyMatch(code -> code.code.equals("5")));
     }
 
     @Test
@@ -229,20 +234,6 @@ public class TerminologyTest {
 //    @Test
 //    public void makeGenericGet() {
 //    }
-
-
-    @Test
-    public void getValueSet1() throws IOException {
-        OkHttpClient hello = session.getSessionClient();
-        if(session.getAuthToken()!=null){
-            String token = Terminology.getServiceTicket(session.getAuthToken(), session.getSessionClient());
-
-            String sap = Objects.requireNonNull(Terminology.getValueSet(hello, "2.16.840.1.113883.3.464.1003.103.12.1020", token)).body().string();
-            assertTrue(sap.contains("190330002"));
-            assertTrue(sap.contains("250.23"));
-            assertTrue(sap.contains("E10.3219"));
-        }
-    }
 
     @Test
     public void makeRequest() {
