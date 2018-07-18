@@ -357,8 +357,8 @@
     "Evaluation Gate delay": {
       "type": "Delay",
       "exact": {
-        "quantity": 6,
-        "unit": "months"
+        "quantity": 1,
+        "unit": "weeks"
       },
       "direct_transition": "PTSD_Re_evaluation Encounter"
     },
@@ -398,7 +398,7 @@
     },
     "end_Psych_encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Evaluation Gate delay"
+      "direct_transition": "therapy delay"
     },
     "PTSD Medication Order": {
       "type": "MedicationOrder",
@@ -707,6 +707,104 @@
         }
       ],
       "direct_transition": "PTSD_Initial_Careplan"
+    },
+    "Telehealth_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185317003,
+          "display": "Telephone encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Telehealth_Observations"
+    },
+    "therapy delay": {
+      "type": "Delay",
+      "direct_transition": "Therapy_Visit",
+      "range": {
+        "low": 5,
+        "high": 14,
+        "unit": "days"
+      }
+    },
+    "Therapy_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Therapy Note"
+    },
+    "telehealth delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Telehealth_Visit"
+    },
+    "Telehealth_Observations": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "84215-3",
+          "display": "Mental health Telehealth Note"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "end telehealth"
+    },
+    "Therapy Note": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75443-2",
+          "display": "Mental health Outpatient Note"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "end therapy visit"
+    },
+    "end therapy visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "telehealth delay"
+    },
+    "end telehealth": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "therapy delay",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "PTSD_Re_evaluation Encounter",
+            "within": {
+              "quantity": 6,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Evaluation Gate delay"
+        }
+      ]
     }
   }
 }
