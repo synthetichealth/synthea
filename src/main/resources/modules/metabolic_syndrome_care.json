@@ -2370,6 +2370,9 @@
             "operator": "==",
             "value": 4
           }
+        },
+        {
+          "transition": "Check_Nephropathy"
         }
       ]
     },
