@@ -15,11 +15,10 @@ import org.junit.Test;
 import org.mitre.synthea.world.geography.Location;
 
 public class ProviderTest {
-  private Set<String> statesLoaded = null;
  
   @Test
   public void testLoadProvidersByAbbreviation() {
-    Provider.getProviderList().clear();
+    Provider.clear();
     Provider.loadProviders("MA");
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
@@ -27,7 +26,7 @@ public class ProviderTest {
 
   @Test
   public void testLoadProvidersByStateName() {
-    Provider.getProviderList().clear();
+    Provider.clear();
     Provider.loadProviders("Massachusetts");
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
@@ -35,7 +34,7 @@ public class ProviderTest {
   
   @Test
   public void testGenerateClinicianByAbbreviation() {
-    Provider.getProviderList().clear();
+    Provider.clear();
     Provider.loadProviders("MA");
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
@@ -47,7 +46,7 @@ public class ProviderTest {
   
   @Test
   public void testGenerateClinicianByState() {
-    Provider.getProviderList().clear();
+    Provider.clear();
     Provider.loadProviders("Massachusetts");
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
@@ -167,6 +166,7 @@ public class ProviderTest {
          .filter(p -> p.toString().endsWith(".csv"))
          .forEach(t -> {
            try {
+             Provider.clear();
              Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName(), 
                  providerServices);
            } catch (Exception e) {

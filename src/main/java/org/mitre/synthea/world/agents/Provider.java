@@ -192,6 +192,12 @@ public class Provider implements QuadTreeData {
     return closest;
   }
   
+  public static void clear() {
+    providerList.clear();
+    statesLoaded.clear();
+    providerMap = new QuadTree(1400, 1400); // node capacity, depth
+  }
+  
   /**
    * Load into cache the list of providers for a state.
    * @param state name or abbreviation.
@@ -217,8 +223,6 @@ public class Provider implements QuadTreeData {
       
         servicesProvided.add(Provider.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        String primaryCareSpecialties = 
-            Config.get("generate.providers.primarycarespecialties.default_file");
         loadProviders(state, abbreviation, primaryCareFile, servicesProvided);
       
         servicesProvided.clear();
