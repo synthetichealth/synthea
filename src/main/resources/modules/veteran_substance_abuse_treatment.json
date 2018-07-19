@@ -279,20 +279,15 @@
           }
         },
         {
-          "transition": "Alcoholism encounter check",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "alcoholism",
-            "operator": "is not nil"
-          }
-        },
-        {
           "transition": "Opioid Addiction Care Plan",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "opioid addiction",
             "operator": "is not nil"
           }
+        },
+        {
+          "transition": "Alcoholism encounter check"
         }
       ]
     },
