@@ -44,6 +44,7 @@ public class Provider implements QuadTreeData {
   // ArrayList of all providers imported
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
   private static QuadTree providerMap = new QuadTree(1400, 1400); // node capacity, depth
+  private static Set<String> statesLoaded = new HashSet<String>();
 
   public Map<String, Object> attributes;
   public String uuid;
@@ -196,36 +197,43 @@ public class Provider implements QuadTreeData {
    * @param state name or abbreviation.
    */
   public static void loadProviders(String state) {
-    try {
+    if (!statesLoaded.contains(state) 
+        || !statesLoaded.contains(Location.getAbbreviation(state)) 
+        || !statesLoaded.contains(Location.getStateName(state))) {
+      try {
       
-      String abbreviation = Location.getAbbreviation(state);
+        String abbreviation = Location.getAbbreviation(state);
 
-      Set<String> servicesProvided = new HashSet<String>();
-      servicesProvided.add(Provider.AMBULATORY);
-      servicesProvided.add(Provider.INPATIENT);
+        Set<String> servicesProvided = new HashSet<String>();
+        servicesProvided.add(Provider.AMBULATORY);
+        servicesProvided.add(Provider.INPATIENT);
       
-      String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-      loadProviders(state, abbreviation, hospitalFile, servicesProvided);
+        String hospitalFile = Config.get("generate.providers.hospitals.default_file");
+        loadProviders(state, abbreviation, hospitalFile, servicesProvided);
 
-      String vaFile = Config.get("generate.providers.veterans.default_file");
-      loadProviders(state, abbreviation, vaFile, servicesProvided);
-      servicesProvided.clear();
+        String vaFile = Config.get("generate.providers.veterans.default_file");
+        loadProviders(state, abbreviation, vaFile, servicesProvided);
+        servicesProvided.clear();
       
-      servicesProvided.add(Provider.WELLNESS);
-      String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-      String primaryCareSpecialties = 
-          Config.get("generate.providers.primarycarespecialties.default_file");
-      loadProviders(state, abbreviation, primaryCareFile, servicesProvided);
+        servicesProvided.add(Provider.WELLNESS);
+        String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
+        String primaryCareSpecialties = 
+            Config.get("generate.providers.primarycarespecialties.default_file");
+        loadProviders(state, abbreviation, primaryCareFile, servicesProvided);
       
-      servicesProvided.clear();
-      servicesProvided.add(Provider.URGENTCARE);
-      String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-      loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
+        servicesProvided.clear();
+        servicesProvided.add(Provider.URGENTCARE);
+        String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
+        loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
       
-      servicesProvided.clear();
-    } catch (IOException e) {
-      System.err.println("ERROR: unable to load providers for state: " + state);
-      e.printStackTrace();
+        servicesProvided.clear();
+        statesLoaded.add(state);
+        statesLoaded.add(Location.getAbbreviation(state));
+        statesLoaded.add(Location.getStateName(state));
+      } catch (IOException e) {
+        System.err.println("ERROR: unable to load providers for state: " + state);
+        e.printStackTrace();
+      }
     }
   }
   
@@ -269,11 +277,6 @@ public class Provider implements QuadTreeData {
         String city = parsed.city;
         String address = parsed.address;
 
-        
-
-        //only enter this if THERE IS AN INFO FILE
-        //if there is no info file or if the provider is not found in the info file
-        // make them one general clinician that's always chosen
         if (row.get("hasSpecialties") == null || row.get("hasSpecialties").equals("FALSE")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
@@ -328,8 +331,8 @@ public class Provider implements QuadTreeData {
   
   /**
    * Randomly chooses a clinician out of a given clinician list.
-   * @param clinicians - the list of clinicians to choose from
-   * @param clinicianSeed - seed to help randomly choose a clinician
+   * @param specialty - the specialty to choose from
+   * @param random - random to help choose clinician
    * @return
    */
   public Clinician chooseClinicianList(String specialty, Random random) {

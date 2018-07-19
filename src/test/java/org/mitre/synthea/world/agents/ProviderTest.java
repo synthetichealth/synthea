@@ -15,7 +15,8 @@ import org.junit.Test;
 import org.mitre.synthea.world.geography.Location;
 
 public class ProviderTest {
-
+  private Set<String> statesLoaded = null;
+ 
   @Test
   public void testLoadProvidersByAbbreviation() {
     Provider.getProviderList().clear();

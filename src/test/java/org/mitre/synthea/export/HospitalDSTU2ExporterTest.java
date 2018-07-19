@@ -36,7 +36,7 @@ public class HospitalDSTU2ExporterTest {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir_dstu2.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
-    Provider.loadProviders(null);
+    Provider.loadProviders("MA");
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 
