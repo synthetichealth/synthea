@@ -1,7 +1,7 @@
 {
   "name": "Veteran PTSD",
   "remarks": [
-    "A blank module"
+    "Post Traumatic Stress Disorder is one of the top disease conditions (by prevalence), disproportionately affecting veterans.  A majority of the guidelines detailed here in this module "
   ],
   "states": {
     "Initial": {
@@ -38,6 +38,10 @@
           "transition": "Terminal",
           "distribution": 0.8964
         }
+      ],
+      "remarks": [
+        "The prevalence data presented here come from the seminal report on VHA health care delivery systems and management processes.  It can be accessed here: https://www.va.gov/opa/choiceact/documents/assessments/integrated_report.pdf",
+        ""
       ]
     },
     "Male": {
@@ -67,6 +71,9 @@
           "transition": "Terminal",
           "distribution": 0.8649
         }
+      ],
+      "remarks": [
+        "The prevalence data presented here come from the seminal report on VHA health care delivery systems and management processes.  It can be accessed here: https://www.va.gov/opa/choiceact/documents/assessments/integrated_report.pdf"
       ]
     },
     "Veteran": {
@@ -432,6 +439,10 @@
           "transition": "PTSD Chronic Pain Med",
           "distribution": 0.5
         }
+      ],
+      "remarks": [
+        "most common Rx ordered tied to mental health conditions like PTSD are SSRIs (per VA CDW data analysis)",
+        ""
       ]
     },
     "end re_evaluation_medication": {
@@ -462,13 +473,12 @@
         "quantity": 21,
         "unit": "years"
       },
-      "direct_transition": "veteran guard"
-    },
-    "veteran guard": {
-      "type": "Simple",
+      "remarks": [
+        "model attempt to wait for war exposure to provide traumatic instance.  Most veterans exposed to at least 1 tour in a war-time scenario become veterans after 21 years age"
+      ],
       "conditional_transition": [
         {
-          "transition": "Veteran",
+          "transition": "mTBI check",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "veteran",
@@ -495,7 +505,10 @@
         }
       ],
       "direct_transition": "end_Psych_encounter",
-      "reason": "ptsd"
+      "reason": "ptsd",
+      "remarks": [
+        "per Dr Trafton and other sources"
+      ]
     },
     "end_follow_up_careplan": {
       "type": "CarePlanEnd",
@@ -534,6 +547,11 @@
           "transition": "At Risk for suicide",
           "distribution": 0.02
         }
+      ],
+      "remarks": [
+        "per new VA protocol identified by Jodie Trafton, PhD",
+        "",
+        ""
       ]
     },
     "PHQ2_Q9 Assessment": {
@@ -706,7 +724,7 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "PTSD_Initial_Careplan"
+      "direct_transition": "PHQ2_Q9_Assessment"
     },
     "Telehealth_Visit": {
       "type": "Encounter",
@@ -803,6 +821,77 @@
         },
         {
           "transition": "Evaluation Gate delay"
+        }
+      ]
+    },
+    "PHQ2_Q9_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 715252007,
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "direct_transition": "Columbia_Suicide_Risk_Assessment",
+      "remarks": [
+        "per new VA protocol identified by Jodie Trafton, PhD",
+        ""
+      ]
+    },
+    "Columbia_Suicide_Risk_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "direct_transition": "PTSD_Initial_Careplan",
+      "remarks": [
+        "per new VA protocol identified by Jodie Trafton, PhD"
+      ]
+    },
+    "mTBI check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mTBI",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "PTSD Episode",
+              "distribution": 0.439
+            },
+            {
+              "transition": "Veteran",
+              "distribution": 0.561
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Veteran",
+              "distribution": 1
+            }
+          ]
         }
       ]
     }
