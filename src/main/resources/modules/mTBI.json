@@ -56,6 +56,24 @@
           "display": "Loss of consciousness (finding)"
         }
       ],
+      "direct_transition": "Wellness Encounter"
+    },
+    "Wellness Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "mTBI",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "New_State",
+      "wellness": true
+    },
+    "New_State": {
+      "type": "EncounterEnd",
       "direct_transition": "Terminal"
     }
   }
