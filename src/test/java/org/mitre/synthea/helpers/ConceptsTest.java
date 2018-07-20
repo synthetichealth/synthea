@@ -95,4 +95,27 @@ public class ConceptsTest {
       assertTrue(concepts.containsKey(code));
     }
   }
+
+  @Test
+  public void testValueSetCodes() throws FileNotFoundException {
+    Path modulesFolder = Paths.get("src/test/resources/generic");
+    Path modulePath = modulesFolder.resolve("active_terminology_logic.json");
+
+    JsonReader reader = new JsonReader(new FileReader(modulePath.toString()));
+    JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+    JsonObject state = module.getAsJsonObject("states").getAsJsonObject("Contract Super Disease");
+
+    Concepts.inventoryState(concepts, state, module.get("name").getAsString());
+    assertEquals(4,concepts.keySet().size());
+
+    Code code1 = new Code("SNOMED-CT", "1231", "henlo");
+    Code code2 = new Code("ICD-10", "E08", "its me");
+    Code code3 = new Code("ICD-9", "250.00", "");
+    assertTrue(concepts.containsKey(code1));
+    assertTrue(concepts.containsKey(code2));
+    assertTrue(concepts.containsKey(code3));
+
+
+
+  }
 }

@@ -65,12 +65,14 @@ public class TerminologyTest {
 
             for (int i = 0; i < 8; i++) {
                 Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.103.12.1001",
-                        "Snomed","340", "poquert");
+                        "Snomed","340", "foobar");
                 String code = retVal.code;
                 resultsList.add(code);
 
             }
 
+            // This test is probabilistically capable of failing with
+            // a 0.000000001% chance of failure.
             boolean enoughUniqueCodes = resultsList.stream().distinct().count() > 3;
             assertTrue(enoughUniqueCodes);
         }else{
@@ -138,8 +140,8 @@ public class TerminologyTest {
         va.getCompose().addInclude();
         ValueSet.ConceptSetComponent b1 = new ValueSet.ConceptSetComponent();
         ValueSet.ConceptSetComponent b2 = new ValueSet.ConceptSetComponent();
-        b1.setSystem("jimbo");
-        b2.setSystem("skadoosh");
+        b1.setSystem("foobar");
+        b2.setSystem("foo");
 
         ValueSet.ConceptReferenceComponent c1 = new ValueSet.ConceptReferenceComponent();
         ValueSet.ConceptReferenceComponent c2 = new ValueSet.ConceptReferenceComponent();
@@ -166,15 +168,15 @@ public class TerminologyTest {
         va.getCompose().addInclude(b1);
         va.getCompose().addInclude(b2);
         Multimap<String, Code> codeMap = Terminology.getCodes(va);
-        assertTrue(codeMap.containsKey("skadoosh"));
-        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("4")));
-        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("5")));
-        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("6")));
-        assertTrue(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("7")));
-        assertFalse(codeMap.get("skadoosh").stream().anyMatch(code -> code.code.equals("3")));
+        assertTrue(codeMap.containsKey("foo"));
+        assertTrue(codeMap.get("foo").stream().anyMatch(code -> code.code.equals("4")));
+        assertTrue(codeMap.get("foo").stream().anyMatch(code -> code.code.equals("5")));
+        assertTrue(codeMap.get("foo").stream().anyMatch(code -> code.code.equals("6")));
+        assertTrue(codeMap.get("foo").stream().anyMatch(code -> code.code.equals("7")));
+        assertFalse(codeMap.get("foo").stream().anyMatch(code -> code.code.equals("3")));
 
-        assertTrue(codeMap.get("jimbo").stream().anyMatch(code -> code.code.equals("2")));
-        assertFalse(codeMap.get("jimbo").stream().anyMatch(code -> code.code.equals("5")));
+        assertTrue(codeMap.get("foobar").stream().anyMatch(code -> code.code.equals("2")));
+        assertFalse(codeMap.get("foobar").stream().anyMatch(code -> code.code.equals("5")));
     }
 
     @Test
