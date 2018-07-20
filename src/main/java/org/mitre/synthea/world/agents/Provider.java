@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -255,9 +256,10 @@ public class Provider implements QuadTreeData {
       Set<String> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
-    List<? extends Map<String,String>> csv = SimpleCSV.parse(resource);
+    Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
     
-    for (Map<String,String> row : csv) {
+    while (csv.hasNext()) {
+      Map<String,String> row = csv.next();
       String currState = row.get("state");
       
       // for now, only allow one state at a time

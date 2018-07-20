@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema.ColumnType;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,23 @@ public class SimpleCSV {
 
     MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
         .with(schema).readValues(csvData);
+    
 
     return it.readAll();
+  }
+  
+  public static Iterator<LinkedHashMap<String, String>> parseLineByLine(String csvData) throws IOException {
+	// Read schema from the first line; start with bootstrap instance
+	    // to enable reading of schema from the first line
+	    // NOTE: reads schema and uses it for binding
+	    CsvMapper mapper = new CsvMapper();
+	    // use first row as header; otherwise defaults are fine
+	    CsvSchema schema = CsvSchema.emptySchema().withHeader();
+
+	    MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
+	        .with(schema).readValues(csvData);
+	    
+	    return it;
   }
 
   /**
