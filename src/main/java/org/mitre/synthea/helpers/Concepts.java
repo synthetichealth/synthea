@@ -124,7 +124,7 @@ public class Concepts {
 
     // TODO - how can we make this more generic
     // and not have to remember to update this if we add new codes in another field?
-    if(state.has("valueSet")){
+    if (state.has("valueSet")) {
       Terminology.Session s = new Terminology.Session();
       List<Code> codes = s.getAllCodes(state.get("valueSet").getAsString());
       inventoryCodes(concepts,codes,module);

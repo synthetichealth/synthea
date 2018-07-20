@@ -372,26 +372,20 @@ public abstract class Logic {
   public static class ActiveCondition extends ActiveLogic {
     @Override
     public boolean test(Person person, long time) {
-      if(this.valueSet != null){
+      if (this.valueSet != null) {
 
         Set<String> presentCodes = new HashSet<>(person.record.present.keySet());
         List<String> valueSetCodes = Terminology.sess.getAllCodes(this.valueSet)
                 .stream()
-                .map(code -> {return code.code;})
+                .map(code -> code.code)
                 .collect(Collectors.toList());
 
-
-        // Takes intersection of codes in value set and codes present in the record and updates in place.
-        // RetainAll returns true if it changes something, you could use that fact to define a boolean
-        // if you wanted to check if ALL the codes in the value set are present.
+        // Takes intersection of codes in value set and codes present
+        // in the record and updates in place. RetainAll returns true if it changes
+        // something, you could use that fact to define a boolean if you wanted to check
+        // if ALL the codes in the value set are present.
         presentCodes.retainAll(valueSetCodes);
-
-
-        if(presentCodes.isEmpty()){
-          return false;
-        }else{
-          return true;
-        }
+        return !presentCodes.isEmpty();
 
       }
 

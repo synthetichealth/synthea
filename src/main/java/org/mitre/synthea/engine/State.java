@@ -648,7 +648,7 @@ public abstract class State implements Cloneable {
       String primaryDisplay = codes.get(0).display;
 
       // Value Set Functionality
-      if(valueSet != null){
+      if (valueSet != null) {
         Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,primaryCode,primaryDisplay);
         primaryCode = vsCode.code;
 
@@ -720,15 +720,6 @@ public abstract class State implements Cloneable {
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
-
-      // Value Set Functionality
-//      if(valueSet != null){
-//        Pair<String,String> vsCode = session.getRandomCode(valueSet,codes.get(0).system,primaryCode);
-//        Code valueSetCode = new Code(vsCode.getKey(), vsCode.getValue(),"henlo");
-//        primaryCode = vsCode.getValue();
-//        codes.set(0,valueSetCode);
-//      }
-
       Entry allergy = person.record.allergyStart(time, primaryCode);
       allergy.name = this.name;
       allergy.codes.addAll(codes);
