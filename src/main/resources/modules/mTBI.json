@@ -1,0 +1,62 @@
+{
+  "name": "Veteran mild TBI ",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "veteran delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "veteran delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 18,
+        "unit": "years"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Loss of Consciousness",
+              "distribution": 0.0094
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.9906
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Terminal",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Loss of Consciousness": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "mTBI",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 419045004,
+          "display": "Loss of consciousness (finding)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  }
+}
