@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -356,7 +357,7 @@ public abstract class Logic {
   private abstract static class ActiveLogic extends Logic {
     protected List<Code> codes;
     protected String referencedByAttribute;
-    protected String value_set;
+    protected String valueSet;
   }
 
   /**
@@ -371,11 +372,10 @@ public abstract class Logic {
   public static class ActiveCondition extends ActiveLogic {
     @Override
     public boolean test(Person person, long time) {
-      if(this.value_set != null){
+      if(this.valueSet != null){
 
-        Set<String> presentCodes = person.record.present.keySet();
-
-        List<String> valueSetCodes = Terminology.sess.getAllCodes(this.value_set)
+        Set<String> presentCodes = new HashSet<>(person.record.present.keySet());
+        List<String> valueSetCodes = Terminology.sess.getAllCodes(this.valueSet)
                 .stream()
                 .map(code -> {return code.code;})
                 .collect(Collectors.toList());
