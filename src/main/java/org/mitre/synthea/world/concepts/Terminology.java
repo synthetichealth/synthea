@@ -6,25 +6,17 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-
-import javafx.util.Pair;
-
+import com.google.gson.stream.JsonWriter;
 import okhttp3.*;
 import org.hl7.fhir.dstu3.model.ValueSet;
 import org.mitre.synthea.helpers.Config;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
-
-import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -162,6 +154,7 @@ public class Terminology {
             // Build a ValueSet
             ValueSet vs = new ValueSet();
 
+
             /*A value set should look like
              Compose: {
                   Include: [
@@ -186,6 +179,19 @@ public class Terminology {
             Document responseXml = builder.parse(is);
             Element root = responseXml.getDocumentElement();
             String namespaceURI = root.getNamespaceURI();
+
+            NamedNodeMap valueSetAttr = responseXml.getElementsByTagNameNS(namespaceURI,"ValueSet")
+                    .item(0)
+                    .getAttributes();
+
+            String displayName = valueSetAttr.getNamedItem("displayName").getTextContent();
+
+            // Regex replaces all puncuation with an underscore
+            displayName = displayName.replaceAll("[, ';\"/:]","_");
+            String oid = valueSetAttr.getNamedItem("ID").getTextContent();
+
+
+            vs.setUrl(oid);
             NodeList concepts =responseXml.getElementsByTagNameNS(namespaceURI,"Concept");
             for(int i = 0 ; i<concepts.getLength();i++){
 
@@ -198,6 +204,7 @@ public class Terminology {
                 // in the ValueSet so we don't have duplicates with the codes
                 // spread out between them.
                 boolean toggle = false;
+
                 for (ValueSet.ConceptSetComponent c : composeComponent.getInclude()) {
                     if(c.getSystem().equals(system)){
                         c.addConcept().setCode(code).setDisplay(display);
@@ -212,7 +219,13 @@ public class Terminology {
 
             }
             vs.setCompose(composeComponent);
+
+            // Writes the value set to the valueset folder with VSAC appended
+            FileWriter w = new FileWriter(
+                    Paths.get(ClassLoader.getSystemClassLoader().getResource(VS_FOLDER).toURI()) + "/" + displayName+"VSAC.json");
+
 //            System.out.println(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(vs));
+            ctx.newJsonParser().setPrettyPrint(true).encodeResourceToWriter(vs,w);
 
             return vs;
 
@@ -259,6 +272,7 @@ public class Terminology {
 
         Map<String, ValueSet> retVal = new ConcurrentHashMap<String, ValueSet>();
         URL valuesetsFolder = ClassLoader.getSystemClassLoader().getResource(VS_FOLDER);
+
         try{
             Path path = Paths.get(valuesetsFolder.toURI());
 
