@@ -494,17 +494,62 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mg/dL",
           "codes": [
             {
               "system": "LOINC",
-              "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "code": "5797-6",
+              "display": "Ketones [Mass/​volume] in Urine by Test strip"
             }
           ],
           "range": {
-            "low": 4,
-            "high": 29
+            "low": 0,
+            "high": 20
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2514-8",
+              "display": "Ketones [Presence] in Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5811-5",
+              "display": "Specific gravity of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1.001,
+            "high": 1.039
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pH",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5803-2",
+              "display": "pH of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 7
           }
         },
         {
@@ -513,118 +558,73 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "17861-6",
-              "display": "Calcium [Mass/​volume] in Serum or Plasma"
+              "code": "5804-0",
+              "display": "Protein [Mass/​volume] in Urine by Test strip"
             }
           ],
           "range": {
-            "low": 8.5,
-            "high": 10.2
+            "low": 250,
+            "high": 450
           }
         },
         {
           "category": "laboratory",
-          "unit": "g/dL",
+          "unit": "{nominal}",
           "codes": [
             {
               "system": "LOINC",
-              "code": "2885-2",
-              "display": "Protein [Mass/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 60,
-            "high": 80
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1751-7",
-              "display": "Albumin [Mass/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 3.5,
-            "high": 5.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "10834-0",
-              "display": "Globulin [Mass/​volume] in Serum by calculation"
+              "code": "20454-5",
+              "display": "Protein [Presence] in Urine by Test strip"
             }
           ],
           "range": {
             "low": 2,
-            "high": 3.5
+            "high": 4
           }
         },
         {
           "category": "laboratory",
-          "unit": "mg/dL",
+          "unit": "{nominal}",
           "codes": [
             {
               "system": "LOINC",
-              "code": "1975-2",
-              "display": "Bilirubin.total [Mass/​volume] in Serum or Plasma"
+              "code": "5802-4",
+              "display": "Nitrite [Presence] in Urine by Test strip"
             }
           ],
           "range": {
-            "low": 0.1,
-            "high": 1.2
+            "low": 0,
+            "high": 1
           }
         },
         {
           "category": "laboratory",
-          "unit": "U/L",
+          "unit": "{nominal}",
           "codes": [
             {
               "system": "LOINC",
-              "code": "6768-6",
-              "display": "Alkaline phosphatase [Enzymatic activity/​volume] in Serum or Plasma"
+              "code": "5794-3",
+              "display": "Hemoglobin [Presence] in Urine by Test strip"
             }
           ],
           "range": {
-            "low": 20,
-            "high": 140
+            "low": 0,
+            "high": 1
           }
         },
         {
           "category": "laboratory",
-          "unit": "U/L",
+          "unit": "{nominal}",
           "codes": [
             {
               "system": "LOINC",
-              "code": "1742-6",
-              "display": "Alanine aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+              "code": "5799-2",
+              "display": "Leukocyte esterase [Presence] in Urine by Test strip"
             }
           ],
           "range": {
-            "low": 20,
-            "high": 60
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1920-8",
-              "display": "Aspartate aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 6,
-            "high": 40
+            "low": 0,
+            "high": 1
           }
         }
       ],
