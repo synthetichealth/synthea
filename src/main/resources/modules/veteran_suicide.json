@@ -508,11 +508,11 @@
           "distributions": [
             {
               "transition": "Delay 18 to 34 years old",
-              "distribution": 0.00453
+              "distribution": 0.0906
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99547
+              "distribution": 0.9094
             }
           ]
         },
@@ -524,11 +524,11 @@
           "distributions": [
             {
               "transition": "Delay 18 to 34 years old",
-              "distribution": 0.00135
+              "distribution": 0.027
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99865
+              "distribution": 0.973
             }
           ]
         },
@@ -540,11 +540,11 @@
           "distributions": [
             {
               "transition": "Delay 35 to 54 years old",
-              "distribution": 0.00375
+              "distribution": 0.075
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99625
+              "distribution": 0.925
             }
           ]
         },
@@ -556,11 +556,11 @@
           "distributions": [
             {
               "transition": "Delay 35 to 54 years old",
-              "distribution": 0.00187
+              "distribution": 0.0374
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99813
+              "distribution": 0.9626
             }
           ]
         },
@@ -572,11 +572,11 @@
           "distributions": [
             {
               "transition": "Delay 55 to 74 years old",
-              "distribution": 0.00267
+              "distribution": 0.0534
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99733
+              "distribution": 0.9466
             }
           ]
         },
@@ -588,11 +588,11 @@
           "distributions": [
             {
               "transition": "Delay 55 to 74 years old",
-              "distribution": 0.00148
+              "distribution": 0.0296
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99852
+              "distribution": 0.9704
             }
           ]
         },
@@ -604,11 +604,11 @@
           "distributions": [
             {
               "transition": "Delay 75 to 110 years old",
-              "distribution": 0.00278
+              "distribution": 0.0556
             },
             {
               "transition": "Terminal",
-              "distribution": 0.99722
+              "distribution": 0.9444
             }
           ]
         }
