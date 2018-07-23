@@ -473,40 +473,13 @@
         {
           "transition": "Record_Former_Smoker",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": false
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "quit_smoking_age",
-                "operator": "is not nil"
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "quit smoking age",
+            "operator": "is not nil"
           }
         },
         {
-          "transition": "Record_Never_Smoker",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": false
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "quit_smoking_age",
-                "operator": "is nil"
-              }
-            ]
-          }
+          "transition": "Record_Never_Smoker"
         }
       ]
     },
