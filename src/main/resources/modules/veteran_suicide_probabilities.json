@@ -100,7 +100,7 @@
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.052
+      "value": 0.0052
     }
   }
 }
