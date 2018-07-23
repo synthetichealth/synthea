@@ -35,12 +35,12 @@ public abstract class State implements Cloneable {
   public Long entered;
   public Long exited;
 
-  private Transition transition;
+  protected Transition transition;
   // note that these are not Transition objects, because they are JSON lists
-  private String directTransition; // or in this case just a String
-  private List<ConditionalTransitionOption> conditionalTransition;
-  private List<DistributedTransitionOption> distributedTransition;
-  private List<ComplexTransitionOption> complexTransition;
+  protected String directTransition; // or in this case just a String
+  protected List<ConditionalTransitionOption> conditionalTransition;
+  protected List<DistributedTransitionOption> distributedTransition;
+  protected List<ComplexTransitionOption> complexTransition;
   public List<String> remarks;
 
   protected void initialize(Module module, String name, JsonObject definition) {
@@ -193,7 +193,7 @@ public abstract class State implements Cloneable {
    * resumes.
    */
   public static class CallSubmodule extends State {
-    private String submodule;
+    protected String submodule;
 
     @Override
     public CallSubmodule clone() {
@@ -273,8 +273,8 @@ public abstract class State implements Cloneable {
     // hence it is not set in clone()
     public Long next;
 
-    private RangeWithUnit<Long> range;
-    private ExactWithUnit<Long> exact;
+    protected RangeWithUnit<Long> range;
+    protected ExactWithUnit<Long> exact;
 
 
     @Override
@@ -319,7 +319,7 @@ public abstract class State implements Cloneable {
    * point it progresses to the next state.
    */
   public static class Guard extends State {
-    private Logic allow;
+    protected Logic allow;
 
     @Override
     public Guard clone() {
@@ -345,8 +345,8 @@ public abstract class State implements Cloneable {
    * reset.
    */
   public static class SetAttribute extends State {
-    private String attribute;
-    private Object value;
+    protected String attribute;
+    protected Object value;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
@@ -390,9 +390,9 @@ public abstract class State implements Cloneable {
    * <p>Note: The attribute is initialized with a default value of 0 if not previously set.
    */
   public static class Counter extends State {
-    private String attribute;
-    private String action;
-    private boolean increment;
+    protected String attribute;
+    protected String action;
+    protected boolean increment;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
@@ -456,10 +456,10 @@ public abstract class State implements Cloneable {
    * discovered and diagnosed.
    */
   public static class Encounter extends State {
-    private boolean wellness;
-    private String encounterClass;
-    private List<Code> codes;
-    private String reason;
+    protected boolean wellness;
+    protected String encounterClass;
+    protected List<Code> codes;
+    protected String reason;
 
     @Override
     public Encounter clone() {
@@ -533,7 +533,7 @@ public abstract class State implements Cloneable {
       }
     }
 
-    private void diagnosePastConditions(Person person, long time) {
+    protected void diagnosePastConditions(Person person, long time) {
       // reminder: history[0] is current state, history[size-1] is Initial
       for (State state : person.history) {
         if (state instanceof OnsetState) {
@@ -567,7 +567,7 @@ public abstract class State implements Cloneable {
    * encounter.
    */
   public static class EncounterEnd extends State {
-    private Code dischargeDisposition;
+    protected Code dischargeDisposition;
 
     @Override
     public EncounterEnd clone() {
@@ -599,7 +599,7 @@ public abstract class State implements Cloneable {
    * be shared. It is an implementation detail and should never be referenced directly in a JSON
    * module.
    */
-  private abstract static class OnsetState extends State {
+  protected abstract static class OnsetState extends State {
     public boolean diagnosed;
 
     protected List<Code> codes;
@@ -673,9 +673,9 @@ public abstract class State implements Cloneable {
    * ConditionOnset state assigned a condition
    */
   public static class ConditionEnd extends State {
-    private List<Code> codes;
-    private String conditionOnset;
-    private String referencedByAttribute;
+    protected List<Code> codes;
+    protected String conditionOnset;
+    protected String referencedByAttribute;
 
     @Override
     public ConditionEnd clone() {
@@ -737,10 +737,10 @@ public abstract class State implements Cloneable {
    *
    */
   public static class AllergyEnd extends State {
-    private List<Code> codes;
+    protected List<Code> codes;
 
-    private String allergyOnset;
-    private String referencedByAttribute;
+    protected String allergyOnset;
+    protected String referencedByAttribute;
 
     @Override
     public AllergyEnd clone() {
@@ -774,10 +774,10 @@ public abstract class State implements Cloneable {
    * the name of an attribute as the reason for the prescription.
    */
   public static class MedicationOrder extends State {
-    private List<Code> codes;
-    private String reason;
-    private JsonObject prescription; // TODO make this a Component
-    private String assignToAttribute;
+    protected List<Code> codes;
+    protected String reason;
+    protected JsonObject prescription; // TODO make this a Component
+    protected String assignToAttribute;
 
     @Override
     public MedicationOrder clone() {
@@ -841,13 +841,13 @@ public abstract class State implements Cloneable {
    * previous MedicationOrder state assigned a medication
    */
   public static class MedicationEnd extends State {
-    private List<Code> codes;
-    private String medicationOrder;
-    private String referencedByAttribute;
+    protected List<Code> codes;
+    protected String medicationOrder;
+    protected String referencedByAttribute;
 
     // note that this code has some child codes for various different reasons,
     // ex "medical aim achieved", "ineffective", "avoid interaction", "side effect", etc
-    private static final Code EXPIRED = new Code("SNOMED-CT", "182840001",
+    protected static final Code EXPIRED = new Code("SNOMED-CT", "182840001",
         "Drug treatment stopped - medical advice");
 
     @Override
@@ -882,11 +882,11 @@ public abstract class State implements Cloneable {
    * what the care plan entails.
    */
   public static class CarePlanStart extends State {
-    private List<Code> codes;
-    private List<Code> activities;
-    private List<JsonObject> goals; // TODO: make this a Component
-    private String reason;
-    private String assignToAttribute;
+    protected List<Code> codes;
+    protected List<Code> activities;
+    protected List<JsonObject> goals; // TODO: make this a Component
+    protected String reason;
+    protected String assignToAttribute;
 
     @Override
     public CarePlanStart clone() {
@@ -943,11 +943,11 @@ public abstract class State implements Cloneable {
    * previous CarePlanStart state assigned a care plan
    */
   public static class CarePlanEnd extends State {
-    private List<Code> codes;
-    private String careplan;
-    private String referencedByAttribute;
+    protected List<Code> codes;
+    protected String careplan;
+    protected String referencedByAttribute;
 
-    private static final Code FINISHED = new Code("SNOMED-CT", "385658003", "Done");
+    protected static final Code FINISHED = new Code("SNOMED-CT", "385658003", "Done");
 
     @Override
     public CarePlanEnd clone() {
@@ -981,10 +981,10 @@ public abstract class State implements Cloneable {
    * supports identifying a previous ConditionOnset or an attribute as the reason for the procedure.
    */
   public static class Procedure extends State {
-    private List<Code> codes;
-    private String reason;
-    private RangeWithUnit<Long> duration;
-    private String assignToAttribute;
+    protected List<Code> codes;
+    protected String reason;
+    protected RangeWithUnit<Long> duration;
+    protected String assignToAttribute;
 
     @Override
     public Procedure clone() {
@@ -1054,10 +1054,10 @@ public abstract class State implements Cloneable {
    * not a physical metric, so it should not be stored in a VitalSign.
    */
   public static class VitalSign extends State {
-    private org.mitre.synthea.world.concepts.VitalSign vitalSign;
-    private String unit;
-    private Range<Double> range;
-    private Exact<Double> exact;
+    protected org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    protected String unit;
+    protected Range<Double> range;
+    protected Exact<Double> exact;
 
     @Override
     public VitalSign clone() {
@@ -1118,14 +1118,14 @@ public abstract class State implements Cloneable {
    * as administrative data such as marital status, race, ethnicity and religious affiliation.
    */
   public static class Observation extends State {
-    private List<Code> codes;
-    private Range<Double> range;
-    private Exact<Object> exact;
-    private Code valueCode;
-    private String attribute;
-    private org.mitre.synthea.world.concepts.VitalSign vitalSign;
-    private String category;
-    private String unit;
+    protected List<Code> codes;
+    protected Range<Double> range;
+    protected Exact<Object> exact;
+    protected Code valueCode;
+    protected String attribute;
+    protected org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    protected String category;
+    protected String unit;
 
     @Override
     public Observation clone() {
@@ -1171,7 +1171,7 @@ public abstract class State implements Cloneable {
    * package multiple observations into a single entity. It is an implementation detail and should
    * not be referenced by JSON modules directly.
    */
-  private abstract static class ObservationGroup extends State {
+  protected abstract static class ObservationGroup extends State {
     protected List<Code> codes;
     protected List<Observation> observations;
 
@@ -1192,7 +1192,7 @@ public abstract class State implements Cloneable {
    * EncounterEnd. See the Encounter section above for more details.
    */
   public static class MultiObservation extends ObservationGroup {
-    private String category;
+    protected String category;
 
     @Override
     public MultiObservation clone() {
@@ -1258,9 +1258,9 @@ public abstract class State implements Cloneable {
    */
   public static class ImagingStudy extends State {
     /** The equivalent SNOMED codes that describe this ImagingStudy as a Procedure. */
-    private Code procedureCode;
+    protected Code procedureCode;
     /** The Series of Instances that represent this ImagingStudy. */
-    private List<HealthRecord.ImagingStudy.Series> series;
+    protected List<HealthRecord.ImagingStudy.Series> series;
 
     @Override
     public ImagingStudy clone() {
@@ -1294,10 +1294,10 @@ public abstract class State implements Cloneable {
    * condition type.
    */
   public static class Symptom extends State {
-    private String symptom;
-    private String cause;
-    private Range<Integer> range;
-    private Exact<Integer> exact;
+    protected String symptom;
+    protected String cause;
+    protected Range<Integer> range;
+    protected Exact<Integer> exact;
     public boolean addressed;
 
     @Override
@@ -1354,11 +1354,11 @@ public abstract class State implements Cloneable {
    * created events and records with a timestamp after the patient's death.
    */
   public static class Death extends State {
-    private List<Code> codes;
-    private String conditionOnset;
-    private String referencedByAttribute;
-    private RangeWithUnit<Integer> range;
-    private ExactWithUnit<Integer> exact;
+    protected List<Code> codes;
+    protected String conditionOnset;
+    protected String referencedByAttribute;
+    protected RangeWithUnit<Integer> range;
+    protected ExactWithUnit<Integer> exact;
 
     @Override
     public Death clone() {
