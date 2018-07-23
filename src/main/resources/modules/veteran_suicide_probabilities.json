@@ -1,0 +1,106 @@
+{
+  "name": "Veteran Suicide Probabilities",
+  "remarks": [
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 18,
+        "unit": "years"
+      },
+      "remarks": "",
+      "direct_transition": "Veteran check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Veteran": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "PTSD",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid addiction",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "SUD",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mdd",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "MDD",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Terminal",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "PTSD": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.0052
+    },
+    "SUD": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.0104
+    },
+    "Veteran check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          },
+          "transition": "Veteran"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "MDD": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.052
+    }
+  }
+}
