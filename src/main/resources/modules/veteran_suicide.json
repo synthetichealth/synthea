@@ -32,7 +32,7 @@
             },
             {
               "distribution": 0.9454,
-              "transition": "Non_Fatal_Attempt"
+              "transition": "VA Hotline Call"
             }
           ]
         },
@@ -48,35 +48,9 @@
             },
             {
               "distribution": 0.9844,
-              "transition": "Non_Fatal_Attempt"
+              "transition": "VA Hotline Call"
             }
           ]
-        }
-      ]
-    },
-    "Non_Fatal_Attempt": {
-      "type": "Simple",
-      "remarks": [
-        "======================================================================",
-        " NON-FATAL                                                            ",
-        "======================================================================",
-        "Most commonly this is from poisoning (overdose), suffocation, or cutting. Less than 1% of all ",
-        "non-fatal attempts involve firearms, so omitting that option altogether. The distributions here ",
-        "are based on the Harvard University study, see: ",
-        "https://www.hsph.harvard.edu/means-matter/basic-suicide-facts/how/"
-      ],
-      "distributed_transition": [
-        {
-          "distribution": 0.64,
-          "transition": "Attempt_By_Poisoning"
-        },
-        {
-          "distribution": 0.19,
-          "transition": "Attempt_By_Cutting"
-        },
-        {
-          "distribution": 0.17,
-          "transition": "Attempt_By_Suffocation"
         }
       ]
     },
@@ -416,20 +390,115 @@
       },
       "conditional_transition": [
         {
-          "transition": "Attempted_Suicide_Incidence_By_Age",
+          "transition": "Veteran check",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "veteran",
             "operator": "is not nil"
           }
+        },
+        {
+          "transition": "Terminal"
         }
       ]
     },
-    "Attempted_Suicide_Incidence_By_Age": {
+    "Delay 55 to 74 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 37,
+        "high": 56,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Delay 35 to 54 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 17,
+        "high": 36,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Delay 75 to 110 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 57,
+        "high": 92,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "Delay 18 to 34 years old": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 16,
+        "unit": "years"
+      },
+      "direct_transition": "Attempts_Suicide"
+    },
+    "MH & SUD Comorbidty Check": {
+      "type": "CallSubmodule",
+      "submodule": "Veteran_Suicide_Probabilities",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "probability_of_suicide",
+            "operator": ">",
+            "value": 0.01
+          },
+          "distributions": [
+            {
+              "transition": "Comorbidity Check",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Comorbidity Check",
+              "distribution": 0.6
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.4
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "probability_of_suicide",
+            "operator": ">=",
+            "value": 0.005
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Comorbidity Check",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.5
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "probability_of_suicide",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "Comorbidity Check": {
       "type": "Simple",
-      "remarks": [
-        ""
-      ],
       "complex_transition": [
         {
           "condition": {
@@ -545,41 +614,95 @@
         }
       ]
     },
-    "Delay 55 to 74 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 37,
-        "high": 56,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
+    "Veteran check": {
+      "type": "Simple",
+      "remarks": [
+        ""
+      ],
+      "direct_transition": "MH & SUD Comorbidty Check"
     },
-    "Delay 35 to 54 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 17,
-        "high": 36,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
+    "VA Hotline Call": {
+      "type": "Simple",
+      "remarks": "",
+      "distributed_transition": [
+        {
+          "transition": "VA Hotline Encounter",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Non_Fatal_Attempt",
+          "distribution": 0.9
+        }
+      ]
     },
-    "Delay 75 to 110 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 57,
-        "high": 92,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
+    "Non_Fatal_Attempt": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.64,
+          "transition": "Attempt_By_Poisoning"
+        },
+        {
+          "distribution": 0.19,
+          "transition": "Attempt_By_Cutting"
+        },
+        {
+          "distribution": 0.17,
+          "transition": "Attempt_By_Suffocation"
+        }
+      ],
+      "remarks": [
+        "======================================================================",
+        " NON-FATAL                                                            ",
+        "======================================================================",
+        "Most commonly this is from poisoning (overdose), suffocation, or cutting. Less than 1% of all ",
+        "non-fatal attempts involve firearms, so omitting that option altogether. The distributions here ",
+        "are based on the Harvard University study, see: ",
+        "https://www.hsph.harvard.edu/means-matter/basic-suicide-facts/how/",
+        ""
+      ]
     },
-    "Delay 18 to 34 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 0,
-        "high": 16,
-        "unit": "years"
+    "VA Hotline Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185317003,
+          "display": "Telephone encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Hotline Mental Health Note"
+    },
+    "end telehealth": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Non_Fatal_Attempt",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Hotline Mental Health Note": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "87626-8",
+          "display": "Suicide prevention note"
+        }
+      ],
+      "exact": {
+        "quantity": 1
       },
-      "direct_transition": "Attempts_Suicide"
+      "direct_transition": "end telehealth"
     }
   }
 }
