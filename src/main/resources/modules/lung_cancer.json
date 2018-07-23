@@ -867,7 +867,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "End_SCLC_Treatment_Encounter"
+      "direct_transition": "Chest CT"
     },
     "End_SCLC_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -974,7 +974,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "End_NSCLC_Treatment_Encounter"
+      "direct_transition": "Chest_CT"
     },
     "End_NSCLC_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -1997,6 +1997,72 @@
         "unit": "minutes"
       },
       "direct_transition": "SCLC Chemotheraphy I"
+    },
+    "Chest CT": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 16335031000119104,
+        "display": "High resolution computed tomography of chest without contrast (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "End_SCLC_Treatment_Encounter"
+    },
+    "Chest_CT": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 16335031000119104,
+        "display": "High resolution computed tomography of chest without contrast (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "End_NSCLC_Treatment_Encounter"
     }
   }
 }
