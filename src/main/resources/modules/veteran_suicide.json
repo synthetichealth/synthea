@@ -623,7 +623,6 @@
     },
     "VA Hotline Call": {
       "type": "Simple",
-      "remarks": "",
       "distributed_transition": [
         {
           "transition": "VA Hotline Encounter",
