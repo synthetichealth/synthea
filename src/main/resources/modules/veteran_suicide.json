@@ -440,7 +440,7 @@
     },
     "MH & SUD Comorbidty Check": {
       "type": "CallSubmodule",
-      "submodule": "Veteran_Suicide_Probabilities",
+      "submodule": "veterans/veteran_suicide_probabilities",
       "complex_transition": [
         {
           "condition": {
