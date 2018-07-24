@@ -170,7 +170,8 @@ public abstract class Logic {
     private String operator;
     private List<Code> codes;
     private String referencedByAttribute;
-    private Double value;
+    private Object value;
+    private Code valueCode;
 
     @Override
     public boolean test(Person person, long time) {
@@ -183,6 +184,7 @@ public abstract class Logic {
             break;
           }
         }
+        
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
           observation = 
@@ -191,8 +193,16 @@ public abstract class Logic {
           return false;
         }
       }
-
-      return Utilities.compare(observation.value, this.value, operator);
+      if (valueCode != null) {
+        value = valueCode;
+      } 
+      if (operator.equals("is nil")) {
+        return observation == null;
+      } else if (operator.equals("is not nil")) {
+        return observation != null;
+      } else {
+        return Utilities.compare(observation.value, this.value, operator);
+      }
     }
   }
   
