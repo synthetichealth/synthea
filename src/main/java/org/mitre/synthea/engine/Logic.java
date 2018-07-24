@@ -198,7 +198,7 @@ public abstract class Logic {
       } 
       if (operator.equals("is nil")) {
         return observation == null;
-      } else if (operator.equals("is not nil") {
+      } else if (operator.equals("is not nil")) {
         return observation != null;
       } else {
         return Utilities.compare(observation.value, this.value, operator);
