@@ -38,6 +38,7 @@ public abstract class TestHelper {
     Config.set("exporter.fhir_dstu2.export", "false");
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
+    Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.cdw.export", "false");
     Config.set("exporter.hospital.fhir.export", "false");
