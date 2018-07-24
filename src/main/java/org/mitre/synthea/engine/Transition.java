@@ -140,6 +140,10 @@ public abstract class Transition {
     private Logic condition;
     private List<DistributedTransitionOption> distributions;
     
+	public List<DistributedTransitionOption> getDistributions() {
+		return distributions;
+	}
+    
   }
   
   /**
@@ -184,6 +188,10 @@ public abstract class Transition {
       throw new IllegalArgumentException(
           "Complex Transition must have either transition or distributions");
     }
+
+	public List<ComplexTransitionOption> getTransitions() {
+		return transitions;
+	}
   }
   
   private static String pickDistributedTransition(
