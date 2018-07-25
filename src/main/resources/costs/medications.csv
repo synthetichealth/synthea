@@ -68,8 +68,8 @@ CODE,MIN,MODE,MAX,COMMENTS
 1049221,2.83,800,2258,Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG Oral Tablet
 857005,2.36,50,500,Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet
 1049630,4,5,12,diphenhydrAMINE Hydrochloride 25 MG Oral Tablet - OTC [Benadryl]
-239981,4,5,10,Chlorpheniramine 2 MG Chewable Tablet - otc [Chlor-Timeton] - see otc_antihistamine
-389128,4,5,10,Chlorpheniramine 8 MG Oral Tablet - otc
+477045,4,5,10,Chlorpheniramine Maleate 2 MG/ML Oral Solution - otc [Chlor-Timeton] - see otc_antihistamine
+1363309,4,5,10,Chlorpheniramine Maleate 4 MG Oral Tablet - otc
 197378,3,7,12,Astemizole 10 MG Oral Tablet - otc [hismanal] - no longer available so assumed to be similar to other otc antihistamines
 141918,6,9,12,Terfenadine 60 MG Oral Tablet - otc [seldane]
 665078,5,7,19,Loratadine 5 MG Chewable Tablet - OTC [claritin]
