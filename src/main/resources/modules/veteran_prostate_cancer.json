@@ -318,28 +318,6 @@
       ],
       "direct_transition": "biopsy_visit_end"
     },
-    "Prostate_Cancer Therapy": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "prostate_cancer",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
-        }
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Aggressive_Therapy_Careplan",
-          "distribution": 0.7
-        },
-        {
-          "transition": "Watchful_Waiting_Careplan",
-          "distribution": 0.3
-        }
-      ]
-    },
     "Aggressive_Therapy_Careplan": {
       "type": "CarePlanStart",
       "codes": [
@@ -384,25 +362,9 @@
           "system": "RxNorm",
           "code": 1860480,
           "display": "1 ML DOCEtaxel 20 MG/ML Injection"
-        },
-        {
-          "system": "RxNorm",
-          "code": "Leuprolide",
-          "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
         }
       ],
-      "assign_to_attribute": "prostate cancer",
-      "conditional_transition": [
-        {
-          "transition": "Prostatectomy",
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 0,
-            "unit": "years"
-          }
-        }
-      ]
+      "direct_transition": "Chemotherapy_Hormone Order2"
     },
     "Prostatectomy": {
       "type": "Procedure",
@@ -458,7 +420,7 @@
         "quantity": 3,
         "unit": "months"
       },
-      "direct_transition": "Prostate_Cancer Therapy"
+      "direct_transition": "Prostate_Cancer_Therapy"
     },
     "eventual_death": {
       "type": "Simple",
@@ -489,7 +451,7 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "Prostate_Cancer Therapy"
+      "direct_transition": "Prostate_Cancer_Therapy"
     },
     "Prostatectomy ": {
       "type": "CarePlanEnd",
@@ -498,6 +460,49 @@
     "end_chemo_med": {
       "type": "MedicationEnd",
       "direct_transition": "end_cancer_therapy encounter"
+    },
+    "Chemotherapy_Hormone Order2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 752899,
+          "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Prostatectomy",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          }
+        }
+      ]
+    },
+    "Prostate_Cancer_Therapy": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "prostate_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Aggressive_Therapy_Careplan",
+          "distribution": 0.7
+        },
+        {
+          "transition": "Watchful_Waiting_Careplan",
+          "distribution": 0.3
+        }
+      ]
     }
   }
 }
