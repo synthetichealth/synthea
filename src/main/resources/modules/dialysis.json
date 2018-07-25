@@ -398,7 +398,11 @@
             }
           ],
           "unit": "{nominal}",
-          "attribute": "cloudy"
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 7766007,
+            "display": "Cloudy urine (finding)"
+          }
         },
         {
           "category": "laboratory",
@@ -410,7 +414,11 @@
             }
           ],
           "unit": "{nominal}",
-          "attribute": "ammonia"
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167248002,
+            "display": "Urine smell ammoniacal (finding)"
+          }
         },
         {
           "category": "laboratory",
@@ -422,7 +430,11 @@
             }
           ],
           "unit": "{nominal}",
-          "attribute": "transparent"
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 300828005,
+            "display": "Translucent (qualifier value)"
+          }
         },
         {
           "category": "laboratory",
@@ -434,7 +446,11 @@
             }
           ],
           "unit": "{nominal}",
-          "attribute": "brown"
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 371254008,
+            "display": "Brown color (qualifier value)"
+          }
         },
         {
           "category": "laboratory",
@@ -461,7 +477,11 @@
             }
           ],
           "unit": "{nominal}",
-          "attribute": "present"
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167265006,
+            "display": "Urine glucose test = ++ (finding)"
+          }
         },
         {
           "category": "laboratory",
@@ -488,8 +508,10 @@
             }
           ],
           "unit": "{nominal}",
-          "exact": {
-            "quantity": 1
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 275778006,
+            "display": "Finding of bilirubin in urine (finding)"
           }
         },
         {
@@ -517,9 +539,10 @@
               "display": "Ketones [Presence] in Urine by Test strip"
             }
           ],
-          "range": {
-            "low": 1,
-            "high": 5
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167291007,
+            "display": "Urine ketone test = +++ (finding)"
           }
         },
         {
@@ -577,9 +600,10 @@
               "display": "Protein [Presence] in Urine by Test strip"
             }
           ],
-          "range": {
-            "low": 2,
-            "high": 4
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167277001,
+            "display": "Urine protein test = +++ (finding)"
           }
         },
         {
@@ -592,9 +616,10 @@
               "display": "Nitrite [Presence] in Urine by Test strip"
             }
           ],
-          "range": {
-            "low": 0,
-            "high": 1
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 314138001,
+            "display": "Urine nitrite negative (finding)"
           }
         },
         {
@@ -607,9 +632,10 @@
               "display": "Hemoglobin [Presence] in Urine by Test strip"
             }
           ],
-          "range": {
-            "low": 0,
-            "high": 1
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167297006,
+            "display": "Urine blood test = negative (finding)"
           }
         },
         {
@@ -622,9 +648,10 @@
               "display": "Leukocyte esterase [Presence] in Urine by Test strip"
             }
           ],
-          "range": {
-            "low": 0,
-            "high": 1
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 394717006,
+            "display": "Urine leukocyte test negative (finding)"
           }
         }
       ],
