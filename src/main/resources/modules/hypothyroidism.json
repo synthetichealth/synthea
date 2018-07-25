@@ -152,7 +152,7 @@
         {
           "system": "LOINC",
           "code": "3024-7",
-          "display": "Thyroxine (T4) free [Mass/​volume] in Serum or Plasma"
+          "display": "Thyroxine (T4) free [Mass/volume] in Serum or Plasma"
         }
       ],
       "direct_transition": "TSH panel result",
@@ -169,7 +169,7 @@
         {
           "system": "LOINC",
           "code": "3016-3",
-          "display": "Thyrotropin [Units/​volume] in Serum or Plasma"
+          "display": "Thyrotropin [Units/volume] in Serum or Plasma"
         }
       ],
       "direct_transition": "encounter end",

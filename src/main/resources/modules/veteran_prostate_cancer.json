@@ -99,7 +99,7 @@
         {
           "system": "LOINC",
           "code": "2857-1",
-          "display": "Prostate specific Ag [Mass/​volume] in Serum or Plasma"
+          "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
         }
       ],
       "direct_transition": "end_wellness_visit",
@@ -161,7 +161,7 @@
         {
           "system": "LOINC",
           "code": "2857-1",
-          "display": "Prostate specific Ag [Mass/​volume] in Serum or Plasma"
+          "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
         }
       ],
       "direct_transition": "end_wellness_visit",
