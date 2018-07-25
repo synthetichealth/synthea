@@ -2151,33 +2151,7 @@
     },
     "Living_With_Diabetes": {
       "type": "Simple",
-      "direct_transition": "Followup_Encounter_After_Diagnosis"
-    },
-    "Followup_Encounter_After_Diagnosis": {
-      "type": "Encounter",
-      "wellness": true,
-      "direct_transition": "Record_HA1C"
-    },
-    "Delay_Before_Next_Dialysis_Encounter": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 2,
-        "unit": "days"
-      },
-      "direct_transition": "Dialysis_Encounter"
-    },
-    "Dialysis_Encounter": {
-      "type": "Encounter",
-      "encounter_class": "outpatient",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
-        }
-      ],
-      "reason": "Diagnose_End_Stage_Renal_Disease",
-      "direct_transition": "Record_HA1C"
+      "direct_transition": "Wellness_Encounter"
     },
     "Hypertension_Medication_Low": {
       "type": "MedicationOrder",
@@ -2269,7 +2243,7 @@
           }
         },
         {
-          "transition": "End_Hypertension_Medication",
+          "transition": "Check_Diabetes",
           "condition": {
             "condition_type": "Active Medication",
             "codes": [
