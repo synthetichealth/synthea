@@ -13,10 +13,6 @@
     },
     "veteran delay": {
       "type": "Delay",
-      "exact": {
-        "quantity": 18,
-        "unit": "years"
-      },
       "complex_transition": [
         {
           "condition": {
@@ -43,7 +39,12 @@
             }
           ]
         }
-      ]
+      ],
+      "range": {
+        "low": 18,
+        "high": 21,
+        "unit": "years"
+      }
     },
     "Loss of Consciousness": {
       "type": "ConditionOnset",
@@ -52,8 +53,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 419045004,
-          "display": "Loss of consciousness (finding)"
+          "code": 127295002,
+          "display": "Traumatic brain injury (disorder)"
         }
       ],
       "direct_transition": "Wellness Encounter"
@@ -69,10 +70,10 @@
           "display": "Encounter for symptom (procedure)"
         }
       ],
-      "direct_transition": "New_State",
+      "direct_transition": "end encounter",
       "wellness": true
     },
-    "New_State": {
+    "end encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     }
