@@ -8,9 +8,6 @@
       "type": "Initial",
       "direct_transition": "age delay"
     },
-    "Terminal": {
-      "type": "Terminal"
-    },
     "CHF symptom onset 1": {
       "type": "Symptom",
       "symptom": "shortness of breath",
@@ -46,7 +43,7 @@
         {
           "system": "SNOMED-CT",
           "code": 88805009,
-          "display": "congestive heart failure"
+          "display": "Chronic congestive heart failure (disorder)"
         }
       ],
       "direct_transition": "CHF initial workup encounter"
@@ -324,16 +321,7 @@
     },
     "end_followup_encounter": {
       "type": "EncounterEnd",
-      "distributed_transition": [
-        {
-          "transition": "stable CHF",
-          "distribution": 0.9
-        },
-        {
-          "transition": "Potential CHF Flare",
-          "distribution": 0.1
-        }
-      ]
+      "direct_transition": "Maintaining CHF"
     },
     "age delay": {
       "type": "Delay",
@@ -366,7 +354,22 @@
         "quantity": 6,
         "unit": "months"
       },
-      "direct_transition": "Potential CHF Flare"
+      "conditional_transition": [
+        {
+          "transition": "Potential CHF Flare",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "followup_CHF_encounter",
+            "within": {
+              "quantity": 1,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "followup_CHF_encounter"
+        }
+      ]
     },
     "Potential CHF Flare": {
       "type": "Simple",
@@ -396,7 +399,7 @@
           "display": "Encounter for Problem"
         }
       ],
-      "direct_transition": "Labs_BMP_ED"
+      "direct_transition": "Record_CMP"
     },
     "CXR_ED": {
       "type": "ImagingStudy",
@@ -430,22 +433,6 @@
         }
       ],
       "direct_transition": "ED_End"
-    },
-    "Labs_BMP_ED": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "1234",
-          "display": "LOINC Code"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "CXR_ED"
     },
     "ED_End": {
       "type": "EncounterEnd",
@@ -501,14 +488,6 @@
         }
       ],
       "direct_transition": "Inpatient CarePlan"
-    },
-    "stable CHF": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 1,
-        "unit": "years"
-      },
-      "direct_transition": "followup_CHF_encounter"
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -716,12 +695,7 @@
     },
     "End Inpatient Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Potential CHF Flare",
-      "discharge_disposition": {
-        "system": "NUBC",
-        "code": "1234",
-        "display": "NUBC Code"
-      }
+      "direct_transition": "Potential CHF Flare"
     },
     "inpatient daily labs": {
       "type": "DiagnosticReport",
@@ -832,6 +806,235 @@
       ],
       "target_encounter": "Wellness_Encounter",
       "direct_transition": "Inpatient Daily Transition"
+    },
+    "Record_CMP": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2339-0",
+              "display": "Glucose"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea Nitrogen"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "38483-4",
+              "display": "Creatinine"
+            }
+          ],
+          "unit": "mg/dL",
+          "vital_sign": "Creatinine"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "49765-1",
+              "display": "Calcium"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2947-0",
+              "display": "Sodium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6298-4",
+              "display": "Potassium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2069-3",
+              "display": "Chloride"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20565-8",
+              "display": "Carbon Dioxide"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+            }
+          ],
+          "range": {
+            "low": 4,
+            "high": 29
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein [Mass/​volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 60,
+            "high": 80
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/​volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10834-0",
+              "display": "Globulin [Mass/​volume] in Serum by calculation"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 3.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1975-2",
+              "display": "Bilirubin.total [Mass/​volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0.1,
+            "high": 1.2
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/​volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 20,
+            "high": 140
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 20,
+            "high": 60
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 40
+          }
+        }
+      ],
+      "direct_transition": "CXR_ED"
     }
   }
 }
