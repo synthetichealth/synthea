@@ -511,8 +511,20 @@
               "distribution": 0.0906
             },
             {
+              "transition": "Delay 35 to 54 years old",
+              "distribution": 0.075
+            },
+            {
+              "transition": "Delay 55 to 74 years old",
+              "distribution": 0.0534
+            },
+            {
+              "transition": "Delay 75 to 110 years old",
+              "distribution": 0.0556
+            },
+            {
               "transition": "Terminal",
-              "distribution": 0.9094
+              "distribution": 0.7254
             }
           ]
         },
@@ -528,87 +540,15 @@
             },
             {
               "transition": "Terminal",
-              "distribution": 0.973
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "transition": "Delay 35 to 54 years old",
-              "distribution": 0.075
+              "distribution": 0.906
             },
-            {
-              "transition": "Terminal",
-              "distribution": 0.925
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
             {
               "transition": "Delay 35 to 54 years old",
               "distribution": 0.0374
             },
             {
-              "transition": "Terminal",
-              "distribution": 0.9626
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "transition": "Delay 55 to 74 years old",
-              "distribution": 0.0534
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.9466
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
               "transition": "Delay 55 to 74 years old",
               "distribution": 0.0296
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.9704
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "transition": "Delay 75 to 110 years old",
-              "distribution": 0.0556
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.9444
             }
           ]
         }
