@@ -317,7 +317,7 @@
         {
           "system": "SNOMED-CT",
           "code": 36923009,
-          "display": "major depression, single episode"
+          "display": "Major depression, single episode"
         }
       ],
       "direct_transition": "Time Gate"
@@ -365,11 +365,6 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370143000,
-          "display": "major depression disorder"
-        },
-        {
-          "system": "SNOMED-CT",
           "code": 79094001,
           "display": "Initial Psychiatric Interview with mental status evaluation"
         }
@@ -394,7 +389,7 @@
         {
           "system": "SNOMED-CT",
           "code": 370143000,
-          "display": "major depression disorder"
+          "display": "Major depression disorder"
         }
       ],
       "distributed_transition": [
