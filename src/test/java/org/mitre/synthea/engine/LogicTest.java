@@ -27,8 +27,6 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 
-import freemarker.debug.Debugger;
-
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class LogicTest {

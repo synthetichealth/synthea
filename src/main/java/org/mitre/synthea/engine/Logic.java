@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.mitre.synthea.engine.Components.DateInput;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -13,7 +14,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.engine.Components.DateInput;
 
 /**
  * Logic represents any portion of a generic module that requires a logical
