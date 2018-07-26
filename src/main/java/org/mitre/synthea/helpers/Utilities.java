@@ -10,7 +10,6 @@ import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;

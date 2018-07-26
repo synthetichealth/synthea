@@ -66,4 +66,14 @@ public abstract class Components {
     public String unit;
   }
   
+  public static class DateInput {
+    public int year;
+    public int month;
+    public int day;
+    public int hour;
+    public int minute;
+    public int second;
+    public int millisecond;
+  }
+
 }

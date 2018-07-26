@@ -1,10 +1,9 @@
 package org.mitre.synthea.engine;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.helpers.Utilities;
@@ -14,6 +13,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.engine.Components.DateInput;
 
 /**
  * Logic represents any portion of a generic module that requires a logical
@@ -84,7 +84,7 @@ public abstract class Logic {
   public static class Date extends Logic {
     private Integer year;
     private Integer month;
-    private String date; //must be in format yyyy-MM-dd HH:mm:ss.SSS 
+    private DateInput date;
     private String operator;
 
     @Override
@@ -96,16 +96,11 @@ public abstract class Logic {
         int currentmonth = Utilities.getMonth(time);
         return Utilities.compare(currentmonth, month, operator);
       } else if (date != null) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        java.util.Date testdate;
-        try {
-          testdate = sdf.parse(date);
-        } catch (ParseException e) {
-          throw new IllegalArgumentException("Invalid date format provided to Date logic,"
-              + " required: yyyy-MM-dd HH:mm:ss.SSS, given: " + date, e);
-        }
-        long testtime = testdate.getTime();
-        return Utilities.compare(time, testtime, operator);
+        Calendar testDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        testDate.set(date.year, date.month - 1, date.day, date.hour, date.minute, date.second);
+        testDate.set(Calendar.MILLISECOND,date.millisecond);
+        long testTime = testDate.getTimeInMillis();
+        return Utilities.compare(time, testTime, operator);
       } else {
         throw new UnsupportedOperationException("Date type "
             + "not currently supported in Date logic.");
