@@ -26,6 +26,9 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+
+import freemarker.debug.Debugger;
+
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class LogicTest {
@@ -156,16 +159,19 @@ public class LogicTest {
     assertTrue(doTest("inJulyTest"));
 
     time = TestHelper.timestamp(2016, 12, 30, 0, 0, 0);
-    assertFalse(doTest("beforeHalloween2016Test"));
+    assertFalse(doTest("beforeChristmas2016Test"));
     assertTrue(doTest("afterIndependenceDay2000Test"));
+    assertFalse(doTest("isHalloween2007Test"));
 
     time = TestHelper.timestamp(2000, 4, 4, 0, 0, 0);
-    assertTrue(doTest("beforeHalloween2016Test"));
+    assertTrue(doTest("beforeChristmas2016Test"));
     assertFalse(doTest("afterIndependenceDay2000Test"));
+    assertFalse(doTest("isHalloween2007Test"));
 
-    time = TestHelper.timestamp(2007, 9, 20, 0, 0, 0);
-    assertTrue(doTest("beforeHalloween2016Test"));
+    time = TestHelper.timestamp(2007, 10, 31, 0, 0, 0);
+    assertTrue(doTest("beforeChristmas2016Test"));
     assertTrue(doTest("afterIndependenceDay2000Test"));
+    assertTrue(doTest("isHalloween2007Test"));
   }
 
   @Test

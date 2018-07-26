@@ -90,15 +90,44 @@
     "operator" : "==",
     "month" : 7
   },
-  "beforeHalloween2016Test" : {
+  "isHalloween2007Test" : {
+    "condition_type" : "Date",
+    "operator" : "==",
+    "date": {
+      "year": 2007,
+      "month": 10,
+      "day": 31,
+      "hour": 0,
+      "minute": 0,
+      "second": 0,
+      "millisecond": 0
+    }
+  },
+  "beforeChristmas2016Test" : {
     "condition_type" : "Date",
     "operator" : "<=",
-    "date" : "2016-10-31 00:00:00.000"
+    "date": {
+      "year": 2016,
+      "month": 12,
+      "day": 25,
+      "hour": 0,
+      "minute": 0,
+      "second": 0,
+      "millisecond": 0
+    }
   },
   "afterIndependenceDay2000Test" : {
     "condition_type" : "Date",
     "operator" : ">=",
-    "date" : "2000-07-04 00:00:00.000"
+    "date": {
+      "year": 2000,
+      "month": 7,
+      "day": 4,
+      "hour": 0,
+      "minute": 0,
+      "second": 0,
+      "millisecond": 0
+    }
   },
   "attributeEqualTo_TestValue_Test" : {
     "condition_type" : "Attribute",
