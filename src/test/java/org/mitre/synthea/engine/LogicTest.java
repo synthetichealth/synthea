@@ -26,7 +26,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
-
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class LogicTest {
