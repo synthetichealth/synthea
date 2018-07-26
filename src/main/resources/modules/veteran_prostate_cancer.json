@@ -327,7 +327,7 @@
           "display": "Cancer care plan"
         }
       ],
-      "direct_transition": "Chemotherapy_Hormone Order",
+      "direct_transition": "In Situ Prostate Cancer",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -351,7 +351,7 @@
           "display": "Cancer care plan"
         }
       ],
-      "direct_transition": "end_cancer_therapy encounter",
+      "direct_transition": "Stage 4 Prostate Cancer",
       "assign_to_attribute": "watchful_waiting",
       "reason": "prostate_cancer"
     },
@@ -423,8 +423,13 @@
       "direct_transition": "Prostate_Cancer_Therapy"
     },
     "eventual_death": {
-      "type": "Simple",
-      "direct_transition": "Terminal"
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "years"
+      }
     },
     "Prostate Cancer Symptom": {
       "type": "Symptom",
@@ -449,13 +454,9 @@
       "symptom": "urinary frequency",
       "cause": "",
       "exact": {
-        "quantity": 1
+        "quantity": 20
       },
       "direct_transition": "Prostate_Cancer_Therapy"
-    },
-    "Prostatectomy ": {
-      "type": "CarePlanEnd",
-      "direct_transition": "Prostatectomy "
     },
     "end_chemo_med": {
       "type": "MedicationEnd",
@@ -472,13 +473,14 @@
       ],
       "conditional_transition": [
         {
-          "transition": "Prostatectomy",
+          "transition": "end_chemo_med",
           "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 0,
-            "unit": "years"
+            "condition_type": "PriorState",
+            "name": "Prostatectomy"
           }
+        },
+        {
+          "transition": "Prostatectomy"
         }
       ]
     },
@@ -503,6 +505,32 @@
           "distribution": 0.3
         }
       ]
+    },
+    "Stage 4 Prostate Cancer": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Prostate_Cancer_Therapy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 314994000,
+          "display": "Metastasis from malignant tumor of prostate (disorder)"
+        }
+      ],
+      "direct_transition": "end_cancer_therapy encounter"
+    },
+    "In Situ Prostate Cancer": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Prostate_Cancer_Therapy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 92691004,
+          "display": "Carcinoma in situ of prostate (disorder)"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Hormone Order"
     }
   }
 }
