@@ -75,7 +75,7 @@
         {
           "system": "SNOMED-CT",
           "code": 55822004,
-          "display": "hyperlipidemia"
+          "display": "Hyperlipidemia"
         }
       ],
       "direct_transition": "Hyperlipidemia initial workup encounter"
