@@ -330,7 +330,7 @@
         {
           "system": "SNOMED-CT",
           "code": 47505003,
-          "display": "posttraumatic stress disorder"
+          "display": "Posttraumatic stress disorder"
         }
       ],
       "distributed_transition": [
