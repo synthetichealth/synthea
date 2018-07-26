@@ -573,7 +573,7 @@
             {
               "system": "LOINC",
               "code": "6690-2",
-              "display": "Leukocytes [#/​volume] in Blood by Automated count"
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
             }
           ],
           "unit": "10*3/uL",
@@ -588,7 +588,7 @@
             {
               "system": "LOINC",
               "code": "789-8",
-              "display": "Erythrocytes [#/​volume] in Blood by Automated count"
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
             }
           ],
           "unit": "10*6/uL",
@@ -603,7 +603,7 @@
             {
               "system": "LOINC",
               "code": "718-7",
-              "display": "Hemoglobin [Mass/​volume] in Blood"
+              "display": "Hemoglobin [Mass/volume] in Blood"
             }
           ],
           "unit": "g/dL",
@@ -664,7 +664,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/​volume] by Automated count"
+              "display": "MCHC [Mass/volume] by Automated count"
             }
           ],
           "range": {
@@ -694,7 +694,7 @@
             {
               "system": "LOINC",
               "code": "777-3",
-              "display": "Platelets [#/​volume] in Blood by Automated count"
+              "display": "Platelets [#/volume] in Blood by Automated count"
             }
           ],
           "range": {

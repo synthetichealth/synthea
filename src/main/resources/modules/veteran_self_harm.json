@@ -9,7 +9,7 @@
       "remarks": [
         ""
       ],
-      "direct_transition": "Vetean Delay"
+      "direct_transition": "Veteran Guard"
     },
     "Attempts_Suicide": {
       "type": "Simple",
@@ -382,26 +382,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Vetean Delay": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 18,
-        "unit": "years"
-      },
-      "conditional_transition": [
-        {
-          "transition": "Veteran check",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
-    },
     "Delay 55 to 74 years old": {
       "type": "Delay",
       "range": {
@@ -441,58 +421,19 @@
     "MH & SUD Comorbidty Check": {
       "type": "CallSubmodule",
       "submodule": "veterans/veteran_suicide_probabilities",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
+          "transition": "Comorbidity Check",
+          "distribution": {
             "attribute": "probability_of_suicide",
-            "operator": ">",
-            "value": 0.01
-          },
-          "distributions": [
-            {
-              "transition": "Comorbidity Check",
-              "distribution": 0.8
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.2
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Comorbidity Check",
-              "distribution": 0.6
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.4
-            }
-          ],
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "probability_of_suicide",
-            "operator": ">=",
-            "value": 0.005
+            "default": 0.0045
           }
         },
         {
-          "distributions": [
-            {
-              "transition": "Comorbidity Check",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.5
-            }
-          ],
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "probability_of_suicide",
-            "operator": "is nil"
+          "transition": "Terminal",
+          "distribution": {
+            "attribute": "probability_of_no_suicide",
+            "default": 0.9955
           }
         }
       ]
@@ -508,23 +449,19 @@
           "distributions": [
             {
               "transition": "Delay 18 to 34 years old",
-              "distribution": 0.0906
+              "distribution": 0.3122
             },
             {
               "transition": "Delay 35 to 54 years old",
-              "distribution": 0.075
+              "distribution": 0.25343
             },
             {
               "transition": "Delay 55 to 74 years old",
-              "distribution": 0.0534
+              "distribution": 0.17982
             },
             {
               "transition": "Delay 75 to 110 years old",
-              "distribution": 0.0556
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.7254
+              "distribution": 0.25455
             }
           ]
         },
@@ -536,30 +473,19 @@
           "distributions": [
             {
               "transition": "Delay 18 to 34 years old",
-              "distribution": 0.027
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.906
+              "distribution": 0.280155642
             },
             {
               "transition": "Delay 35 to 54 years old",
-              "distribution": 0.0374
+              "distribution": 0.449416342
             },
             {
               "transition": "Delay 55 to 74 years old",
-              "distribution": 0.0296
+              "distribution": 0.270428016
             }
           ]
         }
       ]
-    },
-    "Veteran check": {
-      "type": "Simple",
-      "remarks": [
-        ""
-      ],
-      "direct_transition": "MH & SUD Comorbidty Check"
     },
     "VA Hotline Call": {
       "type": "Simple",
@@ -642,6 +568,15 @@
         "quantity": 1
       },
       "direct_transition": "end telehealth"
+    },
+    "Veteran Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "veteran",
+        "operator": "is not nil"
+      },
+      "direct_transition": "MH & SUD Comorbidty Check"
     }
   }
 }

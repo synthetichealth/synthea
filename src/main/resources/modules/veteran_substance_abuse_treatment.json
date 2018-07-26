@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wellness Encounter"
+      "direct_transition": "Veteran Guard"
     },
     "Smoking_Condition": {
       "type": "ConditionOnset",
@@ -18,7 +18,7 @@
           "display": "Smokes tobacco daily"
         }
       ],
-      "direct_transition": "Alcohol Check"
+      "direct_transition": "Smoking_Careplan"
     },
     "Smoking_Careplan": {
       "type": "CarePlanStart",
@@ -37,32 +37,17 @@
           "display": "smoking cessation therapy"
         }
       ],
-      "complex_transition": [
+      "conditional_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking_medication",
-            "operator": "is not nil"
-          },
-          "distributions": [
-            {
-              "transition": "Alcoholism encounter check",
-              "distribution": 1
-            }
-          ]
-        },
-        {
+          "transition": "Smoking Medication",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "smoking_medication",
             "operator": "is nil"
-          },
-          "distributions": [
-            {
-              "transition": "Smoking Medication",
-              "distribution": 1
-            }
-          ]
+          }
+        },
+        {
+          "transition": "Alcohol Check"
         }
       ]
     },
@@ -75,7 +60,7 @@
           "display": "24hr nicotine transdermal patch"
         }
       ],
-      "direct_transition": "Alcoholism encounter check",
+      "direct_transition": "Alcohol Check",
       "reason": "Smoking_Condition",
       "assign_to_attribute": "smoking_medication"
     },
@@ -91,12 +76,7 @@
           }
         },
         {
-          "transition": "SUD check",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "alcoholism",
-            "operator": "is nil"
-          }
+          "transition": "SUD check"
         }
       ]
     },
@@ -111,69 +91,15 @@
           "display": "Alcoholism"
         }
       ],
-      "direct_transition": "SUD check"
+      "direct_transition": "Alcoholism_Care_Plan"
     },
     "Wellness Encounter": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
-        }
-      ],
-      "direct_transition": "Veteran Guard"
-    },
-    "Alcoholism Care Plan": {
-      "type": "CarePlanStart",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 734163000,
-          "display": "Care Plan"
-        }
-      ],
-      "direct_transition": "encounter_end",
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": 24165007,
-          "display": "Alcoholism counseling"
-        }
-      ]
-    },
-    "Alcoholism encounter check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Alcoholism Care Plan",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "alcoholism",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "encounter_end",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "alcoholism",
-            "operator": "is nil"
-          }
-        }
-      ]
+      "direct_transition": "Smoking_Check",
+      "wellness": true
     },
     "encounter_end": {
       "type": "EncounterEnd",
-      "direct_transition": "time_gate"
-    },
-    "time_gate": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 12,
-        "unit": "months"
-      },
       "direct_transition": "smoking post treatment"
     },
     "smoking symptom post treatment": {
@@ -189,7 +115,7 @@
           "distribution": 0.05
         },
         {
-          "transition": "Wellness Encounter",
+          "transition": "Loop_Back_To_Encounter",
           "distribution": 0.95
         }
       ]
@@ -210,7 +136,7 @@
     "alcoholism symptom post treatment": {
       "type": "SetAttribute",
       "attribute": "alcoholism",
-      "direct_transition": "Wellness Encounter"
+      "direct_transition": "Loop_Back_To_Encounter"
     },
     "Opioid Addiction Care Plan": {
       "type": "CarePlanStart",
@@ -248,46 +174,21 @@
         "quantity": 18,
         "unit": "years"
       },
-      "conditional_transition": [
-        {
-          "transition": "Smoking_Condition",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Alcohol Check",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is nil"
-          }
-        }
-      ]
+      "direct_transition": "Wellness Encounter"
     },
     "SUD check": {
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Smoking_Careplan",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "smoking",
-            "operator": "is not nil"
-          }
-        },
-        {
           "transition": "Opioid Addiction Care Plan",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "opioid addiction",
+            "attribute": "opioid_addiction",
             "operator": "is not nil"
           }
         },
         {
-          "transition": "Alcoholism encounter check"
+          "transition": "encounter_end"
         }
       ]
     },
@@ -302,7 +203,48 @@
           "display": "Opioid abuse (disorder)"
         }
       ],
-      "direct_transition": "Alcoholism encounter check"
+      "direct_transition": "encounter_end"
+    },
+    "Smoking_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Smoking_Condition",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcohol Check"
+        }
+      ]
+    },
+    "Alcoholism_Care_Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "SUD check",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 24165007,
+          "display": "Alcoholism counseling"
+        }
+      ]
+    },
+    "Loop_Back_To_Encounter": {
+      "type": "Simple",
+      "direct_transition": "Wellness Encounter",
+      "remarks": [
+        "Added this state just so that only one path goes back up to the top"
+      ]
     }
   }
 }
