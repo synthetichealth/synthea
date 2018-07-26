@@ -747,7 +747,7 @@
           "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
         }
       ],
-      "unit": "{nominal}",
+      "unit": "{score}",
       "direct_transition": "Record_Weight",
       "range": {
         "low": 0,
