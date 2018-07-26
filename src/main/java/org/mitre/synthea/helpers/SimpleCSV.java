@@ -43,18 +43,28 @@ public class SimpleCSV {
     return it.readAll();
   }
   
-  public static Iterator<LinkedHashMap<String, String>> parseLineByLine(String csvData) throws IOException {
-	// Read schema from the first line; start with bootstrap instance
-	    // to enable reading of schema from the first line
-	    // NOTE: reads schema and uses it for binding
-	    CsvMapper mapper = new CsvMapper();
-	    // use first row as header; otherwise defaults are fine
-	    CsvSchema schema = CsvSchema.emptySchema().withHeader();
+  /**
+   * Parse the data from the given CSV file into an Iterator of Maps, where the key is the
+   * column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
+   * the resulting maps. Uses an Iterator, as opposed to a list, in order to parse line by line and
+   * avoid memory overload.
+   * 
+   * @param csvData
+   *          Raw CSV data
+   * @return parsed data
+   * @throws IOException
+   *           if any exception occurs while parsing the data
+   */
+  public static Iterator<LinkedHashMap<String, String>> parseLineByLine(String csvData) 
+      throws IOException {
+    CsvMapper mapper = new CsvMapper();
+    // use first row as header; otherwise defaults are fine
+    CsvSchema schema = CsvSchema.emptySchema().withHeader();
 
-	    MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
-	        .with(schema).readValues(csvData);
-	    
-	    return it;
+    MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
+        .with(schema).readValues(csvData);
+    
+    return it;
   }
 
   /**

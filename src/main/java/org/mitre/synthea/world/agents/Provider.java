@@ -64,8 +64,6 @@ public class Provider implements QuadTreeData {
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
-  public long seed;
-
   
 
   protected Provider() {

@@ -383,7 +383,8 @@ public class Generator {
     Clinician clinician = null;
     try {
       
-      // NOTE: Currently used default demographics for clinicians
+      // NOTE: Currently, default demographics are used for clinician generation. 
+      // Commented out lines in this method are for using new, random demographics for clinicians.
       
       //Random randomForDemographics = new Random(clinicianSeed);
       //Demographics city = location.randomCity(randomForDemographics);
