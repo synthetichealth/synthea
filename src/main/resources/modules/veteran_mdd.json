@@ -425,6 +425,32 @@
       "codes": [
         {
           "system": "SNOMED-CT",
+          "code": 736254008,
+          "display": "Psychiatry care plan"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ssri",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "MDD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ssri",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "reason": "mdd_psych",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
           "code": 88848003,
           "display": "Psychiatric Follow-up"
         },
@@ -448,30 +474,25 @@
           "code": 304822001,
           "display": "Psychodynamic Interpersonal Therapy"
         }
-      ],
-      "conditional_transition": [
-        {
-          "transition": "end re_evaluation_medication",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ssri",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "MDD Medication Order",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ssri",
-            "operator": "is nil"
-          }
-        }
-      ],
-      "reason": "mdd_psych"
+      ]
     },
     "MDD_Careplan_Psych": {
       "type": "CarePlanStart",
       "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736254008,
+          "display": "Psychiatry care plan"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "reason": "mdd_psych",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
         {
           "system": "SNOMED-CT",
           "code": 88848003,
@@ -482,15 +503,6 @@
           "code": 225337009,
           "display": "Suicide Risk Assessment"
         }
-      ],
-      "direct_transition": "end_Psych_encounter",
-      "reason": "mdd_psych",
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": 385724002,
-          "display": "Coping Support Management"
-        }
       ]
     },
     "MDD_Re_evaluation Encounter": {
@@ -500,8 +512,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370143000,
-          "display": "major depression disorder"
+          "code": 390906007,
+          "display": "Follow-up encounter"
         }
       ],
       "distributed_transition": [
@@ -700,7 +712,7 @@
     "Therapy_Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "ptsd",
+      "reason": "mdd_psych",
       "codes": [
         {
           "system": "SNOMED-CT",
