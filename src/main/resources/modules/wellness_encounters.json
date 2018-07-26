@@ -26,7 +26,7 @@
         }
       ],
       "unit": "cm",
-      "direct_transition": "Record_Weight"
+      "direct_transition": "Record_Pain"
     },
     "Record_Weight": {
       "type": "Observation",
@@ -735,6 +735,24 @@
       ],
       "target_encounter": "Wellness_Encounter",
       "direct_transition": "check_eGFR"
+    },
+    "Record_Pain": {
+      "type": "Observation",
+      "target_encounter": "Wellness_Encounter",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "unit": "{nominal}",
+      "direct_transition": "Record_Weight",
+      "range": {
+        "low": 0,
+        "high": 4
+      }
     }
   }
 }
