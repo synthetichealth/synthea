@@ -1247,13 +1247,15 @@ public class CDWExporter {
         value = ExportHelper.getObservationValue(observation, "8480-6"); // systolic
         if (value != null && value.indexOf('.') >= 0) {
           value = value.substring(0, value.indexOf('.'));
+          s.append(value);
         }
-        s.append(value).append(',');
+        s.append(',');
         value = ExportHelper.getObservationValue(observation, "8462-4"); // diastolic
         if (value != null && value.indexOf('.') >= 0) {
           value = value.substring(0, value.indexOf('.'));
+          s.append(value);
         }
-        s.append(value).append(',');
+        s.append(',');
         break;
       case "29463-7": // weight
         // convert from kg to lbs
