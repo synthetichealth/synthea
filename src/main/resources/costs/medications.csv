@@ -109,9 +109,9 @@ CODE,MIN,MODE,MAX,COMMENTS
 1190795,7.45,20,40,Atropine Sulfate 1 MG/ML Injectable Solution
 897718,2,30,285,Verapamil Hydrochloride 40 MG
 312961,2,10,55,Simvastatin 20 MG Oral Tablet
-727374,130,350,650,1 ML Epinephrine 1 MG/ML Prefilled Syringe
+1660014,1,5,5,1 ML Epinephrine 1 MG/ML Injection -- https://www.cbsnews.com/news/cheaper-epipen-alternative-may-carry-risks/
 197604,4,45,150,Digoxin 0.125 MG Oral Tablet
 259255,1,24,600,Atorvastatin 80 MG Oral Tablet
-308056,6000,6400,6800,"Alteplase 1 MG/ML Injectable Solution -- not found in data, used https://www.managedcaremag.com/news/cost-clot-busting-drug-alteplase-outpaces-reimbursement"
+1804799,6000,6400,6800,"Alteplase 100 MG Injection -- not found in data, used https://www.managedcaremag.com/news/cost-clot-busting-drug-alteplase-outpaces-reimbursement"
 855332,1.5,15,250,Warfarin Sodium 5 MG Oral Tablet
 833036,15,65,150,"Captopril 25 MG Oral Tablet -- high variability, ranges 15-150, avg ~65"
