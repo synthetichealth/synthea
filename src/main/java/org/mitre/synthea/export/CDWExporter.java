@@ -1245,8 +1245,14 @@ public class CDWExporter {
       case "55284-4": // blood pressure
         s.append(',');
         value = ExportHelper.getObservationValue(observation, "8480-6"); // systolic
+        if (value != null && value.indexOf('.') >= 0) {
+          value = value.substring(0, value.indexOf('.'));
+        }
         s.append(value).append(',');
         value = ExportHelper.getObservationValue(observation, "8462-4"); // diastolic
+        if (value != null && value.indexOf('.') >= 0) {
+          value = value.substring(0, value.indexOf('.'));
+        }
         s.append(value).append(',');
         break;
       case "29463-7": // weight
