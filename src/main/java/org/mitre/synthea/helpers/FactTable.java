@@ -25,6 +25,8 @@ public class FactTable {
   private Map<String,Integer> keys;
   /** Lookup the fact by ID. */
   private Map<Integer,String> facts;
+  /** Synchronization lock. */
+  private static final Object LOCK = new Object();
   
   /**
    * Create a FactTable with an ID that starts at 1
@@ -41,7 +43,9 @@ public class FactTable {
    * @param id The value of the next ID.
    */
   public void setNextId(int id) {
-    this.id = new AtomicInteger(id);
+    synchronized (LOCK) {
+      this.id = new AtomicInteger(id);
+    }
   }
   
   /**
@@ -58,7 +62,9 @@ public class FactTable {
    * @return The ID for the fact. For example, 1 or 2.
    */
   public int getFactId(String key) {
-    return keys.get(key);
+    synchronized (LOCK) {
+      return keys.get(key);
+    }
   }
 
   /**
@@ -67,8 +73,10 @@ public class FactTable {
    * @return The fact. For example, 'Male' or 'Female'.
    */
   public String getFactByKey(String key) {
-    Integer id = keys.get(key);
-    return facts.get(id);
+    synchronized (LOCK) {
+      Integer id = keys.get(key);
+      return facts.get(id);
+    }
   }
 
   /**
@@ -77,7 +85,9 @@ public class FactTable {
    * @return The fact. For example, 'Male' or 'Female'.
    */
   public String getFactById(Integer id) {
-    return facts.get(id);
+    synchronized (LOCK) {
+      return facts.get(id);
+    }
   }
 
   /**
@@ -91,14 +101,16 @@ public class FactTable {
    * @return The ID for the fact. For example, 1 or 2.
    */
   public int addFact(String key, String fact) {
-    if (keys.containsKey(key)) {
-      return keys.get(key);
+    synchronized (LOCK) {
+      if (keys.containsKey(key)) {
+        return keys.get(key);
+      }
+
+      int next = id.getAndIncrement();
+      keys.put(key, next);
+      facts.put(next, fact);
+      return next;
     }
-    
-    int next = id.getAndIncrement();
-    keys.put(key, next);
-    facts.put(next, fact);
-    return next;
   }
   
   /**
@@ -107,17 +119,19 @@ public class FactTable {
    * @throws IOException On errors.
    */
   public void write(Writer writer) throws IOException {
-    writer.write(header);
-    writer.write(NEWLINE);
-    for (Integer key : facts.keySet()) {
-      writer.write(key.toString());
-      writer.write(',');
-      String fact = facts.get(key);
-      if (fact != null) {
-        writer.write(facts.get(key));        
-      }
+    synchronized (LOCK) {
+      writer.write(header);
       writer.write(NEWLINE);
+      for (Integer key : facts.keySet()) {
+        writer.write(key.toString());
+        writer.write(',');
+        String fact = facts.get(key);
+        if (fact != null) {
+          writer.write(facts.get(key));
+        }
+        writer.write(NEWLINE);
+      }
+      writer.flush();
     }
-    writer.flush();
   }
 }

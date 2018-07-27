@@ -410,7 +410,7 @@ public class CDWExporter {
     sidStart = id;
 
     // Dim tables have smaller key ranges: only a 2 byte integer -- max of 32K
-    id = (id / 10_000);
+    id = (id / 2500); // this gives a range of 400 entries per state without collisions.
 
     sstaff.setNextId(id);
     generateClinicians();
