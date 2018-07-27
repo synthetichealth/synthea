@@ -177,13 +177,10 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": 275302008,
-          "display": "Prostate enlarged on PR"
+          "code": "32465-7",
+          "display": "Physical findings of Prostate"
         }
       ],
-      "exact": {
-        "quantity": 1
-      },
       "distributed_transition": [
         {
           "transition": "detect_abnormal results",
@@ -193,7 +190,12 @@
           "transition": "detect_normal results",
           "distribution": 0.71
         }
-      ]
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 275302008,
+        "display": "Prostate enlarged on PR"
+      }
     },
     "normal_DRE": {
       "type": "Observation",
@@ -202,14 +204,16 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": 300531004,
-          "display": "Normal size prostate"
+          "code": "32465-7",
+          "display": "Physical findings of Prostate"
         }
       ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "detect_normal results"
+      "direct_transition": "detect_normal results",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 300531004,
+        "display": "Normal size prostate"
+      }
     },
     "wellness_visit_time_delay": {
       "type": "Delay",
@@ -263,12 +267,16 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": 165132006,
-          "display": "Surgical biopsy result abnormal"
+          "code": "46288-7",
+          "display": "US Guidance for biopsy of Prostate"
         }
       ],
       "direct_transition": "Prostate_Cancer",
-      "attribute": "biopsy_abnormal"
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 165132006,
+        "display": "Surgical biopsy result abnormal"
+      }
     },
     "biopsy_results_normal": {
       "type": "Observation",
@@ -277,12 +285,16 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": 165131004,
-          "display": "Surgical biopsy result normal"
+          "code": "46288-7",
+          "display": "US Guidance for biopsy of Prostate"
         }
       ],
       "direct_transition": "biopsy_visit_end",
-      "attribute": "biopsy_normal"
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 165131004,
+        "display": "Surgical biopsy result normal"
+      }
     },
     "biopsy_visit_end": {
       "type": "EncounterEnd",
@@ -390,12 +402,16 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "watchful_waiting",
-            "operator": "is not nil"
+            "operator": "is nil"
           },
           "distributions": [
             {
               "transition": "watchful_waiting_guard",
-              "distribution": 1
+              "distribution": 0.95
+            },
+            {
+              "transition": "eventual_death",
+              "distribution": 0.05
             }
           ]
         },
@@ -403,7 +419,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "watchful_waiting",
-            "operator": "is nil"
+            "operator": "is not nil"
           },
           "distributions": [
             {
@@ -442,9 +458,10 @@
       "direct_transition": "Terminal",
       "range": {
         "low": 1,
-        "high": 3,
+        "high": 5,
         "unit": "years"
-      }
+      },
+      "condition_onset": "Prostate_Cancer"
     },
     "Prostate Cancer Symptom": {
       "type": "Symptom",
@@ -513,11 +530,11 @@
       "distributed_transition": [
         {
           "transition": "Aggressive_Therapy_Careplan",
-          "distribution": 0.7
+          "distribution": 0.91
         },
         {
           "transition": "Watchful_Waiting_Careplan",
-          "distribution": 0.3
+          "distribution": 0.09
         }
       ]
     },
