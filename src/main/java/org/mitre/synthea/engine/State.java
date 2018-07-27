@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javafx.util.Pair;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
@@ -454,6 +453,7 @@ public abstract class State implements Cloneable {
     private String encounterClass;
     private List<Code> codes;
     private String reason;
+    private String valueSet;
 
     @Override
     public Encounter clone() {
@@ -462,11 +462,29 @@ public abstract class State implements Cloneable {
       clone.encounterClass = encounterClass;
       clone.reason = reason;
       clone.codes = codes;
+      clone.valueSet = valueSet;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
+
+      // Value Set Functionality
+      if (valueSet != null) {
+        String primaryCode = null;
+        String primaryDisplay = null;
+        if (codes != null) {
+          primaryCode = codes.get(0).code;
+          primaryDisplay = codes.get(0).display;
+        }
+
+        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+            primaryCode,primaryDisplay);
+
+        // Only changes the primary code.
+        codes.set(0,vsCode);
+      }
+
       if (wellness) {
         HealthRecord.Encounter encounter = person.record.currentEncounter(time);
         String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module.name;
@@ -649,7 +667,8 @@ public abstract class State implements Cloneable {
 
       // Value Set Functionality
       if (valueSet != null) {
-        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,primaryCode,primaryDisplay);
+        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+            primaryCode,primaryDisplay);
         primaryCode = vsCode.code;
 
         // Only changes the primary code.
@@ -681,6 +700,7 @@ public abstract class State implements Cloneable {
    */
   public static class ConditionEnd extends State {
     private List<Code> codes;
+    private String valueSet;
     private String conditionOnset;
     private String referencedByAttribute;
 
@@ -690,6 +710,7 @@ public abstract class State implements Cloneable {
       clone.codes = codes;
       clone.conditionOnset = conditionOnset;
       clone.referencedByAttribute = referencedByAttribute;
+      clone.valueSet = valueSet;
       return clone;
     }
 
@@ -702,6 +723,16 @@ public abstract class State implements Cloneable {
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
+        String primaryCode = codes.get(0).code;
+        String primaryDisplay = codes.get(0).display;
+        // Value Set Functionality
+        if (valueSet != null) {
+          Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+              primaryCode,primaryDisplay);
+          // Only changes the primary code.
+          codes.set(0,vsCode);
+        }
+
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;
@@ -719,7 +750,19 @@ public abstract class State implements Cloneable {
   public static class AllergyOnset extends OnsetState {
     @Override
     public void diagnose(Person person, long time) {
+
       String primaryCode = codes.get(0).code;
+      String primaryDisplay = codes.get(0).display;
+
+      // Value Set Functionality
+      if (valueSet != null) {
+        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+            primaryCode,primaryDisplay);
+        primaryCode = vsCode.code;
+
+        // Only changes the primary code.
+        codes.set(0,vsCode);
+      }
       Entry allergy = person.record.allergyStart(time, primaryCode);
       allergy.name = this.name;
       allergy.codes.addAll(codes);
@@ -990,6 +1033,7 @@ public abstract class State implements Cloneable {
   public static class Procedure extends State {
     private List<Code> codes;
     private String reason;
+    private String valueSet;
     private RangeWithUnit<Long> duration;
     private String assignToAttribute;
 
@@ -1000,12 +1044,25 @@ public abstract class State implements Cloneable {
       clone.reason = reason;
       clone.duration = duration;
       clone.assignToAttribute = assignToAttribute;
+      clone.valueSet = valueSet;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
+      String primaryDisplay = codes.get(0).display;
+
+      // Value Set Functionality
+      if (valueSet != null) {
+        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+            primaryCode,primaryDisplay);
+        primaryCode = vsCode.code;
+
+        // Only changes the primary code.
+        codes.set(0,vsCode);
+      }
+
       HealthRecord.Procedure procedure = person.record.procedure(time, primaryCode);
       procedure.name = this.name;
       procedure.codes.addAll(codes);
@@ -1133,6 +1190,7 @@ public abstract class State implements Cloneable {
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
     private String unit;
+    private String valueSet;
 
     @Override
     public Observation clone() {
@@ -1145,12 +1203,25 @@ public abstract class State implements Cloneable {
       clone.vitalSign = vitalSign;
       clone.category = category;
       clone.unit = unit;
+      clone.valueSet = valueSet;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
+      String primaryDisplay = codes.get(0).display;
+
+      // Value Set Functionality
+      if (valueSet != null) {
+        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+            primaryCode,primaryDisplay);
+        primaryCode = vsCode.code;
+
+        // Only changes the primary code.
+        codes.set(0,vsCode);
+      }
+
       Object value = null;
       if (exact != null) {
         value = exact.quantity;

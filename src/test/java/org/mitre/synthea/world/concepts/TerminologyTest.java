@@ -2,14 +2,15 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.common.collect.Multimap;
 import okhttp3.*;
+import okio.Buffer;
 import org.hl7.fhir.dstu3.model.ValueSet;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -30,7 +31,7 @@ public class TerminologyTest {
         List<String> resultsList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             Code retVal = session.getRandomCode("https://www.hl7.org/fhir/synthea/diabetes",
-                    "henlo.org","8675309","diabetes mellitus");
+                    "websiteName.org","8675309","diabetes mellitus");
             String code = retVal.code;
             resultsList.add(code);
             assertTrue(code.equals("427089005") || code.equals("E08") || code.equals("250.00"));
@@ -42,7 +43,7 @@ public class TerminologyTest {
 
         if(session.getAuthToken()!=null){
             for (int i = 0; i < 8; i++) {
-                Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071","CPT",
+                Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071","ICD-9",
                         "42","display text");
                 String code = retVal.code;
                 resultsList.add(code);
@@ -75,7 +76,7 @@ public class TerminologyTest {
             boolean enoughUniqueCodes = resultsList.stream().distinct().count() > 3;
             assertTrue(enoughUniqueCodes);
         }else{
-            Code retVal = session.getRandomCode("2.16.840.1.113883.3.464.1003.198.12.1071",
+            Code retVal = session.getRandomCode("2.16.840.1.113883.3.526.3.1489",
                     "bip","bop","boop");
             assertEquals(retVal.system, "bip");
             assertEquals(retVal.code, "bop");
@@ -84,12 +85,6 @@ public class TerminologyTest {
                 "wishy", "washy","wooshy");
         assertEquals(retVal.system, "wishy");
         assertEquals(retVal.code, "washy");
-
-
-
-
-
-
 
 
     }
@@ -108,7 +103,7 @@ public class TerminologyTest {
         Path path = Paths.get("src/main/resources/valuesets/diabetes.json");
         ValueSet va;
         try {
-            va = Terminology.loadFile(path);
+            va = Terminology.loadValueSetFile(path);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -118,7 +113,7 @@ public class TerminologyTest {
         assertTrue(va.getCompose().hasInclude());
         path = Paths.get("src/main/resources/valuesets/neverMakeThisFile.json");
         try {
-            va = Terminology.loadFile(path);
+            va = Terminology.loadValueSetFile(path);
         } catch (Exception e) {
             va = null;
         }
@@ -130,6 +125,7 @@ public class TerminologyTest {
         ValueSet va = Terminology.getValueSets().get("https://www.hl7.org/fhir/synthea/diabetes");
         assertNotNull(va);
         assertTrue(va.hasCompose());
+        assertTrue(va.getCompose().getInclude().get(0).hasConcept());
 
     }
 
@@ -185,27 +181,10 @@ public class TerminologyTest {
         assertEquals(hello.getClass(), goodbye.getClass());
     }
 
-    @Test
-    public void getClient1() {
-        OkHttpClient client = Terminology.getClient("www.hello.com", 8080);
-        assertTrue(client.proxy().address().toString().contains("www.hello.com"));
-        assertTrue(client.proxy().address().toString().contains("8080"));
-    }
 
     @Test
     public void getAuthToken() {
-        OkHttpClient hello;
-        String PORT = Config.get("terminology.PORT");
-        String HOSTNAME = Config.get("terminology.PROXY_HOSTNAME");
-        if(HOSTNAME!=null & PORT!=null){
-            hello = new OkHttpClient.Builder()
-                    .proxy(new Proxy(Proxy.Type.HTTP,
-                            new InetSocketAddress(HOSTNAME, Integer.parseInt(PORT))))
-                    .build();
-        }else{
-            hello = new OkHttpClient.Builder()
-                    .build();
-        }
+        OkHttpClient hello = new OkHttpClient.Builder().build();
         if(Config.get("VSAC_USER")!=null & Config.get("VSAC_PASS")!=null){
 
             String authToken = Terminology.getAuthToken(hello);
@@ -238,50 +217,43 @@ public class TerminologyTest {
 
     @Test
     public void makeRequest() {
-        String url = "http://echo.jsontest.com/title/ipsum/content/blah";
+        String url = "http://mock.com/";
         Request request = Terminology.makeRequest(url);
         assertEquals(request.url().toString(), url);
-        try {
-            Response response = session.getSessionClient().newCall(request).execute();
-
-            assertTrue(Objects.requireNonNull(response.body()).string().contains("ipsum"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     @Test
-    public void makeRequest1() {
+    public void makeRequest1() throws IOException {
+
         FormBody formBody = new FormBody.Builder().add("json", "{1:2}").build();
-        Request request = Terminology.makeRequest("http://validate.jsontest.com/", formBody);
-        try {
-            Response response = session.getSessionClient().newCall(request).execute();
-            String body = Objects.requireNonNull(response.body()).string();
-            assertTrue(body.contains("validate"));
-            assertTrue(body.contains("true"));
-            assertFalse(body.contains("error"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        // makeRequest doesn't actually make the request, it makes the request object
+        // which can be used to make the request.  Potentially needs to be renamed.
+        Request request = Terminology.makeRequest("http://real.website.com/", formBody);
+        Buffer buffer = new Buffer();
+        assertNotNull( request.body());
+        request.body().writeTo(buffer);
+        assertEquals(buffer.readUtf8(),"json=%7B1%3A2%7D");
     }
 
     @Test
-    public void makeRequestBody() {
+    public void makeRequestBody() throws IOException {
+        // Just need to make sure the request body is put together properly, not that it
+        // yields a response from an arbitrary server.
         Map<String, String> alpha = new HashMap<>();
         alpha.put("yes", "no");
         alpha.put("thirst", "quenched");
+
         RequestBody requestBody = Terminology.makeRequestBody(alpha);
-        Request request = new Request.Builder().url("http://httpbin.org/post").post(requestBody).build();
-        try {
-            Response response = session.getSessionClient().newCall(request).execute();
-            String body = Objects.requireNonNull(response.body()).string();
-            assertTrue(body.contains("thirst"));
-            assertTrue(body.contains("quenched"));
-            assertFalse(body.contains("error"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Buffer buffer = new Buffer();
+        requestBody.writeTo(buffer);
+
+        assertEquals(buffer.readUtf8(),"thirst=quenched&yes=no");
+
+    }
+
+    @Test
+    public void test() throws URISyntaxException {
+        Terminology.loadLookupTable();
     }
 }

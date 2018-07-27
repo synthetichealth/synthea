@@ -3,15 +3,18 @@ package org.mitre.synthea.world.concepts;
 import ca.uhn.fhir.context.FhirContext;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,27 +66,29 @@ public class Terminology {
 
   private static String VS_FOLDER = "valuesets";
 
-  private static String PROXY_URL = Config.get("terminology.PROXY_HOSTNAME");
 
-  private static String PROXY_PORT = Config.get("terminology.PORT");
 
   private static final String VSAC_USER = Config.get("terminology.username");
   private static final String VSAC_PASS = Config.get("terminology.password");
 
-  // URL needs to be HTTPS or the request will be redirected, defaulting request type
-
-  private static final String AUTH_URL = "https://vsac.nlm.nih.gov/vsac/ws/Ticket";
+  private static final String AUTH_URL = "http://vsac.nlm.nih.gov/vsac/ws/Ticket";
 
   private static final String SERVICE_URL = "http://umlsks.nlm.nih.gov";
 
   private static final String VSAC_VALUE_SET_RETRIEVAL_URL = "vsac.nlm.nih.gov";
   private static final FhirContext ctx = FhirContext.forDstu3();
   private static final Map<String, ValueSet> valueSets = loadValueSets();
+  private static final Map<String,String> codeLookup = loadLookupTable();
 
   private static final Logger logger = LoggerFactory.getLogger(Terminology.class);
+  private static boolean connectionFailed = false;
 
 
-  public static Session sess = new Session();
+  public static Session sess;
+
+  static {
+    sess = new Session();
+  }
 
 
 
@@ -103,24 +108,16 @@ public class Terminology {
 
     public Session() {
 
-
-      if (PROXY_URL != null & PROXY_PORT != null) {
-
-        client = getClient(PROXY_URL,Integer.parseInt(PROXY_PORT));
-      } else {
-
-        client = getClient();
-      }
-
       if (VSAC_PASS == null | VSAC_USER == null) {
         authToken = null;
-      } else {
+      } else if (!connectionFailed) {
+        client = getClient();
         authToken = Terminology.getAuthToken(client);
+
       }
 
+
     }
-
-
 
     /**
      * Retrieves a value set from file, and if it can't find one, looks on VSAC.  Returns null if
@@ -240,7 +237,7 @@ public class Terminology {
 
       String displayName = valueSetAttr.getNamedItem("displayName").getTextContent();
 
-      // Regex replaces all puncuation with an underscore
+      // Regex replaces all punctuation with an underscore
       displayName = displayName.replaceAll("[, ';\"/:]","_");
       String oid = valueSetAttr.getNamedItem("ID").getTextContent();
       vs.setUrl(oid);
@@ -312,10 +309,23 @@ public class Terminology {
     void setAuthToken(String token) {
       this.authToken = token;
     }
+  }
 
+  static Map<String, String> loadLookupTable() {
 
+    // Loads valueSets from file and puts them in a map of {url : ValueSet}
+    Map<String, String> retVal = new ConcurrentHashMap<>();
 
-
+    URL valueSetsFolder = ClassLoader.getSystemClassLoader().getResource("code_system_lookup.json");
+    try {
+      JsonObject codeSystemLookup = loadJsonFile(Paths.get(valueSetsFolder.toURI()));
+      for(String member : codeSystemLookup.keySet()) {
+        retVal.put(member,codeSystemLookup.get(member).getAsString());
+      }
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+    }
+    return null;
 
   }
 
@@ -335,7 +345,7 @@ public class Terminology {
           .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
             try {
 
-              ValueSet vs = loadFile(t);
+              ValueSet vs = loadValueSetFile(t);
               String url = vs.getUrl();
               retVal.put(url,vs);
             } catch (Exception e) {
@@ -351,27 +361,43 @@ public class Terminology {
     return retVal;
   }
 
-  static ValueSet loadFile(Path path) throws Exception {
+  static ValueSet loadValueSetFile(Path path) throws Exception {
 
     // Loads JSON files as ValueSets.
-    FileReader fileReader = new FileReader(path.toString());
-    JsonReader reader = new JsonReader(fileReader);
-    JsonParser parser = new JsonParser();
-    String object = parser.parse(reader).toString();
+    String jsonContent = loadJsonFile(path).toString();
     ValueSet valueset;
 
     try {
-      valueset = ctx.newJsonParser().parseResource(ValueSet.class, object);
+      valueset = ctx.newJsonParser().parseResource(ValueSet.class, jsonContent);
     } catch (Exception e) {
       System.out.println("File " + path.toString() + " is not the correct format for a ValueSet");
       valueset = null;
     }
 
-    fileReader.close();
-    reader.close();
     return valueset;
   }
 
+  static JsonObject loadJsonFile(Path path) {
+
+    // Loads JSON files as ValueSets.
+    FileReader fileReader = null;
+    try {
+      fileReader = new FileReader(path.toString());
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    JsonReader reader = new JsonReader(fileReader);
+    JsonParser parser = new JsonParser();
+    JsonObject retVal = parser.parse(reader).getAsJsonObject();
+    try {
+      fileReader.close();
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return retVal;
+  }
 
 
   static Multimap<String, Code> getCodes(ValueSet vs) {
@@ -439,8 +465,11 @@ public class Terminology {
       }
       response.close();
     } catch (IOException | NullPointerException e) {
+      // Could just be a logger warn statement to notify user they're not connected to
+      // VSAC instead of a full blown stack trace.
       e.printStackTrace();
       token = null;
+      connectionFailed = true;
       // Check to make sure that params are correctly entered
       // eg. 'username' not 'user', 'password' not 'pass'.
     }
@@ -476,40 +505,6 @@ public class Terminology {
     return token;
 
   }
-
-  //
-  //    public static String makeGenericPost(String url,
-  //                                         Map<String,String> requestForm, OkHttpClient client) {
-  //      String responseBody;
-  //      RequestBody requestBody = makeRequestBody(requestForm);
-  //      Request request = makeRequest(url,requestBody);
-  //      try {
-  //        Response response = client.newCall(request).execute();
-  //        assert response.body() != null;
-  //        responseBody = response.body().string();
-  //      } catch (IOException | NullPointerException e) {
-  //        e.printStackTrace();
-  //        responseBody = null;
-  //      }
-  //      return responseBody;
-  //  }
-
-  //  public static String makeGenericGet(String url,
-  //                                      Map<String,String> requestForm, OkHttpClient client) {
-  //
-  //    String responseBody;
-  //    HttpUrl requestUrl = makeGetUrl(url, requestForm);
-  //
-  //
-  //        Request request = makeRequest(requestUrl.toString());
-  //        try {
-  //            Response response = client.newCall(request).execute();
-  //            responseBody = response.body().string();
-  //        } catch (IOException | NullPointerException e) {
-  //            e.printStackTrace();
-  //            responseBody = null;
-  //        }
-  // return responseBody;
 
   private static Response getValueSet(OkHttpClient client, String oid, String ticket) {
 
@@ -560,6 +555,8 @@ public class Terminology {
 
     // Constructs the url that is queried in the Get call.
     HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
+
+    // URL needs to be HTTPS or the request will be redirected, defaulting request type
     String urlScheme = "https";
     urlBuilder.scheme(urlScheme)
         .host(Terminology.VSAC_VALUE_SET_RETRIEVAL_URL)
