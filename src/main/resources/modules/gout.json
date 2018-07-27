@@ -232,8 +232,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "573839",
-          "display": "Allopurinol 100 MG [Zyloprim]"
+          "code": "197319",
+          "display": "Allopurinol 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
