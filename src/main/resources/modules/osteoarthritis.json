@@ -98,7 +98,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "OA_CarePlan"
+      "direct_transition": "Pain Vital"
     },
     "OA_CarePlan": {
       "type": "CarePlanStart",
@@ -410,6 +410,23 @@
       "range": {
         "low": 0,
         "high": 50
+      }
+    },
+    "Pain Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "direct_transition": "OA_CarePlan",
+      "range": {
+        "low": 5,
+        "high": 10
       }
     }
   }
