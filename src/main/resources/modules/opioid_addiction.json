@@ -381,7 +381,7 @@
           "remarks": [
             "0.02 --> 0.13187"
           ],
-          "transition": "Active_Addiction"
+          "transition": "Opioid_Addiction_Symptom1"
         },
         {
           "distribution": 0.681862,
