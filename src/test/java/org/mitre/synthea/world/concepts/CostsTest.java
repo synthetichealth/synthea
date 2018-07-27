@@ -21,7 +21,7 @@ public class CostsTest {
   }
   
   @Test public void testCostByKnownCode() {
-    Code code = new Code("RxNorm","564666","Nitroglycerin 0.4 MG/ACTUAT [Nitrolingual]");
+    Code code = new Code("RxNorm","705129","Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray");
     // note: cost range = 8.5-400, with mode at 20
     double minCost = 8.5;
     double maxCost = 400;
@@ -44,7 +44,7 @@ public class CostsTest {
   }
   
   @Test public void testCostByCodeWithDifferentSystem() {
-    Code code = new Code("SNOMED-CT","564666","Fake SNOMED with the same code as an RxNorm code");
+    Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Entry fakeProcedure = person.record.procedure(0L, code.display);
     fakeProcedure.codes.add(code);
     
