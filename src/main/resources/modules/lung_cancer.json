@@ -210,7 +210,7 @@
           "display": "Emergency Room Admission"
         }
       ],
-      "direct_transition": "Chest X-Ray"
+      "direct_transition": "Pain_Vital"
     },
     "Chest X-Ray": {
       "type": "Procedure",
@@ -867,7 +867,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "Chest CT"
+      "direct_transition": "Pain_Vital_2"
     },
     "End_SCLC_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -974,7 +974,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "Chest_CT"
+      "direct_transition": "Pain_Vital_3"
     },
     "End_NSCLC_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -2477,6 +2477,57 @@
       ],
       "target_encounter": "Wellness_Encounter",
       "direct_transition": "Hearing Test"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "Chest X-Ray"
+    },
+    "Pain_Vital_2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 10
+      },
+      "direct_transition": "Chest CT"
+    },
+    "Pain_Vital_3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 10
+      },
+      "direct_transition": "Chest_CT"
     }
   }
 }

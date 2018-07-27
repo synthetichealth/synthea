@@ -112,7 +112,7 @@
           "display": "Weight difference [Mass difference] --pre dialysis - post dialysis"
         }
       ],
-      "direct_transition": "end dialysis",
+      "direct_transition": "Pain_Vital",
       "range": {
         "low": 1,
         "high": 5
@@ -656,6 +656,23 @@
         }
       ],
       "direct_transition": "Dialysis CarePlan"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 6
+      },
+      "direct_transition": "end dialysis"
     }
   }
 }

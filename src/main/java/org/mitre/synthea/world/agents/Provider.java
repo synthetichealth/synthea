@@ -37,6 +37,9 @@ public class Provider implements QuadTreeData {
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
   private static QuadTree providerMap = new QuadTree(500, 500); // node capacity, depth
 
+  private static final double MAX_PROVIDER_SEARCH_DISTANCE =
+      Double.parseDouble(Config.get("generate.maximum_provider_search_distance", "500"));
+  
   public Map<String, Object> attributes;
   public String uuid;
   public String id;
@@ -143,11 +146,11 @@ public class Provider implements QuadTreeData {
    * @return Service provider or null if none is available.
    */
   public static Provider findClosestService(Person person, String service, long time) {
-    double maxDistance = 500;
+    double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
     double distance = 100;
     double step = 100;
     Provider provider = null;
-    while (provider == null && distance <= maxDistance) {
+    while (distance <= maxDistance) {
       provider = findService(person, service, distance, time);
       if (provider != null) {
         return provider;

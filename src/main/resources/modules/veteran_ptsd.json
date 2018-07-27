@@ -288,7 +288,7 @@
     },
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
-      "direct_transition": "end_PTSD_Re_evaluation_Encounter",
+      "direct_transition": "Pain_Vital_3",
       "referenced_by_attribute": "ptsd"
     },
     "PTSD_Careplan_Rx_ONLY": {
@@ -432,7 +432,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "end_Psych_encounter",
+          "transition": "Pain_Vital_4",
           "distribution": 0.5
         },
         {
@@ -504,7 +504,7 @@
           "display": "Acetaminophen/Hydrocodone"
         }
       ],
-      "direct_transition": "end_Psych_encounter",
+      "direct_transition": "Pain_Vital",
       "reason": "ptsd",
       "remarks": [
         "per Dr Trafton and other sources"
@@ -616,7 +616,7 @@
           "display": "Inpatient stay 3 days"
         }
       ],
-      "direct_transition": "Inpatient Suicide Care Plan",
+      "direct_transition": "Pain_Vital_2",
       "reason": "suicide_risk"
     },
     "Inpatient Suicide Risk Assessment": {
@@ -901,6 +901,74 @@
         "",
         ""
       ]
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "end_Psych_encounter"
+    },
+    "Pain_Vital_2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "Inpatient Suicide Care Plan"
+    },
+    "Pain_Vital_3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 3
+      },
+      "direct_transition": "end_PTSD_Re_evaluation_Encounter"
+    },
+    "Pain_Vital_4": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 4
+      },
+      "direct_transition": "end_Psych_encounter"
     }
   }
 }

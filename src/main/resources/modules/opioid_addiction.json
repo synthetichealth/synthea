@@ -179,7 +179,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Enter_Directed_Use_Procedure1"
+      "direct_transition": "Pain_Vital_3"
     },
     "Enter_Directed_Use_Procedure1": {
       "type": "Procedure",
@@ -229,7 +229,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription2"
+      "direct_transition": "Pain_Vital_2"
     },
     "Directed_Use_Prescription2": {
       "type": "MedicationOrder",
@@ -267,7 +267,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription3"
+      "direct_transition": "Pain_Vital"
     },
     "Directed_Use_Prescription3": {
       "type": "MedicationOrder",
@@ -381,7 +381,7 @@
           "remarks": [
             "0.02 --> 0.13187"
           ],
-          "transition": "Active_Addiction"
+          "transition": "Opioid_Addiction_Symptom1"
         },
         {
           "distribution": 0.681862,
@@ -544,7 +544,7 @@
           "display": "Drug rehabilitation and detoxification"
         }
       ],
-      "direct_transition": "End_Addiction_Treatment_Encounter"
+      "direct_transition": "Pain_Vital_4"
     },
     "End_Addiction_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -577,8 +577,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "266707007",
-          "display": "Drug addiction therapy"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "End_Recovery_Management_Encounter"
@@ -741,8 +741,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "266707007",
-          "display": "Drug addiction therapy"
+          "code": 734163000,
+          "display": "Care plan (record artifact)"
         }
       ],
       "activities": [
@@ -755,6 +755,11 @@
           "system": "SNOMED-CT",
           "code": "61480009",
           "display": "Drug detoxification"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 266707007,
+          "display": "Drug addiction therapy"
         }
       ],
       "direct_transition": "End_Addiction_Overdose_Encounter"
@@ -776,6 +781,74 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "Directed_Use_Prescription3"
+    },
+    "Pain_Vital_2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 9
+      },
+      "direct_transition": "Directed_Use_Prescription2"
+    },
+    "Pain_Vital_3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 3,
+        "high": 8
+      },
+      "direct_transition": "Enter_Directed_Use_Procedure1"
+    },
+    "Pain_Vital_4": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 8
+      },
+      "direct_transition": "End_Addiction_Treatment_Encounter"
     }
   }
 }

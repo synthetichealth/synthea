@@ -83,7 +83,7 @@
       ],
       "direct_transition": "Gout_Symptom1"
     },
-     "Gout_Symptom1": {
+    "Gout_Symptom1": {
       "type": "Symptom",
       "symptom": "Joint Pain",
       "range": {
@@ -130,19 +130,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "gout_careplan",
-            "operator": "is nil"
-          },
-          "transition": "Gout_CarePlan"
-        },
-        {
-          "transition": "Gout_Nonopioid_Pain_Medication"
-        }
-      ]
+      "direct_transition": "Pain_Vital"
     },
     "Gout_CarePlan": {
       "type": "CarePlanStart",
@@ -285,6 +273,35 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "gout_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Gout_CarePlan"
+        },
+        {
+          "transition": "Gout_Nonopioid_Pain_Medication"
+        }
+      ]
     }
   }
 }
