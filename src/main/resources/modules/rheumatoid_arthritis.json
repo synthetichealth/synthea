@@ -192,8 +192,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "575020",
-          "display": "Methotrexate 10 MG [Trexall]"
+          "code": "105586",
+          "display": "Methotrexate 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "Encounter_Ends_After_DMARD"
