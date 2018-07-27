@@ -147,8 +147,7 @@
     "No Opioid Dependence": {
       "type": "SetAttribute",
       "attribute": "opioid_addiction",
-      "direct_transition": "Terminal",
-      "value": "nil"
+      "direct_transition": "Terminal"
     }
   }
 }
