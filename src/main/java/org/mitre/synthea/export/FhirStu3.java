@@ -826,12 +826,11 @@ public class FhirStu3 {
   private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
       BundleEntryComponent encounterEntry, HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
-
     conditionResource.setSubject(new Reference(personEntry.getFullUrl()));
     conditionResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     Code code = condition.codes.get(0);
-    conditionResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+    conditionResource.setCode(mapCodeToCodeableConcept(code, code.system));
 
     conditionResource.setVerificationStatus(ConditionVerificationStatus.CONFIRMED);
     conditionResource.setClinicalStatus(ConditionClinicalStatus.ACTIVE);
