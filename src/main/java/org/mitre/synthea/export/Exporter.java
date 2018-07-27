@@ -103,8 +103,8 @@ public abstract class Exporter {
   }
 
   /**
-   * Run any exporters that require the full dataset to be generated prior to exporting. (Ex, an
-   * aggregate statistical exporter)
+   * Run any exporters that require the full dataset to be generated prior to exporting.
+   * (E.g., an aggregate statistical exporter)
    * 
    * @param generator
    *          Generator that generated the patients
@@ -300,7 +300,8 @@ public abstract class Exporter {
 
     folders.add(folderName);
 
-    if (person != null && Boolean.parseBoolean(Config.get("exporter.subfolders_by_id_substring"))) {
+    if (person != null
+        && Boolean.parseBoolean(Config.get("exporter.subfolders_by_id_substring"))) {
       String id = (String) person.attributes.get(Person.ID);
 
       folders.add(id.substring(0, 2));
@@ -334,7 +335,16 @@ public abstract class Exporter {
     }
   }
 
-  public static String filename_per_encounter(Person person, String encounterNumber, String extension) {
+  /**
+   * Get the file name to be used to export this encounter record.
+   *
+   * @param person The person being exported.
+   * @param encounterNumber The number of the encounter.
+   * @param extension The file extension to use.
+   * @return The filename only (not a path).
+   */
+  public static String filename_per_encounter(Person person, String encounterNumber,
+      String extension) {
     if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
       return person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
     } else {

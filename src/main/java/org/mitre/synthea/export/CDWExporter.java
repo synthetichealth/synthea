@@ -1,6 +1,5 @@
 package org.mitre.synthea.export;
 
-import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
 import com.google.gson.JsonObject;
@@ -10,11 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.sis.geometry.DirectPosition2D;
@@ -27,12 +23,10 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -82,7 +76,6 @@ public class CDWExporter {
   private FactTable institution = new FactTable();
   private FactTable loinc = new FactTable();
   private FactTable cpt = new FactTable();
-  private FactTable cptModifier = new FactTable();
   private FactTable vitalType = new FactTable();
 
   /**
@@ -143,8 +136,6 @@ public class CDWExporter {
    */
   private FileWriter surgeryProcedureDiagnosisCode;
   private FileWriter surgeryPRE;
-  private FileWriter surgeryPrincipalAssociatedProcedure;
-  private FileWriter surgeryPrincipalCPTModifier;
 
   /**
    * Writers for vital sign Observation data.
@@ -211,10 +202,6 @@ public class CDWExporter {
       surgeryProcedureDiagnosisCode = openFileWriter(outputDirectory,
           "surgeryprocedurediagnosiscode.csv");
       surgeryPRE = openFileWriter(outputDirectory, "surgerypre.csv");
-      surgeryPrincipalAssociatedProcedure = openFileWriter(outputDirectory,
-          "surgeryprincipalassociatedprocedure.csv");
-      surgeryPrincipalCPTModifier = openFileWriter(outputDirectory,
-          "surgeryprincipalcptmodifier.csv");
 
       // Vital Sign Observation Data
       vitalSign = openFileWriter(outputDirectory, "vitalsign.csv");
@@ -262,7 +249,6 @@ public class CDWExporter {
     institution.setHeader("InstitutionSID,Sta3n,InstitutionName,InstitutionCode");
     loinc.setHeader("LOINCSID,LOINC,Component");
     cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
-    cptModifier.setHeader("CPTModifierSID,CPTModifierName,CPTModifierCode");
     vitalType.setHeader("VitalTypeSID,VitalType,VUID");
 
     // Patient Tables
@@ -364,12 +350,6 @@ public class CDWExporter {
     surgeryProcedureDiagnosisCode.write(NEWLINE);
     surgeryPRE.write("SurgerySID,VisitSID,NonORLocationSID,SurgeryCancelReasonSID,CPRSOrderSID");
     surgeryPRE.write(NEWLINE);
-    surgeryPrincipalAssociatedProcedure.write("SurgeryPrincipalAssociatedProcedureSID,"
-        + "SurgeryProcedureDiagnosisCodeSID,PatientSID,OtherProcedureCPTSID");
-    surgeryPrincipalAssociatedProcedure.write(NEWLINE);
-    surgeryPrincipalCPTModifier.write("SurgeryPrincipalCPTModifierSID,"
-        + "SurgeryPrincipalCPTModifierSID,CPTModifierSID,PatientSID");
-    surgeryPrincipalCPTModifier.write(NEWLINE);
 
     // Vital Sign Observation Tables
     vitalSign.write("VitalSignSID,Sta3n,VitalSignTakenDateTime,PatientSID,VitalTypeSID,VitalResult,"
@@ -455,7 +435,6 @@ public class CDWExporter {
     institution.setNextId(id);
     loinc.setNextId(id);
     cpt.setNextId(id);
-    cptModifier.setNextId(id);
     vitalType.setNextId(id);
   }
 
@@ -514,14 +493,6 @@ public class CDWExporter {
       for (Immunization immunization : encounter.immunizations) {
         immunization(personID, person, encounterID, encounter, immunization, primarySta3n);
       }
-
-      for (CarePlan careplan : encounter.careplans) {
-        careplan(personID, encounterID, careplan);
-      }
-
-      for (ImagingStudy imagingStudy : encounter.imagingStudies) {
-        imagingStudy(personID, encounterID, imagingStudy);
-      }
     }
 
     // Patient Data
@@ -549,6 +520,26 @@ public class CDWExporter {
     // Condition Data
     problemlist.flush();
     vdiagnosis.flush();
+
+    // Medication Data
+    rxoutpatient.flush();
+    rxoutpatfill.flush();
+    nonvamed.flush();
+    cprsorder.flush();
+    ordereditem.flush();
+
+    // Diagnostic Report Data
+    labchem.flush();
+    labpanel.flush();
+    patientlabchem.flush();
+    vprocedure.flush();
+
+    // Procedure Data
+    surgeryProcedureDiagnosisCode.flush();
+    surgeryPRE.flush();
+
+    // Vital Sign Observation Data
+    vitalSign.flush();
   }
   
   /**
@@ -579,7 +570,6 @@ public class CDWExporter {
       institution.write(openFileWriter(outputDirectory, "institution.csv"));
       loinc.write(openFileWriter(outputDirectory, "loinc.csv"));
       cpt.write(openFileWriter(outputDirectory, "cpt.csv"));
-      cptModifier.write(openFileWriter(outputDirectory, "cptmodifier.csv"));
       vitalType.write(openFileWriter(outputDirectory, "vitaltype.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -1063,7 +1053,6 @@ public class CDWExporter {
       sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
       providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
-    Code code = report.codes.get(0);
 
     // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
     //   + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
@@ -1095,6 +1084,7 @@ public class CDWExporter {
     write(s.toString(), cprsorder);
 
     // orderableItem.setHeader("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
+    Code code = report.codes.get(0);
     int orderableItemSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
 
     // ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
@@ -1200,6 +1190,7 @@ public class CDWExporter {
   }
 
   private static final Map<String,String> VITALS = vitalSignCodes();
+
   private static Map<String,String> vitalSignCodes() {
     Map<String,String> codes = new HashMap<String,String>();
     codes.put("29463-7", "4500639");
@@ -1223,7 +1214,9 @@ public class CDWExporter {
       int primarySta3n, Observation observation) throws IOException {
     String code = observation.codes.get(0).code;
 
-    if (!VITALS.containsKey(code)) return;
+    if (!VITALS.containsKey(code)) {
+      return;
+    }
 
     Integer sta3nValue = primarySta3n;
     Integer providerSID = (sidStart / 10_000);
@@ -1249,27 +1242,29 @@ public class CDWExporter {
     s.append(vitalTypeSID).append(',');
     String value = null;
     switch (code) {
-    case "55284-4": // blood pressure
-      s.append(',');
-      value = ExportHelper.getObservationValue(observation, "8480-6"); // systolic
-      s.append(value).append(',');
-      value = ExportHelper.getObservationValue(observation, "8462-4"); // diastolic
-      s.append(value).append(',');
-      break;
-    case "29463-7": // weight
-      // convert from kg to lbs
-      value = String.format("%.1f", ((Double)observation.value * 2.20462));
-      s.append(value).append(",,,");
-      break;
-    case "8302-2": // height
-      // convert from cm to inches
-      value = String.format("%.1f", ((Double)observation.value * 0.393701));
-      s.append(value).append(",,,");
-      break;
-    case "72514-3": // pain
-      value = String.format("%d", StrictMath.round((Double) observation.value));
-      s.append(value).append(",,,");
-      break;        
+      case "55284-4": // blood pressure
+        s.append(',');
+        value = ExportHelper.getObservationValue(observation, "8480-6"); // systolic
+        s.append(value).append(',');
+        value = ExportHelper.getObservationValue(observation, "8462-4"); // diastolic
+        s.append(value).append(',');
+        break;
+      case "29463-7": // weight
+        // convert from kg to lbs
+        value = String.format("%.1f", ((Double) observation.value * 2.20462));
+        s.append(value).append(",,,");
+        break;
+      case "8302-2": // height
+        // convert from cm to inches
+        value = String.format("%.1f", ((Double) observation.value * 0.393701));
+        s.append(value).append(",,,");
+        break;
+      case "72514-3": // pain
+        value = String.format("%d", StrictMath.round((Double) observation.value));
+        s.append(value).append(",,,");
+        break;
+      default:
+        s.append(",,,");
     }
     s.append(','); // SupplementalO2
     s.append(locationSID).append(",");
@@ -1342,9 +1337,6 @@ public class CDWExporter {
     //cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
     int cptSID = cpt.addFact(code.code, "XXXXX," + clean(code.display) + "," + clean(code.display));
 
-    // TODO Remove?
-    //cptModifier.setHeader("CPTModifierSID,CPTModifierName,CPTModifierCode");
-
     //surgeryProcedureDiagnosisCode.write("SurgeryProcedureDiagnosisCodeSID,SurgerySID,Sta3n,"
     //    + "PrincipalCPTSID,PatientSID,SurgeryDateTime,PrincipalPostOpICD9SID,"
     //    + "PrincipalPostOpICD10SID,CodingCompleteFlag");
@@ -1361,14 +1353,6 @@ public class CDWExporter {
     s.append('1'); // CodingCompleteFlag
     s.append(NEWLINE);
     write(s.toString(), surgeryProcedureDiagnosisCode);
-
-    // TODO Remove?
-    //surgeryPrincipalAssociatedProcedure.write("SurgeryPrincipalAssociatedProcedureSID,"
-    //    + "SurgeryProcedureDiagnosisCodeSID,PatientSID,OtherProcedureCPTSID");
-
-    // TODO Remove?
-    //surgeryPrincipalCPTModifier.write("SurgeryPrincipalCPTModifierSID,"
-    //    + "SurgeryProcedureDiagnosisCodeSID,CPTModifierSID,PatientSID");
   }
 
   /**
@@ -1385,7 +1369,7 @@ public class CDWExporter {
       Medication medication, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
 
-    Integer sta3nValue = null;
+    Integer sta3nValue = primarySta3n;
     Integer providerSID = (sidStart / 10_000);
     if (encounter.provider != null) {
       String state = Location.getStateName(encounter.provider.state);
@@ -1397,9 +1381,6 @@ public class CDWExporter {
 
     // pharmacyOrderableItem ("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
     int pharmSID = pharmacyOrderableItem.addFact(code.code, clean(code.display) + ",1");
-
-    // orderableItem ("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
-    int orderSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
 
     // dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
     Integer dosageSID = 1; // Default Dosage SID
@@ -1431,17 +1412,12 @@ public class CDWExporter {
     //    + "NationalDrugSID,NationalDrugNameWithDose,PharmacyOrderableItemSID");
     s.setLength(0);
     s.append(ndrugSID).append(',');
-    if (sta3nValue != null) {
-      s.append(sta3nValue);
-    } else {
-      s.append(primarySta3n);
-    }
-    s.append(',');
+    s.append(sta3nValue).append(',');
     s.append(clean(code.display)).append(',');
     s.append(ndrugSID).append(',');
     s.append(clean(code.display)).append(',');
     s.append(pharmSID);
-    int ldrugSID = localDrug.addFact(code.code, s.toString());
+    final int ldrugSID = localDrug.addFact(code.code, s.toString());
 
     // rxoutpatient.write("RxOutpatSID,Sta3n,RxNumber,IssueDate,CancelDate,FinishingDateTime,"
     //    + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
@@ -1449,12 +1425,7 @@ public class CDWExporter {
     s.setLength(0);
     int rxNum = getNextKey(rxoutpatient);
     s.append(rxNum).append(',');
-    if (sta3nValue != null) {
-      s.append(sta3nValue);
-    } else {
-      s.append(primarySta3n);
-    }
-    s.append(',');
+    s.append(sta3nValue).append(',');
     s.append(rxNum).append(',');
     s.append(iso8601Timestamp(medication.start)).append(',');
     if (medication.stop != 0L) {
@@ -1502,12 +1473,7 @@ public class CDWExporter {
     int cprsSID = getNextKey(cprsorder);
     s.setLength(0);
     s.append(cprsSID).append(',');
-    if (sta3nValue != null) {
-      s.append(sta3nValue);
-    } else {
-      s.append(primarySta3n);
-    }
-    s.append(',');
+    s.append(sta3nValue).append(',');
     s.append(personID).append(',');
     s.append(providerSID).append(","); // OrderStaffSID
     s.append(providerSID).append(","); // EnteredByStaffSID
@@ -1529,6 +1495,9 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), cprsorder);
 
+    // orderableItem ("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
+    int orderSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
+
     // ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
     s.setLength(0);
     s.append(cprsSID).append(",");
@@ -1544,12 +1513,7 @@ public class CDWExporter {
     s.append(nonvamedSID).append(',');
     s.append(personID).append(',');
     s.append(nonvamedSID).append(',');
-    if (sta3nValue != null) {
-      s.append(sta3nValue);
-    } else {
-      s.append(primarySta3n);
-    }
-    s.append(',');
+    s.append(sta3nValue).append(',');
     s.append(ldrugSID).append(',');
     if (dosageSID != null) {
       String fact = dosageForm.getFactById(dosageSID);
@@ -1624,91 +1588,6 @@ public class CDWExporter {
         + clean(cvx.display) + " vaccine administered.");
     s.append(NEWLINE);
     write(s.toString(), immunization);
-  }
-
-  /**
-   * Write a single CarePlan to careplans.csv.
-   *
-   * @param personID ID of the person prescribed the careplan.
-   * @param encounterID ID of the encounter where the careplan was prescribed
-   * @param careplan The careplan itself
-   * @throws IOException if any IO error occurs
-   */
-  private String careplan(int personID, int encounterID,
-      CarePlan careplan) throws IOException {
-    // ID,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION
-    StringBuilder s = new StringBuilder();
-
-    String careplanID = UUID.randomUUID().toString();
-    s.append(careplanID).append(',');
-    s.append(dateFromTimestamp(careplan.start)).append(',');
-    if (careplan.stop != 0L) {
-      s.append(dateFromTimestamp(careplan.stop));
-    }
-    s.append(',');
-    s.append(personID).append(',');
-    s.append(encounterID).append(',');
-
-    Code coding = careplan.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(coding.display).append(',');
-
-    if (careplan.reasons.isEmpty()) {
-      s.append(','); // reason code & desc
-    } else {
-      Code reason = careplan.reasons.get(0);
-      s.append(reason.code).append(',');
-      s.append(clean(reason.display));
-    }
-    s.append(NEWLINE);
-
-    //write(s.toString(), careplans);
-
-    return careplanID;
-  }
-
-  /**
-   * Write a single ImagingStudy to imaging_studies.csv.
-   *
-   * @param personID ID of the person the ImagingStudy was taken of.
-   * @param encounterID ID of the encounter where the ImagingStudy was performed
-   * @param imagingStudy The ImagingStudy itself
-   * @throws IOException if any IO error occurs
-   */
-  private String imagingStudy(int personID, int encounterID,
-      ImagingStudy imagingStudy) throws IOException {
-    // ID,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,
-    // MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION
-    StringBuilder s = new StringBuilder();
-
-    String studyID = UUID.randomUUID().toString();
-    s.append(studyID).append(',');
-    s.append(dateFromTimestamp(imagingStudy.start)).append(',');
-    s.append(personID).append(',');
-    s.append(encounterID).append(',');
-
-    ImagingStudy.Series series1 = imagingStudy.series.get(0);
-    ImagingStudy.Instance instance1 = series1.instances.get(0);
-
-    Code bodySite = series1.bodySite;
-    Code modality = series1.modality;
-    Code sopClass = instance1.sopClass;
-
-    s.append(bodySite.code).append(',');
-    s.append(bodySite.display).append(',');
-
-    s.append(modality.code).append(',');
-    s.append(modality.display).append(',');
-
-    s.append(sopClass.code).append(',');
-    s.append(sopClass.display);
-
-    s.append(NEWLINE);
-
-    //write(s.toString(), imagingStudies);
-
-    return studyID;
   }
 
   private int getNextKey(FileWriter table) {

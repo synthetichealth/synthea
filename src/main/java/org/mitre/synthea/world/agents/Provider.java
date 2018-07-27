@@ -127,6 +127,7 @@ public class Provider implements QuadTreeData {
     // for now assume every provider accepts every patient
     // UNLESS it's a VA facility and the person is not a veteran
     // eventually we may want to expand this (ex. capacity?)
+    // TODO: Ensure this is uncommented before merge into master.
 //    if ("VA Facility".equals(this.type) && !person.attributes.containsKey("veteran")) {
 //      // this could be made a one-liner but i think this is more clear
 //      return false;
