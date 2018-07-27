@@ -10,8 +10,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -81,6 +83,7 @@ public class CDWExporter {
   private FactTable loinc = new FactTable();
   private FactTable cpt = new FactTable();
   private FactTable cptModifier = new FactTable();
+  private FactTable vitalType = new FactTable();
 
   /**
    * Writers for patient data.
@@ -143,6 +146,10 @@ public class CDWExporter {
   private FileWriter surgeryPrincipalAssociatedProcedure;
   private FileWriter surgeryPrincipalCPTModifier;
 
+  /**
+   * Writers for vital sign Observation data.
+   */
+  private FileWriter vitalSign;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -209,6 +216,9 @@ public class CDWExporter {
       surgeryPrincipalCPTModifier = openFileWriter(outputDirectory,
           "surgeryprincipalcptmodifier.csv");
 
+      // Vital Sign Observation Data
+      vitalSign = openFileWriter(outputDirectory, "vitalsign.csv");
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -253,6 +263,7 @@ public class CDWExporter {
     loinc.setHeader("LOINCSID,LOINC,Component");
     cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
     cptModifier.setHeader("CPTModifierSID,CPTModifierName,CPTModifierCode");
+    vitalType.setHeader("VitalTypeSID,VitalType,VUID");
 
     // Patient Tables
     lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
@@ -359,6 +370,11 @@ public class CDWExporter {
     surgeryPrincipalCPTModifier.write("SurgeryPrincipalCPTModifierSID,"
         + "SurgeryPrincipalCPTModifierSID,CPTModifierSID,PatientSID");
     surgeryPrincipalCPTModifier.write(NEWLINE);
+
+    // Vital Sign Observation Tables
+    vitalSign.write("VitalSignSID,Sta3n,VitalSignTakenDateTime,PatientSID,VitalTypeSID,VitalResult,"
+        + "Systolic,Diastolic,SupplementalO2,LocationSID,StaffSID,EnteredInErrorFlag");
+    vitalSign.write(NEWLINE);
   }
 
   /**
@@ -440,6 +456,7 @@ public class CDWExporter {
     loinc.setNextId(id);
     cpt.setNextId(id);
     cptModifier.setNextId(id);
+    vitalType.setNextId(id);
   }
 
   /**
@@ -483,7 +500,7 @@ public class CDWExporter {
       }
 
       for (Observation observation : encounter.observations) {
-        observation(personID, encounterID, observation);
+        observation(personID, encounterID, encounter, primarySta3n, observation);
       }
 
       for (Procedure procedure : encounter.procedures) {
@@ -563,6 +580,7 @@ public class CDWExporter {
       loinc.write(openFileWriter(outputDirectory, "loinc.csv"));
       cpt.write(openFileWriter(outputDirectory, "cpt.csv"));
       cptModifier.write(openFileWriter(outputDirectory, "cptmodifier.csv"));
+      vitalType.write(openFileWriter(outputDirectory, "vitaltype.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -1181,50 +1199,84 @@ public class CDWExporter {
     write(s.toString(), patientlabchem);
   }
 
+  private static final Map<String,String> VITALS = vitalSignCodes();
+  private static Map<String,String> vitalSignCodes() {
+    Map<String,String> codes = new HashMap<String,String>();
+    codes.put("29463-7", "4500639");
+    codes.put("55284-4", "4500634");
+    codes.put("72514-3", "4500635");
+    codes.put("8302-2", "4688724");
+    return codes;
+  }
+
   /**
-   * Write a single Observation to observations.csv.
+   * Write a single Observation to the tables.
    *
    * @param personID ID of the person to whom the observation applies.
-   * @param encounterID ID of the encounter where the observation was taken
+   * @param encounterID The ID of the encounter
+   * @param encounter The encounter
+   * @param primarySta3n The primary home sta3n for the patient
    * @param observation The observation itself
    * @throws IOException if any IO error occurs
    */
-  private void observation(int personID, int encounterID,
-      Observation observation) throws IOException {
+  private void observation(int personID, int encounterID, Encounter encounter,
+      int primarySta3n, Observation observation) throws IOException {
+    String code = observation.codes.get(0).code;
 
-    if (observation.value == null) {
-      if (observation.observations != null && !observation.observations.isEmpty()) {
-        // just loop through the child observations
+    if (!VITALS.containsKey(code)) return;
 
-        for (Observation subObs : observation.observations) {
-          observation(personID, encounterID, subObs);
-        }
-      }
-
-      // no value so nothing more to report here
-      return;
+    Integer sta3nValue = primarySta3n;
+    Integer providerSID = (sidStart / 10_000);
+    Integer locationSID = null;
+    if (encounter.provider != null) {
+      String state = Location.getStateName(encounter.provider.state);
+      String tz = Location.getTimezoneByState(state);
+      sta3nValue = sta3n.addFact(encounter.provider.id, clean(encounter.provider.name) + "," + tz);
+      locationSID = location.addFact(encounter.provider.id, clean(encounter.provider.name));
+      providerSID = (Integer) encounter.provider.attributes.get(CLINICIAN_SID);
     }
 
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS
+    // vitalType.setHeader("VitalTypeSID,VitalType,VUID");
+    int vitalTypeSID = vitalType.addFact(code, code + "," + VITALS.get(code));
+
+    // "VitalSignSID,Sta3n,VitalSignTakenDateTime,PatientSID,VitalTypeSID,VitalResult"
+    // "Systolic,Diastolic,SupplementalO2,LocationSID,StaffSID,EnteredInErrorFlag"
     StringBuilder s = new StringBuilder();
-
-    s.append(dateFromTimestamp(observation.start)).append(',');
+    s.append(getNextKey(vitalSign)).append(',');
+    s.append(sta3nValue).append(',');
+    s.append(iso8601Timestamp(observation.start)).append(',');
     s.append(personID).append(',');
-    s.append(encounterID).append(',');
-
-    Code coding = observation.codes.get(0);
-
-    s.append(coding.code).append(',');
-    s.append(clean(coding.display)).append(',');
-
-    String value = ExportHelper.getObservationValue(observation);
-    String type = ExportHelper.getObservationType(observation);
-    s.append(value).append(',');
-    s.append(observation.unit).append(',');
-    s.append(type);
-
+    s.append(vitalTypeSID).append(',');
+    String value = null;
+    switch (code) {
+    case "55284-4": // blood pressure
+      s.append(',');
+      value = ExportHelper.getObservationValue(observation, "8480-6"); // systolic
+      s.append(value).append(',');
+      value = ExportHelper.getObservationValue(observation, "8462-4"); // diastolic
+      s.append(value).append(',');
+      break;
+    case "29463-7": // weight
+      // convert from kg to lbs
+      value = String.format("%.1f", ((Double)observation.value * 2.20462));
+      s.append(value).append(",,,");
+      break;
+    case "8302-2": // height
+      // convert from cm to inches
+      value = String.format("%.1f", ((Double)observation.value * 0.393701));
+      s.append(value).append(",,,");
+      break;
+    case "72514-3": // pain
+      value = String.format("%d", StrictMath.round((Double) observation.value));
+      s.append(value).append(",,,");
+      break;        
+    }
+    s.append(','); // SupplementalO2
+    s.append(locationSID).append(",");
+    s.append(providerSID).append(",");
+    s.append(","); // EnteredInErrorFlag
     s.append(NEWLINE);
-    //write(s.toString(), observations);
+    write(s.toString(), vitalSign);
   }
 
   /**

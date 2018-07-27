@@ -42,6 +42,34 @@ public abstract class ExportHelper {
   }
 
   /**
+   * Helper to get a readable string representation of an Observation's value.
+   * Units are not included.
+   * 
+   * @param observation The observation to get the value from.
+   * @param code The observation or component observation matching this code.
+   * @return A human-readable string representation of observation with the given code.
+   */
+  public static String getObservationValue(Observation observation, String code) {
+    // Check whether this observation has the desired code.
+    for (Code c : observation.codes) {
+      if (c.code.equals(code)) {
+        return getObservationValue(observation);
+      }
+    }
+
+    // Check whether any of the contained observations have the desired code.
+    String value = null;
+    for (Observation o : observation.observations) {
+      value = getObservationValue(o, code);
+      if (value != null) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Helper to get a readable string representation of an Observation's type.
    * 
    * @param observation The observation to get the type from
