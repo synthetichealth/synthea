@@ -31,6 +31,7 @@ public class TextExporterTest {
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
       Config.set("exporter.text.export", "true");
+      Config.set("exporter.text.per_encounter_export", "true");
       Exporter.export(person, System.currentTimeMillis());
     }
 

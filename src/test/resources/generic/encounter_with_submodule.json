@@ -1,0 +1,36 @@
+{
+  "name": "encounter_with_submodule",
+  "remarks": [
+    "A simple module that starts an encounter, calls a submodule, and then ends an encounter."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "EncounterOutside"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "CallSubmodule": {
+      "type": "CallSubmodule",
+      "submodule": "submodules/admission",
+      "direct_transition": "EndEncounterOutside"
+    },
+    "EndEncounterOutside": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "EncounterOutside": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "CallSubmodule"
+    }
+  }
+}

@@ -25,6 +25,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 /**
  * Exporter for a simple human-readable text format per person.
@@ -167,6 +168,7 @@ public class TextExporter {
     List<Encounter> encounters = person.record.encounters;
     List<Entry> conditions = new ArrayList<>();
     List<Entry> allergies = new ArrayList<>();
+    List<Report> reports = new ArrayList<>();
     List<Observation> observations = new ArrayList<>();
     List<Procedure> procedures = new ArrayList<>();
     List<Medication> medications = new ArrayList<>();
@@ -177,6 +179,7 @@ public class TextExporter {
     for (Encounter encounter : person.record.encounters) {
       conditions.addAll(encounter.conditions);
       allergies.addAll(encounter.allergies);
+      reports.addAll(encounter.reports);
       observations.addAll(encounter.observations);
       procedures.addAll(encounter.procedures);
       medications.addAll(encounter.medications);
@@ -189,6 +192,7 @@ public class TextExporter {
     Collections.reverse(encounters);
     Collections.reverse(conditions);
     Collections.reverse(allergies);
+    Collections.reverse(reports);
     Collections.reverse(observations);
     Collections.reverse(procedures);
     Collections.reverse(medications);
@@ -230,6 +234,12 @@ public class TextExporter {
     }
     breakline(textRecord);
 
+    textRecord.add("REPORTS:");
+    for (Report report : reports) {
+      diagnosticReport(textRecord, report);
+    }
+    breakline(textRecord);
+    
     textRecord.add("OBSERVATIONS:");
     for (Observation observation : observations) {
       observation(textRecord, observation);
@@ -444,6 +454,7 @@ public class TextExporter {
 
     //Create lists for only the items that occurred at the encounter
     List<Entry> encounterConditions = new ArrayList<>();
+    List<Report> encounterReports = new ArrayList<>();
     List<Observation> encounterObservations = new ArrayList<>();
     List<Procedure> encounterProcedures = new ArrayList<>();
     List<Medication> encounterMedications = new ArrayList<>();
@@ -452,6 +463,7 @@ public class TextExporter {
     List<ImagingStudy> encounterImagingStudies = new ArrayList<>();
 
     encounterConditions.addAll(encounter.conditions);
+    encounterReports.addAll(encounter.reports);
     encounterObservations.addAll(encounter.observations);
     encounterProcedures.addAll(encounter.procedures);
     encounterMedications.addAll(encounter.medications);
@@ -482,6 +494,12 @@ public class TextExporter {
     textRecord.add("   CARE PLANS:");
     for (CarePlan careplan : encounterCareplans) {
       careplan(textRecord, careplan, false);
+    }
+    textRecord.add("   ");
+
+    textRecord.add("   REPORTS:");
+    for (Report report : encounterReports) {
+      diagnosticReport(textRecord, report);
     }
     textRecord.add("   ");
 
@@ -589,6 +607,24 @@ public class TextExporter {
   }
 
   /**
+   * Write lines for a Diagnostic Report to the exported record.
+   *
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param observation
+   *          The Report to add to the export
+   */
+  private static void diagnosticReport(List<String> textRecord, Report report) {
+    // note that this is largely the same as the MultiObservation
+    String obsTime = dateFromTimestamp(report.start);
+    String obsDesc = report.codes.get(0).display;
+
+    textRecord.add("  " + obsTime + " : " + obsDesc);
+    
+    observationGroup(textRecord, report.observations);
+  }
+  
+  /**
    * Write lines for an Observation with multiple parts to the exported record.
    *
    * @param textRecord
@@ -602,7 +638,19 @@ public class TextExporter {
 
     textRecord.add("  " + obsTime + " : " + obsDesc);
 
-    for (Observation subObs : observation.observations) {
+    observationGroup(textRecord, observation.observations);
+  }
+  
+  /**
+   * Common logic for outputting a group of observations,
+   * intended to be used by MultiObservations and DiagnosticReports.
+   * @param textRecord
+   *          Text format record, as a list of lines
+   * @param observation
+   *          The group of Observations to add to the export
+   */
+  private static void observationGroup(List<String> textRecord, List<Observation> subObservations) {
+    for (Observation subObs : subObservations) {
       String value = ExportHelper.getObservationValue(subObs);
       String unit = subObs.unit != null ? subObs.unit : "";
       String subObsDesc = subObs.codes.get(0).display;
