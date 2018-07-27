@@ -585,7 +585,7 @@
           "display": "Rectal polypectomy"
         }
       ],
-      "direct_transition": "End_Followup_Encounter_After_Adenoma_Removal"
+      "direct_transition": "Pain_Vital"
     },
     "End_Followup_Encounter_After_Adenoma_Removal": {
       "type": "EncounterEnd",
@@ -1132,7 +1132,7 @@
           "display": "Partial resection of colon"
         }
       ],
-      "direct_transition": "Partial_Colectomy_CarePlan"
+      "direct_transition": "Pain_Vital_3"
     },
     "Partial_Colectomy_CarePlan": {
       "type": "CarePlanStart",
@@ -1259,7 +1259,7 @@
           "display": "Construction of diverting colostomy"
         }
       ],
-      "direct_transition": "Diverting_Colostomy_CarePlan"
+      "direct_transition": "Pain_Vital_2"
     },
     "Diverting_Colostomy_CarePlan": {
       "type": "CarePlanStart",
@@ -1361,7 +1361,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Pain_Vital_4"
     },
     "Chemotherapy_Drugs_I": {
       "type": "MedicationOrder",
@@ -1927,6 +1927,74 @@
       ],
       "target_encounter": "Wellness_Encounter",
       "direct_transition": "Chemotherapy_Drugs_I"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 8
+      },
+      "direct_transition": "End_Followup_Encounter_After_Adenoma_Removal"
+    },
+    "Pain_Vital_2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 10
+      },
+      "direct_transition": "Diverting_Colostomy_CarePlan"
+    },
+    "Pain_Vital_3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 10
+      },
+      "direct_transition": "Partial_Colectomy_CarePlan"
+    },
+    "Pain_Vital_4": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 8
+      },
+      "direct_transition": "Record_CMP"
     }
   }
 }
