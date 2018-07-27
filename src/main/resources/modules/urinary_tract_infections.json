@@ -257,8 +257,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "568530",
-          "display": "Nitrofurantoin 5 MG/ML [Furadantin]"
+          "code": "311989",
+          "display": "Nitrofurantoin 5 MG/ML Oral Suspension"
         }
       ],
       "direct_transition": "Prescribe_OTC_Painkiller_For_UTIs"
