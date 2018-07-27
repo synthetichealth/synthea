@@ -223,7 +223,7 @@ public final class CardiovascularDiseaseModule extends Module {
     LOOKUP.put("simvastatin", new Code("RxNorm", "312961", "Simvastatin 20 MG Oral Tablet"));
     LOOKUP.put("amlodipine", new Code("RxNorm", "197361", "Amlodipine 5 MG Oral Tablet"));
     LOOKUP.put("nitroglycerin",
-        new Code("RxNorm", "564666", "Nitroglycerin 0.4 MG/ACTUAT [Nitrolingual]"));
+        new Code("RxNorm", "705129", "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray"));
     LOOKUP.put("atorvastatin", new Code("RxNorm", "259255", "Atorvastatin 80 MG Oral Tablet"));
     LOOKUP.put("captopril", new Code("RxNorm", "833036", "Captopril 25 MG Oral Tablet"));
     LOOKUP.put("warfarin", new Code("RxNorm", "855332", "Warfarin Sodium 5 MG Oral Tablet"));
