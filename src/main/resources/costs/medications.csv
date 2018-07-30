@@ -35,7 +35,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 310436,20,110,350,Galantamine 4 MG Oral Tablet
 997223,2,250,630,Donepezil hydrochloride 10 MG Oral Tablet
 313185,1280,1350,1447,Tacrine 10 MG Oral Capsule -- using yearly cost from https://webcache.googleusercontent.com/search?q=cache:tEYxPDcg0UoJ:https://www.thepharmaletter.com/article/cognex-approved-for-alzheimer-s-in-usa+&cd=12&hl=en&ct=clnk&gl=us&client=firefox-b-1
-1602593,400,450,600,Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG [Namzaric] -- https://www.drugs.com/price-guide/namzaric
+1599803,400,450,600,24 HR Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG Extended Release Oral Capsule -- https://www.drugs.com/price-guide/namzaric
 996740,33,275,900,Memantine hydrochloride 2 MG/ML Oral Solution
 998582,2,250,630,"Donepezil hydrochloride 23 MG [Aricept] -- note aricept expensive, generic only ~10"
 106258,3,7,12,Hydrocortisone 10 MG/ML Topical Cream - OTC
@@ -101,7 +101,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 834101,0.01,7,43,Penicillin V Potassium 500 MG
 311989,72,602,3785,Nitrofurantoin 5 MG/ML Oral Suspension-- note few examples
 1094107,6.75,22,65,Phenazopyridine hydrochloride 100 MG Oral Tablet
-1648767,3,40,146,NITROFURANTOIN  MACROCRYSTALS 50 MG [Macrodantin]
+311995,3,40,146,NITROFURANTOIN, MACROCRYSTALS 50 MG Oral Capsule
 309362,3,26,150,Clopidogrel 75 MG Oral Tablet
 197361,1.29,9,93,Amlodipine 5 MG Oral Tablet -- using AMLODIPINE BESYLATE
 834357,2.5,25,360,3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe

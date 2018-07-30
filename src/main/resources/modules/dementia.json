@@ -524,8 +524,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1602593",
-          "display": "Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG [Namzaric]"
+          "code": "1599803",
+          "display": "24 HR Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG Extended Release Oral Capsule"
         }
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"

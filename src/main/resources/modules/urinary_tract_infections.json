@@ -353,8 +353,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1648767",
-          "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG [Macrodantin]"
+          "code": "311995",
+          "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Followup"
