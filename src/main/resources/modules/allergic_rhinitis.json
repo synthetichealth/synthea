@@ -347,9 +347,9 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Allergic_Rhinitis_Symptom4_Ends"
+      "direct_transition": "Allergic_Rhinitis_Symptom5_Ends"
     },
-    "Allergic_Rhinitis_Symptom4_Ends": {
+    "Allergic_Rhinitis_Symptom5_Ends": {
       "type": "Symptom",
       "symptom": "Ear Pressure",
       "exact": {
