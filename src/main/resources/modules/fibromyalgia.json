@@ -318,8 +318,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "596927",
-          "display": "DULoxetine 20 MG [Cymbalta]"
+          "code": "596926",
+          "display": "duloxetine 20 MG Delayed Release Oral Capsule"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
