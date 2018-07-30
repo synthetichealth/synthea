@@ -341,8 +341,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "602735",
-          "display": "Galantamine 4 MG [Razadyne]"
+          "code": "310436",
+          "display": "Galantamine 4 MG Oral Tablet"
         }
       ],
       "direct_transition": "ModerateDecline"
