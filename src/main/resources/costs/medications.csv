@@ -6,7 +6,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 1091166,20,90,250,"Methylphenidate Hydrochloride 20 MG [Ritalin] -- note high variability on this one, I see 20-250, avg is ~90"
 617944,100,300,700,Atomoxetine 100 MG [Strattera]
 1020137,4,8,12,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
-608680,3,7,12,Acetaminophen 160 MG - OTC
+313782,3,7,12,Acetaminophen 325 MG Oral Tablet - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 1736776,2000,2500,3500,10 ML oxaliplatin 5 MG/ML Injection -- note few instances in data
 1366342,300,600,800,Levonorgestrel 0.00354 MG/HR [Norplant] -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
