@@ -52,7 +52,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 1736854,400,445,500,Cisplatin 50 MG Injection -- https://www.mskcc.org/sites/default/files/node/25097/documents/drug-prices-table-bach-center-health-policy-and-outcomes-v2.pdf
 1734340,150,200,250,Etoposide 100 MG Injection -- https://www.drugs.com/price-guide/etoposide
 583214,6000,6500,6800,PACLitaxel 100 MG Injection -- few instances in data set
-849727,6,8,11,Naproxen sodium 220 MG [Aleve] - OTC
+849574,6,8,11,Naproxen sodium 220 MG Oral Tablet - OTC
 567645,2,7,25,predniSONE 2.5 MG [Deltasone]
 835900,50,200,650,cycloSPORINE  modified 100 MG [Neoral]
 105078,0.01,7,43,Penicillin G 375 MG/ML Injectable Solution
