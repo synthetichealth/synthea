@@ -8,7 +8,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 1020137,4,8,12,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
 608680,3,7,12,Acetaminophen 160 MG - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
-575971,2000,2500,3500,oxaliplatin 5 MG/ML [Eloxatin] -- note few instances in data
+1736776,2000,2500,3500,10 ML oxaliplatin 5 MG/ML Injection -- note few instances in data
 1366342,300,600,800,Levonorgestrel 0.00354 MG/HR [Norplant] -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
 646250,300,600,800,Implanon 68 MG Drug Implant -- assuming the same cost for all 3 implants
 1111011,300,600,800,Nexplanon 68 MG Drug Implant
