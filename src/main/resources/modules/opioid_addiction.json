@@ -237,8 +237,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1049544",
-          "display": "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
+          "code": "1860154",
+          "display": "Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"
