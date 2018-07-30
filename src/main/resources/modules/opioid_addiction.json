@@ -275,8 +275,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1049639",
-          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
+          "code": "1049221",
+          "display": "Acetaminophen 325 MG / Oxycodone Hydrochloride 5 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"
