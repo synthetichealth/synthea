@@ -202,8 +202,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "849437",
-          "display": "Naproxen sodium 550 MG [Anaprox]"
+          "code": "198014",
+          "display": "Naproxen 500 MG Oral Tablet"
         }
       ],
       "direct_transition": "Uric_Acid_Reducer"
