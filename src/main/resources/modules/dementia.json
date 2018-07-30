@@ -537,8 +537,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "996741",
-          "display": "Memantine hydrochloride 2 MG/ML [Namenda]"
+          "code": "996740",
+          "display": "Memantine hydrochloride 2 MG/ML Oral Solution"
         }
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
