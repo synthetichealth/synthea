@@ -335,8 +335,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1091166",
-          "display": "Methylphenidate Hydrochloride 20 MG [Ritalin]"
+          "code": "1091392",
+          "display": "Methylphenidate Hydrochloride 20 MG Oral Tablet"
         }
       ],
       "distributed_transition": [
@@ -358,8 +358,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "617944",
-          "display": "Atomoxetine 100 MG [Strattera]"
+          "code": "608139",
+          "display": "atomoxetine 100 MG Oral Capsule"
         }
       ],
       "distributed_transition": [

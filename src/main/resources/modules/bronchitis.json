@@ -404,8 +404,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "608680",
-          "display": "Acetaminophen 160 MG"
+          "code": "313782",
+          "display": "Acetaminophen 325 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Doctor_Visit"

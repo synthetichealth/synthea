@@ -1383,8 +1383,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "575971",
-          "display": "oxaliplatin 5 MG/ML [Eloxatin]"
+          "code": "1736776",
+          "display": "10 ML oxaliplatin 5 MG/ML Injection"
         }
       ],
       "direct_transition": "Chemotherapy_Procedure"
