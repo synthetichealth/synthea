@@ -273,8 +273,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1094108",
-          "display": "Phenazopyridine hydrochloride 100 MG [Pyridium]"
+          "code": "1094107",
+          "display": "Phenazopyridine hydrochloride 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "UTI_CarePlan"
