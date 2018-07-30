@@ -355,8 +355,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "997221",
-          "display": "Donepezil hydrochloride 10 MG [Aricept]"
+          "code": "997223",
+          "display": "Donepezil hydrochloride 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "ModerateDecline"
