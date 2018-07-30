@@ -4,7 +4,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 895994,6,20,60,120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler -- note that brand name Flovent HFA ranges from 130 - 500
 745679,5,65,300,200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler
 1091166,20,90,250,"Methylphenidate Hydrochloride 20 MG [Ritalin] -- note high variability on this one, I see 20-250, avg is ~90"
-617944,100,300,700,Atomoxetine 100 MG [Strattera]
+608139,100,300,700,atomoxetine 100 MG Oral Capsule
 1020137,4,8,12,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
 313782,3,7,12,Acetaminophen 325 MG Oral Tablet - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
