@@ -1,11 +1,11 @@
 package org.mitre.synthea.engine;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.mitre.synthea.engine.Components.DateInput;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -84,7 +84,7 @@ public abstract class Logic {
   public static class Date extends Logic {
     private Integer year;
     private Integer month;
-    private String date; //must be in format yyyy-MM-dd HH:mm:ss.SSS 
+    private DateInput date;
     private String operator;
 
     @Override
@@ -96,16 +96,11 @@ public abstract class Logic {
         int currentmonth = Utilities.getMonth(time);
         return Utilities.compare(currentmonth, month, operator);
       } else if (date != null) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        java.util.Date testdate;
-        try {
-          testdate = sdf.parse(date);
-        } catch (ParseException e) {
-          throw new IllegalArgumentException("Invalid date format provided to Date logic,"
-              + " required: yyyy-MM-dd HH:mm:ss.SSS, given: " + date, e);
-        }
-        long testtime = testdate.getTime();
-        return Utilities.compare(time, testtime, operator);
+        Calendar testDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        testDate.set(date.year, date.month - 1, date.day, date.hour, date.minute, date.second);
+        testDate.set(Calendar.MILLISECOND,date.millisecond);
+        long testTime = testDate.getTimeInMillis();
+        return Utilities.compare(time, testTime, operator);
       } else {
         throw new UnsupportedOperationException("Date type "
             + "not currently supported in Date logic.");
@@ -170,7 +165,8 @@ public abstract class Logic {
     private String operator;
     private List<Code> codes;
     private String referencedByAttribute;
-    private Double value;
+    private Object value;
+    private Code valueCode;
 
     @Override
     public boolean test(Person person, long time) {
@@ -183,6 +179,7 @@ public abstract class Logic {
             break;
           }
         }
+        
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
           observation = 
@@ -191,8 +188,16 @@ public abstract class Logic {
           return false;
         }
       }
-
-      return Utilities.compare(observation.value, this.value, operator);
+      if (valueCode != null) {
+        value = valueCode;
+      } 
+      if (operator.equals("is nil")) {
+        return observation == null;
+      } else if (operator.equals("is not nil")) {
+        return observation != null;
+      } else {
+        return Utilities.compare(observation.value, this.value, operator);
+      }
     }
   }
   

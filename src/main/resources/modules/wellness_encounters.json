@@ -113,7 +113,6 @@
       "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_MetabolicPanel"
     },
-
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
       "number_of_observations": 8,
@@ -316,7 +315,7 @@
         }
       ],
       "unit": "mL/min/{1.73_m2}",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Smoker_Status_Observation"
     },
     "Lab_MetabolicPanel": {
       "type": "Simple",
@@ -455,9 +454,88 @@
           "transition": "Record_EGFR"
         },
         {
-          "transition": "Wellness_Encounter"
+          "transition": "Smoker_Status_Observation"
         }
       ]
+    },
+    "Smoker_Status_Observation": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Record_Current_Smoker",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Record_Former_Smoker",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "quit smoking age",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Record_Never_Smoker"
+        }
+      ]
+    },
+    "Record_Current_Smoker": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72166-2",
+          "display": "Tobacco smoking status NHIS"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 449868002,
+        "display": "Current every day smoker"
+      },
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Record_Former_Smoker": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72166-2",
+          "display": "Tobacco smoking status NHIS"
+        }
+      ],
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 8517006,
+        "display": "Former smoker"
+      }
+    },
+    "Record_Never_Smoker": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72166-2",
+          "display": "Tobacco smoking status NHIS"
+        }
+      ],
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 266919005,
+        "display": "Never smoker"
+      }
     }
   }
 }

@@ -237,8 +237,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "239981",
-          "display": "Chlorpheniramine 2 MG Chewable Tablet"
+          "code": "477045",
+          "display": "Chlorpheniramine Maleate 2 MG/ML Oral Solution"
         }
       ],
       "prescription": {
@@ -252,8 +252,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "389128",
-          "display": "Chlorpheniramine 8 MG Oral Tablet"
+          "code": "1363309",
+          "display": "Chlorpheniramine Maleate 4 MG Oral Tablet"
         }
       ],
       "prescription": {
