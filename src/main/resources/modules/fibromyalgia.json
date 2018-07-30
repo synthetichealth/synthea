@@ -304,8 +304,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "607015",
-          "display": "pregabalin 100 MG [Lyrica]"
+          "code": "483438",
+          "display": "pregabalin 100 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
