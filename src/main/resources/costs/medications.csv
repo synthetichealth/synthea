@@ -12,7 +12,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 1366342,300,600,800,Levonorgestrel 0.00354 MG/HR [Norplant] -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
 389221,300,600,800, Etonogestrel 68 MG Drug Implant-- assuming the same cost for all 3 implants
 1000126,20,55,715,1 ML medroxyprogesterone acetate 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
-1000158,20,55,715,0.65 ML depo-subQ provera 160 MG/ML Prefilled Syringe
+1000156,20,55,715,0.65 ML medroxyprogesterone acetate 160 MG/ML Prefilled Syringe
 807283,800,1000,1494,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
 1605257,800,1000,1494,Liletta 52 MG Intrauterine System
 1856546,800,1000,1494,Kyleena 19.5 MG Intrauterine System
