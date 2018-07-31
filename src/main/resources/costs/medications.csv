@@ -5,7 +5,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 745679,5,65,300,200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler
 1091392,20,90,250,"Methylphenidate Hydrochloride 20 MG Oral Tablet -- note high variability on this one, I see 20-250, avg is ~90"
 608139,100,300,700,atomoxetine 100 MG Oral Capsule
-1020137,4,8,12,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
+1043400,4,8,12,Acetaminophen 21.7 MG/ML / Dextromethorphan Hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution - OTC cough syrup
 313782,3,7,12,Acetaminophen 325 MG Oral Tablet - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 1736776,2000,2500,3500,10 ML oxaliplatin 5 MG/ML Injection -- note few instances in data
