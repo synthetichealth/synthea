@@ -112,8 +112,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1000128",
-          "display": "1 ML Depo-Provera 150 MG/ML Injection"
+          "code": "1000126",
+          "display": "1 ML medroxyprogesterone acetate 150 MG/ML Injection"
         }
       ],
       "direct_transition": "Initial_Injection_By_Physician"
