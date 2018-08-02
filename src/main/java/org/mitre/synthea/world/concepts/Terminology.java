@@ -370,7 +370,7 @@ public class Terminology {
     try {
       valueset = ctx.newJsonParser().parseResource(ValueSet.class, jsonContent);
     } catch (Exception e) {
-      System.out.println("File " + path.toString() + " is not the correct format for a ValueSet");
+      logger.error("File " + path.toString() + " is not the correct format for a ValueSet");
       valueset = null;
     }
 
@@ -452,7 +452,7 @@ public class Terminology {
     // Make request body.
     RequestBody requestBody = makeRequestBody(requestForm);
     //Create Request
-    Request request = makeRequest(AUTH_URL,requestBody);
+    Request request = buildRequest(AUTH_URL,requestBody);
     try {
 
       Response response = client.newCall(request).execute();
@@ -489,7 +489,7 @@ public class Terminology {
     Map<String,String> requestForm = new LinkedHashMap<>();
     requestForm.put("service",SERVICE_URL);
     RequestBody requestBody = makeRequestBody(requestForm);
-    Request request = makeRequest(AUTH_URL + "/" + authToken,requestBody);
+    Request request = buildRequest(AUTH_URL + "/" + authToken,requestBody);
     try {
       Response response = client.newCall(request).execute();
       assert response.body() != null;
@@ -513,7 +513,7 @@ public class Terminology {
     parameterMap.put("id",oid);
     parameterMap.put("ticket",ticket);
     HttpUrl requestUrl = makeGetUrl(parameterMap);
-    Request request = makeRequest(requestUrl.toString());
+    Request request = buildRequest(requestUrl.toString());
     try {
       response = client.newCall(request).execute();
     } catch (IOException | NullPointerException e) {
@@ -524,7 +524,7 @@ public class Terminology {
   }
 
 
-  static Request makeRequest(String url) {
+  static Request buildRequest(String url) {
 
     //Makes requests of specified type, overloaded to switch between GET and POST.
     return new Request.Builder()
@@ -533,7 +533,7 @@ public class Terminology {
                         .build();
   }
 
-  static Request makeRequest(String url, RequestBody body) {
+  static Request buildRequest(String url, RequestBody body) {
 
     return new Request.Builder()
             .url(url)
