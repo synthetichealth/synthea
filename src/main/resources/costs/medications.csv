@@ -1,19 +1,18 @@
 CODE,MIN,MODE,MAX,COMMENTS
 312617,2,7,25,predniSONE 5 MG Oral Tablet
-727316,150,350,530,0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector
+1870230,150,350,530,NDA020800 0.3 ML Epinephrine 1 MG/ML Auto-Injector
 895994,6,20,60,120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler -- note that brand name Flovent HFA ranges from 130 - 500
 745679,5,65,300,200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler
 1091392,20,90,250,"Methylphenidate Hydrochloride 20 MG Oral Tablet -- note high variability on this one, I see 20-250, avg is ~90"
 608139,100,300,700,atomoxetine 100 MG Oral Capsule
-1020137,4,8,12,Dextromethorphan Hydrobromide 1 MG/ML - OTC cough syrup
+1043400,4,8,12,Acetaminophen 21.7 MG/ML / Dextromethorphan Hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution - OTC cough syrup
 313782,3,7,12,Acetaminophen 325 MG Oral Tablet - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 1736776,2000,2500,3500,10 ML oxaliplatin 5 MG/ML Injection -- note few instances in data
 1366343,300,600,800,Levonorgestrel 0.00354 MG/HR Drug Implant -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
-646250,300,600,800,Implanon 68 MG Drug Implant -- assuming the same cost for all 3 implants
-1111011,300,600,800,Nexplanon 68 MG Drug Implant
-1000128,20,55,715,1 ML Depo-Provera 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
-1000158,20,55,715,0.65 ML depo-subQ provera 160 MG/ML Prefilled Syringe
+389221,300,600,800, Etonogestrel 68 MG Drug Implant-- assuming the same cost for all 3 implants
+1000126,20,55,715,1 ML medroxyprogesterone acetate 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
+1000156,20,55,715,0.65 ML medroxyprogesterone acetate 160 MG/ML Prefilled Syringe
 807283,800,1000,1494,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
 1605257,800,1000,1494,Liletta 52 MG Intrauterine System
 1856546,800,1000,1494,Kyleena 19.5 MG Intrauterine System
@@ -29,7 +28,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 748856,15,35,50,Yaz 28 Day Pack
 978950,15,35,50,Natazia 28 Day Pack
 748879,15,35,50,Levora 0.15/30 28 Day Pack
-1536586,15,35,50,Xulane 150/35 MCG/Day Weekly Transdermal System - same source as pills
+1534809,15,35,50,168 HR Ethinyl Estradiol 0.00146 MG/HR / norelgestromin 0.00625 MG/HR Transdermal System - same source as pills
 1367439,15,40,50,NuvaRing 0.12/0.015 MG per 24HR 21 Day Vaginal Ring - est from https://www.plannedparenthood.org/learn/birth-control/birth-control-vaginal-ring-nuvaring/how-do-i-get-nuvaring
 896209,6,20,60,60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler
 310436,20,110,350,Galantamine 4 MG Oral Tablet
@@ -97,8 +96,8 @@ CODE,MIN,MODE,MAX,COMMENTS
 904419,2.55,110,303,Alendronic acid 10 MG Oral Tablet -- SEE ALENDRONATE SODIUM
 105586,5.5,70,180,Methotrexate 10 MG Oral Tablet
 562251,3,16,153,Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet -- see AMOX TR-POTASSIUM CLAVULANATE
-834060,0.01,7,43,Penicillin V Potassium 250 MG
-834101,0.01,7,43,Penicillin V Potassium 500 MG
+834061,0.01,7,43,Penicillin V Potassium 250 MG Oral Tablet
+834102,0.01,7,43,Penicillin V Potassium 500 MG Oral Tablet
 311989,72,602,3785,Nitrofurantoin 5 MG/ML Oral Suspension-- note few examples
 1094107,6.75,22,65,Phenazopyridine hydrochloride 100 MG Oral Tablet
 311995,3,40,146,NITROFURANTOIN MACROCRYSTALS 50 MG Oral Capsule

@@ -84,8 +84,8 @@ public class ConceptsTest {
     
     codes.add(new Code("SNOMED-CT","230690007","Stroke"));
     codes.add(new Code("SNOMED-CT","22298006","Myocardial Infarction"));
-    codes.add(new Code("RxNorm","834060","Penicillin V Potassium 250 MG"));
-    codes.add(new Code("RxNorm","834060","Penicillin V Potassium 250 MG")); 
+    codes.add(new Code("RxNorm","834061","Penicillin V Potassium 250 MG Oral Tablet"));
+    codes.add(new Code("RxNorm","834061","Penicillin V Potassium 250 MG Oral Tablet"));
     // note duplicate code here!! ex, same code in multiple modules
     
     Concepts.inventoryCodes(concepts, codes, ConceptsTest.class.getSimpleName());
