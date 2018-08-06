@@ -4,8 +4,12 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -223,7 +227,7 @@ public class Provider implements QuadTreeData {
         servicesProvided.add(Provider.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(state, abbreviation, primaryCareFile, servicesProvided);
-      
+        
         servicesProvided.clear();
         servicesProvided.add(Provider.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
@@ -239,7 +243,7 @@ public class Provider implements QuadTreeData {
       }
     }
   }
-  
+
   /**
    * Read the providers from the given resource file, only importing the ones for the given state.
    * THIS method is for loading providers and generating clinicians with specific specialties
