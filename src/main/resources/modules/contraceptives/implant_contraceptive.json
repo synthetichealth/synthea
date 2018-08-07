@@ -143,8 +143,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1366342",
-          "display": "Levonorgestrel 0.00354 MG/HR [Norplant]"
+          "code": "1366343",
+          "display": "Levonorgestrel 0.00354 MG/HR Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"

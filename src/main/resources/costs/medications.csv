@@ -9,7 +9,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 313782,3,7,12,Acetaminophen 325 MG Oral Tablet - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 1736776,2000,2500,3500,10 ML oxaliplatin 5 MG/ML Injection -- note few instances in data
-1366342,300,600,800,Levonorgestrel 0.00354 MG/HR [Norplant] -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
+1366343,300,600,800,Levonorgestrel 0.00354 MG/HR Drug Implant -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
 389221,300,600,800, Etonogestrel 68 MG Drug Implant-- assuming the same cost for all 3 implants
 1000126,20,55,715,1 ML medroxyprogesterone acetate 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
 1000156,20,55,715,0.65 ML medroxyprogesterone acetate 160 MG/ML Prefilled Syringe
@@ -58,7 +58,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 789980,11,175,350,Ampicillin 100 MG/ML Injectable Solution
 1652673,8.8,60,733,Doxycycline Monohydrate 50 MG Oral Tablet
 1650142,8.8,60,733,Doxycycline Monohydrate 100 MG Oral Tablet
-392151,0.01,4,25,Amoxicillin 200 MG Oral Tablet
+308182,0.01,4,25,Amoxicillin 250 MG Oral Capsule
 308192,0.01,4,25,Amoxicillin 500 MG Oral Tablet
 309045,40,55,66,Cefaclor 250 MG Oral Capsule
 309043,40,55,66,12 HR Cefaclor 500 MG Extended Release Oral Tablet
