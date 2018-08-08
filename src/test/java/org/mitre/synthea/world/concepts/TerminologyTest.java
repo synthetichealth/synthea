@@ -252,8 +252,4 @@ public class TerminologyTest {
 
     }
 
-    @Test
-    public void test() throws URISyntaxException {
-        Terminology.loadLookupTable();
-    }
 }
