@@ -23,7 +23,7 @@ public class TerminologyTest {
 
     @Before
     public void setUp() {
-        session = new Terminology.Session();
+        session = Terminology.sess;
     }
 
     @Test
