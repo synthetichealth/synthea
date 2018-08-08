@@ -290,11 +290,11 @@ public class Provider implements QuadTreeData {
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
         } else {
           for (String specialty : ClinicianSpecialty.getSpecialties()) { 
-            if (row.get(specialty) != "") {
-              if (!row.get(specialty).equals("0")) {
-                parsed.clinicianMap.put(specialty, 
-                    parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty));
-              }
+            String specialtyCount = row.get(specialty);
+            if (specialtyCount != null && !specialtyCount.trim().equals("") 
+                && !specialtyCount.trim().equals("0")) {
+              parsed.clinicianMap.put(specialty, 
+                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty));
             }
           }
           if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
@@ -305,9 +305,6 @@ public class Provider implements QuadTreeData {
         
         
         //TODO - determine how many clinicians based off the population
-
-        parsed.clinicianMap.put("GENERAL PRACTICE", 
-            parsed.generateClinicianList(1, "GENERAL PRACTICE"));
 
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
