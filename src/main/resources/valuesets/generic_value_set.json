@@ -1,0 +1,35 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://www.hl7.org/fhir/synthea/infertility",
+  "compose": {
+    "include": [
+      {
+        "system": "SNOMED-CT",
+        "concept": [
+          {
+            "code": "1231",
+            "display":"display1"
+          }
+        ]
+      },
+      {
+        "system": "ICD-10",
+        "concept": [
+          {
+            "code": "E08",
+            "display": "display2"
+          }
+        ]
+      },
+      {
+        "system": "ICD-9",
+        "concept": [
+          {
+            "code": "250.00",
+            "display": "display3"
+          }
+        ]
+      }
+    ]
+  }
+}

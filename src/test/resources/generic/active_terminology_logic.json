@@ -1,0 +1,111 @@
+{
+  "name": "SuperDiseaseAlpha",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Contract Super Disease"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Contract Super Disease": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "helo",
+      "value_set": "https://www.hl7.org/fhir/synthea/infertility",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 3333333333,
+          "display": "Default Code"
+        }
+      ],
+      "direct_transition": "helo"
+    },
+    "helo": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "value_set": "https://www.hl7.org/fhir/synthea/infertility",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1231111,
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "New_State"
+    },
+    "end": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "value_set": "https://www.hl7.org/fhir/synthea/infertility",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 449494949,
+          "display": "testing encounter"
+        }
+      ],
+      "direct_transition": "New_State_2"
+    },
+    "New_State": {
+      "type": "Simple",
+      "direct_transition": "New_State_5"
+    },
+    "New_State_2": {
+      "type": "Procedure",
+      "value_set": "https://www.hl7.org/fhir/synthea/infertility",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 44333344,
+          "display": "Testing procedure"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "New_State_3"
+    },
+    "New_State_3": {
+      "type": "EncounterEnd",
+      "direct_transition": "New_State_4"
+    },
+    "New_State_4": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Terminal"
+    },
+    "New_State_5": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "end",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "https://www.hl7.org/fhir/synthea/infertility",
+                "display": "SNOMED Code"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    }
+  }
+}
