@@ -19,6 +19,7 @@ import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.geography.Location;
 
 public class HospitalDSTU2ExporterTest {
 
@@ -36,7 +37,8 @@ public class HospitalDSTU2ExporterTest {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir_dstu2.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
-    Provider.loadProviders("MA");
+    Location location = new Location("Massachusetts", null);
+    Provider.loadProviders(location);
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 

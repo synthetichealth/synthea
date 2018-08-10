@@ -1,27 +1,16 @@
 package org.mitre.synthea.world.agents;
 
-import com.google.common.collect.HashBasedTable;     
-import com.google.common.collect.Table;              
-import com.google.gson.internal.LinkedTreeMap;       
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.sis.geometry.DirectPosition2D;
-import org.apache.sis.index.tree.QuadTree;
 import org.apache.sis.index.tree.QuadTreeData;
-import org.mitre.synthea.engine.EventList;
-import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.VitalSign;
-
-
-
-
 
 public class Clinician implements Serializable, QuadTreeData {
+  private static final long serialVersionUID = 1370111157423846567L;
 
   public static final String WELLNESS = "wellness";
   public static final String AMBULATORY = "ambulatory";

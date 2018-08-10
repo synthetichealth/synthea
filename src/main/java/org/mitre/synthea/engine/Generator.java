@@ -19,7 +19,6 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -160,7 +159,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(o.state);
+    Provider.loadProviders(location);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     
@@ -355,89 +354,6 @@ public class Generator {
       throw e;
     }
     return person;
-  }
-  
-  /**
-   * Generate a completely random Clinician. 
-   * The seed used to generate the person is randomized as well.
-   * 
-   * @param index Target index in the whole set of people to generate
-   * @return generated Person
-   */
-  public static Clinician generateClinician(int index, Provider provider) {
-    // System.currentTimeMillis is not unique enough
-    long clinicianSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    return generateClinician(index, clinicianSeed, provider);
-  }
-
-  /**
-   * Generate a random clinician, from the given seed. 
-   * 
-   * @param index
-   *          Target index in the whole set of people to generate
-   * @param clinicianSeed
-   *          Seed for the random clinician
-   * @return generated Clinician
-   */
-  public static Clinician generateClinician(int index, long clinicianSeed, Provider provider) {
-    Clinician clinician = null;
-    try {
-      
-      // NOTE: Currently, default demographics are used for clinician generation. 
-      // Commented out lines in this method are for using new, random demographics for clinicians.
-      
-      //Random randomForDemographics = new Random(clinicianSeed);
-      //Demographics city = location.randomCity(randomForDemographics);
-      Map<String, Object> out = new HashMap<>();
-
-      
-      //String race = city.pickRace(randomForDemographics);
-      String race = "other";
-      out.put(Person.RACE, race);
-      //String ethnicity = city.ethnicityFromRace(race, randomForDemographics);
-      String ethnicity = "arab";
-      out.put(Person.ETHNICITY, ethnicity);
-      //String language = city.languageFromEthnicity(ethnicity, randomForDemographics);
-      String language = "english";
-      out.put(Person.FIRST_LANGUAGE, language);
-      /*String gender = city.pickGender(randomForDemographics);
-      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
-        gender = "M";
-      } else {
-        gender = "F";
-      }
-    */
-      String gender = "F";
-      out.put(Person.GENDER, gender);
-      Map<String, Object> demoAttributes = out;
-      
-
-      clinician = new Clinician(clinicianSeed);
-      clinician.attributes.putAll(demoAttributes);
-      clinician.attributes.put(Person.ADDRESS, provider.address);
-      clinician.attributes.put(Person.CITY, provider.city);
-      clinician.attributes.put(Person.STATE, provider.state);
-      clinician.attributes.put(Person.ZIP, provider.zip);
-        
-      String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
-      String lastName = LifecycleModule.fakeLastName(language, clinician.random);
-
-      if (LifecycleModule.appendNumbersToNames) {
-        firstName = LifecycleModule.addHash(firstName);
-        lastName = LifecycleModule.addHash(lastName);
-      }
-      clinician.attributes.put(Clinician.FIRST_NAME, firstName);
-      clinician.attributes.put(Clinician.LAST_NAME, lastName);
-      clinician.attributes.put(Clinician.NAME, firstName + " " + lastName);
-      clinician.attributes.put(Clinician.NAME_PREFIX, "Dr.");
-      clinician.attributes.put(Clinician.EDUCATION, "bs_degree");
-        
-    } catch (Throwable e) {
-      // lots of fhir things throw errors for some reason
-      e.printStackTrace();
-      throw e;
-    }
-    return clinician;
   }
   
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {

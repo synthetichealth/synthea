@@ -411,7 +411,7 @@ public class TextExporter {
 
     String clinician = "";
     if (encounter.clinician != null) {
-      clinician = "(" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) 
+      clinician = " (" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) 
           + " " + encounter.clinician.attributes.get(Clinician.NAME) + ")";
     }
     if (encounter.reason == null && encounter.provider == null) {

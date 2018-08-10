@@ -15,27 +15,32 @@ import org.junit.Test;
 import org.mitre.synthea.world.geography.Location;
 
 public class ProviderTest {
- 
+
+  private Location location = new Location("Massachusetts", null);
+  private Location city = new Location("Massachusetts", "Bedford");
+
+  @Before
+  public void clearProviders() {
+    Provider.clear();
+  }
+
   @Test
   public void testLoadProvidersByAbbreviation() {
-    Provider.clear();
-    Provider.loadProviders("MA");
+    Provider.loadProviders(location);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
   }
 
   @Test
   public void testLoadProvidersByStateName() {
-    Provider.clear();
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(location);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
   }
   
   @Test
   public void testGenerateClinicianByAbbreviation() {
-    Provider.clear();
-    Provider.loadProviders("MA");
+    Provider.loadProviders(location);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
     Provider provider = Provider.getProviderList().get(0);
@@ -46,8 +51,7 @@ public class ProviderTest {
   
   @Test
   public void testGenerateClinicianByState() {
-    Provider.clear();
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(location);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
     Provider provider = Provider.getProviderList().get(0);
@@ -58,9 +62,8 @@ public class ProviderTest {
   
   @Test
   public void testNearestInpatientInState() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(location);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.INPATIENT, 0);
     Assert.assertNotNull(provider);
@@ -68,9 +71,8 @@ public class ProviderTest {
 
   @Test
   public void testNearestAmbulatoryInState() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(location);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.AMBULATORY, 0);
     Assert.assertNotNull(provider);
@@ -78,9 +80,8 @@ public class ProviderTest {
 
   @Test
   public void testNearestEmergencyInState() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(location);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.EMERGENCY, 0);
     Assert.assertNotNull(provider);
@@ -88,9 +89,8 @@ public class ProviderTest {
 
   @Test
   public void testNearestUrgentCareInState() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(location);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.URGENTCARE, 0);
     Assert.assertNotNull(provider); 
@@ -98,53 +98,47 @@ public class ProviderTest {
   
   @Test
   public void testNearestInpatientInCity() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(city);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", "Bedford");
-    location.assignPoint(person, location.randomCityName(person.random));
+    city.assignPoint(person, city.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.INPATIENT, 0);
     Assert.assertNotNull(provider);
   }
 
   @Test
   public void testNearestAmbulatoryInCity() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(city);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", "Bedford");
-    location.assignPoint(person, location.randomCityName(person.random));
+    city.assignPoint(person, city.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.AMBULATORY, 0);
     Assert.assertNotNull(provider);
   }
 
   @Test
   public void testNearestEmergencyInCity() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(city);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", "Bedford");
-    location.assignPoint(person, location.randomCityName(person.random));
+    city.assignPoint(person, city.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.EMERGENCY, 0);
     Assert.assertNotNull(provider);
   }
 
   @Test
   public void testNearestUrgentCareInCity() {
-    Provider.loadProviders("Massachusetts");
+    Provider.loadProviders(city);
     Person person = new Person(0L);
-    Location location = new Location("Massachusetts", "Bedford");
-    location.assignPoint(person, location.randomCityName(person.random));
+    city.assignPoint(person, city.randomCityName(person.random));
     Provider provider = Provider.findClosestService(person, Provider.URGENTCARE, 0);
     Assert.assertNotNull(provider);
   }
   
   @Test
   public void testVaFacilityOnlyAcceptsVeteran() {
-    Provider.loadProviders("Massachusetts");
-
+    Provider.loadProviders(location);
     Provider vaProvider = Provider.getProviderList()
                                   .stream()
                                   .filter(p -> "VA Facility".equals(p.type))
                                   .findFirst().get();
-
     Person veteran = new Person(0L);
     veteran.attributes.put("veteran", "vietnam");
     Person nonVet = new Person(1L);
@@ -167,7 +161,7 @@ public class ProviderTest {
          .forEach(t -> {
            try {
              Provider.clear();
-             Provider.loadProviders("Massachusetts", "MA", "providers/" + t.getFileName(), 
+             Provider.loadProviders(location, "providers/" + t.getFileName(),
                  providerServices);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);

@@ -357,7 +357,6 @@ public class Person implements Serializable, QuadTreeData {
 
   private void setWellnessProvider(long time) {
     Provider provider = Provider.findClosestService(this, Provider.WELLNESS, time);
-    System.out.println("prov is " + provider);
     attributes.put(PREFERREDWELLNESSPROVIDER, provider);
   }
 

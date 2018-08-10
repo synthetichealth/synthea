@@ -4,12 +4,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,11 +16,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sis.geometry.DirectPosition2D;
 import org.apache.sis.index.tree.QuadTree;
 import org.apache.sis.index.tree.QuadTreeData;
-import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -32,7 +26,6 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
-
 
 public class Provider implements QuadTreeData {
 
@@ -55,6 +48,7 @@ public class Provider implements QuadTreeData {
   public String uuid;
   public String id;
   public String name;
+  private Location location;
   public String address;
   public String city;
   public String state;
@@ -68,14 +62,12 @@ public class Provider implements QuadTreeData {
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
-  
 
   protected Provider() {
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<String>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
-    
   }
 
   public String getResourceID() {
@@ -203,42 +195,39 @@ public class Provider implements QuadTreeData {
   
   /**
    * Load into cache the list of providers for a state.
-   * @param state name or abbreviation.
+   * @param Location the state being loaded.
    */
-  public static void loadProviders(String state) {
-    if (!statesLoaded.contains(state) 
-        || !statesLoaded.contains(Location.getAbbreviation(state)) 
-        || !statesLoaded.contains(Location.getStateName(state))) {
+  public static void loadProviders(Location location) {
+    if (!statesLoaded.contains(location.state)
+        || !statesLoaded.contains(Location.getAbbreviation(location.state))
+        || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-      
-        String abbreviation = Location.getAbbreviation(state);
-
         Set<String> servicesProvided = new HashSet<String>();
         servicesProvided.add(Provider.AMBULATORY);
         servicesProvided.add(Provider.INPATIENT);
       
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-        loadProviders(state, abbreviation, hospitalFile, servicesProvided);
+        loadProviders(location, hospitalFile, servicesProvided);
 
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(state, abbreviation, vaFile, servicesProvided);
+        loadProviders(location, vaFile, servicesProvided);
         servicesProvided.clear();
       
         servicesProvided.add(Provider.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        loadProviders(state, abbreviation, primaryCareFile, servicesProvided);
+        loadProviders(location, primaryCareFile, servicesProvided);
         
         servicesProvided.clear();
         servicesProvided.add(Provider.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-        loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
+        loadProviders(location, urgentcareFile, servicesProvided);
       
         servicesProvided.clear();
-        statesLoaded.add(state);
-        statesLoaded.add(Location.getAbbreviation(state));
-        statesLoaded.add(Location.getStateName(state));
+        statesLoaded.add(location.state);
+        statesLoaded.add(Location.getAbbreviation(location.state));
+        statesLoaded.add(Location.getStateName(location.state));
       } catch (IOException e) {
-        System.err.println("ERROR: unable to load providers for state: " + state);
+        System.err.println("ERROR: unable to load providers for state: " + location.state);
         e.printStackTrace();
       }
     }
@@ -248,13 +237,12 @@ public class Provider implements QuadTreeData {
    * Read the providers from the given resource file, only importing the ones for the given state.
    * THIS method is for loading providers and generating clinicians with specific specialties
    * 
-   * @param state Name of the current state, ex "Massachusetts"
-   * @param abbreviation State abbreviation, ex "MA"
+   * @param Location the state being loaded
    * @param filename Location of the file, relative to src/main/resources
    * @param servicesProvided Set of services provided by these facilities
    * @throws IOException if the file cannot be read
    */
-  public static void loadProviders(String state, String abbreviation, String filename, 
+  public static void loadProviders(Location location, String filename,
       Set<String> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
@@ -263,10 +251,11 @@ public class Provider implements QuadTreeData {
     while (csv.hasNext()) {
       Map<String,String> row = csv.next();
       String currState = row.get("state");
-      
+      String abbreviation = Location.getAbbreviation(location.state);
+
       // for now, only allow one state at a time
-      if ((state == null)
-          || (state != null && state.equalsIgnoreCase(currState))
+      if ((location.state == null)
+          || (location.state != null && location.state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
     
         Provider parsed = csvLineToProvider(row);
@@ -281,9 +270,10 @@ public class Provider implements QuadTreeData {
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsed.attributes.put(e.getKey(), e.getValue());
         }
-        
-        String city = parsed.city;
-        String address = parsed.address;
+
+        parsed.location = location;
+        // String city = parsed.city;
+        // String address = parsed.address;
 
         if (row.get("hasSpecialties") == null || row.get("hasSpecialties").equals("FALSE")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
@@ -302,9 +292,6 @@ public class Provider implements QuadTreeData {
                 parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
           }
         }
-        
-        
-        //TODO - determine how many clinicians based off the population
 
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
@@ -322,18 +309,87 @@ public class Provider implements QuadTreeData {
    * @param specialty - which specialty clinicians to generate
    * @return
    */
-  public ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty) {
+  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = Generator.generateClinician(i, this);
+      clinician = generateClinician(i, this);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
     return clinicians;
-  
   }
   
+  /**
+   * Generate a completely random Clinician.
+   * The seed used to generate the person is randomized as well.
+   *
+   * @param index Target index in the whole set of people to generate
+   * @return generated Person
+   */
+  private Clinician generateClinician(int index, Provider provider) {
+    // System.currentTimeMillis is not unique enough
+    long clinicianSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+    return generateClinician(index, clinicianSeed, provider);
+  }
+
+  /**
+   * Generate a random clinician, from the given seed.
+   *
+   * @param index
+   *          Target index in the whole set of people to generate
+   * @param clinicianSeed
+   *          Seed for the random clinician
+   * @return generated Clinician
+   */
+  private Clinician generateClinician(int index, long clinicianSeed, Provider provider) {
+    Clinician clinician = null;
+    try {
+      Random randomForDemographics = new Random(clinicianSeed);
+      Demographics city = location.randomCity(randomForDemographics);
+      Map<String, Object> out = new HashMap<>();
+
+      String race = city.pickRace(randomForDemographics);
+      out.put(Person.RACE, race);
+      String ethnicity = city.ethnicityFromRace(race, randomForDemographics);
+      out.put(Person.ETHNICITY, ethnicity);
+      String language = city.languageFromEthnicity(ethnicity, randomForDemographics);
+      out.put(Person.FIRST_LANGUAGE, language);
+      String gender = city.pickGender(randomForDemographics);
+      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
+        gender = "M";
+      } else {
+        gender = "F";
+      }
+      out.put(Person.GENDER, gender);
+
+      clinician = new Clinician(clinicianSeed);
+      clinician.attributes.putAll(out);
+      clinician.attributes.put(Person.ADDRESS, provider.address);
+      clinician.attributes.put(Person.CITY, provider.city);
+      clinician.attributes.put(Person.STATE, provider.state);
+      clinician.attributes.put(Person.ZIP, provider.zip);
+
+      String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
+      String lastName = LifecycleModule.fakeLastName(language, clinician.random);
+
+      if (LifecycleModule.appendNumbersToNames) {
+        firstName = LifecycleModule.addHash(firstName);
+        lastName = LifecycleModule.addHash(lastName);
+      }
+      clinician.attributes.put(Clinician.FIRST_NAME, firstName);
+      clinician.attributes.put(Clinician.LAST_NAME, lastName);
+      clinician.attributes.put(Clinician.NAME, firstName + " " + lastName);
+      clinician.attributes.put(Clinician.NAME_PREFIX, "Dr.");
+      // Degree's beyond a bachelors degree are not currently tracked.
+      clinician.attributes.put(Clinician.EDUCATION, "bs_degree");
+    } catch (Throwable e) {
+      e.printStackTrace();
+      throw e;
+    }
+    return clinician;
+  }
+
   /**
    * Randomly chooses a clinician out of a given clinician list.
    * @param specialty - the specialty to choose from
