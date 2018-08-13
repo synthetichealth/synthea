@@ -12,8 +12,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -53,10 +51,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 
-
-
-
-
 /**
  * Finds a specified value set, extracts the codes and systems
  * and selects one code/system at random.
@@ -65,8 +59,6 @@ import org.xml.sax.InputSource;
 public class Terminology {
 
   private static String VS_FOLDER = "valuesets";
-
-
 
   private static final String VSAC_USER = Config.get("terminology.username");
   private static final String VSAC_PASS = Config.get("terminology.password");
@@ -83,233 +75,222 @@ public class Terminology {
   private static final Logger logger = LoggerFactory.getLogger(Terminology.class);
   private static boolean connectionFailed = false;
 
+  private static final OkHttpClient client = getClient();
 
-  public static Session sess;
+  // Can be reused for multiple requests
+  // Not final in case we want to get a new token
+  private static String authToken = Terminology.requestAuthToken();
 
-  static {
-    sess = new Session();
+
+
+  /**
+   * Retrieves a value set from file, and if it can't find one, looks on VSAC.  Returns null if
+   * it can't find anything.
+   * @param url the uri, oid, or url of the value set
+   * @return the value set that was requested, either from file or VSAC
+   */
+  static ValueSet getValueSet(String url) {
+    // Call to get valueSet from a Map
+    ValueSet vs = valueSets.get(url);
+    if (vs == null && authToken != null) {
+      String ticket = getServiceTicket(authToken);
+      Response response = Terminology.requestValueSet(url,ticket);
+      if (response.code() == 200) {
+        try {
+          assert response.body() != null;
+          vs = parseResponse(response.body().string());
+          valueSets.put(url,vs);
+          response.close();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+      } else {
+        logger.warn("Invalid OID or URL provided");
+        return null;
+      }
+    } else if (vs == null) {
+      return null;
+    }
+    return vs;
+  }
+
+  private static Response requestValueSet(String oid, String ticket) {
+
+    Response response = null;
+    Map<String,String> parameterMap = new LinkedHashMap<>();
+    parameterMap.put("id",oid);
+    parameterMap.put("ticket",ticket);
+    HttpUrl requestUrl = makeGetUrl(parameterMap);
+    Request request = buildGetRequest(requestUrl.toString());
+    try {
+      response = client.newCall(request).execute();
+    } catch (IOException | NullPointerException e) {
+      e.printStackTrace();
+    }
+
+    return response;
   }
 
 
 
-  public static class Session {
-
-    private OkHttpClient client;
-
-    // Can be reused for multiple requests
-    private String authToken;
-
-
-    /**
-     * Sessions hold on to the client and auth token so that we don't have to
-     * keep making them, but you can make multiple instances in case you need
-     * more than one type of client.
-     */
-
-    public Session() {
-
-      if (VSAC_PASS == null | VSAC_USER == null) {
-        authToken = null;
-      } else if (!connectionFailed) {
-        client = getClient();
-        authToken = Terminology.getAuthToken(client);
-
-      }
-
-
+  /**
+   * Gets a random code from a value set.  First gets a value set, then gets its codes, then
+   * chooses one of those codes.  If the value set can't be found, it just returns
+   * the provided defaults.
+   * @param url The canonical URL of the ValueSet or a VSAC oid
+   * @return A random code from the specified ValueSet as a Pair of form (system:code)
+   */
+  public static Code getRandomCode(String url,
+                            String defaultSystem, String defaultCode, String defaultDisplay) {
+    ValueSet vs = getValueSet(url);
+    if (vs == null) {
+      return new Code(defaultSystem,defaultCode,defaultDisplay);
     }
-
-    /**
-     * Retrieves a value set from file, and if it can't find one, looks on VSAC.  Returns null if
-     * it can't find anything.
-     * @param url the uri, oid, or url of the value set
-     * @return the value set that was requested, either from file or VSAC
-     */
-    ValueSet getValueSet(String url) {
-      // Call to get valueSet from a Map
-      ValueSet vs = valueSets.get(url);
-      if (vs == null & authToken != null) {
-        String ticket = getServiceTicket(authToken,client);
-        Response response = Terminology.getValueSet(client,url,ticket);
-        if (response.code() == 200) {
-          try {
-            assert response.body() != null;
-            vs = parseResponse(response.body().string());
-            valueSets.put(url,vs);
-            response.close();
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-
-        } else {
-          logger.warn("Invalid OID or URL provided");
-          return null;
-        }
-      } else if (vs == null) {
-        return null;
-      }
-      return vs;
-    }
-
-
-
-    /**
-     * Gets a random code from a value set.  First gets a value set, then gets its codes, then
-     * chooses one of those codes.  If the value set can't be found, it just returns
-     * the provided defaults.
-     * @param url The canonical URL of the ValueSet or a VSAC oid
-     * @return A random code from the specified ValueSet as a Pair of form (system:code)
-     */
-    public Code getRandomCode(String url,
-                              String defaultSystem, String defaultCode, String defaultDisplay) {
-      ValueSet vs = getValueSet(url);
-      if (vs == null) {
-        return new Code(defaultSystem,defaultCode,defaultDisplay);
-      }
-      return chooseCode(Terminology.getCodes(vs));
-    }
-
-
-    /**
-     * Gets all the codes from a value set after retrieving it.
-     * @param url the url or oid of the value set to be retrieved
-     * @return an array of every code, unsorted
-     */
-    public List<Code> getAllCodes(String url) {
-
-      // Mainly for use by Concepts.java, doesn't default
-      ValueSet vs = getValueSet(url);
-      if (vs == null) {
-
-        return null;
-      }
-      Multimap<String, Code> codes = getCodes(vs);
-      return new ArrayList<>(codes.values());
-    }
-
-    /**
-     * Parses the XML response from VSAC, returns a value set, and saves the value set
-     * as JSON locally for easy use later.
-     * @param xml String representation of XML response from VSAC
-     * @return ValueSet containing systems and their codes
-     * @throws Exception just in case
-     */
-    ValueSet parseResponse(String xml) throws Exception {
-
-      // Parse the string to get XML encoding.
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      InputSource is = new InputSource(new StringReader(xml));
-
-      // Build a ValueSet
-      ValueSet vs = new ValueSet();
-
-
-      /*A value set should look like
-       Compose: {
-            Include: [
-                {
-                system,
-                concept: [
-                        code
-                        code
-                        ...
-                        code
-                         ]
-                }
-                {
-                system,
-                concept: [
-                    ...
-                        ]
-                 }
-                 ]}
-      */
-
-      ValueSet.ValueSetComposeComponent composeComponent = new ValueSet.ValueSetComposeComponent();
-      Document responseXml = builder.parse(is);
-      Element root = responseXml.getDocumentElement();
-      String namespaceURI = root.getNamespaceURI();
-      NamedNodeMap valueSetAttr = responseXml.getElementsByTagNameNS(namespaceURI,"ValueSet")
-                    .item(0)
-                    .getAttributes();
-
-      String displayName = valueSetAttr.getNamedItem("displayName").getTextContent();
-
-      // Regex replaces all punctuation with an underscore
-      displayName = displayName.replaceAll("[, ';\"/:]","_");
-      String oid = valueSetAttr.getNamedItem("ID").getTextContent();
-      vs.setUrl(oid);
-      NodeList concepts = responseXml.getElementsByTagNameNS(namespaceURI,"Concept");
-      for (int i = 0; i < concepts.getLength(); i++) {
-        Node currentNode = concepts.item(i);
-        String system = currentNode.getAttributes().getNamedItem("codeSystem").getTextContent();
-        String code = currentNode.getAttributes().getNamedItem("code").getTextContent();
-        String display = currentNode.getAttributes().getNamedItem("displayName").getTextContent();
-
-        // the toggle checks to see if we already have the system present
-        // in the ValueSet so we don't have duplicates with the codes
-        // spread out between them.
-        boolean toggle = false;
-
-        for (ValueSet.ConceptSetComponent c : composeComponent.getInclude()) {
-          if (c.getSystem().equals(system)) {
-            c.addConcept().setCode(code).setDisplay(display);
-            toggle = true;
-          }
-        }
-        if (!toggle) {
-          composeComponent.addInclude()
-              .setSystem(system)
-              .addConcept()
-              .setCode(code)
-              .setDisplay(display);
-        }
-      }
-      vs.setCompose(composeComponent);
-
-      // Writes the value set to the valueset folder with VSAC appended.
-      FileWriter w = new FileWriter(
-          Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
-              .getResource(VS_FOLDER)).toURI()) + "/" + displayName + "VSAC.json");
-
-      // System.out.println(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(vs));
-      ctx.newJsonParser().setPrettyPrint(true).encodeResourceToWriter(vs,w);
-      return vs;
-
-    }
-
-    <E> Optional<E> getRandom(Collection<E> e) {
-      return e.stream()
-                .skip((int) (e.size() * Math.random()))
-                .findFirst();
-    }
-
-    Code chooseCode(Multimap<String, Code> codes) {
-      // Chooses a random code by picking a system then picking a code from
-      // that system.
-
-      List<String> keys = new ArrayList<>(codes.keySet());
-      Random r = new Random();
-      String system = keys.get(r.nextInt(keys.size()));
-      return getRandom(codes.get(system)).get();
-    }
-
-
-
-    String getAuthToken() {
-      return this.authToken;
-    }
-
-    OkHttpClient getSessionClient() {
-      return this.client;
-    }
-
-    void setAuthToken(String token) {
-      this.authToken = token;
-    }
+    return chooseCode(Terminology.getCodes(vs));
   }
+
+
+  /**
+   * Gets all the codes from a value set after retrieving it.
+   * @param url the url or oid of the value set to be retrieved
+   * @return an array of every code, unsorted
+   */
+  public static List<Code> getAllCodes(String url) {
+
+    // Mainly for use by Concepts.java, doesn't default
+    ValueSet vs = getValueSet(url);
+    if (vs == null) {
+
+      return null;
+    }
+    Multimap<String, Code> codes = getCodes(vs);
+    return new ArrayList<>(codes.values());
+  }
+
+  /**
+   * Parses the XML response from VSAC, returns a value set, and saves the value set
+   * as JSON locally for easy use later.
+   * @param xml String representation of XML response from VSAC
+   * @return ValueSet containing systems and their codes
+   * @throws Exception just in case
+   */
+  static ValueSet parseResponse(String xml) throws Exception {
+
+    // Parse the string to get XML encoding.
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setNamespaceAware(true);
+    DocumentBuilder builder = factory.newDocumentBuilder();
+    InputSource is = new InputSource(new StringReader(xml));
+
+    // Build a ValueSet
+    ValueSet vs = new ValueSet();
+
+
+    /*A value set should look like
+     Compose: {
+          Include: [
+              {
+              system,
+              concept: [
+                      code
+                      code
+                      ...
+                      code
+                       ]
+              }
+              {
+              system,
+              concept: [
+                  ...
+                      ]
+               }
+               ]}
+    */
+
+    ValueSet.ValueSetComposeComponent composeComponent = new ValueSet.ValueSetComposeComponent();
+    Document responseXml = builder.parse(is);
+    Element root = responseXml.getDocumentElement();
+    String namespaceURI = root.getNamespaceURI();
+    NamedNodeMap valueSetAttr = responseXml.getElementsByTagNameNS(namespaceURI,"ValueSet")
+                  .item(0)
+                  .getAttributes();
+
+    String displayName = valueSetAttr.getNamedItem("displayName").getTextContent();
+
+    // Regex replaces all punctuation with an underscore
+    displayName = displayName.replaceAll("[, ';\"/:]","_");
+    String oid = valueSetAttr.getNamedItem("ID").getTextContent();
+    vs.setUrl(oid);
+    NodeList concepts = responseXml.getElementsByTagNameNS(namespaceURI,"Concept");
+    for (int i = 0; i < concepts.getLength(); i++) {
+      Node currentNode = concepts.item(i);
+      String system = currentNode.getAttributes().getNamedItem("codeSystem").getTextContent();
+      String code = currentNode.getAttributes().getNamedItem("code").getTextContent();
+      String display = currentNode.getAttributes().getNamedItem("displayName").getTextContent();
+
+      // the toggle checks to see if we already have the system present
+      // in the ValueSet so we don't have duplicates with the codes
+      // spread out between them.
+      boolean toggle = false;
+
+      for (ValueSet.ConceptSetComponent c : composeComponent.getInclude()) {
+        if (c.getSystem().equals(system)) {
+          c.addConcept().setCode(code).setDisplay(display);
+          toggle = true;
+        }
+      }
+      if (!toggle) {
+        composeComponent.addInclude()
+            .setSystem(system)
+            .addConcept()
+            .setCode(code)
+            .setDisplay(display);
+      }
+    }
+    vs.setCompose(composeComponent);
+
+    // Writes the value set to the valueset folder with VSAC appended.
+    FileWriter w = new FileWriter(
+        Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
+            .getResource(VS_FOLDER)).toURI()) + "/" + displayName + "VSAC.json");
+
+    // System.out.println(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(vs));
+    ctx.newJsonParser().setPrettyPrint(true).encodeResourceToWriter(vs,w);
+    return vs;
+
+  }
+
+  static <E> Optional<E> getRandom(Collection<E> e) {
+    return e.stream()
+              .skip((int) (e.size() * Math.random()))
+              .findFirst();
+  }
+
+  static Code chooseCode(Multimap<String, Code> codes) {
+    // Chooses a random code by picking a system then picking a code from
+    // that system.
+
+    List<String> keys = new ArrayList<>(codes.keySet());
+    Random r = new Random();
+    String system = keys.get(r.nextInt(keys.size()));
+    return getRandom(codes.get(system)).get();
+  }
+
+
+
+  static String getAuthToken() {
+    return authToken;
+  }
+
+  static OkHttpClient getSessionClient() {
+    return client;
+  }
+
+  static void setAuthToken(String token) {
+    authToken = token;
+  }
+
 
   static Map<String, String> loadLookupTable() {
 
@@ -319,13 +300,13 @@ public class Terminology {
     URL valueSetsFolder = ClassLoader.getSystemClassLoader().getResource("code_system_lookup.json");
     try {
       JsonObject codeSystemLookup = loadJsonFile(Paths.get(valueSetsFolder.toURI()));
-      for(String member : codeSystemLookup.keySet()) {
+      for (String member : codeSystemLookup.keySet()) {
         retVal.put(member,codeSystemLookup.get(member).getAsString());
       }
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    return null;
+    return retVal;
 
   }
 
@@ -425,53 +406,45 @@ public class Terminology {
     return retVal;
   }
 
-
-
-
-  static OkHttpClient getClient(String host, int port) {
-    // If you want to route through a proxy.
-    return new OkHttpClient.Builder()
-        .proxy(new Proxy(Proxy.Type.HTTP,
-            new InetSocketAddress(host, port)))
-        .build();
-  }
-
-
   //Overloaded for use without a proxy
   public static OkHttpClient getClient() {
     return new OkHttpClient.Builder().build();
   }
 
-  static String getAuthToken(OkHttpClient client) {
+  static String requestAuthToken() {
 
-    String token;
-    //Order matters for request body, requiring an ordered map.
-    Map<String,String> requestForm = new LinkedHashMap<>();
-    requestForm.put("username",VSAC_USER);
-    requestForm.put("password",VSAC_PASS);
-    // Make request body.
-    RequestBody requestBody = makeRequestBody(requestForm);
-    //Create Request
-    Request request = buildRequest(AUTH_URL,requestBody);
-    try {
+    String token = null;
+    if (VSAC_PASS == null || VSAC_USER == null) {
+      return null;
+    } else if (!connectionFailed) {
+      //Order matters for request body, requiring an ordered map.
+      Map<String,String> requestForm = new LinkedHashMap<>();
+      requestForm.put("username",VSAC_USER);
+      requestForm.put("password",VSAC_PASS);
+      // Make request body.
+      RequestBody requestBody = makeRequestBody(requestForm);
+      //Create Request
+      Request request = buildRequestPost(AUTH_URL,requestBody);
+      try {
 
-      Response response = client.newCall(request).execute();
+        Response response = client.newCall(request).execute();
 
-      if (response.code() == 200) {
-        assert response.body() != null;
-        token = response.body().string();
-      } else {
+        if (response.code() == 200) {
+          assert response.body() != null;
+          token = response.body().string();
+        } else {
+          token = null;
+        }
+        response.close();
+      } catch (IOException | NullPointerException e) {
+        // Could just be a logger warn statement to notify user they're not connected to
+        // VSAC instead of a full blown stack trace.
+        e.printStackTrace();
         token = null;
+        connectionFailed = true;
+        // Check to make sure that params are correctly entered
+        // eg. 'username' not 'user', 'password' not 'pass'.
       }
-      response.close();
-    } catch (IOException | NullPointerException e) {
-      // Could just be a logger warn statement to notify user they're not connected to
-      // VSAC instead of a full blown stack trace.
-      e.printStackTrace();
-      token = null;
-      connectionFailed = true;
-      // Check to make sure that params are correctly entered
-      // eg. 'username' not 'user', 'password' not 'pass'.
     }
 
     return token;
@@ -481,15 +454,14 @@ public class Terminology {
    * Service tickets are a one-time use auth code for accessing value sets from VSAC.
    * A regular auth token can be used to acquire multiple service tickets.
    * @param authToken the auth token needed to make a VSAC request
-   * @param client the OkHttp client to connect to VSAC API
    * @return a string representing a service ticket, which is a one use code to get a value set
    */
-  static String getServiceTicket(String authToken, OkHttpClient client) {
+  static String getServiceTicket(String authToken) {
     String token;
     Map<String,String> requestForm = new LinkedHashMap<>();
     requestForm.put("service",SERVICE_URL);
     RequestBody requestBody = makeRequestBody(requestForm);
-    Request request = buildRequest(AUTH_URL + "/" + authToken,requestBody);
+    Request request = buildRequestPost(AUTH_URL + "/" + authToken,requestBody);
     try {
       Response response = client.newCall(request).execute();
       assert response.body() != null;
@@ -506,25 +478,7 @@ public class Terminology {
 
   }
 
-  private static Response getValueSet(OkHttpClient client, String oid, String ticket) {
-
-    Response response = null;
-    Map<String,String> parameterMap = new LinkedHashMap<>();
-    parameterMap.put("id",oid);
-    parameterMap.put("ticket",ticket);
-    HttpUrl requestUrl = makeGetUrl(parameterMap);
-    Request request = buildRequest(requestUrl.toString());
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException | NullPointerException e) {
-      e.printStackTrace();
-    }
-
-    return response;
-  }
-
-
-  static Request buildRequest(String url) {
+  static Request buildGetRequest(String url) {
 
     //Makes requests of specified type, overloaded to switch between GET and POST.
     return new Request.Builder()
@@ -533,7 +487,7 @@ public class Terminology {
                         .build();
   }
 
-  static Request buildRequest(String url, RequestBody body) {
+  static Request buildRequestPost(String url, RequestBody body) {
 
     return new Request.Builder()
             .url(url)

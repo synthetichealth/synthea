@@ -215,7 +215,7 @@ public class TerminologyTest {
   @Test
   public void makeRequest() {
     String url = "http://mock.com/";
-    Request request = Terminology.buildRequest(url);
+    Request request = Terminology.buildGetRequest(url);
     assertEquals(request.url().toString(), url);
   }
 
@@ -224,9 +224,9 @@ public class TerminologyTest {
 
     FormBody formBody = new FormBody.Builder().add("json", "{1:2}").build();
 
-    // buildRequest doesn't actually make the request, it makes the request object
+    // buildRequestPost doesn't actually make the request, it makes the request object
     // which can be used to make the request.  Potentially needs to be renamed.
-    Request request = Terminology.buildRequest("http://real.website.com/", formBody);
+    Request request = Terminology.buildRequestPost("http://real.website.com/", formBody);
     Buffer buffer = new Buffer();
     assertNotNull(request.body());
     request.body().writeTo(buffer);
