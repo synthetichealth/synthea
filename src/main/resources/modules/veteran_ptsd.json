@@ -247,9 +247,23 @@
           "system": "SNOMED-CT",
           "code": 225337009,
           "display": "Suicide Risk Assessment"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 76168009,
+          "display": "Group psychotherapy (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 719858009,
+          "display": "Telehealth monitoring (regime/therapy)"
         }
       ],
-      "assign_to_attribute": "ptsd_careplan"
+      "assign_to_attribute": "ptsd_careplan",
+      "remarks": [
+        "overall care plan recommendation provided in consultation with Drs Jodie Trafton and Brian Marx, SMEs for PTSD within the VA",
+        ""
+      ]
     },
     "PTSD_Careplan_Psych": {
       "type": "CarePlanStart",
@@ -283,6 +297,16 @@
           "system": "SNOMED-CT",
           "code": 88848003,
           "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 76168009,
+          "display": "Group psychotherapy (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 719858009,
+          "display": "Telehealth monitoring (regime/therapy)"
         }
       ]
     },
@@ -350,6 +374,10 @@
           "transition": "PTSD_Careplan_Rx_ONLY",
           "distribution": 0.3
         }
+      ],
+      "remarks": [
+        "estimate of percents of patients falling into larger categories of treatment models (e.g. Rx only, Rx + Psychology or Psych only) provided by Jodie Trafton, PhD.",
+        ""
       ]
     },
     "end_PTSD_Encounter": {
@@ -521,7 +549,11 @@
         "quantity": 2,
         "unit": "weeks"
       },
-      "direct_transition": "Initial_Psychiatric_PTSD_Encounter"
+      "direct_transition": "Initial_Psychiatric_PTSD_Encounter",
+      "remarks": [
+        "estimate provided by Jodie Trafton, PhD",
+        ""
+      ]
     },
     "Columbia Suicide Risk Assessment": {
       "type": "Procedure",
@@ -578,6 +610,10 @@
           "transition": "Change_Dx_Not_PTSD",
           "distribution": 0.1
         }
+      ],
+      "remarks": [
+        "estimate of 10% of patients who initially screened positive for PTSD to not ultimately screen in by a mental health expert, provided in consultation with Jodie Trafton, PhD",
+        ""
       ]
     },
     "At Risk for suicide": {
@@ -724,7 +760,7 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "PHQ2_Q9_Assessment"
+      "direct_transition": "PC-PTSD Screen"
     },
     "Telehealth_Visit": {
       "type": "Encounter",
@@ -737,7 +773,11 @@
           "display": "Telephone encounter (procedure)"
         }
       ],
-      "direct_transition": "Telehealth_Observations"
+      "direct_transition": "Telehealth_Observations",
+      "remarks": [
+        "careplan to include regular telephone psychotherapy.  workflow recommendation provided by Brian Marx, PhD, SME for PTSD within VA",
+        ""
+      ]
     },
     "therapy delay": {
       "type": "Delay",
@@ -969,6 +1009,25 @@
         "high": 4
       },
       "direct_transition": "end_Psych_encounter"
+    },
+    "PC-PTSD Screen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385892002,
+          "display": "Mental health screening (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "PHQ2_Q9_Assessment",
+      "remarks": [
+        "workflow approach provided by Brian "
+      ]
     }
   }
 }
