@@ -487,7 +487,7 @@ public abstract class State implements Cloneable {
           primaryDisplay = codes.get(0).display;
         }
 
-        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+        Code vsCode = Terminology.getRandomCode(valueSet,codes.get(0).system,
             primaryCode,primaryDisplay);
 
         // Only changes the primary code.
@@ -676,7 +676,7 @@ public abstract class State implements Cloneable {
 
       // Value Set Functionality
       if (valueSet != null) {
-        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+        Code vsCode = Terminology.getRandomCode(valueSet,codes.get(0).system,
             primaryCode,primaryDisplay);
         primaryCode = vsCode.code;
 
@@ -736,7 +736,7 @@ public abstract class State implements Cloneable {
         String primaryDisplay = codes.get(0).display;
         // Value Set Functionality
         if (valueSet != null) {
-          Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+          Code vsCode = Terminology.getRandomCode(valueSet,codes.get(0).system,
               primaryCode,primaryDisplay);
           // Only changes the primary code.
           codes.set(0,vsCode);
@@ -765,7 +765,7 @@ public abstract class State implements Cloneable {
 
       // Value Set Functionality
       if (valueSet != null) {
-        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+        Code vsCode = Terminology.getRandomCode(valueSet,codes.get(0).system,
             primaryCode,primaryDisplay);
         primaryCode = vsCode.code;
 
@@ -1064,7 +1064,7 @@ public abstract class State implements Cloneable {
 
       // Value Set Functionality
       if (valueSet != null) {
-        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+        Code vsCode = Terminology.getRandomCode(valueSet,codes.get(0).system,
             primaryCode,primaryDisplay);
         primaryCode = vsCode.code;
 
@@ -1223,7 +1223,7 @@ public abstract class State implements Cloneable {
 
       // Value Set Functionality
       if (valueSet != null) {
-        Code vsCode = Terminology.sess.getRandomCode(valueSet,codes.get(0).system,
+        Code vsCode = Terminology.getRandomCode(valueSet,codes.get(0).system,
             primaryCode,primaryDisplay);
         primaryCode = vsCode.code;
 

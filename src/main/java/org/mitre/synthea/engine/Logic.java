@@ -380,7 +380,7 @@ public abstract class Logic {
       if (this.valueSet != null) {
 
         Set<String> presentCodes = new HashSet<>(person.record.present.keySet());
-        List<String> valueSetCodes = Terminology.sess.getAllCodes(this.valueSet)
+        List<String> valueSetCodes = Terminology.getAllCodes(this.valueSet)
                 .stream()
                 .map(code -> code.code)
                 .collect(Collectors.toList());
