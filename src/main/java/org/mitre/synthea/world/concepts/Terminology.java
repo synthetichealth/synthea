@@ -58,24 +58,24 @@ import org.xml.sax.InputSource;
 
 public class Terminology {
 
-  private static String VS_FOLDER = "valuesets";
+  private static final String VS_FOLDER = "valuesets";
+  private static final String CODE_SYSTEM_LOOKUP = "code_system_lookup.json";
 
   private static final String VSAC_USER = Config.get("terminology.username");
   private static final String VSAC_PASS = Config.get("terminology.password");
 
   private static final String AUTH_URL = "http://vsac.nlm.nih.gov/vsac/ws/Ticket";
-
   private static final String SERVICE_URL = "http://umlsks.nlm.nih.gov";
-
   private static final String VSAC_VALUE_SET_RETRIEVAL_URL = "vsac.nlm.nih.gov";
+
+
   private static final FhirContext ctx = FhirContext.forDstu3();
   private static final Map<String, ValueSet> valueSets = loadValueSets();
-  private static final Map<String,String> codeLookup = loadLookupTable();
 
   private static final Logger logger = LoggerFactory.getLogger(Terminology.class);
-  private static boolean connectionFailed = false;
 
-  private static final OkHttpClient client = getClient();
+  // We only really need one client
+  private static final OkHttpClient client = buildClient();
 
   // Can be reused for multiple requests
   // Not final in case we want to get a new token
@@ -104,7 +104,6 @@ public class Terminology {
         } catch (Exception e) {
           e.printStackTrace();
         }
-
       } else {
         logger.warn("Invalid OID or URL provided");
         return null;
@@ -262,13 +261,14 @@ public class Terminology {
   }
 
   static <E> Optional<E> getRandom(Collection<E> e) {
+    // Gets a random element from a collection
     return e.stream()
               .skip((int) (e.size() * Math.random()))
               .findFirst();
   }
 
   static Code chooseCode(Multimap<String, Code> codes) {
-    // Chooses a random code by picking a system then picking a code from
+    // Chooses a random code by picking a random system then picking a random code from
     // that system.
 
     List<String> keys = new ArrayList<>(codes.keySet());
@@ -283,7 +283,7 @@ public class Terminology {
     return authToken;
   }
 
-  static OkHttpClient getSessionClient() {
+  static OkHttpClient getClient() {
     return client;
   }
 
@@ -291,13 +291,17 @@ public class Terminology {
     authToken = token;
   }
 
-
-  static Map<String, String> loadLookupTable() {
+  /**
+   * Loads the lookup table to convert system names and OIDs into URIs.
+   * Doesn't take any parameters
+   * @return a map of system name to URI
+   */
+  public static Map<String, String> loadLookupTable() {
 
     // Loads valueSets from file and puts them in a map of {url : ValueSet}
     Map<String, String> retVal = new ConcurrentHashMap<>();
 
-    URL valueSetsFolder = ClassLoader.getSystemClassLoader().getResource("code_system_lookup.json");
+    URL valueSetsFolder = ClassLoader.getSystemClassLoader().getResource(CODE_SYSTEM_LOOKUP);
     try {
       JsonObject codeSystemLookup = loadJsonFile(Paths.get(valueSetsFolder.toURI()));
       for (String member : codeSystemLookup.keySet()) {
@@ -406,8 +410,7 @@ public class Terminology {
     return retVal;
   }
 
-  //Overloaded for use without a proxy
-  public static OkHttpClient getClient() {
+  public static OkHttpClient buildClient() {
     return new OkHttpClient.Builder().build();
   }
 
@@ -416,15 +419,15 @@ public class Terminology {
     String token = null;
     if (VSAC_PASS == null || VSAC_USER == null) {
       return null;
-    } else if (!connectionFailed) {
+    } else {
       //Order matters for request body, requiring an ordered map.
-      Map<String,String> requestForm = new LinkedHashMap<>();
-      requestForm.put("username",VSAC_USER);
-      requestForm.put("password",VSAC_PASS);
+      Map<String, String> requestForm = new LinkedHashMap<>();
+      requestForm.put("username", VSAC_USER);
+      requestForm.put("password", VSAC_PASS);
       // Make request body.
       RequestBody requestBody = makeRequestBody(requestForm);
       //Create Request
-      Request request = buildRequestPost(AUTH_URL,requestBody);
+      Request request = buildPostRequest(AUTH_URL, requestBody);
       try {
 
         Response response = client.newCall(request).execute();
@@ -441,11 +444,11 @@ public class Terminology {
         // VSAC instead of a full blown stack trace.
         e.printStackTrace();
         token = null;
-        connectionFailed = true;
         // Check to make sure that params are correctly entered
         // eg. 'username' not 'user', 'password' not 'pass'.
       }
     }
+
 
     return token;
   }
@@ -461,7 +464,7 @@ public class Terminology {
     Map<String,String> requestForm = new LinkedHashMap<>();
     requestForm.put("service",SERVICE_URL);
     RequestBody requestBody = makeRequestBody(requestForm);
-    Request request = buildRequestPost(AUTH_URL + "/" + authToken,requestBody);
+    Request request = buildPostRequest(AUTH_URL + "/" + authToken,requestBody);
     try {
       Response response = client.newCall(request).execute();
       assert response.body() != null;
@@ -487,7 +490,7 @@ public class Terminology {
                         .build();
   }
 
-  static Request buildRequestPost(String url, RequestBody body) {
+  static Request buildPostRequest(String url, RequestBody body) {
 
     return new Request.Builder()
             .url(url)

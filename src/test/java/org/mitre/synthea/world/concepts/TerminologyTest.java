@@ -186,7 +186,7 @@ public class TerminologyTest {
   @Test
   public void getClient() {
     OkHttpClient hello = new OkHttpClient.Builder().build();
-    OkHttpClient goodbye = Terminology.getClient();
+    OkHttpClient goodbye = Terminology.buildClient();
     assertEquals(hello.getClass(), goodbye.getClass());
   }
 
@@ -224,9 +224,9 @@ public class TerminologyTest {
 
     FormBody formBody = new FormBody.Builder().add("json", "{1:2}").build();
 
-    // buildRequestPost doesn't actually make the request, it makes the request object
+    // buildPostRequest doesn't actually make the request, it makes the request object
     // which can be used to make the request.  Potentially needs to be renamed.
-    Request request = Terminology.buildRequestPost("http://real.website.com/", formBody);
+    Request request = Terminology.buildPostRequest("http://real.website.com/", formBody);
     Buffer buffer = new Buffer();
     assertNotNull(request.body());
     request.body().writeTo(buffer);
