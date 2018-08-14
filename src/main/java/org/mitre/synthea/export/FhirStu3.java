@@ -109,6 +109,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.concepts.Terminology;
 
 public class FhirStu3 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
@@ -129,6 +130,9 @@ public class FhirStu3 {
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
+
+  @SuppressWarnings("rawtypes")
+  private static final Map codeSystemLookup = Terminology.loadLookupTable();
 
   private static final boolean USE_SHR_EXTENSIONS =
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
@@ -1624,6 +1628,11 @@ public class FhirStu3 {
     if (system == null) {
       coding.setSystem(from.system);
     } else {
+      // If the system is in the lookup table, it's not a URI,
+      // so it has to be translated
+      if (codeSystemLookup.containsKey(system)) {
+        system = codeSystemLookup.get(system).toString();
+      }
       coding.setSystem(system);
     }
 
