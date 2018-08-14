@@ -6,5 +6,10 @@
   "2.16.840.1.113883.6.1":"http://loinc.org",
   "2.16.840.1.113883.6.96":"http://snomed.info/sct",
   "2.16.840.1.113883.6.88":"http://www.nlm.nih.gov/research/umls/rxnorm",
-  "2.16.840.1.113883.3.26.1.1":"http://ncimeta.nci.nih.gov"
+  "2.16.840.1.113883.3.26.1.1":"http://ncimeta.nci.nih.gov",
+  "ICD-10":"http://hl7.org/fhir/sid/icd-10",
+  "ICD-9":"http://hl7.org/fhir/sid/icd-9-cm",
+  "SNOMED-CT":"http://snomed.info/sct",
+  "RXNORM":"http://www.nlm.nih.gov/research/umls/rxnorm",
+  "LOINC":"http://loinc.org"
 }
