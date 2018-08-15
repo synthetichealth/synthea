@@ -132,7 +132,7 @@ public class FhirStu3 {
   private static final Map languageLookup = loadLanguageLookup();
 
   @SuppressWarnings("rawtypes")
-  private static final Map codeSystemLookup = Terminology.loadLookupTable();
+  private static final Map codeSystemLookup = loadLookupTable();
 
   private static final boolean USE_SHR_EXTENSIONS =
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
@@ -155,6 +155,22 @@ public class FhirStu3 {
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  private static Map loadLookupTable() {
+
+    String filename = "code_system_lookup.json";
+    try {
+      String json = Utilities.readResource(filename);
+      Gson g = new Gson();
+      return g.fromJson(json, HashMap.class);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load json: " + filename);
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(e);
+    }
+
   }
 
   @SuppressWarnings("rawtypes")
@@ -590,7 +606,7 @@ public class FhirStu3 {
 
     } else {
       Code code = encounter.codes.get(0);
-      encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
+      encounterResource.addType(mapCodeToCodeableConcept(code, code.system));
     }
 
     encounterResource.setClass_(new Coding().setCode(encounter.type));
@@ -601,7 +617,7 @@ public class FhirStu3 {
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
-          .setDisplay(encounter.reason.display).setSystem(SNOMED_URI);
+          .setDisplay(encounter.reason.display).setSystem(encounter.reason.system);
     }
 
     if (encounter.provider != null) {
@@ -899,7 +915,7 @@ public class FhirStu3 {
     allergyResource.setVerificationStatus(AllergyIntoleranceVerificationStatus.CONFIRMED);
     allergyResource.setPatient(new Reference(personEntry.getFullUrl()));
     Code code = allergy.codes.get(0);
-    allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+    allergyResource.setCode(mapCodeToCodeableConcept(code, code.system));
 
     if (USE_SHR_EXTENSIONS) {
       Meta meta = new Meta();
@@ -938,7 +954,7 @@ public class FhirStu3 {
     observationResource.setStatus(ObservationStatus.FINAL);
 
     Code code = observation.codes.get(0);
-    observationResource.setCode(mapCodeToCodeableConcept(code, LOINC_URI));
+    observationResource.setCode(mapCodeToCodeableConcept(code, code.system));
 
     observationResource.addCategory().addCoding().setCode(observation.category)
         .setSystem("http://hl7.org/fhir/observation-category").setDisplay(observation.category);
@@ -950,7 +966,7 @@ public class FhirStu3 {
       // multi-observation (ex blood pressure)
       for (Observation subObs : observation.observations) {
         ObservationComponentComponent comp = new ObservationComponentComponent();
-        comp.setCode(mapCodeToCodeableConcept(subObs.codes.get(0), LOINC_URI));
+        comp.setCode(mapCodeToCodeableConcept(subObs.codes.get(0), subObs.codes.get(0).system));
         Type value = mapValueToFHIRType(subObs.value, subObs.unit);
         comp.setValue(value);
         observationResource.addComponent(comp);
@@ -986,10 +1002,10 @@ public class FhirStu3 {
 
     } else if (value instanceof Condition) {
       Code conditionCode = ((HealthRecord.Entry) value).codes.get(0);
-      return mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
+      return mapCodeToCodeableConcept(conditionCode, conditionCode.system);
 
     } else if (value instanceof Code) {
-      return mapCodeToCodeableConcept((Code) value, SNOMED_URI);
+      return mapCodeToCodeableConcept((Code) value, ((Code) value).system);
 
     } else if (value instanceof String) {
       return new StringType((String) value);
@@ -1027,7 +1043,7 @@ public class FhirStu3 {
     procedureResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     Code code = procedure.codes.get(0);
-    CodeableConcept procCode = mapCodeToCodeableConcept(code, SNOMED_URI);
+    CodeableConcept procCode = mapCodeToCodeableConcept(code, code.system);
     procedureResource.setCode(procCode);
 
     if (procedure.stop != 0L) {

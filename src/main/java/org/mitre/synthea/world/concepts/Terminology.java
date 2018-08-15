@@ -291,29 +291,6 @@ public class Terminology {
     authToken = token;
   }
 
-  /**
-   * Loads the lookup table to convert system names and OIDs into URIs.
-   * Doesn't take any parameters
-   * @return a map of system name to URI
-   */
-  public static Map<String, String> loadLookupTable() {
-
-    // Loads valueSets from file and puts them in a map of {url : ValueSet}
-    Map<String, String> retVal = new ConcurrentHashMap<>();
-
-    URL valueSetsFolder = ClassLoader.getSystemClassLoader().getResource(CODE_SYSTEM_LOOKUP);
-    try {
-      JsonObject codeSystemLookup = loadJsonFile(Paths.get(valueSetsFolder.toURI()));
-      for (String member : codeSystemLookup.keySet()) {
-        retVal.put(member,codeSystemLookup.get(member).getAsString());
-      }
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
-    return retVal;
-
-  }
-
   static Map<String, ValueSet> loadValueSets() {
 
     // Loads valueSets from file and puts them in a map of {url : ValueSet}
