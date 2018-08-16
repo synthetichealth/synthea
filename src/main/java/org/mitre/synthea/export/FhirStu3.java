@@ -132,7 +132,7 @@ public class FhirStu3 {
   private static final Map languageLookup = loadLanguageLookup();
 
   @SuppressWarnings("rawtypes")
-  private static final Map codeSystemLookup = loadLookupTable();
+  private static final Map codeSystemLookup = Utilities.codeSystemLookup;
 
   private static final boolean USE_SHR_EXTENSIONS =
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
@@ -304,20 +304,20 @@ public class FhirStu3 {
 
     Code mrnCode = new Code("http://hl7.org/fhir/v2/0203", "MR", "Medical Record Number");
     patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(mrnCode, "http://hl7.org/fhir/v2/0203"))
+        .setType(mapCodeToCodeableConcept(mrnCode))
         .setSystem("http://hospital.smarthealthit.org")
         .setValue((String) person.attributes.get(Person.ID));
 
     Code ssnCode = new Code("http://hl7.org/fhir/identifier-type", "SB", "Social Security Number");
     patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(ssnCode, "http://hl7.org/fhir/identifier-type"))
+        .setType(mapCodeToCodeableConcept(ssnCode))
         .setSystem("http://hl7.org/fhir/sid/us-ssn")
         .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
 
     if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
       Code driversCode = new Code("http://hl7.org/fhir/v2/0203", "DL", "Driver's License");
       patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(driversCode, "http://hl7.org/fhir/v2/0203"))
+          .setType(mapCodeToCodeableConcept(driversCode))
           .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
     }
@@ -325,7 +325,7 @@ public class FhirStu3 {
     if (person.attributes.get(Person.IDENTIFIER_PASSPORT) != null) {
       Code passportCode = new Code("http://hl7.org/fhir/v2/0203", "PPN", "Passport Number");
       patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(passportCode, "http://hl7.org/fhir/v2/0203"))
+          .setType(mapCodeToCodeableConcept(passportCode))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
@@ -412,7 +412,7 @@ public class FhirStu3 {
     List<PatientCommunicationComponent> communication =
         new ArrayList<PatientCommunicationComponent>();
     communication.add(new PatientCommunicationComponent(
-        mapCodeToCodeableConcept(languageCode, (String) languageMap.get("system"))));
+        mapCodeToCodeableConcept(languageCode)));
     patientResource.setCommunication(communication);
 
     HumanName name = patientResource.addName();
@@ -495,12 +495,12 @@ public class FhirStu3 {
       Code maritalStatusCode = new Code("http://hl7.org/fhir/v3/MaritalStatus", maritalStatus,
           maritalStatus);
       patientResource.setMaritalStatus(
-          mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
+          mapCodeToCodeableConcept(maritalStatusCode));
     } else {
       Code maritalStatusCode = new Code("http://hl7.org/fhir/v3/MaritalStatus", "S",
           "Never Married");
       patientResource.setMaritalStatus(
-          mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
+          mapCodeToCodeableConcept(maritalStatusCode));
     }
 
     DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
@@ -606,7 +606,7 @@ public class FhirStu3 {
 
     } else {
       Code code = encounter.codes.get(0);
-      encounterResource.addType(mapCodeToCodeableConcept(code, code.system));
+      encounterResource.addType(mapCodeToCodeableConcept(code));
     }
 
     encounterResource.setClass_(new Coding().setCode(encounter.type));
@@ -646,7 +646,7 @@ public class FhirStu3 {
       Code dischargeDisposition = new Code(DISCHARGE_URI, encounter.discharge.code,
           encounter.discharge.display);
       hospitalization
-          .setDischargeDisposition(mapCodeToCodeableConcept(dischargeDisposition, DISCHARGE_URI));
+          .setDischargeDisposition(mapCodeToCodeableConcept(dischargeDisposition));
       encounterResource.setHospitalization(hospitalization);
     }
 
@@ -850,7 +850,7 @@ public class FhirStu3 {
     conditionResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     Code code = condition.codes.get(0);
-    conditionResource.setCode(mapCodeToCodeableConcept(code, code.system));
+    conditionResource.setCode(mapCodeToCodeableConcept(code));
 
     conditionResource.setVerificationStatus(ConditionVerificationStatus.CONFIRMED);
     conditionResource.setClinicalStatus(ConditionClinicalStatus.ACTIVE);
@@ -915,7 +915,7 @@ public class FhirStu3 {
     allergyResource.setVerificationStatus(AllergyIntoleranceVerificationStatus.CONFIRMED);
     allergyResource.setPatient(new Reference(personEntry.getFullUrl()));
     Code code = allergy.codes.get(0);
-    allergyResource.setCode(mapCodeToCodeableConcept(code, code.system));
+    allergyResource.setCode(mapCodeToCodeableConcept(code));
 
     if (USE_SHR_EXTENSIONS) {
       Meta meta = new Meta();
@@ -954,7 +954,7 @@ public class FhirStu3 {
     observationResource.setStatus(ObservationStatus.FINAL);
 
     Code code = observation.codes.get(0);
-    observationResource.setCode(mapCodeToCodeableConcept(code, code.system));
+    observationResource.setCode(mapCodeToCodeableConcept(code));
 
     observationResource.addCategory().addCoding().setCode(observation.category)
         .setSystem("http://hl7.org/fhir/observation-category").setDisplay(observation.category);
@@ -966,7 +966,7 @@ public class FhirStu3 {
       // multi-observation (ex blood pressure)
       for (Observation subObs : observation.observations) {
         ObservationComponentComponent comp = new ObservationComponentComponent();
-        comp.setCode(mapCodeToCodeableConcept(subObs.codes.get(0), subObs.codes.get(0).system));
+        comp.setCode(mapCodeToCodeableConcept(subObs.codes.get(0)));
         Type value = mapValueToFHIRType(subObs.value, subObs.unit);
         comp.setValue(value);
         observationResource.addComponent(comp);
@@ -1002,10 +1002,10 @@ public class FhirStu3 {
 
     } else if (value instanceof Condition) {
       Code conditionCode = ((HealthRecord.Entry) value).codes.get(0);
-      return mapCodeToCodeableConcept(conditionCode, conditionCode.system);
+      return mapCodeToCodeableConcept(conditionCode);
 
     } else if (value instanceof Code) {
-      return mapCodeToCodeableConcept((Code) value, ((Code) value).system);
+      return mapCodeToCodeableConcept((Code) value);
 
     } else if (value instanceof String) {
       return new StringType((String) value);
@@ -1043,7 +1043,7 @@ public class FhirStu3 {
     procedureResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     Code code = procedure.codes.get(0);
-    CodeableConcept procCode = mapCodeToCodeableConcept(code, code.system);
+    CodeableConcept procCode = mapCodeToCodeableConcept(code);
     procedureResource.setCode(procCode);
 
     if (procedure.stop != 0L) {
@@ -1094,7 +1094,7 @@ public class FhirStu3 {
     Immunization immResource = new Immunization();
     immResource.setStatus(ImmunizationStatus.COMPLETED);
     immResource.setDate(new Date(immunization.start));
-    immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0), CVX_URI));
+    immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0)));
     immResource.setNotGiven(false);
     immResource.setPrimarySource(true);
     immResource.setPatient(new Reference(personEntry.getFullUrl()));
@@ -1140,7 +1140,7 @@ public class FhirStu3 {
     medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
     medicationResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
-    medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
+    medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0)));
 
     medicationResource.setAuthoredOn(new Date(medication.start));
     medicationResource.setIntent(MedicationRequestIntent.ORDER);
@@ -1201,7 +1201,7 @@ public class FhirStu3 {
                 instruction.get("display").getAsString()
             );
 
-            dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
+            dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode));
           }
         }
       }
@@ -1245,7 +1245,7 @@ public class FhirStu3 {
   private static final Code PRESCRIPTION_OF_DRUG_CODE =
       new Code("SNOMED-CT","33633005","Prescription of drug (procedure)");
   private static final CodeableConcept PRESCRIPTION_OF_DRUG_CC =
-      mapCodeToCodeableConcept(PRESCRIPTION_OF_DRUG_CODE, SNOMED_URI);
+      mapCodeToCodeableConcept(PRESCRIPTION_OF_DRUG_CODE);
 
 
   /**
@@ -1265,7 +1265,7 @@ public class FhirStu3 {
       BundleEntryComponent encounterEntry, Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
     reportResource.setStatus(DiagnosticReportStatus.FINAL);
-    reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
+    reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0)));
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setContext(new Reference(encounterEntry.getFullUrl()));
     reportResource.setEffective(convertFhirDateTime(report.start, true));
@@ -1302,7 +1302,7 @@ public class FhirStu3 {
     careplanResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     Code code = carePlan.codes.get(0);
-    careplanResource.addCategory(mapCodeToCodeableConcept(code, SNOMED_URI));
+    careplanResource.addCategory(mapCodeToCodeableConcept(code));
 
     CarePlanActivityStatus activityStatus;
     GoalStatus goalStatus;
@@ -1328,7 +1328,7 @@ public class FhirStu3 {
 
         activityDetailComponent.setStatus(activityStatus);
 
-        activityDetailComponent.setCode(mapCodeToCodeableConcept(activity, SNOMED_URI));
+        activityDetailComponent.setCode(mapCodeToCodeableConcept(activity));
         activityComponent.setDetail(activityDetailComponent);
 
         careplanResource.addActivity(activityComponent);
@@ -1400,10 +1400,10 @@ public class FhirStu3 {
       seriesResource.setStarted(startDate);
       seriesResource.setAvailability(InstanceAvailability.UNAVAILABLE);
 
-      CodeableConcept modalityConcept = mapCodeToCodeableConcept(series.modality, DICOM_DCM_URI);
+      CodeableConcept modalityConcept = mapCodeToCodeableConcept(series.modality);
       seriesResource.setModality(modalityConcept.getCoding().get(0));
 
-      CodeableConcept bodySiteConcept = mapCodeToCodeableConcept(series.bodySite, SNOMED_URI);
+      CodeableConcept bodySiteConcept = mapCodeToCodeableConcept(series.bodySite);
       seriesResource.setBodySite(bodySiteConcept.getCoding().get(0));
 
       // Convert the images in each series into their FHIR equivalents
@@ -1454,8 +1454,7 @@ public class FhirStu3 {
             new Code(
                 "http://hl7.org/fhir/ValueSet/organization-type",
                 "prov",
-                "Healthcare Provider"),
-            "Healthcare Provider"));
+                "Healthcare Provider")));
 
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
     .setValue((String) provider.getResourceID());
@@ -1627,11 +1626,9 @@ public class FhirStu3 {
    *
    * @param from
    *          The Code to create a CodeableConcept from.
-   * @param system
-   *          The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
    */
-  private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
+  private static CodeableConcept mapCodeToCodeableConcept(Code from) {
     CodeableConcept to = new CodeableConcept();
 
     if (from.display != null) {
@@ -1641,16 +1638,15 @@ public class FhirStu3 {
     Coding coding = new Coding();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (system == null) {
-      coding.setSystem(from.system);
+
+    // If the system is in the lookup table, it's not a URI,
+    // so it has to be translated
+    if (codeSystemLookup.containsKey(from.system)) {
+      coding.setSystem(codeSystemLookup.get(from.system).toString());
     } else {
-      // If the system is in the lookup table, it's not a URI,
-      // so it has to be translated
-      if (codeSystemLookup.containsKey(system)) {
-        system = codeSystemLookup.get(system).toString();
-      }
-      coding.setSystem(system);
+      coding.setSystem(from.system);
     }
+
 
     to.addCoding(coding);
 
