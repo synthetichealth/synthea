@@ -328,7 +328,7 @@
         {
           "system": "SNOMED-CT",
           "code": 65275009,
-          "display": "Inflammation of the gall bladder"
+          "display": "Acute Cholecystitis"
         }
       ],
       "distributed_transition": [
@@ -519,7 +519,7 @@
     },
     "Laparoscopic_Recovery": {
       "type": "Delay",
-      "direct_transition": "Postoperative_Care_Plan",
+      "direct_transition": "Saline_End",
       "range": {
         "low": 2,
         "high": 24,
@@ -557,7 +557,7 @@
     },
     "Open_Recovery": {
       "type": "Delay",
-      "direct_transition": "Postoperative_Care_Plan",
+      "direct_transition": "Saline_End",
       "range": {
         "low": 3,
         "high": 7,
@@ -586,13 +586,20 @@
     },
     "Death_after_Cholecystectomy": {
       "type": "Death",
-      "direct_transition": "Terminal",
+      "direct_transition": "Chole_Symptom1_Ends",
       "range": {
         "low": 0,
         "high": 30,
         "unit": "days"
       },
-      "condition_onset": "Acute_Cholecystitis"
+      "condition_onset": "Acute_Cholecystitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385486001,
+          "display": "Postoperative complication"
+        }
+      ]
     },
     "Prescribe_Opioids": {
       "type": "CallSubmodule",
@@ -667,7 +674,7 @@
           "display": "2 ML Ondansetron 2 MG/ML Injection"
         }
       ],
-      "direct_transition": "Complete_Blood_Count",
+      "direct_transition": "Antiemetic_End",
       "remarks": [
         "Based on the safety and efficacy of ondansetron, it may be used as a first-line agent for relief of nausea or vomiting for most patient populations in the ED.",
         "https://www.ncbi.nlm.nih.gov/pubmed/20022195"
@@ -724,24 +731,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "conditional_transition": [
-        {
-          "transition": "Cefotaxime",
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": 91936005,
-                "display": "Allergy to Penicillin"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Penicillin"
-        }
-      ]
+      "direct_transition": "Morphine_End"
     },
     "Postoperative_Care_Plan": {
       "type": "CarePlanStart",
@@ -1167,18 +1157,7 @@
       "exact": {
         "quantity": 0
       },
-      "conditional_transition": [
-        {
-          "transition": "Open_Recovery",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Open_Cholecystectomy"
-          }
-        },
-        {
-          "transition": "Laparoscopic_Recovery"
-        }
-      ]
+      "direct_transition": "Gallstones_Removed"
     },
     "Home_Recovery": {
       "type": "Delay",
@@ -1209,7 +1188,7 @@
           "display": "Piperacillin 4000 MG / tazobactam 500 MG Injection"
         }
       ],
-      "direct_transition": "Anesthesia",
+      "direct_transition": "Penicillin_End",
       "remarks": [
         "Assuming the patient is not allergic to Penicillin, piperacillin is recommended for acute cholecystitis:",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
@@ -1228,13 +1207,12 @@
         "For patients allergic to penicillin, a 3rd-gen cephalosporin-based antibiotic is recommended for acute cholecystitis:",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
       ],
-      "direct_transition": "Anesthesia"
+      "direct_transition": "Cefotaxime_End"
     },
     "Anesthesia": {
       "type": "CallSubmodule",
-      "submodule": "general_anesthesia",
-      "direct_transition": "Ready_for_Surgery",
-      "remarks": ""
+      "submodule": "surgery/general_anesthesia",
+      "direct_transition": "Ready_for_Surgery"
     },
     "ECG": {
       "type": "Procedure",
@@ -1261,7 +1239,75 @@
           "display": "heparin sodium, porcine"
         }
       ],
-      "direct_transition": "Saline"
+      "direct_transition": "Heparin_End"
+    },
+    "Gallstones_Removed": {
+      "type": "ConditionEnd",
+      "condition_onset": "Gallstones",
+      "direct_transition": "Acute_Cholecystitis_Ends"
+    },
+    "Acute_Cholecystitis_Ends": {
+      "type": "ConditionEnd",
+      "conditional_transition": [
+        {
+          "transition": "Open_Recovery",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Open_Cholecystectomy"
+          }
+        },
+        {
+          "transition": "Laparoscopic_Recovery"
+        }
+      ],
+      "condition_onset": "Acute_Cholecystitis"
+    },
+    "Cefotaxime_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Anesthesia",
+      "medication_order": "Cefotaxime"
+    },
+    "Penicillin_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Anesthesia",
+      "medication_order": "Penicillin"
+    },
+    "Saline_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Postoperative_Care_Plan",
+      "medication_order": "Saline"
+    },
+    "Morphine_End": {
+      "type": "MedicationEnd",
+      "conditional_transition": [
+        {
+          "transition": "Cefotaxime",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 91936005,
+                "display": "Allergy to Penicillin"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Penicillin"
+        }
+      ],
+      "medication_order": "Morphine"
+    },
+    "Heparin_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Saline",
+      "medication_order": "Heparin"
+    },
+    "Antiemetic_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Complete_Blood_Count",
+      "medication_order": "Antiemetic"
     }
   }
 }

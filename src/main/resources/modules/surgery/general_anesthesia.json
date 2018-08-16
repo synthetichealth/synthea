@@ -30,7 +30,7 @@
           "display": "100 ML Propofol 10 MG/ML Injection"
         }
       ],
-      "direct_transition": "Paralytic",
+      "direct_transition": "Induction_Medication_End",
       "remarks": [
         "TODO: look into Phenobarbital (can cause apnea), Etomidate (risk of nausea), Ketamine (increased secretions, risk of laryngospasm and hallucinations), Dexmedetomidine",
         "https://www.ncbi.nlm.nih.gov/books/NBK493199/"
@@ -61,8 +61,7 @@
           "display": "Midazolam 1 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Induction_Medication",
-      "remarks": ""
+      "direct_transition": "Midazolam_End"
     },
     "Anxiolytic": {
       "type": "Simple",
@@ -95,8 +94,7 @@
           "display": "Diazepam 5 MG/ML Injectable Solution"
         }
       ],
-      "remarks": "",
-      "direct_transition": "Induction_Medication"
+      "direct_transition": "Diazepam_End"
     },
     "Lorazepam": {
       "type": "MedicationOrder",
@@ -107,8 +105,7 @@
           "display": "Lorazepam 2 MG/ML Injectable Solution"
         }
       ],
-      "remarks": "",
-      "direct_transition": "Induction_Medication"
+      "direct_transition": "Lorazepam_End"
     },
     "Antiemetic": {
       "type": "MedicationOrder",
@@ -119,7 +116,7 @@
           "display": "2 ML Ondansetron 2 MG/ML Injection"
         }
       ],
-      "direct_transition": "Anxiolytic",
+      "direct_transition": "Antiemetic_End",
       "remarks": [
         "4mg is the most common dose for Ondansetron and virtually all anesthesia patients receive it prior to general anesthesia.",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5509245/"
@@ -134,7 +131,7 @@
           "display": "Rocuronium bromide 10 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Intubation",
+      "direct_transition": "Paralytic_End",
       "remarks": [
         "Paralytics are administered to prevent patients from moving around during surgery and to assist in intubation.",
         "Succinylcholine, Rocuronium, and Vecuronium are possible paralytics but Succinylcholine has considerable side effects. ",
@@ -153,7 +150,7 @@
           "display": "Fentanyl"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Fentanyl_End"
     },
     "Analgesic": {
       "type": "Simple",
@@ -189,7 +186,7 @@
           "display": "Remifentanil"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Remifentanil_End"
     },
     "Alfentanil": {
       "type": "MedicationOrder",
@@ -200,7 +197,7 @@
           "display": "Alfentanil"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Alfentanil_End"
     },
     "Sufentanil": {
       "type": "MedicationOrder",
@@ -211,7 +208,7 @@
           "display": "Sufentanil"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Sufentanil_End"
     },
     "Isoflurane": {
       "type": "MedicationOrder",
@@ -222,7 +219,7 @@
           "display": "Isoflurane 999 MG/ML Inhalant Solution"
         }
       ],
-      "direct_transition": "Analgesic"
+      "direct_transition": "Isoflurane_End"
     },
     "Volatile_Anesthetic": {
       "type": "Simple",
@@ -256,7 +253,7 @@
           "display": "desflurane 990 MG/ML Inhalant Solution"
         }
       ],
-      "direct_transition": "Analgesic"
+      "direct_transition": "Desflurane_End"
     },
     "Sevoflurane": {
       "type": "MedicationOrder",
@@ -267,7 +264,72 @@
           "display": "sevoflurane 1000 MG/ML Inhalant Solution"
         }
       ],
-      "direct_transition": "Analgesic"
+      "direct_transition": "Sevoflurane_End"
+    },
+    "Midazolam_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Induction_Medication",
+      "medication_order": "Midazolam"
+    },
+    "Diazepam_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Induction_Medication",
+      "medication_order": "Diazepam"
+    },
+    "Lorazepam_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Induction_Medication",
+      "medication_order": "Lorazepam"
+    },
+    "Antiemetic_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Anxiolytic",
+      "medication_order": "Antiemetic"
+    },
+    "Induction_Medication_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Paralytic",
+      "medication_order": "Induction_Medication"
+    },
+    "Paralytic_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Intubation",
+      "medication_order": "Paralytic"
+    },
+    "Isoflurane_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Analgesic",
+      "medication_order": "Isoflurane"
+    },
+    "Desflurane_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Analgesic",
+      "medication_order": "Desflurane"
+    },
+    "Sevoflurane_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Analgesic",
+      "medication_order": "Sevoflurane"
+    },
+    "Fentanyl_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "medication_order": "Fentanyl"
+    },
+    "Remifentanil_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "medication_order": "Remifentanil"
+    },
+    "Alfentanil_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "medication_order": "Alfentanil"
+    },
+    "Sufentanil_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "medication_order": "Sufentanil"
     }
   }
 }
