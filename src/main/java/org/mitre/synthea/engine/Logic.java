@@ -397,7 +397,7 @@ public abstract class Logic {
       if (this.codes != null) {
         for (Code code : this.codes) {
 
-          if (person.record.present.containsKey(code.code)) {
+          if (person.record.conditionActive(code.code)) {
 
             return true;
           }
