@@ -58,6 +58,7 @@ import org.hl7.fhir.dstu3.model.Dosage;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.ExplanationOfBenefit;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.HumanName;
@@ -84,6 +85,7 @@ import org.hl7.fhir.dstu3.model.PositiveIntType;
 import org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.ReferralRequest;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
@@ -255,7 +257,10 @@ public class FhirStu3 {
       }
 
       // one claim per encounter
-      encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
+      BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
+
+      explanationOfBenefit(personEntry,bundle,encounterEntry,encounter,
+          (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource());
     }
 
     String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
@@ -809,6 +814,107 @@ public class FhirStu3 {
 
     return newEntry(bundle, claimResource);
   }
+
+
+  private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
+                                           Bundle bundle, BundleEntryComponent encounterEntry,
+                                           Encounter encounter,
+                                           org.hl7.fhir.dstu3.model.Claim claim) {
+
+    ExplanationOfBenefit eob = new ExplanationOfBenefit();
+    FhirContext fc3 = FhirContext.forDstu3();
+    org.hl7.fhir.dstu3.model.Encounter encounterResource =
+        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
+    eob.setBillablePeriod(encounterResource.getPeriod());
+
+    // Set References
+    eob.setPatient(claim.getPatient());
+    eob.setOrganization(claim.getOrganization());
+    eob.setProvider(claim.getProvider());
+    eob.setReferral(new Reference("#1"));
+
+    eob.addIdentifier()
+        .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
+        .setValue("23853631084");
+    eob.addIdentifier()
+        .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
+        .setValue("93480754268");
+    eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
+    eob.setCreated(encounterResource.getPeriod().getEnd());
+
+    eob.setType(claim.getType());
+
+    List<ExplanationOfBenefit.DiagnosisComponent> eobDiag = new ArrayList<>();
+
+    for (org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diag : claim.getDiagnosis()) {
+      ExplanationOfBenefit.DiagnosisComponent d = new ExplanationOfBenefit.DiagnosisComponent();
+      d.setDiagnosis(diag.getDiagnosis());
+      d.setType(diag.getType());
+      d.setSequence(d.getSequence());
+      d.setPackageCode(diag.getPackageCode());
+      eobDiag.add(d);
+    }
+    eob.setDiagnosis(eobDiag);
+    List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
+
+    for (ProcedureComponent proc : claim.getProcedure()) {
+      ExplanationOfBenefit.ProcedureComponent p = new ExplanationOfBenefit.ProcedureComponent();
+      p.setDate(proc.getDate());
+      p.setSequence(proc.getSequence());
+      p.setProcedure(proc.getProcedure());
+    }
+    List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
+
+    // Get all the items info from the claim
+    for (ItemComponent item : claim.getItem()) {
+      ExplanationOfBenefit.ItemComponent i = new ExplanationOfBenefit.ItemComponent();
+
+      i.setSequence(item.getSequence());
+      i.setService(item.getService());
+      i.setServiced(item.getServiced());
+      i.setRevenue(item.getRevenue());
+      i.setLocation(item.getLocation());
+      i.setCategory(item.getCategory());
+      i.setCareTeamLinkId(item.getCareTeamLinkId());
+      i.setDiagnosisLinkId(item.getDiagnosisLinkId());
+      i.setInformationLinkId(item.getInformationLinkId());
+      i.setNet(item.getNet());
+      i.setQuantity(item.getQuantity());
+      i.setUnitPrice(item.getUnitPrice());
+      i.setEncounter(item.getEncounter());
+      eobItem.add(i);
+    }
+
+    eob.setItem(eobItem);
+
+    // Hardcoded
+    List<Reference> recipientList = new ArrayList<>();
+    recipientList.add(new Reference("#2"));
+    eob.getContained().add(new ReferralRequest()
+        .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
+        .setSubject(new Reference(personEntry.getFullUrl()))
+        .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
+            .setAgent(new Reference("#3")))
+        .setRecipient(recipientList)
+        .setId("1"));
+    eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
+        .setSequence(1)
+        //No care team set in health record
+        .setProvider(claim.getProvider())
+        .setResponsible(true)
+        .setRole(new CodeableConcept().addCoding(new Coding()
+            .setCode("primary")
+            .setSystem("http://hl7.org/fhir/claimcareteamrole")
+            .setDisplay("Primary Care Practitioner")))
+        .setQualification(new CodeableConcept().addCoding(new Coding()
+            .setCode("999")
+            // bluebutton placeholder system
+            .setSystem("https://bluebutton.cms.gov/resources/variables/prvdr_spclty")))
+    );
+    return newEntry(bundle,eob);
+
+  }
+
 
   /**
    * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
