@@ -616,8 +616,14 @@ public class FhirStu3 {
             .setEnd(new Date(encounter.stop)));
 
     if (encounter.reason != null) {
+      String reason;
+      if (codeSystemLookup.containsKey(encounter.reason.system)) {
+        reason = codeSystemLookup.get(encounter.reason.system).toString();
+      } else {
+        reason = encounter.reason.system;
+      }
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
-          .setDisplay(encounter.reason.display).setSystem(encounter.reason.system);
+          .setDisplay(encounter.reason.display).setSystem(reason);
     }
 
     if (encounter.provider != null) {
