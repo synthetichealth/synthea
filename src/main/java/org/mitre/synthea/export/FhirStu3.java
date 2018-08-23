@@ -483,10 +483,13 @@ public class FhirStu3 {
           mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
     }
 
-    Extension geolocation = addrResource.addExtension();
-    geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
-    geolocation.addExtension("latitude", new DecimalType(person.getX()));
-    geolocation.addExtension("longitude", new DecimalType(person.getY()));
+    DirectPosition2D coord = person.getLatLon();
+    if (coord != null) {
+      Extension geolocation = addrResource.addExtension();
+      geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+      geolocation.addExtension("latitude", new DecimalType(coord.getX()));
+      geolocation.addExtension("longitude", new DecimalType(coord.getY()));
+    }
 
     if (!person.alive(stopTime)) {
       patientResource.setDeceased(convertFhirDateTime(person.record.death, true));
