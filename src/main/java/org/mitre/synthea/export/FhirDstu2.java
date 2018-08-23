@@ -388,7 +388,7 @@ public class FhirDstu2 {
       addrResource.setCountry(COUNTRY_CODE);
     }
 
-    DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
+    DirectPosition2D coord = person.getLatLon();
     if (coord != null) {
       ExtensionDt geolocationExtension = new ExtensionDt();
       geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
@@ -396,8 +396,8 @@ public class FhirDstu2 {
       ExtensionDt longitudeExtension = new ExtensionDt();
       latitudeExtension.setUrl("latitude");
       longitudeExtension.setUrl("longitude");
-      latitudeExtension.setValue(new DecimalDt(coord.getY()));
-      longitudeExtension.setValue(new DecimalDt(coord.getX()));
+      latitudeExtension.setValue(new DecimalDt(coord.getX()));
+      longitudeExtension.setValue(new DecimalDt(coord.getY()));
       geolocationExtension.addUndeclaredExtension(latitudeExtension);
       geolocationExtension.addUndeclaredExtension(longitudeExtension);
       addrResource.addUndeclaredExtension(geolocationExtension);
