@@ -259,7 +259,7 @@ public class FhirStu3 {
       // one claim per encounter
       BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
 
-      explanationOfBenefit(personEntry,bundle,encounterEntry,encounter,
+      explanationOfBenefit(personEntry,bundle,encounterEntry,person,
           (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource());
     }
 
@@ -818,7 +818,7 @@ public class FhirStu3 {
 
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
-                                           Encounter encounter,
+                                           Person person,
                                            org.hl7.fhir.dstu3.model.Claim claim) {
 
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
@@ -826,6 +826,7 @@ public class FhirStu3 {
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
     eob.setBillablePeriod(encounterResource.getPeriod());
+
 
     // Set References
     eob.setPatient(claim.getPatient());
@@ -857,12 +858,22 @@ public class FhirStu3 {
     eob.setDiagnosis(eobDiag);
     List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
 
+    // get the insurance info at the time that the encounter happened
+    List insuranceList = (List) person.attributes.get("insurance");
+    int age = person.ageInYears(encounterResource.getPeriod().getEnd().getTime());
+    String insurance = (String) insuranceList.get(age);
+    eob.setInsurance(new ExplanationOfBenefit.InsuranceComponent().setCoverage(
+        new Reference().setReference(insurance)
+    ));
+
+
     for (ProcedureComponent proc : claim.getProcedure()) {
       ExplanationOfBenefit.ProcedureComponent p = new ExplanationOfBenefit.ProcedureComponent();
       p.setDate(proc.getDate());
       p.setSequence(proc.getSequence());
       p.setProcedure(proc.getProcedure());
     }
+
     List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
 
     // Get all the items info from the claim
@@ -911,6 +922,10 @@ public class FhirStu3 {
             // bluebutton placeholder system
             .setSystem("https://bluebutton.cms.gov/resources/variables/prvdr_spclty")))
     );
+
+    // Temporarily hardcode provider as ambulatory and stuff the name into a reference
+    Provider ambulatoryProvider = person.getAmbulatoryProvider(encounterResource.getPeriod().getEnd().getTime());
+    eob.setProvider(new Reference().setReference(ambulatoryProvider.name));
     return newEntry(bundle,eob);
 
   }
@@ -1752,7 +1767,6 @@ public class FhirStu3 {
    */
   private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
     BundleEntryComponent entry = bundle.addEntry();
-
     String resourceID = UUID.randomUUID().toString();
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);
