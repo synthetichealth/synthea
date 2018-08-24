@@ -259,8 +259,9 @@ public class FhirStu3 {
       // one claim per encounter
       BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
 
+
       explanationOfBenefit(personEntry,bundle,encounterEntry,person,
-          (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource());
+          (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource(), encounter);
     }
 
     String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
@@ -818,8 +819,8 @@ public class FhirStu3 {
 
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
-                                           Person person,
-                                           org.hl7.fhir.dstu3.model.Claim claim) {
+                                           Person person, org.hl7.fhir.dstu3.model.Claim claim,
+                                                           Encounter encounter) {
 
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
     FhirContext fc3 = FhirContext.forDstu3();
@@ -828,6 +829,9 @@ public class FhirStu3 {
     eob.setBillablePeriod(encounterResource.getPeriod());
 
 
+    Money totalCost = new Money();
+    totalCost.setValue(encounter.claim.total());
+    eob.setTotalCost(totalCost);
     // Set References
     eob.setPatient(claim.getPatient());
     eob.setOrganization(claim.getOrganization());
