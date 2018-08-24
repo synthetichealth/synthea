@@ -487,8 +487,8 @@ public class FhirStu3 {
     if (coord != null) {
       Extension geolocation = addrResource.addExtension();
       geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
-      geolocation.addExtension("latitude", new DecimalType(coord.getX()));
-      geolocation.addExtension("longitude", new DecimalType(coord.getY()));
+      geolocation.addExtension("latitude", new DecimalType(coord.getY()));
+      geolocation.addExtension("longitude", new DecimalType(coord.getX()));
     }
 
     if (!person.alive(stopTime)) {
