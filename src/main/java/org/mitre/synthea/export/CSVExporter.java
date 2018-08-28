@@ -151,7 +151,8 @@ public class CSVExporter {
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
-    encounters.write("ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
+    encounters.write("ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,"
+        + "REASONCODE,REASONDESCRIPTION,ENCOUNTERCLASS");
     encounters.write(NEWLINE);
     imagingStudies.write("ID,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
@@ -312,10 +313,14 @@ public class CSVExporter {
     s.append(String.format("%.2f", encounter.cost())).append(',');
 
     if (encounter.reason == null) {
-      s.append(','); // reason code & desc
+      s.append(",,"); // reason code & desc
     } else {
       s.append(encounter.reason.code).append(',');
-      s.append(clean(encounter.reason.display));
+      s.append(clean(encounter.reason.display)).append(',');
+    }
+
+    if (encounter.type != null) {
+      s.append(encounter.type.toLowerCase());
     }
 
     s.append(NEWLINE);
