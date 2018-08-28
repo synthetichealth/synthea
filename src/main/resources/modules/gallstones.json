@@ -1,0 +1,1313 @@
+{
+  "name": "Gallstones",
+  "remarks": [
+    "Gallstones are stones formed within the gallbladder (or common bile duct) due to an imbalance in the chemical composition of bile.  They can lead to inflammation and other issues with the gall bladder, the main bile duct, and the pancreas.  This model considers the most common process for surgical intervention for gallstones (due to a sudden onset of acute cholecystitis).",
+    "",
+    "Known model limitations:",
+    "- This model assumes that all cholecystectomies are due to cholecystitis, which is not necessarily true.  Many cholecystectomies are performed due to chronic cholelithiasis.  Prevalence data for cholelithiasis versus cholecystitis has not been found in scientific literature.",
+    "- Other related disorders (e.g., acute cholangitis, pancreatitis, choledocholithiasis, gall bladder cancer, etc.) are not included.",
+    "- Subsequent or otherwise related procedures (e.g., ERCP) are not included.",
+    "- BMI is a known risk factor for gallstones but is not included due to a lack of published articles with gallstone prevalence distribution by BMI"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Female": {
+      "type": "Simple",
+      "remarks": [
+        "North American Indians have the highest reported rates of cholelithiasis, afflicting 64.1% of women and 29.5% of men. White Americans have an overall prevalence of 16.6% in women and 8.6% in men. Intermediate prevalence rates occur in Asian populations and Black Americans (13.9% of women; 5.3% of men)",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343155/",
+        "The age-adjusted prevalence of gallstone disease (gallstones + cholecystectomy) among Mexican American men (7.2%) was 1.7 times that of Cuban American men and 1.8 times that of Puerto Rican men. The prevalence for Mexican American women (23.2%) was 1.5 times that of Cuban American women and 1.7 times that of Puerto Rican women.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/2642879"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Native"
+          },
+          "distributions": [
+            {
+              "transition": "Female_Gallstone_Formation",
+              "distribution": 0.641
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.359
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          },
+          "distributions": [
+            {
+              "transition": "Female_Gallstone_Formation",
+              "distribution": 0.166
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.834
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Female_Gallstone_Formation",
+              "distribution": 0.139
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.861
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Asian"
+          },
+          "distributions": [
+            {
+              "transition": "Female_Gallstone_Formation",
+              "distribution": 0.139
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.861
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Hispanic"
+          },
+          "distributions": [
+            {
+              "transition": "Female_Gallstone_Formation",
+              "distribution": 0.232
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.768
+            }
+          ]
+        }
+      ]
+    },
+    "Male": {
+      "type": "Simple",
+      "remarks": [
+        "North American Indians have the highest reported rates of cholelithiasis, afflicting 64.1% of women and 29.5% of men. White Americans have an overall prevalence of 16.6% in women and 8.6% in men. Intermediate prevalence rates occur in Asian populations and Black Americans (13.9% of women; 5.3% of men)",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343155/",
+        "The age-adjusted prevalence of gallstone disease (gallstones + cholecystectomy) among Mexican American men (7.2%) was 1.7 times that of Cuban American men and 1.8 times that of Puerto Rican men. The prevalence for Mexican American women (23.2%) was 1.5 times that of Cuban American women and 1.7 times that of Puerto Rican women.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/2642879"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Native"
+          },
+          "distributions": [
+            {
+              "transition": "Male_Gallstone_Formation",
+              "distribution": 0.295
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.705
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Male_Gallstone_Formation",
+              "distribution": 0.0866
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.9134
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          },
+          "distributions": [
+            {
+              "transition": "Male_Gallstone_Formation",
+              "distribution": 0.053
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.947
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Asian"
+          },
+          "distributions": [
+            {
+              "transition": "Male_Gallstone_Formation",
+              "distribution": 0.053
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.947
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Hispanic"
+          },
+          "distributions": [
+            {
+              "transition": "Male_Gallstone_Formation",
+              "distribution": 0.072
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.928
+            }
+          ]
+        }
+      ]
+    },
+    "Female_Gallstone_Formation": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Age_20-29",
+          "distribution": 0.0718
+        },
+        {
+          "transition": "Age_30-39",
+          "distribution": 0.1127
+        },
+        {
+          "transition": "Age_40-49",
+          "distribution": 0.1735
+        },
+        {
+          "transition": "Age_50-59",
+          "distribution": 0.2763
+        },
+        {
+          "transition": "Age_60-74",
+          "distribution": 0.3657
+        }
+      ],
+      "remarks": [
+        "Distribution of gallbladder disease prevalence by sex and age from Table 1: https://www.gastrojournal.org/article/S0016-5085(99)70456-7/pdf",
+        "(Age prevalence percentages were converted to a proportion of the total prevalence, given the race and sex distribution already in place)"
+      ]
+    },
+    "Male_Gallstone_Formation": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Age_20-29",
+          "distribution": 0.0274
+        },
+        {
+          "transition": "Age_30-39",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Age_40-49",
+          "distribution": 0.1537
+        },
+        {
+          "transition": "Age_50-59",
+          "distribution": 0.2463
+        },
+        {
+          "transition": "Age_60-74",
+          "distribution": 0.5326
+        }
+      ],
+      "remarks": [
+        "Distribution of gallbladder disease prevalence by sex and age from Table 1: https://www.gastrojournal.org/article/S0016-5085(99)70456-7/pdf",
+        "(Age prevalence percentages were converted to a proportion of the total prevalence, given the race and sex distribution already in place)"
+      ]
+    },
+    "Age_20-29": {
+      "type": "Delay",
+      "direct_transition": "Gallstones",
+      "range": {
+        "low": 20,
+        "high": 29,
+        "unit": "years"
+      }
+    },
+    "Age_30-39": {
+      "type": "Delay",
+      "direct_transition": "Gallstones",
+      "range": {
+        "low": 30,
+        "high": 39,
+        "unit": "years"
+      }
+    },
+    "Age_40-49": {
+      "type": "Delay",
+      "direct_transition": "Gallstones",
+      "range": {
+        "low": 40,
+        "high": 49,
+        "unit": "days"
+      }
+    },
+    "Age_50-59": {
+      "type": "Delay",
+      "direct_transition": "Gallstones",
+      "range": {
+        "low": 50,
+        "high": 59,
+        "unit": "years"
+      }
+    },
+    "Age_60-74": {
+      "type": "Delay",
+      "direct_transition": "Gallstones",
+      "range": {
+        "low": 60,
+        "high": 74,
+        "unit": "years"
+      }
+    },
+    "Acute_Cholecystitis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cholecystitis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65275009,
+          "display": "Acute Cholecystitis"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Cholecystitis_Encounter",
+          "distribution": 0.994
+        },
+        {
+          "transition": "Death_from_Acute_Cholecystitis",
+          "distribution": 0.006
+        }
+      ],
+      "remarks": [
+        "Fortunately, cholecystitis carries a relatively low death rate of 0.6%.",
+        "https://link.springer.com/article/10.1007/s11894-005-0051-8"
+      ]
+    },
+    "Gallstones": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cholecystitis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 235919008,
+          "display": "Cholelithiasis"
+        }
+      ],
+      "remarks": [
+        "Up to 80% will never experience biliary pain or complications such as acute cholecystitis, cholangitis, or pancreatitis",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343155/"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Cholecystitis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "Acute_Cholecystitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency Room Admission"
+        }
+      ],
+      "remarks": [
+        "The ratio of LC performed increased from 83% in 1998 to 93% in 2005; 12% of cases were attempted laparoscopically but converted to OC.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/18656637"
+      ],
+      "direct_transition": "Heparin"
+    },
+    "Cholecystitis_Encounter_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Home_Recovery",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 1,
+        "display": "Discharged to home care or self care (routine discharge)"
+      }
+    },
+    "Symptom_Onset_Delay": {
+      "type": "Delay",
+      "direct_transition": "Chole_Symptom1",
+      "range": {
+        "low": 0,
+        "high": 20,
+        "unit": "years"
+      }
+    },
+    "Chole_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Upper Abdominal Pain",
+      "cause": "Acute_Cholecystitis",
+      "direct_transition": "Chole_Symptom2",
+      "range": {
+        "low": 50,
+        "high": 150
+      }
+    },
+    "Chole_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "cause": "Acute_Cholecystitis",
+      "direct_transition": "Chole_Symptom3",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
+    },
+    "Chole_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "cause": "Acute_Cholecystitis",
+      "direct_transition": "Chole_Symptom4",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
+    },
+    "Chole_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Jaundice",
+      "cause": "Acute_Cholecystitis",
+      "direct_transition": "Symptom_Period",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
+    },
+    "Chole_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Upper Abdominal Pain",
+      "cause": "Acute_Cholecystitis",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Chole_Symptom2_Ends"
+    },
+    "Chole_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "cause": "Acute_Cholecystitis",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Chole_Symptom3_Ends"
+    },
+    "Chole_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "cause": "Acute_Cholecystitis",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Chole_Symptom4_Ends"
+    },
+    "Symptom_Period": {
+      "type": "Delay",
+      "direct_transition": "Acute_Cholecystitis",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      }
+    },
+    "Laparoscopic_Cholecystectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 45595009,
+          "display": "Laparoscopic Removal of Gall Bladder"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 240,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Open_Cholecystectomy",
+          "distribution": 0.12
+        },
+        {
+          "transition": "Chole_Symptom1_Ends",
+          "distribution": 0.87941
+        },
+        {
+          "transition": "Death_after_Cholecystectomy",
+          "distribution": 0.00059
+        }
+      ],
+      "remarks": [
+        "The ratio of LC performed increased from 83% in 1998 to 93% in 2005; 12% of cases were attempted laparoscopically but converted to OC.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/18656637",
+        "0.059% 30-day mortality rate for laparoscopic cholecystectomy from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4333785/"
+      ]
+    },
+    "Laparoscopic_Recovery": {
+      "type": "Delay",
+      "direct_transition": "Saline_End",
+      "range": {
+        "low": 2,
+        "high": 24,
+        "unit": "hours"
+      }
+    },
+    "Open_Cholecystectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 38102005,
+          "display": "Open Removal of Gall Bladder"
+        }
+      ],
+      "duration": {
+        "low": 120,
+        "high": 300,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "0.847% 30-day mortality rate for open cholecystectomy from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4333785/",
+        "Procedure duration from https://www.dovemed.com/common-procedures/procedures-surgical/gallbladder-removal-by-open-technique-open-cholecystectomy/"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Chole_Symptom1_Ends",
+          "distribution": 0.99153
+        },
+        {
+          "transition": "Death_after_Cholecystectomy",
+          "distribution": 0.00847
+        }
+      ]
+    },
+    "Open_Recovery": {
+      "type": "Delay",
+      "direct_transition": "Saline_End",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "remarks": [
+        "Recovery time from https://www.dovemed.com/common-procedures/procedures-surgical/gallbladder-removal-by-open-technique-open-cholecystectomy/"
+      ]
+    },
+    "Death_from_Acute_Cholecystitis": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "condition_onset": "Acute_Cholecystitis",
+      "range": {
+        "low": 5,
+        "high": 30,
+        "unit": "days"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91302008,
+          "display": "Death due to sepsis"
+        }
+      ]
+    },
+    "Death_after_Cholecystectomy": {
+      "type": "Death",
+      "direct_transition": "Chole_Symptom1_Ends",
+      "range": {
+        "low": 0,
+        "high": 30,
+        "unit": "days"
+      },
+      "condition_onset": "Acute_Cholecystitis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385486001,
+          "display": "Postoperative complication"
+        }
+      ]
+    },
+    "Prescribe_Opioids": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Cholecystitis_Encounter_End"
+    },
+    "LC_Postoperative_Follow-up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "direct_transition": "End_Postoperative_Follow-up",
+      "reason": "Laparoscopic_Cholecystectomy"
+    },
+    "OC_Postoperative_Follow_up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for 'check-up'"
+        }
+      ],
+      "reason": "Open_Cholecystectomy",
+      "direct_transition": "End_Postoperative_Follow-up"
+    },
+    "End_Postoperative_Follow-up": {
+      "type": "EncounterEnd",
+      "direct_transition": "Continue_Low_Fat_Diet",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 1,
+        "display": "Discharged to home care or self care (routine discharge)"
+      }
+    },
+    "Ready_for_Surgery": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Laparoscopic_Cholecystectomy",
+          "distribution": 0.93
+        },
+        {
+          "transition": "Open_Cholecystectomy",
+          "distribution": 0.07
+        }
+      ]
+    },
+    "Saline": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313002,
+          "display": "Sodium Chloride 9 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Antiemetic"
+    },
+    "Antiemetic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1740467,
+          "display": "2 ML Ondansetron 2 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Antiemetic_End",
+      "remarks": [
+        "Based on the safety and efficacy of ondansetron, it may be used as a first-line agent for relief of nausea or vomiting for most patient populations in the ED.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/20022195"
+      ]
+    },
+    "Morphine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1732136,
+          "display": "1 ML Morphine Sulfate 5 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Delay_for_Surgical_Appointment"
+    },
+    "Gall_Bladder_Imaging": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 426701000119108,
+        "display": "Ultrasonography of abdomen, right upper quadrant and epigastrium"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 50519007,
+            "display": "Structure of right upper quadrant of abdomen"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Morphine"
+    },
+    "Delay_for_Surgical_Appointment": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "direct_transition": "Morphine_End"
+    },
+    "Postoperative_Care_Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care"
+        }
+      ],
+      "direct_transition": "Prescribe_Opioids",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 436861000124104,
+          "display": "Decreased fat diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225317005,
+          "display": "Restriction of movement"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225358003,
+          "display": "Wound care"
+        }
+      ]
+    },
+    "Postoperative_Care_Plan_Ends": {
+      "type": "CarePlanEnd",
+      "direct_transition": "Terminal",
+      "careplan": "Postoperative_Care_Plan"
+    },
+    "Continue_Low_Fat_Diet": {
+      "type": "Delay",
+      "direct_transition": "Postoperative_Care_Plan_Ends",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      }
+    },
+    "Comprehensive_Metabolic_Panel": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "42719-5",
+              "display": "Total Bilirubin (Elevated)"
+            }
+          ],
+          "range": {
+            "low": 1.2,
+            "high": 2.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "IU/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "ALT (Elevated)"
+            }
+          ],
+          "range": {
+            "low": 100,
+            "high": 200
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "IU/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "AST (Elevated)"
+            }
+          ],
+          "range": {
+            "low": 100,
+            "high": 200
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose"
+            }
+          ],
+          "vital_sign": "Glucose"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea Nitrogen"
+            }
+          ],
+          "vital_sign": "Urea Nitrogen"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine"
+            }
+          ],
+          "vital_sign": "Creatinine"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium"
+            }
+          ],
+          "vital_sign": "Calcium"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium"
+            }
+          ],
+          "vital_sign": "Sodium"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium"
+            }
+          ],
+          "vital_sign": "Potassium"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride"
+            }
+          ],
+          "vital_sign": "Chloride"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon Dioxide"
+            }
+          ],
+          "vital_sign": "Carbon Dioxide"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33037-3",
+              "display": "Anion Gap"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein"
+            }
+          ],
+          "range": {
+            "low": 6.2,
+            "high": 8.2
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin"
+            }
+          ],
+          "range": {
+            "low": 3.4,
+            "high": 5.2
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10834-0",
+              "display": "Globulin"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "IU/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline Phosphatase"
+            }
+          ],
+          "range": {
+            "low": 30,
+            "high": 115
+          }
+        }
+      ],
+      "direct_transition": "RUQ_Murphy_Sign",
+      "remarks": [
+        "Expected aberrant values:",
+        "Total Bilirubin (normal 0 - 1.2)",
+        "ALT (normal 7 - 40)",
+        "AST (normal 11 - 40)"
+      ]
+    },
+    "Complete_Blood_Count": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69742-5",
+          "display": "CBC W Differential panel, method unspecified - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "K/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "26464-8",
+              "display": "White Blood Cell (Elevated)"
+            }
+          ],
+          "range": {
+            "low": 11,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "M/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "26453-1",
+              "display": "Red Blood Cell"
+            }
+          ],
+          "range": {
+            "low": 4.5,
+            "high": 5.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin"
+            }
+          ],
+          "range": {
+            "low": 13.8,
+            "high": 17.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit"
+            }
+          ],
+          "range": {
+            "low": 41,
+            "high": 51
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "30428-7",
+              "display": "MCV"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 96
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "30385-9",
+              "display": "RBC Distribution Width"
+            }
+          ],
+          "range": {
+            "low": 11.6,
+            "high": 14.6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "K/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "26515-7",
+              "display": "Platelet Count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        }
+      ],
+      "direct_transition": "Comprehensive_Metabolic_Panel",
+      "remarks": [
+        "Expected aberrant values:",
+        "WBC (normal 4.4 - 11.3)"
+      ]
+    },
+    "RUQ_Murphy_Sign": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80271-0",
+          "display": "Physical findings of Abdomen by Palpation"
+        }
+      ],
+      "direct_transition": "ECG",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 53566005,
+        "display": "Positive Murphy's Sign"
+      }
+    },
+    "Chole_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Jaundice",
+      "cause": "Acute_Cholecystitis",
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Gallstones_Removed"
+    },
+    "Home_Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 14,
+        "high": 21,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "OC_Postoperative_Follow_up",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Open_Cholecystectomy"
+          }
+        },
+        {
+          "transition": "LC_Postoperative_Follow-up"
+        }
+      ]
+    },
+    "Penicillin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1659149,
+          "display": "Piperacillin 4000 MG / tazobactam 500 MG Injection"
+        }
+      ],
+      "direct_transition": "Penicillin_End",
+      "remarks": [
+        "Assuming the patient is not allergic to Penicillin, piperacillin is recommended for acute cholecystitis:",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
+      ]
+    },
+    "Cefotaxime": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1656318,
+          "display": "Cefotaxime 2000 MG Injection"
+        }
+      ],
+      "remarks": [
+        "For patients allergic to penicillin, a 3rd-gen cephalosporin-based antibiotic is recommended for acute cholecystitis:",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
+      ],
+      "direct_transition": "Cefotaxime_End"
+    },
+    "Anesthesia": {
+      "type": "CallSubmodule",
+      "submodule": "surgery/general_anesthesia",
+      "direct_transition": "Ready_for_Surgery"
+    },
+    "ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Gall_Bladder_Imaging"
+    },
+    "Heparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 314659,
+          "display": "heparin sodium, porcine"
+        }
+      ],
+      "direct_transition": "Heparin_End"
+    },
+    "Gallstones_Removed": {
+      "type": "ConditionEnd",
+      "condition_onset": "Gallstones",
+      "direct_transition": "Acute_Cholecystitis_Ends"
+    },
+    "Acute_Cholecystitis_Ends": {
+      "type": "ConditionEnd",
+      "conditional_transition": [
+        {
+          "transition": "Open_Recovery",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Open_Cholecystectomy"
+          }
+        },
+        {
+          "transition": "Laparoscopic_Recovery"
+        }
+      ],
+      "condition_onset": "Acute_Cholecystitis"
+    },
+    "Cefotaxime_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Anesthesia",
+      "medication_order": "Cefotaxime"
+    },
+    "Penicillin_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Anesthesia",
+      "medication_order": "Penicillin"
+    },
+    "Saline_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Postoperative_Care_Plan",
+      "medication_order": "Saline"
+    },
+    "Morphine_End": {
+      "type": "MedicationEnd",
+      "conditional_transition": [
+        {
+          "transition": "Cefotaxime",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 91936005,
+                "display": "Allergy to Penicillin"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Penicillin"
+        }
+      ],
+      "medication_order": "Morphine"
+    },
+    "Heparin_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Saline",
+      "medication_order": "Heparin"
+    },
+    "Antiemetic_End": {
+      "type": "MedicationEnd",
+      "direct_transition": "Complete_Blood_Count",
+      "medication_order": "Antiemetic"
+    }
+  }
+}

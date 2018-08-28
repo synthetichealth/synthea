@@ -203,8 +203,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "849437",
-          "display": "Naproxen sodium 550 MG [Anaprox]"
+          "code": "198014",
+          "display": "Naproxen 500 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -304,8 +304,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "607015",
-          "display": "pregabalin 100 MG [Lyrica]"
+          "code": "483438",
+          "display": "pregabalin 100 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
@@ -318,8 +318,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "596927",
-          "display": "DULoxetine 20 MG [Cymbalta]"
+          "code": "596926",
+          "display": "duloxetine 20 MG Delayed Release Oral Capsule"
         }
       ],
       "direct_transition": "End_Episode_Encounter"

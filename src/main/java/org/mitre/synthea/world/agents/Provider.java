@@ -293,7 +293,7 @@ public class Provider implements QuadTreeData {
     }
     double lat = Double.parseDouble(line.remove("LAT"));
     double lon = Double.parseDouble(line.remove("LON"));
-    d.coordinates = new DirectPosition2D(lat, lon);
+    d.coordinates = new DirectPosition2D(lon, lat);
     return d;
   }
 

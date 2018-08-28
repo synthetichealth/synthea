@@ -112,8 +112,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1000128",
-          "display": "1 ML Depo-Provera 150 MG/ML Injection"
+          "code": "1000126",
+          "display": "1 ML medroxyprogesterone acetate 150 MG/ML Injection"
         }
       ],
       "direct_transition": "Initial_Injection_By_Physician"
@@ -124,8 +124,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1000158",
-          "display": "0.65 ML depo-subQ provera 160 MG/ML Prefilled Syringe"
+          "code": "1000156",
+          "display": "0.65 ML medroxyprogesterone acetate 160 MG/ML Prefilled Syringe"
         }
       ],
       "direct_transition": "Initial_Injection_By_Physician"

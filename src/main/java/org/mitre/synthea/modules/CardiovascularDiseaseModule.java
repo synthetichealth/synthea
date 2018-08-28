@@ -223,19 +223,19 @@ public final class CardiovascularDiseaseModule extends Module {
     LOOKUP.put("simvastatin", new Code("RxNorm", "312961", "Simvastatin 20 MG Oral Tablet"));
     LOOKUP.put("amlodipine", new Code("RxNorm", "197361", "Amlodipine 5 MG Oral Tablet"));
     LOOKUP.put("nitroglycerin",
-        new Code("RxNorm", "564666", "Nitroglycerin 0.4 MG/ACTUAT [Nitrolingual]"));
+        new Code("RxNorm", "705129", "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray"));
     LOOKUP.put("atorvastatin", new Code("RxNorm", "259255", "Atorvastatin 80 MG Oral Tablet"));
     LOOKUP.put("captopril", new Code("RxNorm", "833036", "Captopril 25 MG Oral Tablet"));
     LOOKUP.put("warfarin", new Code("RxNorm", "855332", "Warfarin Sodium 5 MG Oral Tablet"));
     LOOKUP.put("verapamil", new Code("RxNorm", "897718", "Verapamil Hydrochloride 40 MG"));
     LOOKUP.put("digoxin", new Code("RxNorm", "197604", "Digoxin 0.125 MG Oral Tablet"));
     LOOKUP.put("epinephrine",
-        new Code("RxNorm", "727374", "1 ML Epinephrine 1 MG/ML Prefilled Syringe"));
+        new Code("RxNorm", "1660014", "1 ML Epinephrine 1 MG/ML Injection"));
     LOOKUP.put("amiodarone",
         new Code("RxNorm", "834357", "3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe"));
     LOOKUP.put("atropine",
         new Code("RxNorm", "1190795", "Atropine Sulfate 1 MG/ML Injectable Solution"));
-    LOOKUP.put("alteplase", new Code("RxNorm", "308056", "Alteplase 1 MG/ML Injectable Solution"));
+    LOOKUP.put("alteplase", new Code("RxNorm", "1804799", "Alteplase 100 MG Injection"));
 
     // reasons
     LOOKUP.put("stop_drug",

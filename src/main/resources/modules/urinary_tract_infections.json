@@ -257,8 +257,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "568530",
-          "display": "Nitrofurantoin 5 MG/ML [Furadantin]"
+          "code": "311989",
+          "display": "Nitrofurantoin 5 MG/ML Oral Suspension"
         }
       ],
       "direct_transition": "Prescribe_OTC_Painkiller_For_UTIs"
@@ -273,8 +273,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1094108",
-          "display": "Phenazopyridine hydrochloride 100 MG [Pyridium]"
+          "code": "1094107",
+          "display": "Phenazopyridine hydrochloride 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "UTI_CarePlan"
@@ -353,8 +353,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1648767",
-          "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG [Macrodantin]"
+          "code": "311995",
+          "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Followup"

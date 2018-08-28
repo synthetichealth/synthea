@@ -190,8 +190,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "849437",
-          "display": "Naproxen sodium 550 MG [Anaprox]"
+          "code": "198014",
+          "display": "Naproxen 500 MG Oral Tablet"
         }
       ],
       "direct_transition": "Uric_Acid_Reducer"
@@ -220,8 +220,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "573839",
-          "display": "Allopurinol 100 MG [Zyloprim]"
+          "code": "197319",
+          "display": "Allopurinol 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"

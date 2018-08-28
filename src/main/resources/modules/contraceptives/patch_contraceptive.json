@@ -68,8 +68,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1536586",
-          "display": "Xulane 150/35 MCG/Day Weekly Transdermal System"
+          "code": "1534809",
+          "display": "168 HR Ethinyl Estradiol 0.00146 MG/HR / norelgestromin 0.00625 MG/HR Transdermal System"
         }
       ],
       "direct_transition": "End_Consultation_Encounter"

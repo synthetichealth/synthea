@@ -223,8 +223,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "904420",
-          "display": "Alendronic acid 10 MG [Fosamax]"
+          "code": "904419",
+          "display": "Alendronic acid 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "Terminal"
