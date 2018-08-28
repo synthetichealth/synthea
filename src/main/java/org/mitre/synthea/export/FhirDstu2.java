@@ -388,7 +388,7 @@ public class FhirDstu2 {
       addrResource.setCountry(COUNTRY_CODE);
     }
 
-    DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
+    DirectPosition2D coord = person.getLatLon();
     if (coord != null) {
       ExtensionDt geolocationExtension = new ExtensionDt();
       geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
