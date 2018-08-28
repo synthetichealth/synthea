@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -739,6 +740,7 @@ public class FhirStu3 {
     claimResource.setStatus(ClaimStatus.ACTIVE);
     claimResource.setUse(org.hl7.fhir.dstu3.model.Claim.Use.COMPLETE);
 
+
     // duration of encounter
     claimResource.setBillablePeriod(encounterResource.getPeriod());
 
@@ -826,11 +828,30 @@ public class FhirStu3 {
     FhirContext fc3 = FhirContext.forDstu3();
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
-    eob.setBillablePeriod(encounterResource.getPeriod());
 
 
+
+    // according to CMS guidelines claims have 12 months to be
+    // billed, so we set the billable period to 1 year after
+    // services have ended (the encounter ends).
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(encounterResource.getPeriod().getEnd());
+    cal.add(Calendar.YEAR,1);
+
+    Period billablePeriod = new Period()
+        .setStart(encounterResource
+            .getPeriod()
+            .getEnd())
+        .setEnd(cal.getTime());
     Money totalCost = new Money();
+    eob.setBillablePeriod(billablePeriod);
+
+    // cost is hardcoded to be USD in claim so this should be fine as well
+    totalCost.setSystem("urn:iso:std:iso:4217");
+    totalCost.setCode("USD");
+
     totalCost.setValue(encounter.claim.total());
+
     eob.setTotalCost(totalCost);
     // Set References
     eob.setPatient(claim.getPatient());
@@ -847,6 +868,8 @@ public class FhirStu3 {
     eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
     eob.setCreated(encounterResource.getPeriod().getEnd());
 
+
+
     eob.setType(claim.getType());
 
     List<ExplanationOfBenefit.DiagnosisComponent> eobDiag = new ArrayList<>();
@@ -854,8 +877,13 @@ public class FhirStu3 {
     for (org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diag : claim.getDiagnosis()) {
       ExplanationOfBenefit.DiagnosisComponent d = new ExplanationOfBenefit.DiagnosisComponent();
       d.setDiagnosis(diag.getDiagnosis());
-      d.setType(diag.getType());
-      d.setSequence(d.getSequence());
+      d.getType().add(new CodeableConcept()
+          .addCoding(new Coding()
+              .setCode("principal")
+              .setDisplay("The single medical diagnosis that is most relevant "
+                  + "to the patient's chief complaint or need for treatment.")
+              .setSystem("https://bluebutton.cms.gov/resources/codesystem/diagnosis-type")));
+      d.setSequence(diag.getSequence());
       d.setPackageCode(diag.getPackageCode());
       eobDiag.add(d);
     }
@@ -880,16 +908,34 @@ public class FhirStu3 {
 
     List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
 
+    double totalPayment = 0;
     // Get all the items info from the claim
+
     for (ItemComponent item : claim.getItem()) {
       ExplanationOfBenefit.ItemComponent i = new ExplanationOfBenefit.ItemComponent();
-
       i.setSequence(item.getSequence());
-      i.setService(item.getService());
-      i.setServiced(item.getServiced());
-      i.setRevenue(item.getRevenue());
-      i.setLocation(item.getLocation());
-      i.setCategory(item.getCategory());
+      // can probably set code based on encounter type with switch statement
+      i.setService(new CodeableConcept().addCoding(new Coding()
+          .setSystem("https://bluebutton.cms.gov/resources/codesystem/hcpcs")
+          .setCode("99212") //99211 to 99215 are outpatient codes based on severity
+          .setDisplay("d")));
+      i.setServiced(encounterResource.getPeriod());
+      // Location of service, can use switch statement based on
+      // encounter type
+      CodeableConcept location = new CodeableConcept();
+      location.addCoding()
+          .setCode("21")
+          //.setSystem("http://hl7.org/fhir/ValueSet/service-place") > if we wanted hl7
+          .setSystem("https://bluebutton.cms.gov/resources/variables/line_place_of_srvc_cd")
+          .setDisplay("Inpatient Hospital");
+      i.setLocation(location);
+
+
+      i.setCategory(new CodeableConcept().addCoding(new Coding()
+          .setSystem("https://bluebutton.cms.gov/resources/variables/line_cms_type_srvc_cd")
+          .setCode("1")
+          .setDisplay("Medical care")));
+
       i.setCareTeamLinkId(item.getCareTeamLinkId());
       i.setDiagnosisLinkId(item.getDiagnosisLinkId());
       i.setInformationLinkId(item.getInformationLinkId());
@@ -897,16 +943,122 @@ public class FhirStu3 {
       i.setQuantity(item.getQuantity());
       i.setUnitPrice(item.getUnitPrice());
       i.setEncounter(item.getEncounter());
+
+      if (item.hasNet()) {
+
+        // Assume that the patient has already paid deductible and
+        // has 20/80 coinsurance
+        ExplanationOfBenefit.AdjudicationComponent coinsuranceAmount = new ExplanationOfBenefit.AdjudicationComponent();
+        coinsuranceAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_coinsrnc_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Submitted Charge Amount"));
+        coinsuranceAmount.getAmount()
+            .setValue(0.2 * item.getNet().getValue().doubleValue()) //20% coinsurance
+            .setSystem("urn:iso:std:iso:4217") //USD
+            .setCode("USD");
+
+        ExplanationOfBenefit.AdjudicationComponent lineProviderAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        lineProviderAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_prvdr_pmt_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Provider Payment Amount"));
+        lineProviderAmount.getAmount()
+            .setValue(0.8 * item.getNet().getValue().doubleValue())
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        // assume the allowed and submitted amounts are the same for now
+        ExplanationOfBenefit.AdjudicationComponent submittedAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        submittedAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_sbmtd_chrg_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Submitted Charge Amount"));
+        submittedAmount.getAmount()
+            .setValue(item.getNet().getValue())
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        ExplanationOfBenefit.AdjudicationComponent allowedAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        allowedAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_alowd_chrg_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Allowed Charge Amount"));
+        allowedAmount.getAmount()
+            .setValue(item.getNet().getValue())
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        ExplanationOfBenefit.AdjudicationComponent indicatorCode =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        indicatorCode.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Processing Indicator Code"));
+        indicatorCode.getReason()
+            .addCoding()
+            .setCode("A")
+            .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd")
+            .setDisplay("Allowed");
+
+
+        // assume deductible is 0
+        ExplanationOfBenefit.AdjudicationComponent deductibleAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        deductibleAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_bene_ptb_ddctbl_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Beneficiary Part B Deductible Amount"));
+        deductibleAmount.getAmount()
+            .setValue(0)
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        List<ExplanationOfBenefit.AdjudicationComponent> adjudicationComponents = new ArrayList<>();
+        adjudicationComponents.add(coinsuranceAmount);
+        adjudicationComponents.add(lineProviderAmount);
+        adjudicationComponents.add(submittedAmount);
+        adjudicationComponents.add(allowedAmount);
+        adjudicationComponents.add(deductibleAmount);
+        adjudicationComponents.add(indicatorCode);
+
+        i.setAdjudication(adjudicationComponents);
+        // the total payment is what the insurance ends up paying
+        totalPayment += 0.8 * item.getNet().getValue().doubleValue();
+      }
       eobItem.add(i);
     }
 
     eob.setItem(eobItem);
+
+    Money payment = new Money();
+    payment.setValue(totalPayment)
+        .setCode("USD")
+        .setSystem("urn:iso:std:iso:4217");
+    eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
+        .setAmount(payment));
 
     // Hardcoded
     List<Reference> recipientList = new ArrayList<>();
     recipientList.add(new Reference("#2"));
     eob.getContained().add(new ReferralRequest()
         .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
+        .setIntent(ReferralRequest.ReferralCategory.ORDER)
         .setSubject(new Reference(personEntry.getFullUrl()))
         .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
             .setAgent(new Reference("#3")))
@@ -915,7 +1067,8 @@ public class FhirStu3 {
     eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
         .setSequence(1)
         //No care team set in health record
-        .setProvider(claim.getProvider())
+        //.setProvider(claim.getProvider())
+        .setProvider(claim.getOrganization())
         .setResponsible(true)
         .setRole(new CodeableConcept().addCoding(new Coding()
             .setCode("primary")
@@ -927,8 +1080,12 @@ public class FhirStu3 {
             .setSystem("https://bluebutton.cms.gov/resources/variables/prvdr_spclty")))
     );
 
-    // Temporarily hardcode provider as ambulatory and stuff the name into a reference
-    Provider ambulatoryProvider = person.getAmbulatoryProvider(encounterResource.getPeriod().getEnd().getTime());
+    // We can use encounter.type to figure out the type of provider needed but for now,
+    // temporarily hardcode provider as ambulatory and stuff the name into a reference
+    Provider ambulatoryProvider = person.getAmbulatoryProvider(encounterResource
+        .getPeriod()
+        .getEnd()
+        .getTime());
     eob.setProvider(new Reference().setReference(ambulatoryProvider.name));
     return newEntry(bundle,eob);
 
