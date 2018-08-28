@@ -449,10 +449,10 @@ public class CDWExporter {
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
-    // TODO Ignore civilians, only consider the veteran population.
-//    if (!person.attributes.containsKey("veteran")) {
-//      return;
-//    }
+    // Ignore civilians, only consider the veteran population.
+    if (!person.attributes.containsKey("veteran")) {
+      return;
+    }
     int primarySta3n = -1;
     Provider provider = person.getAmbulatoryProvider(time);
     if (provider != null) {

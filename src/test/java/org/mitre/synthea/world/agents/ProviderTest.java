@@ -117,9 +117,7 @@ public class ProviderTest {
     Assert.assertNotNull(provider);
   }
   
-  /**
-   * TODO Re-enable this test
-   */
+  @Test
   public void testVaFacilityOnlyAcceptsVeteran() {
     Provider.loadProviders("Massachusetts");
 
