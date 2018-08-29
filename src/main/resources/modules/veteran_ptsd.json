@@ -385,7 +385,7 @@
       "direct_transition": "time gate",
       "discharge_disposition": {
         "system": "NUBC",
-        "code": 1,
+        "code": "01",
         "display": "Discharged home safe"
       }
     },

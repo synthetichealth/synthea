@@ -355,7 +355,7 @@
       "direct_transition": "Initial_Psychiatric_MDD_Encounter",
       "discharge_disposition": {
         "system": "NUBC",
-        "code": 1,
+        "code": "01",
         "display": "Discharged home safe"
       }
     },

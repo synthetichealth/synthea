@@ -1,7 +1,7 @@
 {
-  "name": "Veteran Dialysis",
+  "name": "Dialysis",
   "remarks": [
-    "A blank module"
+    "Dialysis Encounter for patients with level 4 Chronic Kidney Disease (CKD)."
   ],
   "states": {
     "Initial": {

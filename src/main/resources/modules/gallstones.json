@@ -394,7 +394,7 @@
       "direct_transition": "Home_Recovery",
       "discharge_disposition": {
         "system": "NUBC",
-        "code": 1,
+        "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
       }
     },
@@ -637,7 +637,7 @@
       "direct_transition": "Continue_Low_Fat_Diet",
       "discharge_disposition": {
         "system": "NUBC",
-        "code": 1,
+        "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
       }
     },
