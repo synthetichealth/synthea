@@ -944,6 +944,8 @@ public class FhirStu3 {
       i.setUnitPrice(item.getUnitPrice());
       i.setEncounter(item.getEncounter());
 
+
+      // Adjudication
       if (item.hasNet()) {
 
         // Assume that the patient has already paid deductible and
@@ -954,7 +956,7 @@ public class FhirStu3 {
             .add(new Coding()
                 .setCode("https://bluebutton.cms.gov/resources/variables/line_coinsrnc_amt")
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
-                .setDisplay("Line Submitted Charge Amount"));
+                .setDisplay("Line Beneficiary Coinsurance Amount"));
         coinsuranceAmount.getAmount()
             .setValue(0.2 * item.getNet().getValue().doubleValue()) //20% coinsurance
             .setSystem("urn:iso:std:iso:4217") //USD
