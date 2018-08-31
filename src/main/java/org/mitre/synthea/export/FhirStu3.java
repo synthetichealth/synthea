@@ -258,7 +258,8 @@ public class FhirStu3 {
       }
 
       // one claim per encounter
-      BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
+      BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle,
+          encounterEntry, encounter.claim);
 
 
       explanationOfBenefit(personEntry,bundle,encounterEntry,person,
@@ -843,49 +844,48 @@ public class FhirStu3 {
             .getPeriod()
             .getEnd())
         .setEnd(cal.getTime());
-    Money totalCost = new Money();
     eob.setBillablePeriod(billablePeriod);
 
     // cost is hardcoded to be USD in claim so this should be fine as well
+    Money totalCost = new Money();
     totalCost.setSystem("urn:iso:std:iso:4217");
     totalCost.setCode("USD");
-
     totalCost.setValue(encounter.claim.total());
-
     eob.setTotalCost(totalCost);
+
     // Set References
     eob.setPatient(claim.getPatient());
     eob.setOrganization(claim.getOrganization());
     eob.setProvider(claim.getProvider());
     eob.setReferral(new Reference("#1"));
 
+    // Hardcoded identifier
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
         .setValue("23853631084");
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
         .setValue("93480754268");
+
     eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
     eob.setCreated(encounterResource.getPeriod().getEnd());
-
-
-
     eob.setType(claim.getType());
 
     List<ExplanationOfBenefit.DiagnosisComponent> eobDiag = new ArrayList<>();
 
-    for (org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent diag : claim.getDiagnosis()) {
-      ExplanationOfBenefit.DiagnosisComponent d = new ExplanationOfBenefit.DiagnosisComponent();
-      d.setDiagnosis(diag.getDiagnosis());
-      d.getType().add(new CodeableConcept()
+    for (org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent claimDiagnosis : claim.getDiagnosis()) {
+      ExplanationOfBenefit.DiagnosisComponent diagnosisComponent =
+          new ExplanationOfBenefit.DiagnosisComponent();
+      diagnosisComponent.setDiagnosis(claimDiagnosis.getDiagnosis());
+      diagnosisComponent.getType().add(new CodeableConcept()
           .addCoding(new Coding()
               .setCode("principal")
               .setDisplay("The single medical diagnosis that is most relevant "
                   + "to the patient's chief complaint or need for treatment.")
               .setSystem("https://bluebutton.cms.gov/resources/codesystem/diagnosis-type")));
-      d.setSequence(diag.getSequence());
-      d.setPackageCode(diag.getPackageCode());
-      eobDiag.add(d);
+      diagnosisComponent.setSequence(claimDiagnosis.getSequence());
+      diagnosisComponent.setPackageCode(claimDiagnosis.getPackageCode());
+      eobDiag.add(diagnosisComponent);
     }
     eob.setDiagnosis(eobDiag);
     List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
@@ -912,14 +912,24 @@ public class FhirStu3 {
     // Get all the items info from the claim
 
     for (ItemComponent item : claim.getItem()) {
-      ExplanationOfBenefit.ItemComponent i = new ExplanationOfBenefit.ItemComponent();
-      i.setSequence(item.getSequence());
+
+      ExplanationOfBenefit.ItemComponent itemComponent = new ExplanationOfBenefit.ItemComponent();
+
+      itemComponent.setSequence(item.getSequence());
+      itemComponent.setCareTeamLinkId(item.getCareTeamLinkId());
+      itemComponent.setDiagnosisLinkId(item.getDiagnosisLinkId());
+      itemComponent.setInformationLinkId(item.getInformationLinkId());
+      itemComponent.setNet(item.getNet());
+      itemComponent.setQuantity(item.getQuantity());
+      itemComponent.setUnitPrice(item.getUnitPrice());
+      itemComponent.setEncounter(item.getEncounter());
+
       // can probably set code based on encounter type with switch statement
-      i.setService(new CodeableConcept().addCoding(new Coding()
+      itemComponent.setService(new CodeableConcept().addCoding(new Coding()
           .setSystem("https://bluebutton.cms.gov/resources/codesystem/hcpcs")
           .setCode("99212") //99211 to 99215 are outpatient codes based on severity
           .setDisplay("d")));
-      i.setServiced(encounterResource.getPeriod());
+      itemComponent.setServiced(encounterResource.getPeriod());
       // Location of service, can use switch statement based on
       // encounter type
       CodeableConcept location = new CodeableConcept();
@@ -928,21 +938,14 @@ public class FhirStu3 {
           //.setSystem("http://hl7.org/fhir/ValueSet/service-place") > if we wanted hl7
           .setSystem("https://bluebutton.cms.gov/resources/variables/line_place_of_srvc_cd")
           .setDisplay("Inpatient Hospital");
-      i.setLocation(location);
+      itemComponent.setLocation(location);
 
 
-      i.setCategory(new CodeableConcept().addCoding(new Coding()
+      itemComponent.setCategory(new CodeableConcept().addCoding(new Coding()
           .setSystem("https://bluebutton.cms.gov/resources/variables/line_cms_type_srvc_cd")
           .setCode("1")
           .setDisplay("Medical care")));
 
-      i.setCareTeamLinkId(item.getCareTeamLinkId());
-      i.setDiagnosisLinkId(item.getDiagnosisLinkId());
-      i.setInformationLinkId(item.getInformationLinkId());
-      i.setNet(item.getNet());
-      i.setQuantity(item.getQuantity());
-      i.setUnitPrice(item.getUnitPrice());
-      i.setEncounter(item.getEncounter());
 
 
       // Adjudication
@@ -950,7 +953,8 @@ public class FhirStu3 {
 
         // Assume that the patient has already paid deductible and
         // has 20/80 coinsurance
-        ExplanationOfBenefit.AdjudicationComponent coinsuranceAmount = new ExplanationOfBenefit.AdjudicationComponent();
+        ExplanationOfBenefit.AdjudicationComponent coinsuranceAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
         coinsuranceAmount.getCategory()
             .getCoding()
             .add(new Coding()
@@ -1039,11 +1043,11 @@ public class FhirStu3 {
         adjudicationComponents.add(deductibleAmount);
         adjudicationComponents.add(indicatorCode);
 
-        i.setAdjudication(adjudicationComponents);
+        itemComponent.setAdjudication(adjudicationComponents);
         // the total payment is what the insurance ends up paying
         totalPayment += 0.8 * item.getNet().getValue().doubleValue();
       }
-      eobItem.add(i);
+      eobItem.add(itemComponent);
     }
 
     eob.setItem(eobItem);
@@ -1082,13 +1086,12 @@ public class FhirStu3 {
             .setSystem("https://bluebutton.cms.gov/resources/variables/prvdr_spclty")))
     );
 
-    // We can use encounter.type to figure out the type of provider needed but for now,
-    // temporarily hardcode provider as ambulatory and stuff the name into a reference
-    Provider ambulatoryProvider = person.getAmbulatoryProvider(encounterResource
+    Provider provider = person.getProvider(encounter.type, encounterResource
         .getPeriod()
         .getEnd()
         .getTime());
-    eob.setProvider(new Reference().setReference(ambulatoryProvider.name));
+    eob.setProvider(new Reference().setReference(provider.uuid));
+
     return newEntry(bundle,eob);
 
   }
