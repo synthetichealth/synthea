@@ -26,7 +26,7 @@
         }
       ],
       "unit": "cm",
-      "direct_transition": "Record_Weight"
+      "direct_transition": "Record_Pain"
     },
     "Record_Weight": {
       "type": "Observation",
@@ -300,7 +300,7 @@
         }
       ],
       "unit": "mg/g",
-      "direct_transition": "Lab_EGFR"
+      "direct_transition": "check_CBC"
     },
     "Record_EGFR": {
       "type": "Observation",
@@ -418,43 +418,7 @@
           "transition": "Record_ACR"
         },
         {
-          "transition": "Lab_EGFR"
-        }
-      ]
-    },
-    "Lab_EGFR": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "44054006",
-                    "display": "Diabetes"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "38341003",
-                    "display": "Hypertension"
-                  }
-                ]
-              }
-            ]
-          },
-          "transition": "Record_EGFR"
-        },
-        {
-          "transition": "Smoker_Status_Observation"
+          "transition": "check_CBC"
         }
       ]
     },
@@ -535,6 +499,259 @@
         "system": "SNOMED-CT",
         "code": 266919005,
         "display": "Never smoker"
+      }
+    },
+    "check_CBC": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "check_eGFR",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Record_CBC_Panel",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Record_CBC_Panel"
+        }
+      ]
+    },
+    "check_eGFR": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "44054006",
+                    "display": "Diabetes"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "38341003",
+                    "display": "Hypertension"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Record_EGFR"
+        },
+        {
+          "transition": "Smoker_Status_Observation"
+        }
+      ]
+    },
+    "Record_CBC_Panel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 4,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "unit": "10*3/uL",
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "unit": "10*6/uL",
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "unit": "g/dL",
+          "range": {
+            "low": 12,
+            "high": 17.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "4544-3",
+              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
+            }
+          ],
+          "unit": "%",
+          "range": {
+            "low": 35,
+            "high": 50
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ],
+      "target_encounter": "Wellness_Encounter",
+      "direct_transition": "check_eGFR"
+    },
+    "Record_Pain": {
+      "type": "Observation",
+      "target_encounter": "Wellness_Encounter",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "unit": "{score}",
+      "direct_transition": "Record_Weight",
+      "range": {
+        "low": 0,
+        "high": 4
       }
     }
   }

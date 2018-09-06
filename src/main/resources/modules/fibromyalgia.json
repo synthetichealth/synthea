@@ -113,7 +113,7 @@
       ],
       "direct_transition": "Fibromyalgia_Symptom1"
     },
-     "Fibromyalgia_Symptom1": {
+    "Fibromyalgia_Symptom1": {
       "type": "Symptom",
       "symptom": "Muscle Pain",
       "range": {
@@ -140,7 +140,7 @@
       },
       "direct_transition": "Fibromyalgia_Symptom4"
     },
-     "Fibromyalgia_Symptom4": {
+    "Fibromyalgia_Symptom4": {
       "type": "Symptom",
       "symptom": "Sleep Disturbances",
       "range": {
@@ -191,7 +191,7 @@
           "display": "Stress management"
         }
       ],
-      "direct_transition": "Strong_NSAID"
+      "direct_transition": "Pain_Vital"
     },
     "Strong_NSAID": {
       "type": "MedicationOrder",
@@ -386,6 +386,23 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 10
+      },
+      "direct_transition": "Strong_NSAID"
     }
   }
 }
