@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.hl7.fhir.dstu3.model.Coverage;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -243,8 +244,17 @@ public class HealthRecord {
     public Encounter encounter;
     public Medication medication;
     public List<Entry> items;
+    public InsuranceType insurance;
 
     public Claim(Encounter encounter) {
+      insurance = new InsuranceType();
+      List insuranceList = (List) person.attributes.get("insurance");
+      int age = person.ageInYears(encounter.start);
+      if (insuranceList != null) {
+        String currentInsurance = (String) insuranceList.get(age);
+        insurance.setName(currentInsurance);
+      }
+
       // Encounter inpatient
       if (encounter.type.equalsIgnoreCase("inpatient")) {
         baseCost = 75.00;

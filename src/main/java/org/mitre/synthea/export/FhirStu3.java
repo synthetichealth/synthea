@@ -50,6 +50,7 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
@@ -859,10 +860,11 @@ public class FhirStu3 {
     eob.setProvider(claim.getProvider());
     eob.setReferral(new Reference("#1"));
 
-    // Hardcoded identifier
+
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
-        .setValue("23853631084");
+        .setValue(UUID.randomUUID().toString());
+    // Hardcoded group id
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
         .setValue("93480754268");
@@ -891,12 +893,11 @@ public class FhirStu3 {
     List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
 
     // get the insurance info at the time that the encounter happened
-    List insuranceList = (List) person.attributes.get("insurance");
-    int age = person.ageInYears(encounterResource.getPeriod().getEnd().getTime());
-    String insurance = (String) insuranceList.get(age);
-    eob.setInsurance(new ExplanationOfBenefit.InsuranceComponent().setCoverage(
-        new Reference().setReference(insurance)
-    ));
+    String insurance = encounter.claim.insurance.getInsuranceName();
+    eob.setInsurance(new ExplanationOfBenefit.InsuranceComponent()
+        .setCoverageTarget(new Coverage()
+            .addPayor(new Reference()
+                .setReference(insurance))));
 
 
     for (ProcedureComponent proc : claim.getProcedure()) {
@@ -932,12 +933,39 @@ public class FhirStu3 {
       itemComponent.setServiced(encounterResource.getPeriod());
       // Location of service, can use switch statement based on
       // encounter type
+      String code;
+      String display;
       CodeableConcept location = new CodeableConcept();
+      switch (encounter.type) {
+        case Provider.AMBULATORY:
+          code = "21";
+          display = "Inpatient Hospital";
+          break;
+        case Provider.EMERGENCY:
+          code = "23";
+          display = "Emergency Room";
+          break;
+        case Provider.INPATIENT:
+          code = "21";
+          display = "Inpatient Hospital";
+          break;
+        case Provider.URGENTCARE:
+          code = "20";
+          display = "Urgent Care Facility";
+          break;
+        case Provider.WELLNESS:
+          code = "22";
+          display = "Outpatient Hospital";
+          break;
+        default:
+          code = "21";
+          display = "Inpatient Hospital";
+      }
       location.addCoding()
-          .setCode("21")
+          .setCode(code)
           //.setSystem("http://hl7.org/fhir/ValueSet/service-place") > if we wanted hl7
           .setSystem("https://bluebutton.cms.gov/resources/variables/line_place_of_srvc_cd")
-          .setDisplay("Inpatient Hospital");
+          .setDisplay(display);
       itemComponent.setLocation(location);
 
 
@@ -1090,7 +1118,9 @@ public class FhirStu3 {
         .getPeriod()
         .getEnd()
         .getTime());
-    eob.setProvider(new Reference().setReference(provider.uuid));
+
+
+    eob.setProvider(new Reference().setReference(findProviderUrl(provider, bundle)));
 
     return newEntry(bundle,eob);
 
