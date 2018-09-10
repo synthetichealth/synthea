@@ -113,7 +113,7 @@
       ],
       "direct_transition": "Fibromyalgia_Symptom1"
     },
-     "Fibromyalgia_Symptom1": {
+    "Fibromyalgia_Symptom1": {
       "type": "Symptom",
       "symptom": "Muscle Pain",
       "range": {
@@ -140,7 +140,7 @@
       },
       "direct_transition": "Fibromyalgia_Symptom4"
     },
-     "Fibromyalgia_Symptom4": {
+    "Fibromyalgia_Symptom4": {
       "type": "Symptom",
       "symptom": "Sleep Disturbances",
       "range": {
@@ -191,7 +191,7 @@
           "display": "Stress management"
         }
       ],
-      "direct_transition": "Strong_NSAID"
+      "direct_transition": "Pain_Vital"
     },
     "Strong_NSAID": {
       "type": "MedicationOrder",
@@ -203,8 +203,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "849437",
-          "display": "Naproxen sodium 550 MG [Anaprox]"
+          "code": "198014",
+          "display": "Naproxen 500 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -304,8 +304,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "607015",
-          "display": "pregabalin 100 MG [Lyrica]"
+          "code": "483438",
+          "display": "pregabalin 100 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
@@ -318,8 +318,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "596927",
-          "display": "DULoxetine 20 MG [Cymbalta]"
+          "code": "596926",
+          "display": "duloxetine 20 MG Delayed Release Oral Capsule"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
@@ -386,6 +386,23 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 10
+      },
+      "direct_transition": "Strong_NSAID"
     }
   }
 }

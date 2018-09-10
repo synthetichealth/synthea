@@ -115,21 +115,18 @@
         },
         {
           "condition": {
-            "condition_type": "Socioeconomic Status",
-            "category": "Low"
+            "condition_type": "Attribute",
+            "attribute": "ptsd",
+            "operator": "is not nil"
           },
           "distributions": [
             {
-              "distribution": 0.0001,
-              "transition": "Enter_Directed_Use"
+              "transition": "Enter_Directed_Use",
+              "distribution": 0.5
             },
             {
-              "distribution": 0.000008,
-              "transition": "Misuse"
-            },
-            {
-              "distribution": 0.999892,
-              "transition": "General_Population"
+              "transition": "General_Population",
+              "distribution": 0.5
             }
           ]
         }
@@ -152,6 +149,10 @@
         {
           "distribution": 0.334,
           "transition": "Enter_Directed_Use_Condition3"
+        },
+        {
+          "transition": "Initial",
+          "distribution": 1
         }
       ]
     },
@@ -178,7 +179,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Enter_Directed_Use_Procedure1"
+      "direct_transition": "Pain_Vital_3"
     },
     "Enter_Directed_Use_Procedure1": {
       "type": "Procedure",
@@ -228,7 +229,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription2"
+      "direct_transition": "Pain_Vital_2"
     },
     "Directed_Use_Prescription2": {
       "type": "MedicationOrder",
@@ -237,8 +238,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1049544",
-          "display": "oxyCODONE Hydrochloride 15 MG [OxyCONTIN]"
+          "code": "1860154",
+          "display": "Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"
@@ -266,7 +267,7 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Directed_Use_Prescription3"
+      "direct_transition": "Pain_Vital"
     },
     "Directed_Use_Prescription3": {
       "type": "MedicationOrder",
@@ -275,8 +276,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1049639",
-          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG [Percocet]"
+          "code": "1049221",
+          "display": "Acetaminophen 325 MG / Oxycodone Hydrochloride 5 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"
@@ -380,7 +381,7 @@
           "remarks": [
             "0.02 --> 0.13187"
           ],
-          "transition": "Active_Addiction"
+          "transition": "Opioid_Addiction_Symptom1"
         },
         {
           "distribution": 0.681862,
@@ -388,8 +389,7 @@
         }
       ]
     },
-
-     "Opioid_Addiction_Symptom1": {
+    "Opioid_Addiction_Symptom1": {
       "type": "Symptom",
       "symptom": "Anxiety",
       "range": {
@@ -479,7 +479,6 @@
       },
       "direct_transition": "Active_Addiction"
     },
-    
     "Active_Addiction": {
       "type": "Delay",
       "exact": {
@@ -545,7 +544,7 @@
           "display": "Drug rehabilitation and detoxification"
         }
       ],
-      "direct_transition": "End_Addiction_Treatment_Encounter"
+      "direct_transition": "Pain_Vital_4"
     },
     "End_Addiction_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -578,8 +577,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "266707007",
-          "display": "Drug addiction therapy"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "End_Recovery_Management_Encounter"
@@ -742,8 +741,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "266707007",
-          "display": "Drug addiction therapy"
+          "code": 734163000,
+          "display": "Care plan (record artifact)"
         }
       ],
       "activities": [
@@ -756,6 +755,11 @@
           "system": "SNOMED-CT",
           "code": "61480009",
           "display": "Drug detoxification"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 266707007,
+          "display": "Drug addiction therapy"
         }
       ],
       "direct_transition": "End_Addiction_Overdose_Encounter"
@@ -777,6 +781,74 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "Directed_Use_Prescription3"
+    },
+    "Pain_Vital_2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 9
+      },
+      "direct_transition": "Directed_Use_Prescription2"
+    },
+    "Pain_Vital_3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 3,
+        "high": 8
+      },
+      "direct_transition": "Enter_Directed_Use_Procedure1"
+    },
+    "Pain_Vital_4": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 8
+      },
+      "direct_transition": "End_Addiction_Treatment_Encounter"
     }
   }
 }

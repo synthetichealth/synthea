@@ -212,8 +212,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "824184",
-          "display": " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
+          "code": "562251",
+          "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -239,8 +239,8 @@
                 "codes": [
                   {
                     "system": "RxNorm",
-                    "code": "824184",
-                    "display": " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
+                    "code": "562251",
+                    "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
                   }
                 ]
               },
@@ -286,8 +286,8 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": "824184",
-                "display": " Amoxicillin 250 MG / Clavulanate 125 MG [Augmentin]"
+                "code": "562251",
+                "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
               }
             ]
           },

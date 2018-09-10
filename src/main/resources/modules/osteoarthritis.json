@@ -23,104 +23,10 @@
         " | Osteoarthritis |   0.34000  |    2:1    | ",
         " ------------------------------------------- "
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "distribution": 0.113,
-              "transition": "Delay_Until_Symptoms"
-            },
-            {
-              "distribution": 0.887,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "distribution": 0.2267,
-              "transition": "Delay_Until_Symptoms"
-            },
-            {
-              "distribution": 0.7733,
-              "transition": "Terminal"
-            }
-          ]
-        }
-      ]
-    },
-    "Delay_Until_Symptoms": {
-      "type": "Delay",
-      "range": {
-        "low": 10,
-        "high": 40,
-        "unit": "years"
-      },
-      "direct_transition": "OA_Symptom1"
-    },
-     "OA_Symptom1": {
-      "type": "Symptom",
-      "symptom": "Joint Pain",
-      "range": {
-        "low": 0,
-        "high": 20
-      },
-      "direct_transition": "OA_Symptom2"
-    },
-    "OA_Symptom2": {
-      "type": "Symptom",
-      "symptom": "Joint Stiffness",
-      "range": {
-        "low": 0,
-        "high": 20
-      },
-      "direct_transition": "Delay_Until_Arthritis"
-    },
-    "Delay_Until_Arthritis": {
-      "type": "Delay",
-      "range": {
-        "low": 15,
-        "high": 40,
-        "unit": "years"
-      },
-      "direct_transition": "OA_Symptom1_Advances"
-    },
-
-    "OA_Symptom1_Advances": {
-      "type": "Symptom",
-      "symptom": "Joint Pain",
-      "range": {
-        "low": 0,
-        "high": 50
-      },
-      "direct_transition": "OA_Symptom2_Advances"
-    },
-    "OA_Symptom2_Advances": {
-      "type": "Symptom",
-      "symptom": "Joint Stiffness",
-      "range": {
-        "low": 0,
-        "high": 50
-      },
-      "direct_transition": "Osteoarthritis"
+      "direct_transition": "Delay_Pre_Arthritis"
     },
     "Osteoarthritis": {
       "type": "Simple",
-      "remarks": [
-        "======================================================================",
-        " OSTEOARTHRITIS                                                       ",
-        "======================================================================",
-        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
-      ],
       "distributed_transition": [
         {
           "distribution": 0.234,
@@ -134,6 +40,12 @@
           "distribution": 0.205,
           "transition": "OA_Of_The_Hip"
         }
+      ],
+      "remarks": [
+        "======================================================================",
+        " OSTEOARTHRITIS                                                       ",
+        "======================================================================",
+        "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
       ]
     },
     "OA_Of_The_Hand": {
@@ -186,7 +98,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "OA_CarePlan"
+      "direct_transition": "Pain Vital"
     },
     "OA_CarePlan": {
       "type": "CarePlanStart",
@@ -221,8 +133,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "849727",
-          "display": "Naproxen sodium 220 MG [Aleve]"
+          "code": "849574",
+          "display": "Naproxen sodium 220 MG Oral Tablet"
         }
       ],
       "remarks": [
@@ -292,28 +204,230 @@
       "value": "hip",
       "direct_transition": "End_Encounter"
     },
-    "End_Encounter" : {
-      "type" : "EncounterEnd",
-      "direct_transition" : "OA_Symptom1_Ends"
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "OA_Symptom1_Ends"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Veteran": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Vietnam_War"
+          },
+          "distributions": [
+            {
+              "transition": "Delay_Until_Symptoms",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Early_Gulf_War"
+          },
+          "distributions": [
+            {
+              "transition": "Delay_Until_Symptoms",
+              "distribution": 0.2642
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7358
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "==",
+            "value": "Late_Gulf_War"
+          },
+          "distributions": [
+            {
+              "transition": "Delay_Until_Symptoms",
+              "distribution": 0.22
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.78
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Non_Veteran"
+        }
+      ]
+    },
+    "Non_Veteran": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Delay_Until_Symptoms",
+              "distribution": 0.21
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.79
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Delay_Until_Symptoms",
+              "distribution": 0.2267
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7733
+            }
+          ]
+        }
+      ]
     },
     "OA_Symptom1_Ends": {
       "type": "Symptom",
       "symptom": "Joint Pain",
+      "cause": "",
       "exact": {
         "quantity": 0
       },
       "direct_transition": "OA_Symptom2_Ends"
     },
-     "OA_Symptom2_Ends": {
+    "OA_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Joint Stiffness",
+      "cause": "",
       "exact": {
         "quantity": 0
       },
       "direct_transition": "Terminal"
     },
-    "Terminal": {
-      "type": "Terminal"
+    "Delay_Until_Symptoms": {
+      "type": "Delay",
+      "direct_transition": "OA_Symptom1",
+      "range": {
+        "low": 0,
+        "high": 15,
+        "unit": "years"
+      }
+    },
+    "OA_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "cause": "",
+      "direct_transition": "OA_Symptom2",
+      "range": {
+        "low": 0,
+        "high": 20
+      }
+    },
+    "OA_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "cause": "",
+      "direct_transition": "Delay_Until_Arthritis",
+      "range": {
+        "low": 0,
+        "high": 20
+      }
+    },
+    "Delay_Pre_Arthritis": {
+      "type": "Delay",
+      "conditional_transition": [
+        {
+          "transition": "Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Non_Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "exact": {
+        "quantity": 25,
+        "unit": "years"
+      }
+    },
+    "Delay_Until_Arthritis": {
+      "type": "Delay",
+      "direct_transition": "OA_Symptom1_Advances",
+      "range": {
+        "low": 5,
+        "high": 30,
+        "unit": "years"
+      }
+    },
+    "OA_Symptom1_Advances": {
+      "type": "Symptom",
+      "symptom": "Joint Pain",
+      "cause": "",
+      "direct_transition": "OA_Symptom2_Advances",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
+    },
+    "OA_Symptom2_Advances": {
+      "type": "Symptom",
+      "symptom": "Joint Stiffness",
+      "cause": "",
+      "direct_transition": "Osteoarthritis",
+      "range": {
+        "low": 0,
+        "high": 50
+      }
+    },
+    "Pain Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "direct_transition": "OA_CarePlan",
+      "range": {
+        "low": 5,
+        "high": 10
+      }
     }
   }
 }

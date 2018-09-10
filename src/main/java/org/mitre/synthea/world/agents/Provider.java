@@ -37,6 +37,9 @@ public class Provider implements QuadTreeData {
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
   private static QuadTree providerMap = new QuadTree(500, 500); // node capacity, depth
 
+  private static final double MAX_PROVIDER_SEARCH_DISTANCE =
+      Double.parseDouble(Config.get("generate.maximum_provider_search_distance", "500"));
+  
   public Map<String, Object> attributes;
   public String uuid;
   public String id;
@@ -105,6 +108,10 @@ public class Provider implements QuadTreeData {
     return utilization;
   }
 
+  /**
+   * Get the bed count for this Provider facility.
+   * @return The number of beds, if they exist, otherwise null.
+   */
   public Integer getBedCount() {
     if (attributes.containsKey("bed_count")) {
       return Integer.parseInt(attributes.get("bed_count").toString());
@@ -124,18 +131,24 @@ public class Provider implements QuadTreeData {
     // UNLESS it's a VA facility and the person is not a veteran
     // eventually we may want to expand this (ex. capacity?)
     if ("VA Facility".equals(this.type) && !person.attributes.containsKey("veteran")) {
-      // this could be made a one-liner but i think this is more clear
       return false;
     }
     return true;
   }
 
+  /**
+   * Find specific service closest to the person, with a maximum distance of 500 kilometers.
+   * @param person The patient who requires the service.
+   * @param service The service required. For example, Provider.AMBULATORY.
+   * @param time The date/time within the simulated world, in milliseconds.
+   * @return Service provider or null if none is available.
+   */
   public static Provider findClosestService(Person person, String service, long time) {
-    double maxDistance = 500;
+    double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
     double distance = 100;
     double step = 100;
     Provider provider = null;
-    while (provider == null && distance <= maxDistance) {
+    while (distance <= maxDistance) {
       provider = findService(person, service, distance, time);
       if (provider != null) {
         return provider;
@@ -147,9 +160,10 @@ public class Provider implements QuadTreeData {
 
   /**
    * Find a service around a given point.
-   * @param coord The location to search near
+   * @param person The patient who requires the service.
    * @param service e.g. Provider.AMBULATORY
    * @param searchDistance in kilometers
+   * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
   private static Provider findService(Person person,
@@ -189,6 +203,8 @@ public class Provider implements QuadTreeData {
       servicesProvided.add(Provider.AMBULATORY);
       servicesProvided.add(Provider.INPATIENT);
       servicesProvided.add(Provider.WELLNESS);
+      servicesProvided.add(Provider.EMERGENCY);
+      servicesProvided.add(Provider.URGENTCARE);
 
       String hospitalFile = Config.get("generate.providers.hospitals.default_file");
       loadProviders(state, abbreviation, hospitalFile, servicesProvided);
@@ -200,7 +216,6 @@ public class Provider implements QuadTreeData {
       servicesProvided.add(Provider.URGENTCARE);
       String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
       loadProviders(state, abbreviation, urgentcareFile, servicesProvided);
-
     } catch (IOException e) {
       System.err.println("ERROR: unable to load providers for state: " + state);
       e.printStackTrace();
@@ -272,7 +287,7 @@ public class Provider implements QuadTreeData {
     }
     double lat = Double.parseDouble(line.remove("LAT"));
     double lon = Double.parseDouble(line.remove("LON"));
-    d.coordinates = new DirectPosition2D(lat, lon);
+    d.coordinates = new DirectPosition2D(lon, lat);
     return d;
   }
 

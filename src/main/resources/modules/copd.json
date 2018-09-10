@@ -292,7 +292,7 @@
         {
           "system": "LOINC",
           "code": "19926-5",
-          "display": "FEV1/​FVC"
+          "display": "FEV1/FVC"
         }
       ],
       "range": {
@@ -408,7 +408,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -428,7 +428,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -452,7 +452,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -480,7 +480,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": "<",
@@ -513,7 +513,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -528,7 +528,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -552,7 +552,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -576,7 +576,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": "<",
@@ -619,7 +619,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -637,7 +637,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -655,7 +655,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">=",
@@ -673,7 +673,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": "<",
@@ -701,7 +701,7 @@
         {
           "system": "LOINC",
           "code": "19926-5",
-          "display": "FEV1/​FVC"
+          "display": "FEV1/FVC"
         }
       ],
       "direct_transition": "Loop_back_to_Living_with_COPD"
@@ -721,7 +721,7 @@
         {
           "system": "LOINC",
           "code": "19926-5",
-          "display": "FEV1/​FVC"
+          "display": "FEV1/FVC"
         }
       ],
       "direct_transition": "Check_Medication"
@@ -741,7 +741,7 @@
         {
           "system": "LOINC",
           "code": "19926-5",
-          "display": "FEV1/​FVC"
+          "display": "FEV1/FVC"
         }
       ],
       "direct_transition": "Check_Medication"
@@ -758,7 +758,7 @@
         {
           "system": "LOINC",
           "code": "19926-5",
-          "display": "FEV1/​FVC"
+          "display": "FEV1/FVC"
         }
       ],
       "direct_transition": "Pulmonary_Rehab"
@@ -772,8 +772,8 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": "896188",
-                "display": "Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT [Advair]"
+                "code": "896209",
+                "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
               }
             ]
           },
@@ -791,8 +791,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "896188",
-          "display": "Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT [Advair]"
+          "code": "896209",
+          "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
         }
       ],
       "direct_transition": "Consider_Surgery"
@@ -817,7 +817,7 @@
                   {
                     "system": "LOINC",
                     "code": "19926-5",
-                    "display": "FEV1/​FVC"
+                    "display": "FEV1/FVC"
                   }
                 ],
                 "operator": ">",
@@ -893,7 +893,7 @@
               {
                 "system": "LOINC",
                 "code": "19926-5",
-                "display": "FEV1/​FVC"
+                "display": "FEV1/FVC"
               }
             ],
             "operator": ">",

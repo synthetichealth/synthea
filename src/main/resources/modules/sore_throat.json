@@ -446,8 +446,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "834060",
-          "display": "Penicillin V Potassium 250 MG"
+          "code": "834061",
+          "display": "Penicillin V Potassium 250 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -460,8 +460,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "834101",
-          "display": "Penicillin V Potassium 500 MG"
+          "code": "834102",
+          "display": "Penicillin V Potassium 500 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Encounter"

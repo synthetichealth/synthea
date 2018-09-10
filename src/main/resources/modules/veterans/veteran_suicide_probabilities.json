@@ -1,0 +1,99 @@
+{
+  "name": "Veteran Suicide Probabilities",
+  "remarks": [
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Veteran check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Veteran": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "PTSD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "SUD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid_addiction",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "MDD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mdd",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Baseline"
+        }
+      ]
+    },
+    "PTSD": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.006,
+      "remarks": [
+        "50 deaths / 100k * 12 attempts / completion == 600 attempts / 100k == .006 == .6 % lifetime probability"
+      ]
+    },
+    "SUD": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.0144,
+      "remarks": [
+        "120 deaths / 100k * 12 attempts / completion == 1440 attempts / 100k == .0144 == 1.44 % lifetime probability"
+      ]
+    },
+    "Veteran check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          },
+          "transition": "Veteran"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "MDD": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.0072,
+      "remarks": [
+        "60 deaths / 100k * 12 attempts / completion == 720 attempts / 100k == .0072 == .72 % lifetime probability"
+      ]
+    },
+    "Baseline": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.003072,
+      "remarks": [
+        "25.6 deaths / 100k * 12 attempts / completion == 307.2 attempts / 100k == .003072 == .3 % lifetime probability"
+      ]
+    }
+  }
+}

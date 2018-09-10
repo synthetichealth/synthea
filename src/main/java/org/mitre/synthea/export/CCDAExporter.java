@@ -1,13 +1,10 @@
 package org.mitre.synthea.export;
 
 import freemarker.template.Configuration;
-import freemarker.template.SimpleNumber;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateMethodModelEx;
 
 import java.io.StringWriter;
-import java.util.List;
 import java.util.UUID;
 
 import org.mitre.synthea.world.agents.Person;
