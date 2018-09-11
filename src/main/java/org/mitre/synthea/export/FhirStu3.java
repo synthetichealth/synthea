@@ -64,6 +64,7 @@ import org.hl7.fhir.dstu3.model.ExplanationOfBenefit;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.HumanName;
+import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.dstu3.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.dstu3.model.ImagingStudy.InstanceAvailability;
@@ -84,6 +85,7 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.PositiveIntType;
+import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -261,7 +263,6 @@ public class FhirStu3 {
       // one claim per encounter
       BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle,
           encounterEntry, encounter.claim);
-
 
       explanationOfBenefit(personEntry,bundle,encounterEntry,person,
           (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource(), encounter);
@@ -820,18 +821,33 @@ public class FhirStu3 {
     return newEntry(bundle, claimResource);
   }
 
-
+  /**
+   * Create an explanation of benefit resource for each claim, detailing insurance
+   * information.
+   *
+   * @param personEntry
+   *         Entry for the person
+   * @param bundle
+   *         The Bundle to add to
+   * @param encounterEntry
+   *         The current Encounter
+   * @param claim
+   *         the Claim object
+   * @param person
+   *          the person the health record belongs to
+   * @param encounter
+   *          the current Encounter as an object
+   *
+   * @return  the added entry
+   */
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
                                            Person person, org.hl7.fhir.dstu3.model.Claim claim,
                                                            Encounter encounter) {
 
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
-    FhirContext fc3 = FhirContext.forDstu3();
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
-
-
 
     // according to CMS guidelines claims have 12 months to be
     // billed, so we set the billable period to 1 year after
@@ -855,26 +871,25 @@ public class FhirStu3 {
     eob.setTotalCost(totalCost);
 
     // Set References
-    eob.setPatient(claim.getPatient());
+    eob.setPatient(new Reference(personEntry.getFullUrl()));
     eob.setOrganization(claim.getOrganization());
-    eob.setProvider(claim.getProvider());
     eob.setReferral(new Reference("#1"));
 
-
+    eob.setClaim(new Reference()
+        .setReference(claim.getId()));
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
-        .setValue(UUID.randomUUID().toString());
+        .setValue(claim.getId());
     // Hardcoded group id
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
-        .setValue("93480754268");
+        .setValue("99999999999");
 
     eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
     eob.setCreated(encounterResource.getPeriod().getEnd());
     eob.setType(claim.getType());
 
     List<ExplanationOfBenefit.DiagnosisComponent> eobDiag = new ArrayList<>();
-
     for (org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent claimDiagnosis : claim.getDiagnosis()) {
       ExplanationOfBenefit.DiagnosisComponent diagnosisComponent =
           new ExplanationOfBenefit.DiagnosisComponent();
@@ -899,7 +914,6 @@ public class FhirStu3 {
             .addPayor(new Reference()
                 .setReference(insurance))));
 
-
     for (ProcedureComponent proc : claim.getProcedure()) {
       ExplanationOfBenefit.ProcedureComponent p = new ExplanationOfBenefit.ProcedureComponent();
       p.setDate(proc.getDate());
@@ -907,11 +921,11 @@ public class FhirStu3 {
       p.setProcedure(proc.getProcedure());
     }
 
-    List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
+    eob.setProcedure(eobProc);
 
+    List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
     double totalPayment = 0;
     // Get all the items info from the claim
-
     for (ItemComponent item : claim.getItem()) {
 
       ExplanationOfBenefit.ItemComponent itemComponent = new ExplanationOfBenefit.ItemComponent();
@@ -968,13 +982,10 @@ public class FhirStu3 {
           .setDisplay(display);
       itemComponent.setLocation(location);
 
-
       itemComponent.setCategory(new CodeableConcept().addCoding(new Coding()
           .setSystem("https://bluebutton.cms.gov/resources/variables/line_cms_type_srvc_cd")
           .setCode("1")
           .setDisplay("Medical care")));
-
-
 
       // Adjudication
       if (item.hasNet()) {
@@ -1048,7 +1059,6 @@ public class FhirStu3 {
             .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd")
             .setDisplay("Allowed");
 
-
         // assume deductible is 0
         ExplanationOfBenefit.AdjudicationComponent deductibleAmount =
             new ExplanationOfBenefit.AdjudicationComponent();
@@ -1089,13 +1099,19 @@ public class FhirStu3 {
 
     // Hardcoded
     List<Reference> recipientList = new ArrayList<>();
-    recipientList.add(new Reference("#2"));
+    recipientList.add(new Reference()
+        .setIdentifier(new Identifier()
+        .setSystem("http://hl7.org/fhir/sid/us-npi")
+        .setValue("99999999")));
     eob.getContained().add(new ReferralRequest()
         .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
         .setIntent(ReferralRequest.ReferralCategory.ORDER)
         .setSubject(new Reference(personEntry.getFullUrl()))
         .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
-            .setAgent(new Reference("#3")))
+            .setAgent(new Reference()
+                .setIdentifier(new Identifier()
+                    .setSystem("http://hl7.org/fhir/sid/us-npi")
+                    .setValue("99999999"))))
         .setRecipient(recipientList)
         .setId("1"));
     eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
@@ -1119,9 +1135,32 @@ public class FhirStu3 {
         .getEnd()
         .getTime());
 
-
     eob.setProvider(new Reference().setReference(findProviderUrl(provider, bundle)));
-
+    eob.setType(new CodeableConcept()
+        .addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/variables/nch_clm_type_cd")
+            // The code should be chosen from the
+            // claim type, which is different from
+            // the encounter type apparently.
+            .setCode("71")
+            .setDisplay("Local carrier non-durable medical equipment, prosthetics, orthotics, and supplies (DMEPOS) claim"))
+        .addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/codesystem/eob-type")
+            // the code is chosen directly as
+            // a result of the nch_clm_type_cd.
+            .setCode("CARRIER"))
+        .addCoding(new Coding()
+            .setSystem("http://hl7.org/fhir/ex-claimtype")
+            // the ex-claimtype is also directly dependent on
+            // the eob-type, making the clm_type the only real
+            // category that needs to be dynamically chosen
+            .setCode("professional"))
+        .addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/variables/nch_near_line_rec_ident_cd")
+            // also dependent on clm-type
+            .setCode("O")
+            .setDisplay("Part B physician/supplier claim record (processed by local "
+                      + "carriers; can include DMEPOS services)")));
     return newEntry(bundle,eob);
 
   }
