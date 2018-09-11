@@ -743,7 +743,6 @@ public class FhirStu3 {
     claimResource.setStatus(ClaimStatus.ACTIVE);
     claimResource.setUse(org.hl7.fhir.dstu3.model.Claim.Use.COMPLETE);
 
-
     // duration of encounter
     claimResource.setBillablePeriod(encounterResource.getPeriod());
 
@@ -763,14 +762,19 @@ public class FhirStu3 {
       if (Costs.hasCost(item)) {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
-
+        Code primaryCode = item.codes.get(0);
+        CodeableConcept serviceProvided = new CodeableConcept()
+            .addCoding(new Coding()
+                .setCode(primaryCode.code)
+                .setDisplay(primaryCode.display)
+                .setSystem(primaryCode.system));
+        claimItem.setService(serviceProvided);
         // calculate the cost of the procedure
         Money moneyResource = new Money();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
         moneyResource.setValue(item.cost());
         claimItem.setNet(moneyResource);
-        claimResource.addItem(claimItem);
 
         if (item instanceof HealthRecord.Procedure) {
           Type procedureReference = new Reference(item.fullUrl);
@@ -778,6 +782,7 @@ public class FhirStu3 {
               new PositiveIntType(procedureSequence), procedureReference);
           claimResource.addProcedure(claimProcedure);
           claimItem.addProcedureLinkId(procedureSequence);
+
           procedureSequence++;
         } else {
           Reference informationReference = new Reference(item.fullUrl);
@@ -791,8 +796,10 @@ public class FhirStu3 {
           informationComponent.setCategory(category);
           claimResource.addInformation(informationComponent);
           claimItem.addInformationLinkId(informationSequence);
+          claimItem.setService(claimResource.getType());
           informationSequence++;
         }
+        claimResource.addItem(claimItem);
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
@@ -810,6 +817,7 @@ public class FhirStu3 {
         conditionSequence++;
       }
       itemSequence++;
+
     }
 
     Money moneyResource = new Money();
@@ -926,6 +934,7 @@ public class FhirStu3 {
     List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
     double totalPayment = 0;
     // Get all the items info from the claim
+
     for (ItemComponent item : claim.getItem()) {
 
       ExplanationOfBenefit.ItemComponent itemComponent = new ExplanationOfBenefit.ItemComponent();
@@ -938,13 +947,9 @@ public class FhirStu3 {
       itemComponent.setQuantity(item.getQuantity());
       itemComponent.setUnitPrice(item.getUnitPrice());
       itemComponent.setEncounter(item.getEncounter());
-
-      // can probably set code based on encounter type with switch statement
-      itemComponent.setService(new CodeableConcept().addCoding(new Coding()
-          .setSystem("https://bluebutton.cms.gov/resources/codesystem/hcpcs")
-          .setCode("99212") //99211 to 99215 are outpatient codes based on severity
-          .setDisplay("d")));
+      itemComponent.setService(item.getService());
       itemComponent.setServiced(encounterResource.getPeriod());
+
       // Location of service, can use switch statement based on
       // encounter type
       String code;
@@ -1164,7 +1169,6 @@ public class FhirStu3 {
     return newEntry(bundle,eob);
 
   }
-
 
   /**
    * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
