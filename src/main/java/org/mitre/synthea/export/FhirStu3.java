@@ -884,7 +884,6 @@ public class FhirStu3 {
 
     // Set References
     eob.setPatient(new Reference(personEntry.getFullUrl()));
-    eob.setPatient(claim.getOrganization());
     eob.setOrganization(claim.getOrganization());
     eob.setReferral(new Reference("#1"));
 

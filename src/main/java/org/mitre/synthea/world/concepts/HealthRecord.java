@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.dstu3.model.Coverage;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -240,6 +239,7 @@ public class HealthRecord {
   }
 
   public class Claim {
+
     public double baseCost;
     public Encounter encounter;
     public Medication medication;
