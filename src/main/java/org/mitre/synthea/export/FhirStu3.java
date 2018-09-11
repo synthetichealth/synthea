@@ -763,11 +763,15 @@ public class FhirStu3 {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
         Code primaryCode = item.codes.get(0);
+
         CodeableConcept serviceProvided = new CodeableConcept()
             .addCoding(new Coding()
                 .setCode(primaryCode.code)
                 .setDisplay(primaryCode.display)
-                .setSystem(primaryCode.system));
+                // Temporarily set the system to SNOMED.  Should be
+                // changed when Terminology branch gets merged and
+                // system names can be translated to their URI's
+                .setSystem(SNOMED_URI));
         claimItem.setService(serviceProvided);
         // calculate the cost of the procedure
         Money moneyResource = new Money();
@@ -880,6 +884,7 @@ public class FhirStu3 {
 
     // Set References
     eob.setPatient(new Reference(personEntry.getFullUrl()));
+    eob.setPatient(claim.getOrganization());
     eob.setOrganization(claim.getOrganization());
     eob.setReferral(new Reference("#1"));
 
@@ -1139,7 +1144,6 @@ public class FhirStu3 {
         .getPeriod()
         .getEnd()
         .getTime());
-
     eob.setProvider(new Reference().setReference(findProviderUrl(provider, bundle)));
     eob.setType(new CodeableConcept()
         .addCoding(new Coding()

@@ -510,7 +510,7 @@
         {
           "system": "SNOMED-CT",
           "code": "104326007",
-          "display": "Measurement of Varicella-zoster virus antibody "
+          "display": "Measurement of Varicella-zoster virus antibody"
         }
       ],
       "direct_transition": "Tuberculosis_Test"
