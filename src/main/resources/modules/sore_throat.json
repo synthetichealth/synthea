@@ -474,7 +474,7 @@
         {
           "system": "SNOMED-CT",
           "code": "117015009",
-          "display": "Throat culture (procedure) "
+          "display": "Throat culture (procedure)"
         }
       ],
       "conditional_transition": [
