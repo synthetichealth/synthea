@@ -29,73 +29,73 @@ import org.mitre.synthea.world.agents.Person;
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRDSTU2ExporterTest {
-    /**
-     * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
-     */
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+  /**
+   * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
+   */
+  @Rule
+  public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    @Before
-    public void setUp(){
-        TestHelper.exportOff();
-        Config.set("exporter.fhir_dstu2.export", "true");
-    }
+  @Before
+  public void setUp() {
+    TestHelper.exportOff();
+    Config.set("exporter.fhir_dstu2.export", "true");
+  }
 
-    @After
-    public void tearDown(){
-        Config.remove("exporter.baseDirectory");
-        Config.remove("exporter.fhir_dstu2.export");
-    }
+  @After
+  public void tearDown() {
+    Config.remove("exporter.baseDirectory");
+    Config.remove("exporter.fhir_dstu2.export");
+  }
 
-    @Test
-    public void testFHIRDSTU2Export() throws Exception {
-        Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
+  @Test
+  public void testFHIRDSTU2Export() throws Exception {
+    Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-        FhirContext ctx = FhirContext.forDstu2();
-        IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+    FhirContext ctx = FhirContext.forDstu2();
+    IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
-        FhirValidator validator = ctx.newValidator();
-        validator.setValidateAgainstStandardSchema(true);
-        validator.setValidateAgainstStandardSchematron(true);
+    FhirValidator validator = ctx.newValidator();
+    validator.setValidateAgainstStandardSchema(true);
+    validator.setValidateAgainstStandardSchematron(true);
 
-        List<String> validationErrors = new ArrayList<String>();
+    List<String> validationErrors = new ArrayList<String>();
 
-        int numberOfPeople = 10;
-        Generator generator = new Generator(numberOfPeople);
-        for (int i = 0; i < numberOfPeople; i++) {
-            int x = validationErrors.size();
-            Person person = generator.generatePerson(i);
-            FhirDstu2.TRANSACTION_BUNDLE = person.random.nextBoolean();
-            String fhirJson = FhirDstu2.convertToFHIR(person, System.currentTimeMillis());
-            IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
-            ValidationResult result = validator.validateWithResult(resource);
-            if (!result.isSuccessful()) {
-                // If the validation failed, let's crack open the Bundle and validate
-                // each individual entry.resource to get context-sensitive error
-                // messages...
-                Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-                for (Entry entry : bundle.getEntry()) {
-                    ValidationResult eresult = validator.validateWithResult(entry.getResource());
-                    if (!eresult.isSuccessful()) {
-                        for (SingleValidationMessage emessage : eresult.getMessages()) {
-                            System.out.println(parser.encodeResourceToString(entry.getResource()));
-                            System.out.println("ERROR: " + emessage.getMessage());
-                            validationErrors.add(emessage.getMessage());
-                        }
-                    }
-                    if (entry.getResource() instanceof DiagnosticReport) {
-                        DiagnosticReport report = (DiagnosticReport) entry.getResource();
-                        if (report.getPerformer().isEmpty()) {
-                            validationErrors.add("Performer is a required field on DiagnosticReport!");
-                        }
-                    }
-                }
+    int numberOfPeople = 10;
+    Generator generator = new Generator(numberOfPeople);
+    for (int i = 0; i < numberOfPeople; i++) {
+      int x = validationErrors.size();
+      Person person = generator.generatePerson(i);
+      FhirDstu2.TRANSACTION_BUNDLE = person.random.nextBoolean();
+      String fhirJson = FhirDstu2.convertToFHIR(person, System.currentTimeMillis());
+      IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
+      ValidationResult result = validator.validateWithResult(resource);
+      if (!result.isSuccessful()) {
+        // If the validation failed, let's crack open the Bundle and validate
+        // each individual entry.resource to get context-sensitive error
+        // messages...
+        Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+        for (Entry entry : bundle.getEntry()) {
+          ValidationResult eresult = validator.validateWithResult(entry.getResource());
+          if (!eresult.isSuccessful()) {
+            for (SingleValidationMessage emessage : eresult.getMessages()) {
+              System.out.println(parser.encodeResourceToString(entry.getResource()));
+              System.out.println("ERROR: " + emessage.getMessage());
+              validationErrors.add(emessage.getMessage());
             }
-            int y = validationErrors.size();
-            if (x != y) {
-                Exporter.export(person, System.currentTimeMillis());
+          }
+          if (entry.getResource() instanceof DiagnosticReport) {
+            DiagnosticReport report = (DiagnosticReport) entry.getResource();
+            if (report.getPerformer().isEmpty()) {
+              validationErrors.add("Performer is a required field on DiagnosticReport!");
             }
+          }
         }
-        assertEquals(0, validationErrors.size());
+      }
+      int y = validationErrors.size();
+      if (x != y) {
+        Exporter.export(person, System.currentTimeMillis());
+      }
     }
+    assertEquals(0, validationErrors.size());
+  }
 }
