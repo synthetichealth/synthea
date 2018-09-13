@@ -32,10 +32,13 @@ public abstract class TestHelper {
   public static void exportOff() {
     Config.set("generate.database_type", "none"); // ensure we don't write to a file-based DB
     Config.set("exporter.use_uuid_filenames", "false");
+    Config.set("exporter.fhir.use_shr_extensions", "false");
     Config.set("exporter.subfolders_by_id_substring", "false");
     Config.set("exporter.ccda.export", "false");
     Config.set("exporter.fhir.export", "false");
     Config.set("exporter.fhir_dstu2.export", "false");
+    Config.set("exporter.fhir_stu3.export", "false");
+    Config.set("exporter.fhir_r4.export", "false");
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
