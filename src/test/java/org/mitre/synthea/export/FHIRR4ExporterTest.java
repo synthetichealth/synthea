@@ -35,13 +35,13 @@ public class FHIRR4ExporterTest {
   @Before
   public void setUp() {
     TestHelper.exportOff();
-    Config.set("exporter.fhir_r4.export", "true");
+    Config.set("exporter.fhir.export", "true");
   }
 
   @After
   public void tearDown() {
     Config.remove("exporter.baseDirectory");
-    Config.remove("exporter.fhir_r4.export");
+    Config.remove("exporter.fhir.export");
   }
 
   @Test
