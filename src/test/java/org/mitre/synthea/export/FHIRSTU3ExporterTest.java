@@ -5,17 +5,12 @@ import static org.junit.Assert.assertEquals;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
-import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Condition;
-import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.After;
@@ -31,35 +26,27 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
-public class FHIRExporterTest {
+public class FHIRSTU3ExporterTest {
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
-  /**
-   * Set up the test prior to run.
-   */
   @Before
   public void setUp() {
     TestHelper.exportOff();
-    Config.set("exporter.fhir.export", "true");
-    Config.set("exporter.fhir.use_shr_extensions", "true");
+    Config.set("exporter.fhir_stu3.export", "true");
   }
 
-  /**
-   * Tear down the test after run.
-   */
   @After
   public void tearDown() {
     Config.remove("exporter.baseDirectory");
-    Config.remove("exporter.fhir.export");
-    Config.remove("exporter.fhir.use_shr_extensions");
+    Config.remove("exporter.fhir_stu3.export");
   }
 
   @Test
-  public void testFHIRExport() throws Exception {
+  public void testFHIRSTU3Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
     FhirContext ctx = FhirContext.forDstu3();
@@ -85,42 +72,32 @@ public class FHIRExporterTest {
         // each individual entry.resource to get context-sensitive error
         // messages...
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-        for (BundleEntryComponent entry : bundle.getEntry()) {
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           ValidationResult eresult = validator.validateWithResult(entry.getResource());
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
-              if (emessage.getSeverity() == ResultSeverityEnum.ERROR
-                  || emessage.getSeverity() == ResultSeverityEnum.FATAL) {
-                boolean valid = false;
+              boolean valid = false;
+              if (emessage.getMessage().contains("@ Observation obs-7")) {
                 /*
-                 * There are a few bugs in the FHIR schematron files that are distributed with HAPI
-                 * 3.0.0 (these are fixed in the latest `master` branch), specifically with XPath
-                 * expressions.
-                 *
-                 * Two of these bugs are related to the FHIR Invariant rules obs-7 and con-4, which
-                 * have XPath expressions that incorrectly raise errors on validation.
+                 * The obs-7 invariant basically says that Observations should have values, unless
+                 * they are made of components. This test replaces an invalid XPath expression
+                 * that was causing correct instances to fail validation.
                  */
-                if (emessage.getMessage().contains("@ Observation obs-7")) {
-                  /*
-                   * The obs-7 invariant basically says that Observations should have values, unless
-                   * they are made of components. This test replaces an invalid XPath expression
-                   * that was causing correct instances to fail validation.
-                   */
-                  valid = validateObs7((Observation) entry.getResource());
-                } else if (emessage.getMessage().contains("@ Condition con-4")) {
-                  /*
-                   * The con-4 invariant says "If condition is abated, then clinicalStatus must be
-                   * either inactive, resolved, or remission" which is very clear and sensical.
-                   * However, the XPath expression does not evaluate correctly for valid instances,
-                   * so we must manually validate.
-                   */
-                  valid = validateCon4((Condition) entry.getResource());
-                }
-                if (!valid) {
-                  System.out.println(parser.encodeResourceToString(entry.getResource()));
-                  System.out.println("ERROR: " + emessage.getMessage());
-                  validationErrors.add(emessage.getMessage());
-                }
+                valid = validateObs7((Observation) entry.getResource());
+              } else if (emessage.getMessage().contains("@ Condition con-4")) {
+                /*
+                 * The con-4 invariant says "If condition is abated, then clinicalStatus must be
+                 * either inactive, resolved, or remission" which is very clear and sensical.
+                 * However, the XPath expression does not evaluate correctly for valid instances,
+                 * so we must manually validate.
+                 */
+                valid = validateCon4((Condition) entry.getResource());
+              }
+
+              if (!valid) {
+                System.out.println(parser.encodeResourceToString(entry.getResource()));
+                System.out.println("ERROR: " + emessage.getMessage());
+                validationErrors.add(emessage.getMessage());
               }
             }
           }
@@ -131,7 +108,6 @@ public class FHIRExporterTest {
         Exporter.export(person, System.currentTimeMillis());
       }
     }
-
     assertEquals(0, validationErrors.size());
   }
 
@@ -156,7 +132,9 @@ public class FHIRExporterTest {
    * @return true on valid, otherwise false.
    */
   private static boolean validateCon4(Condition con) {
-    return (con.hasAbatement() && con.getClinicalStatus() != ConditionClinicalStatus.ACTIVE)
+    return (con.hasAbatement()
+        && con.getClinicalStatus() != Condition.ConditionClinicalStatus.ACTIVE)
         || !con.hasAbatement();
   }
+
 }

@@ -3,18 +3,15 @@ package org.mitre.synthea.export;
 import static org.junit.Assert.assertEquals;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.hl7.fhir.dstu3.model.DiagnosticReport;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,7 +25,7 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
-public class FHIRDSTU2ExporterTest {
+public class FHIRR4ExporterTest {
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
@@ -38,20 +35,20 @@ public class FHIRDSTU2ExporterTest {
   @Before
   public void setUp() {
     TestHelper.exportOff();
-    Config.set("exporter.fhir_dstu2.export", "true");
+    Config.set("exporter.fhir_r4.export", "true");
   }
 
   @After
   public void tearDown() {
     Config.remove("exporter.baseDirectory");
-    Config.remove("exporter.fhir_dstu2.export");
+    Config.remove("exporter.fhir_r4.export");
   }
 
   @Test
-  public void testFHIRDSTU2Export() throws Exception {
+  public void testFHIRR4Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirContext.forDstu2();
+    FhirContext ctx = FhirContext.forR4();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
     FhirValidator validator = ctx.newValidator();
@@ -65,8 +62,8 @@ public class FHIRDSTU2ExporterTest {
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       Person person = generator.generatePerson(i);
-      FhirDstu2.TRANSACTION_BUNDLE = person.random.nextBoolean();
-      String fhirJson = FhirDstu2.convertToFHIR(person, System.currentTimeMillis());
+      FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
+      String fhirJson = FhirR4.convertToFHIR(person, System.currentTimeMillis());
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
       ValidationResult result = validator.validateWithResult(resource);
       if (!result.isSuccessful()) {
@@ -74,7 +71,7 @@ public class FHIRDSTU2ExporterTest {
         // each individual entry.resource to get context-sensitive error
         // messages...
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-        for (Entry entry : bundle.getEntry()) {
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           ValidationResult eresult = validator.validateWithResult(entry.getResource());
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
