@@ -1403,10 +1403,10 @@ public class FhirR4 {
     organizationType.add(
         mapCodeToCodeableConcept(
             new Code(
-                "http://hl7.org/fhir/ValueSet/organization-type",
+                "http://terminology.hl7.org/CodeSystem/organization-type",
                 "prov",
                 "Healthcare Provider"),
-            "http://hl7.org/fhir/ValueSet/organization-type")
+            "Healthcare Provider")
     );
 
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
