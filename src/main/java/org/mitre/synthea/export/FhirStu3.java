@@ -1433,7 +1433,7 @@ public class FhirStu3 {
     organizationType.add(
         mapCodeToCodeableConcept(
             new Code(
-                "http://hl7.org/fhir/ValueSet/organization-type",
+                "http://hl7.org/fhir/organization-type",
                 "prov",
                 "Healthcare Provider"),
             "Healthcare Provider"));
