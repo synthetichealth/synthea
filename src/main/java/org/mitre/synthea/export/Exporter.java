@@ -249,11 +249,13 @@ public abstract class Exporter {
    * @param claimItems   List of ClaimItems, from which any removed items should also be removed.
    * @param cutoffDate   Minimum date, entries older than this may be discarded
    * @param endTime      Maximum date, entries newer than this may be discarded
-   * @param keepFunction Keep function, if this function returns `true` for an entry then it will be kept
+   * @param keepFunction Keep function, if this function returns `true` for an entry then it will
+   *                     be kept
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-                                                                   List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime,
-                                                                   Predicate<E> keepFunction) {
+      List<HealthRecord.Entry> claimItems, long cutoffDate,
+      long endTime, Predicate<E> keepFunction) {
+
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
     while (iterator.hasNext()) {
@@ -271,7 +273,9 @@ public abstract class Exporter {
     }
   }
 
-  private static boolean entryWithinTimeRange(HealthRecord.Entry e, long cutoffDate, long endTime) {
+  private static boolean entryWithinTimeRange(
+      HealthRecord.Entry e, long cutoffDate, long endTime) {
+
     if (e.start > cutoffDate && e.start <= endTime) {
       return true; // trivial case, when we're within the last __ years
     }
@@ -299,7 +303,7 @@ public abstract class Exporter {
    * @param folderName The base folder to use.
    * @param person     The person being exported.
    * @return Either the base folder provided, or a subdirectory, depending on configuration
-   * settings.
+   *     settings.
    */
   public static File getOutputFolder(String folderName, Person person) {
     List<String> folders = new ArrayList<>();
