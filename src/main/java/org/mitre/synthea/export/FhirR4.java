@@ -1044,7 +1044,6 @@ public class FhirR4 {
     immResource.setStatus(ImmunizationStatus.COMPLETED);
     immResource.setDate(new Date(immunization.start));
     immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0), CVX_URI));
-    immResource.setStatus(ImmunizationStatus.COMPLETED);
     immResource.setPrimarySource(true);
     immResource.setPatient(new Reference(personEntry.getFullUrl()));
     immResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
