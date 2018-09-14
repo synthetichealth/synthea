@@ -12,8 +12,6 @@ import java.util.List;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DiagnosticReport;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -32,18 +30,6 @@ public class FHIRR4ExporterTest {
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
-  @Before
-  public void setUp() {
-    TestHelper.exportOff();
-    Config.set("exporter.fhir.export", "true");
-  }
-
-  @After
-  public void tearDown() {
-    Config.remove("exporter.baseDirectory");
-    Config.remove("exporter.fhir.export");
-  }
-
   @Test
   public void testFHIRR4Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
@@ -61,7 +47,9 @@ public class FHIRR4ExporterTest {
     Generator generator = new Generator(numberOfPeople);
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
+      TestHelper.exportOff();
       Person person = generator.generatePerson(i);
+      Config.set("exporter.fhir_r4.export", "true");
       FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
       String fhirJson = FhirR4.convertToFHIR(person, System.currentTimeMillis());
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);

@@ -37,7 +37,6 @@ public abstract class TestHelper {
     Config.set("exporter.ccda.export", "false");
     Config.set("exporter.fhir.export", "false");
     Config.set("exporter.fhir_dstu2.export", "false");
-    Config.set("exporter.fhir_stu3.export", "false");
     Config.set("exporter.fhir_r4.export", "false");
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
