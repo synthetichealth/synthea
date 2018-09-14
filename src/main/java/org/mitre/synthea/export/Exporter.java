@@ -35,9 +35,9 @@ public abstract class Exporter {
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
     }
-    // Defaults to R4 output
+    // Defaults to STU3 output
     if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
-      String bundleJson = FhirR4.convertToFHIR(person, stopTime);
+      String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
       File outDirectory = getOutputFolder("fhir", person);
       Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
 
@@ -58,9 +58,9 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-    if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
-      String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
-      File outDirectory = getOutputFolder("fhir_stu3", person);
+    if (Boolean.parseBoolean(Config.get("exporter.fhir_r4.export"))) {
+      String bundleJson = FhirR4.convertToFHIR(person, stopTime);
+      File outDirectory = getOutputFolder("fhir_r4", person);
       Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
 
       try {
