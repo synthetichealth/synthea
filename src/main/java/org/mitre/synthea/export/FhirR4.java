@@ -201,7 +201,7 @@ public class FhirR4 {
    * @param person   Person to generate the FHIR JSON for
    * @param stopTime Time the simulation ended
    * @return String containing a JSON representation of a FHIR Bundle containing the Person's health
-   * record
+   *     record
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
@@ -669,8 +669,9 @@ public class FhirR4 {
    * @return the added Entry
    */
   private static BundleEntryComponent medicationClaim(BundleEntryComponent personEntry,
-                                                      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim,
-                                                      BundleEntryComponent medicationEntry) {
+      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim,
+      BundleEntryComponent medicationEntry) {
+    
     org.hl7.fhir.r4.model.Claim claimResource = new org.hl7.fhir.r4.model.Claim();
     org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
@@ -710,7 +711,7 @@ public class FhirR4 {
    * @return the added Entry
    */
   private static BundleEntryComponent encounterClaim(BundleEntryComponent personEntry,
-                                                     Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
+      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
     org.hl7.fhir.r4.model.Claim claimResource = new org.hl7.fhir.r4.model.Claim();
     org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
@@ -804,7 +805,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
-                                                BundleEntryComponent encounterEntry, HealthRecord.Entry condition) {
+      BundleEntryComponent encounterEntry, HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
 
     conditionResource.setSubject(new Reference(personEntry.getFullUrl()));
@@ -853,10 +854,9 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent allergy(BundleEntryComponent personEntry, Bundle bundle,
-                                              BundleEntryComponent encounterEntry, HealthRecord.Entry allergy) {
+      BundleEntryComponent encounterEntry, HealthRecord.Entry allergy) {
 
     AllergyIntolerance allergyResource = new AllergyIntolerance();
-
     allergyResource.setAssertedDate(new Date(allergy.start));
 
     if (allergy.stop == 0) {
@@ -897,7 +897,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent observation(BundleEntryComponent personEntry, Bundle bundle,
-                                                  BundleEntryComponent encounterEntry, Observation observation) {
+      BundleEntryComponent encounterEntry, Observation observation) {
     org.hl7.fhir.r4.model.Observation observationResource =
         new org.hl7.fhir.r4.model.Observation();
 
@@ -952,22 +952,17 @@ public class FhirR4 {
   private static Type mapValueToFHIRType(Object value, String unit) {
     if (value == null) {
       return null;
-
     } else if (value instanceof Condition) {
       Code conditionCode = ((HealthRecord.Entry) value).codes.get(0);
       return mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
-
     } else if (value instanceof Code) {
       return mapCodeToCodeableConcept((Code) value, SNOMED_URI);
-
     } else if (value instanceof String) {
       return new StringType((String) value);
-
     } else if (value instanceof Number) {
       return new Quantity().setValue(((Number) value).doubleValue())
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
-
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
@@ -984,7 +979,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent procedure(BundleEntryComponent personEntry, Bundle bundle,
-                                                BundleEntryComponent encounterEntry, Procedure procedure) {
+      BundleEntryComponent encounterEntry, Procedure procedure) {
     org.hl7.fhir.r4.model.Procedure procedureResource = new org.hl7.fhir.r4.model.Procedure();
 
     procedureResource.setStatus(ProcedureStatus.COMPLETED);
@@ -1039,7 +1034,7 @@ public class FhirR4 {
   }
 
   private static BundleEntryComponent immunization(BundleEntryComponent personEntry, Bundle bundle,
-                                                   BundleEntryComponent encounterEntry, HealthRecord.Entry immunization) {
+      BundleEntryComponent encounterEntry, HealthRecord.Entry immunization) {
     Immunization immResource = new Immunization();
     immResource.setStatus(ImmunizationStatus.COMPLETED);
     immResource.setDate(new Date(immunization.start));
@@ -1078,7 +1073,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent medication(BundleEntryComponent personEntry, Bundle bundle,
-                                                 BundleEntryComponent encounterEntry, Medication medication) {
+      BundleEntryComponent encounterEntry, Medication medication) {
     MedicationRequest medicationResource = new MedicationRequest();
 
     medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
@@ -1209,7 +1204,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent report(BundleEntryComponent personEntry, Bundle bundle,
-                                             BundleEntryComponent encounterEntry, Report report) {
+      BundleEntryComponent encounterEntry, Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
     reportResource.setStatus(DiagnosticReportStatus.FINAL);
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
@@ -1238,7 +1233,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent careplan(BundleEntryComponent personEntry, Bundle bundle,
-                                               BundleEntryComponent encounterEntry, CarePlan carePlan) {
+      BundleEntryComponent encounterEntry, CarePlan carePlan) {
     org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
     careplanResource.setIntent(CarePlanIntent.ORDER);
     careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
@@ -1319,7 +1314,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent imagingStudy(BundleEntryComponent personEntry, Bundle bundle,
-                                                   BundleEntryComponent encounterEntry, ImagingStudy imagingStudy) {
+      BundleEntryComponent encounterEntry, ImagingStudy imagingStudy) {
     org.hl7.fhir.r4.model.ImagingStudy imagingStudyResource =
         new org.hl7.fhir.r4.model.ImagingStudy();
 

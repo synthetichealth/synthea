@@ -81,7 +81,7 @@ public abstract class Config {
   }
 
   /**
-   * Unset a configuration value
+   * Unset a configuration value.
    *
    * @param key property name
    */
