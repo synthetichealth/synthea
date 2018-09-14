@@ -53,6 +53,7 @@ import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
 import org.hl7.fhir.r4.model.Dosage;
+import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
@@ -1106,6 +1107,8 @@ public class FhirR4 {
       }
     }
 
+    // TODO R4 Medication Dosage Exceptions
+/*
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;
       Dosage dosage = new Dosage();
@@ -1130,13 +1133,15 @@ public class FhirR4 {
         Quantity dose = new SimpleQuantity().setValue(
             rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
 
-        Dosage.DosageDoseAndRateComponent dosageDetails = new Dosage.DosageDoseAndRateComponent();
+        DosageDoseAndRateComponent dosageDetails = new DosageDoseAndRateComponent();
         dosageDetails.setType(new CodeableConcept().addCoding(
             new Coding().setCode(DoseRateType.ORDERED.toCode())
                 .setSystem(DoseRateType.ORDERED.getSystem())
                 .setDisplay(DoseRateType.ORDERED.getDisplay())));
         dosageDetails.setDose(dose);
-        dosage.addDoseAndRate(dosageDetails);
+        List<DosageDoseAndRateComponent> details = new ArrayList<DosageDoseAndRateComponent>();
+        details.add(dosageDetails);
+        dosage.setDoseAndRate(details);
 
         if (rxInfo.has("instructions")) {
           for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
@@ -1156,7 +1161,7 @@ public class FhirR4 {
       dosageInstruction.add(dosage);
       medicationResource.setDosageInstruction(dosageInstruction);
     }
-
+*/
     if (USE_SHR_EXTENSIONS) {
 
       medicationResource.addExtension()
@@ -1401,7 +1406,7 @@ public class FhirR4 {
                 "http://terminology.hl7.org/CodeSystem/organization-type",
                 "prov",
                 "Healthcare Provider"),
-            "Healthcare Provider")
+            "http://terminology.hl7.org/CodeSystem/organization-type")
     );
 
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
