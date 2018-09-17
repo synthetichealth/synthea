@@ -355,7 +355,7 @@ public class Generator {
     }
     return person;
   }
-  
+
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
     // this is synchronized to ensure all lines for a single person are always printed 
     // consecutively
