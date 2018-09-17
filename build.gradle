@@ -21,28 +21,29 @@ repositories {
 }
 
 checkstyle {
-	toolVersion '8.4'
-	//showViolations = true
+  toolVersion '8.4'
+  //showViolations = true
 }
 
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.3.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.3.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.3.0'
-	// C-CDA export uses Apache FreeMarker templates
-	compile 'org.freemarker:freemarker:2.3.26-incubating'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.4.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.4.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.4.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.4.0'
+  // C-CDA export uses Apache FreeMarker templates
+  compile 'org.freemarker:freemarker:2.3.26-incubating'
   // location processing
   compile group: 'org.apache.sis.core', name: 'sis-referencing', version: '0.8'
   compile group: 'org.apache.sis.storage', name: 'sis-storage', version: '0.8'
   compile group: 'com.h2database', name: 'h2', version: '1.4.196'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'
-	compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
-	// CSV Stuff
-	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
-	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
+  compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
+  // CSV Stuff
+  compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
+  compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
   compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
   compile group: 'org.apache.commons', name: 'commons-text', version: '1.2'
@@ -64,18 +65,20 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.19.0'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:3.3.0'
-	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.3.0'
-	testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.3.0'
-	testCompile 'com.phloc:phloc-schematron:2.7.1'
-	testCompile 'com.phloc:phloc-commons:4.4.11'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:3.4.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.4.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.4.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:3.4.0'
+  testCompile 'com.helger:ph-schematron:5.0.6'
+  testCompile 'com.phloc:phloc-schematron:2.7.1'
+  testCompile 'com.phloc:phloc-commons:4.4.11'
 }
 
 // Provide more descriptive test failure output
 test {
-    testLogging {
-        exceptionFormat = 'full'
-    }
+  testLogging {
+    exceptionFormat = 'full'
+  }
 }
 
 buildscript {
@@ -85,7 +88,7 @@ buildscript {
   dependencies {
     // commons-io used in getting the version id below
     classpath group: 'commons-io', name: 'commons-io', version: '2.5'
-    // note that commons-io is already a dependency 
+    // note that commons-io is already a dependency
     // of commons-csv in the primary dependencies above
   }
 }
@@ -100,9 +103,9 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {
-	description 'Generate rule visualization'
-	classpath sourceSets.main.runtimeClasspath
-	main = "Graphviz"
+  description 'Generate rule visualization'
+  classpath sourceSets.main.runtimeClasspath
+  main = "Graphviz"
 }
 
 task concepts(type: JavaExec) {
@@ -112,25 +115,25 @@ task concepts(type: JavaExec) {
 }
 
 task versionTxt() {
-    doLast {
-      // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
-      // "git describe" can use tags or fallback to the commit hash if necessary.
-      // this assumes (as does the ruby version) that git will always be present when building
-      String[] cmd = [ "git", "describe", "--tags", "--always" ]
-      Process p = Runtime.getRuntime().exec(cmd)
-      p.waitFor()
-      def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
-      def file = new File("$projectDir/src/main/resources/version.txt")
-      file.createNewFile()
-      file.text = version
-    }
+  doLast {
+    // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
+    // "git describe" can use tags or fallback to the commit hash if necessary.
+    // this assumes (as does the ruby version) that git will always be present when building
+    String[] cmd = ["git", "describe", "--tags", "--always"]
+    Process p = Runtime.getRuntime().exec(cmd)
+    p.waitFor()
+    def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
+    def file = new File("$projectDir/src/main/resources/version.txt")
+    file.createNewFile()
+    file.text = version
+  }
 }
 
 compileJava.dependsOn versionTxt
 
 task cleanOutput {
   doLast {
-    delete fileTree(dir: 'output' , include: '**/*')
+    delete fileTree(dir: 'output', include: '**/*')
   }
 }
 
@@ -138,10 +141,10 @@ task cleanOutput {
 mainClassName = 'App'
 
 run {
-    // args are called "arams" because they are called with -P,
-    // ex. gradle run -Params="['arg1', 'args2']"
-    // see https://stackoverflow.com/questions/27604283/gradle-task-pass-arguments-to-java-application
-    if (project.hasProperty("arams")) {
-        args Eval.me(arams)
-    }
+  // args are called "arams" because they are called with -P,
+  // ex. gradle run -Params="['arg1', 'args2']"
+  // see https://stackoverflow.com/questions/27604283/gradle-task-pass-arguments-to-java-application
+  if (project.hasProperty("arams")) {
+    args Eval.me(arams)
+  }
 }

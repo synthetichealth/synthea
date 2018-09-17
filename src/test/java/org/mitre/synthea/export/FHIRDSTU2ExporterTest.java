@@ -32,11 +32,11 @@ public class FHIRDSTU2ExporterTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   @Test
   public void testFHIRDSTU2Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-    
+
     FhirContext ctx = FhirContext.forDstu2();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
@@ -45,7 +45,7 @@ public class FHIRDSTU2ExporterTest {
     validator.setValidateAgainstStandardSchematron(true);
 
     List<String> validationErrors = new ArrayList<String>();
-    
+
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
     for (int i = 0; i < numberOfPeople; i++) {
@@ -57,14 +57,14 @@ public class FHIRDSTU2ExporterTest {
       String fhirJson = FhirDstu2.convertToFHIR(person, System.currentTimeMillis());
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
       ValidationResult result = validator.validateWithResult(resource);
-      if (result.isSuccessful() == false) {
+      if (!result.isSuccessful()) {
         // If the validation failed, let's crack open the Bundle and validate
         // each individual entry.resource to get context-sensitive error
         // messages...
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
         for (Entry entry : bundle.getEntry()) {
           ValidationResult eresult = validator.validateWithResult(entry.getResource());
-          if (eresult.isSuccessful() == false) {
+          if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));
               System.out.println("ERROR: " + emessage.getMessage());

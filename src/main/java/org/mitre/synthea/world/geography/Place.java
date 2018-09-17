@@ -31,7 +31,7 @@ public class Place implements QuadTreeData {
     this.postalCode = row.get("ZCTA5");
     double lat = Double.parseDouble(row.get("LAT"));
     double lon = Double.parseDouble(row.get("LON"));
-    this.coordinate = new DirectPosition2D(lat, lon);
+    this.coordinate = new DirectPosition2D(lon, lat);
   }
   
   /**

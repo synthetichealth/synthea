@@ -143,8 +143,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1366342",
-          "display": "Levonorgestrel 0.00354 MG/HR [Norplant]"
+          "code": "1366343",
+          "display": "Levonorgestrel 0.00354 MG/HR Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"
@@ -155,8 +155,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "646250",
-          "display": "Implanon 68 MG Drug Implant"
+          "code": "389221",
+          "display": "Etonogestrel 68 MG Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"
@@ -167,8 +167,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1111011",
-          "display": "Nexplanon 68 MG Drug Implant"
+          "code": "389221",
+          "display": "Etonogestrel 68 MG Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"

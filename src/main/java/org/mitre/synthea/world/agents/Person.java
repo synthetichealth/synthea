@@ -117,9 +117,16 @@ public class Person implements Serializable, QuadTreeData {
     
     return rand(range[0], range[1]);
   }
-  
-  // no good way to share code between the double[] and int[] version unfortunately....
-  
+
+  /**
+   * Return one of the options randomly with uniform distribution.
+   * @param choices The options to be returned.
+   * @return One of the options randomly selected.
+   */
+  public String rand(String[] choices) {
+    return choices[random.nextInt(choices.length)];
+  }
+
   /**
    * Helper function to get a random number based on an integer array of [min, max].
    * This should be used primarily when pulling ranges from YML.

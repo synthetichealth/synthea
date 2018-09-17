@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.datastore.DataStore;
+import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
@@ -43,6 +44,7 @@ public class Generator {
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyDeadPatients;
+  private boolean onlyVeterans;
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
 
@@ -137,6 +139,8 @@ public class Generator {
     if (o.state == null) {
       o.state = DEFAULT_STATE;
     }
+    int stateIndex = Location.getIndex(o.state);
+    CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     
     this.options = o;
     this.random = new Random(o.seed);
@@ -147,7 +151,7 @@ public class Generator {
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
-
+    this.onlyVeterans = Boolean.parseBoolean(Config.get("generate.veteran_population_override"));
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
     stats.put("alive", new AtomicInteger(0));
@@ -424,6 +428,10 @@ public class Generator {
     double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
     out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
     out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+
+    if (this.onlyVeterans) {
+      out.put("veteran_population_override", Boolean.TRUE);
+    }
 
     int targetAge;
     if (options.ageSpecified) {

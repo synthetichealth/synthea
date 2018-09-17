@@ -156,16 +156,19 @@ public class LogicTest {
     assertTrue(doTest("inJulyTest"));
 
     time = TestHelper.timestamp(2016, 12, 30, 0, 0, 0);
-    assertFalse(doTest("beforeHalloween2016Test"));
+    assertFalse(doTest("beforeChristmas2016Test"));
     assertTrue(doTest("afterIndependenceDay2000Test"));
+    assertFalse(doTest("isHalloween2007Test"));
 
     time = TestHelper.timestamp(2000, 4, 4, 0, 0, 0);
-    assertTrue(doTest("beforeHalloween2016Test"));
+    assertTrue(doTest("beforeChristmas2016Test"));
     assertFalse(doTest("afterIndependenceDay2000Test"));
+    assertFalse(doTest("isHalloween2007Test"));
 
-    time = TestHelper.timestamp(2007, 9, 20, 0, 0, 0);
-    assertTrue(doTest("beforeHalloween2016Test"));
+    time = TestHelper.timestamp(2007, 10, 31, 0, 0, 0);
+    assertTrue(doTest("beforeChristmas2016Test"));
     assertTrue(doTest("afterIndependenceDay2000Test"));
+    assertTrue(doTest("isHalloween2007Test"));
   }
 
   @Test
@@ -250,6 +253,24 @@ public class LogicTest {
     obs = person.record.observation(time, mmseCode.code, 29);
     obs.codes.add(mmseCode);
     assertTrue(doTest("mmseObservationGt22"));
+
+    person.record = new HealthRecord(person); // clear it out
+
+    HealthRecord.Code valueCodeFalse = new HealthRecord.Code("LOINC", "72107-8",
+        "Other Observation Value");
+
+    obs = person.record.observation(time, mmseCode.code, valueCodeFalse);
+    obs.codes.add(mmseCode);
+    assertFalse(doTest("ObservationEqValueCode"));
+
+    person.record = new HealthRecord(person); // clear it out
+
+    HealthRecord.Code valueCodeTrue = new HealthRecord.Code("LOINC", "72107-7",
+        "Some Observation Value");
+
+    obs = person.record.observation(time, mmseCode.code, valueCodeTrue);
+    obs.codes.add(mmseCode);
+    assertTrue(doTest("ObservationEqValueCode"));
 
     person.record = new HealthRecord(person); // clear it out
     assertFalse(doTest("hasDiabetesObservation"));
