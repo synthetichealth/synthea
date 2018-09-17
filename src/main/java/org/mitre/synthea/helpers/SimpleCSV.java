@@ -38,7 +38,6 @@ public class SimpleCSV {
 
     MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
         .with(schema).readValues(csvData);
-    
 
     return it.readAll();
   }
