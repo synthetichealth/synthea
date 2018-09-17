@@ -186,7 +186,10 @@ public class Provider implements QuadTreeData {
 
     return closest;
   }
-  
+
+  /**
+   * Clear the list of loaded and cached providers.
+   */
   public static void clear() {
     providerList.clear();
     statesLoaded.clear();
@@ -260,11 +263,11 @@ public class Provider implements QuadTreeData {
     
         Provider parsed = csvLineToProvider(row);
         parsed.servicesProvided.addAll(servicesProvided);
-        
+
         if ("Yes".equals(row.remove("emergency"))) {
           parsed.servicesProvided.add(Provider.EMERGENCY);
         }
-        
+
         // add any remaining columns we didn't explicitly map to first-class fields
         // into the attributes table
         for (Map.Entry<String, String> e : row.entrySet()) {
