@@ -212,7 +212,7 @@ public class Provider implements QuadTreeData {
   
   /**
    * Load into cache the list of providers for a state.
-   * @param Location the state being loaded.
+   * @param location the state being loaded.
    */
   public static void loadProviders(Location location) {
     if (!statesLoaded.contains(location.state)
@@ -253,7 +253,7 @@ public class Provider implements QuadTreeData {
    * Read the providers from the given resource file, only importing the ones for the given state.
    * THIS method is for loading providers and generating clinicians with specific specialties
    * 
-   * @param Location the state being loaded
+   * @param location the state being loaded
    * @param filename Location of the file, relative to src/main/resources
    * @param servicesProvided Set of services provided by these facilities
    * @throws IOException if the file cannot be read
@@ -291,7 +291,7 @@ public class Provider implements QuadTreeData {
         // String city = parsed.city;
         // String address = parsed.address;
 
-        if (row.get("hasSpecialties") == null || row.get("hasSpecialties").equals("FALSE")) {
+        if (row.get("hasSpecialties") == null || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
         } else {
@@ -410,7 +410,7 @@ public class Provider implements QuadTreeData {
    * Randomly chooses a clinician out of a given clinician list.
    * @param specialty - the specialty to choose from
    * @param random - random to help choose clinician
-   * @return
+   * @return A clinician with the required specialty.
    */
   public Clinician chooseClinicianList(String specialty, Random random) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
@@ -418,9 +418,9 @@ public class Provider implements QuadTreeData {
   }
   
   /**
-   * 
+   * Given a line of parsed CSV input, convert the data into a Provider.
    * @param line - read a csv line to a provider's attributes
-   * @return
+   * @return A provider.
    */
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();

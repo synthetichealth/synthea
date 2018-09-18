@@ -64,7 +64,7 @@ public class ProviderTest {
   public void testAllFacilitiesHaveAnId() {
     Provider.loadProviders(location);
     for (Provider p : Provider.getProviderList()) {
-      Assert.assertNotNull(p.id);
+      Assert.assertNotNull(p.name + " has a null ID.", p.id);
     }
   }
 

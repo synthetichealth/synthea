@@ -1,21 +1,18 @@
 package org.mitre.synthea.modules;
 
 import java.util.Arrays;
-
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.concepts.ClinicianSpecialty;
-
 
 public final class EncounterModule extends Module {
 
@@ -54,6 +51,7 @@ public final class EncounterModule extends Module {
   @Override
   public boolean process(Person person, long time) {
     boolean startedEncounter = false;
+    int year = Utilities.getYear(time);
 
     // add a wellness encounter if this is the right time
     if (person.record.timeSinceLastWellnessEncounter(time)
@@ -63,6 +61,7 @@ public final class EncounterModule extends Module {
       encounter.name = "Encounter Module Scheduled Wellness";
       encounter.codes.add(ENCOUNTER_CHECKUP);
       Provider prov = person.getAmbulatoryProvider(time);
+      prov.incrementEncounters(EncounterType.WELLNESS.toString(), year);
       encounter.provider = prov;
       encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
           person.random);
@@ -81,13 +80,13 @@ public final class EncounterModule extends Module {
             EncounterType.EMERGENCY.toString());
         encounter.name = "Encounter Module Symptom Driven";
         Provider prov = person.getEmergencyProvider(time);
+        prov.incrementEncounters(EncounterType.EMERGENCY.toString(), year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
         encounter.codes.add(ENCOUNTER_EMERGENCY);
         person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
         startedEncounter = true;
-          
       }
     } else if (person.symptomTotal() > URGENT_CARE_SYMPTOM_THRESHOLD) {
       if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
@@ -101,6 +100,7 @@ public final class EncounterModule extends Module {
             EncounterType.URGENTCARE.toString());
         encounter.name = "Encounter Module Symptom Driven";
         Provider prov = person.getUrgentCareProvider(time);
+        prov.incrementEncounters(EncounterType.URGENTCARE.toString(), year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
@@ -119,6 +119,7 @@ public final class EncounterModule extends Module {
             EncounterType.WELLNESS.toString());
         encounter.name = "Encounter Module Symptom Driven";
         Provider prov = person.getAmbulatoryProvider(time);
+        prov.incrementEncounters(EncounterType.WELLNESS.toString(), year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
