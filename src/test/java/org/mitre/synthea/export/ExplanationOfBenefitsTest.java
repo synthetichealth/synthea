@@ -1,6 +1,8 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.validation.ResultSeverityEnum;
+import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Meta;
@@ -33,13 +35,17 @@ public class ExplanationOfBenefitsTest {
       for (Bundle.BundleEntryComponent bec : resource.getEntry()) {
         if (bec.getResource().fhirType().equals("ExplanationOfBenefit")) {
           ValidationResult resultNormal = validator.validate(bec.getResource());
-          bec.getResource().setMeta(new Meta().addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim"));
+          bec.getResource().setMeta(new Meta().addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim"));
           ValidationResult resultBlueButton = validator.validate(bec.getResource());
 
-          System.out.println("Against BlueButton");
-          System.out.println(resultBlueButton);
-          System.out.println("Against FHIR");
-          System.out.println(resultNormal);
+          for(SingleValidationMessage message : resultBlueButton.getMessages()) {
+            if(message.getSeverity() == ResultSeverityEnum.ERROR) {
+              System.out.println(message.getSeverity() + ": " + message.getMessage());
+
+            }
+          }
+          System.out.println("______________!_______________");
+
         }
       }
     }

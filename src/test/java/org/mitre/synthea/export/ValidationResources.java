@@ -39,6 +39,7 @@ public class ValidationResources {
     //Only support for dstu3 for now
     ctx = FhirContext.forDstu3();
     validator = ctx.newValidator();
+
     instanceValidator = new FhirInstanceValidator();
     IValidationSupport valSupport = new ValidationSupport();
     ValidationSupportChain support = new ValidationSupportChain(valSupport,
@@ -55,8 +56,8 @@ public class ValidationResources {
    */
   public static List<StructureDefinition> loadFromDirectory(String rootDir) {
 
-    IParser xmlParser = FhirContext.forDstu3().newXmlParser();
-    xmlParser.setParserErrorHandler(new StrictErrorHandler());
+    IParser jsonParser = FhirContext.forDstu3().newJsonParser();
+    jsonParser.setParserErrorHandler(new StrictErrorHandler());
     List<StructureDefinition> definitions = new ArrayList<>();
 
     File[] profiles =
@@ -67,7 +68,7 @@ public class ValidationResources {
 
     Arrays.asList(profiles).forEach(f -> {
       try {
-        StructureDefinition sd = xmlParser.parseResource(StructureDefinition.class,
+        StructureDefinition sd = jsonParser.parseResource(StructureDefinition.class,
             new FileReader(f));
         definitions.add(sd);
       } catch (FileNotFoundException e) {

@@ -29,10 +29,11 @@ dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.3.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.3.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.3.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.3.0'
-	// C-CDA export uses Apache FreeMarker templates
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.3.0'
+
+  // C-CDA export uses Apache FreeMarker templates
 	compile 'org.freemarker:freemarker:2.3.26-incubating'
   // location processing
   compile group: 'org.apache.sis.core', name: 'sis-referencing', version: '0.8'
