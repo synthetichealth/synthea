@@ -458,7 +458,6 @@ public class TextExporter {
     } else {
       textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name
           + " : Encounter for " + encounter.reason.display);
-
     }
 
     textRecord.add("Type: " + encounter.type);

@@ -97,10 +97,8 @@ public class HealthRecord {
    * associated codes.
    */
   public class Entry {
-
     /** reference to the HealthRecord this entry belongs to. */
     private HealthRecord record = HealthRecord.this;
-
     public String fullUrl;
     public String name;
     public long start;

@@ -291,7 +291,8 @@ public class Provider implements QuadTreeData {
         // String city = parsed.city;
         // String address = parsed.address;
 
-        if (row.get("hasSpecialties") == null || row.get("hasSpecialties").equalsIgnoreCase("false")) {
+        if (row.get("hasSpecialties") == null
+            || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
         } else {

@@ -29,7 +29,6 @@ public class Location {
   public final String state;
   private Map<String, Demographics> demographics;
 
-
   /**
    * Location is a set of demographic and place information.
    * @param state The full name of the state.

@@ -75,7 +75,6 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-
         Encounter encounter = person.record.encounterStart(time, 
             EncounterType.EMERGENCY.toString());
         encounter.name = "Encounter Module Symptom Driven";
@@ -95,7 +94,6 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-
         Encounter encounter = person.record.encounterStart(time,
             EncounterType.URGENTCARE.toString());
         encounter.name = "Encounter Module Symptom Driven";
