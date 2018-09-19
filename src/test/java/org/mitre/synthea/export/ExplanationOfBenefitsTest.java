@@ -5,7 +5,6 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Meta;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -32,19 +31,18 @@ public class ExplanationOfBenefitsTest {
       String fhirJson = FhirStu3.convertToFHIR(person, System.currentTimeMillis());
       Bundle resource = (Bundle) ctx.newJsonParser().parseResource(fhirJson);
 
+
       for (Bundle.BundleEntryComponent bec : resource.getEntry()) {
         if (bec.getResource().fhirType().equals("ExplanationOfBenefit")) {
           ValidationResult resultNormal = validator.validate(bec.getResource());
-          bec.getResource().setMeta(new Meta().addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim"));
           ValidationResult resultBlueButton = validator.validate(bec.getResource());
 
-          for(SingleValidationMessage message : resultBlueButton.getMessages()) {
+          for(SingleValidationMessage message : resultNormal.getMessages()) {
             if(message.getSeverity() == ResultSeverityEnum.ERROR) {
               System.out.println(message.getSeverity() + ": " + message.getMessage());
 
             }
           }
-          System.out.println("______________!_______________");
 
         }
       }

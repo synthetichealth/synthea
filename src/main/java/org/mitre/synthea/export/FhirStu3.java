@@ -861,11 +861,13 @@ public class FhirStu3 {
                                                            Encounter encounter) {
 
     boolean inpatient = false;
-    boolean outpatient = true;
+    boolean outpatient = false;
     boolean carrier = false;
-//    if (encounter.type.equals(Provider.INPATIENT)) {
-//      inpatient = true;
-//    }
+    if (encounter.type.equals(Provider.INPATIENT)) {
+      inpatient = true;
+    } else if (encounter.type.equals(Provider.WELLNESS)) {
+      outpatient = true;
+    }
 
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
 
@@ -875,9 +877,14 @@ public class FhirStu3 {
     // Give it a random uuid for now
     // eob.setId(UUID.randomUUID().toString());
 
-    System.out.println(eob.hasId());
-    eob.setIdElement(IdType.newRandomUuid());
-    System.out.println(eob.hasId());
+    Meta id = new Meta();
+    id.setId(UUID.randomUUID().toString());
+    if (inpatient) {
+      id.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
+    }else if(outpatient) {
+      id.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim");
+    }
+    eob.setMeta(id);
 
 
     // First add the extensions
@@ -1118,7 +1125,7 @@ public class FhirStu3 {
 
       // FI or MAC number
       eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-fi-num-extension")
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-fi-num-extension")
           .setValue(new Identifier()
               .setValue("002000")
               // No system page exists yet
@@ -1187,7 +1194,7 @@ public class FhirStu3 {
         .setValue("99999999999");
 
     eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
-    if (!inpatient) {
+    if (!inpatient && !outpatient) {
       eob.setClaim(new Reference()
           .setReference(claim.getId()));
       eob.setReferral(new Reference("#1"));
@@ -1232,11 +1239,21 @@ public class FhirStu3 {
 
       itemComponent.setSequence(item.getSequence());
       itemComponent.setCareTeamLinkId(item.getCareTeamLinkId());
-      itemComponent.setDiagnosisLinkId(item.getDiagnosisLinkId());
       itemComponent.setQuantity(item.getQuantity());
       itemComponent.setUnitPrice(item.getUnitPrice());
-      itemComponent.setService(item.getService());
-      if (!inpatient) {
+      if (item.hasService()) {
+        itemComponent
+            .setService(item
+                .getService())
+            .addExtension(new Extension()
+                .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ide-ndc-upc-num-extension")
+                .setValue(new Coding()
+                    .setSystem("https://www.accessdata.fda.gov/scripts/cder/ndc")
+                    .setDisplay("Dummy")
+                    .setCode("0624")));
+      }
+      if (!inpatient && !outpatient) {
+        itemComponent.setDiagnosisLinkId(item.getDiagnosisLinkId());
         itemComponent.setInformationLinkId(item.getInformationLinkId());
         itemComponent.setNet(item.getNet());
         itemComponent.setEncounter(item.getEncounter());
@@ -1359,13 +1376,18 @@ public class FhirStu3 {
                 .setCode("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd")
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Processing Indicator Code"));
-        if (!inpatient) {
-          indicatorCode.getReason()
-              .addCoding()
-              .setCode("A")
-              .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd")
+
+        indicatorCode.getReason()
+            .addCoding()
+            .setCode("A")
+            .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd");
+        if (!inpatient && !outpatient) {
+          indicatorCode
+              .getReason()
+              .getCodingFirstRep()
               .setDisplay("Allowed");
         }
+
 
 
         // assume deductible is 0
@@ -1427,7 +1449,7 @@ public class FhirStu3 {
         .getPeriod()
         .getEnd()
         .getTime());
-    if (!inpatient) {
+    if (!inpatient && !outpatient) {
       eob.setProvider(new Reference().setReference(findProviderUrl(provider, bundle)));
     } else {
       eob.setProviderTarget(new Practitioner()
