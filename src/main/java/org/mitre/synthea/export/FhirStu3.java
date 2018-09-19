@@ -64,7 +64,6 @@ import org.hl7.fhir.dstu3.model.ExplanationOfBenefit;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.HumanName;
-import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.dstu3.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
@@ -862,34 +861,28 @@ public class FhirStu3 {
 
     boolean inpatient = false;
     boolean outpatient = false;
-    boolean carrier = false;
-    if (encounter.type.equals(Provider.INPATIENT)) {
+    if (encounter.type.equals(Provider.INPATIENT) |encounter.type.equals(Provider.AMBULATORY)) {
       inpatient = true;
-    } else if (encounter.type.equals(Provider.WELLNESS)) {
+      // Provider enum doesn't include outpatient, but it can still be
+      // an encounter type.
+    } else if (encounter.type.equals("outpatient")) {
       outpatient = true;
     }
-
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
-
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
-
     // Give it a random uuid for now
-    // eob.setId(UUID.randomUUID().toString());
-
-    Meta id = new Meta();
-    id.setId(UUID.randomUUID().toString());
+    eob.setId(UUID.randomUUID().toString());
+    Meta meta = new Meta();
     if (inpatient) {
-      id.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
-    }else if(outpatient) {
-      id.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim");
+      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
+    }  else if (outpatient) {
+      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim");
     }
-    eob.setMeta(id);
-
+    eob.setMeta(meta);
 
     // First add the extensions
     // will have to deal with different claim types (e.g. inpatient vs outpatient)
-
     if (inpatient) {
       //https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Indirect-Medical-Education-IME
       // Extra cost for educational hospitals
@@ -906,7 +899,7 @@ public class FhirStu3 {
           .setValue(new Money()
               .setValue(0)
               .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD)"));
+              .setCode("USD"));
 
       // The pass through per diem rate
       // not really defined by CMS
@@ -1038,6 +1031,7 @@ public class FhirStu3 {
               .setSystem("urn:iso:std:iso:4217")
               .setCode("USD"));
 
+      // Non-payment reason
       eob.addExtension()
           .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-mdcr-non-pmt-rsn-cd-extension")
           .setValue(new Coding()
@@ -1045,6 +1039,7 @@ public class FhirStu3 {
               .setDisplay("All other reasons for non-payment")
               .setCode("N"));
 
+      // Prepayment
       eob.addExtension()
           .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-prpayamt-extension")
           .setValue(new Money()
@@ -1052,6 +1047,7 @@ public class FhirStu3 {
               .setSystem("urn:iso:std:iso:4217")
               .setCode("USD"));
 
+      // FI or MAC number
       eob.addExtension()
           .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-fi-num-extension")
           .setValue(new Identifier()
@@ -1132,7 +1128,6 @@ public class FhirStu3 {
               .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-fi-num"));
     }
 
-
     // according to CMS guidelines claims have 12 months to be
     // billed, so we set the billable period to 1 year after
     // services have ended (the encounter ends).
@@ -1180,10 +1175,6 @@ public class FhirStu3 {
         new ExplanationOfBenefit.InsuranceComponent();
     insuranceComponent.setCoverage(new Reference(insurance));
     eob.setInsurance(insuranceComponent);
-//    eob.setInsurance(new ExplanationOfBenefit.InsuranceComponent()
-//        .setCoverageTarget(new Coverage()
-//            .addPayor(new Reference()
-//                .setReference(insurance))));
 
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
@@ -1199,9 +1190,7 @@ public class FhirStu3 {
           .setReference(claim.getId()));
       eob.setReferral(new Reference("#1"));
       eob.setCreated(encounterResource.getPeriod().getEnd());
-
     }
-
     eob.setType(claim.getType());
 
     List<ExplanationOfBenefit.DiagnosisComponent> eobDiag = new ArrayList<>();
@@ -1238,9 +1227,10 @@ public class FhirStu3 {
       ExplanationOfBenefit.ItemComponent itemComponent = new ExplanationOfBenefit.ItemComponent();
 
       itemComponent.setSequence(item.getSequence());
-      itemComponent.setCareTeamLinkId(item.getCareTeamLinkId());
       itemComponent.setQuantity(item.getQuantity());
       itemComponent.setUnitPrice(item.getUnitPrice());
+      itemComponent.setCareTeamLinkId(item.getCareTeamLinkId());
+
       if (item.hasService()) {
         itemComponent
             .setService(item
@@ -1377,18 +1367,16 @@ public class FhirStu3 {
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Processing Indicator Code"));
 
-        indicatorCode.getReason()
-            .addCoding()
-            .setCode("A")
-            .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd");
         if (!inpatient && !outpatient) {
+          indicatorCode.getReason()
+              .addCoding()
+              .setCode("A")
+              .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd");
           indicatorCode
               .getReason()
               .getCodingFirstRep()
               .setDisplay("Allowed");
         }
-
-
 
         // assume deductible is 0
         ExplanationOfBenefit.AdjudicationComponent deductibleAmount =
@@ -1493,9 +1481,7 @@ public class FhirStu3 {
             .setDisplay("Part B physician/supplier claim record (processed by local "
                       + "carriers; can include DMEPOS services)")));
 
-
     return newEntry(bundle,eob);
-
   }
 
   /**
