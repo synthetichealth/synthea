@@ -41,8 +41,9 @@ public class Provider implements QuadTreeData {
 
   // ArrayList of all providers imported
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
-  private static QuadTree providerMap = new QuadTree(1400, 1400); // node capacity, depth
+  private static QuadTree providerMap = generateQuadTree();
   private static Set<String> statesLoaded = new HashSet<String>();
+  private static int loaded = 0;
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
       Double.parseDouble(Config.get("generate.maximum_provider_search_distance", "500"));
@@ -207,7 +208,17 @@ public class Provider implements QuadTreeData {
   public static void clear() {
     providerList.clear();
     statesLoaded.clear();
-    providerMap = new QuadTree(1400, 1400); // node capacity, depth
+    providerMap = generateQuadTree();
+    loaded = 0;
+  }
+
+  /**
+   * Generate a quad tree with sufficient capacity and depth to load
+   * the biggest states.
+   * @return QuadTree.
+   */
+  private static QuadTree generateQuadTree() {
+    return new QuadTree(7500, 25); // capacity, depth
   }
   
   /**
@@ -313,8 +324,10 @@ public class Provider implements QuadTreeData {
         providerList.add(parsed);
         boolean inserted = providerMap.insert(parsed);
         if (!inserted) {
-          System.err.println("Provider QuadTree Full! Dropping "
+          throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
               + parsed.name + " @ " + parsed.city);
+        } else {
+          loaded++;
         }
       }
     }
