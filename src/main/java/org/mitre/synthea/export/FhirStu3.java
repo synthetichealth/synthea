@@ -871,8 +871,7 @@ public class FhirStu3 {
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
-    // Give it a random uuid for now
-    eob.setId(UUID.randomUUID().toString());
+
     Meta meta = new Meta();
     if (inpatient) {
       meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
@@ -1204,6 +1203,12 @@ public class FhirStu3 {
               .setSystem("https://bluebutton.cms.gov/resources/codesystem/diagnosis-type")));
       diagnosisComponent.setSequence(claimDiagnosis.getSequence());
       diagnosisComponent.setPackageCode(claimDiagnosis.getPackageCode());
+      diagnosisComponent.addExtension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-poa-ind-sw1-extension")
+          .setValue(new Coding()
+              .setCode("Y")
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-clm-poa-ind-sw1")
+              .setDisplay("Diagnosis present at time of admission"));
       eobDiag.add(diagnosisComponent);
     }
     eob.setDiagnosis(eobDiag);
@@ -1234,13 +1239,7 @@ public class FhirStu3 {
       if (item.hasService()) {
         itemComponent
             .setService(item
-                .getService())
-            .addExtension(new Extension()
-                .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ide-ndc-upc-num-extension")
-                .setValue(new Coding()
-                    .setSystem("https://www.accessdata.fda.gov/scripts/cder/ndc")
-                    .setDisplay("Dummy")
-                    .setCode("0624")));
+                .getService());
       }
       if (!inpatient && !outpatient) {
         itemComponent.setDiagnosisLinkId(item.getDiagnosisLinkId());
@@ -1261,6 +1260,14 @@ public class FhirStu3 {
         itemComponent.addExtension(new Extension()
             .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ndc-qty-extension")
             .setValue(new Quantity().setValue(0)));
+        if (itemComponent.hasService()) {
+          itemComponent.getService().addExtension(new Extension()
+              .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ide-ndc-upc-num-extension")
+              .setValue(new Coding()
+                  .setSystem("https://www.accessdata.fda.gov/scripts/cder/ndc")
+                  .setDisplay("Dummy")
+                  .setCode("0624")));
+        }
       }
 
       // Location of service, can use switch statement based on
@@ -1409,9 +1416,15 @@ public class FhirStu3 {
 
     eob.setItem(eobItem);
 
+    // This will throw a validation error no matter what.  The
+    // payment section is required, and it requires a value.
+    // The validator will complain that if there is a value, the payment
+    // needs a code, but it will also complain if there is a code.
+    // There is no way to resolve this error.
     Money payment = new Money();
     payment.setValue(totalPayment)
-        .setSystem("urn:iso:std:iso:4217").setCode("USD");
+        .setSystem("urn:iso:std:iso:4217")
+        .setCode("USD");
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
 
@@ -1447,7 +1460,12 @@ public class FhirStu3 {
 
     eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
         .setSequence(1)
-        .setProvider(new Reference().setReference(findProviderUrl(provider, bundle)))
+        .setProvider(new Reference()
+//            .setReference(findProviderUrl(provider, bundle))
+            .setIdentifier(new Identifier()
+                .setSystem("http://hl7.org/fhir/sid/us-npi")
+                // providers don't have an npi
+                .setValue("99999999")))
         .setRole(new CodeableConcept().addCoding(new Coding()
             .setCode("primary")
             .setSystem("http://hl7.org/fhir/claimcareteamrole")
