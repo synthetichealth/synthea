@@ -4,8 +4,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Components.DateInput;
@@ -378,7 +378,6 @@ public abstract class Logic {
     @Override
     public boolean test(Person person, long time) {
       if (this.valueSet != null) {
-
         Set<String> presentCodes = new HashSet<>(person.record.present.keySet());
         List<String> valueSetCodes = Terminology.getAllCodes(this.valueSet)
                 .stream()
@@ -391,14 +390,11 @@ public abstract class Logic {
         // if ALL the codes in the value set are present.
         presentCodes.retainAll(valueSetCodes);
         return !presentCodes.isEmpty();
-
       }
 
       if (this.codes != null) {
         for (Code code : this.codes) {
-
           if (person.record.conditionActive(code.code)) {
-
             return true;
           }
         }
@@ -412,7 +408,8 @@ public abstract class Logic {
         }
       }
 
-      throw new RuntimeException("Active Condition logic must be specified by code or attribute");
+      throw new RuntimeException(
+          "Active Condition logic must be specified by code, attribute, or value set.");
     }
   }
 

@@ -130,9 +130,7 @@ public class FhirStu3 {
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
-
-  @SuppressWarnings("rawtypes")
-  private static final Map codeSystemLookup = Utilities.codeSystemLookup;
+  private static final Map<String, String> codeSystemLookup = Utilities.codeSystemLookup;
 
   private static final boolean USE_SHR_EXTENSIONS =
       Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));

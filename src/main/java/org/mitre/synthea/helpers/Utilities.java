@@ -6,11 +6,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
@@ -21,7 +22,8 @@ import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
-  public static Map codeSystemLookup = loadLookupTable();
+  public static Map<String, String> codeSystemLookup = loadLookupTable();
+
   /**
    * Convert a quantity of time in a specified units into milliseconds.
    *
@@ -324,13 +326,13 @@ public class Utilities {
    * Can map from name to URI and from OID to URI.
    * @return the map that converts the systems
    */
-  @SuppressWarnings("rawtypes")
-  private static Map loadLookupTable() {
+  private static Map<String, String> loadLookupTable() {
     String filename = "code_system_lookup.json";
     try {
       String json = Utilities.readResource(filename);
       Gson g = new Gson();
-      return g.fromJson(json, HashMap.class);
+      Type mapType = new TypeToken<Map<String, String>>() {}.getType();
+      return g.fromJson(json, mapType);
     } catch (Exception e) {
       System.err.println("ERROR: unable to load json: " + filename);
       e.printStackTrace();

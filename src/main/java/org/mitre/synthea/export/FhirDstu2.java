@@ -122,9 +122,7 @@ public class FhirDstu2 {
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
   @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
-
-  @SuppressWarnings("rawtypes")
-  private static final Map codeSystemLookup = Utilities.codeSystemLookup;
+  private static final Map<String, String> codeSystemLookup = Utilities.codeSystemLookup;
 
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
