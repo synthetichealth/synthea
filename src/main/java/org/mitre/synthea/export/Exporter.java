@@ -354,7 +354,7 @@ public abstract class Exporter {
    * @return The filename only (not a path).
    */
   public static String filename_per_encounter(Person person, String encounterNumber,
-                                              String extension) {
+      String extension) {
     if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
       return person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
     } else {

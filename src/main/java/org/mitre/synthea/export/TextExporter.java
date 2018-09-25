@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.text.WordUtils;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -401,6 +402,10 @@ public class TextExporter {
     if (prov != null) {
       textRecord.add("Outpatient Provider: " + prov.name);
     }
+    Provider primaryProv = person.getWellnessProvider(endTime);
+    if (primaryProv != null) {
+      textRecord.add("Primary Care Provider: " + prov.address);
+    }
   }
   
   /**
@@ -413,15 +418,21 @@ public class TextExporter {
    */
   private static void encounter(List<String> textRecord, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
+
+    String clinician = "";
+    if (encounter.clinician != null) {
+      clinician = " (" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) 
+          + " " + encounter.clinician.attributes.get(Clinician.NAME) + ")";
+    }
     if (encounter.reason == null && encounter.provider == null) {
-      textRecord.add(encounterTime + " : " + encounter.codes.get(0).display);
-    } else if (encounter.reason == null && encounter.provider != null) {
-      textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name);
-    } else if (encounter.reason != null && encounter.provider == null) {
-      textRecord.add(encounterTime + " : Encounter for " + encounter.reason.display);
+      textRecord.add(encounterTime + clinician + " : " + encounter.codes.get(0).display);
+    } else if  (encounter.reason == null && encounter.provider != null) {
+      textRecord.add(encounterTime + clinician + " : Encounter at " + encounter.provider.name);
+    } else if  (encounter.reason != null && encounter.provider == null) {
+      textRecord.add(encounterTime + clinician + " : Encounter for " + encounter.reason.display);
     } else {
-      textRecord.add(encounterTime + " : Encounter at " + encounter.provider.name
-          + " : Encounter for " + encounter.reason.display);
+      textRecord.add(encounterTime + clinician + " : Encounter at " 
+          + encounter.provider.name + " : Encounter for " + encounter.reason.display);
     }
   } 
 

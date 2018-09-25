@@ -163,7 +163,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(o.state);
+    Provider.loadProviders(location);
     Module.getModules(); // ensure modules load early
     Costs.loadCostData(); // ensure cost data loads early
     

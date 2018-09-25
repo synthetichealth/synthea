@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema.ColumnType;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,30 @@ public class SimpleCSV {
         .with(schema).readValues(csvData);
 
     return it.readAll();
+  }
+  
+  /**
+   * Parse the data from the given CSV file into an Iterator of Maps, where the key is the
+   * column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
+   * the resulting maps. Uses an Iterator, as opposed to a list, in order to parse line by line and
+   * avoid memory overload.
+   * 
+   * @param csvData
+   *          Raw CSV data
+   * @return parsed data
+   * @throws IOException
+   *           if any exception occurs while parsing the data
+   */
+  public static Iterator<LinkedHashMap<String, String>> parseLineByLine(String csvData) 
+      throws IOException {
+    CsvMapper mapper = new CsvMapper();
+    // use first row as header; otherwise defaults are fine
+    CsvSchema schema = CsvSchema.emptySchema().withHeader();
+
+    MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
+        .with(schema).readValues(csvData);
+    
+    return it;
   }
 
   /**

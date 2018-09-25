@@ -381,13 +381,17 @@
           "remarks": [
             "0.02 --> 0.13187"
           ],
-          "transition": "Opioid_Addiction_Symptom1"
+          "transition": "Active_Addiction_Symptom_Onset"
         },
         {
           "distribution": 0.681862,
           "transition": "Misuse"
         }
       ]
+    },
+    "Active_Addiction_Symptom_Onset": {
+      "type": "Simple",
+      "direct_transition": "Opioid_Addiction_Symptom1"
     },
     "Opioid_Addiction_Symptom1": {
       "type": "Symptom",
