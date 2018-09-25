@@ -19,7 +19,7 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 script:
-  - ./gradlew check
+  - travis_wait ./gradlew check
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
