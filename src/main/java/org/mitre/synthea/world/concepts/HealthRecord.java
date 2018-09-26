@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
@@ -239,7 +240,6 @@ public class HealthRecord {
   }
 
   public class Claim {
-
     public double baseCost;
     public Encounter encounter;
     public Medication medication;
@@ -248,12 +248,7 @@ public class HealthRecord {
 
     public Claim(Encounter encounter) {
       insurance = new InsuranceType();
-      List insuranceList = (List) person.attributes.get("insurance");
-      int age = person.ageInYears(encounter.start);
-      if (insuranceList != null) {
-        String currentInsurance = (String) insuranceList.get(age);
-        insurance.setName(currentInsurance);
-      }
+      insurance.setName(HealthInsuranceModule.getCurrentInsurance(person, encounter.start));
 
       // Encounter inpatient
       if (encounter.type.equalsIgnoreCase("inpatient")) {
