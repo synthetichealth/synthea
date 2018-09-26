@@ -50,6 +50,7 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
@@ -856,8 +857,7 @@ public class FhirStu3 {
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
                                            Person person, org.hl7.fhir.dstu3.model.Claim claim,
-                                                           Encounter encounter) {
-
+                                           Encounter encounter) {
     boolean inpatient = false;
     boolean outpatient = false;
     if (encounter.type.equals(Provider.INPATIENT) || encounter.type.equals(Provider.AMBULATORY)) {
@@ -1160,11 +1160,14 @@ public class FhirStu3 {
     eob.setOrganizationTarget(claim.getOrganizationTarget());
 
     // get the insurance info at the time that the encounter happened
-    // TODO this does not correctly reference a Coverage resource
     String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+    Coverage coverage = new Coverage();
+    coverage.setId("coverage");
+    coverage.setType(new CodeableConcept().setText(insurance));
+    eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
-    insuranceComponent.setCoverage(new Reference(insurance));
+    insuranceComponent.setCoverage(new Reference("#coverage"));
     eob.setInsurance(insuranceComponent);
 
     eob.addIdentifier()
@@ -1204,15 +1207,14 @@ public class FhirStu3 {
       eobDiag.add(diagnosisComponent);
     }
     eob.setDiagnosis(eobDiag);
-    List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
 
+    List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
     for (ProcedureComponent proc : claim.getProcedure()) {
       ExplanationOfBenefit.ProcedureComponent p = new ExplanationOfBenefit.ProcedureComponent();
       p.setDate(proc.getDate());
       p.setSequence(proc.getSequence());
       p.setProcedure(proc.getProcedure());
     }
-
     eob.setProcedure(eobProc);
 
     List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
@@ -1426,7 +1428,7 @@ public class FhirStu3 {
         .setIdentifier(new Identifier()
         .setSystem("http://hl7.org/fhir/sid/us-npi")
         .setValue("99999999")));
-    eob.getContained().add(new ReferralRequest()
+    eob.addContained(new ReferralRequest()
         .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
         .setIntent(ReferralRequest.ReferralCategory.ORDER)
         .setSubject(new Reference(personEntry.getFullUrl()))

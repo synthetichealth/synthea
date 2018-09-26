@@ -244,11 +244,10 @@ public class HealthRecord {
     public Encounter encounter;
     public Medication medication;
     public List<Entry> items;
-    public InsuranceType insurance;
+    public String insurance;
 
     public Claim(Encounter encounter) {
-      insurance = new InsuranceType();
-      insurance.setName(HealthInsuranceModule.getCurrentInsurance(person, encounter.start));
+      this.insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
 
       // Encounter inpatient
       if (encounter.type.equalsIgnoreCase("inpatient")) {
