@@ -57,7 +57,7 @@ public class FHIRExporterTest {
       Person person = generator.generatePerson(i);
       Config.set("exporter.fhir.export", "true");
       Config.set("exporter.fhir.use_shr_extensions", "true");
-      FhirDstu2.TRANSACTION_BUNDLE = person.random.nextBoolean();
+      FhirStu3.TRANSACTION_BUNDLE = person.random.nextBoolean();
       String fhirJson = FhirStu3.convertToFHIR(person, System.currentTimeMillis());
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
       ValidationResult result = validator.validateWithResult(resource);
