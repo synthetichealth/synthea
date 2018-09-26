@@ -140,8 +140,10 @@ public class Generator {
       o.state = DEFAULT_STATE;
     }
     int stateIndex = Location.getIndex(o.state);
-    CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
-    
+    if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
+      CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
+    }
+
     this.options = o;
     this.random = new Random(o.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
