@@ -18,6 +18,7 @@ import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -46,6 +47,8 @@ public class FHIRExporterTest {
     FhirValidator validator = ctx.newValidator();
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
+
+    ValidationResources validationResources = new ValidationResources();
 
     List<String> validationErrors = new ArrayList<String>();
 
@@ -81,14 +84,14 @@ public class FHIRExporterTest {
                  * Two of these bugs are related to the FHIR Invariant rules obs-7 and con-4, which
                  * have XPath expressions that incorrectly raise errors on validation.
                  */
-                if (emessage.getMessage().contains("Message=obs-7")) {
+                if (emessage.getMessage().contains("Observation obs-7")) {
                   /*
                    * The obs-7 invariant basically says that Observations should have values, unless
                    * they are made of components. This test replaces an invalid XPath expression
                    * that was causing correct instances to fail validation.
                    */
                   valid = validateObs7((Observation) entry.getResource());
-                } else if (emessage.getMessage().contains("Message=con-4")) {
+                } else if (emessage.getMessage().contains("Condition con-4")) {
                   /*
                    * The con-4 invariant says "If condition is abated, then clinicalStatus must be
                    * either inactive, resolved, or remission" which is very clear and sensical.
@@ -101,6 +104,23 @@ public class FHIRExporterTest {
                   System.out.println(parser.encodeResourceToString(entry.getResource()));
                   System.out.println("ERROR: " + emessage.getMessage());
                   validationErrors.add(emessage.getMessage());
+                }
+              }
+            }
+          }
+          // Check ExplanationOfBenefit Resources against BlueButton
+          if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
+            ValidationResult bbResult = validationResources.validate(entry.getResource());
+
+            for (SingleValidationMessage message : bbResult.getMessages()) {
+              if (message.getSeverity() == ResultSeverityEnum.ERROR) {
+                if (!message.getMessage().contains(
+                    "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")) {
+                  // For some reason that validator is not detecting the IDs on the resources,
+                  // even though they appear to be present while debugging and during normal
+                  // operations.
+                  System.out.println(message.getSeverity() + ": " + message.getMessage());
+                  Assert.fail(message.getSeverity() + ": " + message.getMessage());
                 }
               }
             }
