@@ -1,0 +1,31 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "dspnsng-stus-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/dspnsng-stus-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/dspnsng-stus-cd"
+  },
+  "version": "1.1.0",
+  "name": "Dispensing Status Code",
+  "title": "Dispensing Status Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/dspnsng-stus-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "Blank",
+      "display": "Not specified or presumably full quantity of prescription"
+    },
+    {
+      "code": "P",
+      "display": "Partial fill"
+    },
+    {
+      "code": "C",
+      "display": "Completion of partial fill"
+    }
+  ]
+}

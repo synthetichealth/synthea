@@ -1,0 +1,31 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "drug-cvrg-stus-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/drug-cvrg-stus-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/drug-cvrg-stus-cd"
+  },
+  "version": "1.1.0",
+  "name": "Drug Coverage Status Code",
+  "title": "Drug Coverage Status Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/drug-cvrg-stus-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "C",
+      "display": "Covered"
+    },
+    {
+      "code": "E",
+      "display": "Supplemental drugs (reported by plans that provide Enhanced Alternative coverage)"
+    },
+    {
+      "code": "O",
+      "display": "Over-the-counter drugs"
+    }
+  ]
+}

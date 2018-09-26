@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "dmerc-line-prcng-state-cd",
+  "url": "http://hl7.org/fhir/ValueSet/dmerc-line-prcng-state-cd",
+  "version": "1.1.0",
+  "name": "DMERC Line Pricing State Code (SSA)",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/dmerc-line-prcng-state-cd"
+      }
+    ]
+  }
+}

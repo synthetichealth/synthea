@@ -1,0 +1,59 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "daw-prod-slctn-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/daw-prod-slctn-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/daw-prod-slctn-cd"
+  },
+  "version": "1.1.0",
+  "name": "Dispense as Written (DAW) Product Selection Code",
+  "title": "Dispense as Written (DAW) Product Selection Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/daw-prod-slctn-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "No Product Selection Indicated (may also have missing values)"
+    },
+    {
+      "code": "1",
+      "display": "Substitution Not Allowed by Prescriber"
+    },
+    {
+      "code": "2",
+      "display": "Substitution Allowed - Patient Requested That Brand Product Be Dispensed"
+    },
+    {
+      "code": "3",
+      "display": "Substitution Allowed - Pharmacist Selected Product Dispensed"
+    },
+    {
+      "code": "4",
+      "display": "Substitution Allowed - Generic Drug Not in Stock"
+    },
+    {
+      "code": "5",
+      "display": "Substitution Allowed - Brand Drug Dispensed as Generic"
+    },
+    {
+      "code": "6",
+      "display": "Override"
+    },
+    {
+      "code": "7",
+      "display": "Substitution Not Allowed - Brand Drug Mandated by Law"
+    },
+    {
+      "code": "8",
+      "display": "Substitution Allowed - Generic Drug Not Available in Marketplace"
+    },
+    {
+      "code": "9",
+      "display": "Other"
+    }
+  ]
+}

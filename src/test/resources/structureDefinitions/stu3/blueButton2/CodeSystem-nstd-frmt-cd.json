@@ -1,0 +1,39 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "nstd-frmt-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/nstd-frmt-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/nstd-frmt-cd"
+  },
+  "version": "1.1.0",
+  "name": "Non-Standard Format Code",
+  "title": "Non-Standard Format Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/nstd-frmt-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "X",
+      "display": "X12 837"
+    },
+    {
+      "code": "B",
+      "display": "Beneficiary submitted claim"
+    },
+    {
+      "code": "C",
+      "display": "Coordination of Benefits"
+    },
+    {
+      "code": "P",
+      "display": "Paper claim from provider"
+    },
+    {
+      "code": "Blank",
+      "display": "NCPDP electronic format"
+    }
+  ]
+}

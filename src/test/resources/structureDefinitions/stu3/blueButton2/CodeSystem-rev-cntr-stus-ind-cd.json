@@ -1,0 +1,123 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "rev-cntr-stus-ind-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/rev-cntr-stus-ind-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/rev-cntr-stus-ind-cd"
+  },
+  "version": "1.1.0",
+  "name": "Revenue Center Status Indicator Code",
+  "title": "Revenue Center Status Indicator Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/rev-cntr-stus-ind-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "A",
+      "display": "Services not paid under OPPS; uses a different fee schedule (e.g., ambulance, PT, mammography)"
+    },
+    {
+      "code": "B",
+      "display": "Non-allowed item or service for OPPS; may be paid under a different bill type (e.g., CORF)"
+    },
+    {
+      "code": "C",
+      "display": "Inpatient procedure (not paid under OPPS)"
+    },
+    {
+      "code": "E",
+      "display": "Non-allowed item or service (not paid by OPPS or any other Medicare payment system)"
+    },
+    {
+      "code": "F",
+      "display": "Corneal tissue acquisition, certain CRNA services and Hepatitis B vaccinations"
+    },
+    {
+      "code": "G",
+      "display": "Drug/biological pass-through (separate APC includes this pass-through amount)"
+    },
+    {
+      "code": "H",
+      "display": "Device pass-through (separate cost-based pass-through payment, not subject to coinsurance)"
+    },
+    {
+      "code": "J",
+      "display": "New drug or new biological pass-through"
+    },
+    {
+      "code": "J1",
+      "display": "Primary service and all adjunctive services on the claim (comprehensive APC; effective 01/2015)"
+    },
+    {
+      "code": "K",
+      "display": "Non pass-through drug/biological, radio-pharmaceutical agent, certain brachytherapy sources (paid under OPPS; separate APC payment)"
+    },
+    {
+      "code": "L",
+      "display": "Flu/PPV vaccines"
+    },
+    {
+      "code": "M",
+      "display": "Service not billable to fiscal intermediary [now a MAC] (not paid under OPPS)"
+    },
+    {
+      "code": "N",
+      "display": "Packaged incidental service (no separate APC payment)"
+    },
+    {
+      "code": "P",
+      "display": "Paid partial hospitalization per diem APC payment"
+    },
+    {
+      "code": "Q1",
+      "display": "Separate payment made; OPPS - APC (effective 2009)"
+    },
+    {
+      "code": "Q2",
+      "display": "No separate payment made; OPPS - APC were packaged into payment for other services (effective 2009)"
+    },
+    {
+      "code": "Q3",
+      "display": "May be paid through a composite APC-based on composite-specific criteria or separately through single code APCs when the criteria are not met (effective 2009)"
+    },
+    {
+      "code": "R",
+      "display": "Blood products"
+    },
+    {
+      "code": "S",
+      "display": "Significant procedure not subject to multiple procedure discounting"
+    },
+    {
+      "code": "T",
+      "display": "Significant procedure subject to multiple procedure discounting"
+    },
+    {
+      "code": "U",
+      "display": "Brachytherapy"
+    },
+    {
+      "code": "V",
+      "display": "Medical visit to clinic or emergency department"
+    },
+    {
+      "code": "W",
+      "display": "Invalid HCPCS or invalid revenue code with blank HCPCS"
+    },
+    {
+      "code": "X",
+      "display": "Ancillary service"
+    },
+    {
+      "code": "Y",
+      "display": "Non-implantable DME(e.g., therapeutic shoes; not paid under OPPS -bill to DMERC)"
+    },
+    {
+      "code": "Z",
+      "display": "Valid revenue with blank HCPCS and no other SI assigned"
+    }
+  ]
+}

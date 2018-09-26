@@ -1,0 +1,55 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "dmerc-line-supplr-type-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/dmerc-line-supplr-type-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/dmerc-line-supplr-type-cd"
+  },
+  "version": "1.1.0",
+  "name": "DMERC Line Supplier Type Code",
+  "title": "DMERC Line Supplier Type Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/dmerc-line-supplr-type-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Clinics, groups, associations, partnerships, or other entities for whom the carrier's own ID number has been assigned."
+    },
+    {
+      "code": "1",
+      "display": "Physicians or suppliers billing as solo practitioners for whom SSN's are shown in the physician ID code field."
+    },
+    {
+      "code": "2",
+      "display": "Physicians or suppliers billing as solo practitioners for whom the carrier's own physician ID code is shown."
+    },
+    {
+      "code": "3",
+      "display": "Suppliers (other than sole proprietorship) for whom employer identification (EI) numbers are used in coding the ID field."
+    },
+    {
+      "code": "4",
+      "display": "Suppliers (other than sole proprietorship) for whom the carrier's own code has been shown."
+    },
+    {
+      "code": "5",
+      "display": "Institutional providers and independent laboratories for whom employer identification (EI) numbers are used in coding the ID field."
+    },
+    {
+      "code": "6",
+      "display": "Institutional providers and independent laboratories for whom the carrier's own ID number is shown."
+    },
+    {
+      "code": "7",
+      "display": "Clinics, groups, associations, or partnerships for whom employer identification (EI) numbers are used in coding the ID field."
+    },
+    {
+      "code": "8",
+      "display": "Other entities for whom employer identification (EI) numbers are used in coding the ID field or proprietorship for whom EI numbers are used in coding the ID field."
+    }
+  ]
+}

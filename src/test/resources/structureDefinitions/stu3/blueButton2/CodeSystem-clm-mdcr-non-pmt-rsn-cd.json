@@ -1,0 +1,211 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-mdcr-non-pmt-rsn-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-mdcr-non-pmt-rsn-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-mdcr-non-pmt-rsn-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim Medicare Non Payment Reason Code",
+  "title": "Claim Medicare Non Payment Reason Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-mdcr-non-pmt-rsn-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "A",
+      "display": "Covered worker's compensation (Obsolete)"
+    },
+    {
+      "code": "B",
+      "display": "Benefit exhausted"
+    },
+    {
+      "code": "C",
+      "display": "Custodial care – non-covered care (includes all 'beneficiary at fault' waiver cases) (Obsolete)"
+    },
+    {
+      "code": "E",
+      "display": "HMO out-of-plan services not emergency or urgently needed (Obsolete)"
+    },
+    {
+      "code": "E",
+      "display": "MSP cost avoided - IRS/SSA/HCFA Data Match (eff. 7/00)"
+    },
+    {
+      "code": "F",
+      "display": "MSP cost avoid HMO Rate Cell (eff. 7/00)"
+    },
+    {
+      "code": "G",
+      "display": "MSP cost avoided Litigation Settlement (eff. 7/00)"
+    },
+    {
+      "code": "H",
+      "display": "MSP cost avoided Employer Voluntary Reporting (eff. 7/00)"
+    },
+    {
+      "code": "J",
+      "display": "MSP cost avoid Insurer Voluntary Reporting (eff. 7/00)"
+    },
+    {
+      "code": "K",
+      "display": "MSP cost avoid Initial Enrollment Questionnaire (eff. 7/00)"
+    },
+    {
+      "code": "N",
+      "display": "All other reasons for non-payment"
+    },
+    {
+      "code": "P",
+      "display": "Payment requested"
+    },
+    {
+      "code": "Q",
+      "display": "MSP cost avoided Voluntary Agreement (eff. 7/00)"
+    },
+    {
+      "code": "R",
+      "display": "Benefits refused, or evidence not submitted"
+    },
+    {
+      "code": "T",
+      "display": "MSP cost avoided - IEQ contractor (eff. 9/76) (obsolete 6/30/00)"
+    },
+    {
+      "code": "U",
+      "display": "MSP cost avoided - HMO rate cell adjustment (eff. 9/76) (Obsolete 6/30/00)"
+    },
+    {
+      "code": "V",
+      "display": "MSP cost avoided - litigation settlement (eff. 9/76) (Obsolete 6/30/00)"
+    },
+    {
+      "code": "W",
+      "display": "Worker's compensation (Obsolete)"
+    },
+    {
+      "code": "X",
+      "display": "MSP cost avoided - generic"
+    },
+    {
+      "code": "Y",
+      "display": "MSP cost avoided - IRS/SSA data match project (obsolete 6/30/00)"
+    },
+    {
+      "code": "Z",
+      "display": "Zero reimbursement RAPs -- zero reimbursement made due to medical review intervention or where provider specific zero payment has been determined. (effective with HHPPS - 10/00)"
+    },
+    {
+      "code": "00",
+      "display": "MSP cost avoided - COB Contractor"
+    },
+    {
+      "code": "12",
+      "display": "MSP cost avoided - BCBS Voluntary Agreements"
+    },
+    {
+      "code": "13",
+      "display": "MSP cost avoided - Office of Personnel Management"
+    },
+    {
+      "code": "14",
+      "display": "MSP cost avoided - Workman's Compensation (WC) Datamatch"
+    },
+    {
+      "code": "15",
+      "display": "MSP cost avoided - Workman's Compensation Insurer Voluntary Data Sharing Agreements (WC VDSA) (eff. 4/2006)"
+    },
+    {
+      "code": "16",
+      "display": "MSP cost avoided - Liability Insurer VDSA (eff. 4/2006)"
+    },
+    {
+      "code": "17",
+      "display": "MSP cost avoided - No-Fault Insurer VDSA (eff. 4/2006)"
+    },
+    {
+      "code": "18",
+      "display": "MSP cost avoided - Pharmacy Benefit Manager Data Sharing Agreement (eff. 4/2006)"
+    },
+    {
+      "code": "19",
+      "display": "SEE NOTE4: Coordination of Benefits Contractor 11119 (see CMS Change Request 7906 for identification of the contractor.)"
+    },
+    {
+      "code": "21",
+      "display": "MSP cost avoided - MIR Group Health Plan (eff. 1/2009)"
+    },
+    {
+      "code": "22",
+      "display": "MSP cost avoided - MIR non-Group Health Plan (eff. 1/2009)"
+    },
+    {
+      "code": "25",
+      "display": "MSP cost avoided - Recovery Audit Contractor - California (eff. 10/2005)"
+    },
+    {
+      "code": "26",
+      "display": "MSP cost avoided - Recovery Audit Contractor - Florida (eff. 10/2005)"
+    },
+    {
+      "code": "42",
+      "display": "SEE NOTE4: Coordination of Benefits Contractor 11142 (see CMS Change Request 7906 for identification of the contractor.)"
+    },
+    {
+      "code": "43",
+      "display": "SEE NOTE4: Coordination of Benefits Contractor 11143 (see CMS Change Request 7906 for identification of the contractor.) Effective 4/1/02, the Medicare nonpayment reason code was expanded to a 2-byte field. The NCH instituted a crosswalk from the 2-byte code to a 1-byte character code. Below are the character codes (found in NCH & NMUD). At some point, NMUD will carry the 2-byte code but NCH will continue to have the 1-byte character code."
+    },
+    {
+      "code": "!",
+      "display": "MSP cost avoided - COB Contractor ('00' 2-byte code)"
+    },
+    {
+      "code": "@",
+      "display": "MSP cost avoided - BC/BS Voluntary Agreements ('12' 2-byte code)"
+    },
+    {
+      "code": "#",
+      "display": "MSP cost avoided - Office of Personnel Management ('13' 2-byte code)"
+    },
+    {
+      "code": "$",
+      "display": "MSP cost avoided - Workman's Compensation (WC) Datamatch ('14' 2-byte code)"
+    },
+    {
+      "code": "*",
+      "display": "MSP cost avoided - Workman's Compensation Insurer Voluntary Data Sharing Agreements (WC VDSA) ('15' 2-byte code) (eff. 4/2006)"
+    },
+    {
+      "code": "(",
+      "display": "MSP cost avoided - Liability Insurer VDSA ('16' 2-byte code) (eff. 4/2006)"
+    },
+    {
+      "code": ")",
+      "display": "MSP cost avoided - No-Fault Insurer VDSA ('17' 2-byte code) (eff. 4/2006)"
+    },
+    {
+      "code": "+",
+      "display": "MSP cost avoided - Pharmacy Benefit Manager Data Sharing Agreement ('18' 2-byte code) (eff. 4/2006)"
+    },
+    {
+      "code": "<",
+      "display": "MSP cost avoided - MIR Group Health Plan ('21' 2-byte code) (eff. 1/2009)"
+    },
+    {
+      "code": ">",
+      "display": "MSP cost avoided - MIR non-Group Health Plan ('22' 2-byte code) (eff. 1/2009)"
+    },
+    {
+      "code": "%",
+      "display": "MSP cost avoided - Recovery Audit Contractor - California ('25' 2-byte code) (eff. 10/2005)"
+    },
+    {
+      "code": "&",
+      "display": "MSP cost avoided - Recovery Audit Contractor - Florida ('26' 2-byte code) (eff. 10/2005)"
+    }
+  ]
+}

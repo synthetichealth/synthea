@@ -1,0 +1,71 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "line-bene-prmry-pyr-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/line-bene-prmry-pyr-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/line-bene-prmry-pyr-cd"
+  },
+  "version": "1.1.0",
+  "name": "Line Primary Payer Code (if not Medicare)",
+  "title": "Line Primary Payer Code (if not Medicare)",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/line-bene-prmry-pyr-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "A",
+      "display": "Working aged bene/spouse with employer group health plan (EGHP)"
+    },
+    {
+      "code": "B",
+      "display": "End stage renal disease (ESRD) beneficiary in the 18 month coordination period with an employer group health plan"
+    },
+    {
+      "code": "C",
+      "display": "Conditional payment by Medicare; future reimbursement expected"
+    },
+    {
+      "code": "D",
+      "display": "Automobile no-fault"
+    },
+    {
+      "code": "E",
+      "display": "Workers' compensation"
+    },
+    {
+      "code": "F",
+      "display": "Public Health Service or other federal agency (other than Dept. of Veterans Affairs)"
+    },
+    {
+      "code": "G",
+      "display": "Working disabled bene (under age 65 with LGHP)"
+    },
+    {
+      "code": "H",
+      "display": "Black Lung"
+    },
+    {
+      "code": "I",
+      "display": "Dept. of Veterans Affairs"
+    },
+    {
+      "code": "L",
+      "display": "Any liability insurance"
+    },
+    {
+      "code": "M",
+      "display": "Override code: EGHP services involved"
+    },
+    {
+      "code": "N",
+      "display": "Override code: non-EGHP services involved"
+    },
+    {
+      "code": "W",
+      "display": "Workers’ Compensation Medicare Set-Aside Arrangement (WCMSA) Null/missing= Medicare is primary payer"
+    }
+  ]
+}

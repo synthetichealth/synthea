@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "adjstmt-dltn-cd",
+  "url": "http://hl7.org/fhir/ValueSet/adjstmt-dltn-cd",
+  "version": "1.1.0",
+  "name": "Adjustment Deletion Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/adjstmt-dltn-cd"
+      }
+    ]
+  }
+}

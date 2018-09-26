@@ -1,0 +1,27 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "asgmntcd",
+  "url": "http://hl7.org/fhir/CodeSystem/asgmntcd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/asgmntcd"
+  },
+  "version": "1.1.0",
+  "name": "Carrier Claim Provider Assignment Indicator Switch",
+  "title": "Carrier Claim Provider Assignment Indicator Switch",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/asgmntcd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "A",
+      "display": "Assigned claim"
+    },
+    {
+      "code": "N",
+      "display": "Non-assigned claim"
+    }
+  ]
+}

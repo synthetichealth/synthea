@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "nch-ptnt-stus-ind-cd",
+  "url": "http://hl7.org/fhir/ValueSet/nch-ptnt-stus-ind-cd",
+  "version": "1.1.0",
+  "name": "NCH Patient Status Indicator Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/nch-ptnt-stus-ind-cd"
+      }
+    ]
+  }
+}

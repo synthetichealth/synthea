@@ -1,0 +1,35 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "adjstmt-dltn-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/adjstmt-dltn-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/adjstmt-dltn-cd"
+  },
+  "version": "1.1.0",
+  "name": "Adjustment Deletion Code",
+  "title": "Adjustment Deletion Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/adjstmt-dltn-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "Blank",
+      "display": "Original PDE"
+    },
+    {
+      "code": "A",
+      "display": "Adjustment"
+    },
+    {
+      "code": "D",
+      "display": "Deletion"
+    },
+    {
+      "code": "R",
+      "display": "Resubmitted"
+    }
+  ]
+}

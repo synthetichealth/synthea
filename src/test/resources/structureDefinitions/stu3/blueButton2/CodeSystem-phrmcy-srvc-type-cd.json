@@ -1,0 +1,59 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "phrmcy-srvc-type-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/phrmcy-srvc-type-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/phrmcy-srvc-type-cd"
+  },
+  "version": "1.1.0",
+  "name": "Pharmacy service type code",
+  "title": "Pharmacy service type code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/phrmcy-srvc-type-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "01",
+      "display": "Community/retail pharmacy"
+    },
+    {
+      "code": "02",
+      "display": "Compounding pharmacy"
+    },
+    {
+      "code": "03",
+      "display": "Home infusion therapy provider"
+    },
+    {
+      "code": "04",
+      "display": "Institutional pharmacy"
+    },
+    {
+      "code": "05",
+      "display": "Long-term care pharmacy"
+    },
+    {
+      "code": "06",
+      "display": "Mail order pharmacy"
+    },
+    {
+      "code": "07",
+      "display": "Managed care organization (MCO) pharmacy"
+    },
+    {
+      "code": "08",
+      "display": "Specialty care pharmacy"
+    },
+    {
+      "code": "99",
+      "display": "Other"
+    },
+    {
+      "code": "Null",
+      "display": "Pharmacy is not in any other category above"
+    }
+  ]
+}

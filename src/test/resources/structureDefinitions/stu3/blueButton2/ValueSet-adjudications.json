@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "adjudications",
+  "url": "http://hl7.org/fhir/ValueSet/adjudications",
+  "version": "1.1.0",
+  "name": "Blue Button Adjudications Amounts",
+  "status": "draft",
+  "date": "2018-02-14",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/adjudications"
+      }
+    ]
+  }
+}

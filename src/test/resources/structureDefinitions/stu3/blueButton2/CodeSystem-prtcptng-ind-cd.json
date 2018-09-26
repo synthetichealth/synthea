@@ -1,0 +1,47 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "prtcptng-ind-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/prtcptng-ind-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/prtcptng-ind-cd"
+  },
+  "version": "1.1.0",
+  "name": "Line Provider Participating Indicator Code",
+  "title": "Line Provider Participating Indicator Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/prtcptng-ind-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "1",
+      "display": "Participating"
+    },
+    {
+      "code": "2",
+      "display": "All or some covered and allowed expenses applied to deductible Participating"
+    },
+    {
+      "code": "3",
+      "display": "Assignment accepted/non-participating"
+    },
+    {
+      "code": "4",
+      "display": "Assignment not accepted/non-participating"
+    },
+    {
+      "code": "5",
+      "display": "Assignment accepted but all or some covered and allowed expenses applied to deductible Non-participating."
+    },
+    {
+      "code": "6",
+      "display": "Assignment not accepted and all covered and allowed expenses applied to deductible non- participating."
+    },
+    {
+      "code": "7",
+      "display": "Participating provider not accepting assignment"
+    }
+  ]
+}

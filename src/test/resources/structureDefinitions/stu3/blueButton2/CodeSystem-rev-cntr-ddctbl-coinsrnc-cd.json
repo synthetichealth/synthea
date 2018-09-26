@@ -1,0 +1,51 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "rev-cntr-ddctbl-coinsrnc-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/rev-cntr-ddctbl-coinsrnc-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/rev-cntr-ddctbl-coinsrnc-cd"
+  },
+  "version": "1.1.0",
+  "name": "Revenue Center Deductible Coinsurance Code",
+  "title": "Revenue Center Deductible Coinsurance Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/rev-cntr-ddctbl-coinsrnc-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Charges are subject to deductible and coinsurance"
+    },
+    {
+      "code": "1",
+      "display": "Charges are not subject to deductible"
+    },
+    {
+      "code": "2",
+      "display": "Charges are not subject to coinsurance"
+    },
+    {
+      "code": "3",
+      "display": "Charges are not subject to deductible or coinsurance"
+    },
+    {
+      "code": "4",
+      "display": "No charge or units associated with this revenue center code. (For multiple HCPCS per single revenue center code) For revenue center code 0001, the following MSP override values may be present:"
+    },
+    {
+      "code": "M",
+      "display": "Override code; EGHP (employer group health plan) services involved"
+    },
+    {
+      "code": "N",
+      "display": "Override code; non-EGHP services involved"
+    },
+    {
+      "code": "X",
+      "display": "Override code: MSP (Medicare is secondary payer) cost avoided"
+    }
+  ]
+}

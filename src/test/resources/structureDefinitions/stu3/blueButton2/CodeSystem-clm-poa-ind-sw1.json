@@ -1,0 +1,47 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-poa-ind-sw1",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-poa-ind-sw1",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-poa-ind-sw1"
+  },
+  "version": "1.1.0",
+  "name": "Claim Diagnosis Code I Diagnosis Present on Admission (POA) Indicator Code",
+  "title": "Claim Diagnosis Code I Diagnosis Present on Admission (POA) Indicator Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-poa-ind-sw1",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "Y",
+      "display": "Diagnosis was present at the time of admission (POA)"
+    },
+    {
+      "code": "N",
+      "display": "Diagnosis was not present at the time of admission"
+    },
+    {
+      "code": "U",
+      "display": "Documentation is insufficient to determine if condition was present on admission"
+    },
+    {
+      "code": "W",
+      "display": "Provider is unable to clinically determine whether condition was present on admission"
+    },
+    {
+      "code": "1",
+      "display": "Unreported/not used - exempt from POA reporting - this code is the equivalent code of a blank, however, it was determined that blanks were undesirable when submitting the data"
+    },
+    {
+      "code": "Z",
+      "display": "Denotes the end of the POA indicators"
+    },
+    {
+      "code": "X",
+      "display": "Denotes the end of the POA indicators in special data processing situations that may be identified by CMS in the future"
+    }
+  ]
+}

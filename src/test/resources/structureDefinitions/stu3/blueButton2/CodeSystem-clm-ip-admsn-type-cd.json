@@ -1,0 +1,59 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-ip-admsn-type-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-ip-admsn-type-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-ip-admsn-type-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim Inpatient Admission Type Code",
+  "title": "Claim Inpatient Admission Type Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-ip-admsn-type-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Unknown Value (but present in data)"
+    },
+    {
+      "code": "1",
+      "display": "Emergency - The patient required immediate medical intervention as a result of severe, life threatening, or potentially disabling conditions. Generally, the patient was admitted through the emergency room."
+    },
+    {
+      "code": "2",
+      "display": "Urgent - The patient required immediate attention for the care and treatment of a physical or mental disorder. Generally, the patient was admitted to the first available and suitable accommodation."
+    },
+    {
+      "code": "3",
+      "display": "Elective - The patient's condition permitted adequate time to schedule the availability of suitable accommodations."
+    },
+    {
+      "code": "4",
+      "display": "Newborn - Necessitates the use of special source of admission codes."
+    },
+    {
+      "code": "5",
+      "display": "Trauma Center - visits to a trauma center/hospital as licensed or designated by the State or local government authority authorized to do so, or as verified by the American College of Surgeons and involving a trauma activation."
+    },
+    {
+      "code": "6",
+      "display": "Reserved"
+    },
+    {
+      "code": "7",
+      "display": "Reserved"
+    },
+    {
+      "code": "8",
+      "display": "Reserved"
+    },
+    {
+      "code": "9",
+      "display": "Unknown - Information not available."
+    }
+  ]
+}

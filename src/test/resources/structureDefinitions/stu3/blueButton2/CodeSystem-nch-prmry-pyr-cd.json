@@ -1,0 +1,67 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "nch-prmry-pyr-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/nch-prmry-pyr-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/nch-prmry-pyr-cd"
+  },
+  "version": "1.1.0",
+  "name": "NCH Primary Payer Code (if not Medicare)",
+  "title": "NCH Primary Payer Code (if not Medicare)",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/nch-prmry-pyr-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "A",
+      "display": "Employer group health plan (EGHP) insurance for an aged beneficiary"
+    },
+    {
+      "code": "B",
+      "display": "EGHP insurance for an end-stage renal disease (ESRD) beneficiary"
+    },
+    {
+      "code": "C",
+      "display": "Conditional payment by Medicare; future reimbursement from the Public Health Service (PHS) expected"
+    },
+    {
+      "code": "D",
+      "display": "No fault automobile insurance"
+    },
+    {
+      "code": "E",
+      "display": "Worker's compensation (WC)"
+    },
+    {
+      "code": "F",
+      "display": "Public Health Service (PHS) or other Federal agency (other than VA)"
+    },
+    {
+      "code": "G",
+      "display": "Working disabled beneficiary under age 65 with a local government health plan (LGHP)"
+    },
+    {
+      "code": "H",
+      "display": "Black lung (BL) program"
+    },
+    {
+      "code": "I",
+      "display": "Department of Veteran's Affairs"
+    },
+    {
+      "code": "L",
+      "display": "Any liability insurance"
+    },
+    {
+      "code": "M",
+      "display": "Override EGHP - Medicare is primary payer"
+    },
+    {
+      "code": "N",
+      "display": "Override non-EGHP - Medicare is primary payer Blank / missing = No other primary payer"
+    }
+  ]
+}

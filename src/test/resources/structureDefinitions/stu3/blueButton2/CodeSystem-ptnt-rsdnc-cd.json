@@ -1,0 +1,83 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "ptnt-rsdnc-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/ptnt-rsdnc-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/ptnt-rsdnc-cd"
+  },
+  "version": "1.1.0",
+  "name": "Patient Residence Code",
+  "title": "Patient Residence Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/ptnt-rsdnc-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "00",
+      "display": "Not specified, other patient residence not identified below"
+    },
+    {
+      "code": "01",
+      "display": "Home"
+    },
+    {
+      "code": "02",
+      "display": "Skilled Nursing Facility"
+    },
+    {
+      "code": "03",
+      "display": "Nursing facility (long-term care facility)"
+    },
+    {
+      "code": "04",
+      "display": "Assisted living facility"
+    },
+    {
+      "code": "05",
+      "display": "Custodial Care Facility (residential but not medical care)"
+    },
+    {
+      "code": "06",
+      "display": "Group home (e.g., congregate residential foster care)"
+    },
+    {
+      "code": "07",
+      "display": "Inpatient Psychiatric Facility"
+    },
+    {
+      "code": "08",
+      "display": "Psychiatric Facility – Partial Hospitalization"
+    },
+    {
+      "code": "09",
+      "display": "Intermediate care facility for the mentally retarded (ICF/MR)"
+    },
+    {
+      "code": "10",
+      "display": "Residential Substance Abuse Treatment Facility"
+    },
+    {
+      "code": "11",
+      "display": "Hospice"
+    },
+    {
+      "code": "12",
+      "display": "Psychiatric Residential Treatment Facility"
+    },
+    {
+      "code": "13",
+      "display": "Comprehensive Inpatient Rehabilitation Facility"
+    },
+    {
+      "code": "14",
+      "display": "Homeless Shelter"
+    },
+    {
+      "code": "15",
+      "display": "Correctional Institution"
+    }
+  ]
+}
