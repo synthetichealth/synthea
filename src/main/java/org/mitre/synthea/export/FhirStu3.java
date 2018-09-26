@@ -50,7 +50,6 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
-import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
@@ -103,6 +102,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -823,7 +823,6 @@ public class FhirStu3 {
         conditionSequence++;
       }
       itemSequence++;
-
     }
 
     Money moneyResource = new Money();
@@ -997,14 +996,6 @@ public class FhirStu3 {
               .setSystem("urn:iso:std:iso:4217")
               .setCode("USD"));
 
-      // Outlier amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/resources/variables/nch_drg_outlier_aprvd_pmt_amt")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
-
       // Old capital hold harmless amount
       eob.addExtension()
           .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-old-cptl-hld-hrmls-amt-extension")
@@ -1169,7 +1160,8 @@ public class FhirStu3 {
     eob.setOrganizationTarget(claim.getOrganizationTarget());
 
     // get the insurance info at the time that the encounter happened
-    String insurance = encounter.claim.insurance.getInsuranceName();
+    // TODO this does not correctly reference a Coverage resource
+    String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
     insuranceComponent.setCoverage(new Reference(insurance));
@@ -1256,7 +1248,7 @@ public class FhirStu3 {
         itemComponent.addExtension(new Extension()
             .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-rev-cntr-ndc-qty-extension")
             .setValue(new Quantity().setValue(0)));
-      }else if (outpatient) {
+      } else if (outpatient) {
         itemComponent.addExtension(new Extension()
             .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ndc-qty-extension")
             .setValue(new Quantity().setValue(0)));
