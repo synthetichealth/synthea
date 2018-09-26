@@ -205,12 +205,10 @@ public class FhirStu3 {
    * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
    * associated entries from their health record.
    *
-   * @param person
-   *          Person to generate the FHIR JSON for
-   * @param stopTime
-   *          Time the simulation ended
-   * @return String containing a JSON representation of a FHIR Bundle containing the Person's health
-   *         record
+   * @param person Person to generate the FHIR JSON for
+   * @param stopTime Time the simulation ended
+   * @return String containing a JSON representation of a FHIR Bundle containing the Person's 
+   *     health record.
    */
   public static String convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
@@ -278,12 +276,9 @@ public class FhirStu3 {
   /**
    * Map the given Person to a FHIR Patient resource, and add it to the given Bundle.
    *
-   * @param person
-   *          The Person
-   * @param bundle
-   *          The Bundle to add to
-   * @param stopTime
-   *          Time the simulation ended
+   * @param person The Person
+   * @param bundle The Bundle to add to
+   * @param stopTime Time the simulation ended
    * @return The created Entry
    */
   @SuppressWarnings("rawtypes")
@@ -494,7 +489,7 @@ public class FhirStu3 {
           mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
     }
 
-    DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
+    DirectPosition2D coord = person.getLatLon();
     if (coord != null) {
       Extension geolocation = addrResource.addExtension();
       geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
@@ -576,12 +571,9 @@ public class FhirStu3 {
   /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          Entry for the Person
-   * @param bundle
-   *          The Bundle to add to
-   * @param encounter
-   *          The current Encounter
+   * @param personEntry Entry for the Person
+   * @param bundle The Bundle to add to
+   * @param encounter The current Encounter
    * @return The added Entry
    */
   private static BundleEntryComponent encounter(Person person, BundleEntryComponent personEntry,
@@ -679,16 +671,11 @@ public class FhirStu3 {
   /**
    * Create an entry for the given Claim, which references a Medication.
    *
-   * @param personEntry
-   *          Entry for the person
-   * @param bundle
-   *          The Bundle to add to
-   * @param encounterEntry
-   *          The current Encounter
-   * @param claim
-   *          the Claim object
-   * @param medicationEntry
-   *          The Entry for the Medication object, previously created
+   * @param personEntry Entry for the person
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter
+   * @param claim the Claim object
+   * @param medicationEntry The Entry for the Medication object, previously created
    * @return the added Entry
    */
   private static BundleEntryComponent medicationClaim(BundleEntryComponent personEntry,
@@ -726,14 +713,10 @@ public class FhirStu3 {
   /**
    * Create an entry for the given Claim, associated to an Encounter.
    *
-   * @param personEntry
-   *          Entry for the person
-   * @param bundle
-   *          The Bundle to add to
-   * @param encounterEntry
-   *          The current Encounter
-   * @param claim
-   *          the Claim object
+   * @param personEntry Entry for the person
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter
+   * @param claim the Claim object
    * @return the added Entry
    */
   private static BundleEntryComponent encounterClaim(BundleEntryComponent personEntry,
@@ -1436,14 +1419,10 @@ public class FhirStu3 {
   /**
    * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Entry for the Person
-   * @param bundle
-   *          The Bundle to add to
-   * @param encounterEntry
-   *          The current Encounter entry
-   * @param condition
-   *          The Condition
+   * @param personEntry The Entry for the Person
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter entry
+   * @param condition The Condition
    * @return The added Entry
    */
   private static BundleEntryComponent condition(BundleEntryComponent personEntry, Bundle bundle,
@@ -1489,14 +1468,10 @@ public class FhirStu3 {
   /**
    * Map the Condition into a FHIR AllergyIntolerance resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Entry for the Person
-   * @param bundle
-   *          The Bundle to add to
-   * @param encounterEntry
-   *          The current Encounter entry
-   * @param allergy
-   *          The Allergy Entry
+   * @param personEntry The Entry for the Person
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter entry
+   * @param allergy The Allergy Entry
    * @return The added Entry
    */
   private static BundleEntryComponent allergy(BundleEntryComponent personEntry, Bundle bundle,
@@ -1537,14 +1512,10 @@ public class FhirStu3 {
   /**
    * Map the given Observation into a FHIR Observation resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Person Entry
-   * @param bundle
-   *          The Bundle to add to
-   * @param encounterEntry
-   *          The current Encounter entry
-   * @param observation
-   *          The Observation
+   * @param personEntry The Person Entry
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter entry
+   * @param observation The Observation
    * @return The added Entry
    */
   private static BundleEntryComponent observation(BundleEntryComponent personEntry, Bundle bundle,
@@ -1591,7 +1562,6 @@ public class FhirStu3 {
       if (codeMappingUri != null) {
         meta.addProfile(codeMappingUri);
       }
-
       observationResource.setMeta(meta);
     }
 
@@ -1618,7 +1588,6 @@ public class FhirStu3 {
       return new Quantity().setValue(((Number) value).doubleValue())
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
-
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
@@ -1628,14 +1597,10 @@ public class FhirStu3 {
   /**
    * Map the given Procedure into a FHIR Procedure resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Person entry
-   * @param bundle
-   *          Bundle to add to
-   * @param encounterEntry
-   *          The current Encounter entry
-   * @param procedure
-   *          The Procedure
+   * @param personEntry The Person entry
+   * @param bundle Bundle to add to
+   * @param encounterEntry The current Encounter entry
+   * @param procedure  The Procedure
    * @return The added Entry
    */
   private static BundleEntryComponent procedure(BundleEntryComponent personEntry, Bundle bundle,
@@ -1727,14 +1692,10 @@ public class FhirStu3 {
   /**
    * Map the given Medication to a FHIR MedicationRequest resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Entry for the Person
-   * @param bundle
-   *          Bundle to add the Medication to
-   * @param encounterEntry
-   *          Current Encounter entry
-   * @param medication
-   *          The Medication
+   * @param personEntry The Entry for the Person
+   * @param bundle Bundle to add the Medication to
+   * @param encounterEntry Current Encounter entry
+   * @param medication The Medication
    * @return The added Entry
    */
   private static BundleEntryComponent medication(BundleEntryComponent personEntry, Bundle bundle,
@@ -1838,7 +1799,6 @@ public class FhirStu3 {
       medicationResource.addExtension(requestedContext);
     }
 
-
     BundleEntryComponent medicationEntry = newEntry(bundle, medicationResource);
     // create new claim for medication
     medicationClaim(personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
@@ -1855,14 +1815,10 @@ public class FhirStu3 {
   /**
    * Map the given Report to a FHIR DiagnosticReport resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Entry for the Person
-   * @param bundle
-   *          Bundle to add the Report to
-   * @param encounterEntry
-   *          Current Encounter entry
-   * @param report
-   *          The Report
+   * @param personEntry The Entry for the Person
+   * @param bundle Bundle to add the Report to
+   * @param encounterEntry Current Encounter entry
+   * @param report The Report
    * @return The added Entry
    */
   private static BundleEntryComponent report(BundleEntryComponent personEntry, Bundle bundle,
@@ -1888,14 +1844,10 @@ public class FhirStu3 {
   /**
    * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Entry for the Person
-   * @param bundle
-   *          Bundle to add the CarePlan to
-   * @param encounterEntry
-   *          Current Encounter entry
-   * @param carePlan
-   *          The CarePlan to map to FHIR and add to the bundle
+   * @param personEntry The Entry for the Person
+   * @param bundle Bundle to add the CarePlan to
+   * @param encounterEntry Current Encounter entry
+   * @param carePlan The CarePlan to map to FHIR and add to the bundle
    * @return The added Entry
    */
   private static BundleEntryComponent careplan(BundleEntryComponent personEntry, Bundle bundle,
@@ -1965,14 +1917,10 @@ public class FhirStu3 {
   /**
    * Map the given ImagingStudy to a FHIR ImagingStudy resource, and add it to the given Bundle.
    *
-   * @param personEntry
-   *          The Entry for the Person
-   * @param bundle
-   *          Bundle to add the ImagingStudy to
-   * @param encounterEntry
-   *          Current Encounter entry
-   * @param imagingStudy
-   *          The ImagingStudy to map to FHIR and add to the bundle
+   * @param personEntry The Entry for the Person
+   * @param bundle Bundle to add the ImagingStudy to
+   * @param encounterEntry Current Encounter entry
+   * @param imagingStudy The ImagingStudy to map to FHIR and add to the bundle
    * @return The added Entry
    */
   private static BundleEntryComponent imagingStudy(BundleEntryComponent personEntry, Bundle bundle,
@@ -2056,10 +2004,10 @@ public class FhirStu3 {
     organizationType.add(
         mapCodeToCodeableConcept(
             new Code(
-                "http://hl7.org/fhir/ValueSet/organization-type",
+                "http://hl7.org/fhir/organization-type",
                 "prov",
                 "Healthcare Provider"),
-            "Healthcare Provider"));
+            "http://hl7.org/fhir/organization-type"));
 
     organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
     .setValue((String) provider.getResourceID());
@@ -2098,7 +2046,7 @@ public class FhirStu3 {
     return newEntry(bundle, organizationResource);
   }
 
-  /*
+  /**
    * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
    * @param bundle The Bundle to add to
    * @param goalStatus The GoalStatus
@@ -2209,10 +2157,8 @@ public class FhirStu3 {
   /**
    * Convert the timestamp into a FHIR DateType or DateTimeType.
    *
-   * @param datetime
-   *          Timestamp
-   * @param time
-   *          If true, return a DateTime; if false, return a Date.
+   * @param datetime Timestamp
+   * @param time If true, return a DateTime; if false, return a Date.
    * @return a DateType or DateTimeType representing the given timestamp
    */
   private static Type convertFhirDateTime(long datetime, boolean time) {
@@ -2229,10 +2175,8 @@ public class FhirStu3 {
    * Helper function to convert a Code into a CodeableConcept. Takes an optional system, which
    * replaces the Code.system in the resulting CodeableConcept if not null.
    *
-   * @param from
-   *          The Code to create a CodeableConcept from.
-   * @param system
-   *          The system identifier, such as a URI. Optional; may be null.
+   * @param from The Code to create a CodeableConcept from.
+   * @param system The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
    */
   private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
@@ -2261,10 +2205,8 @@ public class FhirStu3 {
    * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
    * the bundle.
    *
-   * @param bundle
-   *          The Bundle to add the Entry to
-   * @param resource
-   *          Resource the new Entry should contain
+   * @param bundle The Bundle to add the Entry to
+   * @param resource Resource the new Entry should contain
    * @return the created Entry
    */
   private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {

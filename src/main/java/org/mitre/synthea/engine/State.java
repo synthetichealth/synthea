@@ -21,6 +21,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -487,7 +488,8 @@ public abstract class State implements Cloneable {
           int year = Utilities.getYear(time);
           provider.incrementEncounters("wellness", year);
           encounter.provider = provider;
-
+          encounter.clinician = provider.chooseClinicianList(
+              ClinicianSpecialty.GENERAL_PRACTICE, person.random);
           diagnosePastConditions(person, time);
 
           return true;
@@ -508,6 +510,8 @@ public abstract class State implements Cloneable {
         int year = Utilities.getYear(time);
         provider.incrementEncounters(encounterClass, year);
         encounter.provider = provider;
+        encounter.clinician = provider.chooseClinicianList(
+            ClinicianSpecialty.GENERAL_PRACTICE, person.random);
 
         encounter.name = this.name;
 

@@ -1,0 +1,1032 @@
+{
+  "name": "Veteran PTSD",
+  "remarks": [
+    "Post Traumatic Stress Disorder is one of the top disease conditions (by prevalence), disproportionately affecting veterans.  A majority of the guidelines detailed here in this module "
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "age guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Onset_age_21_to_29_Female",
+          "distribution": 0.0315
+        },
+        {
+          "transition": "Onset_age_30_to_39_Female",
+          "distribution": 0.0245
+        },
+        {
+          "transition": "Onset_age_40_to_49_Female",
+          "distribution": 0.0252
+        },
+        {
+          "transition": "Onset_age_50_to_59_Female",
+          "distribution": 0.014
+        },
+        {
+          "transition": "Onset_age_60_to_99_Female",
+          "distribution": 0.0084
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8964
+        }
+      ],
+      "remarks": [
+        "The prevalence data presented here come from the seminal report on VHA health care delivery systems and management processes.  It can be accessed here: https://www.va.gov/opa/choiceact/documents/assessments/integrated_report.pdf",
+        ""
+      ]
+    },
+    "Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Onset_age_21_to_29_Male",
+          "distribution": 0.049
+        },
+        {
+          "transition": "Onset_age_30_to_39_Male",
+          "distribution": 0.0385
+        },
+        {
+          "transition": "Onset_age_40_to_49_Male",
+          "distribution": 0.0266
+        },
+        {
+          "transition": "Onset_age_50_to_59_Male",
+          "distribution": 0.014
+        },
+        {
+          "transition": "Onset_age_60_to_99_Male",
+          "distribution": 0.007
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8649
+        }
+      ],
+      "remarks": [
+        "The prevalence data presented here come from the seminal report on VHA health care delivery systems and management processes.  It can be accessed here: https://www.va.gov/opa/choiceact/documents/assessments/integrated_report.pdf"
+      ]
+    },
+    "Veteran": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Non_Veteran": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Onset_age_30_to_39_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "years"
+      }
+    },
+    "Onset_age_30_to_39_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "years"
+      }
+    },
+    "Onset_age_40_to_49_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 19,
+        "high": 28,
+        "unit": "years"
+      }
+    },
+    "Onset_age_40_to_49_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 19,
+        "high": 28,
+        "unit": "years"
+      }
+    },
+    "Onset_age_50_to_59_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 29,
+        "high": 38,
+        "unit": "years"
+      }
+    },
+    "Onset_age_50_to_59_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 29,
+        "high": 38,
+        "unit": "years"
+      }
+    },
+    "PTSD Episode": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "ptsd",
+      "target_encounter": "PTSD_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 47505003,
+          "display": "Posttraumatic stress disorder"
+        }
+      ],
+      "direct_transition": "PTSD_Encounter"
+    },
+    "PTSD_Initial_Careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736254008,
+          "display": "Psychiatry care plan"
+        }
+      ],
+      "reason": "ptsd",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 79094001,
+          "display": "Initial psychiatric interview with mental status and evaluation"
+        }
+      ],
+      "direct_transition": "end_PTSD_Encounter"
+    },
+    "Initial_Psychiatric_PTSD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 79094001,
+          "display": "Initial Psychiatric Interview with mental status evaluation"
+        }
+      ],
+      "reason": "ptsd",
+      "direct_transition": "PHQ2_Q9 Assessment"
+    },
+    "PTSD_Careplan_Psych_and_Rx": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "PTSD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is nil",
+            "value": "Vicodin"
+          }
+        }
+      ],
+      "reason": "ptsd",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 406185000,
+          "display": "Trauma Therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 76168009,
+          "display": "Group psychotherapy (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 719858009,
+          "display": "Telehealth monitoring (regime/therapy)"
+        }
+      ],
+      "assign_to_attribute": "ptsd_careplan",
+      "remarks": [
+        "overall care plan recommendation provided in consultation with Drs Jodie Trafton and Brian Marx, SMEs for PTSD within the VA",
+        ""
+      ]
+    },
+    "PTSD_Careplan_Psych": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter",
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 406185000,
+          "display": "Trauma Therapy"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 76168009,
+          "display": "Group psychotherapy (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 719858009,
+          "display": "Telehealth monitoring (regime/therapy)"
+        }
+      ]
+    },
+    "Change_Dx_Not_PTSD": {
+      "type": "ConditionEnd",
+      "direct_transition": "Pain_Vital_3",
+      "referenced_by_attribute": "ptsd"
+    },
+    "PTSD_Careplan_Rx_ONLY": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is not nil",
+            "value": "Vicodin"
+          }
+        },
+        {
+          "transition": "PTSD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is nil"
+          }
+        }
+      ],
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan"
+    },
+    "PTSD Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Initial_Psychiatric_PTSD_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 47505003,
+          "display": "Posttraumatic stress disorder"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Change_Dx_Not_PTSD",
+          "distribution": 0.1
+        },
+        {
+          "transition": "PTSD_Careplan_Psych",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PTSD_Careplan_Psych_and_Rx",
+          "distribution": 0.4
+        },
+        {
+          "transition": "PTSD_Careplan_Rx_ONLY",
+          "distribution": 0.3
+        }
+      ],
+      "remarks": [
+        "estimate of percents of patients falling into larger categories of treatment models (e.g. Rx only, Rx + Psychology or Psych only) provided by Jodie Trafton, PhD.",
+        ""
+      ]
+    },
+    "end_PTSD_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "time gate",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged home safe"
+      }
+    },
+    "Evaluation Gate delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "PTSD_Re_evaluation Encounter"
+    },
+    "PTSD_Re_evaluation Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 47505003,
+          "display": "posttraumatic stress disorder"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Change_Dx_Not_PTSD",
+          "distribution": 0.48
+        },
+        {
+          "transition": "PTSD_Careplan_Psych",
+          "distribution": 0.15
+        },
+        {
+          "transition": "PTSD_Careplan_Rx_ONLY",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PTSD_Careplan_Psych_and_Rx",
+          "distribution": 0.15
+        },
+        {
+          "transition": "Inpatient Suicide Assessment",
+          "distribution": 0.02
+        }
+      ],
+      "reason": "ptsd"
+    },
+    "end_Psych_encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "therapy delay"
+    },
+    "PTSD Medication Order": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 328670,
+          "display": "Sertraline 100MG"
+        }
+      ],
+      "assign_to_attribute": "SSRI",
+      "reason": "ptsd",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "distributed_transition": [
+        {
+          "transition": "Pain_Vital_4",
+          "distribution": 0.5
+        },
+        {
+          "transition": "PTSD Chronic Pain Med",
+          "distribution": 0.5
+        }
+      ],
+      "remarks": [
+        "most common Rx ordered tied to mental health conditions like PTSD are SSRIs (per VA CDW data analysis)",
+        ""
+      ]
+    },
+    "end re_evaluation_medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "PTSD Medication Order",
+      "medication_order": "",
+      "referenced_by_attribute": "SSRI"
+    },
+    "end_PTSD_Re_evaluation_Encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "end_follow_up_careplan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd_careplan",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "age guard": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 21,
+        "unit": "years"
+      },
+      "remarks": [
+        "model attempt to wait for war exposure to provide traumatic instance.  Most veterans exposed to at least 1 tour in a war-time scenario become veterans after 21 years age"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "mTBI check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Non_Veteran",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "PTSD Chronic Pain Med": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 856980,
+          "display": "Acetaminophen/Hydrocodone"
+        }
+      ],
+      "direct_transition": "Pain_Vital",
+      "reason": "ptsd",
+      "remarks": [
+        "per Dr Trafton and other sources"
+      ]
+    },
+    "end_follow_up_careplan": {
+      "type": "CarePlanEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "ptsd_careplan"
+    },
+    "time gate": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Initial_Psychiatric_PTSD_Encounter",
+      "remarks": [
+        "estimate provided by Jodie Trafton, PhD",
+        ""
+      ]
+    },
+    "Columbia Suicide Risk Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "distributed_transition": [
+        {
+          "transition": "PTSD Diagnosis",
+          "distribution": 0.98
+        },
+        {
+          "transition": "At Risk for suicide",
+          "distribution": 0.02
+        }
+      ],
+      "remarks": [
+        "per new VA protocol identified by Jodie Trafton, PhD",
+        ""
+      ]
+    },
+    "PHQ2_Q9 Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 715252007,
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "distributed_transition": [
+        {
+          "transition": "Columbia Suicide Risk Assessment",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Change_Dx_Not_PTSD",
+          "distribution": 0.1
+        }
+      ],
+      "remarks": [
+        "estimate of 10% of patients who initially screened positive for PTSD to not ultimately screen in by a mental health expert, provided in consultation with Jodie Trafton, PhD",
+        ""
+      ]
+    },
+    "At Risk for suicide": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "suicide_risk",
+      "target_encounter": "Initial_Psychiatric_PTSD_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225444004,
+          "display": "At risk for suicide (finding)"
+        }
+      ],
+      "direct_transition": "Inpatient Suicide Assessment"
+    },
+    "Inpatient Suicide Assessment": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "suicide_risk",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Inpatient Suicide Risk Assessment"
+    },
+    "Inpatient_admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183801001,
+          "display": "Inpatient stay 3 days"
+        }
+      ],
+      "direct_transition": "Pain_Vital_2",
+      "reason": "suicide_risk"
+    },
+    "Inpatient Suicide Risk Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "direct_transition": "emergency_encounter end"
+    },
+    "emergency_encounter end": {
+      "type": "EncounterEnd",
+      "direct_transition": "Inpatient_admission"
+    },
+    "Inpatient Suicide Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736353004,
+          "display": "Inpatient care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "time delay",
+      "reason": "suicide_risk",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183402001,
+          "display": "Potential suicide care (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183401008,
+          "display": "Anti-suicide psychotherapy (regime/therapy)"
+        }
+      ]
+    },
+    "time delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Inpatient Suicide Care Plan_2"
+    },
+    "Inpatient Suicide Care Plan_2": {
+      "type": "CarePlanEnd",
+      "direct_transition": "PTSD_Re_evaluation Encounter",
+      "careplan": "Inpatient Suicide Care Plan"
+    },
+    "Onset_age_21_to_29_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Onset_age_60_to_99_Male": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 39,
+        "high": 68,
+        "unit": "years"
+      }
+    },
+    "Onset_age_21_to_29_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Onset_age_60_to_99_Female": {
+      "type": "Delay",
+      "direct_transition": "PTSD Episode",
+      "range": {
+        "low": 39,
+        "high": 68,
+        "unit": "years"
+      }
+    },
+    "PTSD_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "PC-PTSD Screen"
+    },
+    "Telehealth_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185317003,
+          "display": "Telephone encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Telehealth_Observations",
+      "remarks": [
+        "careplan to include regular telephone psychotherapy.  workflow recommendation provided by Brian Marx, PhD, SME for PTSD within VA",
+        ""
+      ]
+    },
+    "therapy delay": {
+      "type": "Delay",
+      "direct_transition": "Therapy_Visit",
+      "range": {
+        "low": 5,
+        "high": 14,
+        "unit": "days"
+      }
+    },
+    "Therapy_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Therapy Note"
+    },
+    "telehealth delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Telehealth_Visit"
+    },
+    "Telehealth_Observations": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "84215-3",
+          "display": "Mental health Telehealth Note"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "end telehealth"
+    },
+    "Therapy Note": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75443-2",
+          "display": "Mental health Outpatient Note"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "end therapy visit"
+    },
+    "end therapy visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "telehealth delay"
+    },
+    "end telehealth": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "therapy delay",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "PTSD_Re_evaluation Encounter",
+            "within": {
+              "quantity": 6,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Evaluation Gate delay"
+        }
+      ]
+    },
+    "PHQ2_Q9_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 715252007,
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "direct_transition": "Columbia_Suicide_Risk_Assessment",
+      "remarks": [
+        "per new VA protocol identified by Jodie Trafton, PhD",
+        ""
+      ]
+    },
+    "Columbia_Suicide_Risk_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "ptsd",
+      "direct_transition": "PTSD_Initial_Careplan",
+      "remarks": [
+        "per new VA protocol identified by Jodie Trafton, PhD"
+      ]
+    },
+    "mTBI check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mTBI",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "PTSD Episode",
+              "distribution": 0.439
+            },
+            {
+              "transition": "Veteran",
+              "distribution": 0.561
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Veteran",
+              "distribution": 1
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Strong comorbidity relationship between mTBI and PTSD:",
+        "",
+        "https://www.ncbi.nlm.nih.gov/books/NBK326723/",
+        "",
+        ""
+      ]
+    },
+    "Pain_Vital": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "end_Psych_encounter"
+    },
+    "Pain_Vital_2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 4,
+        "high": 8
+      },
+      "direct_transition": "Inpatient Suicide Care Plan"
+    },
+    "Pain_Vital_3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 3
+      },
+      "direct_transition": "end_PTSD_Re_evaluation_Encounter"
+    },
+    "Pain_Vital_4": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72514-3",
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 4
+      },
+      "direct_transition": "end_Psych_encounter"
+    },
+    "PC-PTSD Screen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385892002,
+          "display": "Mental health screening (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "PHQ2_Q9_Assessment",
+      "remarks": [
+        "workflow approach provided by Brian "
+      ]
+    }
+  }
+}

@@ -33,6 +33,13 @@ public class LocationTest {
   }
 
   @Test
+  public void testTimezone() {
+    String tz = Location.getTimezoneByState("Massachusetts");
+    Assert.assertNotNull(tz);
+    Assert.assertTrue(tz.equals("Eastern Standard Time"));
+  }
+
+  @Test
   public void testAllDemographicsHaveLocations() throws Exception {
     String demoFileContents =
         Utilities.readResource(Config.get("generate.demographics.default_file"));

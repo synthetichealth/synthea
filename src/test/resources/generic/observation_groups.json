@@ -113,10 +113,8 @@
       "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_MetabolicPanel"
     },
-
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
-      "number_of_observations": 8,
       "codes": [
         {
           "system": "LOINC",
@@ -227,7 +225,6 @@
     },
     "Record_LipidPanel": {
       "type": "DiagnosticReport",
-      "number_of_observations": 4,
       "codes": [
         {
           "system": "LOINC",

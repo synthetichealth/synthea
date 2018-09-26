@@ -19,11 +19,13 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
@@ -37,7 +39,7 @@ public final class LifecycleModule extends Module {
   public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
-  private static final boolean appendNumbersToNames =
+  public static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
   
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
@@ -207,7 +209,7 @@ public final class LifecycleModule extends Module {
   }
   
   @SuppressWarnings("unchecked")
-  private static String fakeFirstName(String gender, String language, Random random) {
+  public static String fakeFirstName(String gender, String language, Random random) {
     List<String> choices;
     if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish." + gender);
@@ -219,7 +221,7 @@ public final class LifecycleModule extends Module {
   }
   
   @SuppressWarnings("unchecked")
-  private static String fakeLastName(String language, Random random) {
+  public static String fakeLastName(String language, Random random) {
     List<String> choices;
     if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish.family");
@@ -231,7 +233,7 @@ public final class LifecycleModule extends Module {
   }
   
   @SuppressWarnings("unchecked")
-  private static String fakeAddress(boolean includeLine2, Random random) {
+  public static String fakeAddress(boolean includeLine2, Random random) {
     int number = random.nextInt(1000) + 100;
     List<String> n = (List<String>)names.get("english.family");
     // for now just use family names as the street name. 
@@ -255,7 +257,7 @@ public final class LifecycleModule extends Module {
    * @param name Person's name
    * @return The name with a hash appended, ex "John123" or "Smith22"
    */
-  private static String addHash(String name) {
+  public static String addHash(String name) {
     // note that this value should be deterministic
     // It cannot be a random number. It needs to be a hash value or something deterministic.
     // We do not want John10 and John52 -- we want all the Johns to have the SAME numbers. e.g. All
@@ -714,14 +716,19 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  private static final boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
+      Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
+  
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
 
   private static void death(Person person, long time) {
-    double roll = person.rand();
-    double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
-    if (roll < likelihoodOfDeath) {
-      person.recordDeath(time, NATURAL_CAUSES, "death");
+    if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
+      double roll = person.rand();
+      double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
+      if (roll < likelihoodOfDeath) {
+        person.recordDeath(time, NATURAL_CAUSES, "death");
+      }
     }
   }
 

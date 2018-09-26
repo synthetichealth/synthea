@@ -117,9 +117,16 @@ public class Person implements Serializable, QuadTreeData {
     
     return rand(range[0], range[1]);
   }
-  
-  // no good way to share code between the double[] and int[] version unfortunately....
-  
+
+  /**
+   * Return one of the options randomly with uniform distribution.
+   * @param choices The options to be returned.
+   * @return One of the options randomly selected.
+   */
+  public String rand(String[] choices) {
+    return choices[random.nextInt(choices.length)];
+  }
+
   /**
    * Helper function to get a random number based on an integer array of [min, max].
    * This should be used primarily when pulling ranges from YML.
@@ -310,6 +317,7 @@ public class Person implements Serializable, QuadTreeData {
   // Providers API -----------------------------------------------------------
   public static final String CURRENTPROVIDER = "currentProvider";
   public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
+  public static final String PREFERREDWELLNESSPROVIDER = "preferredWellnessProvider";
   public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
   public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
   public static final String PREFERREDURGENTCAREPROVIDER = "preferredUrgentCareProvider";
@@ -323,7 +331,7 @@ public class Person implements Serializable, QuadTreeData {
       case Provider.INPATIENT:
         return this.getInpatientProvider(time);
       case Provider.WELLNESS:
-        return this.getAmbulatoryProvider(time);
+        return this.getWellnessProvider(time);
       case Provider.URGENTCARE:
         return this.getUrgentCareProvider(time);
       default:
@@ -347,6 +355,22 @@ public class Person implements Serializable, QuadTreeData {
     attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
   }
 
+  public Provider getWellnessProvider(long time) {
+    if (!attributes.containsKey(PREFERREDWELLNESSPROVIDER)) {
+      setWellnessProvider(time);
+    }
+    return (Provider) attributes.get(PREFERREDWELLNESSPROVIDER);
+  }
+
+  private void setWellnessProvider(long time) {
+    Provider provider = Provider.findClosestService(this, Provider.WELLNESS, time);
+    attributes.put(PREFERREDWELLNESSPROVIDER, provider);
+  }
+
+  public void setWellnessProvider(Provider provider) {
+    attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+  }
+  
   public Provider getInpatientProvider(long time) {
     if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER)) {
       setInpatientProvider(time);

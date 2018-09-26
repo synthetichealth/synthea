@@ -13,16 +13,38 @@ import java.util.Set;
 import org.junit.Test;
 
 public class ConfigTest {
-  @Test public void testConfig() throws URISyntaxException, FileNotFoundException, IOException {
+  @Test
+  public void testConfig() throws URISyntaxException, IOException {
     URI uri = ConfigTest.class.getResource("/test.properties").toURI();
     File file = new File(uri);
     Config.load(file);
     Set<String> propertyNames = Config.allPropertyNames();
     assertFalse(propertyNames.isEmpty());
-    
-    String[] expected = { "test.foo.bar", "test.foo.baz", "test.bar", "foo" };
+
+    String[] expected = {"test.foo.bar", "test.foo.baz", "test.bar", "foo"};
     for (String key : expected) {
-      assertTrue(propertyNames.contains(key));      
+      assertTrue(propertyNames.contains(key));
     }
+  }
+
+  @Test
+  public void testSetAndUnsetConfig() throws IOException, URISyntaxException {
+    URI uri = ConfigTest.class.getResource("/test.properties").toURI();
+    File file = new File(uri);
+    Config.load(file);
+    Set<String> propertyNames = Config.allPropertyNames();
+    assertFalse(propertyNames.isEmpty());
+
+    assertFalse(propertyNames.contains("bing.bong.do"));
+    Config.set("bing.bong.do", "true");
+
+    propertyNames = Config.allPropertyNames();
+    assertFalse(propertyNames.isEmpty());
+    assertTrue(propertyNames.contains("bing.bong.do"));
+
+    Config.remove("bing.bong.do");
+    propertyNames = Config.allPropertyNames();
+    assertFalse(propertyNames.contains("bing.bong.do"));
+
   }
 }

@@ -110,7 +110,7 @@
         }
       ]
     },
-    "Age <1": {
+    "Age Less Than 1": {
       "type": "Delay",
       "exact": {
         "quantity": 1,
@@ -168,7 +168,7 @@
           "transition": "Neonatal_screening",
           "condition": {
             "condition_type": "PriorState",
-            "name": "Age <1"
+            "name": "Age Less Than 1"
           }
         },
         {
@@ -591,7 +591,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Age <1",
+          "transition": "Age Less Than 1",
           "distribution": 0.657
         },
         {

@@ -37,8 +37,7 @@ public abstract class Config {
   /**
    * Get a named property.
    *
-   * @param key
-   *          property name
+   * @param key property name
    * @return value for the property, or null if not found
    */
   public static String get(String key) {
@@ -48,10 +47,8 @@ public abstract class Config {
   /**
    * Get a named property, or the default value if not found.
    *
-   * @param key
-   *          property name
-   * @param defaultValue
-   *          value to return if the property is not found in the list
+   * @param key          property name
+   * @param defaultValue value to return if the property is not found in the list
    * @return value for the property, or defaultValue if not found
    */
   public static String get(String key, String defaultValue) {
@@ -61,10 +58,8 @@ public abstract class Config {
   /**
    * Manually set a property.
    *
-   * @param key
-   *          property name
-   * @param value
-   *          property value
+   * @param key   property name
+   * @param value property value
    */
   public static void set(String key, String value) {
     properties.setProperty(key, value);
@@ -72,7 +67,7 @@ public abstract class Config {
 
   /**
    * Get a set of the names for all properties in the config file.
-   * 
+   *
    * <p>Returns a set of keys in this property list where the key and its corresponding value are
    * strings, including distinct keys in the default property list if a key of the same name has not
    * already been found from the main properties list. Properties whose key or value is not of type
@@ -84,4 +79,16 @@ public abstract class Config {
   public static Set<String> allPropertyNames() {
     return properties.stringPropertyNames();
   }
+
+  /**
+   * Unset a configuration value.
+   *
+   * @param key property name
+   */
+  public static void remove(String key) {
+    if (properties.stringPropertyNames().contains(key)) {
+      properties.remove(key);
+    }
+  }
+
 }

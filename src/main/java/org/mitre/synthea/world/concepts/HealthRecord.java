@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
@@ -166,6 +167,8 @@ public class HealthRecord {
   }
 
   public class Immunization extends Entry {
+    public int series = -1;
+
     public Immunization(long start, String type) {
       super(start, type);
     }
@@ -173,6 +176,8 @@ public class HealthRecord {
 
   public class Procedure extends Entry {
     public List<Code> reasons;
+    public Provider provider;
+    public Clinician clinician;
 
     public Procedure(long time, String type) {
       super(time, type);
@@ -292,7 +297,7 @@ public class HealthRecord {
     public List<Entry> conditions;
     public List<Entry> allergies;
     public List<Procedure> procedures;
-    public List<Entry> immunizations;
+    public List<Immunization> immunizations;
     public List<Medication> medications;
     public List<CarePlan> careplans;
     public List<ImagingStudy> imagingStudies;
@@ -300,6 +305,7 @@ public class HealthRecord {
     public Code reason;
     public Code discharge;
     public Provider provider;
+    public Clinician clinician;
     public boolean ended;
 
     public Encounter(long time, String type) {
@@ -320,7 +326,7 @@ public class HealthRecord {
       conditions = new ArrayList<Entry>();
       allergies = new ArrayList<Entry>();
       procedures = new ArrayList<Procedure>();
-      immunizations = new ArrayList<Entry>();
+      immunizations = new ArrayList<Immunization>();
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();

@@ -12,10 +12,12 @@ import java.util.Random;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 
 public class Location {
-  private static Map<String, String> stateAbbreviations = loadAbbreviations();
+  private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
+  private static Map<String, String> timezones = loadTimezones();
 
   private long totalPopulation;
 
@@ -23,7 +25,8 @@ public class Location {
   private Map<String, Long> populationByCity;
   private Map<String, List<Place>> zipCodes;
 
-  private String city;
+  public final String city;
+  public final String state;
   private Map<String, Demographics> demographics;
 
   /**
@@ -36,6 +39,7 @@ public class Location {
   public Location(String state, String city) {
     try {
       this.city = city;
+      this.state = state;
       
       Table<String,String,Demographics> allDemographics = Demographics.load(state);
       
@@ -187,8 +191,44 @@ public class Location {
     }
   }
 
-  private static Map<String, String> loadAbbreviations() {
-    Map<String, String> abbreviations = new HashMap<String, String>();
+  /**
+   * Assign a geographic location to the given Clinician. Location includes City, State, Zip, and
+   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
+   * that city. If cityName is not given, then picks a random city from the list of all cities.
+   * 
+   * @param clinician
+   *          Clinician to assign location information
+   * @param cityName
+   *          Name of the city, or null to choose one randomly
+   */
+  public void assignPoint(Clinician clinician, String cityName) {
+    List<Place> zipsForCity = null;
+
+    if (cityName == null) {
+      int size = zipCodes.keySet().size();
+      cityName = (String) zipCodes.keySet().toArray()[clinician.randInt(size)];
+    }
+    zipsForCity = zipCodes.get(cityName);
+
+    if (zipsForCity == null) {
+      zipsForCity = zipCodes.get(cityName + " Town");
+    }
+    
+    Place place = null;
+    if (zipsForCity.size() == 1) {
+      place = zipsForCity.get(0);
+    } else {
+      // pick a random one
+      place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
+    }
+    
+    if (place != null) {
+      clinician.attributes.put(Person.COORDINATE, place.getLatLon());
+    }
+  }
+  
+  private static LinkedHashMap<String, String> loadAbbreviations() {
+    LinkedHashMap<String, String> abbreviations = new LinkedHashMap<String, String>();
     String filename = null;
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
@@ -217,6 +257,24 @@ public class Location {
   }
   
   /**
+   * Get the index for a state. This maybe useful for
+   * exporters where you want to generate a list of unique
+   * identifiers that do not collide across state-boundaries.
+   * @param state State name. e.g. "Massachusetts"
+   * @return state index. e.g. 1 or 50
+   */
+  public static int getIndex(String state) {
+    int index = 0;
+    for (String stateName : stateAbbreviations.keySet()) {
+      if (stateName.equals(state)) {
+        return index;
+      }
+      index++;
+    }
+    return index;
+  }
+
+  /**
    * Get the state name from an abbreviation.
    * @param abbreviation State abbreviation. e.g. "MA"
    * @return state name. e.g. "Massachusetts"
@@ -228,5 +286,35 @@ public class Location {
       }
     }
     return null;
+  }
+
+  private static Map<String, String> loadTimezones() {
+    HashMap<String, String> timezones = new HashMap<String, String>();
+    String filename = null;
+    try {
+      filename = Config.get("generate.geography.timezones.default_file");
+      String csv = Utilities.readResource(filename);
+      List<? extends Map<String,String>> tzlist = SimpleCSV.parse(csv);
+
+      for (Map<String,String> line : tzlist) {
+        String state = line.get("STATE");
+        String timezone = line.get("TIMEZONE");
+        timezones.put(state, timezone);
+      }
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load timezones csv: " + filename);
+      e.printStackTrace();
+    }
+    return timezones;
+  }
+
+  /**
+   * Get the full name of the timezone by the full name of the state.
+   * Timezones are approximate.
+   * @param state The full name of the state (e.g. "Massachusetts")
+   * @return The full name of the timezone (e.g. "Eastern Standard Time")
+   */
+  public static String getTimezoneByState(String state) {
+    return timezones.get(state);
   }
 }

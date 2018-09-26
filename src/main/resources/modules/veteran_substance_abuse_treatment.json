@@ -1,0 +1,250 @@
+{
+  "name": "Veteran Substance Abuse Treatment",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Veteran Guard"
+    },
+    "Smoking_Condition": {
+      "type": "ConditionOnset",
+      "target_encounter": "Wellness Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 449868002,
+          "display": "Smokes tobacco daily"
+        }
+      ],
+      "direct_transition": "Smoking_Careplan"
+    },
+    "Smoking_Careplan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "reason": "Smoking_Condition",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 710081004,
+          "display": "smoking cessation therapy"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Smoking Medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking_medication",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Alcohol Check"
+        }
+      ]
+    },
+    "Smoking Medication": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198031,
+          "display": "24hr nicotine transdermal patch"
+        }
+      ],
+      "direct_transition": "Alcohol Check",
+      "reason": "Smoking_Condition",
+      "assign_to_attribute": "smoking_medication"
+    },
+    "Alcohol Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Alcohol Diagnosis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholism",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "SUD check"
+        }
+      ]
+    },
+    "Alcohol Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 7200002,
+          "display": "Alcoholism"
+        }
+      ],
+      "direct_transition": "Alcoholism_Care_Plan"
+    },
+    "Wellness Encounter": {
+      "type": "Encounter",
+      "direct_transition": "Smoking_Check",
+      "wellness": true
+    },
+    "encounter_end": {
+      "type": "EncounterEnd",
+      "direct_transition": "smoking post treatment"
+    },
+    "smoking symptom post treatment": {
+      "type": "SetAttribute",
+      "attribute": "smoking",
+      "direct_transition": "alcoholism post treatment"
+    },
+    "alcoholism post treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "alcoholism symptom post treatment",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Loop_Back_To_Encounter",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "smoking post treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "alcoholism post treatment",
+          "distribution": 0.95
+        },
+        {
+          "transition": "smoking symptom post treatment",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "alcoholism symptom post treatment": {
+      "type": "SetAttribute",
+      "attribute": "alcoholism",
+      "direct_transition": "Loop_Back_To_Encounter"
+    },
+    "Opioid Addiction Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "Opioid Abuse Diagnosis",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313071005,
+          "display": "Counseling for substance abuse (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 408935001,
+          "display": "Substance abuse prevention education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 408936000,
+          "display": "Substance abuse prevention management (procedure)"
+        }
+      ]
+    },
+    "Veteran Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Wellness Encounter"
+    },
+    "SUD check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Opioid Addiction Care Plan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid_addiction",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "encounter_end"
+        }
+      ]
+    },
+    "Opioid Abuse Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5602001,
+          "display": "Opioid abuse (disorder)"
+        }
+      ],
+      "direct_transition": "encounter_end"
+    },
+    "Smoking_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Smoking_Condition",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoking",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcohol Check"
+        }
+      ]
+    },
+    "Alcoholism_Care_Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care Plan"
+        }
+      ],
+      "direct_transition": "SUD check",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 24165007,
+          "display": "Alcoholism counseling"
+        }
+      ]
+    },
+    "Loop_Back_To_Encounter": {
+      "type": "Simple",
+      "direct_transition": "Wellness Encounter",
+      "remarks": [
+        "Added this state just so that only one path goes back up to the top"
+      ]
+    }
+  }
+}
