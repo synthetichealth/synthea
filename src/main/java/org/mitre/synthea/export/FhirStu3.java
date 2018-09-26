@@ -97,7 +97,6 @@ import org.hl7.fhir.dstu3.model.Timing;
 import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
-import org.hl7.fhir.dstu3.model.UriType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Config;
@@ -836,23 +835,35 @@ public class FhirStu3 {
   }
 
   /**
+   * Create an extension in with a valueMoney in USD.
+   * @param url The url of the extension.
+   * @param value The value in USD.
+   * @return the Extension
+   */
+  private static Extension createMoneyExtension(String url, double value) {
+    Money money = new Money();
+    money.setValue(value);
+    money.setSystem("urn:iso:std:iso:4217");
+    money.setCode("USD");
+
+    Extension extension = new Extension();
+    extension.setUrl(url);
+    extension.setValue(money);
+
+    return extension;
+  }
+
+  /**
    * Create an explanation of benefit resource for each claim, detailing insurance
    * information.
    *
-   * @param personEntry
-   *         Entry for the person
-   * @param bundle
-   *         The Bundle to add to
-   * @param encounterEntry
-   *         The current Encounter
-   * @param claim
-   *         the Claim object
-   * @param person
-   *          the person the health record belongs to
-   * @param encounter
-   *          the current Encounter as an object
-   *
-   * @return  the added entry
+   * @param personEntry Entry for the person
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter
+   * @param claim the Claim object
+   * @param person the person the health record belongs to
+   * @param encounter the current Encounter as an object
+   * @return the added entry
    */
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
@@ -884,142 +895,91 @@ public class FhirStu3 {
     if (inpatient) {
       //https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Indirect-Medical-Education-IME
       // Extra cost for educational hospitals
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-ime-op-clm-val-amt-extension")
-          .setValue(new Money()
-              .setValue(400)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-ime-op-clm-val-amt-extension",
+          400));
+
       // DSH payment-- Massachusetts does not make DSH payments at all, so set to 0 for now
       // https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-dsh-op-clm-val-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-dsh-op-clm-val-amt-extension",
+          0));
 
       // The pass through per diem rate
       // not really defined by CMS
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pass-thru-per-diem-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pass-thru-per-diem-amt-extension",
+          0));
 
       // Professional charge
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-profnl-cmpnt-chrg-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-profnl-cmpnt-chrg-amt-extension",
+          0));
 
       // total claim PPS charge
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-tot-pps-cptl-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-tot-pps-cptl-amt-extension",
+          0));
 
       // Deductible Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-ip-ddctbl-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-ip-ddctbl-amt-extension",
+          0));
 
       // Coinsurance Liability
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-pta-coinsrnc-lblty-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-pta-coinsrnc-lblty-amt-extension",
+          0));
 
       // Non-covered Charge Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-ip-ncvrd-chrg-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-ip-ncvrd-chrg-amt-extension",
+          0));
 
       // Total Deductible/Coinsurance Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-ip-tot-ddctn-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-ip-tot-ddctn-amt-extension",
+          0));
 
       // PPS Capital DSH Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-dsprprtnt-shr-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-dsprprtnt-shr-amt-extension",
+          0));
 
       // PPS Capital Exception Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-excptn-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-excptn-amt-extension",
+          0));
 
       // PPS FSP
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-fsp-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-fsp-amt-extension",
+          0));
 
       // PPS IME
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-ime-amt-extension")
-          .setValue(new Money()
-              .setValue(400)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-ime-amt-extension",
+          400));
 
       // PPS Capital Outlier Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-outlier-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-outlier-amt-extension",
+          0));
 
       // Old capital hold harmless amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-old-cptl-hld-hrmls-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-old-cptl-hld-hrmls-amt-extension",
+          0));
 
       // NCH DRG Outlier Approved Payment Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-drg-outlier-aprvd-pmt-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-drg-outlier-aprvd-pmt-amt-extension",
+          0));
 
-      UriType utp = new UriType();
-      utp.setValue("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-blood-ddctbl-lblty-am-extension");
       // NCH Beneficiary Blood Deductible Liability Amount
-      eob.addExtension().setUrlElement(utp)
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-blood-ddctbl-lblty-am-extension",
+          0));
 
       // Non-payment reason
       eob.addExtension()
@@ -1030,12 +990,9 @@ public class FhirStu3 {
               .setCode("N"));
 
       // Prepayment
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-prpayamt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-prpayamt-extension",
+          0));
 
       // FI or MAC number
       eob.addExtension()
@@ -1046,68 +1003,47 @@ public class FhirStu3 {
               .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-fi-num"));
     } else if (outpatient) {
       // Professional component charge amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-profnl-cmpnt-chrg-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-profnl-cmpnt-chrg-amt-extension",
+          0));
 
       // Deductible amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-ptb-ddctbl-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-ptb-ddctbl-amt-extension",
+          0));
 
       // Coinsurance amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-ptb-coinsrnc-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-ptb-coinsrnc-amt-extension",
+          0));
 
       // Provider Payment
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-op-prvdr-pmt-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-op-prvdr-pmt-amt-extension",
+          0));
 
       // Beneficiary payment
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-op-bene-pmt-amt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-op-bene-pmt-amt-extension",
+          0));
 
       // Beneficiary Blood Deductible Liability Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-blood-ddctbl-lblty-am-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-blood-ddctbl-lblty-am-extension",
+          0));
 
       // Claim Medicare Non Payment Reason Code
       eob.addExtension()
           .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-mdcr-non-pmt-rsn-cd-extension")
           .setValue(new Coding()
-              .setDisplay("N")
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+              .setDisplay("All other reasons for non-payment")
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-clm-mdcr-non-pmt-rsn-cd")
+              .setCode("N"));
 
       // NCH Primary Payer Claim Paid Amount
-      eob.addExtension()
-          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-prpayamt-extension")
-          .setValue(new Money()
-              .setValue(0)
-              .setSystem("urn:iso:std:iso:4217")
-              .setCode("USD"));
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-prpayamt-extension",
+          0));
 
       // FI or MAC number
       eob.addExtension()
