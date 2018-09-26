@@ -4,15 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.parser.StrictErrorHandler;
 
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
-import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
-import org.hl7.fhir.dstu3.model.CodeSystem;
-import org.hl7.fhir.dstu3.model.CodeSystem.ConceptDefinitionComponent;
-import org.hl7.fhir.dstu3.model.StructureDefinition;
-import org.hl7.fhir.dstu3.model.ValueSet;
-import org.hl7.fhir.dstu3.model.ValueSet.ConceptSetComponent;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URL;
@@ -23,6 +14,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
+import org.hl7.fhir.dstu3.model.CodeSystem;
+import org.hl7.fhir.dstu3.model.CodeSystem.ConceptDefinitionComponent;
+import org.hl7.fhir.dstu3.model.StructureDefinition;
+import org.hl7.fhir.dstu3.model.ValueSet;
+import org.hl7.fhir.dstu3.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
 
 /**
  * ValidationSupport provides implementation guide profiles (i.e. StructureDefinitions)
@@ -58,7 +58,7 @@ public class ValidationSupport implements IValidationSupport {
    * Loads the structure definitions from the given directory.
    * @param rootDir the directory to load structure definitions from
    * @return a list of structure definitions
-   * @throws Throwable
+   * @throws Throwable when there is an error reading the structure definitions.
    */
   private void loadFromDirectory(String rootDir) throws Throwable {
 
@@ -69,26 +69,26 @@ public class ValidationSupport implements IValidationSupport {
     Path path = Paths.get(profilesFolder.toURI());
     Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
         .filter(p -> p.toString().endsWith(".json")).forEach(f -> {
-      try {
-        IBaseResource resource = jsonParser.parseResource(new FileReader(f.toFile()));
-        resources.add(resource);
-        if (resource instanceof CodeSystem) {
-          CodeSystem cs = (CodeSystem) resource;
-          resourcesMap.put(cs.getUrl(), cs);
-          codeSystemMap.put(cs.getUrl(), cs);
-        } else if (resource instanceof ValueSet) {
-          ValueSet vs = (ValueSet) resource;
-          resourcesMap.put(vs.getUrl(), vs);
-        } else if (resource instanceof StructureDefinition) {
-          StructureDefinition sd = (StructureDefinition) resource;
-          resourcesMap.put(sd.getUrl(), sd);
-          definitions.add(sd);
-          definitionsMap.put(sd.getUrl(), sd);
-        }
-      } catch (FileNotFoundException e) {
-        throw new RuntimeException(e);
-      }
-    });
+          try {
+            IBaseResource resource = jsonParser.parseResource(new FileReader(f.toFile()));
+            resources.add(resource);
+            if (resource instanceof CodeSystem) {
+              CodeSystem cs = (CodeSystem) resource;
+              resourcesMap.put(cs.getUrl(), cs);
+              codeSystemMap.put(cs.getUrl(), cs);
+            } else if (resource instanceof ValueSet) {
+              ValueSet vs = (ValueSet) resource;
+              resourcesMap.put(vs.getUrl(), vs);
+            } else if (resource instanceof StructureDefinition) {
+              StructureDefinition sd = (StructureDefinition) resource;
+              resourcesMap.put(sd.getUrl(), sd);
+              definitions.add(sd);
+              definitionsMap.put(sd.getUrl(), sd);
+            }
+          } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+          }
+        });
   }
 
   @Override

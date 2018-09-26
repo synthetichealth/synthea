@@ -296,7 +296,8 @@ public abstract class Exporter {
     }
   }
 
-  public static String filename_per_encounter(Person person, String encounterNumber, String extension) {
+  public static String filename_per_encounter(Person person, String encounterNumber,
+      String extension) {
     if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
       return person.attributes.get(Person.ID) + "_" + encounterNumber + "." + extension;
     } else {

@@ -860,7 +860,7 @@ public class FhirStu3 {
 
     boolean inpatient = false;
     boolean outpatient = false;
-    if (encounter.type.equals(Provider.INPATIENT) |encounter.type.equals(Provider.AMBULATORY)) {
+    if (encounter.type.equals(Provider.INPATIENT) || encounter.type.equals(Provider.AMBULATORY)) {
       inpatient = true;
       // Provider enum doesn't include outpatient, but it can still be
       // an encounter type.
@@ -1453,7 +1453,7 @@ public class FhirStu3 {
     eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
         .setSequence(1)
         .setProvider(new Reference()
-//            .setReference(findProviderUrl(provider, bundle))
+            // .setReference(findProviderUrl(provider, bundle))
             .setIdentifier(new Identifier()
                 .setSystem("http://hl7.org/fhir/sid/us-npi")
                 // providers don't have an npi
@@ -1470,7 +1470,8 @@ public class FhirStu3 {
             // claim type, which is different from
             // the encounter type apparently.
             .setCode("71")
-            .setDisplay("Local carrier non-durable medical equipment, prosthetics, orthotics, and supplies (DMEPOS) claim"))
+            .setDisplay("Local carrier non-durable medical equipment, prosthetics, orthotics, "
+                + "and supplies (DMEPOS) claim"))
         .addCoding(new Coding()
             .setSystem("https://bluebutton.cms.gov/resources/codesystem/eob-type")
             // the code is chosen directly as

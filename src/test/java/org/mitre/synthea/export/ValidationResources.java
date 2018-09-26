@@ -4,11 +4,11 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
+import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
 import org.hl7.fhir.dstu3.hapi.validation.DefaultProfileValidationSupport;
+import org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator;
 import org.hl7.fhir.dstu3.hapi.validation.ValidationSupportChain;
 import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
-import org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,20 +49,20 @@ public class ValidationResources {
     // Show the issues
     for (SingleValidationMessage next : result.getMessages()) {
       switch (next.getSeverity()) {
-      case ERROR:
-        logger.error(next.getLocationString() + " - " + next.getMessage());
-        break;
-      case INFORMATION:
-        logger.info(next.getLocationString() + " - " + next.getMessage());
-        break;
-      case WARNING:
-        logger.warn(next.getLocationString() + " - " + next.getMessage());
-        break;
-      case FATAL:
-        logger.error(next.getLocationString() + " - " + next.getMessage());
-        break;
-      default:
-        logger.debug(next.getLocationString() + " - " + next.getMessage());
+        case ERROR:
+          logger.error(next.getLocationString() + " - " + next.getMessage());
+          break;
+        case INFORMATION:
+          logger.info(next.getLocationString() + " - " + next.getMessage());
+          break;
+        case WARNING:
+          logger.warn(next.getLocationString() + " - " + next.getMessage());
+          break;
+        case FATAL:
+          logger.error(next.getLocationString() + " - " + next.getMessage());
+          break;
+        default:
+          logger.debug(next.getLocationString() + " - " + next.getMessage());
       }
     }
     return result;
