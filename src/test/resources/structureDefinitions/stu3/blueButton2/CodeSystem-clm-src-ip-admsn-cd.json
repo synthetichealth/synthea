@@ -1,0 +1,119 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-src-ip-admsn-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-src-ip-admsn-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-src-ip-admsn-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim Source Inpatient Admission Code",
+  "title": "Claim Source Inpatient Admission Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-src-ip-admsn-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "ANOMALY: invalid value, if present, translate to '9'"
+    },
+    {
+      "code": "1",
+      "display": "Non-Health Care Facility Point of Origin (Physician Referral) – The patient was admitted to this facility upon an order of a physician."
+    },
+    {
+      "code": "2",
+      "display": "Clinic referral – The patient was admitted upon the recommendation of this facility's clinic physician."
+    },
+    {
+      "code": "3",
+      "display": "HMO referral - Reserved for national Prior to 3/08, HMO referral – The patient was admitted upon the recommendation of an health maintenance organization (HMO) physician."
+    },
+    {
+      "code": "4",
+      "display": "Transfer from hospital (Different Facility) – The patient was admitted to this facility as a hospital transfer from an acute care facility where he or she was an inpatient."
+    },
+    {
+      "code": "5",
+      "display": "Transfer from a skilled nursing facility (SNF) or Intermediate Care Facility (ICF) – The patient was admitted to this facility as a transfer from a SNF or ICF where he or she was a resident."
+    },
+    {
+      "code": "6",
+      "display": "Transfer from another health care facility – The patient was admitted to this facility as a transfer from another type of health care facility not defined elsewhere in this code list where he or she was an inpatient."
+    },
+    {
+      "code": "7",
+      "display": "Emergency room – The patient was admitted to this facility after receiving services in this facility's emergency room department (CMS discontinued this code 07/2010, although a small number of claims with this code appear after that time)."
+    },
+    {
+      "code": "8",
+      "display": "Court/law enforcement – The patient was admitted upon the direction of a court of law or upon the request of a law enforcement agency's representative."
+    },
+    {
+      "code": "9",
+      "display": "Information not available – The means by which the patient was admitted is not known."
+    },
+    {
+      "code": "A",
+      "display": "Reserved for National Assignment. (eff. 3/08) Prior to 3/08 defined as: Transfer from a Critical Access Hospital - patient was admitted/referred to this facility as a transfer from a Critical Access Hospital."
+    },
+    {
+      "code": "B",
+      "display": "Transfer from Another Home Health Agency – The patient was admitted to this home health agency as a transfer from another home health agency. (Discontinued July 1, 2010- See Condition Code 47)"
+    },
+    {
+      "code": "C",
+      "display": "Readmission to Same Home Health Agency – The patient was readmitted to this home health agency within the same home health episode period. (Discontinued July 1, 2010)"
+    },
+    {
+      "code": "D",
+      "display": "Transfer from hospital inpatient in the same facility resulting in a separate claim to the payer – The patient was admitted to this facility as a transfer from hospital inpatient within this facility resulting in a separate claim to the payer."
+    },
+    {
+      "code": "E",
+      "display": "Transfer from Ambulatory Surgical Center"
+    },
+    {
+      "code": "F",
+      "display": "Transfer from hospice and is under a hospice plan of care or enrolled in hospice program For Newborn Type of Admission"
+    },
+    {
+      "code": "1",
+      "display": "Normal delivery – A baby delivered without complications."
+    },
+    {
+      "code": "2",
+      "display": "Premature delivery – A baby delivered with time and/or weight factors qualifying it for premature status."
+    },
+    {
+      "code": "3",
+      "display": "Sick baby – A baby delivered with medical complications, other than those relating to premature status."
+    },
+    {
+      "code": "4",
+      "display": "Extramural birth – A baby delivered in a nonsterile environment."
+    },
+    {
+      "code": "5",
+      "display": "Reserved for national assignment."
+    },
+    {
+      "code": "6",
+      "display": "Reserved for national assignment."
+    },
+    {
+      "code": "7",
+      "display": "Reserved for national assignment."
+    },
+    {
+      "code": "8",
+      "display": "Reserved for national assignment."
+    },
+    {
+      "code": "9",
+      "display": "Information not available."
+    }
+  ]
+}

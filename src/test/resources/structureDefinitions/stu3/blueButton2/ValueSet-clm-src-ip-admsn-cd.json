@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "clm-src-ip-admsn-cd",
+  "url": "http://hl7.org/fhir/ValueSet/clm-src-ip-admsn-cd",
+  "version": "1.1.0",
+  "name": "Claim Source Inpatient Admission Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/clm-src-ip-admsn-cd"
+      }
+    ]
+  }
+}

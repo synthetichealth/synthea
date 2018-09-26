@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "clm-fac-type-cd",
+  "url": "http://hl7.org/fhir/ValueSet/clm-fac-type-cd",
+  "version": "1.1.0",
+  "name": "Claim Facility Type Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/clm-fac-type-cd"
+      }
+    ]
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "submsn-clr-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/submsn-clr-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/submsn-clr-cd"
+  },
+  "version": "1.1.0",
+  "name": "Submission clarification code",
+  "title": "Submission clarification code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/submsn-clr-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "00",
+      "display": "(Unknown value – rarely populated)"
+    },
+    {
+      "code": "05",
+      "display": "Therapy change. Physician determined that a change in therapy was required – either the medication was used faster than expected, or a different dosage form is needed."
+    },
+    {
+      "code": "07",
+      "display": "Emergency supply of non-formulary drugs (or formulary drugs which typically require step therapy or prior authorization). Medication has been determined by the physician to be medically necessary."
+    },
+    {
+      "code": "08",
+      "display": "Process compound for approved ingredients"
+    },
+    {
+      "code": "14",
+      "display": "LTC leave of absence – short fill required for take-home use"
+    },
+    {
+      "code": "16",
+      "display": "LTC emergency box (e box) /automated dispensing machine"
+    },
+    {
+      "code": "17",
+      "display": "LTC emergency supply remainder (remainder of drug from the emergency supply)"
+    },
+    {
+      "code": "18",
+      "display": "LTC patient admit/readmission indicator. This status required new dispensing of medication."
+    },
+    {
+      "code": "19",
+      "display": "Split billing. The quantity dispensed is the remainder billed to a subsequent payer after Medicare Part A benefits expired (partial payment under Part A)."
+    },
+    {
+      "code": "21",
+      "display": "LTC dispensing rule for <=14 day supply is not applicable due to CMS exclusion or the fact that the manufacturer’s packaging does not allow for special dispensing"
+    },
+    {
+      "code": "22",
+      "display": "LTC dispensing, 7-day supply"
+    },
+    {
+      "code": "23",
+      "display": "LTC dispensing, 4-day supply"
+    },
+    {
+      "code": "24",
+      "display": "LTC dispensing, 3-day supply"
+    },
+    {
+      "code": "25",
+      "display": "LTC dispensing, 2-day supply"
+    },
+    {
+      "code": "26",
+      "display": "LTC dispensing, 1-day supply"
+    },
+    {
+      "code": "27",
+      "display": "LTC dispensing, 4-day supply, then 3-day supply"
+    },
+    {
+      "code": "28",
+      "display": "LTC dispensing, 2-day supply, then 2-day supply, then 3-day supply"
+    },
+    {
+      "code": "29",
+      "display": "LTC dispensing, daily during the week then multiple days (3) for weekend"
+    },
+    {
+      "code": "30",
+      "display": "LTC dispensing, per shift (multiple medication passes)"
+    },
+    {
+      "code": "31",
+      "display": "LTC dispensing, per medication pass"
+    },
+    {
+      "code": "32",
+      "display": "LTC dispensing, PRN on demand"
+    },
+    {
+      "code": "33",
+      "display": "LTC dispensing, other <=7 day cycle"
+    },
+    {
+      "code": "34",
+      "display": "LTC dispensing, 14-day supply"
+    },
+    {
+      "code": "35",
+      "display": "LTC dispensing, other 8-14 day dispensing not listed above"
+    },
+    {
+      "code": "36",
+      "display": "LTC dispensing, outside short cycle, determined to be Part D after originally submitted to another payer"
+    },
+    {
+      "code": "42",
+      "display": "The prescriber ID submitted has been validated and is active (rarely populated)"
+    },
+    {
+      "code": "43",
+      "display": "For the prescriber ID submitted, the associated DEA number has been renewed or the renewal is in progress (rarely populated)"
+    },
+    {
+      "code": "44",
+      "display": "(Unknown value – rarely populated)"
+    },
+    {
+      "code": "45",
+      "display": "For the prescriber ID submitted, the associated DEA number is a valid hospital DEA number with suffix (rarely populated)"
+    },
+    {
+      "code": "Null",
+      "display": "Not applicable, beneficiary not in an LTC setting (or in the first two months of 2013, the presumption is there was greater than a 14-day supply)"
+    }
+  ]
+}

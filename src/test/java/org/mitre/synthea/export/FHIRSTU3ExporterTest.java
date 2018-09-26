@@ -5,14 +5,17 @@ import static org.junit.Assert.assertEquals;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
+import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -42,6 +45,8 @@ public class FHIRSTU3ExporterTest {
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
 
+    ValidationResources validationResources = new ValidationResources();
+
     List<String> validationErrors = new ArrayList<String>();
 
     int numberOfPeople = 10;
@@ -51,6 +56,7 @@ public class FHIRSTU3ExporterTest {
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
       Config.set("exporter.fhir.export", "true");
+      Config.set("exporter.fhir.use_shr_extensions", "true");
       FhirStu3.TRANSACTION_BUNDLE = person.random.nextBoolean();
       String fhirJson = FhirStu3.convertToFHIR(person, System.currentTimeMillis());
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
@@ -60,7 +66,7 @@ public class FHIRSTU3ExporterTest {
         // each individual entry.resource to get context-sensitive error
         // messages...
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+        for (BundleEntryComponent entry : bundle.getEntry()) {
           ValidationResult eresult = validator.validateWithResult(entry.getResource());
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
@@ -86,6 +92,23 @@ public class FHIRSTU3ExporterTest {
                 System.out.println(parser.encodeResourceToString(entry.getResource()));
                 System.out.println("ERROR: " + emessage.getMessage());
                 validationErrors.add(emessage.getMessage());
+              }
+            }
+          }
+          // Check ExplanationOfBenefit Resources against BlueButton
+          if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
+            ValidationResult bbResult = validationResources.validate(entry.getResource());
+
+            for (SingleValidationMessage message : bbResult.getMessages()) {
+              if (message.getSeverity() == ResultSeverityEnum.ERROR) {
+                if (!message.getMessage().contains(
+                    "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")) {
+                  // For some reason that validator is not detecting the IDs on the resources,
+                  // even though they appear to be present while debugging and during normal
+                  // operations.
+                  System.out.println(message.getSeverity() + ": " + message.getMessage());
+                  Assert.fail(message.getSeverity() + ": " + message.getMessage());
+                }
               }
             }
           }

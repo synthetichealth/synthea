@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "information-categories",
+  "url": "http://hl7.org/fhir/ValueSet/information-categories",
+  "version": "1.1.0",
+  "name": "Information Categories",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/information-categories"
+      }
+    ]
+  }
+}

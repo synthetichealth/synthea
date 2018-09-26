@@ -1,0 +1,31 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "ctstrphc-cvrg-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/ctstrphc-cvrg-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/ctstrphc-cvrg-cd"
+  },
+  "version": "1.1.0",
+  "name": "Catastrophic Coverage Code",
+  "title": "Catastrophic Coverage Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/ctstrphc-cvrg-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "A",
+      "display": "Attachment point met on this event"
+    },
+    {
+      "code": "C",
+      "display": "Above attachment point"
+    },
+    {
+      "code": "Blank",
+      "display": "Attachment point not met"
+    }
+  ]
+}

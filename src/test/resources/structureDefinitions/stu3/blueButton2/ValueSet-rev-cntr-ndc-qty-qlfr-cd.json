@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "rev-cntr-ndc-qty-qlfr-cd",
+  "url": "http://hl7.org/fhir/ValueSet/rev-cntr-ndc-qty-qlfr-cd",
+  "version": "1.1.0",
+  "name": "Revenue Center NDC Quantity Qualifier Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/rev-cntr-ndc-qty-qlfr-cd"
+      }
+    ]
+  }
+}

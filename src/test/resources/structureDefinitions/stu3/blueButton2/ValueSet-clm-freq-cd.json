@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "clm-freq-cd",
+  "url": "http://hl7.org/fhir/ValueSet/clm-freq-cd",
+  "version": "1.1.0",
+  "name": "Claim Frequency Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/clm-freq-cd"
+      }
+    ]
+  }
+}

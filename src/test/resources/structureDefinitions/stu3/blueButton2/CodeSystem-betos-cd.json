@@ -1,0 +1,443 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "betos-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/betos-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/betos-cd"
+  },
+  "version": "1.1.0",
+  "name": "Line Berenson-Eggers Type of Service (BETOS) Code",
+  "title": "Line Berenson-Eggers Type of Service (BETOS) Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/betos-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "M1A",
+      "display": "Office visits - new"
+    },
+    {
+      "code": "M1B",
+      "display": "Office visits - established"
+    },
+    {
+      "code": "M2A",
+      "display": "Hospital visit - initial"
+    },
+    {
+      "code": "M2B",
+      "display": "Hospital visit - subsequent"
+    },
+    {
+      "code": "M2C",
+      "display": "Hospital visit - critical care"
+    },
+    {
+      "code": "M3",
+      "display": "Emergency room visit"
+    },
+    {
+      "code": "M4A",
+      "display": "Home visit"
+    },
+    {
+      "code": "M4B",
+      "display": "Nursing home visit"
+    },
+    {
+      "code": "M5A",
+      "display": "Specialist - pathology"
+    },
+    {
+      "code": "M5B",
+      "display": "Specialist - psychiatry"
+    },
+    {
+      "code": "M5C",
+      "display": "Specialist - ophthalmology"
+    },
+    {
+      "code": "M5D",
+      "display": "Specialist - other"
+    },
+    {
+      "code": "M6",
+      "display": "Consultations"
+    },
+    {
+      "code": "P0",
+      "display": "Anesthesia"
+    },
+    {
+      "code": "P1A",
+      "display": "Major procedure - breast"
+    },
+    {
+      "code": "P1B",
+      "display": "Major procedure - colectomy"
+    },
+    {
+      "code": "P1C",
+      "display": "Major procedure - cholecystectomy"
+    },
+    {
+      "code": "P1D",
+      "display": "Major procedure - turp"
+    },
+    {
+      "code": "P1E",
+      "display": "Major procedure - hysterectomy"
+    },
+    {
+      "code": "P1F",
+      "display": "Major procedure - explor/decompr/excisdisc"
+    },
+    {
+      "code": "P1G",
+      "display": "Major procedure - Other"
+    },
+    {
+      "code": "P2A",
+      "display": "Major procedure, cardiovascular-CABG"
+    },
+    {
+      "code": "P2B",
+      "display": "Major procedure, cardiovascular-Aneurysm repair"
+    },
+    {
+      "code": "P2C",
+      "display": "Major Procedure, cardiovascular-Thromboendarterectomy"
+    },
+    {
+      "code": "P2D",
+      "display": "Major procedure, cardiovascualr-Coronary angioplasty (PTCA)"
+    },
+    {
+      "code": "P2E",
+      "display": "Major procedure, cardiovascular-Pacemaker insertion"
+    },
+    {
+      "code": "P2F",
+      "display": "Major procedure, cardiovascular-Other"
+    },
+    {
+      "code": "P3A",
+      "display": "Major procedure, orthopedic - Hip fracture repair"
+    },
+    {
+      "code": "P3B",
+      "display": "Major procedure, orthopedic - Hip replacement"
+    },
+    {
+      "code": "P3C",
+      "display": "Major procedure, orthopedic - Knee replacement"
+    },
+    {
+      "code": "P3D",
+      "display": "Major procedure, orthopedic - other"
+    },
+    {
+      "code": "P4A",
+      "display": "Eye procedure - corneal transplant"
+    },
+    {
+      "code": "P4B",
+      "display": "Eye procedure - cataract removal/lens insertion"
+    },
+    {
+      "code": "P4C",
+      "display": "Eye procedure - retinal detachment"
+    },
+    {
+      "code": "P4D",
+      "display": "Eye procedure - treatment of retinal lesions"
+    },
+    {
+      "code": "P4E",
+      "display": "Eye procedure - other"
+    },
+    {
+      "code": "P5A",
+      "display": "Ambulatory procedures - skin"
+    },
+    {
+      "code": "P5B",
+      "display": "Ambulatory procedures - musculoskeletal"
+    },
+    {
+      "code": "P5C",
+      "display": "Ambulatory procedures - inguinal hernia repair"
+    },
+    {
+      "code": "P5D",
+      "display": "Ambulatory procedures - lithotripsy"
+    },
+    {
+      "code": "P5E",
+      "display": "Ambulatory procedures - other"
+    },
+    {
+      "code": "P6A",
+      "display": "Minor procedures - skin"
+    },
+    {
+      "code": "P6B",
+      "display": "Minor procedures - musculoskeletal"
+    },
+    {
+      "code": "P6C",
+      "display": "Minor procedures - other (Medicare fee schedule)"
+    },
+    {
+      "code": "P6D",
+      "display": "Minor procedures - other (non-Medicare fee schedule)"
+    },
+    {
+      "code": "P7A",
+      "display": "Oncology - radiation therapy"
+    },
+    {
+      "code": "P7B",
+      "display": "Oncology - other"
+    },
+    {
+      "code": "P8A",
+      "display": "Endoscopy - arthroscopy"
+    },
+    {
+      "code": "P8B",
+      "display": "Endoscopy - upper gastrointestinal"
+    },
+    {
+      "code": "P8C",
+      "display": "Endoscopy - sigmoidoscopy"
+    },
+    {
+      "code": "P8D",
+      "display": "Endoscopy - colonoscopy"
+    },
+    {
+      "code": "P8E",
+      "display": "Endoscopy - cystoscopy"
+    },
+    {
+      "code": "P8F",
+      "display": "Endoscopy - bronchoscopy"
+    },
+    {
+      "code": "P8G",
+      "display": "Endoscopy - laparoscopic cholecystectomy"
+    },
+    {
+      "code": "P8H",
+      "display": "Endoscopy - laryngoscopy"
+    },
+    {
+      "code": "P8I",
+      "display": "Endoscopy - other"
+    },
+    {
+      "code": "P9A",
+      "display": "Dialysis services (Medicare fee schedule)"
+    },
+    {
+      "code": "P9B",
+      "display": "Dialysis services (non-Medicare fee schedule)"
+    },
+    {
+      "code": "I1A",
+      "display": "Standard imaging - chest"
+    },
+    {
+      "code": "I1B",
+      "display": "Standard imaging - musculoskeletal"
+    },
+    {
+      "code": "I1C",
+      "display": "Standard imaging - breast"
+    },
+    {
+      "code": "I1D",
+      "display": "Standard imaging - contrast gastrointestinal"
+    },
+    {
+      "code": "I1E",
+      "display": "Standard imaging - nuclear medicine"
+    },
+    {
+      "code": "I1F",
+      "display": "Standard imaging - other"
+    },
+    {
+      "code": "I2A",
+      "display": "Advanced imaging - CAT/CT/CTA: brain/head/neck"
+    },
+    {
+      "code": "I2B",
+      "display": "Advanced imaging - CAT/CT/CTA: other"
+    },
+    {
+      "code": "I2C",
+      "display": "Advanced imaging - MRI/MRA: brain/head/neck"
+    },
+    {
+      "code": "I2D",
+      "display": "Advanced imaging - MRI/MRA: other"
+    },
+    {
+      "code": "I3A",
+      "display": "Echography/ultrasonography - eye"
+    },
+    {
+      "code": "I3B",
+      "display": "Echography/ultrasonography - abdomen/pelvis"
+    },
+    {
+      "code": "I3C",
+      "display": "Echography/ultrasonography - heart"
+    },
+    {
+      "code": "I3D",
+      "display": "Echography/ultrasonography - carotid arteries"
+    },
+    {
+      "code": "I3E",
+      "display": "Echography/ultrasonography - prostate, transrectal"
+    },
+    {
+      "code": "I3F",
+      "display": "Echography/ultrasonography - other"
+    },
+    {
+      "code": "I4A",
+      "display": "Imaging/procedure - heart including cardiac catheterization"
+    },
+    {
+      "code": "I4B",
+      "display": "Imaging/procedure - other"
+    },
+    {
+      "code": "T1A",
+      "display": "Lab tests - routine venipuncture (non-Medicare fee schedule)"
+    },
+    {
+      "code": "T1B",
+      "display": "Lab tests - automated general profiles"
+    },
+    {
+      "code": "T1C",
+      "display": "Lab tests - urinalysis"
+    },
+    {
+      "code": "T1D",
+      "display": "Lab tests - blood counts"
+    },
+    {
+      "code": "T1E",
+      "display": "Lab tests - glucose"
+    },
+    {
+      "code": "T1F",
+      "display": "Lab tests - bacterial cultures"
+    },
+    {
+      "code": "T1G",
+      "display": "Lab tests - other (Medicare fee schedule)"
+    },
+    {
+      "code": "T1H",
+      "display": "Lab tests - other (non-Medicare fee schedule)"
+    },
+    {
+      "code": "T2A",
+      "display": "Other tests - electrocardiograms"
+    },
+    {
+      "code": "T2B",
+      "display": "Other tests - cardiovascular stress tests"
+    },
+    {
+      "code": "T2C",
+      "display": "Other tests - EKG monitoring"
+    },
+    {
+      "code": "T2D",
+      "display": "Other tests - other"
+    },
+    {
+      "code": "D1A",
+      "display": "Medical/surgical supplies"
+    },
+    {
+      "code": "D1B",
+      "display": "Hospital beds"
+    },
+    {
+      "code": "D1C",
+      "display": "Oxygen and supplies"
+    },
+    {
+      "code": "D1D",
+      "display": "Wheelchairs"
+    },
+    {
+      "code": "D1E",
+      "display": "Other DME"
+    },
+    {
+      "code": "D1F",
+      "display": "Prosthetic/Orthotic devices"
+    },
+    {
+      "code": "D1G",
+      "display": "Drugs Administered through DME"
+    },
+    {
+      "code": "O1A",
+      "display": "Ambulance"
+    },
+    {
+      "code": "O1B",
+      "display": "Chiropractic"
+    },
+    {
+      "code": "O1C",
+      "display": "Enteral and parenteral"
+    },
+    {
+      "code": "O1D",
+      "display": "Chemotherapy"
+    },
+    {
+      "code": "O1E",
+      "display": "Other drugs"
+    },
+    {
+      "code": "O1F",
+      "display": "Hearing and speech services"
+    },
+    {
+      "code": "O1G",
+      "display": "Immunizations/Vaccinations"
+    },
+    {
+      "code": "Y1",
+      "display": "Other - Medicare fee schedule"
+    },
+    {
+      "code": "Y2",
+      "display": "Other - non-Medicare fee schedule"
+    },
+    {
+      "code": "Z1",
+      "display": "Local codes"
+    },
+    {
+      "code": "Z2",
+      "display": "Undefined codes"
+    }
+  ]
+}

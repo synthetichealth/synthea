@@ -97,4 +97,23 @@ public class HealthInsuranceModule extends Module {
 
     return NO_INSURANCE;
   }
+
+  /**
+   * Get the insurance recorded for a person at a given time. The time
+   * must not be in the future or beyond the latest simulated date.
+   * @param person The person under question.
+   * @return A string categorization of insurance.
+   */
+  @SuppressWarnings("unchecked")
+  public static String getCurrentInsurance(Person person, long time) {
+    String result = NO_INSURANCE;
+    if (person.attributes.containsKey(INSURANCE)) {
+      List<String> insurance = (List<String>) person.attributes.get(INSURANCE);
+      int age = person.ageInYears(time);
+      if (insurance.get(age) == null) {
+        result = insurance.get(age);
+      }
+    }
+    return result;
+  }
 }

@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "prtcptng-ind-cd",
+  "url": "http://hl7.org/fhir/ValueSet/prtcptng-ind-cd",
+  "version": "1.1.0",
+  "name": "Line Provider Participating Indicator Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/prtcptng-ind-cd"
+      }
+    ]
+  }
+}

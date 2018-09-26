@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "race",
+  "url": "http://hl7.org/fhir/ValueSet/race",
+  "version": "1.1.0",
+  "name": "Blue Button Race Codes",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/race"
+      }
+    ]
+  }
+}

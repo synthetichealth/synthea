@@ -1,0 +1,48 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "race",
+  "url": "http://hl7.org/fhir/CodeSystem/race",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/race"
+  },
+  "version": "1.1.0",
+  "name": "Race Codes",
+  "title": "Race Codes",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/race",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "count": 7,
+  "concept": [
+    {
+      "code": "0",
+      "display": "Unknown"
+    },
+    {
+      "code": "1",
+      "display": "White"
+    },
+    {
+      "code": "2",
+      "display": "Black"
+    },
+    {
+      "code": "3",
+      "display": "Other"
+    },
+    {
+      "code": "4",
+      "display": "Asian"
+    },
+    {
+      "code": "5",
+      "display": "Hispanic"
+    },
+    {
+      "code": "6",
+      "display": "North American Native"
+    }
+  ]
+}

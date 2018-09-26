@@ -1,0 +1,67 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-hha-rfrl-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-hha-rfrl-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-hha-rfrl-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim HHA Referral Code",
+  "title": "Claim HHA Referral Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-hha-rfrl-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "1",
+      "display": "Physician referral - The patient was admitted upon the recommendation of a personal physician."
+    },
+    {
+      "code": "2",
+      "display": "Clinic referral - The patient was admitted upon the recommendation of this facility's clinic physician."
+    },
+    {
+      "code": "3",
+      "display": "HMO referral - The patient was admitted upon the recommendation of an health maintenance organization (HMO) physician."
+    },
+    {
+      "code": "4",
+      "display": "Transfer from hospital - The patient was admitted as an inpatient transfer from an acute care facility."
+    },
+    {
+      "code": "5",
+      "display": "Transfer from a skilled nursing facility (SNF) - The patient was admitted as an inpatient transfer from a SNF."
+    },
+    {
+      "code": "6",
+      "display": "Transfer from another health care facility - The patient was admitted as a transfer from a health care facility other than an acute care facility or SNF."
+    },
+    {
+      "code": "7",
+      "display": "Emergency room - The patient was admitted upon the recommendation of this facility's emergency room physician."
+    },
+    {
+      "code": "8",
+      "display": "Court/law enforcement - The patient was admitted upon the direction of a court of law or upon the request of a law enforcement agency's representative."
+    },
+    {
+      "code": "9",
+      "display": "Information not available - The means by which the patient was admitted is not known."
+    },
+    {
+      "code": "A",
+      "display": "Transfer from a Critical Access Hospital - patient was admitted/referred to this facility as a transfer from a Critical Access Hospital"
+    },
+    {
+      "code": "B",
+      "display": "Transfer from another HHA – Beneficiaries are permitted to transfer from one HHA to another unrelated HHA under HH PPS. (eff.10/00)"
+    },
+    {
+      "code": "C",
+      "display": "Readmission to same HHA - If a beneficiary is discharged from an HHA and then readmitted within the original 60-day episode, the original episode must be closed early and a new one created."
+    }
+  ]
+}

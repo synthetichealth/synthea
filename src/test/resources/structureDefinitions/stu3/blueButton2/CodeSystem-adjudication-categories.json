@@ -1,0 +1,55 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "adjudication-categories",
+  "url": "http://hl7.org/fhir/CodeSystem/adjudication-categories",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/adjudication-categories"
+  },
+  "version": "1.1.0",
+  "name": "Adjudication Categories",
+  "title": "Adjudication Categories",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/us/core/ValueSet/adjudications",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "Part D Covered",
+      "display": "Problem List Item"
+    },
+    {
+      "code": "Gross Drug Cost Below Out-of-Pocket Threshold (GDCB)",
+      "display": "Encounter Diagnosis"
+    },
+    {
+      "code": "Gross Drug Cost Above Out-of-Pocket Threshold (GDCA)",
+      "display": "Problem"
+    },
+    {
+      "code": "Patient Pay Amount",
+      "display": "Health Concern"
+    },
+    {
+      "code": "Other True Out-of-Pocket (TrOOP) Amount",
+      "display": "Cell"
+    },
+    {
+      "code": "Part D Low Income Subsidy (LICS) Amount",
+      "display": "Cell"
+    },
+    {
+      "code": "Reduction in patient liability due to payments by other payers (PLRO) Amount",
+      "display": "Cell"
+    },
+    {
+      "code": "Total Prescription Cost",
+      "display": "Cell"
+    },
+    {
+      "code": "Medicare Coverage Gap Discount Amount",
+      "display": "Cell"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "information-categories",
+  "url": "http://hl7.org/fhir/CodeSystem/information-categories",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/information-categories"
+  },
+  "version": "1.1.0",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/information-categories",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "daw-prod-slctn-cd",
+      "display": "Dispense as Written (DAW) Product Selection Code"
+    },
+    {
+      "code": "dspnsng-stus-cd",
+      "display": "Dispensing Status Code"
+    },
+    {
+      "code": "drug-cvrg-stus-cd",
+      "display": "Drug Coverage Status Code"
+    },
+    {
+      "code": "adjstmt-dltn-cd",
+      "display": "Adjustment Deletion Code"
+    },
+    {
+      "code": "nstd-frmt-cd",
+      "display": "Non-Standard Format Code"
+    },
+    {
+      "code": "prcng-excptn-cd",
+      "display": "Pricing Exception Code"
+    },
+    {
+      "code": "ctstrphc-cvrg-cd",
+      "display": "Catastrophic Coverage Code"
+    },
+    {
+      "code": "rx-orgn-cd",
+      "display": "Prescription Origination Code"
+    },
+    {
+      "code": "brnd-gnrc-cd",
+      "display": "Brand-Generic Code Reported by Submitting Plan"
+    },
+    {
+      "code": "phrmcy-srvc-type-cd",
+      "display": "Pharmacy service type code"
+    },
+    {
+      "code": "ptnt-rsdnc-cd",
+      "display": "Patient Residence Code"
+    },
+    {
+      "code": "submsn-clr-cd",
+      "display": "Submission clarification code"
+    },
+    {
+      "code": "nch-ptnt-stus-ind-cd",
+      "display": "NCH Patient Status Indicator Code"
+    },
+    {
+      "code": "clm-ip-admsn-type-cd",
+      "display": "Claim Inpatient Admission Type Code"
+    },
+    {
+      "code": "clm-src-ip-admsn-cd",
+      "display": "Claim Source Inpatient Admission Code"
+    },
+    {
+      "code": "clm-mco-pd-sw",
+      "display": "Claim MCO Paid Switch"
+    },
+    {
+      "code": "clm-freq-cd",
+      "display": "Claim Frequency Code"
+    },
+    {
+      "code": "ptnt-dschrg-stus-cd",
+      "display": "Patient Discharge Status Code"
+    },
+    {
+      "code": "nch-prmry-pyr-cd",
+      "display": "NCH Primary Payer Code (if not Medicare)"
+    },
+    {
+      "code": "clm-hha-lupa-ind-cd",
+      "display": "Claim HHA Low Utilization Payment Adjustment (LUPA) Indicator Code"
+    },
+    {
+      "code": "clm-hha-rfrl-cd",
+      "display": "Physician referral - The patient was admitted upon the recommendation of a personal physician"
+    }
+  ]
+}

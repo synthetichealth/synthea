@@ -1,0 +1,195 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "ptnt-dschrg-stus-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/ptnt-dschrg-stus-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/ptnt-dschrg-stus-cd"
+  },
+  "version": "1.1.0",
+  "name": "Patient Discharge Status Code",
+  "title": "Patient Discharge Status Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/ptnt-dschrg-stus-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Unknown Value (but present in data)"
+    },
+    {
+      "code": "01",
+      "display": "Discharged to home/self-care (routine charge)."
+    },
+    {
+      "code": "02",
+      "display": "Discharged/transferred to other short term general hospital for inpatient care."
+    },
+    {
+      "code": "03",
+      "display": "Discharged/transferred to skilled nursing facility (SNF) with Medicare certification in anticipation of covered skilled care -- (For hospitals with an approved swing bed arrangement, use Code 61 - swing bed. For reporting discharges/transfers to a non-certified SNF, the hospital must use Code 04 - ICF."
+    },
+    {
+      "code": "04",
+      "display": "Discharged/transferred to intermediate care facility (ICF)."
+    },
+    {
+      "code": "05",
+      "display": "Discharged/transferred to another type of institution for inpatient care (including distinct parts). NOTE: Effective 1/2005, psychiatric hospital or psychiatric distinct part unit of a hospital will no longer be identified by this code. New code is '65'."
+    },
+    {
+      "code": "06",
+      "display": "Discharged/transferred to home care of organized home health service organization."
+    },
+    {
+      "code": "07",
+      "display": "Left against medical advice or discontinued care."
+    },
+    {
+      "code": "08",
+      "display": "Discharged/transferred to home under care of a home IV drug therapy provider. (discontinued effective 10/1/05)"
+    },
+    {
+      "code": "09",
+      "display": "Admitted as an inpatient to this hospital (effective 3/1/91). In situations where a patient is admitted before midnight of the third day following the day of an outpatient service, the outpatient services are considered inpatient."
+    },
+    {
+      "code": "20",
+      "display": "Expired (patient did not recover)."
+    },
+    {
+      "code": "21",
+      "display": "Discharged/transferred to court/law enforcement."
+    },
+    {
+      "code": "30",
+      "display": "Still patient."
+    },
+    {
+      "code": "40",
+      "display": "Expired at home (hospice claims only)"
+    },
+    {
+      "code": "41",
+      "display": "Expired in a medical facility such as hospital, SNF, ICF, or freestanding hospice. (Hospice claims only)"
+    },
+    {
+      "code": "42",
+      "display": "Expired - place unknown (Hospice claims only)"
+    },
+    {
+      "code": "43",
+      "display": "Discharged/transferred to a federal hospital (eff. 10/1/03)"
+    },
+    {
+      "code": "50",
+      "display": "Discharged/transferred to a Hospice – home."
+    },
+    {
+      "code": "51",
+      "display": "Discharged/transferred to a Hospice – medical facility."
+    },
+    {
+      "code": "61",
+      "display": "Discharged/transferred within this institution to a hospital-based Medicare approved swing bed (eff. 9/01)"
+    },
+    {
+      "code": "62",
+      "display": "Discharged/transferred to an inpatient rehabilitation facility including distinct parts units of a hospital. (eff. 1/2002)"
+    },
+    {
+      "code": "63",
+      "display": "Discharged/transferred to a long term care hospitals. (eff. 1/2002)"
+    },
+    {
+      "code": "64",
+      "display": "Discharged/transferred to a nursing facility certified under Medicaid but not under Medicare (eff. 10/2002)"
+    },
+    {
+      "code": "65",
+      "display": "Discharged/Transferred to a psychiatric hospital or psychiatric distinct unit of a hospital (these types of hospitals were pulled from patient/discharge status code '05' and given their own code). (eff. 1/2005)."
+    },
+    {
+      "code": "66",
+      "display": "Discharged/transferred to a Critical Access Hospital (CAH) (eff. 1/1/06)"
+    },
+    {
+      "code": "69",
+      "display": "Discharged/transferred to a designated disaster alternative care site (starting 10/2013; applies only to particular MS-DRGs*)"
+    },
+    {
+      "code": "70",
+      "display": "Discharged/transferred to another type of health care institution not defined elsewhere in code list."
+    },
+    {
+      "code": "71",
+      "display": "Discharged/transferred/referred to another institution for outpatient services as specified by the discharge plan of care (eff. 9/01) (discontinued effective 10/1/05)"
+    },
+    {
+      "code": "72",
+      "display": "Discharged/transferred/referred to this institution for outpatient services as specified by the discharge plan of care (eff. 9/01) (discontinued effective 10/1/05) The following codes apply only to particular MS-DRGs*, and were new in 10/2013:"
+    },
+    {
+      "code": "81",
+      "display": "Discharged to home or self-care with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "82",
+      "display": "Discharged/transferred to a short term general hospital for inpatient care with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "83",
+      "display": "Discharged/transferred to a skilled nursing facility (SNF) with Medicare certification with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "84",
+      "display": "Discharged/transferred to a facility that provides custodial or supportive care with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "85",
+      "display": "Discharged/transferred to a designated cancer center or children’s hospital with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "86",
+      "display": "Discharged/transferred to home under care of organized home health service organization with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "87",
+      "display": "Discharged/transferred to court/law enforcement with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "88",
+      "display": "Discharged/transferred to a federal health care facility with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "89",
+      "display": "Discharged/transferred to a hospital-based Medicare approved swing bed with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "90",
+      "display": "Discharged/transferred to an inpatient rehabilitation facility (IRF) including rehabilitation distinct part units of a hospital with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "91",
+      "display": "Discharged/transferred to a Medicare certified long term care hospital (LTCH) with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "92",
+      "display": "Discharged/transferred to a nursing facility certified under Medicaid but not certified under Medicare with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "93",
+      "display": "Discharged/transferred to a psychiatric distinct part unit of a hospital with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "94",
+      "display": "Discharged/transferred to a critical access hospital (CAH) with a planned acute care hospital inpatient readmission."
+    },
+    {
+      "code": "95",
+      "display": "Discharged/transferred to another type of health care institution not defined elsewhere in this code list with a planned acute care hospital inpatient readmission."
+    }
+  ]
+}

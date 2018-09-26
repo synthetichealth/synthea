@@ -1,0 +1,47 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "rx-orgn-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/rx-orgn-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/rx-orgn-cd"
+  },
+  "version": "1.1.0",
+  "name": "Prescription Origination Code",
+  "title": "Prescription Origination Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/rx-orgn-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "Null",
+      "display": "Unknown"
+    },
+    {
+      "code": "0",
+      "display": "Not specified"
+    },
+    {
+      "code": "1",
+      "display": "Written"
+    },
+    {
+      "code": "2",
+      "display": "Telephone"
+    },
+    {
+      "code": "3",
+      "display": "Electronic"
+    },
+    {
+      "code": "4",
+      "display": "Facsimile"
+    },
+    {
+      "code": "5",
+      "display": "Pharmacy"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -49,6 +50,7 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
@@ -58,9 +60,11 @@ import org.hl7.fhir.dstu3.model.Dosage;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.ExplanationOfBenefit;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Goal.GoalStatus;
 import org.hl7.fhir.dstu3.model.HumanName;
+import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.dstu3.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.dstu3.model.ImagingStudy.InstanceAvailability;
@@ -81,9 +85,11 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.PositiveIntType;
+import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.ReferralRequest;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
@@ -96,6 +102,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -253,7 +260,11 @@ public class FhirStu3 {
       }
 
       // one claim per encounter
-      encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
+      BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle,
+          encounterEntry, encounter.claim);
+
+      explanationOfBenefit(personEntry,bundle,encounterEntry,person,
+          (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource(), encounter);
     }
 
     String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
@@ -735,14 +746,23 @@ public class FhirStu3 {
       if (Costs.hasCost(item)) {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
+        Code primaryCode = item.codes.get(0);
 
+        CodeableConcept serviceProvided = new CodeableConcept()
+            .addCoding(new Coding()
+                .setCode(primaryCode.code)
+                .setVersion("v1")
+                // Temporarily set the system to SNOMED.  Should be
+                // changed when Terminology branch gets merged and
+                // system names can be translated to their URI's
+                .setSystem(SNOMED_URI));
+        claimItem.setService(serviceProvided);
         // calculate the cost of the procedure
         Money moneyResource = new Money();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
         moneyResource.setValue(item.cost());
         claimItem.setNet(moneyResource);
-        claimResource.addItem(claimItem);
 
         if (item instanceof HealthRecord.Procedure) {
           Type procedureReference = new Reference(item.fullUrl);
@@ -750,6 +770,7 @@ public class FhirStu3 {
               new PositiveIntType(procedureSequence), procedureReference);
           claimResource.addProcedure(claimProcedure);
           claimItem.addProcedureLinkId(procedureSequence);
+
           procedureSequence++;
         } else {
           Reference informationReference = new Reference(item.fullUrl);
@@ -763,8 +784,11 @@ public class FhirStu3 {
           informationComponent.setCategory(category);
           claimResource.addInformation(informationComponent);
           claimItem.addInformationLinkId(informationSequence);
+          claimItem.setService(claimResource.getType());
+
           informationSequence++;
         }
+        claimResource.addItem(claimItem);
       } else {
         // assume it's a Condition, we don't have a Condition class specifically
         // add diagnosisComponent to claim
@@ -791,6 +815,605 @@ public class FhirStu3 {
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource);
+  }
+
+  /**
+   * Create an extension in with a valueMoney in USD.
+   * @param url The url of the extension.
+   * @param value The value in USD.
+   * @return the Extension
+   */
+  private static Extension createMoneyExtension(String url, double value) {
+    Money money = new Money();
+    money.setValue(value);
+    money.setSystem("urn:iso:std:iso:4217");
+    money.setCode("USD");
+
+    Extension extension = new Extension();
+    extension.setUrl(url);
+    extension.setValue(money);
+
+    return extension;
+  }
+
+  /**
+   * Create an explanation of benefit resource for each claim, detailing insurance
+   * information.
+   *
+   * @param personEntry Entry for the person
+   * @param bundle The Bundle to add to
+   * @param encounterEntry The current Encounter
+   * @param claim the Claim object
+   * @param person the person the health record belongs to
+   * @param encounter the current Encounter as an object
+   * @return the added entry
+   */
+  private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
+                                           Bundle bundle, BundleEntryComponent encounterEntry,
+                                           Person person, org.hl7.fhir.dstu3.model.Claim claim,
+                                           Encounter encounter) {
+    boolean inpatient = false;
+    boolean outpatient = false;
+    if (encounter.type.equals(Provider.INPATIENT) || encounter.type.equals(Provider.AMBULATORY)) {
+      inpatient = true;
+      // Provider enum doesn't include outpatient, but it can still be
+      // an encounter type.
+    } else if (encounter.type.equals("outpatient")) {
+      outpatient = true;
+    }
+    ExplanationOfBenefit eob = new ExplanationOfBenefit();
+    org.hl7.fhir.dstu3.model.Encounter encounterResource =
+        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
+
+    Meta meta = new Meta();
+    if (inpatient) {
+      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
+    }  else if (outpatient) {
+      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim");
+    }
+    eob.setMeta(meta);
+
+    // First add the extensions
+    // will have to deal with different claim types (e.g. inpatient vs outpatient)
+    if (inpatient) {
+      //https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Indirect-Medical-Education-IME
+      // Extra cost for educational hospitals
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-ime-op-clm-val-amt-extension",
+          400));
+
+      // DSH payment-- Massachusetts does not make DSH payments at all, so set to 0 for now
+      // https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-dsh-op-clm-val-amt-extension",
+          0));
+
+      // The pass through per diem rate
+      // not really defined by CMS
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pass-thru-per-diem-amt-extension",
+          0));
+
+      // Professional charge
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-profnl-cmpnt-chrg-amt-extension",
+          0));
+
+      // total claim PPS charge
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-tot-pps-cptl-amt-extension",
+          0));
+
+      // Deductible Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-ip-ddctbl-amt-extension",
+          0));
+
+      // Coinsurance Liability
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-pta-coinsrnc-lblty-amt-extension",
+          0));
+
+      // Non-covered Charge Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-ip-ncvrd-chrg-amt-extension",
+          0));
+
+      // Total Deductible/Coinsurance Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-ip-tot-ddctn-amt-extension",
+          0));
+
+      // PPS Capital DSH Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-dsprprtnt-shr-amt-extension",
+          0));
+
+      // PPS Capital Exception Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-excptn-amt-extension",
+          0));
+
+      // PPS FSP
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-fsp-amt-extension",
+          0));
+
+      // PPS IME
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-ime-amt-extension",
+          400));
+
+      // PPS Capital Outlier Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-cptl-outlier-amt-extension",
+          0));
+
+      // Old capital hold harmless amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-pps-old-cptl-hld-hrmls-amt-extension",
+          0));
+
+      // NCH DRG Outlier Approved Payment Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-drg-outlier-aprvd-pmt-amt-extension",
+          0));
+
+      // NCH Beneficiary Blood Deductible Liability Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-nch-bene-blood-ddctbl-lblty-am-extension",
+          0));
+
+      // Non-payment reason
+      eob.addExtension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-mdcr-non-pmt-rsn-cd-extension")
+          .setValue(new Coding()
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-clm-mdcr-non-pmt-rsn-cd")
+              .setDisplay("All other reasons for non-payment")
+              .setCode("N"));
+
+      // Prepayment
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-prpayamt-extension",
+          0));
+
+      // FI or MAC number
+      eob.addExtension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-fi-num-extension")
+          .setValue(new Identifier()
+              .setValue("002000")
+              // No system page exists yet
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-fi-num"));
+    } else if (outpatient) {
+      // Professional component charge amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-profnl-cmpnt-chrg-amt-extension",
+          0));
+
+      // Deductible amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-ptb-ddctbl-amt-extension",
+          0));
+
+      // Coinsurance amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-ptb-coinsrnc-amt-extension",
+          0));
+
+      // Provider Payment
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-op-prvdr-pmt-amt-extension",
+          0));
+
+      // Beneficiary payment
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-op-bene-pmt-amt-extension",
+          0));
+
+      // Beneficiary Blood Deductible Liability Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-nch-bene-blood-ddctbl-lblty-am-extension",
+          0));
+
+      // Claim Medicare Non Payment Reason Code
+      eob.addExtension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-clm-mdcr-non-pmt-rsn-cd-extension")
+          .setValue(new Coding()
+              .setDisplay("All other reasons for non-payment")
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-clm-mdcr-non-pmt-rsn-cd")
+              .setCode("N"));
+
+      // NCH Primary Payer Claim Paid Amount
+      eob.addExtension(createMoneyExtension(
+          "https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-prpayamt-extension",
+          0));
+
+      // FI or MAC number
+      eob.addExtension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-fi-num-extension")
+          .setValue(new Identifier()
+              .setValue("002000")
+              // No system page exists yet
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-fi-num"));
+    }
+
+    // according to CMS guidelines claims have 12 months to be
+    // billed, so we set the billable period to 1 year after
+    // services have ended (the encounter ends).
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(encounterResource.getPeriod().getEnd());
+    cal.add(Calendar.YEAR,1);
+
+    Period billablePeriod = new Period()
+        .setStart(encounterResource
+            .getPeriod()
+            .getEnd())
+        .setEnd(cal.getTime());
+    if (inpatient) {
+      billablePeriod.addExtension(new Extension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim-query-cd-extension")
+          .setValue(new Coding()
+              .setCode("3")
+              .setSystem("https://bluebutton.cms.gov/assets/ig/ValueSet-claim-query-cd")
+              .setDisplay("Final Bill")));
+    } else if (outpatient) {
+      billablePeriod.addExtension(new Extension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim-query-cd-extension")
+          .setValue(new Coding()
+              .setCode("3")
+              .setSystem("https://bluebutton.cms.gov/assets/ig/ValueSet-claim-query-cd")
+              .setDisplay("Final Bill")));
+    }
+
+    eob.setBillablePeriod(billablePeriod);
+
+    // cost is hardcoded to be USD in claim so this should be fine as well
+    Money totalCost = new Money();
+    totalCost.setSystem("urn:iso:std:iso:4217");
+    totalCost.setCode("USD");
+    totalCost.setValue(encounter.claim.total());
+    eob.setTotalCost(totalCost);
+
+    // Set References
+    eob.setPatient(new Reference(personEntry.getFullUrl()));
+    eob.setOrganizationTarget(claim.getOrganizationTarget());
+
+    // get the insurance info at the time that the encounter happened
+    String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+    Coverage coverage = new Coverage();
+    coverage.setId("coverage");
+    coverage.setType(new CodeableConcept().setText(insurance));
+    eob.addContained(coverage);
+    ExplanationOfBenefit.InsuranceComponent insuranceComponent =
+        new ExplanationOfBenefit.InsuranceComponent();
+    insuranceComponent.setCoverage(new Reference("#coverage"));
+    eob.setInsurance(insuranceComponent);
+
+    eob.addIdentifier()
+        .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
+        .setValue(claim.getId());
+    // Hardcoded group id
+    eob.addIdentifier()
+        .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
+        .setValue("99999999999");
+
+    eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
+    if (!inpatient && !outpatient) {
+      eob.setClaim(new Reference()
+          .setReference(claim.getId()));
+      eob.setReferral(new Reference("#1"));
+      eob.setCreated(encounterResource.getPeriod().getEnd());
+    }
+    eob.setType(claim.getType());
+
+    List<ExplanationOfBenefit.DiagnosisComponent> eobDiag = new ArrayList<>();
+    for (org.hl7.fhir.dstu3.model.Claim.DiagnosisComponent claimDiagnosis : claim.getDiagnosis()) {
+      ExplanationOfBenefit.DiagnosisComponent diagnosisComponent =
+          new ExplanationOfBenefit.DiagnosisComponent();
+      diagnosisComponent.setDiagnosis(claimDiagnosis.getDiagnosis());
+      diagnosisComponent.getType().add(new CodeableConcept()
+          .addCoding(new Coding()
+              .setCode("principal")
+              .setSystem("https://bluebutton.cms.gov/resources/codesystem/diagnosis-type")));
+      diagnosisComponent.setSequence(claimDiagnosis.getSequence());
+      diagnosisComponent.setPackageCode(claimDiagnosis.getPackageCode());
+      diagnosisComponent.addExtension()
+          .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-clm-poa-ind-sw1-extension")
+          .setValue(new Coding()
+              .setCode("Y")
+              .setSystem("https://bluebutton.cms.gov/assets/ig/CodeSystem-clm-poa-ind-sw1")
+              .setDisplay("Diagnosis present at time of admission"));
+      eobDiag.add(diagnosisComponent);
+    }
+    eob.setDiagnosis(eobDiag);
+
+    List<ExplanationOfBenefit.ProcedureComponent> eobProc = new ArrayList<>();
+    for (ProcedureComponent proc : claim.getProcedure()) {
+      ExplanationOfBenefit.ProcedureComponent p = new ExplanationOfBenefit.ProcedureComponent();
+      p.setDate(proc.getDate());
+      p.setSequence(proc.getSequence());
+      p.setProcedure(proc.getProcedure());
+    }
+    eob.setProcedure(eobProc);
+
+    List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
+    double totalPayment = 0;
+    // Get all the items info from the claim
+
+    for (ItemComponent item : claim.getItem()) {
+
+      ExplanationOfBenefit.ItemComponent itemComponent = new ExplanationOfBenefit.ItemComponent();
+
+      itemComponent.setSequence(item.getSequence());
+      itemComponent.setQuantity(item.getQuantity());
+      itemComponent.setUnitPrice(item.getUnitPrice());
+      itemComponent.setCareTeamLinkId(item.getCareTeamLinkId());
+
+      if (item.hasService()) {
+        itemComponent
+            .setService(item
+                .getService());
+      }
+      if (!inpatient && !outpatient) {
+        itemComponent.setDiagnosisLinkId(item.getDiagnosisLinkId());
+        itemComponent.setInformationLinkId(item.getInformationLinkId());
+        itemComponent.setNet(item.getNet());
+        itemComponent.setEncounter(item.getEncounter());
+        itemComponent.setServiced(encounterResource.getPeriod());
+        itemComponent.setCategory(new CodeableConcept().addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/variables/line_cms_type_srvc_cd")
+            .setCode("1")
+            .setDisplay("Medical care")));
+      }
+      if (inpatient) {
+        itemComponent.addExtension(new Extension()
+            .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-rev-cntr-ndc-qty-extension")
+            .setValue(new Quantity().setValue(0)));
+      } else if (outpatient) {
+        itemComponent.addExtension(new Extension()
+            .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ndc-qty-extension")
+            .setValue(new Quantity().setValue(0)));
+        if (itemComponent.hasService()) {
+          itemComponent.getService().addExtension(new Extension()
+              .setUrl("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-rev-cntr-ide-ndc-upc-num-extension")
+              .setValue(new Coding()
+                  .setSystem("https://www.accessdata.fda.gov/scripts/cder/ndc")
+                  .setDisplay("Dummy")
+                  .setCode("0624")));
+        }
+      }
+
+      // Location of service, can use switch statement based on
+      // encounter type
+      String code;
+      String display;
+      CodeableConcept location = new CodeableConcept();
+      switch (encounter.type) {
+        case Provider.AMBULATORY:
+          code = "21";
+          display = "Inpatient Hospital";
+          break;
+        case Provider.EMERGENCY:
+          code = "23";
+          display = "Emergency Room";
+          break;
+        case Provider.INPATIENT:
+          code = "21";
+          display = "Inpatient Hospital";
+          break;
+        case Provider.URGENTCARE:
+          code = "20";
+          display = "Urgent Care Facility";
+          break;
+        case Provider.WELLNESS:
+          code = "22";
+          display = "Outpatient Hospital";
+          break;
+        default:
+          code = "21";
+          display = "Inpatient Hospital";
+      }
+      location.addCoding()
+          .setCode(code)
+          //.setSystem("http://hl7.org/fhir/ValueSet/service-place") > if we wanted hl7
+          .setSystem("https://bluebutton.cms.gov/resources/variables/line_place_of_srvc_cd")
+          .setDisplay(display);
+      itemComponent.setLocation(location);
+
+      // Adjudication
+      if (item.hasNet()) {
+
+        // Assume that the patient has already paid deductible and
+        // has 20/80 coinsurance
+        ExplanationOfBenefit.AdjudicationComponent coinsuranceAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        coinsuranceAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_coinsrnc_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Beneficiary Coinsurance Amount"));
+        coinsuranceAmount.getAmount()
+            .setValue(0.2 * item.getNet().getValue().doubleValue()) //20% coinsurance
+            .setSystem("urn:iso:std:iso:4217") //USD
+            .setCode("USD");
+
+        ExplanationOfBenefit.AdjudicationComponent lineProviderAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        lineProviderAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_prvdr_pmt_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Provider Payment Amount"));
+        lineProviderAmount.getAmount()
+            .setValue(0.8 * item.getNet().getValue().doubleValue())
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        // assume the allowed and submitted amounts are the same for now
+        ExplanationOfBenefit.AdjudicationComponent submittedAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        submittedAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_sbmtd_chrg_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Submitted Charge Amount"));
+        submittedAmount.getAmount()
+            .setValue(item.getNet().getValue())
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        ExplanationOfBenefit.AdjudicationComponent allowedAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        allowedAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_alowd_chrg_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Allowed Charge Amount"));
+        allowedAmount.getAmount()
+            .setValue(item.getNet().getValue())
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        ExplanationOfBenefit.AdjudicationComponent indicatorCode =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        indicatorCode.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Processing Indicator Code"));
+
+        if (!inpatient && !outpatient) {
+          indicatorCode.getReason()
+              .addCoding()
+              .setCode("A")
+              .setSystem("https://bluebutton.cms.gov/resources/variables/line_prcsg_ind_cd");
+          indicatorCode
+              .getReason()
+              .getCodingFirstRep()
+              .setDisplay("Allowed");
+        }
+
+        // assume deductible is 0
+        ExplanationOfBenefit.AdjudicationComponent deductibleAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        deductibleAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_bene_ptb_ddctbl_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Beneficiary Part B Deductible Amount"));
+        deductibleAmount.getAmount()
+            .setValue(0)
+            .setSystem("urn:iso:std:iso:4217")
+            .setCode("USD");
+
+        List<ExplanationOfBenefit.AdjudicationComponent> adjudicationComponents = new ArrayList<>();
+        adjudicationComponents.add(coinsuranceAmount);
+        adjudicationComponents.add(lineProviderAmount);
+        adjudicationComponents.add(submittedAmount);
+        adjudicationComponents.add(allowedAmount);
+        adjudicationComponents.add(deductibleAmount);
+        adjudicationComponents.add(indicatorCode);
+
+        itemComponent.setAdjudication(adjudicationComponents);
+        // the total payment is what the insurance ends up paying
+        totalPayment += 0.8 * item.getNet().getValue().doubleValue();
+      }
+      eobItem.add(itemComponent);
+    }
+
+    eob.setItem(eobItem);
+
+    // This will throw a validation error no matter what.  The
+    // payment section is required, and it requires a value.
+    // The validator will complain that if there is a value, the payment
+    // needs a code, but it will also complain if there is a code.
+    // There is no way to resolve this error.
+    Money payment = new Money();
+    payment.setValue(totalPayment)
+        .setSystem("urn:iso:std:iso:4217")
+        .setCode("USD");
+    eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
+        .setAmount(payment));
+
+    // Hardcoded
+    List<Reference> recipientList = new ArrayList<>();
+    recipientList.add(new Reference()
+        .setIdentifier(new Identifier()
+        .setSystem("http://hl7.org/fhir/sid/us-npi")
+        .setValue("99999999")));
+    eob.addContained(new ReferralRequest()
+        .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
+        .setIntent(ReferralRequest.ReferralCategory.ORDER)
+        .setSubject(new Reference(personEntry.getFullUrl()))
+        .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
+            .setAgent(new Reference()
+                .setIdentifier(new Identifier()
+                    .setSystem("http://hl7.org/fhir/sid/us-npi")
+                    .setValue("99999999"))))
+        .setRecipient(recipientList)
+        .setId("1"));
+
+    Provider provider = person.getProvider(encounter.type, encounterResource
+        .getPeriod()
+        .getEnd()
+        .getTime());
+    if (!inpatient && !outpatient) {
+      eob.setProvider(new Reference().setReference(findProviderUrl(provider, bundle)));
+    } else {
+      eob.setProviderTarget(new Practitioner()
+          .addIdentifier(new Identifier()
+              .setValue("yes")));
+    }
+
+    eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
+        .setSequence(1)
+        .setProvider(new Reference()
+            // .setReference(findProviderUrl(provider, bundle))
+            .setIdentifier(new Identifier()
+                .setSystem("http://hl7.org/fhir/sid/us-npi")
+                // providers don't have an npi
+                .setValue("99999999")))
+        .setRole(new CodeableConcept().addCoding(new Coding()
+            .setCode("primary")
+            .setSystem("http://hl7.org/fhir/claimcareteamrole")
+            .setDisplay("Primary Care Practitioner"))));
+
+    eob.setType(new CodeableConcept()
+        .addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/variables/nch_clm_type_cd")
+            // The code should be chosen from the
+            // claim type, which is different from
+            // the encounter type apparently.
+            .setCode("71")
+            .setDisplay("Local carrier non-durable medical equipment, prosthetics, orthotics, "
+                + "and supplies (DMEPOS) claim"))
+        .addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/codesystem/eob-type")
+            // the code is chosen directly as
+            // a result of the nch_clm_type_cd.
+            .setCode("CARRIER")
+            .setDisplay("EOB Type"))
+        .addCoding(new Coding()
+            .setSystem("http://hl7.org/fhir/ex-claimtype")
+            // the ex-claimtype is also directly dependent on
+            // the eob-type, making the clm_type the only real
+            // category that needs to be dynamically chosen
+            .setCode("professional")
+            .setDisplay("Claim Type"))
+        .addCoding(new Coding()
+            .setSystem("https://bluebutton.cms.gov/resources/variables/nch_near_line_rec_ident_cd")
+            // also dependent on clm-type
+            .setCode("O")
+            .setDisplay("Part B physician/supplier claim record (processed by local "
+                      + "carriers; can include DMEPOS services)")));
+
+    return newEntry(bundle,eob);
   }
 
   /**
@@ -1588,7 +2211,6 @@ public class FhirStu3 {
    */
   private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
     BundleEntryComponent entry = bundle.addEntry();
-
     String resourceID = UUID.randomUUID().toString();
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);

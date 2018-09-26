@@ -1,0 +1,371 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "carr-line-prcng-lclty-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/carr-line-prcng-lclty-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/carr-line-prcng-lclty-cd"
+  },
+  "version": "1.1.0",
+  "name": "Carrier Line Pricing Locality Code",
+  "title": "Carrier Line Pricing Locality Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/carr-line-prcng-lclty-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "1",
+      "display": "ALABAMA"
+    },
+    {
+      "code": "2",
+      "display": "ALASKA"
+    },
+    {
+      "code": "3",
+      "display": "ARIZONA"
+    },
+    {
+      "code": "4",
+      "display": "ARKANSAS"
+    },
+    {
+      "code": "5",
+      "display": "ANAHEIM/SANTA ANA, CA"
+    },
+    {
+      "code": "6",
+      "display": "LOS ANGELES, CA"
+    },
+    {
+      "code": "7",
+      "display": "MARIN/NAPA/SOLANO, CA"
+    },
+    {
+      "code": "8",
+      "display": "OAKLAND/BERKELEY, CA"
+    },
+    {
+      "code": "9",
+      "display": "REST OF CALIFORNIA"
+    },
+    {
+      "code": "10",
+      "display": "SAN FRANCISCO, CA"
+    },
+    {
+      "code": "11",
+      "display": "SAN MATEO, CA"
+    },
+    {
+      "code": "12",
+      "display": "SANTA CLARA, CA"
+    },
+    {
+      "code": "13",
+      "display": "VENTURA, CA"
+    },
+    {
+      "code": "14",
+      "display": "COLORADO"
+    },
+    {
+      "code": "15",
+      "display": "CONNECTICUT"
+    },
+    {
+      "code": "16",
+      "display": "DC + MD/VA SUBURBS"
+    },
+    {
+      "code": "17",
+      "display": "DELAWARE"
+    },
+    {
+      "code": "18",
+      "display": "FORT LAUDERDALE, FL"
+    },
+    {
+      "code": "19",
+      "display": "MIAMI, FL"
+    },
+    {
+      "code": "20",
+      "display": "REST OF FLORIDA"
+    },
+    {
+      "code": "21",
+      "display": "ATLANTA, GA"
+    },
+    {
+      "code": "22",
+      "display": "REST OF GEORGIA"
+    },
+    {
+      "code": "23",
+      "display": "HAWAII"
+    },
+    {
+      "code": "24",
+      "display": "IDAHO"
+    },
+    {
+      "code": "25",
+      "display": "CHICAGO, IL"
+    },
+    {
+      "code": "26",
+      "display": "EAST ST. LOUIS, IL"
+    },
+    {
+      "code": "27",
+      "display": "REST OF ILLINOIS"
+    },
+    {
+      "code": "28",
+      "display": "SUBURBAN CHICAGO, IL"
+    },
+    {
+      "code": "29",
+      "display": "INDIANA"
+    },
+    {
+      "code": "30",
+      "display": "IOWA"
+    },
+    {
+      "code": "31",
+      "display": "KANSAS"
+    },
+    {
+      "code": "32",
+      "display": "KENTUCKY"
+    },
+    {
+      "code": "33",
+      "display": "NEW ORLEANS, LA"
+    },
+    {
+      "code": "34",
+      "display": "REST OF LOUISIANA"
+    },
+    {
+      "code": "35",
+      "display": "REST OF MAINE"
+    },
+    {
+      "code": "36",
+      "display": "SOUTHERN MAINE"
+    },
+    {
+      "code": "37",
+      "display": "BALTIMORE/SURR. CNTYS, MD"
+    },
+    {
+      "code": "38",
+      "display": "REST OF MARYLAND"
+    },
+    {
+      "code": "39",
+      "display": "METROPOLITAN BOSTON"
+    },
+    {
+      "code": "40",
+      "display": "REST OF MASSACHUSETTS"
+    },
+    {
+      "code": "41",
+      "display": "DETROIT, MI"
+    },
+    {
+      "code": "42",
+      "display": "REST OF MICHIGAN"
+    },
+    {
+      "code": "43",
+      "display": "MINNESOTA"
+    },
+    {
+      "code": "44",
+      "display": "MISSISSIPPI"
+    },
+    {
+      "code": "45",
+      "display": "METROPOLITAN KANSAS CITY, MO"
+    },
+    {
+      "code": "46",
+      "display": "METROPOLITAN ST. LOUIS, MO"
+    },
+    {
+      "code": "47",
+      "display": "REST OF MISSOURI"
+    },
+    {
+      "code": "48",
+      "display": "MONTANA"
+    },
+    {
+      "code": "49",
+      "display": "NEBRASKA"
+    },
+    {
+      "code": "50",
+      "display": "NEVADA"
+    },
+    {
+      "code": "51",
+      "display": "NEW HAMPSHIRE"
+    },
+    {
+      "code": "52",
+      "display": "NORTHERN NJ"
+    },
+    {
+      "code": "53",
+      "display": "REST OF NEW JERSEY"
+    },
+    {
+      "code": "54",
+      "display": "NEW MEXICO"
+    },
+    {
+      "code": "55",
+      "display": "MANHATTAN, NY"
+    },
+    {
+      "code": "56",
+      "display": "NYC SUBURBS/LONG I., NY"
+    },
+    {
+      "code": "57",
+      "display": "POUGHKPSIE/N NYC SUBURBS, NY"
+    },
+    {
+      "code": "58",
+      "display": "QUEENS, NY"
+    },
+    {
+      "code": "59",
+      "display": "REST OF NEW YORK"
+    },
+    {
+      "code": "60",
+      "display": "NORTH CAROLINA"
+    },
+    {
+      "code": "61",
+      "display": "NORTH DAKOTA"
+    },
+    {
+      "code": "62",
+      "display": "OHIO"
+    },
+    {
+      "code": "63",
+      "display": "OKLAHOMA"
+    },
+    {
+      "code": "64",
+      "display": "PORTLAND, OR"
+    },
+    {
+      "code": "65",
+      "display": "REST OF OREGON"
+    },
+    {
+      "code": "66",
+      "display": "METROPOLITAN PHILADELPHIA, PA"
+    },
+    {
+      "code": "67",
+      "display": "REST OF PENNSYLVANIA"
+    },
+    {
+      "code": "68",
+      "display": "PUERTO RICO"
+    },
+    {
+      "code": "69",
+      "display": "RHODE ISLAND"
+    },
+    {
+      "code": "70",
+      "display": "SOUTH CAROLINA"
+    },
+    {
+      "code": "71",
+      "display": "SOUTH DAKOTA"
+    },
+    {
+      "code": "72",
+      "display": "TENNESSEE"
+    },
+    {
+      "code": "73",
+      "display": "AUSTIN, TX"
+    },
+    {
+      "code": "74",
+      "display": "BEAUMONT, TX"
+    },
+    {
+      "code": "75",
+      "display": "BRAZORIA, TX"
+    },
+    {
+      "code": "76",
+      "display": "DALLAS, TX"
+    },
+    {
+      "code": "77",
+      "display": "FORT WORTH, TX"
+    },
+    {
+      "code": "78",
+      "display": "GALVESTON, TX"
+    },
+    {
+      "code": "79",
+      "display": "HOUSTON, TX"
+    },
+    {
+      "code": "80",
+      "display": "REST OF TEXAS"
+    },
+    {
+      "code": "81",
+      "display": "UTAH"
+    },
+    {
+      "code": "82",
+      "display": "VERMONT"
+    },
+    {
+      "code": "83",
+      "display": "VIRGIN ISLANDS"
+    },
+    {
+      "code": "84",
+      "display": "VIRGINIA"
+    },
+    {
+      "code": "85",
+      "display": "REST OF WASHINGTON"
+    },
+    {
+      "code": "86",
+      "display": "SEATTLE (KING CNTY), WA"
+    },
+    {
+      "code": "87",
+      "display": "WEST VIRGINIA"
+    },
+    {
+      "code": "88",
+      "display": "WISCONSIN 89 WYOMING"
+    }
+  ]
+}
