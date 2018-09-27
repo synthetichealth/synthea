@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.Locale;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -322,7 +323,7 @@ public class CSVExporter {
     //DESCRIPTION
     s.append(clean(coding.display)).append(',');
     //COST
-    s.append(String.format("%.2f", encounter.cost())).append(',');
+    s.append(String.format(Locale.US, "%.2f", encounter.cost())).append(',');
     //REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
       s.append(",");
