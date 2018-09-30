@@ -1,0 +1,47 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-fac-type-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-fac-type-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-fac-type-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim Facility Type Code",
+  "title": "Claim Facility Type Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-fac-type-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "1",
+      "display": "Hospital"
+    },
+    {
+      "code": "2",
+      "display": "Skilled Nursing Facility (SNF)"
+    },
+    {
+      "code": "3",
+      "display": "Home Health Agency (HHA)"
+    },
+    {
+      "code": "4",
+      "display": "Religious Non-medical (hospital)"
+    },
+    {
+      "code": "6",
+      "display": "Intermediate Care (IMC)"
+    },
+    {
+      "code": "7",
+      "display": "Clinic services or hospital-based renal dialysis facility"
+    },
+    {
+      "code": "8",
+      "display": "Ambulatory Surgery Center (ASC) or other special facility (e.g. hospice)"
+    }
+  ]
+}

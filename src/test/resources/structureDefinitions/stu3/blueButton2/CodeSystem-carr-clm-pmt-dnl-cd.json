@@ -1,0 +1,67 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "carr-clm-pmt-dnl-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/carr-clm-pmt-dnl-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/carr-clm-pmt-dnl-cd"
+  },
+  "version": "1.1.0",
+  "name": "Carrier Claim Payment Denial Code",
+  "title": "Carrier Claim Payment Denial Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/carr-clm-pmt-dnl-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "!",
+      "display": "MSP cost avoided - COB Contractor (converted to '00' 2-byte code)"
+    },
+    {
+      "code": "@",
+      "display": "MSP cost avoided - BC/BS Voluntary Agreements (converted to '12' 2-byte code)"
+    },
+    {
+      "code": "#",
+      "display": "MSP cost avoided - Office of Personnel Management (converted to '13' 2-byte code)"
+    },
+    {
+      "code": "$",
+      "display": "MSP cost avoided - Workman's Compensation (WC) Datamatch (converted to '14' 2-byte code)"
+    },
+    {
+      "code": "*",
+      "display": "MSP cost avoided - Workman's Compensation Insurer Voluntary Data Sharing Agreements (WC VDSA) (eff. 4/2006) (converted to '15' 2-byte code)"
+    },
+    {
+      "code": "(",
+      "display": "MSP cost avoided - Liability Insurer VDSA (eff. 4/2006) (converted to '16' 2-byte code)"
+    },
+    {
+      "code": ")",
+      "display": "MSP cost avoided - No-Fault Insurer VDSA (eff. 4/2006) (converted to '17' 2-byte code)"
+    },
+    {
+      "code": "+",
+      "display": "MSP cost avoided - Pharmacy Benefit Manager Data Sharing Agreement (eff. 4/2006) (converted to '18' 2 -byte code)"
+    },
+    {
+      "code": "<",
+      "display": "MSP cost avoided - MIR Group Health Plan (eff. 1/2009) (converted to '21' 2-byte code)"
+    },
+    {
+      "code": ">",
+      "display": "MSP cost avoided - MIR non-Group Health Plan (eff. 1/2009) (converted to '22' 2-byte code)"
+    },
+    {
+      "code": "%",
+      "display": "MSP cost avoided - Recovery Audit Contractor - California (eff. 10/2005) (converted to '25' 2-byte code)"
+    },
+    {
+      "code": "&",
+      "display": "MSP cost avoided - Recovery Audit Contractor - Florida (eff. 10/2005) (converted to '26' 2-byte code)"
+    }
+  ]
+}

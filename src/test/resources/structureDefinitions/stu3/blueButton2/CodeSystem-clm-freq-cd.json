@@ -1,0 +1,79 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-freq-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-freq-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-freq-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim Frequency Code",
+  "title": "Claim Frequency Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-freq-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Non-payment/zero claims"
+    },
+    {
+      "code": "1",
+      "display": "Admit thru discharge claim"
+    },
+    {
+      "code": "2",
+      "display": "Interim – first claim"
+    },
+    {
+      "code": "3",
+      "display": "Interim – continuing claim"
+    },
+    {
+      "code": "4",
+      "display": "Interim – last claim"
+    },
+    {
+      "code": "5",
+      "display": "Late charge(s) only claim"
+    },
+    {
+      "code": "7",
+      "display": "Replacement of prior claim"
+    },
+    {
+      "code": "8",
+      "display": "Void/cancel prior claim"
+    },
+    {
+      "code": "9",
+      "display": "Final claim (for HH PPS = process as a debit/credit to RAP claim)"
+    },
+    {
+      "code": "G",
+      "display": "Common Working File (NCH) generated adjustment claim"
+    },
+    {
+      "code": "H",
+      "display": "CMS generated adjustment claim"
+    },
+    {
+      "code": "I",
+      "display": "Misc. adjustment claim (e.g., initiated by intermediary or QIO)"
+    },
+    {
+      "code": "J",
+      "display": "Other adjustment request"
+    },
+    {
+      "code": "M",
+      "display": "Medicare secondary payer (MSP) adjustment"
+    },
+    {
+      "code": "P",
+      "display": "Adjustment required by QIO"
+    }
+  ]
+}

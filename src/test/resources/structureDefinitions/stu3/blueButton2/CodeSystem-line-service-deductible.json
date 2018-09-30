@@ -1,0 +1,27 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "line-service-deductible",
+  "url": "http://hl7.org/fhir/CodeSystem/line-service-deductible",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/line-service-deductible"
+  },
+  "version": "1.1.0",
+  "name": "Line Service Deductible Indicator Switch",
+  "title": "Line Service Deductible Indicator Switch",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/line-service-deductible",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Service Subject to Deductible"
+    },
+    {
+      "code": "1",
+      "display": "Service Not Subject to Deductible"
+    }
+  ]
+}

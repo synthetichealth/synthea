@@ -1,0 +1,35 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "rev-cntr-ndc-qty-qlfr-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/rev-cntr-ndc-qty-qlfr-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/rev-cntr-ndc-qty-qlfr-cd"
+  },
+  "version": "1.1.0",
+  "name": "Revenue Center NDC Quantity Qualifier Code",
+  "title": "Revenue Center NDC Quantity Qualifier Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/rev-cntr-ndc-qty-qlfr-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "F2",
+      "display": "International Unit"
+    },
+    {
+      "code": "GR",
+      "display": "Gram"
+    },
+    {
+      "code": "ML",
+      "display": "Milliliter"
+    },
+    {
+      "code": "UN",
+      "display": "Unit"
+    }
+  ]
+}

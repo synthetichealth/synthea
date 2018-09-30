@@ -1,0 +1,27 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "clm-hha-lupa-ind-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/clm-hha-lupa-ind-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/clm-hha-lupa-ind-cd"
+  },
+  "version": "1.1.0",
+  "name": "Claim HHA Low Utilization Payment Adjustment (LUPA) Indicator Code",
+  "title": "Claim HHA Low Utilization Payment Adjustment (LUPA) Indicator Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/clm-hha-lupa-ind-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "L",
+      "display": "Low utilization payment adjustment (LUPA) claim"
+    },
+    {
+      "code": "Blank",
+      "display": "Not a LUPA claim; process using Home Health resource groups (HHRG)"
+    }
+  ]
+}

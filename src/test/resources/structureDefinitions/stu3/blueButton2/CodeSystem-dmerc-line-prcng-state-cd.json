@@ -1,0 +1,331 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "dmerc-line-prcng-state-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/dmerc-line-prcng-state-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/dmerc-line-prcng-state-cd"
+  },
+  "version": "1.1.0",
+  "name": "DMERC Line Pricing State Code (SSA)",
+  "title": "DMERC Line Pricing State Code (SSA)",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/dmerc-line-prcng-state-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "01",
+      "display": "Alabama"
+    },
+    {
+      "code": "02",
+      "display": "Alaska"
+    },
+    {
+      "code": "03",
+      "display": "Arizona"
+    },
+    {
+      "code": "04",
+      "display": "Arkansas"
+    },
+    {
+      "code": "05",
+      "display": "California"
+    },
+    {
+      "code": "06",
+      "display": "Colorado"
+    },
+    {
+      "code": "07",
+      "display": "Connecticut"
+    },
+    {
+      "code": "08",
+      "display": "Delaware"
+    },
+    {
+      "code": "09",
+      "display": "District of Columbia"
+    },
+    {
+      "code": "10",
+      "display": "Florida"
+    },
+    {
+      "code": "11",
+      "display": "Georgia"
+    },
+    {
+      "code": "12",
+      "display": "Hawaii"
+    },
+    {
+      "code": "13",
+      "display": "Idaho"
+    },
+    {
+      "code": "14",
+      "display": "Illinois"
+    },
+    {
+      "code": "15",
+      "display": "Indiana"
+    },
+    {
+      "code": "16",
+      "display": "Iowa"
+    },
+    {
+      "code": "17",
+      "display": "Kansas"
+    },
+    {
+      "code": "18",
+      "display": "Kentucky"
+    },
+    {
+      "code": "19",
+      "display": "Louisiana"
+    },
+    {
+      "code": "20",
+      "display": "Maine"
+    },
+    {
+      "code": "21",
+      "display": "Maryland"
+    },
+    {
+      "code": "22",
+      "display": "Massachusetts"
+    },
+    {
+      "code": "23",
+      "display": "Michigan"
+    },
+    {
+      "code": "24",
+      "display": "Minnesota"
+    },
+    {
+      "code": "25",
+      "display": "Mississippi"
+    },
+    {
+      "code": "26",
+      "display": "Missouri"
+    },
+    {
+      "code": "27",
+      "display": "Montana"
+    },
+    {
+      "code": "28",
+      "display": "Nebraska"
+    },
+    {
+      "code": "29",
+      "display": "Nevada"
+    },
+    {
+      "code": "30",
+      "display": "New Hampshire"
+    },
+    {
+      "code": "31",
+      "display": "New Jersey"
+    },
+    {
+      "code": "32",
+      "display": "New Mexico"
+    },
+    {
+      "code": "33",
+      "display": "New York"
+    },
+    {
+      "code": "34",
+      "display": "North Carolina"
+    },
+    {
+      "code": "35",
+      "display": "North Dakota"
+    },
+    {
+      "code": "36",
+      "display": "Ohio"
+    },
+    {
+      "code": "37",
+      "display": "Oklahoma"
+    },
+    {
+      "code": "38",
+      "display": "Oregon"
+    },
+    {
+      "code": "39",
+      "display": "Pennsylvania"
+    },
+    {
+      "code": "40",
+      "display": "Puerto Rico"
+    },
+    {
+      "code": "41",
+      "display": "Rhode Island"
+    },
+    {
+      "code": "42",
+      "display": "South Carolina"
+    },
+    {
+      "code": "43",
+      "display": "South Dakota"
+    },
+    {
+      "code": "44",
+      "display": "Tennessee"
+    },
+    {
+      "code": "45",
+      "display": "Texas"
+    },
+    {
+      "code": "46",
+      "display": "Utah"
+    },
+    {
+      "code": "47",
+      "display": "Vermont"
+    },
+    {
+      "code": "48",
+      "display": "Virgin Islands"
+    },
+    {
+      "code": "49",
+      "display": "Virginia"
+    },
+    {
+      "code": "50",
+      "display": "Washington"
+    },
+    {
+      "code": "51",
+      "display": "West Virginia"
+    },
+    {
+      "code": "52",
+      "display": "Wisconsin"
+    },
+    {
+      "code": "53",
+      "display": "Wyoming"
+    },
+    {
+      "code": "54",
+      "display": "Africa"
+    },
+    {
+      "code": "55",
+      "display": "California"
+    },
+    {
+      "code": "56",
+      "display": "Canada & Islands"
+    },
+    {
+      "code": "57",
+      "display": "Central America and West Indies"
+    },
+    {
+      "code": "58",
+      "display": "Europe"
+    },
+    {
+      "code": "59",
+      "display": "Mexico"
+    },
+    {
+      "code": "60",
+      "display": "Oceania"
+    },
+    {
+      "code": "61",
+      "display": "Philippines"
+    },
+    {
+      "code": "62",
+      "display": "South America"
+    },
+    {
+      "code": "63",
+      "display": "U.S. Possessions"
+    },
+    {
+      "code": "64",
+      "display": "American Samoa"
+    },
+    {
+      "code": "65",
+      "display": "Guam"
+    },
+    {
+      "code": "66",
+      "display": "Commonwealth of the Northern Marianas Islands"
+    },
+    {
+      "code": "67",
+      "display": "Texas"
+    },
+    {
+      "code": "68",
+      "display": "Florida (eff. 10/2005)"
+    },
+    {
+      "code": "69",
+      "display": "Florida (eff. 10/2005)"
+    },
+    {
+      "code": "70",
+      "display": "Kansas (eff. 10/2005)"
+    },
+    {
+      "code": "71",
+      "display": "Louisiana (eff. 10/2005)"
+    },
+    {
+      "code": "72",
+      "display": "Ohio (eff. 10/2005)"
+    },
+    {
+      "code": "73",
+      "display": "Pennsylvania (eff. 10/2005)"
+    },
+    {
+      "code": "74",
+      "display": "Texas (eff. 10/2005)"
+    },
+    {
+      "code": "80",
+      "display": "Maryland (eff. 8/2000)"
+    },
+    {
+      "code": "97",
+      "display": "Northern Marianas"
+    },
+    {
+      "code": "98",
+      "display": "Guam"
+    },
+    {
+      "code": "99",
+      "display": "With 000 county code is American Samoa; otherwise unknown"
+    }
+  ]
+}

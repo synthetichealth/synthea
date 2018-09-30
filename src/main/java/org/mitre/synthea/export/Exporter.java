@@ -26,8 +26,8 @@ public abstract class Exporter {
   /**
    * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
    * configuration)
-   * 
-   * @param person Patient to export
+   *
+   * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
    */
   public static void export(Person person, long stopTime) {
@@ -35,6 +35,7 @@ public abstract class Exporter {
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
     }
+    // Defaults to STU3 output
     if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
       String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
       File outDirectory = getOutputFolder("fhir", person);
@@ -49,6 +50,17 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.fhir_dstu2.export"))) {
       String bundleJson = FhirDstu2.convertToFHIR(person, stopTime);
       File outDirectory = getOutputFolder("fhir_dstu2", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
+
+      try {
+        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (Boolean.parseBoolean(Config.get("exporter.fhir_r4.export"))) {
+      String bundleJson = FhirR4.convertToFHIR(person, stopTime);
+      File outDirectory = getOutputFolder("fhir_r4", person);
       Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
 
       try {
@@ -105,9 +117,8 @@ public abstract class Exporter {
   /**
    * Run any exporters that require the full dataset to be generated prior to exporting.
    * (E.g., an aggregate statistical exporter)
-   * 
-   * @param generator
-   *          Generator that generated the patients
+   *
+   * @param generator Generator that generated the patients
    */
   public static void runPostCompletionExports(Generator generator) {
     try {
@@ -115,7 +126,7 @@ public abstract class Exporter {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
+
     try {
       HospitalDSTU2Exporter.export(generator.stop);
     } catch (Exception e) {
@@ -148,16 +159,16 @@ public abstract class Exporter {
       CDWExporter.getInstance().writeFactTables();
     }
   }
-  
+
   /**
    * Filter the patient's history to only the last __ years
    * but also include relevant history from before that. Exclude
    * any history that occurs after the specified end_time -- typically
    * this is the current time/System.currentTimeMillis().
    *
-   * @param original The Person to filter.
+   * @param original    The Person to filter.
    * @param yearsToKeep The last __ years to keep.
-   * @param endTime The time the history ends.
+   * @param endTime     The time the history ends.
    * @return Modified Person with history expunged.
    */
   public static Person filterForExport(Person original, int yearsToKeep, long endTime) {
@@ -166,21 +177,21 @@ public abstract class Exporter {
     long cutoffDate = endTime - Utilities.convertTime("years", yearsToKeep);
 
     Predicate<HealthRecord.Entry> notFutureDated = e -> e.start <= endTime;
-    
-    // TODO: clone the patient so that we export only the last _ years 
+
+    // TODO: clone the patient so that we export only the last _ years
     // but the rest still exists, just in case
     Person filtered = original; //.clone();
     //filtered.record = original.record.clone();
 
     final HealthRecord record = filtered.record;
-    
-    for (Encounter encounter : record.encounters) { 
+
+    for (Encounter encounter : record.encounters) {
       List<HealthRecord.Entry> claimItems = encounter.claim.items;
       // keep conditions if still active, regardless of start date
       Predicate<HealthRecord.Entry> conditionActive = c -> record.conditionActive(c.type);
       // or if the condition was active at any point since the cutoff date
       Predicate<HealthRecord.Entry> activeWithinCutoff = c -> c.stop != 0L && c.stop > cutoffDate;
-      Predicate<HealthRecord.Entry> keepCondition = conditionActive.or(activeWithinCutoff); 
+      Predicate<HealthRecord.Entry> keepCondition = conditionActive.or(activeWithinCutoff);
       filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, keepCondition);
 
       // allergies are essentially the same as conditions
@@ -201,7 +212,7 @@ public abstract class Exporter {
       filterEntries(encounter.procedures, claimItems, cutoffDate, endTime, null);
 
       // keep medications if still active, regardless of start date
-      filterEntries(encounter.medications, claimItems, cutoffDate, endTime, 
+      filterEntries(encounter.medications, claimItems, cutoffDate, endTime,
           med -> record.medicationActive(med.type));
 
       filterEntries(encounter.immunizations, claimItems, cutoffDate, endTime, null);
@@ -214,13 +225,13 @@ public abstract class Exporter {
     // if ANY of these are not empty, the encounter is not empty
     Predicate<Encounter> encounterNotEmpty = e ->
         !e.conditions.isEmpty() || !e.allergies.isEmpty()
-        || !e.observations.isEmpty() || !e.reports.isEmpty()
-        || !e.procedures.isEmpty() || !e.medications.isEmpty()
-        || !e.immunizations.isEmpty() || !e.careplans.isEmpty();
+            || !e.observations.isEmpty() || !e.reports.isEmpty()
+            || !e.procedures.isEmpty() || !e.medications.isEmpty()
+            || !e.immunizations.isEmpty() || !e.careplans.isEmpty();
 
-    Predicate<Encounter> isDeathCertification = 
+    Predicate<Encounter> isDeathCertification =
         e -> !e.codes.isEmpty() && DeathModule.DEATH_CERTIFICATION.equals(e.codes.get(0));
-    Predicate<Encounter> keepEncounter = 
+    Predicate<Encounter> keepEncounter =
         encounterNotEmpty.or(isDeathCertification.and(notFutureDated));
 
     // finally filter out any empty encounters
@@ -233,21 +244,18 @@ public abstract class Exporter {
    * Helper function to filter entries from a list. Entries are kept if their date range falls
    * within the provided range or if `keepFunction` is provided, and returns `true` for the given
    * entry.
-   * 
-   * @param entries
-   *          List of `Entry`s to filter
-   * @param claimItems
-   *          List of ClaimItems, from which any removed items should also be removed.
-   * @param cutoffDate
-   *          Minimum date, entries older than this may be discarded
-   * @param endTime
-   *          Maximum date, entries newer than this may be discarded
-   * @param keepFunction
-   *          Keep function, if this function returns `true` for an entry then it will be kept
+   *
+   * @param entries      List of `Entry`s to filter
+   * @param claimItems   List of ClaimItems, from which any removed items should also be removed.
+   * @param cutoffDate   Minimum date, entries older than this may be discarded
+   * @param endTime      Maximum date, entries newer than this may be discarded
+   * @param keepFunction Keep function, if this function returns `true` for an entry then it will
+   *                     be kept
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-      List<HealthRecord.Entry> claimItems, long cutoffDate, long endTime,
-      Predicate<E> keepFunction) {
+      List<HealthRecord.Entry> claimItems, long cutoffDate,
+      long endTime, Predicate<E> keepFunction) {
+
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
     while (iterator.hasNext()) {
@@ -255,33 +263,35 @@ public abstract class Exporter {
       // if the entry is not within the keep time range,
       // and the special keep function (if provided) doesn't say keep it
       // remove it from the list
-      if (!entryWithinTimeRange(entry, cutoffDate, endTime) 
+      if (!entryWithinTimeRange(entry, cutoffDate, endTime)
           && (keepFunction == null || !keepFunction.test(entry))) {
         iterator.remove();
-        
-        claimItems.removeIf(ci -> ci == entry); 
+
+        claimItems.removeIf(ci -> ci == entry);
         // compare with == because we only care if it's the actual same object
       }
     }
   }
-  
-  private static boolean entryWithinTimeRange(HealthRecord.Entry e, long cutoffDate, long endTime) {
+
+  private static boolean entryWithinTimeRange(
+      HealthRecord.Entry e, long cutoffDate, long endTime) {
+
     if (e.start > cutoffDate && e.start <= endTime) {
       return true; // trivial case, when we're within the last __ years
     }
 
     // if the entry has a stop time, check if the effective date range overlapped the last __ years
     if (e.stop != 0L && e.stop > cutoffDate) {
-      
+
       if (e.stop > endTime) {
         // If any entries have an end date in the future but are within the cutoffDate,
         // remove the end date but keep the entry (since it's still active).
         e.stop = 0L;
       }
-      
+
       return true;
     }
-    
+
     return false;
   }
 
@@ -291,7 +301,7 @@ public abstract class Exporter {
    * "exporter.baseDirectory".
    *
    * @param folderName The base folder to use.
-   * @param person The person being exported.
+   * @param person     The person being exported.
    * @return Either the base folder provided, or a subdirectory, depending on configuration
    *     settings.
    */
@@ -320,7 +330,7 @@ public abstract class Exporter {
    * Get the filename to used to export the patient record.
    * See the configuration setting "exporter.use_uuid_filenames".
    *
-   * @param person The person being exported.
+   * @param person    The person being exported.
    * @param extension The file extension to use.
    * @return The filename only (not a path).
    */
@@ -338,9 +348,9 @@ public abstract class Exporter {
   /**
    * Get the file name to be used to export this encounter record.
    *
-   * @param person The person being exported.
+   * @param person          The person being exported.
    * @param encounterNumber The number of the encounter.
-   * @param extension The file extension to use.
+   * @param extension       The file extension to use.
    * @return The filename only (not a path).
    */
   public static String filename_per_encounter(Person person, String encounterNumber,

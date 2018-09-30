@@ -1,0 +1,35 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "line-pmt-80-100-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/line-pmt-80-100-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/line-pmt-80-100-cd"
+  },
+  "version": "1.1.0",
+  "name": "Line Payment 80% / 100% Code",
+  "title": "Line Payment 80% / 100% Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/line-pmt-80-100-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "80%"
+    },
+    {
+      "code": "1",
+      "display": "100%"
+    },
+    {
+      "code": "3",
+      "display": "100% Limitation of liability only"
+    },
+    {
+      "code": "4",
+      "display": "75% Reimbursement"
+    }
+  ]
+}

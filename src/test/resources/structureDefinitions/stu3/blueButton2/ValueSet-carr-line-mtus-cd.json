@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "carr-line-mtus-cd",
+  "url": "http://hl7.org/fhir/ValueSet/carr-line-mtus-cd",
+  "version": "1.1.0",
+  "name": "Carrier Line Miles/Time/Units/Services (MTUS) Indicator Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/carr-line-mtus-cd"
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "carr-line-mtus-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/carr-line-mtus-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/carr-line-mtus-cd"
+  },
+  "version": "1.1.0",
+  "name": "Carrier Line Miles/Time/Units/Services (MTUS) Indicator Code",
+  "title": "Carrier Line Miles/Time/Units/Services (MTUS) Indicator Code",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/carr-line-mtus-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "0",
+      "display": "Values reported as zero (no allowed activities)"
+    },
+    {
+      "code": "1",
+      "display": "Transportation (ambulance) miles"
+    },
+    {
+      "code": "2",
+      "display": "Anesthesia time units"
+    },
+    {
+      "code": "3",
+      "display": "Services"
+    },
+    {
+      "code": "4",
+      "display": "Oxygen units"
+    },
+    {
+      "code": "5",
+      "display": "Units of blood"
+    }
+  ]
+}

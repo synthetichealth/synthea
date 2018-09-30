@@ -1,0 +1,39 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "plan-cntrct-rec-id",
+  "url": "http://hl7.org/fhir/CodeSystem/plan-cntrct-rec-id",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/plan-cntrct-rec-id"
+  },
+  "version": "1.1.0",
+  "name": "Plan Contract ID",
+  "title": "Plan Contract ID",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/plan-cntrct-rec-id",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "H",
+      "display": "Managed Care Organizations other than Regional PPO"
+    },
+    {
+      "code": "R",
+      "display": "Regional preferred provider organization (PPO)"
+    },
+    {
+      "code": "S",
+      "display": "Stand-alone prescription drug plan (PDP)"
+    },
+    {
+      "code": "E",
+      "display": "Employer direct plan (starting January 2007)"
+    },
+    {
+      "code": "X",
+      "display": "Limited Income Newly Eligible Transition plan (LI NET, starting July 2009)"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "brnd-gnrc-cd",
+  "url": "http://hl7.org/fhir/CodeSystem/brnd-gnrc-cd",
+  "identifier": {
+    "value": "http://hl7.org/fhir/CodeSystem/brnd-gnrc-cd"
+  },
+  "version": "1.1.0",
+  "name": "Brand-Generic Code Reported by Submitting Plan",
+  "title": "Brand-Generic Code Reported by Submitting Plan",
+  "status": "active",
+  "date": "2018-05-31T14:39:32+00:00",
+  "caseSensitive": true,
+  "valueSet": "http://hl7.org/fhir/ValueSet/brnd-gnrc-cd",
+  "hierarchyMeaning": "is-a",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "B",
+      "display": "Brand"
+    },
+    {
+      "code": "G",
+      "display": "Generic Null/missing"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "ptnt-dschrg-stus-cd",
+  "url": "http://hl7.org/fhir/ValueSet/ptnt-dschrg-stus-cd",
+  "version": "1.1.0",
+  "name": "Patient Discharge Status Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/ptnt-dschrg-stus-cd"
+      }
+    ]
+  }
+}

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.Locale;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -151,7 +152,8 @@ public class CSVExporter {
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
-    encounters.write("ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
+    encounters.write("ID,START,STOP,PATIENT,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
+        + "REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("ID,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
@@ -292,27 +294,39 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // ID,START,STOP,PATIENT,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // ID,START,STOP,PATIENT,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
+    //ID
     s.append(encounterID).append(',');
+    //START
     s.append(iso8601Timestamp(encounter.start)).append(',');
+    //STOP
     if (encounter.stop != 0L) {
       s.append(iso8601Timestamp(encounter.stop)).append(',');
     } else {
       s.append(',');
     }
+    //PATIENT
     s.append(personID).append(',');
 
+    //ENCOUNTERCLASS
+    if (encounter.type != null) {
+      s.append(encounter.type.toLowerCase()).append(',');
+    } else {
+      s.append(',');
+    }
+    //CODE
     Code coding = encounter.codes.get(0);
     s.append(coding.code).append(',');
+    //DESCRIPTION
     s.append(clean(coding.display)).append(',');
-
-    s.append(String.format("%.2f", encounter.cost())).append(',');
-
+    //COST
+    s.append(String.format(Locale.US, "%.2f", encounter.cost())).append(',');
+    //REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
-      s.append(','); // reason code & desc
+      s.append(",");
     } else {
       s.append(encounter.reason.code).append(',');
       s.append(clean(encounter.reason.display));

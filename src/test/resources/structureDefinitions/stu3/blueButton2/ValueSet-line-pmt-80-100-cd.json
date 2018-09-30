@@ -1,0 +1,16 @@
+{
+  "resourceType": "ValueSet",
+  "id": "line-pmt-80-100-cd",
+  "url": "http://hl7.org/fhir/ValueSet/line-pmt-80-100-cd",
+  "version": "1.1.0",
+  "name": "Line Payment 80% / 100% Code",
+  "status": "draft",
+  "date": "2018-05-31T14:39:32+00:00",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/line-pmt-80-100-cd"
+      }
+    ]
+  }
+}
