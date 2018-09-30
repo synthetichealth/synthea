@@ -37,6 +37,25 @@
           "transition": "Diagnose_Hypertension"
         },
         {
+          "transition": "Check_Hypertension_BP",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_dx",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
           "transition": "Check_Diabetes",
           "condition": {
             "condition_type": "Attribute",
@@ -44,9 +63,6 @@
             "operator": "!=",
             "value": true
           }
-        },
-        {
-          "transition": "Check_Hypertension_BP"
         }
       ]
     },
