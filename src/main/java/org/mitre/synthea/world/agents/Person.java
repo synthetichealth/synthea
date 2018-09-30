@@ -7,9 +7,11 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.sis.geometry.DirectPosition2D;
@@ -200,6 +202,22 @@ public class Person implements Serializable, QuadTreeData {
       }
     }
     return max;
+  }
+
+  /**
+   * Get active symptoms above some threshold.
+   * TODO These symptoms are not filtered by time.
+   * @return list of active symptoms above the threshold.
+   */
+  public Set<String> getSymptoms() {
+    Set<String> active = new HashSet<String>(symptoms.keySet());
+    for (String symptom : symptomStatuses.keySet()) {
+      int severity = getSymptom(symptom);
+      if (severity < 20) {
+        active.remove(symptom);
+      }
+    }
+    return active;
   }
 
   //Mark the largest valued symptom as addressed.

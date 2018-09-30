@@ -307,6 +307,7 @@ public class HealthRecord {
     public Provider provider;
     public Clinician clinician;
     public boolean ended;
+    public String clinicalNote;
 
     public Encounter(long time, String type) {
       super(time, type);
