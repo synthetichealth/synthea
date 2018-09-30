@@ -96,7 +96,7 @@ public abstract class ExportHelper {
   /**
    * Year-Month-Day date format.
    */
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYY-MM-dd");
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Iso8601 date time format.
