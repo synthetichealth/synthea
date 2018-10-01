@@ -2110,7 +2110,7 @@ public class FhirStu3 {
       practitionerResource.setGender(AdministrativeGender.FEMALE);
     }
 
-    return newEntry(bundle, practitionerResource);
+    return newEntry(bundle, practitionerResource, clinician.getResourceID());
   }
 
   /**
