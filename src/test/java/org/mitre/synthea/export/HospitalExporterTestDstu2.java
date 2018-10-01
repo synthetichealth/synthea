@@ -38,6 +38,7 @@ public class HospitalExporterTestDstu2 {
     Config.set("exporter.hospital.fhir_dstu2.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
     Location location = new Location("Massachusetts", null);
+    Provider.clear();
     Provider.loadProviders(location);
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());

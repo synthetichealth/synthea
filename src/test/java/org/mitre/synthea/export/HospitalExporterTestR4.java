@@ -38,6 +38,7 @@ public class HospitalExporterTestR4 {
     Config.set("exporter.hospital.fhir_r4.export", "true");
     Config.set("exporter.fhir_r4.transaction_bundle", "true");
     Location location = new Location("Massachusetts", null);
+    Provider.clear();
     Provider.loadProviders(location);
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());

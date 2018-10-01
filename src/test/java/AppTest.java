@@ -19,6 +19,7 @@ public class AppTest {
     final PrintStream print = new PrintStream(out, true);
     System.setOut(print);
     App.main(args);
+    out.flush();
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Population:"));
@@ -39,6 +40,7 @@ public class AppTest {
     final PrintStream print = new PrintStream(out, true);
     System.setOut(print);
     App.main(args);
+    out.flush();
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Gender: M"));
@@ -59,6 +61,7 @@ public class AppTest {
     final PrintStream print = new PrintStream(out, true);
     System.setOut(print);
     App.main(args);
+    out.flush();
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
@@ -81,6 +84,7 @@ public class AppTest {
     final PrintStream print = new PrintStream(out, true);
     System.setOut(print);
     App.main(args);
+    out.flush();
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
@@ -111,6 +115,7 @@ public class AppTest {
     System.setOut(print);
     System.setErr(print);
     App.main(args);
+    out.flush();
     String output = out.toString();
     Assert.assertTrue(output.contains("Usage"));
     Assert.assertFalse(output.contains("Running with options:"));
