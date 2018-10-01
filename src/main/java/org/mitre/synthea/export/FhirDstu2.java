@@ -484,6 +484,7 @@ public class FhirDstu2 {
     ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
         new ca.uhn.fhir.model.dstu2.resource.Encounter();
 
+    encounterResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     encounterResource.setStatus(EncounterStateEnum.FINISHED);
     if (encounter.codes.isEmpty()) {
       // wellness encounter
