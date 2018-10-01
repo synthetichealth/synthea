@@ -14,16 +14,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
-import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Resource;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Provider;
@@ -36,8 +32,6 @@ public abstract class HospitalExporterR4 {
 
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
-
-  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_r4.export"))) {
@@ -55,7 +49,8 @@ public abstract class HospitalExporterR4 {
         int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
             .mapToInt(ai -> ai.get()).sum();
         if (totalEncounters > 0) {
-          addHospitalToBundle(h, bundle);
+          BundleEntryComponent entry = FhirR4.provider(bundle, h);
+          addHospitalExtensions(h, (Organization) entry.getResource());
         }
       }
 
@@ -64,7 +59,7 @@ public abstract class HospitalExporterR4 {
 
       // get output folder
       List<String> folders = new ArrayList<>();
-      folders.add("fhir");
+      folders.add("fhir_r4");
       String baseDirectory = Config.get("exporter.baseDirectory");
       File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
       f.mkdirs();
@@ -78,25 +73,7 @@ public abstract class HospitalExporterR4 {
     }
   }
 
-  public static void addHospitalToBundle(Provider h, Bundle bundle) {
-    Organization organizationResource = new Organization();
-
-    organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
-        .setValue((String) h.getResourceID());
-
-    organizationResource.setId(h.getResourceID());
-    organizationResource.setName(h.name);
-
-    Address address = new Address();
-    address.addLine(h.address);
-    address.setCity(h.city);
-    address.setPostalCode(h.zip);
-    address.setState(h.state);
-    if (COUNTRY_CODE != null) {
-      address.setCountry(COUNTRY_CODE);
-    }
-    organizationResource.addAddress(address);
-
+  public static void addHospitalExtensions(Provider h, Organization organizationResource) {
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
     // calculate totals for utilization
     int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
@@ -135,25 +112,5 @@ public abstract class HospitalExporterR4 {
       bedCountExtension.setValue(bedCountValue);
       organizationResource.addExtension(bedCountExtension);
     }
-
-    newEntry(bundle, organizationResource, h.getResourceID());
-  }
-
-  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource,
-      String resourceID) {
-    BundleEntryComponent entry = bundle.addEntry();
-
-    resource.setId(resourceID);
-    entry.setFullUrl("urn:uuid:" + resourceID);
-    entry.setResource(resource);
-
-    if (TRANSACTION_BUNDLE) {
-      BundleEntryRequestComponent request = entry.getRequest();
-      request.setMethod(HTTPVerb.POST);
-      request.setUrl(resource.getResourceType().name());
-      entry.setRequest(request);
-    }
-
-    return entry;
   }
 }

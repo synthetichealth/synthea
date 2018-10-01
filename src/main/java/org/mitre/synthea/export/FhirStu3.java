@@ -2276,7 +2276,7 @@ public class FhirStu3 {
    * @param resource Resource the new Entry should contain
    * @return the created Entry
    */
-  protected static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
+  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
     String resourceID = UUID.randomUUID().toString();
     return newEntry(bundle, resource, resourceID);
   }
@@ -2290,7 +2290,7 @@ public class FhirStu3 {
    * @param resourceID The Resource ID to assign
    * @return the created Entry
    */
-  protected static BundleEntryComponent newEntry(Bundle bundle, Resource resource,
+  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource,
       String resourceID) {
     BundleEntryComponent entry = bundle.addEntry();
 

@@ -149,7 +149,6 @@ public abstract class HospitalExporterDstu2 {
 
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);
-
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {

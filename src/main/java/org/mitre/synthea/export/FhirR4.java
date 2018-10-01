@@ -1427,7 +1427,7 @@ public class FhirR4 {
    * @param provider The Provider
    * @return The added Entry
    */
-  private static BundleEntryComponent provider(Bundle bundle, Provider provider) {
+  protected static BundleEntryComponent provider(Bundle bundle, Provider provider) {
     Organization organizationResource =
         new Organization();
 
@@ -1475,7 +1475,7 @@ public class FhirR4 {
       organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
     }
 
-    return newEntry(bundle, organizationResource);
+    return newEntry(bundle, organizationResource, provider.getResourceID());
   }
 
   /**
@@ -1484,7 +1484,7 @@ public class FhirR4 {
    * @param clinician The clinician
    * @return The added Entry
    */
-  private static BundleEntryComponent practitioner(Bundle bundle, Clinician clinician) {
+  protected static BundleEntryComponent practitioner(Bundle bundle, Clinician clinician) {
     Practitioner practitionerResource = new Practitioner();
 
     practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
@@ -1511,7 +1511,7 @@ public class FhirR4 {
       practitionerResource.setGender(AdministrativeGender.FEMALE);
     }
 
-    return newEntry(bundle, practitionerResource);
+    return newEntry(bundle, practitionerResource, clinician.getResourceID());
   }
 
   /**
@@ -1680,12 +1680,26 @@ public class FhirR4 {
    * @return the created Entry
    */
   private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
+    String resourceID = UUID.randomUUID().toString();
+    return newEntry(bundle, resource, resourceID);
+  }
+
+  /**
+   * Helper function to create an Entry for the given Resource within the given Bundle. Sets the
+   * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
+   * the bundle.
+   *
+   * @param bundle   The Bundle to add the Entry to
+   * @param resource Resource the new Entry should contain
+   * @param resourceID The Resource ID to assign
+   * @return the created Entry
+   */
+  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource,
+      String resourceID) {
     BundleEntryComponent entry = bundle.addEntry();
 
-    String resourceID = UUID.randomUUID().toString();
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);
-
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {
