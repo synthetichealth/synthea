@@ -81,6 +81,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.PositiveIntType;
+import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
@@ -97,6 +98,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -614,6 +616,17 @@ public class FhirR4 {
       }
     }
 
+    if (encounter.clinician != null) {
+      String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
+
+      if (practitionerFullUrl != null) {
+        encounterResource.addParticipant().setIndividual(new Reference(practitionerFullUrl));
+      } else {
+        BundleEntryComponent practitioner = practitioner(bundle, encounter.clinician);
+        encounterResource.addParticipant().setIndividual(new Reference(practitioner.getFullUrl()));
+      }
+    }
+
     if (encounter.discharge != null) {
       EncounterHospitalizationComponent hospitalization = new EncounterHospitalizationComponent();
       Code dischargeDisposition = new Code(DISCHARGE_URI, encounter.discharge.code,
@@ -652,6 +665,25 @@ public class FhirR4 {
       if (entry.getResource().fhirType().equals("Organization")) {
         Organization org = (Organization) entry.getResource();
         if (org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
+          return entry.getFullUrl();
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find the Practitioner entry in this bundle, and return the associated "fullUrl"
+   * attribute.
+   * @param clinician A given clinician.
+   * @param bundle The current bundle being generated.
+   * @return Practitioner.fullUrl if found, otherwise null.
+   */
+  private static String findPractitioner(Clinician clinician, Bundle bundle) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource().fhirType().equals("Practitioner")) {
+        Practitioner doc = (Practitioner) entry.getResource();
+        if (doc.getIdentifierFirstRep().getValue().equals(""+clinician.seed)) {
           return entry.getFullUrl();
         }
       }
@@ -1446,7 +1478,43 @@ public class FhirR4 {
     return newEntry(bundle, organizationResource);
   }
 
-  /*
+  /**
+   * Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.
+   * @param bundle The Bundle to add to
+   * @param clinician The clinician
+   * @return The added Entry
+   */
+  private static BundleEntryComponent practitioner(Bundle bundle, Clinician clinician) {
+    Practitioner practitionerResource = new Practitioner();
+
+    practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
+    .setValue("" + clinician.seed);
+    practitionerResource.setActive(true);
+    practitionerResource.addName().setFamily(
+        (String) clinician.attributes.get(Clinician.LAST_NAME))
+      .addGiven((String) clinician.attributes.get(Clinician.FIRST_NAME))
+      .addPrefix((String) clinician.attributes.get(Clinician.NAME_PREFIX));
+
+    Address address = new Address()
+        .addLine((String) clinician.attributes.get(Clinician.ADDRESS))
+        .setCity((String) clinician.attributes.get(Clinician.CITY))
+        .setPostalCode((String) clinician.attributes.get(Clinician.ZIP))
+        .setState((String) clinician.attributes.get(Clinician.STATE));
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
+    practitionerResource.addAddress(address);
+
+    if (clinician.attributes.get(Person.GENDER).equals("M")) {
+      practitionerResource.setGender(AdministrativeGender.MALE);
+    } else if (clinician.attributes.get(Person.GENDER).equals("F")) {
+      practitionerResource.setGender(AdministrativeGender.FEMALE);
+    }
+
+    return newEntry(bundle, practitionerResource);
+  }
+
+  /**
    * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
    * @param bundle The Bundle to add to
    * @param goalStatus The GoalStatus
