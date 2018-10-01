@@ -1,17 +1,6 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.dstu2.composite.AddressDt;
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
-import ca.uhn.fhir.model.dstu2.resource.Organization;
-import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.HTTPVerbEnum;
-import ca.uhn.fhir.model.primitive.IntegerDt;
-
 import com.google.common.collect.Table;
 
 import java.io.File;
@@ -25,12 +14,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.hl7.fhir.dstu3.model.Address;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
+import org.hl7.fhir.dstu3.model.Extension;
+import org.hl7.fhir.dstu3.model.IntegerType;
+import org.hl7.fhir.dstu3.model.Organization;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Provider;
 
-public abstract class HospitalDSTU2Exporter {
+public abstract class HospitalExporterStu3 {
 
-  private static final FhirContext FHIR_CTX = FhirContext.forDstu2();
+  private static final FhirContext FHIR_CTX = FhirContext.forDstu3();
 
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
@@ -40,13 +39,13 @@ public abstract class HospitalDSTU2Exporter {
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_dstu2.export"))) {
-      
+    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
+
       Bundle bundle = new Bundle();
       if (TRANSACTION_BUNDLE) {
-        bundle.setType(BundleTypeEnum.TRANSACTION);
+        bundle.setType(BundleType.TRANSACTION);
       } else {
-        bundle.setType(BundleTypeEnum.COLLECTION);
+        bundle.setType(BundleType.COLLECTION);
       }
       for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
@@ -64,7 +63,7 @@ public abstract class HospitalDSTU2Exporter {
 
       // get output folder
       List<String> folders = new ArrayList<>();
-      folders.add("fhir_dstu2");
+      folders.add("fhir");
       String baseDirectory = Config.get("exporter.baseDirectory");
       File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
       f.mkdirs();
@@ -87,7 +86,7 @@ public abstract class HospitalDSTU2Exporter {
     organizationResource.setId(h.getResourceID());
     organizationResource.setName(h.name);
 
-    AddressDt address = new AddressDt();
+    Address address = new Address();
     address.addLine(h.address);
     address.setCity(h.city);
     address.setPostalCode(h.zip);
@@ -101,51 +100,47 @@ public abstract class HospitalDSTU2Exporter {
     // calculate totals for utilization
     int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
         .mapToInt(ai -> ai.get()).sum();
-    ExtensionDt encountersExtension = new ExtensionDt();
-    encountersExtension.setUrl(SYNTHEA_URI + "utilization-encounters-extension");
-    IntegerDt encountersValue = new IntegerDt(totalEncounters);
+    Extension encountersExtension = new Extension(SYNTHEA_URI + "utilization-encounters-extension");
+    IntegerType encountersValue = new IntegerType(totalEncounters);
     encountersExtension.setValue(encountersValue);
-    organizationResource.addUndeclaredExtension(encountersExtension);
+    organizationResource.addExtension(encountersExtension);
 
     int totalProcedures = utilization.column(Provider.PROCEDURES).values().stream()
         .mapToInt(ai -> ai.get()).sum();
-    ExtensionDt proceduresExtension = new ExtensionDt();
-    proceduresExtension.setUrl(SYNTHEA_URI + "utilization-procedures-extension");
-    IntegerDt proceduresValue = new IntegerDt(totalProcedures);
+    Extension proceduresExtension = new Extension(SYNTHEA_URI + "utilization-procedures-extension");
+    IntegerType proceduresValue = new IntegerType(totalProcedures);
     proceduresExtension.setValue(proceduresValue);
-    organizationResource.addUndeclaredExtension(proceduresExtension);
+    organizationResource.addExtension(proceduresExtension);
 
     int totalLabs = utilization.column(Provider.LABS).values().stream().mapToInt(ai -> ai.get())
         .sum();
-    ExtensionDt labsExtension = new ExtensionDt();
-    labsExtension.setUrl(SYNTHEA_URI + "utilization-labs-extension");
-    IntegerDt labsValue = new IntegerDt(totalLabs);
+    Extension labsExtension = new Extension(SYNTHEA_URI + "utilization-labs-extension");
+    IntegerType labsValue = new IntegerType(totalLabs);
     labsExtension.setValue(labsValue);
-    organizationResource.addUndeclaredExtension(labsExtension);
+    organizationResource.addExtension(labsExtension);
 
     int totalPrescriptions = utilization.column(Provider.PRESCRIPTIONS).values().stream()
         .mapToInt(ai -> ai.get()).sum();
-    ExtensionDt prescriptionsExtension = new ExtensionDt();
-    prescriptionsExtension.setUrl(SYNTHEA_URI + "utilization-prescriptions-extension");
-    IntegerDt prescriptionsValue = new IntegerDt(totalPrescriptions);
+    Extension prescriptionsExtension = new Extension(
+        SYNTHEA_URI + "utilization-prescriptions-extension");
+    IntegerType prescriptionsValue = new IntegerType(totalPrescriptions);
     prescriptionsExtension.setValue(prescriptionsValue);
-    organizationResource.addUndeclaredExtension(prescriptionsExtension);
+    organizationResource.addExtension(prescriptionsExtension);
 
     Integer bedCount = h.getBedCount();
     if (bedCount != null) {
-      ExtensionDt bedCountExtension = new ExtensionDt();
-      bedCountExtension.setUrl(SYNTHEA_URI + "bed-count-extension");
-      IntegerDt bedCountValue = new IntegerDt(bedCount);
+      Extension bedCountExtension = new Extension(SYNTHEA_URI + "bed-count-extension");
+      IntegerType bedCountValue = new IntegerType(bedCount);
       bedCountExtension.setValue(bedCountValue);
-      organizationResource.addUndeclaredExtension(bedCountExtension);
+      organizationResource.addExtension(bedCountExtension);
     }
 
     newEntry(bundle, organizationResource, h.getResourceID());
   }
 
-  private static Entry newEntry(Bundle bundle, BaseResource resource,
+  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource,
       String resourceID) {
-    Entry entry = bundle.addEntry();
+    BundleEntryComponent entry = bundle.addEntry();
 
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);
@@ -153,9 +148,9 @@ public abstract class HospitalDSTU2Exporter {
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {
-      EntryRequest request = entry.getRequest();
-      request.setMethod(HTTPVerbEnum.POST);
-      request.setUrl(resource.getResourceName());
+      BundleEntryRequestComponent request = entry.getRequest();
+      request.setMethod(HTTPVerb.POST);
+      request.setUrl(resource.getResourceType().name());
       entry.setRequest(request);
     }
 

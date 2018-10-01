@@ -428,7 +428,9 @@ public class Provider implements QuadTreeData {
    */
   public Clinician chooseClinicianList(String specialty, Random random) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
-    return clinicians.get(random.nextInt(clinicians.size()));
+    Clinician doc = clinicians.get(random.nextInt(clinicians.size()));
+    doc.incrementEncounters();
+    return doc;
   }
   
   /**

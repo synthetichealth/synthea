@@ -39,6 +39,7 @@ public class Clinician implements Serializable, QuadTreeData {
   public final long seed;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
+  private int encounters;
   public long populationSeed;
   
   public Clinician(long seed) {
@@ -58,6 +59,22 @@ public class Clinician implements Serializable, QuadTreeData {
   
   public boolean hasService(String service) {
     return servicesProvided.contains(service);
+  }
+
+  /**
+   * Increment the number of encounters performed by this Clinician.
+   * @return The incremented number of encounters.
+   */
+  public synchronized int incrementEncounters() {
+    return encounters++;
+  }
+
+  /**
+   * Get the number of encounters performed by this Clinician.
+   * @return The number of encounters.
+   */
+  public int getEncounterCount() {
+    return encounters;
   }
   
   public int randInt() {

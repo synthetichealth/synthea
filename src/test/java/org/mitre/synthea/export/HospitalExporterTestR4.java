@@ -21,14 +21,14 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
-public class HospitalExporterTest {
+public class HospitalExporterTestR4 {
 
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   public void testFHIRExport() throws Exception {
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirContext.forR4();
     FhirValidator validator = ctx.newValidator();
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
@@ -43,7 +43,7 @@ public class HospitalExporterTest {
     assertFalse(Provider.getProviderList().isEmpty());
 
     Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS.toString(), 0);
-    HospitalExporter.export(0L);
+    HospitalExporterStu3.export(0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir").toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());

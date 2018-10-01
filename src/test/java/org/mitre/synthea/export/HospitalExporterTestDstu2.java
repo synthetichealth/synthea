@@ -21,7 +21,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
-public class HospitalDSTU2ExporterTest {
+public class HospitalExporterTestDstu2 {
 
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -43,7 +43,7 @@ public class HospitalDSTU2ExporterTest {
     assertFalse(Provider.getProviderList().isEmpty());
 
     Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS.toString(), 0);
-    HospitalDSTU2Exporter.export(0L);
+    HospitalExporterDstu2.export(0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir_dstu2").toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
