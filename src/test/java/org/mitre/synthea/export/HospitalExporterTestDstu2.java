@@ -27,7 +27,7 @@ public class HospitalExporterTestDstu2 {
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
-  public void testFHIRDSTU2Export() throws Exception {
+  public void testFHIRExport() throws Exception {
     FhirContext ctx = FhirContext.forDstu2();
     FhirValidator validator = ctx.newValidator();
     validator.setValidateAgainstStandardSchema(true);
@@ -37,6 +37,7 @@ public class HospitalExporterTestDstu2 {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir_dstu2.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
+    FhirDstu2.TRANSACTION_BUNDLE = true; // set this manually, in case it has already been loaded.
     Location location = new Location("Massachusetts", null);
     Provider.clear();
     Provider.loadProviders(location);

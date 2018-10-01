@@ -37,6 +37,7 @@ public class HospitalExporterTestStu3 {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
+    FhirStu3.TRANSACTION_BUNDLE = true; // set this manually, in case it has already been loaded.
     Location location = new Location("Massachusetts", null);
     Provider.clear();
     Provider.loadProviders(location);
