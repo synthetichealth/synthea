@@ -683,7 +683,7 @@ public class FhirR4 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue().equals(""+clinician.seed)) {
+        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.seed)) {
           return entry.getFullUrl();
         }
       }

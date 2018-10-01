@@ -582,7 +582,7 @@ public class FhirDstu2 {
     for (Entry entry : bundle.getEntry()) {
       if (entry.getResource().getResourceName().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue().equals(""+clinician.seed)) {
+        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.seed)) {
           return entry.getFullUrl();
         }
       }
