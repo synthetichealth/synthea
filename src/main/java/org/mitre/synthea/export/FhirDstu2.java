@@ -35,6 +35,7 @@ import ca.uhn.fhir.model.dstu2.resource.Observation.Component;
 import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
+import ca.uhn.fhir.model.dstu2.resource.Practitioner;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCriticalityEnum;
@@ -91,6 +92,7 @@ import java.util.UUID;
 import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -525,6 +527,19 @@ public class FhirDstu2 {
       }
     }
 
+    if (encounter.clinician != null) {
+      String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
+
+      if (practitionerFullUrl != null) {
+        encounterResource.addParticipant().setIndividual(
+            new ResourceReferenceDt(practitionerFullUrl));
+      } else {
+        Entry practitioner = practitioner(bundle, encounter.clinician);
+        encounterResource.addParticipant().setIndividual(
+            new ResourceReferenceDt(practitioner.getFullUrl()));
+      }
+    }
+
     if (encounter.discharge != null) {
       Hospitalization hospitalization = new Hospitalization();
       Code dischargeDisposition = new Code(DISCHARGE_URI, encounter.discharge.code,
@@ -548,6 +563,25 @@ public class FhirDstu2 {
       if (entry.getResource().getResourceName().equals("Organization")) {
         Organization org = (Organization) entry.getResource();
         if (org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
+          return entry.getFullUrl();
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find the Practitioner entry in this bundle, and return the associated "fullUrl"
+   * attribute.
+   * @param clinician A given clinician.
+   * @param bundle The current bundle being generated.
+   * @return Practitioner.fullUrl if found, otherwise null.
+   */
+  private static String findPractitioner(Clinician clinician, Bundle bundle) {
+    for (Entry entry : bundle.getEntry()) {
+      if (entry.getResource().getResourceName().equals("Practitioner")) {
+        Practitioner doc = (Practitioner) entry.getResource();
+        if (doc.getIdentifierFirstRep().getValue().equals(""+clinician.seed)) {
           return entry.getFullUrl();
         }
       }
@@ -1269,15 +1303,47 @@ public class FhirDstu2 {
     return newEntry(bundle, organizationResource);
   }
 
-  /*
-   * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
-   *
+  /**
+   * Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.
    * @param bundle The Bundle to add to
-   *
+   * @param clinician The clinician
+   * @return The added Entry
+   */
+  private static Entry practitioner(Bundle bundle, Clinician clinician) {
+    Practitioner practitionerResource = new Practitioner();
+
+    practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
+    .setValue("" + clinician.seed);
+    practitionerResource.setActive(true);
+    practitionerResource.getName().addFamily(
+        (String) clinician.attributes.get(Clinician.LAST_NAME))
+      .addGiven((String) clinician.attributes.get(Clinician.FIRST_NAME))
+      .addPrefix((String) clinician.attributes.get(Clinician.NAME_PREFIX));
+
+    AddressDt address = new AddressDt()
+        .addLine((String) clinician.attributes.get(Clinician.ADDRESS))
+        .setCity((String) clinician.attributes.get(Clinician.CITY))
+        .setPostalCode((String) clinician.attributes.get(Clinician.ZIP))
+        .setState((String) clinician.attributes.get(Clinician.STATE));
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
+    practitionerResource.addAddress(address);
+
+    if (clinician.attributes.get(Person.GENDER).equals("M")) {
+      practitionerResource.setGender(AdministrativeGenderEnum.MALE);
+    } else if (clinician.attributes.get(Person.GENDER).equals("F")) {
+      practitionerResource.setGender(AdministrativeGenderEnum.FEMALE);
+    }
+
+    return newEntry(bundle, practitionerResource);
+  }
+
+  /**
+   * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
+   * @param bundle The Bundle to add to
    * @param goalStatus The GoalStatus
-   *
    * @param goal The JsonObject
-   *
    * @return The added Entry
    */
   private static Entry caregoal(Bundle bundle, GoalStatusEnum goalStatus, JsonObject goal) {
