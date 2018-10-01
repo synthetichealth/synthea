@@ -2,14 +2,10 @@ package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.dstu2.composite.AddressDt;
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
 import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.HTTPVerbEnum;
 import ca.uhn.fhir.model.primitive.IntegerDt;
 
 import com.google.common.collect.Table;
@@ -37,8 +33,6 @@ public abstract class HospitalExporterDstu2 {
   protected static boolean TRANSACTION_BUNDLE =
       Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
 
-  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
-
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_dstu2.export"))) {
       
@@ -50,12 +44,12 @@ public abstract class HospitalExporterDstu2 {
       }
       for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
-
         Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
         int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
             .mapToInt(ai -> ai.get()).sum();
         if (totalEncounters > 0) {
-          addHospitalToBundle(h, bundle);
+          Entry entry = FhirDstu2.provider(bundle, h);
+          addHospitalExtensions(h, (Organization) entry.getResource());
         }
       }
 
@@ -78,25 +72,7 @@ public abstract class HospitalExporterDstu2 {
     }
   }
 
-  public static void addHospitalToBundle(Provider h, Bundle bundle) {
-    Organization organizationResource = new Organization();
-
-    organizationResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
-        .setValue((String) h.getResourceID());
-
-    organizationResource.setId(h.getResourceID());
-    organizationResource.setName(h.name);
-
-    AddressDt address = new AddressDt();
-    address.addLine(h.address);
-    address.setCity(h.city);
-    address.setPostalCode(h.zip);
-    address.setState(h.state);
-    if (COUNTRY_CODE != null) {
-      address.setCountry(COUNTRY_CODE);
-    }
-    organizationResource.addAddress(address);
-
+  public static void addHospitalExtensions(Provider h, Organization organizationResource) {
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
     // calculate totals for utilization
     int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
@@ -139,25 +115,5 @@ public abstract class HospitalExporterDstu2 {
       bedCountExtension.setValue(bedCountValue);
       organizationResource.addUndeclaredExtension(bedCountExtension);
     }
-
-    newEntry(bundle, organizationResource, h.getResourceID());
-  }
-
-  private static Entry newEntry(Bundle bundle, BaseResource resource,
-      String resourceID) {
-    Entry entry = bundle.addEntry();
-
-    resource.setId(resourceID);
-    entry.setFullUrl("urn:uuid:" + resourceID);
-    entry.setResource(resource);
-
-    if (TRANSACTION_BUNDLE) {
-      EntryRequest request = entry.getRequest();
-      request.setMethod(HTTPVerbEnum.POST);
-      request.setUrl(resource.getResourceName());
-      entry.setRequest(request);
-    }
-
-    return entry;
   }
 }

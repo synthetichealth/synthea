@@ -43,7 +43,6 @@ public abstract class HospitalExporterStu3 {
       }
       for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
-
         Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
         int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
             .mapToInt(ai -> ai.get()).sum();

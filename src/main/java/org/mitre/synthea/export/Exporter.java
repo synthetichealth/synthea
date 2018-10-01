@@ -151,6 +151,12 @@ public abstract class Exporter {
       e.printStackTrace();
     }
 
+    try {
+      FhirPractitionerExporterDstu2.export(generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     if (Boolean.parseBoolean(Config.get("exporter.cost_access_outcomes_report"))) {
       ReportExporter.export(generator);
     }

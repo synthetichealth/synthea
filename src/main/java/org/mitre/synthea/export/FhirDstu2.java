@@ -1270,7 +1270,7 @@ public class FhirDstu2 {
    *          The Provider
    * @return The added Entry
    */
-  private static Entry provider(Bundle bundle, Provider provider) {
+  protected static Entry provider(Bundle bundle, Provider provider) {
     ca.uhn.fhir.model.dstu2.resource.Organization organizationResource =
         new ca.uhn.fhir.model.dstu2.resource.Organization();
 
@@ -1301,7 +1301,7 @@ public class FhirDstu2 {
       organizationResource.addTelecom(contactPoint);
     }
 
-    return newEntry(bundle, organizationResource);
+    return newEntry(bundle, organizationResource, provider.getResourceID());
   }
 
   /**
@@ -1310,7 +1310,7 @@ public class FhirDstu2 {
    * @param clinician The clinician
    * @return The added Entry
    */
-  private static Entry practitioner(Bundle bundle, Clinician clinician) {
+  protected static Entry practitioner(Bundle bundle, Clinician clinician) {
     Practitioner practitionerResource = new Practitioner();
 
     practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
@@ -1337,7 +1337,7 @@ public class FhirDstu2 {
       practitionerResource.setGender(AdministrativeGenderEnum.FEMALE);
     }
 
-    return newEntry(bundle, practitionerResource);
+    return newEntry(bundle, practitionerResource, clinician.getResourceID());
   }
 
   /**
@@ -1478,19 +1478,31 @@ public class FhirDstu2 {
    * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
    * the bundle.
    *
-   * @param bundle
-   *          The Bundle to add the Entry to
-   * @param resource
-   *          Resource the new Entry should contain
+   * @param bundle The Bundle to add the Entry to
+   * @param resource Resource the new Entry should contain
    * @return the created Entry
    */
   private static Entry newEntry(Bundle bundle, BaseResource resource) {
+    String resourceID = UUID.randomUUID().toString();
+    return newEntry(bundle, resource, resourceID);
+  }
+
+  /**
+   * Helper function to create an Entry for the given Resource within the given Bundle. Sets the
+   * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
+   * the bundle.
+   *
+   * @param bundle The Bundle to add the Entry to
+   * @param resource Resource the new Entry should contain
+   * @param resourceID The resourceID to use.
+   * @return the created Entry
+   */
+  private static Entry newEntry(Bundle bundle, BaseResource resource,
+      String resourceID) {
     Entry entry = bundle.addEntry();
 
-    String resourceID = UUID.randomUUID().toString();
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);
-
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {
