@@ -122,7 +122,19 @@ public abstract class Exporter {
    */
   public static void runPostCompletionExports(Generator generator) {
     try {
+      HospitalExporterR4.export(generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
       HospitalExporterStu3.export(generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
+      FhirPractitionerExporterStu3.export(generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }

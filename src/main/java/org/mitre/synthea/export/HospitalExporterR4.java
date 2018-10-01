@@ -40,7 +40,7 @@ public abstract class HospitalExporterR4 {
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_r4.export"))) {
 
       Bundle bundle = new Bundle();
       if (TRANSACTION_BUNDLE) {

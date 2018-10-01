@@ -2027,7 +2027,7 @@ public class FhirStu3 {
    * @param provider The Provider
    * @return The added Entry
    */
-  private static BundleEntryComponent provider(Bundle bundle, Provider provider) {
+  protected static BundleEntryComponent provider(Bundle bundle, Provider provider) {
     org.hl7.fhir.dstu3.model.Organization organizationResource =
         new org.hl7.fhir.dstu3.model.Organization();
 
@@ -2074,7 +2074,7 @@ public class FhirStu3 {
       organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
     }
 
-    return newEntry(bundle, organizationResource);
+    return newEntry(bundle, organizationResource, provider.getResourceID());
   }
 
   /**
@@ -2083,7 +2083,7 @@ public class FhirStu3 {
    * @param clinician The clinician
    * @return The added Entry
    */
-  private static BundleEntryComponent practitioner(Bundle bundle, Clinician clinician) {
+  protected static BundleEntryComponent practitioner(Bundle bundle, Clinician clinician) {
     Practitioner practitionerResource = new Practitioner();
 
     practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
@@ -2276,12 +2276,26 @@ public class FhirStu3 {
    * @param resource Resource the new Entry should contain
    * @return the created Entry
    */
-  private static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
-    BundleEntryComponent entry = bundle.addEntry();
+  protected static BundleEntryComponent newEntry(Bundle bundle, Resource resource) {
     String resourceID = UUID.randomUUID().toString();
+    return newEntry(bundle, resource, resourceID);
+  }
+
+  /**
+   * Helper function to create an Entry for the given Resource within the given Bundle.
+   * Sets the entry's fullURL to resourceID, and adds the entry to the bundle.
+   *
+   * @param bundle The Bundle to add the Entry to
+   * @param resource Resource the new Entry should contain
+   * @param resourceID The Resource ID to assign
+   * @return the created Entry
+   */
+  protected static BundleEntryComponent newEntry(Bundle bundle, Resource resource,
+      String resourceID) {
+    BundleEntryComponent entry = bundle.addEntry();
+
     resource.setId(resourceID);
     entry.setFullUrl("urn:uuid:" + resourceID);
-
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {
