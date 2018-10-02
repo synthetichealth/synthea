@@ -29,14 +29,11 @@ public abstract class HospitalExporterStu3 {
 
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
-  protected static boolean TRANSACTION_BUNDLE =
-      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
-
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
 
       Bundle bundle = new Bundle();
-      if (TRANSACTION_BUNDLE) {
+      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
         bundle.setType(BundleType.TRANSACTION);
       } else {
         bundle.setType(BundleType.COLLECTION);
