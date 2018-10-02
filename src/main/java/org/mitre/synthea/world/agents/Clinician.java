@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.sis.geometry.DirectPosition2D;
@@ -36,16 +37,23 @@ public class Clinician implements Serializable, QuadTreeData {
   
   
   public final Random random;
+  public final String uuid;
   public final long seed;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
+  private int encounters;
   public long populationSeed;
   
   public Clinician(long seed) {
+    this.uuid = UUID.randomUUID().toString();
     this.seed = seed; // keep track of seed so it can be exported later
     random = new Random(seed);
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
+  }
+
+  public String getResourceID() {
+    return uuid;
   }
 
   public double rand() {
@@ -58,6 +66,22 @@ public class Clinician implements Serializable, QuadTreeData {
   
   public boolean hasService(String service) {
     return servicesProvided.contains(service);
+  }
+
+  /**
+   * Increment the number of encounters performed by this Clinician.
+   * @return The incremented number of encounters.
+   */
+  public synchronized int incrementEncounters() {
+    return encounters++;
+  }
+
+  /**
+   * Get the number of encounters performed by this Clinician.
+   * @return The number of encounters.
+   */
+  public int getEncounterCount() {
+    return encounters;
   }
   
   public int randInt() {

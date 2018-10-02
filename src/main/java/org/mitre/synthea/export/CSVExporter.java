@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
-import java.util.UUID;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
