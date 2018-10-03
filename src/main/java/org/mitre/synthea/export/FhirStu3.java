@@ -265,7 +265,7 @@ public class FhirStu3 {
           encounterEntry, encounter.claim);
 
       explanationOfBenefit(personEntry,bundle,encounterEntry,person,
-          (org.hl7.fhir.dstu3.model.Claim) encounterClaim.getResource(), encounter);
+          encounterClaim, encounter);
     }
 
     String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
@@ -881,10 +881,11 @@ public class FhirStu3 {
    */
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
-                                           Person person, org.hl7.fhir.dstu3.model.Claim claim,
+                                           Person person, BundleEntryComponent claimEntry,
                                            Encounter encounter) {
     boolean inpatient = false;
     boolean outpatient = false;
+    org.hl7.fhir.dstu3.model.Claim claim = (org.hl7.fhir.dstu3.model.Claim) claimEntry.getResource();
     if (encounter.type.equals(Provider.INPATIENT) || encounter.type.equals(Provider.AMBULATORY)) {
       inpatient = true;
       // Provider enum doesn't include outpatient, but it can still be
@@ -1131,7 +1132,7 @@ public class FhirStu3 {
     eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
     if (!inpatient && !outpatient) {
       eob.setClaim(new Reference()
-          .setReference(claim.getId()));
+          .setReference(claimEntry.getFullUrl()));
       eob.setReferral(new Reference("#1"));
       eob.setCreated(encounterResource.getPeriod().getEnd());
     }
