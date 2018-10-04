@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Locale;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.engine.Event;
@@ -1262,12 +1263,12 @@ public class CDWExporter {
         break;
       case "29463-7": // weight
         // convert from kg to lbs
-        value = String.format("%.1f", ((Double) observation.value * 2.20462));
+        value = String.format(Locale.US, "%.1f", ((Double) observation.value * 2.20462));
         s.append(value).append(",,,");
         break;
       case "8302-2": // height
         // convert from cm to inches
-        value = String.format("%.1f", ((Double) observation.value * 0.393701));
+        value = String.format(Locale.US, "%.1f", ((Double) observation.value * 0.393701));
         s.append(value).append(",,,");
         break;
       case "72514-3": // pain

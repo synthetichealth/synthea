@@ -3,6 +3,7 @@ package org.mitre.synthea.export;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Locale;
 
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -33,7 +34,7 @@ public abstract class ExportHelper {
       value = (String)observation.value;
     } else if (observation.value instanceof Double) {
       // round to 1 decimal place for display
-      value = String.format("%.1f", observation.value);
+      value = String.format(Locale.US, "%.1f", observation.value);
     } else if (observation.value != null) {
       value = observation.value.toString();
     }

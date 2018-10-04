@@ -466,7 +466,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", procedure.cost())).append(',');
+    s.append(String.format(Locale.US, "%.2f", procedure.cost())).append(',');
 
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -509,7 +509,7 @@ public class CSVExporter {
     s.append(clean(coding.display)).append(',');
 
     BigDecimal cost = medication.cost();
-    s.append(cost).append(',');
+    s.append(String.format(Locale.US, "%.2f", cost)).append(',');
     long dispenses = 1; // dispenses = refills + original
     // makes the math cleaner and more explicit. dispenses * unit cost = total cost
     
@@ -547,7 +547,7 @@ public class CSVExporter {
     BigDecimal totalCost = cost
         .multiply(BigDecimal.valueOf(dispenses))
         .setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
-    s.append(totalCost).append(',');
+    s.append(String.format(Locale.US, "%.2f", totalCost)).append(',');
 
     if (medication.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -583,7 +583,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format("%.2f", immunization.cost()));
+    s.append(String.format(Locale.US, "%.2f", immunization.cost()));
 
     s.append(NEWLINE);
     write(s.toString(), immunizations);
