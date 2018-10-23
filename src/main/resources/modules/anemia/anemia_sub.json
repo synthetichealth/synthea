@@ -1,0 +1,518 @@
+{
+  "name": "anemia_sub",
+  "remarks": [
+    "Anemia"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Anemia"
+    },
+    "Anemia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "anemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271737000,
+          "display": "Anemia (disorder)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Review_Of_Systems": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415300000,
+          "display": "Review of systems (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Medication_Reconciliation",
+      "remarks": [
+        "Future model: This should be a submodule that records social habits, nutrition, alcohol consumption."
+      ]
+    },
+    "Brief_Examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 162676008,
+          "display": "Brief general examination (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "Remarks:",
+        "- Percent of severe patients estimated (needs verification)",
+        ""
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Initial_Encounter",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "20570-8",
+                    "display": "Hematocrit"
+                  }
+                ],
+                "operator": "<=",
+                "value": 33
+              },
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Initial_Encounter",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "20570-8",
+                    "display": "Hematocrit"
+                  }
+                ],
+                "operator": "<=",
+                "value": 30
+              }
+            ]
+          }
+        },
+        {
+          "transition": "PLACEHOLDER_Collect_Social_Habits"
+        }
+      ]
+    },
+    "End_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Inpatient_Encounter"
+    },
+    "Inpatient_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "anemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Recheck_Blood_Counts"
+    },
+    "Recheck_Blood_Counts": {
+      "type": "Simple",
+      "direct_transition": "Consult/Referral_to_Experts"
+    },
+    "Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Blood_Panel_M_Severe",
+          "distribution": 0.07
+        },
+        {
+          "transition": "Blood_Panel_M_Routine",
+          "distribution": 0.93
+        }
+      ]
+    },
+    "Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Blood_Panel_F_Severe",
+          "distribution": 0.07
+        },
+        {
+          "transition": "Blood_Panel_F_Routine",
+          "distribution": 0.93
+        }
+      ]
+    },
+    "Blood_Panel_F_Routine": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 2,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24360-0",
+          "display": "Hemoglobin and Hematocrit panel - Blood"
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear",
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11,
+            "high": 11.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        }
+      ]
+    },
+    "Blood_Panel_M_Routine": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 2,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24360-0",
+          "display": "Hemoglobin and Hematocrit panel - Blood"
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear",
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 10,
+            "high": 11.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 30.1,
+            "high": 35
+          }
+        }
+      ]
+    },
+    "Blood_Panel_M_Severe": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 2,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24360-0",
+          "display": "Hemoglobin and Hematocrit panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 6.7,
+            "high": 10
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 20,
+            "high": 30
+          }
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear"
+    },
+    "Blood_Panel_F_Severe": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 2,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24360-0",
+          "display": "Hemoglobin and Hematocrit panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 7,
+            "high": 10.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 21,
+            "high": 32.9
+          }
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear"
+    },
+    "Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 180207008,
+          "display": "Intravenous blood transfusion of packed cells (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "PLACEHOLDER_Do_Other_Severe_Anemia_Things"
+    },
+    "Peripheral_Blood_Smear": {
+      "type": "Simple",
+      "direct_transition": "Review_Of_Systems"
+    },
+    "Medication_Reconciliation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 430193006,
+          "display": "Medication Reconciliation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Brief_Examination"
+    },
+    "PLACEHOLDER_Collect_Social_Habits": {
+      "type": "Simple",
+      "direct_transition": "PLACEHOLDER_Collect_Nutrition",
+      "remarks": [
+        "Done in review of systems."
+      ]
+    },
+    "PLACEHOLDER_Collect_Nutrition": {
+      "type": "Simple",
+      "direct_transition": "Administer_Medications",
+      "remarks": [
+        "Done in review of systems"
+      ]
+    },
+    "Administer_Medications": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Iron_Supplement",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Vitamin B12 Booster",
+          "distribution": 0.1
+        },
+        {
+          "transition": "PLACEHOLDER_Do_Other_Anemia_Things",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Iron_Supplement": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 310325,
+          "display": "ferrous sulfate 325 MG Oral Tablet"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Vitamin B12 Booster",
+          "distribution": 0.1
+        },
+        {
+          "transition": "PLACEHOLDER_Do_Other_Anemia_Things",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Vitamin B12 Booster": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2001499,
+          "display": "Vitamin B 12 5 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "PLACEHOLDER_Do_Other_Anemia_Things"
+    },
+    "Consult/Referral_to_Experts": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "20570-8",
+                    "display": "Hematrocrit"
+                  }
+                ],
+                "operator": "<",
+                "value": 30
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Transfusion"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "20570-8",
+                    "display": "Hematrocrit"
+                  }
+                ],
+                "operator": "<",
+                "value": 30
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Transfusion"
+        }
+      ]
+    },
+    "PLACEHOLDER_Do_Other_Severe_Anemia_Things": {
+      "type": "Simple",
+      "direct_transition": "Administer_Medications"
+    },
+    "PLACEHOLDER_Do_Other_Anemia_Things": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    }
+  }
+}
