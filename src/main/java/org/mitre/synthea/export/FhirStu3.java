@@ -73,6 +73,7 @@ import org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.MedicationRequest;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent;
+import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestRequesterComponent;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus;
 import org.hl7.fhir.dstu3.model.Meta;
 import org.hl7.fhir.dstu3.model.Money;
@@ -1741,6 +1742,12 @@ public class FhirStu3 {
 
     medicationResource.setAuthoredOn(new Date(medication.start));
     medicationResource.setIntent(MedicationRequestIntent.ORDER);
+    org.hl7.fhir.dstu3.model.Encounter encounter =
+        (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
+    MedicationRequestRequesterComponent requester = new MedicationRequestRequesterComponent();
+    requester.setAgent(encounter.getParticipantFirstRep().getIndividual());
+    requester.setOnBehalfOf(encounter.getServiceProvider());
+    medicationResource.setRequester(requester);
 
     if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationRequestStatus.STOPPED);

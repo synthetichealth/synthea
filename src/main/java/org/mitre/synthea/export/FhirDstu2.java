@@ -973,6 +973,9 @@ public class FhirDstu2 {
 
     medicationResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     medicationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
+        (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
+    medicationResource.setPrescriber(encounter.getParticipantFirstRep().getIndividual());
     medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
@@ -1114,6 +1117,11 @@ public class FhirDstu2 {
 
     Code code = carePlan.codes.get(0);
     careplanResource.addCategory(mapCodeToCodeableConcept(code, SNOMED_URI));
+
+    NarrativeDt narrative = new NarrativeDt();
+    narrative.setStatus(NarrativeStatusEnum.GENERATED);
+    narrative.setDiv(code.display);
+    careplanResource.setText(narrative);
 
     CarePlanActivityStatusEnum activityStatus;
     GoalStatusEnum goalStatus;
