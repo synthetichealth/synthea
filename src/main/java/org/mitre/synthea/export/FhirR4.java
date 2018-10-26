@@ -1116,6 +1116,9 @@ public class FhirR4 {
 
     medicationResource.setAuthoredOn(new Date(medication.start));
     medicationResource.setIntent(MedicationRequestIntent.ORDER);
+    org.hl7.fhir.r4.model.Encounter encounter =
+        (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+    medicationResource.setRequester(encounter.getParticipantFirstRep().getIndividual());
 
     if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationRequestStatus.STOPPED);

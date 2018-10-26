@@ -86,6 +86,14 @@ public class FHIRSTU3ExporterTest {
                  * so we must manually validate.
                  */
                 valid = validateCon4((Condition) entry.getResource());
+              } else if (emessage.getMessage().contains("@ MedicationRequest mps-1")) {
+                /*
+                 * The mps-1 invariant says MedicationRequest.requester.onBehalfOf can only be
+                 * specified if MedicationRequest.requester.agent is practitioner or device.
+                 * But the invariant is poorly written and does not correctly handle references
+                 * starting with "urn:uuid"
+                 */
+                valid = true; // ignore this error
               }
 
               if (!valid) {
