@@ -886,7 +886,6 @@ public class FhirStu3 {
                                            Encounter encounter) {
     boolean inpatient = false;
     boolean outpatient = false;
-    org.hl7.fhir.dstu3.model.Claim claim = (org.hl7.fhir.dstu3.model.Claim) claimEntry.getResource();
     if (encounter.type.equals(Provider.INPATIENT) || encounter.type.equals(Provider.AMBULATORY)) {
       inpatient = true;
       // Provider enum doesn't include outpatient, but it can still be
@@ -1109,7 +1108,15 @@ public class FhirStu3 {
 
     // Set References
     eob.setPatient(new Reference(personEntry.getFullUrl()));
-    eob.setOrganizationTarget(claim.getOrganizationTarget());
+    if (encounter.provider != null) {
+      // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
+      // String providerUrl = findProviderUrl(encounter.provider, bundle);
+      // eob.setOrganization(new Reference().setReference(providerUrl));
+      // Instead, we'll create the BlueButton 2.0 reference via identifier...
+      Identifier identifier = new Identifier();
+      identifier.setValue(encounter.provider.getResourceID());
+      eob.setOrganization(new Reference().setIdentifier(identifier));
+    }
 
     // get the insurance info at the time that the encounter happened
     String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
@@ -1122,6 +1129,8 @@ public class FhirStu3 {
     insuranceComponent.setCoverage(new Reference("#coverage"));
     eob.setInsurance(insuranceComponent);
 
+    org.hl7.fhir.dstu3.model.Claim claim =
+        (org.hl7.fhir.dstu3.model.Claim) claimEntry.getResource();
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
         .setValue(claim.getId());
@@ -1392,16 +1401,18 @@ public class FhirStu3 {
         .setRecipient(recipientList)
         .setId("1"));
 
-    Provider provider = person.getProvider(encounter.type, encounterResource
-        .getPeriod()
-        .getEnd()
-        .getTime());
-    if (!inpatient && !outpatient) {
-      eob.setProvider(new Reference().setReference(findProviderUrl(provider, bundle)));
+    if (encounter.clinician != null) {
+      // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
+      // String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
+      // eob.setProvider(new Reference().setReference(practitionerFullUrl));
+      // Instead, we'll create the BlueButton 2.0 reference via identifier...
+      Identifier identifier = new Identifier();
+      identifier.setValue(encounter.clinician.getResourceID());
+      eob.setProvider(new Reference().setIdentifier(identifier));
     } else {
-      eob.setProviderTarget(new Practitioner()
-          .addIdentifier(new Identifier()
-              .setValue("yes")));
+      Identifier identifier = new Identifier();
+      identifier.setValue("Unknown");
+      eob.setProvider(new Reference().setIdentifier(identifier));
     }
 
     eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
