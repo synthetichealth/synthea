@@ -168,12 +168,32 @@ public class Person implements Serializable, QuadTreeData {
     return age;
   }
 
+  /**
+   * Return the persons age in months at a given time.
+   * @param time The time when their age should be calculated.
+   * @return age in months. Can never be less than zero,
+   * even if given a time before they were born.
+   */
   public int ageInMonths(long time) {
-    return (int) age(time).toTotalMonths();
+    int months = (int) age(time).toTotalMonths();
+    if (months < 0) {
+      months = 0;
+    }
+    return months;
   }
 
+  /**
+   * Return the persons age in years at a given time.
+   * @param time The time when their age should be calculated.
+   * @return age in years. Can never be less than zero,
+   * even if given a time before they were born.
+   */
   public int ageInYears(long time) {
-    return age(time).getYears();
+    int years = age(time).getYears();
+    if (years < 0) {
+      years = 0;
+    }
+    return years;
   }
 
   public boolean alive(long time) {

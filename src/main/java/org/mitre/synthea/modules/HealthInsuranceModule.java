@@ -110,7 +110,7 @@ public class HealthInsuranceModule extends Module {
     if (person.attributes.containsKey(INSURANCE)) {
       List<String> insurance = (List<String>) person.attributes.get(INSURANCE);
       int age = person.ageInYears(time);
-      if (insurance.get(age) == null) {
+      if (insurance.size() > age && insurance.get(age) != null) {
         result = insurance.get(age);
       }
     }
