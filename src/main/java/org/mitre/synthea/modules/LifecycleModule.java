@@ -19,13 +19,11 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
@@ -609,7 +607,8 @@ public final class LifecycleModule extends Module {
 
     person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
     
-    int kidneyDamage = (Integer) person.attributes.getOrDefault("diabetic_kidney_damage", 0); 
+    // CKD == stage of "Chronic Kidney Disease" or the level of diabetic kidney damage
+    int kidneyDamage = (Integer) person.attributes.getOrDefault("ckd", 0);
     int[] ccRange;
     int[] mcrRange;
     switch (kidneyDamage) {
@@ -716,13 +715,13 @@ public final class LifecycleModule extends Module {
     }
   }
 
-  private static final boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
+  protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
   
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
 
-  private static void death(Person person, long time) {
+  protected static void death(Person person, long time) {
     if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
       double roll = person.rand();
       double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
@@ -732,7 +731,7 @@ public final class LifecycleModule extends Module {
     }
   }
 
-  private static double likelihoodOfDeath(int age) {
+  protected static double likelihoodOfDeath(int age) {
     double yearlyRisk;
 
     if (age < 1) {
@@ -803,11 +802,11 @@ public final class LifecycleModule extends Module {
   }
 
   private static void startAlcoholism(Person person, long time) {
-    // TODO there are various types of alcoholics with different characteristics
+    // there are various types of alcoholics with different characteristics
     // including age of onset of dependence. we pick 25 as a starting point
     // https://www.therecoveryvillage.com/alcohol-abuse/types-alcoholics/
     if (person.attributes.get(Person.ALCOHOLIC) == null && person.ageInYears(time) == 25) {
-      // TODO assume about 8 mil alcoholics/320 mil gen pop
+      // assume about 8 mil alcoholics/320 mil gen pop
       Boolean alcoholic = person.rand() < 0.025;
       person.attributes.put(Person.ALCOHOLIC, alcoholic);
       double quitAlcoholismBaseline = Double
@@ -816,10 +815,13 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * If the person is a smoker, there is a small chance they will quit.
+   * @param person The person who might quit smoking.
+   * @param time The current time in the simulation.
+   */
   public static void quitSmoking(Person person, long time) {
-
     int age = person.ageInYears(time);
-
     if (person.attributes.containsKey(Person.SMOKER)) {
       if (person.attributes.get(Person.SMOKER).equals(true)) {
         double probability = (double) person.attributes.get(QUIT_SMOKING_PROBABILITY);
@@ -841,8 +843,12 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * If the person is an alcoholic, there is a small chance they will quit.
+   * @param person The person who might quit drinking.
+   * @param time The current time in the simulation.
+   */
   public static void quitAlcoholism(Person person, long time) {
-
     int age = person.ageInYears(time);
 
     if (person.attributes.containsKey(Person.ALCOHOLIC)) {
@@ -866,26 +872,33 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * Adjust the probability of a patients adherence to Doctor orders, whether
+   * medication, careplans, whatever.
+   * @param person The patient to consider.
+   * @param time The time in the simulation.
+   */
   public static void adherence(Person person, long time) {
-
     if (person.attributes.containsKey(Person.ADHERENCE)) {
       double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
-
-      double aherenceBaseline = Double
+      double adherenceBaseline = Double
           .parseDouble(Config.get("lifecycle.adherence.baseline", "0.05"));
       double adherenceTimestepDelta = Double
-          .parseDouble(Config.get("lifecycle.aherence.timestep_delta", "-.01"));
+          .parseDouble(Config.get("lifecycle.adherence.timestep_delta", "-.01"));
       probability += adherenceTimestepDelta;
-      if (probability < aherenceBaseline) {
-        probability = aherenceBaseline;
+      if (probability < adherenceBaseline) {
+        probability = adherenceBaseline;
       }
       person.attributes.put(ADHERENCE_PROBABILITY, probability);
-
     }
   }
 
-  // referenced in the Injuries module - adults > age 65 have multiple screenings that affect fall
-  // risk
+  /**
+   * Creates a "probability_of_fall_injury" attribute that gets referenced in the Injuries module
+   * where adults > age 65 have multiple screenings that affect fall.
+   * @param person The person to calculate risk for.
+   * @param time The time within the simulation.
+   */
   private void calculateFallRisk(Person person, long time) {
     if (person.ageInYears(time) >= 65) {
       boolean hasOsteoporosis = (boolean) person.attributes.getOrDefault("osteporosis", false);
@@ -894,7 +907,7 @@ public final class LifecycleModule extends Module {
       int activeInterventions = 0;
 
       // careplan for exercise or PT
-      if (person.record.careplanActive("Physical therapy")
+      if (person.record.careplanActive("Physical therapy procedure")
           || person.record.careplanActive("Physical activity target light exercise")) {
         activeInterventions++;
       }
