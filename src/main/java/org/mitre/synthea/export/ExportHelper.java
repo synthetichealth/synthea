@@ -2,8 +2,8 @@ package org.mitre.synthea.export;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.world.concepts.HealthRecord;
