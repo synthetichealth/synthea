@@ -9,10 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.Locale;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.engine.Event;

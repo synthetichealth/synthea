@@ -198,15 +198,14 @@ public class FhirR4 {
   }
 
   /**
-   * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
+   * Convert the given Person into a FHIR Bundle of the Patient and the
    * associated entries from their health record.
    *
    * @param person   Person to generate the FHIR JSON for
    * @param stopTime Time the simulation ended
-   * @return String containing a JSON representation of a FHIR Bundle containing the Person's health
-   *     record
+   * @return FHIR Bundle containing the Person's health record
    */
-  public static String convertToFHIR(Person person, long stopTime) {
+  public static Bundle convertToFHIR(Person person, long stopTime) {
     Bundle bundle = new Bundle();
     if (TRANSACTION_BUNDLE) {
       bundle.setType(BundleType.TRANSACTION);
@@ -258,7 +257,19 @@ public class FhirR4 {
       // one claim per encounter
       encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
     }
-
+    return bundle;
+  }
+  /**
+   * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
+   * associated entries from their health record.
+   *
+   * @param person   Person to generate the FHIR JSON for
+   * @param stopTime Time the simulation ended
+   * @return String containing a JSON representation of a FHIR Bundle containing the Person's health
+   *     record
+   */
+  public static String convertToFHIRJson(Person person, long stopTime) {
+    Bundle bundle = convertToFHIR(person, stopTime);
     String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
         .encodeResourceToString(bundle);
 

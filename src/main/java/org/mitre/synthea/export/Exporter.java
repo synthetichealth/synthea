@@ -22,6 +22,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+
 public abstract class Exporter {
   /**
    * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
@@ -37,49 +40,61 @@ public abstract class Exporter {
     }
     // Defaults to STU3 output
     if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
-      String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
       File outDirectory = getOutputFolder("fhir", person);
-      Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+        org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
+        IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
+        for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceType().toString() + ".json";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        String bundleJson = FhirStu3.convertToFHIRJson(person, stopTime);
+        Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
+        writeNewFile(outFilePath, bundleJson);
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.fhir_dstu2.export"))) {
-      String bundleJson = FhirDstu2.convertToFHIR(person, stopTime);
       File outDirectory = getOutputFolder("fhir_dstu2", person);
-      Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+        ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
+        IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
+        for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceName() + ".json";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        String bundleJson = FhirDstu2.convertToFHIRJson(person, stopTime);
+        Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
+        writeNewFile(outFilePath, bundleJson);
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.fhir_r4.export"))) {
-      String bundleJson = FhirR4.convertToFHIR(person, stopTime);
       File outDirectory = getOutputFolder("fhir_r4", person);
-      Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+        org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+        IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
+        for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceType().toString() + ".json";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
+        Path outFilePath = outDirectory.toPath().resolve(filename(person, "json"));
+        writeNewFile(outFilePath, bundleJson);
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
-
       File outDirectory = getOutputFolder("ccda", person);
       Path outFilePath = outDirectory.toPath().resolve(filename(person, "xml"));
-
-      try {
-        Files.write(outFilePath, Collections.singleton(ccdaXml), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      writeNewFile(outFilePath, ccdaXml);
     }
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
@@ -88,7 +103,6 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
         TextExporter.exportAll(person, stopTime);
@@ -96,7 +110,6 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-
     if (Boolean.parseBoolean(Config.get("exporter.text.per_encounter_export"))) {
       try {
         TextExporter.exportEncounter(person, stopTime);
@@ -104,13 +117,46 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       try {
         CDWExporter.getInstance().export(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
+    }
+  }
+
+  /**
+   * Write a new file with the given contents.
+   * @param file Path to the new file.
+   * @param contents The contents of the file.
+   */
+  private static void writeNewFile(Path file, String contents) {
+    try {
+      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE_NEW);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Append contents to the end of a file.
+   * @param file Path to the new file.
+   * @param contents The contents of the file.
+   */
+  private static void appendToFile(Path file, String contents) {
+    try {
+      if (Files.notExists(file)) {
+        Files.createFile(file);
+      }
+    } catch (Exception e) {
+      // Ignore... multi-threaded race condition to create a file that didn't exist,
+      // but does now because one of the other exporter threads beat us to it.
+    }
+    try {
+      Files.write(file, Collections.singleton(contents), StandardOpenOption.APPEND);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
