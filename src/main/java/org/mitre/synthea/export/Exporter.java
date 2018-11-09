@@ -45,7 +45,7 @@ public abstract class Exporter {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceType().toString() + ".json";
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
           String entryJson = parser.encodeResourceToString(entry.getResource());
           appendToFile(outFilePath, entryJson);
@@ -62,7 +62,7 @@ public abstract class Exporter {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceName() + ".json";
+          String filename = entry.getResource().getResourceName() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
           String entryJson = parser.encodeResourceToString(entry.getResource());
           appendToFile(outFilePath, entryJson);
@@ -79,7 +79,7 @@ public abstract class Exporter {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceType().toString() + ".json";
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
           String entryJson = parser.encodeResourceToString(entry.getResource());
           appendToFile(outFilePath, entryJson);
