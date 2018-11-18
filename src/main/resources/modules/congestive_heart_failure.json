@@ -1,12 +1,31 @@
 {
   "name": "Congestive Heart Failure",
   "remarks": [
-    "A blank module"
+    "This module was built based on the following references:",
+    "1. the existing synthea congestive_heartfailure_module",
+    "2. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5494150/",
+    "3. https://www.acc.org/tools-and-practice-support/clinical-toolkits/~/media/1E4D8F9B69D14F55821BFE642FBFA221.ashx",
+    "4. https://r.details.loinc.org/LOINC/55405-5.html?sections=Comprehensive",
+    "",
+    "LIMITATIONS:",
+    "- Age-specific prevalences are based on numbers from Portugal",
+    "",
+    "IN PROGRESS",
+    "- EF observations",
+    "- Reporting on imaging procedures",
+    "- Implement full LOINC heartfailure tracking panel",
+    "",
+    "TODO:",
+    "- NYHA classification",
+    "- Death",
+    "- Check number for BNP (too low for HF?)",
+    "- Adopt medications to severity",
+    ""
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "age delay"
+      "direct_transition": "Age Guard"
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
@@ -60,39 +79,6 @@
         }
       ],
       "direct_transition": "BNP lab workup"
-    },
-    "inital workup imaging for CHF": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": "34552-0",
-        "display": "trans thoracic echocardiogram"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 261179002,
-            "display": "thoracic"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "US",
-            "display": "Ultrasound"
-          },
-          "instances": [
-            {
-              "title": "Ultrasound Multiframe Image Storage",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.3.1",
-                "display": "Ultrasound Multiframe Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "CHF careplan"
     },
     "BNP lab workup": {
       "type": "Observation",
@@ -231,7 +217,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "inital workup imaging for CHF"
+      "direct_transition": "Workup imaging for CHF"
     },
     "CHF careplan": {
       "type": "CarePlanStart",
@@ -242,7 +228,7 @@
           "display": "Heart failure self management plan"
         }
       ],
-      "direct_transition": "CHF Medication Start 1",
+      "direct_transition": "Wrap up follow-up encounter",
       "reason": "chf",
       "activities": [
         {
@@ -303,7 +289,7 @@
           "display": "Lasix 40mg"
         }
       ],
-      "direct_transition": "end_followup_encounter",
+      "direct_transition": "Assign CHF care plan",
       "reason": "chf",
       "prescription": {
         "dosage": {
@@ -323,28 +309,42 @@
       "type": "EncounterEnd",
       "direct_transition": "Maintaining CHF"
     },
-    "age delay": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 50,
-        "unit": "years"
-      },
-      "direct_transition": "chance of CHF"
-    },
     "chance of CHF": {
       "type": "Delay",
       "exact": {
         "quantity": 1,
         "unit": "years"
       },
-      "distributed_transition": [
+      "conditional_transition": [
         {
-          "transition": "chance of CHF",
-          "distribution": 0.99904
+          "transition": "Age_80-Chance of CHF",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 80,
+            "unit": "years"
+          }
         },
         {
-          "transition": "CHF symptom onset 1",
-          "distribution": 0.00096
+          "transition": "Age_70-79-Chance of CHF",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 70,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Age_60-69-Chance of CHF",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 60,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Age_50-59-Chance of CHF"
         }
       ]
     },
@@ -1035,6 +1035,208 @@
         }
       ],
       "direct_transition": "CXR_ED"
+    },
+    "Age Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 50,
+        "unit": "years"
+      },
+      "direct_transition": "chance of CHF"
+    },
+    "Age_50-59-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.003
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.9970000000000001
+        }
+      ]
+    },
+    "Age_60-69-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.008
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.992
+        }
+      ]
+    },
+    "Age_70-79-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.013
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.9870000000000001
+        }
+      ]
+    },
+    "Age_80-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.02
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "CHF onset": {
+      "type": "Simple",
+      "direct_transition": "Calculate LVEF"
+    },
+    "CHF careplan for smokers": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 735984001,
+          "display": "Heart failure self management plan"
+        }
+      ],
+      "reason": "chf",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183063000,
+          "display": "low salt diet education"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183301007,
+          "display": "physical exercise"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225323000,
+          "display": "Smoking cessation education"
+        }
+      ],
+      "direct_transition": "Wrap up follow-up encounter"
+    },
+    "Assign CHF care plan": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CHF careplan for smokers",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CHF careplan"
+        }
+      ]
+    },
+    "Wrap up follow-up encounter": {
+      "type": "Simple",
+      "direct_transition": "end_followup_encounter"
+    },
+    "Order medications": {
+      "type": "Simple",
+      "direct_transition": "CHF Medication Start 1"
+    },
+    "Report workup imaging": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55405-5",
+          "display": "Heartfailure Tracking Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-sign",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10230-1",
+              "display": "Left ventricular Ejection fraction"
+            }
+          ],
+          "vital_sign": "Left ventricular Ejection fraction"
+        }
+      ],
+      "direct_transition": "Order medications"
+    },
+    "Workup imaging for CHF": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "34552-0",
+        "display": "trans thoracic echocardiogram"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 261179002,
+            "display": "thoracic"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Read workup imaging"
+    },
+    "Calculate LVEF": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "%",
+      "direct_transition": "CHF symptom onset 1",
+      "range": {
+        "low": 30,
+        "high": 49
+      }
+    },
+    "Read workup imaging": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "10230-1",
+          "display": "Left ventricular Ejection fraction"
+        }
+      ],
+      "direct_transition": "Report workup imaging",
+      "vital_sign": "Left ventricular Ejection fraction"
     }
   }
 }
