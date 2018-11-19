@@ -1,24 +1,31 @@
 {
   "name": "Congestive Heart Failure",
   "remarks": [
+    "REFERENCES",
     "This module was built based on the following references:",
     "1. the existing synthea congestive_heartfailure_module",
     "2. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5494150/",
     "3. https://www.acc.org/tools-and-practice-support/clinical-toolkits/~/media/1E4D8F9B69D14F55821BFE642FBFA221.ashx",
     "4. https://r.details.loinc.org/LOINC/55405-5.html?sections=Comprehensive",
+    "5. https://www.nbt.nhs.uk/sites/default/files/BNP%20fact%20sheet.pdf",
     "",
-    "LIMITATIONS:",
+    "GOALS",
+    "- Simulate entire lifecycle of HF from onset to death",
+    "- Simulate disease progression through NYHA II-IV",
+    "- Include telemedicine (remote monitoring)",
+    "",
+    "LIMITATIONS",
     "- Age-specific prevalences are based on numbers from Portugal",
     "",
     "IN PROGRESS",
     "- EF observations",
     "- Reporting on imaging procedures",
-    "- Implement full LOINC heartfailure tracking panel",
+    "- Implement full LOINC heart failure tracking panel",
+    "",
     "",
     "TODO:",
+    "- enrolment of patient in telemedicine program",
     "- NYHA classification",
-    "- Death",
-    "- Check number for BNP (too low for HF?)",
     "- Adopt medications to severity",
     ""
   ],
@@ -78,24 +85,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "BNP lab workup"
-    },
-    "BNP lab workup": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "pg/mL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "42637-9",
-          "display": "Natriuretic peptide B"
-        }
-      ],
-      "direct_transition": "Record_MetabolicPanel",
-      "range": {
-        "low": 2,
-        "high": 100
-      }
+      "direct_transition": "NTproBNP lab workup"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -440,39 +430,14 @@
     },
     "Admit_Discharge Transition": {
       "type": "Simple",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Systolic Blood Pressure",
-                "operator": "<",
-                "value": 0
-              },
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Sodium",
-                "operator": "<",
-                "value": 135
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "Inpatient_admittance",
-              "distribution": 1
-            }
-          ]
+          "transition": "Inpatient_admittance",
+          "distribution": 0.85
         },
         {
-          "distributions": [
-            {
-              "transition": "Potential CHF Flare",
-              "distribution": 1
-            }
-          ]
+          "transition": "Maintaining CHF",
+          "distribution": 0.1499999999999999
         }
       ]
     },
@@ -487,7 +452,7 @@
           "display": "Inpatient stay (finding)"
         }
       ],
-      "direct_transition": "Inpatient CarePlan"
+      "direct_transition": "Inpatient LOS"
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -498,7 +463,7 @@
           "display": "Inpatient care plan (record artifact)"
         }
       ],
-      "direct_transition": "Lasix IV",
+      "direct_transition": "Inpatient daily routine",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -648,41 +613,7 @@
         "quantity": 1,
         "unit": "days"
       },
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Systolic Blood Pressure",
-                "operator": ">",
-                "value": 120
-              },
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Sodium",
-                "operator": ">",
-                "value": 135
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "Inpatient Discharge",
-              "distribution": 1
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Lasix IV",
-              "distribution": 1
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Inpatient Death decision"
     },
     "Inpatient Discharge": {
       "type": "Simple",
@@ -1100,7 +1031,7 @@
     },
     "CHF onset": {
       "type": "Simple",
-      "direct_transition": "Calculate LVEF"
+      "direct_transition": "Reset inpatient count"
     },
     "CHF careplan for smokers": {
       "type": "CarePlanStart",
@@ -1237,6 +1168,104 @@
       ],
       "direct_transition": "Report workup imaging",
       "vital_sign": "Left ventricular Ejection fraction"
+    },
+    "NTproBNP lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "pg/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33762-6",
+          "display": "NT-proBNP"
+        }
+      ],
+      "direct_transition": "Record_MetabolicPanel",
+      "range": {
+        "low": 200,
+        "high": 2000
+      }
+    },
+    "Count inpatient stays": {
+      "type": "Counter",
+      "attribute": "inpatient-count",
+      "action": "increment",
+      "direct_transition": "Inpatient CarePlan"
+    },
+    "Inpatient LOS": {
+      "type": "SetAttribute",
+      "attribute": "inpatient-los",
+      "direct_transition": "Count inpatient stays",
+      "value": 0
+    },
+    "Reset inpatient count": {
+      "type": "SetAttribute",
+      "attribute": "inpatient-count",
+      "direct_transition": "Calculate LVEF",
+      "value": 0
+    },
+    "Inpatient daily routine": {
+      "type": "Simple",
+      "direct_transition": "Lasix IV"
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Inpatient Discharge decision": {
+      "type": "Counter",
+      "attribute": "inpatient-los",
+      "action": "increment",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "inpatient-los",
+            "operator": ">=",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Inpatient Discharge",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Inpatient daily routine",
+              "distribution": 0.19999999999999996
+            }
+          ]
+        }
+      ]
+    },
+    "Inpatient Death decision": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "inpatient-count",
+            "operator": ">=",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Death",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Inpatient Discharge decision",
+              "distribution": 0.19999999999999996
+            }
+          ]
+        }
+      ]
     }
   }
 }
