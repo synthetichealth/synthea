@@ -8,6 +8,9 @@
     "3. https://www.acc.org/tools-and-practice-support/clinical-toolkits/~/media/1E4D8F9B69D14F55821BFE642FBFA221.ashx",
     "4. https://r.details.loinc.org/LOINC/55405-5.html?sections=Comprehensive",
     "5. https://www.nbt.nhs.uk/sites/default/files/BNP%20fact%20sheet.pdf",
+    "6. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4254520/",
+    "7. http://heartfailure.onlinejacc.org/content/jhf/2/3/278.full.pdf",
+    "8. https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007569",
     "",
     "GOALS",
     "- Simulate entire lifecycle of HF from onset to death",
@@ -27,7 +30,10 @@
     "- enrolment of patient in telemedicine program",
     "- NYHA classification",
     "- Adopt medications to severity",
-    ""
+    "- send patients to observation unit ([6])",
+    "- Better modelling of mortality (e.g. clustered ED visits [8])",
+    "- Telemedicine only began in the early 2000s.",
+    "- What is a documented probability of acute exacerbations per 6 months? 1% was too low. But what is good number?"
   ],
   "states": {
     "Initial": {
@@ -366,11 +372,11 @@
       "distributed_transition": [
         {
           "transition": "acute inpatient CHF flare",
-          "distribution": 0.01
+          "distribution": 0.5
         },
         {
           "transition": "Maintaining CHF",
-          "distribution": 0.99
+          "distribution": 0.5
         }
       ]
     },
@@ -433,11 +439,11 @@
       "distributed_transition": [
         {
           "transition": "Inpatient_admittance",
-          "distribution": 0.85
+          "distribution": 0.84
         },
         {
           "transition": "Maintaining CHF",
-          "distribution": 0.1499999999999999
+          "distribution": 0.16000000000000014
         }
       ]
     },
@@ -626,7 +632,16 @@
     },
     "End Inpatient Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Potential CHF Flare"
+      "distributed_transition": [
+        {
+          "transition": "Maintaining CHF",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Maintaining CHF with Telemedicine",
+          "distribution": 0.5
+        }
+      ]
     },
     "inpatient daily labs": {
       "type": "DiagnosticReport",
@@ -1242,6 +1257,9 @@
             }
           ]
         }
+      ],
+      "remarks": [
+        "Model the ALOS (5.8) through an increased likelihood of a discharge after 5 days."
       ]
     },
     "Inpatient Death decision": {
@@ -1265,7 +1283,90 @@
             }
           ]
         }
+      ],
+      "remarks": [
+        "A high number of previous inpatient encounters increases the likelihood of death."
       ]
+    },
+    "Maintaining CHF with Telemedicine": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Self-Measurement",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Skip daily measurement",
+          "distribution": 0.39
+        },
+        {
+          "transition": "Potential CHF Flare",
+          "distribution": 0.010000000000000009
+        }
+      ]
+    },
+    "Skip daily measurement": {
+      "type": "Simple",
+      "direct_transition": "Maintaining CHF with Telemedicine"
+    },
+    "Self-Measurement": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448337001,
+          "display": "Telemedicine consultation with patient"
+        }
+      ],
+      "direct_transition": "Daily self-measurement"
+    },
+    "Daily self-measurement": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55284-4",
+          "display": "Blood Pressure"
+        }
+      ],
+      "direct_transition": "End self-measurement",
+      "observations": [
+        {
+          "category": "vital-signs",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ]
+    },
+    "End self-measurement": {
+      "type": "EncounterEnd",
+      "direct_transition": "Maintaining CHF with Telemedicine"
     }
   }
 }
