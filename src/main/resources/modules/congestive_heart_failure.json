@@ -27,7 +27,6 @@
     "",
     "",
     "TODO:",
-    "- enrolment of patient in telemedicine program",
     "- NYHA classification",
     "- Adopt medications to severity",
     "- send patients to observation unit ([6])",
@@ -445,6 +444,9 @@
           "transition": "Maintaining CHF",
           "distribution": 0.16000000000000014
         }
+      ],
+      "remarks": [
+        "Different studies suggest numbers from 74% to 84% for inpatient admittance."
       ]
     },
     "Inpatient_admittance": {
@@ -1296,7 +1298,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Self-Measurement",
+          "transition": "Set new systolic BP",
           "distribution": 0.6
         },
         {
@@ -1323,7 +1325,8 @@
           "display": "Telemedicine consultation with patient"
         }
       ],
-      "direct_transition": "Daily self-measurement"
+      "direct_transition": "Daily self-measurement",
+      "reason": "chf"
     },
     "Daily self-measurement": {
       "type": "MultiObservation",
@@ -1367,6 +1370,32 @@
     "End self-measurement": {
       "type": "EncounterEnd",
       "direct_transition": "Maintaining CHF with Telemedicine"
+    },
+    "Set new systolic BP": {
+      "type": "VitalSign",
+      "vital_sign": "Systolic Blood Pressure",
+      "unit": "mmHg",
+      "direct_transition": "Set new diastolic BP",
+      "range": {
+        "low": 140,
+        "high": 190
+      },
+      "remarks": [
+        "an ugly hack to obtain new BP regardless of time step duration."
+      ]
+    },
+    "Set new diastolic BP": {
+      "type": "VitalSign",
+      "vital_sign": "Diastolic Blood Pressure",
+      "unit": "mmHg",
+      "direct_transition": "Self-Measurement",
+      "range": {
+        "low": 90,
+        "high": 110
+      },
+      "remarks": [
+        "an ugly hack to obtain new BP regardless of time step duration."
+      ]
     }
   }
 }
