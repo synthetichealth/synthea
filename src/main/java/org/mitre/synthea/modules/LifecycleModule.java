@@ -372,17 +372,17 @@ public final class LifecycleModule extends Module {
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
 
-    double height = person.getVitalSign(VitalSign.HEIGHT);
-    double weight = person.getVitalSign(VitalSign.WEIGHT);
+    double height = person.getVitalSign(VitalSign.HEIGHT, time);
+    double weight = person.getVitalSign(VitalSign.WEIGHT, time);
 
     if (age < 20) {
       // follow growth charts
       String gender = (String) person.attributes.get(Person.GENDER);
       int ageInMonths = person.ageInMonths(time);
       height = lookupGrowthChart("height", gender, ageInMonths,
-          person.getVitalSign(VitalSign.HEIGHT_PERCENTILE));
+          person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
       weight = lookupGrowthChart("weight", gender, ageInMonths,
-          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE));
+          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
     } else if (age <= ADULT_MAX_WEIGHT_AGE) {
       // getting older and fatter
       double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
@@ -586,7 +586,7 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.HDL, hdl);
     person.setVitalSign(VitalSign.LDL, ldl);
     
-    double bmi = person.getVitalSign(VitalSign.BMI);
+    double bmi = person.getVitalSign(VitalSign.BMI, time);
     boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
     boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
     double hbA1c = estimateHbA1c(bmi, prediabetes, diabetes, person);
@@ -703,7 +703,7 @@ public final class LifecycleModule extends Module {
     try {
       int age = person.ageInYears(time);
       boolean female = "F".equals(person.attributes.get(Person.GENDER));
-      double weight = person.getVitalSign(VitalSign.WEIGHT); // kg
+      double weight = person.getVitalSign(VitalSign.WEIGHT, time); // kg
       crcl = Math.max(1, Math.min(crcl, 100)); // clamp between 1-100
       double creatinine = ((140.0 - age) * weight) / (72.0 * crcl);
       if (female) {

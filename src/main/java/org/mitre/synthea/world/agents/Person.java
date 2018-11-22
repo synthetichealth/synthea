@@ -18,6 +18,8 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -70,7 +72,7 @@ public class Person implements Serializable, QuadTreeData {
   public final long seed;
   public long populationSeed;
   public Map<String, Object> attributes;
-  public Map<VitalSign, Double> vitalSigns;
+  public Map<VitalSign, ValueGenerator> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
   public EventList events;
@@ -82,7 +84,7 @@ public class Person implements Serializable, QuadTreeData {
     this.seed = seed; // keep track of seed so it can be exported later
     random = new Random(seed);
     attributes = new ConcurrentHashMap<String, Object>();
-    vitalSigns = new ConcurrentHashMap<VitalSign, Double>();
+    vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
     events = new EventList();
@@ -242,12 +244,24 @@ public class Person implements Serializable, QuadTreeData {
     symptomStatuses.get(highestType).put(highestCause, true);
   }
 
-  public Double getVitalSign(VitalSign vitalSign) {
-    return vitalSigns.get(vitalSign);
+  public Double getVitalSign(VitalSign vitalSign, long time) {
+    ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
+    if (valueGenerator == null) {
+      throw new IllegalStateException("Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
+    }
+    return valueGenerator.getValue(time);
   }
 
+  public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {
+    System.out.println("Setting vital sign: " + vitalSign);  // TODO: Remove
+    vitalSigns.put(vitalSign, valueGenerator);
+  }
+
+  /**
+   * Convenience function to set a vital sign to a constant value
+   */
   public void setVitalSign(VitalSign vitalSign, double value) {
-    vitalSigns.put(vitalSign, value);
+    setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
   }
 
   public void recordDeath(long time, Code cause, String ruleName) {

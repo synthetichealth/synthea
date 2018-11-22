@@ -351,7 +351,7 @@ public class StateTest {
     State vitalsign = module.getState("VitalSign").clone();
     assertTrue(vitalsign.process(person, time));
 
-    assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE), 0.0);
+    assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time), 0.0);
 
     verifyZeroInteractions(person.record);
   }
