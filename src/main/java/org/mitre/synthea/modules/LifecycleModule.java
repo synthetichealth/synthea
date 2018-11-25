@@ -99,7 +99,7 @@ public final class LifecycleModule extends Module {
     quitSmoking(person, time);
     quitAlcoholism(person, time);
     adherence(person, time);
-    diabeticVitalSigns(person, time);
+    calculateVitalSigns(person, time);
     calculateFallRisk(person, time);
     death(person, time);
 
@@ -201,6 +201,7 @@ public final class LifecycleModule extends Module {
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
+    calculateVitalSigns(person, time);  // Set some initial vital signs, such as blood pressure
 
     String orientation = sexualOrientationData.next(person.random);
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
@@ -555,7 +556,7 @@ public final class LifecycleModule extends Module {
    * @param person The person
    * @param time Current simulation timestamp
    */
-  private static void diabeticVitalSigns(Person person, long time) {
+  private static void calculateVitalSigns(Person person, long time) {
     boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
 
     int[] sysRange;
