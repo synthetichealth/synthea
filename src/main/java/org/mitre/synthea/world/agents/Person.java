@@ -247,7 +247,7 @@ public class Person implements Serializable, QuadTreeData {
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
     if (valueGenerator == null) {
-      throw new IllegalStateException("Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
+      throw new NullPointerException("Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
     return valueGenerator.getValue(time);
   }
