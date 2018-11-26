@@ -171,6 +171,7 @@ public final class LifecycleModule extends Module {
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person.random));
 
+    // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
     double weightPercentile = person.rand();
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
