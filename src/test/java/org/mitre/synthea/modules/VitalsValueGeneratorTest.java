@@ -61,13 +61,15 @@ public class VitalsValueGeneratorTest {
       }
   }
 
+
   @Test
   public void testSystolicTrendGenerator() {
-      TrendingValueGenerator boundedRandomVariable = new TrendingValueGenerator(person, 1.0, 140.0, 140.0, 0L, 1000L, null, null);
+    BloodPressureValueGenerator bloodPressureValueGenerator = new BloodPressureValueGenerator(person, BloodPressureValueGenerator.SysDias.SYSTOLIC);
+    final long ONE_DAY = 1*24*60*60*1000L;
 
-      for (long testTime = 0L; testTime < 1200L; testTime += 100L) {
-          double systolicValue = boundedRandomVariable.getValue(testTime);
-          System.out.println(systolicValue);
-      }
+    for (long time = 0L; time < ONE_DAY * 100; time += ONE_DAY) {
+        double testValue = bloodPressureValueGenerator.getValue(time);
+        System.out.println("Value @ " + time + ": " + testValue);
+    }
   }
 }

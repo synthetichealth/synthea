@@ -48,6 +48,15 @@ public class TrendingValueGenerator extends ValueGenerator {
     }
 
 
+    public long getBeginTime() {
+        return this.beginTime;
+    }
+
+    public long getEndTime() {
+        return this.endTime;
+    }
+
+
     /**
      * Return the value at the given time.
      * 
