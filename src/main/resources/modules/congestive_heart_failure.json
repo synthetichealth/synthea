@@ -637,11 +637,11 @@
       "distributed_transition": [
         {
           "transition": "Maintaining CHF",
-          "distribution": 0.5
+          "distribution": 0.05
         },
         {
           "transition": "Maintaining CHF with Telemedicine",
-          "distribution": 0.5
+          "distribution": 0.95
         }
       ]
     },
@@ -1298,7 +1298,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Set new systolic BP",
+          "transition": "Daily Self-Measurement Encounter",
           "distribution": 0.6
         },
         {
@@ -1314,19 +1314,6 @@
     "Skip daily measurement": {
       "type": "Simple",
       "direct_transition": "Maintaining CHF with Telemedicine"
-    },
-    "Self-Measurement": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 448337001,
-          "display": "Telemedicine consultation with patient"
-        }
-      ],
-      "direct_transition": "Daily self-measurement",
-      "reason": "chf"
     },
     "Daily self-measurement": {
       "type": "MultiObservation",
@@ -1371,31 +1358,18 @@
       "type": "EncounterEnd",
       "direct_transition": "Maintaining CHF with Telemedicine"
     },
-    "Set new systolic BP": {
-      "type": "VitalSign",
-      "vital_sign": "Systolic Blood Pressure",
-      "unit": "mmHg",
-      "direct_transition": "Set new diastolic BP",
-      "range": {
-        "low": 140,
-        "high": 190
-      },
-      "remarks": [
-        "an ugly hack to obtain new BP regardless of time step duration."
-      ]
-    },
-    "Set new diastolic BP": {
-      "type": "VitalSign",
-      "vital_sign": "Diastolic Blood Pressure",
-      "unit": "mmHg",
-      "direct_transition": "Self-Measurement",
-      "range": {
-        "low": 90,
-        "high": 110
-      },
-      "remarks": [
-        "an ugly hack to obtain new BP regardless of time step duration."
-      ]
+    "Daily Self-Measurement Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448337001,
+          "display": "Telemedicine consultation with patient"
+        }
+      ],
+      "direct_transition": "Daily self-measurement",
+      "reason": "chf"
     }
   }
 }

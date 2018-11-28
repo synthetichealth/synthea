@@ -74,7 +74,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
         final long TEN_DAYS = 10*ONE_DAY;
 
         int endIndex = 0;
-        long endTime = -1L;
+        long endTime = Long.MIN_VALUE;
         for (int i=0; i < RING_ENTRIES; i++) {
             if (ringBuffer[i] != null && ringBuffer[i].getEndTime() > endTime) {
                 endIndex = i;
@@ -99,7 +99,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
             System.out.println("Starting over");
             currentTime = time - TEN_DAYS;
             generatePeriod = TEN_DAYS + TEN_DAYS;
-            startValue = 120.0;  // TODO: Have a function which takes hypertension, etc. into account
+            startValue = calculateMean(person, currentTime);
         } else {
             System.out.println("Continuing @ " + endTime);
             currentTime = endTime;
@@ -110,7 +110,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
         while(generatePeriod > 0L) {
             long duration = ONE_DAY * (1 + person.randInt(4)); // Random duration from 1-5 days.
-            double endValue = person.rand(120, 155); // TODO: Use values taking sys/dias + hypertension + age into account
+            double endValue = calculateMean(person, currentTime + duration);
             ringBuffer[ringIndex] = new TrendingValueGenerator(person, 1.0, startValue, endValue,
                     currentTime, currentTime + duration, null, null);
             System.out.println("Filled [" + ringIndex + "] with: " + ringBuffer[ringIndex]);
@@ -119,6 +119,16 @@ public class BloodPressureValueGenerator extends ValueGenerator {
             currentTime = currentTime + duration + 1L;
             generatePeriod -= duration;
             startValue = endValue;
+        }
+    }
+
+
+    private double calculateMean(Person person, long time) {
+        // TODO: Take many factors into consideration: sys/dias + hypertension + age + gender + ...
+        if (sysDias == SysDias.SYSTOLIC) {
+            return person.rand(120, 155);
+        } else {
+            return person.rand(60, 90);
         }
     }
 }

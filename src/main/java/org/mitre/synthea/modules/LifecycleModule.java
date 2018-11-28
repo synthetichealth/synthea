@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
@@ -206,8 +207,22 @@ public final class LifecycleModule extends Module {
 
     String orientation = sexualOrientationData.next(person.random);
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
+
+    setupVitalSignGenerators(person, time);
   }
   
+  
+  /**
+   * Set up the generators for vital signs which use the generator-based approach already.
+   * @param person
+   * @param time
+   */
+  private static void setupVitalSignGenerators(Person person, long time) {
+    person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
+    person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
+  }
+
+
   @SuppressWarnings("unchecked")
   public static String fakeFirstName(String gender, String language, Random random) {
     List<String> choices;
@@ -558,7 +573,8 @@ public final class LifecycleModule extends Module {
    * @param time Current simulation timestamp
    */
   private static void calculateVitalSigns(Person person, long time) {
-    boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
+// TODO: Remove once the trend generator approach is working
+    /*    boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
 
     int[] sysRange;
     int[] diaRange;
@@ -572,7 +588,8 @@ public final class LifecycleModule extends Module {
 
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(sysRange));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(diaRange));
-    
+*/
+
     int index = 0;
     if (person.attributes.containsKey("diabetes_severity")) {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
