@@ -45,6 +45,8 @@ public class BloodPressureValueGenerator extends ValueGenerator {
      * @return a value generator
      */
     private TrendingValueGenerator getTrendingValueGenerator(long time, boolean createNewGenerators) {
+        System.out.println("getTVG @ " + time);
+
         for (int i=0; i < RING_ENTRIES; i++)
         {
             final TrendingValueGenerator trendingValueGenerator = ringBuffer[i];
@@ -55,7 +57,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
             return null;
         else
         {
-            createNewGenerators(time, getTrendingValueGenerator(time - 1L, false));
+            createNewGenerators(time);
             return getTrendingValueGenerator(time, false);
         }
     }
@@ -67,26 +69,45 @@ public class BloodPressureValueGenerator extends ValueGenerator {
      * @param time
      * @param previousValueGenerator
      */
-    private void createNewGenerators(long time, TrendingValueGenerator previousValueGenerator) {
+    private void createNewGenerators(long time) {
         final long ONE_DAY = 1*24*60*60*1000L;
         final long TEN_DAYS = 10*ONE_DAY;
+
+        int endIndex = 0;
+        long endTime = -1L;
+        for (int i=0; i < RING_ENTRIES; i++) {
+            if (ringBuffer[i] != null && ringBuffer[i].getEndTime() > endTime) {
+                endIndex = i;
+                endTime = ringBuffer[i].getEndTime();
+            }
+        }
+
+        TrendingValueGenerator previousValueGenerator;
+        if (time - endTime < TEN_DAYS) {
+            // If the last ringbuffer entry is maximum ten days in the past, then continue from it
+            previousValueGenerator = ringBuffer[endIndex];
+        } else {
+            // Last entry is too far in the past. Start over.
+            previousValueGenerator = null;
+        }
 
         long currentTime;
         long generatePeriod;
         double startValue; 
         if (previousValueGenerator == null) {
-            // There is no previous buffer entry. Start from a few days in the past.
+            // There is no recent previous buffer entry. Start from a few days in the past.
+            System.out.println("Starting over");
             currentTime = time - TEN_DAYS;
             generatePeriod = TEN_DAYS + TEN_DAYS;
             startValue = 120.0;  // TODO: Have a function which takes hypertension, etc. into account
         } else {
-            currentTime = time;
+            System.out.println("Continuing @ " + endTime);
+            currentTime = endTime;
             generatePeriod = TEN_DAYS;
-            startValue = previousValueGenerator.getValue(time - 1L);
+            startValue = previousValueGenerator.getValue(endTime);
         }
 
 
-        // TODO: This is not yet properly picking up the end value from the previous segment (always starts at 120.0)
         while(generatePeriod > 0L) {
             long duration = ONE_DAY * (1 + person.randInt(4)); // Random duration from 1-5 days.
             double endValue = person.rand(120, 155); // TODO: Use values taking sys/dias + hypertension + age into account
@@ -97,6 +118,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
             ringIndex = ringIndex % RING_ENTRIES;
             currentTime = currentTime + duration + 1L;
             generatePeriod -= duration;
+            startValue = endValue;
         }
     }
 }

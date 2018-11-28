@@ -102,6 +102,8 @@ public class TrendingValueGenerator extends ValueGenerator {
         sb.append("standardDeviation=").append(standardDeviation);
         sb.append(", beginMean=").append(beginMean);
         sb.append(", endMean=").append(endMean);
+        sb.append(", beginTime=").append(beginTime);
+        sb.append(", endTime=").append(endTime);
         sb.append(", minimumValue=").append(minimumValue);
         sb.append(", maximumValue=").append(maximumValue);
         sb.append('}');
