@@ -1,10 +1,9 @@
 package org.mitre.synthea.modules;
 
-import java.util.Random;
-
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.BiometricsConfig;
 
 
 /**
@@ -15,6 +14,15 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     public enum SysDias {
         SYSTOLIC, DIASTOLIC
     }
+
+    private static final int[] HYPERTENSIVE_SYS_BP_RANGE =
+        BiometricsConfig.ints("metabolic.blood_pressure.hypertensive.systolic");
+    private static final int[] HYPERTENSIVE_DIA_BP_RANGE =
+        BiometricsConfig.ints("metabolic.blood_pressure.hypertensive.diastolic");
+    private static final int[] NORMAL_SYS_BP_RANGE =
+        BiometricsConfig.ints("metabolic.blood_pressure.normal.systolic");
+    private static final int[] NORMAL_DIA_BP_RANGE =
+        BiometricsConfig.ints("metabolic.blood_pressure.normal.diastolic");
 
     // Use a ringbuffer to reproducibly travel back in time for a bit, but not keep a full history per patient.
     private final static int RING_ENTRIES = 10;
@@ -32,6 +40,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
     @Override
     public double getValue(long time) {
+        // TODO: BP is circadian. Model change over time of day.
         final TrendingValueGenerator trendingValueGenerator = getTrendingValueGenerator(time, true);
         return trendingValueGenerator.getValue(time);
     }
@@ -109,7 +118,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
 
         while(generatePeriod > 0L) {
-            long duration = ONE_DAY * (1 + person.randInt(4)); // Random duration from 1-5 days.
+            long duration = ONE_DAY * (2 + person.randInt(4)); // Random duration from 2-5 days.
             double endValue = calculateMean(person, currentTime + duration);
             ringBuffer[ringIndex] = new TrendingValueGenerator(person, 1.0, startValue, endValue,
                     currentTime, currentTime + duration, null, null);
@@ -124,11 +133,21 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
 
     private double calculateMean(Person person, long time) {
-        // TODO: Take many factors into consideration: sys/dias + hypertension + age + gender + ...
+        // TODO: Take additional factors into consideration: age + gender
+        boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
+
         if (sysDias == SysDias.SYSTOLIC) {
-            return person.rand(120, 155);
+            if (hypertension) {
+                return person.rand(HYPERTENSIVE_SYS_BP_RANGE);                
+            } else {
+                return person.rand(NORMAL_SYS_BP_RANGE);
+            }
         } else {
-            return person.rand(60, 90);
+            if (hypertension) {
+                return person.rand(HYPERTENSIVE_DIA_BP_RANGE);
+            } else {
+                return person.rand(NORMAL_DIA_BP_RANGE);
+            }
         }
     }
 }

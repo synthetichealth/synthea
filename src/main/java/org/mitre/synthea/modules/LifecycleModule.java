@@ -505,14 +505,7 @@ public final class LifecycleModule extends Module {
     return impacts;
   }
   
-  private static final int[] HYPERTENSIVE_SYS_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.hypertensive.systolic");
-  private static final int[] HYPERTENSIVE_DIA_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.hypertensive.diastolic");
-  private static final int[] NORMAL_SYS_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.normal.systolic");
-  private static final int[] NORMAL_DIA_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.normal.diastolic");
+
   
   private static final int[] CHOLESTEROL_RANGE =
       BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
@@ -573,23 +566,6 @@ public final class LifecycleModule extends Module {
    * @param time Current simulation timestamp
    */
   private static void calculateVitalSigns(Person person, long time) {
-// TODO: Remove once the trend generator approach is working
-    /*    boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
-
-    int[] sysRange;
-    int[] diaRange;
-    if (hypertension) {
-      sysRange = HYPERTENSIVE_SYS_BP_RANGE;
-      diaRange = HYPERTENSIVE_DIA_BP_RANGE;
-    } else {
-      sysRange = NORMAL_SYS_BP_RANGE;
-      diaRange = NORMAL_DIA_BP_RANGE;
-    }
-
-    person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(sysRange));
-    person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(diaRange));
-*/
-
     int index = 0;
     if (person.attributes.containsKey("diabetes_severity")) {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
