@@ -31,7 +31,6 @@
     "- Adopt medications to severity",
     "- send patients to observation unit ([6])",
     "- Better modelling of mortality (e.g. clustered ED visits [8])",
-    "- Telemedicine only began in the early 2000s.",
     "- What is a documented probability of acute exacerbations per 6 months? 1% was too low. But what is good number?"
   ],
   "states": {
@@ -634,15 +633,36 @@
     },
     "End Inpatient Encounter": {
       "type": "EncounterEnd",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Maintaining CHF",
-          "distribution": 0.05
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2005,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Maintaining CHF",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Maintaining CHF with Telemedicine",
-          "distribution": 0.95
+          "distributions": [
+            {
+              "transition": "Maintaining CHF with Telemedicine",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Maintaining CHF",
+              "distribution": 0.30000000000000004
+            }
+          ]
         }
+      ],
+      "remarks": [
+        "Discharge the patient. Starting since the early 2000s this has a likelihood of being an enrollment into a telemedical home monitoring program, designed to prevent readmissions."
       ]
     },
     "inpatient daily labs": {
