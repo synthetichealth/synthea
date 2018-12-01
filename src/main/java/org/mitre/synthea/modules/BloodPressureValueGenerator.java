@@ -54,7 +54,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
      * @return a value generator
      */
     private TrendingValueGenerator getTrendingValueGenerator(long time, boolean createNewGenerators) {
-        System.out.println("getTVG @ " + time);
+        // System.out.println("getTVG @ " + time);
 
         for (int i=0; i < RING_ENTRIES; i++)
         {
@@ -105,12 +105,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
         double startValue; 
         if (previousValueGenerator == null) {
             // There is no recent previous buffer entry. Start from a few days in the past.
-            System.out.println("Starting over");
+            // System.out.println("Starting over");
             currentTime = time - TEN_DAYS;
             generatePeriod = TEN_DAYS + TEN_DAYS;
             startValue = calculateMean(person, currentTime);
         } else {
-            System.out.println("Continuing @ " + endTime);
+            // System.out.println("Continuing @ " + endTime);
             currentTime = endTime;
             generatePeriod = TEN_DAYS;
             startValue = previousValueGenerator.getValue(endTime);
@@ -118,8 +118,13 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
 
         while(generatePeriod > 0L) {
-            long duration = ONE_DAY * (2 + person.randInt(4)); // Random duration from 2-5 days.
-            double endValue = calculateMean(person, currentTime + duration);
+            final int days = 2 + person.randInt(4); // Random duration from 2-5 days.
+            long duration = ONE_DAY * days;
+            double endValue;
+            do {  // Limit the maximum rate of change.
+                endValue = calculateMean(person, currentTime + duration);
+            } while (Math.abs(startValue - endValue) > 15.0 * duration);
+
             ringBuffer[ringIndex] = new TrendingValueGenerator(person, 1.0, startValue, endValue,
                     currentTime, currentTime + duration, null, null);
             System.out.println("Filled [" + ringIndex + "] with: " + ringBuffer[ringIndex]);

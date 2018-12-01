@@ -253,7 +253,6 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {
-    System.out.println("Setting vital sign: " + vitalSign);  // TODO: Remove
     vitalSigns.put(vitalSign, valueGenerator);
   }
 
