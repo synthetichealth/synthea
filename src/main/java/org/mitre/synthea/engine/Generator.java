@@ -259,7 +259,6 @@ public class Generator {
       
       Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
       long start = (long) demoAttributes.get(Person.BIRTHDATE);
-      System.out.println("Person start @ " + start);
 
       do {
         List<Module> modules = Module.getModules();

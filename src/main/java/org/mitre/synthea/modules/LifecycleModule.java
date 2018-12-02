@@ -203,11 +203,12 @@ public final class LifecycleModule extends Module {
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
-    calculateVitalSigns(person, time);  // Set some initial vital signs, such as blood pressure
+    calculateVitalSigns(person, time);  // Set initial values for many vital signs.
 
     String orientation = sexualOrientationData.next(person.random);
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
 
+    // Setup vital signs which follow the generator approach
     setupVitalSignGenerators(person, time);
   }
   
