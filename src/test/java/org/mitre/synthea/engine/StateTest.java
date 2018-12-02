@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -45,6 +46,10 @@ public class StateTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.FIRST_LANGUAGE, "spanish");
+    person.attributes.put(Person.RACE, "other");
+    person.attributes.put(Person.ETHNICITY, "hispanic");
 
     person.history = new LinkedList<>();
     person.setAmbulatoryProvider(Mockito.mock(Provider.class));
@@ -1435,6 +1440,9 @@ public class StateTest {
 
   @Test
   public void testDiagnosticReport() {
+    // Birth makes the vital signs come alive :-)
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
+
     Module module = getModule("observation_groups.json");
 
     State condition = module.getState("Record_MetabolicPanel");
@@ -1463,6 +1471,9 @@ public class StateTest {
   
   @Test
   public void testMultiObservation() {
+    // Birth makes the blood pump :-)
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
+
     Module module = getModule("observation_groups.json");
 
     State condition = module.getState("Record_BP");
