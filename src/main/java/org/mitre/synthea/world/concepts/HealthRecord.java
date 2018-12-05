@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
@@ -310,6 +311,20 @@ public class HealthRecord {
 
     public Encounter(long time, String type) {
       super(time, type);
+      if (type.equalsIgnoreCase(EncounterType.WELLNESS.toString())){
+        // Check if time is a weekday
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        while (Utilities.isWeekend(time)){
+          c.add(Calendar.DATE, 1);
+          time = c.getTimeInMillis();
+        }
+        // Check if time isn't between business hours
+        if(!Utilities.isBusinessHours(time)){
+          c.set(Calendar.HOUR, 8);
+        }
+        this.start = c.getTimeInMillis();
+      }
       if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
         // Emergency encounters should take at least an hour.
         this.stop = this.start + TimeUnit.MINUTES.toMillis(60);

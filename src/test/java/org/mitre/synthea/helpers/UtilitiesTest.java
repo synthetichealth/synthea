@@ -32,6 +32,46 @@ public class UtilitiesTest {
   }
 
   @Test
+  public void testGetHour() {
+    assertEquals(0, Utilities.getHour(0L));
+    // the time as of this writing, 2017-09-07
+    assertEquals(11, Utilities.getHour(1504783221000L));
+    assertEquals(11, Utilities.getHour(1234567890000L));
+  }
+
+  @Test
+  public void testGetDay() {
+    assertEquals(1, Utilities.getDay(0L));
+    // the time as of this writing, 2017-09-07
+    assertEquals(7, Utilities.getDay(1504783221000L));
+    assertEquals(13, Utilities.getDay(1234567890000L));
+  }
+
+  @Test
+  public void testIsWeekend() {
+    assertEquals(false, Utilities.isWeekend(0L));
+    // the time as of this writing, 2017-09-07
+    assertEquals(false, Utilities.isWeekend(1504783221000L));
+    assertEquals(true, Utilities.isWeekend(1503832821000L));
+  }
+
+  @Test
+  public void testGetDayOfWeek() {
+    assertEquals(5, Utilities.getDayOfWeek(0L));
+    // the time as of this writing, 2017-09-07
+    assertEquals(5, Utilities.getDayOfWeek(1504783221000L));
+    assertEquals(1, Utilities.getDayOfWeek(1503832821000L));
+  }
+
+  @Test
+  public void testIsBusinessHours() {
+    assertEquals(false, Utilities.isBusinessHours(0L));
+    // the time as of this writing, 2017-09-07
+    assertEquals(true, Utilities.isBusinessHours(1504783221000L));
+    assertEquals(true, Utilities.isBusinessHours(1234567890000L));
+  }
+
+  @Test
   public void testCompareObjects() {
     Object lhs = new String("foo");
     Object rhs = new String("foobar");

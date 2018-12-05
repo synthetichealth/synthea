@@ -53,16 +53,39 @@ public class Utilities {
     return convertTime("years", (long) (years - 1970));
   }
 
-  public static int getYear(long time) {
+  public static int getCalendarPart(long time, int part){
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
-    return calendar.get(Calendar.YEAR);
+    return calendar.get(part);
+  }
+
+  public static int getYear(long time) {
+    return getCalendarPart(time, Calendar.YEAR);
   }
 
   public static int getMonth(long time) {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-    calendar.setTimeInMillis(time);
-    return calendar.get(Calendar.MONTH) + 1;
+    return getCalendarPart(time, Calendar.MONTH) +1;
+  }
+
+  public static int getDay(long time){
+    return getCalendarPart(time, Calendar.DATE);
+  }
+
+  public static int getDayOfWeek(long time){
+    return getCalendarPart(time, Calendar.DAY_OF_WEEK);
+  }
+
+  public static int getHour(long time){
+    return getCalendarPart(time, Calendar.HOUR);
+  }
+
+  public static boolean isWeekend(long time){
+    return (getDayOfWeek(time) == Calendar.SATURDAY ||
+            getDayOfWeek(time) == Calendar.SUNDAY);
+  }
+
+  public static boolean isBusinessHours(long time){
+    return getHour(time)>=8 && getHour(time)<=16;
   }
 
   /**
