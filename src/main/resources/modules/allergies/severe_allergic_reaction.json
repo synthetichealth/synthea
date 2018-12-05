@@ -20,7 +20,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency Room Admission"
         }
       ],
       "direct_transition": "Acute_Allergic_Reaction"
