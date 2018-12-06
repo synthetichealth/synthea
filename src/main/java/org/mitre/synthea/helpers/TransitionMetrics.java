@@ -35,23 +35,6 @@ public class TransitionMetrics {
       Tables.synchronizedTable(HashBasedTable.create());
 
   /**
-   * List of all modules. This reference held here so we don't have to get it multiple times.
-   */
-  private static final List<Module> ALL_MODULES = Module.getModules();
-
-  /**
-   * Record all appropriate state transition information from the given person.
-   * 
-   * @param person
-   *          Person that went through the modules
-   * @param simulationEnd
-   *          Date the simulation ended
-   */
-  public void recordStats(Person person, long simulationEnd) {
-    recordStats(person, simulationEnd, ALL_MODULES);
-  }
-  
-  /**
    * Record all appropriate state transition information from the given person.
    * 
    * @param person
@@ -130,16 +113,6 @@ public class TransitionMetrics {
     // but i dont think that will break anything here if it happens
 
     stateStats.duration.addAndGet(exitTime - startTime);
-  }
-
-  /**
-   * Print the statistics that have been gathered.
-   * 
-   * @param totalPopulation
-   *          The total population that was simulated.
-   */
-  public void printStats(int totalPopulation) {
-    printStats(totalPopulation, ALL_MODULES);
   }
   
   /**
