@@ -1,0 +1,125 @@
+{
+  "africa": [
+    "Algiers",
+    "Oran",
+    "Constantine",
+    "Annaba",
+    "Blida"
+  ],
+  "arabic": [
+    "Riyadh",
+    "Najran",
+    "Al-Mubarraz",
+    "Khamis Mushayt",
+    "Jeddah"
+  ],
+  "central_american": [
+    "Guatemala City",
+    "Panama City",
+    "San Jose",
+    "Tegucigalpa",
+    "San Salvador"
+  ],
+  "chinese": [
+    "Hong Kong",
+    "Macau",
+    "Beijing",
+    "Chongqing",
+    "Shanghai"
+  ],
+  "dominican": [
+    "Roseau",
+    "Portsmouth",
+    "Salisbury",
+    "Wesley",
+    "Marigot"
+  ],
+  "french": [
+    "Paris",
+    "Marseille",
+    "Lyon",
+    "Toulouse",
+    "Nice"
+  ],
+  "french_canadian": [
+    "Quebec",
+    "Montreal",
+    "Boucherville",
+    "Terrebonne",
+    "Longueuil"
+  ],
+  "german": [
+    "Berlin",
+    "Hamburg",
+    "Munich",
+    "Cologne",
+    "Frankfurt"
+  ],
+  "greek": [
+    "Athens",
+    "Thessaloniki",
+    "Patras",
+    "Heraklion",
+    "Larissa"
+  ],
+  "indian": [
+    "Mumbai",
+    "Delhi",
+    "Bangalore",
+    "Hyderabad",
+    "Ahmedabad"
+  ],
+  "italian": [
+    "Rome",
+    "Milan",
+    "Naples",
+    "Turin",
+    "Palermo"
+  ],
+  "mexican": [
+    "Mexico City",
+    "Ecatapec",
+    "Gaudalajara",
+    "Puebla",
+    "Juarez"
+  ],
+  "portuguese": [
+    "Lisbon",
+    "Funchal",
+    "Braga",
+    "Almada",
+    "Porto"
+  ],
+  "puerto_rican": [
+    "San Juan",
+    "Ponce",
+    "Carolina",
+    "Bayamon",
+    "Caguas"
+  ],
+  "russian": [
+    "Moscow",
+    "St Petersburg",
+    "Novosibirsk",
+    "Yekaterinburg",
+    "Nizhny Novgorod"
+  ],
+  "south_american": [
+    "Sao Paulo",
+    "Rio de Janerio",
+    "Salvador",
+    "Brasilia",
+    "Lima",
+    "Bogota",
+    "Santiago",
+    "Caracas",
+    "Buenos Aires"
+  ],
+  "west_indian": [
+    "Santo Domingo",
+    "Port-au-Prince",
+    "Havana",
+    "Kingston",
+    "Santiago de los Caballeros"
+  ]
+}

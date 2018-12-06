@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.google.gson.Gson;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -18,6 +19,7 @@ import org.mitre.synthea.world.agents.Person;
 public class Location {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
+  private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLangauge();
 
   private long totalPopulation;
 
@@ -153,6 +155,28 @@ public class Location {
 
     // should never happen
     throw new RuntimeException("Unable to select a random city name.");
+  }
+
+  /**
+   * Method which returns a city from the foreignPlacesOfBirth map if the map contains values for an ethnicity
+   * In the case an ethnicity is not present the method returns the value from a call to randomCityName()
+   *
+   * @param random the Random to base our city selection on
+   * @param ethnicity the ethnicity to look for cities in
+   * @return A String representing the place of birth
+   */
+  public String randomCityNameByEthnicity(Random random, String ethnicity) {
+    String placeOfBirth;
+    List<String> cities = foreignPlacesOfBirth.get(ethnicity.toLowerCase());
+
+    if (cities != null && cities.size() > 0) {
+      int upperBound = cities.size();
+      placeOfBirth = cities.get(random.nextInt(upperBound));
+    } else {  //if we can't find a foreign city at least return something
+      placeOfBirth = randomCityName(random);
+    }
+
+    return placeOfBirth;
   }
 
   /**
@@ -306,6 +330,35 @@ public class Location {
       e.printStackTrace();
     }
     return timezones;
+  }
+
+  private static Map<String, List<String>> loadCitiesByLangauge() {
+    //get the default foreign_birthplace file if we can't get the file listed in the config
+    String resource = Config.get("generate.geography.foreign.birthplace.default_file",
+            "geography/foreign_birthplace.json");
+    return loadCitiesByLanguage(resource);
+  }
+
+  /**
+   * Load a resource which contains foreign places of birth based on ethnicity in json format:
+   *
+   * {"ethnicity":["city1", "city2"..., "cityN"]}
+   *
+   * see src/main/resources/foreign_birthplace.json for a working example
+   * package protected for testing
+   * @return
+   */
+  protected static Map<String, List<String>> loadCitiesByLanguage(String resource) {
+    Map<String, List<String>> foreignPlacesOfBirth = new HashMap<>();
+    try {
+      String json = Utilities.readResource(resource);
+      foreignPlacesOfBirth = new Gson().fromJson(json, HashMap.class);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load foreign places of birth");
+      e.printStackTrace();
+    }
+
+    return foreignPlacesOfBirth;
   }
 
   /**

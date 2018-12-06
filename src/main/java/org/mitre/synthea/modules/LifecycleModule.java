@@ -165,7 +165,11 @@ public final class LifecycleModule extends Module {
       // should never happen in practice, but can happen in unit tests
       location.assignPoint(person, city);
       person.attributes.put(Person.ZIP, location.getZipCode(city));
-      attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
+      if ("english".equalsIgnoreCase((String) attributes.get(Person.FIRST_LANGUAGE))) {
+        attributes.put(Person.BIRTHPLACE, location.randomCityName(person.random));
+      } else {
+        attributes.put(Person.BIRTHPLACE, location.randomCityNameByEthnicity(person.random, (String) person.attributes.get(Person.ETHNICITY)));
+      }
     }
     
     boolean hasStreetAddress2 = person.rand() < 0.5;
