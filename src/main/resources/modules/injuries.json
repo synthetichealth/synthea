@@ -393,7 +393,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
@@ -582,7 +582,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Gunshot_Wound"
@@ -747,7 +747,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
@@ -919,7 +919,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Whiplash"
@@ -1002,7 +1002,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Broken_Bone"
@@ -1691,7 +1691,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Burn"
@@ -1937,7 +1937,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Laceration"
@@ -2146,7 +2146,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
@@ -2260,7 +2260,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
