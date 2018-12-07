@@ -39,13 +39,11 @@ public class FHIRSTU3ExporterTest {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
     FhirContext ctx = FhirContext.forDstu3();
-    IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+
 
     FhirValidator validator = ctx.newValidator();
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
-
-    ValidationResources validationResources = new ValidationResources();
 
     List<String> validationErrors = new ArrayList<String>();
 
@@ -61,73 +59,125 @@ public class FHIRSTU3ExporterTest {
       String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
       ValidationResult result = validator.validateWithResult(resource);
+
       if (!result.isSuccessful()) {
-        // If the validation failed, let's crack open the Bundle and validate
-        // each individual entry.resource to get context-sensitive error
-        // messages...
-        Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-        for (BundleEntryComponent entry : bundle.getEntry()) {
-          ValidationResult eresult = validator.validateWithResult(entry.getResource());
-          if (!eresult.isSuccessful()) {
-            for (SingleValidationMessage emessage : eresult.getMessages()) {
-              boolean valid = false;
-              if (emessage.getMessage().contains("@ Observation obs-7")) {
+        vetErrorMessages(fhirJson, validationErrors, validator, ctx);
+      }
+
+      int y = validationErrors.size();
+
+      if (x != y) {
+        Exporter.export(person, System.currentTimeMillis());
+      }
+    }
+    assertEquals(0, validationErrors.size());
+  }
+
+  @Test
+  public void validateFhirOn_Behalf_Of_Error() throws Exception {
+    Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
+
+    FhirContext ctx = FhirContext.forDstu3();
+
+    FhirValidator validator = ctx.newValidator();
+    validator.setValidateAgainstStandardSchema(true);
+    validator.setValidateAgainstStandardSchematron(true);
+
+    List<String> validationErrors = new ArrayList<>();
+
+    Generator generator = new Generator(1);
+
+    TestHelper.exportOff();
+
+    //generate a specific seed which causes the error listed in #454
+    Person person = generator.generatePerson(1, 3579459278049789113L);
+    Config.set("exporter.fhir.export", "true");
+    Config.set("exporter.fhir.use_shr_extensions", "true");
+    FhirStu3.TRANSACTION_BUNDLE = person.random.nextBoolean();
+    String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
+    IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
+    ValidationResult result = validator.validateWithResult(resource);
+
+    if (!result.isSuccessful()) {
+      vetErrorMessages(fhirJson, validationErrors, validator, ctx);
+    }
+
+    //export error(s) to console
+    if (validationErrors.size() > 0) {
+      Exporter.export(person, System.currentTimeMillis());
+    }
+
+    assertEquals(0, validationErrors.size());
+  }
+
+  private static void vetErrorMessages(
+          String fhirJson,
+          List<String> validationErrors,
+          FhirValidator validator,
+          FhirContext ctx) {
+
+    // If the validation failed, let's crack open the Bundle and validate
+    // each individual entry.resource to get context-sensitive error
+    // messages...
+    IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+    ValidationResources validationResources = new ValidationResources();
+
+    Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      ValidationResult eresult = validator.validateWithResult(entry.getResource());
+      if (!eresult.isSuccessful()) {
+        for (SingleValidationMessage emessage : eresult.getMessages()) {
+          boolean valid = false;
+          if (emessage.getMessage().contains("@ Observation obs-7")) {
                 /*
                  * The obs-7 invariant basically says that Observations should have values, unless
                  * they are made of components. This test replaces an invalid XPath expression
                  * that was causing correct instances to fail validation.
                  */
-                valid = validateObs7((Observation) entry.getResource());
-              } else if (emessage.getMessage().contains("@ Condition con-4")) {
+            valid = validateObs7((Observation) entry.getResource());
+          } else if (emessage.getMessage().contains("@ Condition con-4")) {
                 /*
                  * The con-4 invariant says "If condition is abated, then clinicalStatus must be
                  * either inactive, resolved, or remission" which is very clear and sensical.
                  * However, the XPath expression does not evaluate correctly for valid instances,
                  * so we must manually validate.
                  */
-                valid = validateCon4((Condition) entry.getResource());
-              } else if (emessage.getMessage().contains("@ MedicationRequest mps-1")) {
+            valid = validateCon4((Condition) entry.getResource());
+          } else if (emessage.getMessage().contains("@ MedicationRequest mps-1")) {
                 /*
                  * The mps-1 invariant says MedicationRequest.requester.onBehalfOf can only be
                  * specified if MedicationRequest.requester.agent is practitioner or device.
                  * But the invariant is poorly written and does not correctly handle references
                  * starting with "urn:uuid"
                  */
-                valid = true; // ignore this error
-              }
-
-              if (!valid) {
-                System.out.println(parser.encodeResourceToString(entry.getResource()));
-                System.out.println("ERROR: " + emessage.getMessage());
-                validationErrors.add(emessage.getMessage());
-              }
-            }
+            valid = true; // ignore this error
           }
-          // Check ExplanationOfBenefit Resources against BlueButton
-          if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
-            ValidationResult bbResult = validationResources.validate(entry.getResource());
 
-            for (SingleValidationMessage message : bbResult.getMessages()) {
-              if (message.getSeverity() == ResultSeverityEnum.ERROR) {
-                if (!message.getMessage().contains(
+          if (!valid) {
+            System.out.println(parser.encodeResourceToString(entry.getResource()));
+            System.out.println("ERROR: " + emessage.getMessage());
+            validationErrors.add(emessage.getMessage());
+          }
+        }
+      }
+      // Check ExplanationOfBenefit Resources against BlueButton
+      if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
+        ValidationResult bbResult = validationResources.validate(entry.getResource());
+
+        for (SingleValidationMessage message : bbResult.getMessages()) {
+          if (message.getSeverity() == ResultSeverityEnum.ERROR) {
+            if (!message.getMessage().contains(
                     "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")) {
-                  // For some reason that validator is not detecting the IDs on the resources,
-                  // even though they appear to be present while debugging and during normal
-                  // operations.
-                  System.out.println(message.getSeverity() + ": " + message.getMessage());
-                  Assert.fail(message.getSeverity() + ": " + message.getMessage());
-                }
-              }
+              // For some reason that validator is not detecting the IDs on the resources,
+              // even though they appear to be present while debugging and during normal
+              // operations.
+              System.out.println(message.getSeverity() + ": " + message.getMessage());
+              Assert.fail(message.getSeverity() + ": " + message.getMessage());
             }
           }
         }
       }
-      int y = validationErrors.size();
-      if (x != y) {
-        Exporter.export(person, System.currentTimeMillis());
-      }
     }
-    assertEquals(0, validationErrors.size());
   }
 
   /**

@@ -1768,7 +1768,7 @@ public class FhirStu3 {
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
     MedicationRequestRequesterComponent requester = new MedicationRequestRequesterComponent();
     requester.setAgent(encounter.getParticipantFirstRep().getIndividual());
-    requester.setOnBehalfOf(encounter.getServiceProvider());
+    requester.setOnBehalfOfTarget(encounter.getServiceProviderTarget());
     medicationResource.setRequester(requester);
 
     if (medication.stop != 0L) {
