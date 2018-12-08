@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang3.ArrayUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -158,6 +159,19 @@ public class Location {
   }
 
   /**
+   * Method which wraps the randomCityName() call for birthplaces
+   */
+  public String[] randomBirthPlace(Random random) {
+    String[] birthPlace = new String[4];
+    birthPlace[0] = randomCityName(random);
+    birthPlace[1] = this.state;
+    birthPlace[2] = "US";
+    birthPlace[3] = birthPlace[0] + ", " + birthPlace[1] + ", " + birthPlace[2];
+
+    return birthPlace;
+  }
+
+  /**
    * Method which returns a city from the foreignPlacesOfBirth map if the map contains values for an ethnicity
    * In the case an ethnicity is not present the method returns the value from a call to randomCityName()
    *
@@ -165,18 +179,28 @@ public class Location {
    * @param ethnicity the ethnicity to look for cities in
    * @return A String representing the place of birth
    */
-  public String randomCityNameByEthnicity(Random random, String ethnicity) {
-    String placeOfBirth;
-    List<String> cities = foreignPlacesOfBirth.get(ethnicity.toLowerCase());
+  public String[] randomBirthplaceByEthnicity(Random random, String ethnicity) {
+    String[] birthPlace;
 
+    List<String> cities = foreignPlacesOfBirth.get(ethnicity.toLowerCase());
     if (cities != null && cities.size() > 0) {
       int upperBound = cities.size();
-      placeOfBirth = cities.get(random.nextInt(upperBound));
+      String randomBirthPlace = cities.get(random.nextInt(upperBound));
+      String[] split = randomBirthPlace.split(",");
+
+      //make sure we have exactly 3 elements (city, state, country_abbr) if not fallback to some random US location
+      if (split.length != 3) {
+        birthPlace = randomBirthPlace(random);
+      } else {
+        //concatenate all the results together, adding spaces behind commas for readability
+        birthPlace = ArrayUtils.addAll(split, new String[] {randomBirthPlace.replaceAll(",", ", ")});
+      }
+
     } else {  //if we can't find a foreign city at least return something
-      placeOfBirth = randomCityName(random);
+      birthPlace = randomBirthPlace(random);
     }
 
-    return placeOfBirth;
+    return birthPlace;
   }
 
   /**
@@ -342,7 +366,7 @@ public class Location {
   /**
    * Load a resource which contains foreign places of birth based on ethnicity in json format:
    *
-   * {"ethnicity":["city1", "city2"..., "cityN"]}
+   * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
    *
    * see src/main/resources/foreign_birthplace.json for a working example
    * package protected for testing

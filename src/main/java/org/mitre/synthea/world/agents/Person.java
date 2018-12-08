@@ -45,6 +45,9 @@ public class Person implements Serializable, QuadTreeData {
   public static final String STATE = "state";
   public static final String ZIP = "zip";
   public static final String BIRTHPLACE = "birthplace";
+  public static final String BIRTH_CITY = "birth_city";
+  public static final String BIRTH_STATE = "birth_state";
+  public static final String BIRTH_COUNTRY = "birth_country";
   public static final String COORDINATE = "coordinate";
   public static final String NAME_MOTHER = "name_mother";
   public static final String NAME_FATHER = "name_father";

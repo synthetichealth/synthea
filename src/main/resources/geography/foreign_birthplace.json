@@ -1,125 +1,125 @@
 {
   "africa": [
-    "Algiers",
-    "Oran",
-    "Constantine",
-    "Annaba",
-    "Blida"
+  "Algiers,Algiers Province,DZ",
+    "Oran,Oran Province,DZ",
+    "Constantine,Constantine Province,DZ",
+    "Annaba,Annaba Provice,DZ",
+    "Blida,Blida Province,DZ"
   ],
   "arabic": [
-    "Riyadh",
-    "Najran",
-    "Al-Mubarraz",
-    "Khamis Mushayt",
-    "Jeddah"
+    "Riyadh,Riyadh,SA",
+    "Najran,Najran,SA",
+    "Al-Mubarraz,Eastern Province,SA",
+    "Khamis Mushayt,Asir,SA",
+    "Jeddah,Tihamah,SA"
   ],
   "central_american": [
-    "Guatemala City",
-    "Panama City",
-    "San Jose",
-    "Tegucigalpa",
-    "San Salvador"
+    "Guatemala City,Guatemala,GT",
+    "Panama City,Panama,PA",
+    "San Jose,San Jose,CR",
+    "Tegucigalpa,Francisco Morazán,HN",
+    "San Salvador,El Salvador,SV"
   ],
   "chinese": [
-    "Hong Kong",
-    "Macau",
-    "Beijing",
-    "Chongqing",
-    "Shanghai"
+    "Hong Kong,Hong Kong Special Administrative Region,CN",
+    "Macau,Macao Special Administrative Region of the People's Republic of China,CN",
+    "Beijing,Beijing Municipality,CN",
+    "Chongqing,Chongqing Municipality,CN",
+    "Shanghai,Shanghai Municipality,CN"
   ],
   "dominican": [
-    "Roseau",
-    "Portsmouth",
-    "Salisbury",
-    "Wesley",
-    "Marigot"
+    "Roseau,Saint George,DM",
+    "Portsmouth,Saint John Parish,DM",
+    "Salisbury,Saint Joseph Parish,DM",
+    "Wesley,Saint Andrew Parish,DM",
+    "Marigot,Saint Andrew Parish,DM"
   ],
   "french": [
-    "Paris",
-    "Marseille",
-    "Lyon",
-    "Toulouse",
-    "Nice"
+    "Paris,Ile-de-France,FR",
+    "Marseille,Provence-Alpes-Cote d'Azur,FR",
+    "Lyon,Auvergne-Rhone-Alpes,FR",
+    "Toulouse,Occitanie,FR",
+    "Nice,Provence-Alpes-Cote d'Azur,FR"
   ],
   "french_canadian": [
-    "Quebec",
-    "Montreal",
-    "Boucherville",
-    "Terrebonne",
-    "Longueuil"
+    "Quebec City,Quebec,CA",
+    "Montreal,Quebec,CA",
+    "Boucherville,Quebec,CA",
+    "Terrebonne,Quebec,CA",
+    "Longueuil,Quebec,CA"
   ],
   "german": [
-    "Berlin",
-    "Hamburg",
-    "Munich",
-    "Cologne",
-    "Frankfurt"
+    "Berlin,Berlin,DE",
+    "Hamburg,Hamburg,DE",
+    "Munich,Bavaria,DE",
+    "Cologne,North Rhine-Westphalia,DE",
+    "Frankfurt,Hesse,DE"
   ],
   "greek": [
-    "Athens",
-    "Thessaloniki",
-    "Patras",
-    "Heraklion",
-    "Larissa"
+    "Athens,Athens Prefecture,GR",
+    "Thessaloniki,Thessaloniki Prefecture,GR",
+    "Patras,Achaea,GR",
+    "Heraklion,Heraklion Prefecture,GR",
+    "Larissa,Larissa Prefecture,GR"
   ],
   "indian": [
-    "Mumbai",
-    "Delhi",
-    "Bangalore",
-    "Hyderabad",
-    "Ahmedabad"
+    "Mumbai,Maharashtra,IN",
+    "Delhi,Delhi,IN",
+    "Bangalore,Karnataka,IN",
+    "Hyderabad,Andhra Pradesh,IN",
+    "Ahmedabad,Gujarat,IN"
   ],
   "italian": [
-    "Rome",
-    "Milan",
-    "Naples",
-    "Turin",
-    "Palermo"
+    "Rome,Lazio,IT",
+    "Milan,Lombardy,IT",
+    "Naples,Campania,IT",
+    "Turin,Piedmont,IT",
+    "Palermo,Sicily,IT"
   ],
   "mexican": [
-    "Mexico City",
-    "Ecatapec",
-    "Gaudalajara",
-    "Puebla",
-    "Juarez"
+    "Mexico City,Mexico City,MX",
+    "La Paz,Baja California,MX",
+    "Gaudalajara,Jalisco,MX",
+    "Puebla,Puebla,MX",
+    "Juarez,Chihuahua,MX"
   ],
   "portuguese": [
-    "Lisbon",
-    "Funchal",
-    "Braga",
-    "Almada",
-    "Porto"
+    "Lisbon,Estremadura,PT",
+    "Funchal,Madeira,PT",
+    "Braga,Minho,PT",
+    "Faro,Algarve,PT",
+    "Porto,Douro Litoral,PT"
   ],
   "puerto_rican": [
-    "San Juan",
-    "Ponce",
-    "Carolina",
-    "Bayamon",
-    "Caguas"
+    "San Juan,Puerto Rico,PR",
+    "Ponce,Puerto Rico,PR",
+    "Carolina,Puerto Rico,PR",
+    "Bayamon,Puerto Rico,PR",
+    "Caguas,Puerto Rico,PR"
   ],
   "russian": [
-    "Moscow",
-    "St Petersburg",
-    "Novosibirsk",
-    "Yekaterinburg",
-    "Nizhny Novgorod"
+    "Moscow,Moscow,RU",
+    "St Petersburg,St Petersburg,RU",
+    "Novosibirsk,Novosibirsk Oblast,RU",
+    "Yekaterinburg,Sverdlovsk Oblast,RU",
+    "Nizhny Novgorod,Nizhny Novgorod Oblast,RU"
   ],
   "south_american": [
-    "Sao Paulo",
-    "Rio de Janerio",
-    "Salvador",
-    "Brasilia",
-    "Lima",
-    "Bogota",
-    "Santiago",
-    "Caracas",
-    "Buenos Aires"
+    "Sao Paulo,Sao Paulo,BR",
+    "Rio de Janerio,Rio de Janerio,BR",
+    "Salvador,Bahia,BR",
+    "Brasilia,Federal District,BR",
+    "Lima,Lima Province,PE",
+    "Bogota,Bogota,CO",
+    "Santiago,Santiago Province,CL",
+    "Caracas,Capital District,VE",
+    "Buenos Aires,Ciudad de Buenos Aires,AR"
   ],
   "west_indian": [
-    "Santo Domingo",
-    "Port-au-Prince",
-    "Havana",
-    "Kingston",
-    "Santiago de los Caballeros"
+    "Santo Domingo,National District,DO",
+    "Port-au-Prince,Haiti,HT",
+    "Havana,Havana,CU",
+    "Kingston,Kingston,JM",
+    "Santiago de los Caballeros,Santiago,DO"
   ]
 }
