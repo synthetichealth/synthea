@@ -3,6 +3,7 @@ package org.mitre.synthea.export;
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
+import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 
 import java.io.File;
@@ -11,11 +12,16 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -77,6 +83,14 @@ public class CSVExporter {
    */
   private FileWriter encounters;
   /**
+   * Writer for providers.csv
+   */
+  private FileWriter providers;
+  /**
+   * Writer for organizations.csv
+   */
+  private FileWriter organizations;
+  /**
    * Writer for imaging_studies.csv
    */
   private FileWriter imagingStudies;
@@ -105,6 +119,8 @@ public class CSVExporter {
       File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
       File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
+      File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
+      File providersFile = outputDirectory.resolve("providers.csv").toFile();
 
       patients = new FileWriter(patientsFile);
       allergies = new FileWriter(allergiesFile);
@@ -116,6 +132,9 @@ public class CSVExporter {
       immunizations = new FileWriter(immunizationsFile);
       encounters = new FileWriter(encountersFile);
       imagingStudies = new FileWriter(imagingStudiesFile);
+      organizations = new FileWriter(organizationsFile);
+      providers = new FileWriter(providersFile);
+
       writeCSVHeaders();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -152,12 +171,16 @@ public class CSVExporter {
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
-    encounters.write("ID,START,STOP,PATIENT,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
+    encounters.write("ID,START,STOP,PATIENT,PROVIDER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
         + "REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("ID,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
     imagingStudies.write(NEWLINE);
+    organizations.write("ID,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,UTILIZATION");
+    organizations.write(NEWLINE);
+    providers.write("ID,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
+    providers.write(NEWLINE);
   }
 
   /**
@@ -177,6 +200,27 @@ public class CSVExporter {
    */
   public static CSVExporter getInstance() {
     return SingletonHolder.instance;
+  }
+
+  public void exportOrganizationsAndProviders() throws IOException {
+    for (Provider org: Provider.getProviderList()) {
+      // Check utilization for hospital before we export
+      Table<Integer, String, AtomicInteger> utilization = org.getUtilization();
+      int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
+              .mapToInt(ai -> ai.get()).sum();
+      if (totalEncounters > 0) {
+        organization(org, totalEncounters);
+        Map<String, ArrayList<Clinician>> providers = org.clinicianMap;
+        for (String speciality: providers.keySet()) {
+          ArrayList<Clinician> clinicians = providers.get(speciality);
+          for (Clinician clinician: clinicians) {
+            provider(clinician, org.getResourceID());
+          }
+        }
+      }
+      organizations.flush();
+      providers.flush();
+    }
   }
 
   /**
@@ -294,7 +338,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // ID,START,STOP,PATIENT,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // ID,START,STOP,PATIENT,PROVIDER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
@@ -310,6 +354,13 @@ public class CSVExporter {
     }
     //PATIENT
     s.append(personID).append(',');
+
+    //PROVIDER
+    if (encounter.provider != null) {
+      s.append(encounter.provider.id).append(',');
+    } else {
+      s.append(',');
+    }
 
     //ENCOUNTERCLASS
     if (encounter.type != null) {
@@ -512,20 +563,20 @@ public class CSVExporter {
     s.append(String.format(Locale.US, "%.2f", cost)).append(',');
     long dispenses = 1; // dispenses = refills + original
     // makes the math cleaner and more explicit. dispenses * unit cost = total cost
-    
+
     long stop = medication.stop;
     if (stop == 0L) {
       stop = stopTime;
     }
     long medDuration = stop - medication.start;
 
-    if (medication.prescriptionDetails != null 
+    if (medication.prescriptionDetails != null
         && medication.prescriptionDetails.has("refills")) {
       dispenses = medication.prescriptionDetails.get("refills").getAsInt();
-    } else if (medication.prescriptionDetails != null 
+    } else if (medication.prescriptionDetails != null
         && medication.prescriptionDetails.has("duration")) {
       JsonObject duration = medication.prescriptionDetails.getAsJsonObject("duration");
-      
+
       long quantity = duration.get("quantity").getAsLong();
       String unit = duration.get("unit").getAsString();
       long durationMs = Utilities.convertTime(unit, quantity);
@@ -535,15 +586,15 @@ public class CSVExporter {
       long durationMs = Utilities.convertTime("months", 1);
       dispenses = medDuration / durationMs;
     }
-    
+
     if (dispenses < 1) {
-      // integer division could leave us with 0, 
+      // integer division could leave us with 0,
       // ex. if the active time (start->stop) is less than the provided duration
       // or less than a month if no duration provided
       dispenses = 1;
     }
 
-    s.append(dispenses).append(','); 
+    s.append(dispenses).append(',');
     BigDecimal totalCost = cost
         .multiply(BigDecimal.valueOf(dispenses))
         .setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
@@ -672,6 +723,60 @@ public class CSVExporter {
     write(s.toString(), imagingStudies);
 
     return studyID;
+  }
+
+  /**
+   * Write a single organization to organizations.csv
+   * @param org The organization to be written
+   * @param utilization The total number of encounters for the org
+   * @throws IOException if any IO error occurs
+   */
+  private void organization(Provider org, int utilization) throws IOException {
+    // ID,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,UTILIZATION
+    StringBuilder s = new StringBuilder();
+    s.append(org.getResourceID()).append(',');
+    s.append(org.name).append(',');
+    s.append(org.address).append(',');
+    s.append(org.city).append(',');
+    s.append(org.state).append(',');
+    s.append(org.zip).append(',');
+    s.append(org.phone).append(',');
+    s.append(utilization);
+    s.append(NEWLINE);
+
+    write(s.toString(), organizations);
+  }
+
+  /**
+   * Write a single clinician to providers.csv
+   * @param provider The provider information to be written
+   * @param orgId ID of the organization the provider belongs to
+   * @throws IOException if any IO error occurs
+   */
+  private void provider(Clinician provider, String orgId) throws IOException {
+    // ID,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION
+
+    StringBuilder s = new StringBuilder();
+    s.append(provider.getResourceID()).append(',');
+    s.append(orgId).append(',');
+    for (String attribute: new String[] {
+            Clinician.NAME,
+            Clinician.GENDER,
+            Clinician.SPECIALTY,
+            Clinician.ADDRESS,
+            Clinician.CITY,
+            Clinician.STATE,
+            Clinician.ZIP
+    }) {
+      String value = (String) provider.attributes.getOrDefault(attribute, "");
+      s.append(clean(value)).append(',');
+    }
+    s.append(provider.getEncounterCount()).append(',');
+
+    s.append(NEWLINE);
+
+    write(s.toString(), providers);
+
   }
 
   /**

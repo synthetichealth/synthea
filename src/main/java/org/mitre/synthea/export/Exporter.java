@@ -228,6 +228,14 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       CDWExporter.getInstance().writeFactTables();
     }
+
+    if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
+      try {
+        CSVExporter.getInstance().exportOrganizationsAndProviders();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
