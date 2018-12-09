@@ -357,7 +357,7 @@ public class CSVExporter {
 
     //PROVIDER
     if (encounter.provider != null) {
-      s.append(encounter.provider.id).append(',');
+      s.append(encounter.provider.getResourceID()).append(',');
     } else {
       s.append(',');
     }
