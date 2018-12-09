@@ -10,6 +10,7 @@ import org.mitre.synthea.world.concepts.BiometricsConfig;
  * Can reproducibly look a few days into the past and future.
  * 
  * @see https://raywinstead.com/bp/thrice.htm for desired result
+ * TODO: Carve out abstract parent class to use this for additional vital signs.
  */
 public class BloodPressureValueGenerator extends ValueGenerator {
   public enum SysDias {
@@ -26,7 +27,9 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       .ints("metabolic.blood_pressure.normal.diastolic");
 
   private static final long ONE_DAY = 1 * 24 * 60 * 60 * 1000L;
-  private static final long TEN_DAYS = 10 * ONE_DAY;
+
+  // How far into the past or into the future can this generator look reproducibly?
+  private static final long TIMETRAVEL_DURATION = 10 * ONE_DAY;
   
 
   // Use a ringbuffer to reproducibly travel back in time for a bit, but not keep
@@ -49,12 +52,38 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     return trendingValueGenerator.getValue(time);
   }
 
+
+  /**
+   * The minimum duration that the trend continues in one direction.
+   * @return the duration in days.
+   */
+  private int minTrendDuration() {
+    return 2;
+  }
+
+  /**
+   * The maximum duration that the trend continues in one direction.
+   * @return the duration in days.
+   */
+  private int maxTrendDuration() {
+    return 5;
+  }
+
+  /**
+   * The maximum permitted change per day.
+   * @return the maximum change per day.
+   */
+  private double maxChangePerDay() {
+    return 15.0;
+  }
+
+
   /**
    * Return a matching value generator for the given time.
    * 
-   * @param time
-   * @param createNewGenerators
-   * @return a value generator
+   * @param time find a value generator for which time stamp?
+   * @param createNewGenerators should a new generator be created when no match can be found?
+   * @return a value generator, or potentially null (if none exists and none should be created)
    */
   private TrendingValueGenerator getTrendingValueGenerator(long time, boolean createNewGenerators) {
     // System.out.println("getTVG @ " + time);
@@ -77,8 +106,8 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   /**
    * Fill the ring buffer with a few new trending sections.
    * 
-   * @param time
-   * @param previousValueGenerator
+   * @param time a timestamp which shall be covered by the generators in the buffer
+   * @param previousValueGenerator a previous generator, for potential continuity
    */
   private void createNewGenerators(long time) {
     int endIndex = 0;
@@ -91,9 +120,9 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
 
     TrendingValueGenerator previousValueGenerator;
-    if (time - endTime < TEN_DAYS) {
-      // If the last ringbuffer entry is maximum ten days in the past, then continue
-      // from it
+    if (time - endTime < TIMETRAVEL_DURATION) {
+      // If the last ringbuffer entry is maximum of TIMETRAVEL_DURATION days in the past,
+      // then continue from it.
       previousValueGenerator = ringBuffer[endIndex];
     } else {
       // Last entry is too far in the past. Start over.
@@ -106,23 +135,24 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     if (previousValueGenerator == null) {
       // There is no recent previous buffer entry. Start from a few days in the past.
       // System.out.println("Starting over");
-      currentTime = time - TEN_DAYS;
-      generatePeriod = TEN_DAYS + TEN_DAYS;
+      currentTime = time - TIMETRAVEL_DURATION;
+      generatePeriod = TIMETRAVEL_DURATION + TIMETRAVEL_DURATION;
       startValue = calculateMean(person, currentTime);
     } else {
       // System.out.println("Continuing @ " + endTime);
       currentTime = endTime;
-      generatePeriod = TEN_DAYS;
+      generatePeriod = TIMETRAVEL_DURATION;
       startValue = previousValueGenerator.getValue(endTime);
     }
 
     while (generatePeriod > 0L) {
-      final int days = 2 + person.randInt(4); // Random duration from 2-5 days.
+      final int days = minTrendDuration() 
+          + person.randInt(maxTrendDuration() - minTrendDuration() + 1);
       long duration = ONE_DAY * days;
       double endValue;
       do { // Limit the maximum rate of change.
         endValue = calculateMean(person, currentTime + duration);
-      } while (Math.abs(startValue - endValue) > 15.0 * duration);
+      } while (Math.abs(startValue - endValue) > maxChangePerDay() * duration);
 
       ringBuffer[ringIndex] = new TrendingValueGenerator(person, 1.0, startValue, endValue,
           currentTime, currentTime + duration, null, null);

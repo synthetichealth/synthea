@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -57,14 +58,22 @@ public class VitalsValueGeneratorTest {
 
     for (long testTime = -200L; testTime < 1200L; testTime += 100L) {
       double testValue = boundedRandomVariable.getValue(testTime);
-      System.out.println(testValue);
+      // System.out.println(testValue);
       assertTrue(testValue <= 998.0);
       assertTrue(testValue >= 2.0);
     }
   }
 
   @Test
+  public void testToString() {
+    TrendingValueGenerator boundedRandomVariable = 
+        new TrendingValueGenerator(person, 5.0, 0.0, 1000.0, 0L, 1000L, 2.0, 998.0);
+    assertNotNull(boundedRandomVariable.toString());    
+  }
+
+  @Test
   public void testSystolicTrendGenerator() {
+    // TODO: Right now this only tests for a lack of crashes. What might be other good criteria?
     BloodPressureValueGenerator bloodPressureValueGenerator = new BloodPressureValueGenerator(
         person, BloodPressureValueGenerator.SysDias.SYSTOLIC);
     for (long time = 0L; time < ONE_DAY * 100; time += ONE_DAY) {
