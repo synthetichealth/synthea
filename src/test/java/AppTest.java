@@ -1,6 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
@@ -97,6 +98,27 @@ public class AppTest {
   }
 
   @Test
+  public void testAppWithOverflow() throws Exception {
+    TestHelper.exportOff();
+    String[] args = {"-s", "1", "-p", "3", "-o", "false"};
+    final PrintStream original = System.out;
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final PrintStream print = new PrintStream(out, true);
+    System.setOut(print);
+    App.main(args);
+    out.flush();
+    String output = out.toString();
+    Assert.assertTrue(output.contains("Running with options:"));
+    Assert.assertTrue(output.contains("Seed:"));
+    String regex = "\\{alive=(\\d+), dead=(\\d+)\\}";
+    Matcher matches = Pattern.compile(regex).matcher(output);
+    Assert.assertTrue(matches.find());
+    int alive = Integer.parseInt(matches.group(1));
+    int dead = Integer.parseInt(matches.group(2));
+    Assert.assertEquals(alive + dead, 3);
+    System.setOut(original);
+  }
+  
   public void testAppWithModuleFilter() throws Exception {
     TestHelper.exportOff();
     Config.set("test_key", "pre-test value");
@@ -117,7 +139,7 @@ public class AppTest {
     Assert.assertFalse(output.contains("asthma"));
     System.setOut(original);
   }
-  
+
   @Test
   public void testAppWithConfigSetting() throws Exception {
     TestHelper.exportOff();

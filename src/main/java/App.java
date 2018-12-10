@@ -19,6 +19,7 @@ public class App {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-p populationSize]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
+    System.out.println("         [-o overflowPopulation]");
     System.out.println("         [-m moduleFileWildcardList]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
@@ -58,6 +59,9 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-p")) {
             String value = argsQ.poll();
             options.population = Integer.parseInt(value);
+          } else if (currArg.equalsIgnoreCase("-o")) {
+            String value = argsQ.poll();
+            options.overflow = Boolean.parseBoolean(value);
           } else if (currArg.equalsIgnoreCase("-g")) {
             String value = argsQ.poll();
             if (value.equals("M") || value.equals("F")) {
