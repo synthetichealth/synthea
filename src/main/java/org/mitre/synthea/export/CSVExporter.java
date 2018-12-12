@@ -83,17 +83,18 @@ public class CSVExporter {
    */
   private FileWriter encounters;
   /**
-   * Writer for providers.csv
+   * Writer for imaging_studies.csv
    */
-  private FileWriter providers;
+  private FileWriter imagingStudies;
   /**
    * Writer for organizations.csv
    */
   private FileWriter organizations;
   /**
-   * Writer for imaging_studies.csv
+   * Writer for providers.csv
    */
-  private FileWriter imagingStudies;
+  private FileWriter providers;
+
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -735,8 +736,8 @@ public class CSVExporter {
     // ID,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,UTILIZATION
     StringBuilder s = new StringBuilder();
     s.append(org.getResourceID()).append(',');
-    s.append(org.name).append(',');
-    s.append(org.address).append(',');
+    s.append(clean(org.name)).append(',');
+    s.append(clean(org.address)).append(',');
     s.append(org.city).append(',');
     s.append(org.state).append(',');
     s.append(org.zip).append(',');
