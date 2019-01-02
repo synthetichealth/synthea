@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -95,7 +96,6 @@ public class CSVExporter {
    */
   private FileWriter providers;
 
-
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
    */
@@ -110,6 +110,16 @@ public class CSVExporter {
       File output = Exporter.getOutputFolder("csv", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
+
+      if (Boolean.parseBoolean(Config.get("exporter.csv.folder_per_run"))) {
+        // we want a folder per run, so name it based on the timestamp
+        // TODO: do we want to consider names based on the current generation options?
+        String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
+        String subfolderName = timestamp.replaceAll("\\W+", "_"); // make sure it's filename-safe
+        outputDirectory = outputDirectory.resolve(subfolderName);
+        outputDirectory.toFile().mkdirs();
+      }
+
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
       File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
       File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
@@ -123,20 +133,25 @@ public class CSVExporter {
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
 
-      patients = new FileWriter(patientsFile);
-      allergies = new FileWriter(allergiesFile);
-      medications = new FileWriter(medicationsFile);
-      conditions = new FileWriter(conditionsFile);
-      careplans = new FileWriter(careplansFile);
-      observations = new FileWriter(observationsFile);
-      procedures = new FileWriter(proceduresFile);
-      immunizations = new FileWriter(immunizationsFile);
-      encounters = new FileWriter(encountersFile);
-      imagingStudies = new FileWriter(imagingStudiesFile);
-      organizations = new FileWriter(organizationsFile);
-      providers = new FileWriter(providersFile);
+      boolean append = patientsFile.exists() 
+          && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+      
+      patients = new FileWriter(patientsFile, append);
+      allergies = new FileWriter(allergiesFile, append);
+      medications = new FileWriter(medicationsFile, append);
+      conditions = new FileWriter(conditionsFile, append);
+      careplans = new FileWriter(careplansFile, append);
+      observations = new FileWriter(observationsFile, append);
+      procedures = new FileWriter(proceduresFile, append);
+      immunizations = new FileWriter(immunizationsFile, append);
+      encounters = new FileWriter(encountersFile, append);
+      imagingStudies = new FileWriter(imagingStudiesFile, append);
+      organizations = new FileWriter(organizationsFile, append);
+      providers = new FileWriter(providersFile, append);
 
-      writeCSVHeaders();
+      if (!append) {
+        writeCSVHeaders();
+      }
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -761,13 +776,13 @@ public class CSVExporter {
     s.append(provider.getResourceID()).append(',');
     s.append(orgId).append(',');
     for (String attribute: new String[] {
-            Clinician.NAME,
-            Clinician.GENDER,
-            Clinician.SPECIALTY,
-            Clinician.ADDRESS,
-            Clinician.CITY,
-            Clinician.STATE,
-            Clinician.ZIP
+        Clinician.NAME,
+        Clinician.GENDER,
+        Clinician.SPECIALTY,
+        Clinician.ADDRESS,
+        Clinician.CITY,
+        Clinician.STATE,
+        Clinician.ZIP
     }) {
       String value = (String) provider.attributes.getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
