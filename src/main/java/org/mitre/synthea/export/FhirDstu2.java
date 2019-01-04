@@ -417,10 +417,10 @@ public class FhirDstu2 {
     }
 
     AddressDt birthplace = new AddressDt();
-    birthplace.setCity((String) person.attributes.get(Person.BIRTHPLACE)).setState(state);
-    if (COUNTRY_CODE != null) {
-      birthplace.setCountry(COUNTRY_CODE);
-    }
+    birthplace.setCity((String) person.attributes.get(Person.BIRTH_CITY))
+            .setState((String) person.attributes.get(Person.BIRTH_STATE))
+            .setCountry((String) person.attributes.get(Person.BIRTH_COUNTRY));
+
     ExtensionDt birthplaceExtension = new ExtensionDt();
     birthplaceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/birthPlace");
     birthplaceExtension.setValue(birthplace);
