@@ -34,6 +34,7 @@ import org.hl7.fhir.r4.model.CarePlan.CarePlanIntent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanStatus;
 import org.hl7.fhir.r4.model.Claim.ClaimStatus;
 import org.hl7.fhir.r4.model.Claim.DiagnosisComponent;
+import org.hl7.fhir.r4.model.Claim.InsuranceComponent;
 import org.hl7.fhir.r4.model.Claim.ItemComponent;
 import org.hl7.fhir.r4.model.Claim.ProcedureComponent;
 import org.hl7.fhir.r4.model.Claim.SupportingInformationComponent;
@@ -95,6 +96,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -232,7 +234,7 @@ public class FhirR4 {
       }
 
       for (Medication medication : encounter.medications) {
-        medication(personEntry, bundle, encounterEntry, medication);
+        medication(person, personEntry, bundle, encounterEntry, medication);
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -252,7 +254,7 @@ public class FhirR4 {
       }
 
       // one claim per encounter
-      encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
+      encounterClaim(person, personEntry, bundle, encounterEntry, encounter.claim);
     }
     return bundle;
   }
@@ -702,6 +704,7 @@ public class FhirR4 {
   /**
    * Create an entry for the given Claim, which references a Medication.
    *
+   * @param person         The person being prescribed medication
    * @param personEntry     Entry for the person
    * @param bundle          The Bundle to add to
    * @param encounterEntry  The current Encounter
@@ -709,7 +712,8 @@ public class FhirR4 {
    * @param medicationEntry The Entry for the Medication object, previously created
    * @return the added Entry
    */
-  private static BundleEntryComponent medicationClaim(BundleEntryComponent personEntry,
+  private static BundleEntryComponent medicationClaim(
+      Person person, BundleEntryComponent personEntry,
       Bundle bundle, BundleEntryComponent encounterEntry, Claim claim,
       BundleEntryComponent medicationEntry) {
     
@@ -718,13 +722,35 @@ public class FhirR4 {
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
 
     claimResource.setStatus(ClaimStatus.ACTIVE);
+    CodeableConcept type = new CodeableConcept();
+    type.getCodingFirstRep()
+      .setSystem("http://terminology.hl7.org/CodeSystem/claim-type")
+      .setCode("pharmacy");
+    claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
+
+    // get the insurance info at the time that the encounter happened
+    String insurance = HealthInsuranceModule.getCurrentInsurance(person,
+        encounterResource.getPeriod().getStart().getTime());
+    InsuranceComponent insuranceComponent = new InsuranceComponent();
+    insuranceComponent.setSequence(1);
+    insuranceComponent.setFocal(true);
+    insuranceComponent.setCoverage(new Reference().setDisplay(insurance));
+    claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
     claimResource.setBillablePeriod(encounterResource.getPeriod());
+    claimResource.setCreated(encounterResource.getPeriod().getEnd());
 
     claimResource.setPatient(new Reference(personEntry.getFullUrl()));
     claimResource.setProvider(encounterResource.getServiceProvider());
+
+    // set the required priority
+    CodeableConcept priority = new CodeableConcept();
+    priority.getCodingFirstRep()
+      .setSystem("http://terminology.hl7.org/CodeSystem/processpriority")
+      .setCode("normal");
+    claimResource.setPriority(priority);
 
     // add item for encounter
     claimResource.addItem(new ItemComponent(new PositiveIntType(1),
@@ -745,25 +771,49 @@ public class FhirR4 {
   /**
    * Create an entry for the given Claim, associated to an Encounter.
    *
+   * @param person         The patient having the encounter.
    * @param personEntry    Entry for the person
    * @param bundle         The Bundle to add to
    * @param encounterEntry The current Encounter
    * @param claim          the Claim object
    * @return the added Entry
    */
-  private static BundleEntryComponent encounterClaim(BundleEntryComponent personEntry,
+  private static BundleEntryComponent encounterClaim(
+      Person person, BundleEntryComponent personEntry,
       Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
     org.hl7.fhir.r4.model.Claim claimResource = new org.hl7.fhir.r4.model.Claim();
     org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
     claimResource.setStatus(ClaimStatus.ACTIVE);
+    CodeableConcept type = new CodeableConcept();
+    type.getCodingFirstRep()
+      .setSystem("http://terminology.hl7.org/CodeSystem/claim-type")
+      .setCode("institutional");
+    claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
+
+    // get the insurance info at the time that the encounter happened
+    String insurance = HealthInsuranceModule.getCurrentInsurance(person,
+        encounterResource.getPeriod().getStart().getTime());
+    InsuranceComponent insuranceComponent = new InsuranceComponent();
+    insuranceComponent.setSequence(1);
+    insuranceComponent.setFocal(true);
+    insuranceComponent.setCoverage(new Reference().setDisplay(insurance));
+    claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
     claimResource.setBillablePeriod(encounterResource.getPeriod());
+    claimResource.setCreated(encounterResource.getPeriod().getEnd());
 
     claimResource.setPatient(new Reference(personEntry.getFullUrl()));
     claimResource.setProvider(encounterResource.getServiceProvider());
+
+    // set the required priority
+    CodeableConcept priority = new CodeableConcept();
+    priority.getCodingFirstRep()
+      .setSystem("http://terminology.hl7.org/CodeSystem/processpriority")
+      .setCode("normal");
+    claimResource.setPriority(priority);
 
     // add item for encounter
     claimResource.addItem(new ItemComponent(new PositiveIntType(1),
@@ -929,7 +979,7 @@ public class FhirR4 {
     allergyResource.setCriticality(AllergyIntoleranceCriticality.LOW);
 
     CodeableConcept verification = new CodeableConcept();
-    status.getCodingFirstRep()
+    verification.getCodingFirstRep()
       .setSystem("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
       .setCode("confirmed");
     allergyResource.setVerificationStatus(verification);
@@ -1102,7 +1152,7 @@ public class FhirR4 {
       BundleEntryComponent encounterEntry, HealthRecord.Entry immunization) {
     Immunization immResource = new Immunization();
     immResource.setStatus(ImmunizationStatus.COMPLETED);
-    immResource.setRecorded(new Date(immunization.start));
+    immResource.setOccurrence(convertFhirDateTime(immunization.start, true));
     immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0), CVX_URI));
     immResource.setPrimarySource(true);
     immResource.setPatient(new Reference(personEntry.getFullUrl()));
@@ -1131,13 +1181,15 @@ public class FhirR4 {
   /**
    * Map the given Medication to a FHIR MedicationRequest resource, and add it to the given Bundle.
    *
+   * @param person         The person being prescribed medication
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Medication to
    * @param encounterEntry Current Encounter entry
    * @param medication     The Medication
    * @return The added Entry
    */
-  private static BundleEntryComponent medication(BundleEntryComponent personEntry, Bundle bundle,
+  private static BundleEntryComponent medication(
+      Person person, BundleEntryComponent personEntry, Bundle bundle,
       BundleEntryComponent encounterEntry, Medication medication) {
     MedicationRequest medicationResource = new MedicationRequest();
 
@@ -1230,7 +1282,6 @@ public class FhirR4 {
     }
     */
     if (USE_SHR_EXTENSIONS) {
-
       medicationResource.addExtension()
           .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
           .setValue(PRESCRIPTION_OF_DRUG_CC);
@@ -1252,10 +1303,10 @@ public class FhirR4 {
       medicationResource.addExtension(requestedContext);
     }
 
-
     BundleEntryComponent medicationEntry = newEntry(bundle, medicationResource);
     // create new claim for medication
-    medicationClaim(personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
+    medicationClaim(person, personEntry, bundle, encounterEntry,
+        medication.claim, medicationEntry);
 
     return medicationEntry;
   }
