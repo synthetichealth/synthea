@@ -20,7 +20,6 @@ import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCriticality;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceType;
-import org.hl7.fhir.r4.model.Basic;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -290,37 +289,37 @@ public class FhirR4 {
     patientResource.addIdentifier().setSystem("https://github.com/synthetichealth/synthea")
         .setValue((String) person.attributes.get(Person.ID));
 
-    Code mrnCode = new Code("http://hl7.org/fhir/v2/0203", "MR", "Medical Record Number");
+    Code mrnCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "MR", "Medical Record Number");
     patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(mrnCode, "http://hl7.org/fhir/v2/0203"))
+        .setType(mapCodeToCodeableConcept(mrnCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
         .setSystem("http://hospital.smarthealthit.org")
         .setValue((String) person.attributes.get(Person.ID));
 
-    Code ssnCode = new Code("http://hl7.org/fhir/identifier-type", "SB", "Social Security Number");
+    Code ssnCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "SSN", "Social Security Number");
     patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(ssnCode, "http://hl7.org/fhir/identifier-type"))
+        .setType(mapCodeToCodeableConcept(ssnCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
         .setSystem("http://hl7.org/fhir/sid/us-ssn")
         .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
 
     if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://hl7.org/fhir/v2/0203", "DL", "Driver's License");
+      Code driversCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "DL", "Driver's License");
       patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(driversCode, "http://hl7.org/fhir/v2/0203"))
+          .setType(mapCodeToCodeableConcept(driversCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
     }
 
     if (person.attributes.get(Person.IDENTIFIER_PASSPORT) != null) {
-      Code passportCode = new Code("http://hl7.org/fhir/v2/0203", "PPN", "Passport Number");
+      Code passportCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "PPN", "Passport Number");
       patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(passportCode, "http://hl7.org/fhir/v2/0203"))
+          .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
 
     // We do not yet account for mixed race
     Extension raceExtension = new Extension(
-        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race");
+        "http://hl7.org/fhir/us/core-r4/StructureDefinition/us-core-race");
     String race = (String) person.attributes.get(Person.RACE);
 
     String raceDisplay;
@@ -356,14 +355,12 @@ public class FhirR4 {
 
     Extension raceTextExtension = new Extension("text");
     raceTextExtension.setValue(new StringType(raceDisplay));
-
     raceExtension.addExtension(raceTextExtension);
-
     patientResource.addExtension(raceExtension);
 
     // We do not yet account for mixed ethnicity
     Extension ethnicityExtension = new Extension(
-        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity");
+        "http://hl7.org/fhir/us/core-r4/StructureDefinition/us-core-ethnicity");
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
     String ethnicityDisplay;
@@ -436,7 +433,7 @@ public class FhirR4 {
     patientResource.setBirthDate(new Date(birthdate));
 
     Extension birthSexExtension = new Extension(
-        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
+        "http://hl7.org/fhir/us/core-r4/StructureDefinition/us-core-birthsex");
     if (person.attributes.get(Person.GENDER).equals("M")) {
       patientResource.setGender(AdministrativeGender.MALE);
       birthSexExtension.setValue(new CodeType("M"));
@@ -480,15 +477,17 @@ public class FhirR4 {
 
     String maritalStatus = ((String) person.attributes.get(Person.MARITAL_STATUS));
     if (maritalStatus != null) {
-      Code maritalStatusCode = new Code("http://hl7.org/fhir/v3/MaritalStatus", maritalStatus,
-          maritalStatus);
+      Code maritalStatusCode = new Code("http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          maritalStatus, maritalStatus);
       patientResource.setMaritalStatus(
-          mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
+          mapCodeToCodeableConcept(maritalStatusCode,
+              "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"));
     } else {
-      Code maritalStatusCode = new Code("http://hl7.org/fhir/v3/MaritalStatus", "S",
-          "Never Married");
+      Code maritalStatusCode = new Code("http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "S", "Never Married");
       patientResource.setMaritalStatus(
-          mapCodeToCodeableConcept(maritalStatusCode, "http://hl7.org/fhir/v3/MaritalStatus"));
+          mapCodeToCodeableConcept(maritalStatusCode,
+              "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"));
     }
 
     DirectPosition2D coord = person.getLatLon();
@@ -503,7 +502,8 @@ public class FhirR4 {
       patientResource.setDeceased(convertFhirDateTime(person.record.death, true));
     }
 
-    String generatedBySynthea = "Generated by <a href=\"https://github.com/synthetichealth/synthea\">Synthea</a>."
+    String generatedBySynthea =
+        "Generated by <a href=\"https://github.com/synthetichealth/synthea\">Synthea</a>."
         + "Version identifier: " + Utilities.SYNTHEA_VERSION + " . "
         + "  Person seed: " + person.seed
         + "  Population seed: " + person.populationSeed;
@@ -532,23 +532,6 @@ public class FhirR4 {
           SHR_EXT + "shr-demographics-SocialSecurityNumber-extension",
           new StringType(ssn));
       patientResource.addExtension(ssnExtension);
-
-      Basic personResource = new Basic();
-      // the only required field on this patient resource is code
-
-      Coding fixedCode = new Coding(
-          "http://standardhealthrecord.org/fhir/basic-resource-type",
-          "shr-entity-Person", "shr-entity-Person");
-      personResource.setCode(new CodeableConcept().addCoding(fixedCode));
-
-      Meta personMeta = new Meta();
-      personMeta.addProfile(SHR_EXT + "shr-entity-Person");
-      personResource.setMeta(personMeta);
-
-      BundleEntryComponent personEntry = newEntry(bundle, personResource);
-      patientResource.addExtension()
-          .setUrl(SHR_EXT + "shr-entity-Person-extension")
-          .setValue(new Reference(personEntry.getFullUrl()));
     }
 
     // DALY and QALY values
