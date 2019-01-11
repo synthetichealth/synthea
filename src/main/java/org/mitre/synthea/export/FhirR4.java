@@ -1226,8 +1226,6 @@ public class FhirR4 {
       }
     }
 
-    // TODO R4 Medication Dosage Exceptions
-    /*
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;
       Dosage dosage = new Dosage();
@@ -1280,7 +1278,7 @@ public class FhirR4 {
       dosageInstruction.add(dosage);
       medicationResource.setDosageInstruction(dosageInstruction);
     }
-    */
+
     if (USE_SHR_EXTENSIONS) {
       medicationResource.addExtension()
           .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
