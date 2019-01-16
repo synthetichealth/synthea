@@ -120,16 +120,22 @@ task concepts(type: JavaExec) {
 
 task versionTxt() {
   doLast {
-    // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
-    // "git describe" can use tags or fallback to the commit hash if necessary.
-    // this assumes (as does the ruby version) that git will always be present when building
-    String[] cmd = ["git", "describe", "--tags", "--always"]
-    Process p = Runtime.getRuntime().exec(cmd)
-    p.waitFor()
-    def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
-    def file = new File("$projectDir/src/main/resources/version.txt")
-    file.createNewFile()
-    file.text = version
+    try {
+      // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
+      // "git describe" can use tags or fallback to the commit hash if necessary.
+      // this assumes (as does the ruby version) that git will always be present when building
+      String[] cmd = ["git", "describe", "--tags", "--always"]
+      Process p = Runtime.getRuntime().exec(cmd)
+      p.waitFor()
+      def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
+      def file = new File("$projectDir/src/main/resources/version.txt")
+      file.createNewFile()
+      file.text = version
+    } catch (e) {
+      // ex. if git is not installed, or if we can't write the file for some reason. it's not critical to the execution so don't crash
+      logger.warn("Warning: unable to create version.txt. Generated records will not indicate which version of Synthea was used to create them.")
+      logger.warn(e.getMessage())
+    }
   }
 }
 
