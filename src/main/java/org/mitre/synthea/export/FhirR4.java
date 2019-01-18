@@ -257,6 +257,7 @@ public class FhirR4 {
     }
     return bundle;
   }
+
   /**
    * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
    * associated entries from their health record.
