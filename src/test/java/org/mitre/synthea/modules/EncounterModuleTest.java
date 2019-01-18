@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -17,6 +18,10 @@ public class EncounterModuleTest {
   private Person person; 
   private EncounterModule module;
   
+  /**
+   * Setup the Encounter Module Tests.
+   * @throws IOException on loading error
+   */
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
