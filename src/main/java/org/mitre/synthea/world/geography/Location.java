@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.google.gson.Gson;
 import org.apache.commons.lang3.ArrayUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -159,7 +159,9 @@ public class Location {
   }
 
   /**
-   * Method which wraps the randomCityName() call for birthplaces
+   * Pick a random birth place, weighted by population.
+   * @param random Source of randomness
+   * @return Array of Strings: [city, state, country, "city, state, country"]
    */
   public String[] randomBirthPlace(Random random) {
     String[] birthPlace = new String[4];
@@ -167,13 +169,14 @@ public class Location {
     birthPlace[1] = this.state;
     birthPlace[2] = "US";
     birthPlace[3] = birthPlace[0] + ", " + birthPlace[1] + ", " + birthPlace[2];
-
     return birthPlace;
   }
 
   /**
-   * Method which returns a city from the foreignPlacesOfBirth map if the map contains values for an ethnicity
-   * In the case an ethnicity is not present the method returns the value from a call to randomCityName()
+   * Method which returns a city from the foreignPlacesOfBirth map if the map contains values
+   * for an ethnicity.
+   * In the case an ethnicity is not present the method returns the value from a call to
+   * randomCityName().
    *
    * @param random the Random to base our city selection on
    * @param ethnicity the ethnicity to look for cities in
@@ -188,12 +191,14 @@ public class Location {
       String randomBirthPlace = cities.get(random.nextInt(upperBound));
       String[] split = randomBirthPlace.split(",");
 
-      //make sure we have exactly 3 elements (city, state, country_abbr) if not fallback to some random US location
+      // make sure we have exactly 3 elements (city, state, country_abbr)
+      // if not fallback to some random US location
       if (split.length != 3) {
         birthPlace = randomBirthPlace(random);
       } else {
         //concatenate all the results together, adding spaces behind commas for readability
-        birthPlace = ArrayUtils.addAll(split, new String[] {randomBirthPlace.replaceAll(",", ", ")});
+        birthPlace = ArrayUtils.addAll(split,
+            new String[] {randomBirthPlace.replaceAll(",", ", ")});
       }
 
     } else {  //if we can't find a foreign city at least return something
@@ -208,10 +213,8 @@ public class Location {
    * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
    * that city. If cityName is not given, then picks a random city from the list of all cities.
    * 
-   * @param person
-   *          Person to assign location information
-   * @param cityName
-   *          Name of the city, or null to choose one randomly
+   * @param person Person to assign location information
+   * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
     List<Place> zipsForCity = null;
@@ -244,10 +247,8 @@ public class Location {
    * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
    * that city. If cityName is not given, then picks a random city from the list of all cities.
    * 
-   * @param clinician
-   *          Clinician to assign location information
-   * @param cityName
-   *          Name of the city, or null to choose one randomly
+   * @param clinician Clinician to assign location information
+   * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Clinician clinician, String cityName) {
     List<Place> zipsForCity = null;
@@ -365,13 +366,15 @@ public class Location {
 
   /**
    * Load a resource which contains foreign places of birth based on ethnicity in json format:
-   *
+   * <p/>
    * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
-   *
+   * <p/>
    * see src/main/resources/foreign_birthplace.json for a working example
    * package protected for testing
-   * @return
+   * @param resource A json file listing foreign places of birth by ethnicity.
+   * @return Map of ethnicity to Lists of Strings "city,state,country"
    */
+  @SuppressWarnings("unchecked")
   protected static Map<String, List<String>> loadCitiesByLanguage(String resource) {
     Map<String, List<String>> foreignPlacesOfBirth = new HashMap<>();
     try {
