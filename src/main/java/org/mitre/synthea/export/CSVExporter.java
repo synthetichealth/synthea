@@ -121,6 +121,9 @@ public class CSVExporter {
       }
 
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
+      boolean append = patientsFile.exists()
+          && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+
       File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
       File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
       File conditionsFile = outputDirectory.resolve("conditions.csv").toFile();
@@ -130,12 +133,7 @@ public class CSVExporter {
       File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
       File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
-      File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
-      File providersFile = outputDirectory.resolve("providers.csv").toFile();
 
-      boolean append = patientsFile.exists() 
-          && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
-      
       patients = new FileWriter(patientsFile, append);
       allergies = new FileWriter(allergiesFile, append);
       medications = new FileWriter(medicationsFile, append);
@@ -146,6 +144,9 @@ public class CSVExporter {
       immunizations = new FileWriter(immunizationsFile, append);
       encounters = new FileWriter(encountersFile, append);
       imagingStudies = new FileWriter(imagingStudiesFile, append);
+
+      File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
+      File providersFile = outputDirectory.resolve("providers.csv").toFile();
       organizations = new FileWriter(organizationsFile, append);
       providers = new FileWriter(providersFile, append);
 
@@ -218,6 +219,12 @@ public class CSVExporter {
     return SingletonHolder.instance;
   }
 
+  /**
+   * Export the organizations.csv and providers.csv files. This method should be
+   * called once after all the Patient records have been exported using the
+   * export(Person,long) method.
+   * @throws IOException if any IO errors occur.
+   */
   public void exportOrganizationsAndProviders() throws IOException {
     for (Provider org: Provider.getProviderList()) {
       // Check utilization for hospital before we export
@@ -354,7 +361,8 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // ID,START,STOP,PATIENT,PROVIDER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // ID,START,STOP,PATIENT,PROVIDER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,
+    // REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
