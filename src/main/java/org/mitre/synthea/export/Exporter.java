@@ -144,7 +144,7 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  private static void appendToFile(Path file, String contents) {
+  private static synchronized void appendToFile(Path file, String contents) {
     try {
       if (Files.notExists(file)) {
         Files.createFile(file);
