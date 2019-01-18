@@ -1,5 +1,6 @@
 package org.mitre.synthea.world.geography;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -7,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
@@ -79,11 +78,13 @@ public class LocationTest {
 
   @Test
   public void testForeignPlaceOfBirthFileLoad() {
-    Map<String, List<String>> map = Location.loadCitiesByLanguage("geography/foreign_birthplace_simple.json");
+    Map<String, List<String>> map =
+        Location.loadCitiesByLanguage("geography/foreign_birthplace_simple.json");
     Set<String> expectedCities = ImmutableSet.of("german", "west_indian");
 
     Assert.assertNotNull("Expected Non-Null map", map);
-    Assert.assertEquals("Expected foreign_birthplace resource to contain 2 ethnicities", 2, map.size());
+    Assert.assertEquals(
+        "Expected foreign_birthplace resource to contain 2 ethnicities", 2, map.size());
     for (String key : map.keySet()) {
       Assert.assertTrue("Unexpected key found in map " + key, expectedCities.contains(key));
       Assert.assertEquals("Expected size to be 1 for key: " + key, 1, map.get(key).size());
@@ -92,14 +93,16 @@ public class LocationTest {
 
   @Test
   public void testInvalidForeignPlaceOfBirthFileLoad() {
-    Map<String, List<String>> map = Location.loadCitiesByLanguage("geography/this_isnt_a_file.json");
+    Map<String, List<String>> map =
+        Location.loadCitiesByLanguage("geography/this_isnt_a_file.json");
     Assert.assertNotNull(map);
     Assert.assertEquals("Expected map to be empty", 0, map.size());
   }
 
   @Test
   public void testMalformedForeignPlaceOfBirthFileLoad() {
-    Map<String, List<String>> map = Location.loadCitiesByLanguage("geography/malformed_foreign_birthplace.json");
+    Map<String, List<String>> map =
+        Location.loadCitiesByLanguage("geography/malformed_foreign_birthplace.json");
     Assert.assertNotNull(map);
     Assert.assertEquals("Expected map to be empty", 0, map.size());
   }
@@ -112,7 +115,8 @@ public class LocationTest {
     Assert.assertEquals("Expected to receive 'Munich'", "Munich", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Bavaria'", "Bavaria", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'DE'", "DE", placeOfBirth[2]);
-    Assert.assertEquals("Expected to receive 'Munich, Bavaria, DE'", "Munich, Bavaria, DE", placeOfBirth[3]);
+    Assert.assertEquals("Expected to receive 'Munich, Bavaria, DE'",
+        "Munich, Bavaria, DE", placeOfBirth[3]);
   }
 
   @Test
@@ -123,7 +127,8 @@ public class LocationTest {
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
-    Assert.assertEquals("Expected to recieve 'Stoughton, Massachusetts, US'", "Stoughton, Massachusetts, US", placeOfBirth[3]);
+    Assert.assertEquals("Expected to recieve 'Stoughton, Massachusetts, US'",
+        "Stoughton, Massachusetts, US", placeOfBirth[3]);
   }
 
   @Test
@@ -134,7 +139,8 @@ public class LocationTest {
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
-    Assert.assertEquals("Expected to recieve 'Stoughton, Massachusetts, US'", "Stoughton, Massachusetts, US", placeOfBirth[3]);
+    Assert.assertEquals("Expected to recieve 'Stoughton, Massachusetts, US'",
+        "Stoughton, Massachusetts, US", placeOfBirth[3]);
   }
 
   @Test
@@ -145,17 +151,19 @@ public class LocationTest {
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
-    Assert.assertEquals("Expected to recieve 'Rehoboth, Massachusetts, US'", "Rehoboth, Massachusetts, US", placeOfBirth[3]);
+    Assert.assertEquals("Expected to recieve 'Rehoboth, Massachusetts, US'",
+        "Rehoboth, Massachusetts, US", placeOfBirth[3]);
   }
 
   @Test
   public void testGetForeignPlaceOfBirth_EmptyValue() {
     Location location = new Location("Massachusetts", null);
     Random random = new Random(0);
-    String placeOfBirth[] = location.randomBirthplaceByEthnicity(random, "empty_ethnicity");
+    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "empty_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
-    Assert.assertEquals("Expected to recieve 'Rehoboth, Massachusetts, US'", "Rehoboth, Massachusetts, US", placeOfBirth[3]);
+    Assert.assertEquals("Expected to recieve 'Rehoboth, Massachusetts, US'",
+        "Rehoboth, Massachusetts, US", placeOfBirth[3]);
   }
 }

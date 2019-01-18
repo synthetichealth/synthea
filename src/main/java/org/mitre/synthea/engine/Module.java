@@ -97,6 +97,7 @@ public class Module {
   }
 
   /**
+   * Get the top-level modules.
    * @return a list of top-level modules. Submodules are not included.
    */
   public static List<Module> getModules() {
@@ -110,6 +111,7 @@ public class Module {
   }
 
   /**
+   * Get a module by path.
    * @param path
    *          : the relative path of the module, without the root or ".json" file extension. For
    *          example, "medications/otc_antihistamine" or "appendicitis".

@@ -1,5 +1,8 @@
 package org.mitre.synthea.export;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,9 +24,6 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
-
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
 
 public abstract class Exporter {
   /**
