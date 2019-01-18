@@ -64,7 +64,8 @@ public class Generator {
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
-    /** Population as exclusively live persons or including deceased. True for live, false includes deceased */
+    /** Population as exclusively live persons or including deceased.
+     * True for live, false includes deceased */
     public boolean overflow = true;
     /** Gender to be generated. M for Male, F for Female, null for any. */
     public String gender;
@@ -349,7 +350,8 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
-      } while ((!isAlive && !onlyDeadPatients && this.options.overflow) || (isAlive && onlyDeadPatients));
+      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
+          || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
