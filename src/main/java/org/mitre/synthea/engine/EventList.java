@@ -28,6 +28,14 @@ public class EventList {
     return retVal;
   }
 
+  /**
+   * Create an event.
+   * @param time The time the event occurred or should occur.
+   * @param type The type of event. For example, "birth" or "death".
+   * @param rule The name of the rule or method that created the event (for debugging).
+   * @param processed Whether or not the event has been processed. For example, a "death"
+   *     event may be set in the future, and only processed when that time has passed.
+   */
   public void create(long time, String type, String rule, boolean processed) {
     Event event = new Event(time, type, rule, processed);
     synchronized (lock) {
