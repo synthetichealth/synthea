@@ -145,18 +145,18 @@ public final class EncounterModule extends Module {
     }
   }
 
+  /**
+   * Process all emergency events. Emergency events must be processed immediately rather
+   * than waiting until the next timestep. Patient may die before the next timestep.
+   * @param person The patient having the emergency encounter.
+   * @param time The time of the encounter in milliseconds.
+   */
   public static void emergencyVisit(Person person, long time) {
-    // processes all emergency events. Implemented as a function instead of a rule because
-    // emergency events must be processed immediately rather than waiting til the next time
-    // period. Patient may die, resulting in rule not being called.
-
     for (Event event : person.events.before(time, "emergency_encounter")) {
       if (event.processed) {
         continue;
       }
-
       event.processed = true;
-
       emergencyEncounter(person, time);
     }
 
@@ -165,11 +165,8 @@ public final class EncounterModule extends Module {
           || event.type.equals("cardiac_arrest") || event.type.equals("stroke"))) {
         continue;
       }
-
       event.processed = true;
-
       CardiovascularDiseaseModule.performEmergency(person, time, event.type);
-
     }
   }
 
@@ -180,6 +177,9 @@ public final class EncounterModule extends Module {
 
     Encounter encounter = person.record.encounterStart(time, "emergency");
     encounter.codes.add(ENCOUNTER_EMERGENCY);
+    encounter.provider = provider;
+    encounter.clinician = provider.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE,
+        person.random);
     // TODO: emergency encounters need their duration to be defined by the activities performed
     // based on the emergencies given here (heart attack, stroke)
     // assume people will be in the hospital for observation for a few days
@@ -193,6 +193,9 @@ public final class EncounterModule extends Module {
 
     Encounter encounter = person.record.encounterStart(time, "urgent_care");
     encounter.codes.add(ENCOUNTER_URGENTCARE);
+    encounter.provider = provider;
+    encounter.clinician = provider.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE,
+        person.random);
     // assume people will be in urgent care for one hour
     person.record.encounterEnd(time + TimeUnit.HOURS.toMillis(1), "urgent_care");
   }
