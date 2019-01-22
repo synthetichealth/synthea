@@ -19,7 +19,7 @@ public abstract class TestHelper {
   public static Module getFixture(String filename) throws Exception {
     Path modulesFolder = Paths.get("generic");
     Path module = modulesFolder.resolve(filename);
-    return Module.loadFile(module, modulesFolder);
+    return Module.loadFile(module, modulesFolder, null);
   }
 
   /**
