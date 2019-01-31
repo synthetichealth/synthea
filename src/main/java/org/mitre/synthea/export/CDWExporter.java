@@ -455,7 +455,7 @@ public class CDWExporter {
       return;
     }
     int primarySta3n = -1;
-    Provider provider = person.getAmbulatoryProvider(time);
+    Provider provider = person.getProvider(EncounterType.AMBULATORY, time);
     if (provider != null) {
       String state = Location.getStateName(provider.state);
       String tz = Location.getTimezoneByState(state);

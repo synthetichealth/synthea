@@ -113,6 +113,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -626,7 +627,7 @@ public class FhirStu3 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getAmbulatoryProvider(encounter.start);
+      Provider provider = person.getProvider(EncounterType.AMBULATORY, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {
@@ -897,11 +898,12 @@ public class FhirStu3 {
                                            Encounter encounter) {
     boolean inpatient = false;
     boolean outpatient = false;
-    if (encounter.type.equals(Provider.INPATIENT) || encounter.type.equals(Provider.AMBULATORY)) {
+    EncounterType type = EncounterType.fromString(encounter.type);
+    if (type == EncounterType.INPATIENT) {
       inpatient = true;
       // Provider enum doesn't include outpatient, but it can still be
       // an encounter type.
-    } else if (encounter.type.equals("outpatient")) {
+    } else if (type == EncounterType.AMBULATORY) {
       outpatient = true;
     }
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
@@ -1241,24 +1243,25 @@ public class FhirStu3 {
       String code;
       String display;
       CodeableConcept location = new CodeableConcept();
-      switch (encounter.type) {
-        case Provider.AMBULATORY:
+      EncounterType encounterType = EncounterType.fromString(encounter.type);
+      switch (encounterType) {
+        case AMBULATORY:
           code = "21";
           display = "Inpatient Hospital";
           break;
-        case Provider.EMERGENCY:
+        case EMERGENCY:
           code = "23";
           display = "Emergency Room";
           break;
-        case Provider.INPATIENT:
+        case INPATIENT:
           code = "21";
           display = "Inpatient Hospital";
           break;
-        case Provider.URGENTCARE:
+        case URGENTCARE:
           code = "20";
           display = "Urgent Care Facility";
           break;
-        case Provider.WELLNESS:
+        case WELLNESS:
           code = "22";
           display = "Outpatient Hospital";
           break;

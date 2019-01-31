@@ -13,6 +13,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mockito.Mockito;
@@ -31,9 +32,11 @@ public class DeathModuleTest {
     person = new Person(0L);
 
     person.history = new LinkedList<>();
-    person.setAmbulatoryProvider(Mockito.mock(Provider.class));
-    person.setEmergencyProvider(Mockito.mock(Provider.class));
-    person.setInpatientProvider(Mockito.mock(Provider.class));
+    Provider mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-UUID";
+    person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.EMERGENCY, mock);
+    person.setProvider(EncounterType.INPATIENT, mock);
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);

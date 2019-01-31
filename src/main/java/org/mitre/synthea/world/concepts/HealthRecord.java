@@ -117,7 +117,7 @@ public class HealthRecord {
     public BigDecimal cost() {
       if (cost == null) {
         Person patient = record.person;
-        Provider provider = null;
+        Provider provider = record.provider;
         String payer = null;
         cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
         cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
@@ -288,7 +288,19 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS, EMERGENCY, INPATIENT, AMBULATORY, URGENTCARE
+    WELLNESS, AMBULATORY, OUTPATIENT, INPATIENT, EMERGENCY, URGENTCARE;
+
+    public static EncounterType fromString(String value) {
+      if (value == null) {
+        return EncounterType.AMBULATORY;
+      } else {
+        return EncounterType.valueOf(value.toUpperCase());
+      }
+    }
+
+    public String toString() {
+      return this.name().toLowerCase();
+    }
   }
 
   public class Encounter extends Entry {
@@ -335,6 +347,7 @@ public class HealthRecord {
   }
 
   private Person person;
+  public Provider provider;
   public List<Encounter> encounters;
   public Map<String, Entry> present;
   /** recorded death date/time. */
@@ -531,16 +544,17 @@ public class HealthRecord {
     return report;
   }
 
-  public Encounter encounterStart(long time, String type) {
-    Encounter encounter = new Encounter(time, type);
+  public Encounter encounterStart(long time, EncounterType type) {
+    Encounter encounter = new Encounter(time, type.toString());
     encounters.add(encounter);
     return encounter;
   }
 
-  public void encounterEnd(long time, String type) {
+  public void encounterEnd(long time, EncounterType type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      if (encounter.type.equalsIgnoreCase(type) && !encounter.ended) {
+      EncounterType encounterType = EncounterType.fromString(encounter.type);
+      if (encounterType == type && !encounter.ended) {
         encounter.ended = true;
         // Only override the stop time if it is longer than the default.
         if (time > encounter.stop) {

@@ -13,7 +13,7 @@ public class HealthRecordTest {
   public void testReportAllObs() {
     Person person = new Person(0L);
     HealthRecord record = new HealthRecord(person);
-    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS.toString());
+    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS);
     record.observation(0L, "A", "A");
     record.observation(0L, "B", "B");
     record.observation(0L, "C", "C");
@@ -30,7 +30,7 @@ public class HealthRecordTest {
   public void testReportSomeObs() {
     Person person = new Person(0L);
     HealthRecord record = new HealthRecord(person);
-    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS.toString());
+    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS);
     record.observation(0L, "A", "A");
     record.observation(0L, "B", "B");
     record.observation(0L, "C", "C");
@@ -46,7 +46,7 @@ public class HealthRecordTest {
   public void testReportTooManyObs() {
     Person person = new Person(0L);
     HealthRecord record = new HealthRecord(person);
-    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS.toString());
+    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS);
     record.observation(0L, "A", "A");
     record.observation(0L, "B", "B");
     record.observation(0L, "C", "C");

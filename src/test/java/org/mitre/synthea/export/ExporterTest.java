@@ -8,8 +8,11 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.geography.Location;
 
 public class ExporterTest {
 
@@ -28,14 +31,17 @@ public class ExporterTest {
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
     patient = new Person(12345L);
+    Location location = new Location("Massachusetts", null);
+    location.assignPoint(patient, location.randomCityName(patient.random));
+    Provider.loadProviders(location);
     record = patient.record;
   }
 
   @Test public void test_export_filter_simple_cutoff() {
-    record.encounterStart(time - years(8), "dummy encounter");
+    record.encounterStart(time - years(8), EncounterType.AMBULATORY);
     record.observation(time - years(8), "height", 64);
     
-    record.encounterStart(time - years(4), "dummy encounter");
+    record.encounterStart(time - years(4), EncounterType.AMBULATORY);
     record.observation(time - years(4), "weight", 128);
 
     // observations should be filtered to the cutoff date
@@ -50,10 +56,10 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_medication() {
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.medicationStart(time - years(10), "fakeitol");
 
-    record.encounterStart(time - years(8), "dummy encounter");
+    record.encounterStart(time - years(8), EncounterType.AMBULATORY);
     record.medicationStart(time - years(8), "placebitol");
     record.medicationEnd(time - years(6), "placebitol", DUMMY_CODE);
 
@@ -66,11 +72,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_medication_that_ended_during_target() {
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.medicationStart(time - years(10), "dimoxinil");
     record.medicationEnd(time - years(9), "dimoxinil", DUMMY_CODE);
 
-    record.encounterStart(time - years(8), "dummy encounter");
+    record.encounterStart(time - years(8), EncounterType.AMBULATORY);
     record.medicationStart(time - years(8), "placebitol");
     record.medicationEnd(time - years(4), "placebitol", DUMMY_CODE);
 
@@ -84,11 +90,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_careplan() {
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(8), "stop_smoking", DUMMY_CODE);
 
-    record.encounterStart(time - years(12), "dummy encounter");
+    record.encounterStart(time - years(12), EncounterType.AMBULATORY);
     record.careplanStart(time - years(12), "healthy_diet");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -100,7 +106,7 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_careplan_that_ended_during_target() {
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(1), "stop_smoking", DUMMY_CODE);
 
@@ -114,11 +120,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_conditions() {
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.conditionStart(time - years(10), "fakitis");
     record.conditionEnd(time - years(8), "fakitis");
 
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.conditionStart(time - years(10), "fakosis");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -130,11 +136,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_condition_that_ended_during_target() {
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.conditionStart(time - years(10), "boneitis");
     record.conditionEnd(time - years(2), "boneitis");
 
-    record.encounterStart(time - years(10), "dummy encounter");
+    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.conditionStart(time - years(10), "smallpox");
     record.conditionEnd(time - years(9), "smallpox");
 
@@ -169,7 +175,7 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_not_keep_old_stuff() {
-    record.encounterStart(time - years(18), "er_visit");
+    record.encounterStart(time - years(18), EncounterType.EMERGENCY);
     record.procedure(time - years(20), "appendectomy");
     record.immunization(time - years(12), "flu_shot");
     record.observation(time - years(10), "weight", 123);
@@ -181,7 +187,7 @@ public class ExporterTest {
 
   @Test public void test_export_filter_should_keep_old_active_stuff() {
     // create an old encounter with a diagnosis that isn't ended
-    record.encounterStart(time - years(18), "er_visit");
+    record.encounterStart(time - years(18), EncounterType.EMERGENCY);
     record.conditionStart(time - years(18), "diabetes");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -192,7 +198,7 @@ public class ExporterTest {
   }
   
   @Test public void test_export_filter_should_filter_claim_items() {
-    record.encounterStart(time - years(10), "er_visit");
+    record.encounterStart(time - years(10), EncounterType.EMERGENCY);
     record.conditionStart(time - years(10), "something_permanent");
     record.procedure(time - years(10), "xray");
     

@@ -56,12 +56,11 @@ public final class EncounterModule extends Module {
     // add a wellness encounter if this is the right time
     if (person.record.timeSinceLastWellnessEncounter(time)
         >= recommendedTimeBetweenWellnessVisits(person, time)) {
-      Encounter encounter = person.record.encounterStart(time,
-          EncounterType.WELLNESS.toString());
+      Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
       encounter.name = "Encounter Module Scheduled Wellness";
       encounter.codes.add(ENCOUNTER_CHECKUP);
-      Provider prov = person.getAmbulatoryProvider(time);
-      prov.incrementEncounters(EncounterType.WELLNESS.toString(), year);
+      Provider prov = person.getProvider(EncounterType.AMBULATORY, time);
+      prov.incrementEncounters(EncounterType.WELLNESS, year);
       encounter.provider = prov;
       encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
           person.random);
@@ -75,11 +74,10 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.record.encounterStart(time, 
-            EncounterType.EMERGENCY.toString());
+        Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getEmergencyProvider(time);
-        prov.incrementEncounters(EncounterType.EMERGENCY.toString(), year);
+        Provider prov = person.getProvider(EncounterType.EMERGENCY, time);
+        prov.incrementEncounters(EncounterType.EMERGENCY, year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
@@ -94,11 +92,10 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.record.encounterStart(time,
-            EncounterType.URGENTCARE.toString());
+        Encounter encounter = person.encounterStart(time, EncounterType.URGENTCARE);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getUrgentCareProvider(time);
-        prov.incrementEncounters(EncounterType.URGENTCARE.toString(), year);
+        Provider prov = person.getProvider(EncounterType.URGENTCARE, time);
+        prov.incrementEncounters(EncounterType.URGENTCARE, year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
@@ -113,11 +110,10 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.record.encounterStart(time,
-            EncounterType.WELLNESS.toString());
+        Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getAmbulatoryProvider(time);
-        prov.incrementEncounters(EncounterType.WELLNESS.toString(), year);
+        Provider prov = person.getProvider(EncounterType.AMBULATORY, time);
+        prov.incrementEncounters(EncounterType.WELLNESS, year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
@@ -172,10 +168,10 @@ public final class EncounterModule extends Module {
 
   public static void emergencyEncounter(Person person, long time) {
     // find closest service provider with emergency service
-    Provider provider = person.getEmergencyProvider(time);
-    provider.incrementEncounters("emergency", Utilities.getYear(time));
+    Provider provider = person.getProvider(EncounterType.EMERGENCY, time);
+    provider.incrementEncounters(EncounterType.EMERGENCY, Utilities.getYear(time));
 
-    Encounter encounter = person.record.encounterStart(time, "emergency");
+    Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
     encounter.codes.add(ENCOUNTER_EMERGENCY);
     encounter.provider = provider;
     encounter.clinician = provider.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE,
@@ -183,21 +179,21 @@ public final class EncounterModule extends Module {
     // TODO: emergency encounters need their duration to be defined by the activities performed
     // based on the emergencies given here (heart attack, stroke)
     // assume people will be in the hospital for observation for a few days
-    person.record.encounterEnd(time + TimeUnit.DAYS.toMillis(4), "emergency");
+    person.record.encounterEnd(time + TimeUnit.DAYS.toMillis(4), EncounterType.EMERGENCY);
   }
 
   public static void urgentCareEncounter(Person person, long time) {
     // find closest service provider with urgent care service
-    Provider provider = person.getUrgentCareProvider(time);
-    provider.incrementEncounters("urgent_care", Utilities.getYear(time));
+    Provider provider = person.getProvider(EncounterType.URGENTCARE, time);
+    provider.incrementEncounters(EncounterType.URGENTCARE, Utilities.getYear(time));
 
-    Encounter encounter = person.record.encounterStart(time, "urgent_care");
+    Encounter encounter = person.encounterStart(time, EncounterType.URGENTCARE);
     encounter.codes.add(ENCOUNTER_URGENTCARE);
     encounter.provider = provider;
     encounter.clinician = provider.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE,
         person.random);
     // assume people will be in urgent care for one hour
-    person.record.encounterEnd(time + TimeUnit.HOURS.toMillis(1), "urgent_care");
+    person.record.encounterEnd(time + TimeUnit.HOURS.toMillis(1), EncounterType.URGENTCARE);
   }
 
 
@@ -226,12 +222,13 @@ public final class EncounterModule extends Module {
   }
 
   public void endWellnessEncounter(Person person, long time) {
-    person.record.encounterEnd(time, EncounterType.WELLNESS.toString());
+    person.record.encounterEnd(time, EncounterType.WELLNESS);
     person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
   }
 
+  @Deprecated
   public void endUrgentCareEncounter(Person person, long time) {
-    person.record.encounterEnd(time, EncounterType.URGENTCARE.toString());
+    person.record.encounterEnd(time, EncounterType.URGENTCARE);
     person.attributes.remove(ACTIVE_URGENT_CARE_ENCOUNTER);
   }
 

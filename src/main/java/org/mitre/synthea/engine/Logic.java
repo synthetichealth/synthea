@@ -195,6 +195,8 @@ public abstract class Logic {
         return observation == null;
       } else if (operator.equals("is not nil")) {
         return observation != null;
+      } else if (observation == null) {
+        throw new NullPointerException("Required observation is null.");
       } else {
         return Utilities.compare(observation.value, this.value, operator);
       }

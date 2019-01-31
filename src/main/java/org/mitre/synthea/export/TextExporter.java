@@ -21,6 +21,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
@@ -398,11 +399,11 @@ public class TextExporter {
     textRecord.add("Marital Status:      "
         + person.attributes.getOrDefault(Person.MARITAL_STATUS, "S"));
 
-    Provider prov = person.getAmbulatoryProvider(endTime);
+    Provider prov = person.getProvider(EncounterType.AMBULATORY, endTime);
     if (prov != null) {
       textRecord.add("Outpatient Provider: " + prov.name);
     }
-    Provider primaryProv = person.getWellnessProvider(endTime);
+    Provider primaryProv = person.getProvider(EncounterType.WELLNESS, endTime);
     if (primaryProv != null) {
       textRecord.add("Primary Care Provider: " + prov.address);
     }

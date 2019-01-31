@@ -47,9 +47,11 @@ public class StateTest {
     person = new Person(0L);
 
     person.history = new LinkedList<>();
-    person.setAmbulatoryProvider(Mockito.mock(Provider.class));
-    person.setEmergencyProvider(Mockito.mock(Provider.class));
-    person.setInpatientProvider(Mockito.mock(Provider.class));
+    Provider mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-UUID";
+    person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.EMERGENCY, mock);
+    person.setProvider(EncounterType.INPATIENT, mock);
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
