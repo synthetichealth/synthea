@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -17,16 +18,21 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mockito.Mockito;
 
 public class LogicTest {
   private Person person;
@@ -41,6 +47,13 @@ public class LogicTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    Provider mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-Ambulatory";
+    person.setProvider(EncounterType.AMBULATORY, mock);
+    mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-Emergency";
+    person.setProvider(EncounterType.EMERGENCY, mock);
+
     time = System.currentTimeMillis();
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
@@ -236,6 +249,46 @@ public class LogicTest {
   public void test_missing_observation() {
     // starts out with no observations
     doTest("mmseObservationGt22");
+  }
+
+  @Test
+  public void test_logic_with_split_record_no_duplicates() {
+    Module module = StateTest.getModule("switching_provider.json");
+    Config.set("exporter.split_records.duplicate_data", "false");
+    person.hasMultipleRecords = true;
+    person.records = new ConcurrentHashMap<String, HealthRecord>();
+    module.process(person, time);
+    assertTrue(person.hasMultipleRecords);
+    assertEquals(2, person.records.size());
+    assertEquals(0, person.record.currentEncounter(time).conditions.size());
+    assertEquals(0, person.record.currentEncounter(time).careplans.size());
+    assertEquals(0, person.record.currentEncounter(time).medications.size());
+    assertEquals(0, person.record.currentEncounter(time).observations.size());
+    assertTrue((Boolean) person.attributes.getOrDefault("found_condition", false));
+    assertTrue((Boolean) person.attributes.getOrDefault("found_careplan", false));
+    assertTrue((Boolean) person.attributes.getOrDefault("found_medication", false));
+    person.hasMultipleRecords = false;
+    person.records = null;
+  }
+
+  @Test
+  public void test_logic_with_split_record_with_duplicates() {
+    Module module = StateTest.getModule("switching_provider.json");
+    Config.set("exporter.split_records.duplicate_data", "true");
+    person.hasMultipleRecords = true;
+    person.records = new ConcurrentHashMap<String, HealthRecord>();
+    module.process(person, time);
+    assertTrue(person.hasMultipleRecords);
+    assertEquals(2, person.records.size());
+    assertEquals(1, person.record.currentEncounter(time).conditions.size());
+    assertEquals(1, person.record.currentEncounter(time).careplans.size());
+    assertEquals(1, person.record.currentEncounter(time).medications.size());
+    assertEquals(1, person.record.currentEncounter(time).observations.size());
+    assertTrue((Boolean) person.attributes.getOrDefault("found_condition", false));
+    assertTrue((Boolean) person.attributes.getOrDefault("found_careplan", false));
+    assertTrue((Boolean) person.attributes.getOrDefault("found_medication", false));
+    person.hasMultipleRecords = false;
+    person.records = null;
   }
 
   @Test

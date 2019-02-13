@@ -60,7 +60,7 @@ public class StateTest {
     time = System.currentTimeMillis();
   }
 
-  private static Module getModule(String name) {
+  protected static Module getModule(String name) {
     try {
       Path modulesFolder = Paths.get("src/test/resources/generic");
       Path logicFile = modulesFolder.resolve(name);

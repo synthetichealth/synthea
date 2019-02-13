@@ -1,0 +1,263 @@
+{
+  "name": "Switching Provider",
+  "remarks": [
+    "In the first outpatient encounter, record whether or not the patient is hungry. In the second emergency encounter, feed the patient only if they are hungry. If the record is split, the second provider will not know whether or not the patient is hungry (not having asked and it not being recorded in the EHR)."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Outpatient Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Outpatient Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Outpatient Encounter"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Not Hungry",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Very Hungry",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Very Hungry": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "Hunger"
+        }
+      ],
+      "direct_transition": "Eat Just Enough",
+      "range": {
+        "low": 6,
+        "high": 10
+      }
+    },
+    "Not Hungry": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "Hunger"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 5
+      },
+      "direct_transition": "Eat Just Enough"
+    },
+    "Emergency Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5678,
+          "display": "Emergency Encounter"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Feed",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": 1234,
+                "display": "Hunger"
+              }
+            ],
+            "operator": ">=",
+            "value": 6
+          }
+        },
+        {
+          "transition": "Check CarePlans"
+        }
+      ]
+    },
+    "End Outpatient": {
+      "type": "EncounterEnd",
+      "direct_transition": "Emergency Encounter"
+    },
+    "End Emergency": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Feed": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 9876,
+          "display": "Feed Patient"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Check CarePlans"
+    },
+    "Check CarePlans": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Found CarePlan",
+          "condition": {
+            "condition_type": "Active CarePlan",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 2345,
+                "display": "Diet"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check Condition"
+        }
+      ]
+    },
+    "Eater": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 8888,
+          "display": "Eater"
+        }
+      ],
+      "direct_transition": "Food"
+    },
+    "Food": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 4567,
+          "display": "Food"
+        }
+      ],
+      "direct_transition": "End Outpatient",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "years"
+        },
+        "as_needed": true
+      }
+    },
+    "Eat Just Enough": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 2345,
+          "display": "Diet"
+        }
+      ],
+      "direct_transition": "Eater",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 3456,
+          "display": "Eat Just Enough"
+        }
+      ]
+    },
+    "Check Condition": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Found Condition",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 8888,
+                "display": "Eater"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check Meds"
+        }
+      ]
+    },
+    "Check Meds": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Found Medication",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 4567,
+                "display": "Food"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End Emergency"
+        }
+      ]
+    },
+    "Found CarePlan": {
+      "type": "SetAttribute",
+      "attribute": "found_careplan",
+      "direct_transition": "Check Condition",
+      "value": true
+    },
+    "Found Condition": {
+      "type": "SetAttribute",
+      "attribute": "found_condition",
+      "direct_transition": "Check Meds",
+      "value": true
+    },
+    "Found Medication": {
+      "type": "SetAttribute",
+      "attribute": "found_medication",
+      "direct_transition": "End Emergency",
+      "value": true
+    }
+  }
+}

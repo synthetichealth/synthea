@@ -34,6 +34,7 @@ public abstract class State implements Cloneable {
   public Module module;
   public String name;
   public Long entered;
+  public Entry entry;
   public Long exited;
 
   private Transition transition;
@@ -117,6 +118,8 @@ public abstract class State implements Cloneable {
 
   /**
    * Process this State with the given Person at the specified time within the simulation.
+   * If this State generates a HealthRecord.Entry during processing, then the resulting data
+   * will reside in the State.entry field.
    *
    * @param person
    *          : the person being simulated
@@ -476,6 +479,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       if (wellness) {
         HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+        entry = encounter;
         String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module.name;
         if (person.attributes.containsKey(activeKey)) {
           person.attributes.remove(activeKey);
@@ -500,6 +504,7 @@ public abstract class State implements Cloneable {
       } else {
         EncounterType type = EncounterType.fromString(encounterClass);
         HealthRecord.Encounter encounter = person.encounterStart(time, type);
+        entry = encounter;
         if (codes != null) {
           encounter.codes.addAll(codes);
         }
@@ -651,13 +656,13 @@ public abstract class State implements Cloneable {
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
-      Entry condition = person.record.conditionStart(time, primaryCode);
-      condition.name = this.name;
+      entry = person.record.conditionStart(time, primaryCode);
+      entry.name = this.name;
       if (codes != null) {
-        condition.codes.addAll(codes);
+        entry.codes.addAll(codes);
       }
       if (assignToAttribute != null) {
-        person.attributes.put(assignToAttribute, condition);
+        person.attributes.put(assignToAttribute, entry);
       }
 
       diagnosed = true;
@@ -715,12 +720,12 @@ public abstract class State implements Cloneable {
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
-      Entry allergy = person.record.allergyStart(time, primaryCode);
-      allergy.name = this.name;
-      allergy.codes.addAll(codes);
+      entry = person.record.allergyStart(time, primaryCode);
+      entry.name = this.name;
+      entry.codes.addAll(codes);
 
       if (assignToAttribute != null) {
-        person.attributes.put(assignToAttribute, allergy);
+        person.attributes.put(assignToAttribute, entry);
       }
 
       diagnosed = true;
@@ -795,6 +800,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
       Medication medication = person.record.medicationStart(time, primaryCode);
+      entry = medication;
       medication.name = this.name;
       medication.codes.addAll(codes);
 
@@ -905,6 +911,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
       CarePlan careplan = person.record.careplanStart(time, primaryCode);
+      entry = careplan;
       careplan.name = this.name;
       careplan.codes.addAll(codes);
 
@@ -1002,6 +1009,7 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
       HealthRecord.Procedure procedure = person.record.procedure(time, primaryCode);
+      entry = procedure;
       procedure.name = this.name;
       procedure.codes.addAll(codes);
 
@@ -1159,6 +1167,7 @@ public abstract class State implements Cloneable {
         value = valueCode;
       }
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
+      entry = observation;
       observation.name = this.name;
       observation.codes.addAll(codes);
       observation.category = category;
@@ -1211,6 +1220,7 @@ public abstract class State implements Cloneable {
       String primaryCode = codes.get(0).code;
       HealthRecord.Observation observation =
           person.record.multiObservation(time, primaryCode, observations.size());
+      entry = observation;
       observation.name = this.name;
       observation.codes.addAll(codes);
       observation.category = category;
@@ -1234,6 +1244,7 @@ public abstract class State implements Cloneable {
       }
       String primaryCode = codes.get(0).code;
       Report report = person.record.report(time, primaryCode, observations.size());
+      entry = report;
       report.name = this.name;
       report.codes.addAll(codes);
 
@@ -1277,7 +1288,7 @@ public abstract class State implements Cloneable {
       // The modality code of the first series is a good approximation
       // of the type of ImagingStudy this is
       String primaryModality = series.get(0).modality.code;
-      person.record.imagingStudy(time, primaryModality, series);
+      entry = person.record.imagingStudy(time, primaryModality, series);
 
       // Also add the Procedure equivalent of this ImagingStudy to the patient's record
       String primaryProcedureCode = procedureCode.code;
