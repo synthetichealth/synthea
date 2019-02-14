@@ -162,10 +162,11 @@ public class TextExporter {
    * Produce and export a person's record in the text format.
    *
    * @param person Person to export
+   * @param fileTag Tag to add to the filename
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
    */
-  public static void exportAll(Person person, long time) throws IOException {
+  public static void exportAll(Person person, String fileTag, long time) throws IOException {
 
     List<Encounter> encounters = person.record.encounters;
     List<Entry> conditions = new ArrayList<>();
@@ -274,7 +275,7 @@ public class TextExporter {
 
     // finally write to the file
     File outDirectory = Exporter.getOutputFolder("text", person);
-    Path outFilePath = outDirectory.toPath().resolve(Exporter.filename(person, "txt"));
+    Path outFilePath = outDirectory.toPath().resolve(Exporter.filename(person, fileTag, "txt"));
     Files.write(outFilePath, textRecord, StandardOpenOption.CREATE_NEW);
   }
 
@@ -356,7 +357,7 @@ public class TextExporter {
 
       //write to the file
       File outDirectory2 = Exporter.getOutputFolder("text_encounters", person);
-      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename_per_encounter(person, 
+      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename(person,
           Integer.toString(encounterNumber), "txt"));
       Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
     }      
