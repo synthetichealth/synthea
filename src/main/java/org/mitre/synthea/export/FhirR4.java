@@ -92,6 +92,7 @@ import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -501,7 +502,8 @@ public class FhirR4 {
     }
 
     if (!person.alive(stopTime)) {
-      patientResource.setDeceased(convertFhirDateTime(person.record.death, true));
+      patientResource.setDeceased(
+          convertFhirDateTime(person.events.event(Event.DEATH).time, true));
     }
 
     String generatedBySynthea =
