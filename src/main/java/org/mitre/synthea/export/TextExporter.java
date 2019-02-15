@@ -17,11 +17,9 @@ import java.util.List;
 import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
-import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
@@ -40,7 +38,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * Age:                 51
  * Birth Date:          1966-10-26
  * Marital Status:
- * Outpatient Provider: MCLEAN HOSPITAL CORPORATION
+ * Provider: MCLEAN HOSPITAL CORPORATION
  * --------------------------------------------------------------------------------
  * ALLERGIES:
  * --------------------------------------------------------------------------------
@@ -400,13 +398,10 @@ public class TextExporter {
     textRecord.add("Marital Status:      "
         + person.attributes.getOrDefault(Person.MARITAL_STATUS, "S"));
 
-    Provider prov = person.getProvider(EncounterType.AMBULATORY, endTime);
-    if (prov != null) {
-      textRecord.add("Outpatient Provider: " + prov.name);
-    }
-    Provider primaryProv = person.getProvider(EncounterType.WELLNESS, endTime);
-    if (primaryProv != null) {
-      textRecord.add("Primary Care Provider: " + prov.address);
+    if (person.record.provider != null) {
+      textRecord.add("Provider:            " + person.record.provider.name);
+      textRecord.add("Provider Address:    " + person.record.provider.address
+         + ", " + person.record.provider.city + ", " + person.record.provider.state);
     }
   }
   
