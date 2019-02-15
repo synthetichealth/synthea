@@ -17,6 +17,8 @@ import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
+import org.mitre.synthea.helpers.RandomValueGenerator;
+import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
@@ -1076,10 +1078,9 @@ public abstract class State implements Cloneable {
     @Override
     public boolean process(Person person, long time) {
       if (exact != null) {
-        person.setVitalSign(vitalSign, exact.quantity);
+        person.setVitalSign(vitalSign, new ConstantValueGenerator(person, exact.quantity));
       } else if (range != null) {
-        double value = person.rand(range.low, range.high);
-        person.setVitalSign(vitalSign, value);
+        person.setVitalSign(vitalSign, new RandomValueGenerator(person, range.low, range.high));
       } else {
         throw new RuntimeException(
             "VitalSign state has no exact quantity or low/high range: " + this);
@@ -1156,7 +1157,7 @@ public abstract class State implements Cloneable {
       } else if (attribute != null) {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
-        value = person.getVitalSign(vitalSign);
+        value = person.getVitalSign(vitalSign, time);
       } else if (valueCode != null) {
         value = valueCode;
       }
