@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
@@ -28,6 +29,7 @@ public class ExporterTest {
    * Setup test data.
    */
   @Before public void setup() {
+    Config.set("exporter.split_records", "false");
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
     patient = new Person(12345L);
