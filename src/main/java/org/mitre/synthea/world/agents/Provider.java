@@ -341,36 +341,21 @@ public class Provider implements QuadTreeData {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = generateClinician(i, this);
+      clinician = generateClinician(Long.parseLong(loaded + "" + i), this);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
     return clinicians;
   }
-  
-  /**
-   * Generate a completely random Clinician.
-   * The seed used to generate the person is randomized as well.
-   *
-   * @param index Target index in the whole set of people to generate
-   * @return generated Person
-   */
-  private Clinician generateClinician(int index, Provider provider) {
-    // System.currentTimeMillis is not unique enough
-    long clinicianSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    return generateClinician(index, clinicianSeed, provider);
-  }
 
   /**
    * Generate a random clinician, from the given seed.
    *
-   * @param index
-   *          Target index in the whole set of people to generate
    * @param clinicianSeed
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  private Clinician generateClinician(int index, long clinicianSeed, Provider provider) {
+  private Clinician generateClinician(long clinicianSeed, Provider provider) {
     Clinician clinician = null;
     try {
       Random randomForDemographics = new Random(clinicianSeed);
@@ -441,6 +426,9 @@ public class Provider implements QuadTreeData {
     // using remove instead of get here so that we can iterate over the remaining keys later
     d.id = line.remove("id");
     d.name = line.remove("name");
+    if (d.name == null || d.name.isEmpty()) {
+      d.name = d.id;
+    }
     String base = d.id + d.name;
     d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     d.address = line.remove("address");
