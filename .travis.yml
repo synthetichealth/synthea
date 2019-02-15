@@ -24,7 +24,4 @@ after_success:
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
 notifications:
   slack: mitrecorp:HNikOgsZALD9WxBZh5oSJve9
-  webhooks:
-    urls:
-      - https://synthea.zulipchat.com/api/v1/external/travis?stream=development&topic=build-status&api_key=XQ5SyfiEkfgjoT9uelJboOTQQOsKYCV2
 

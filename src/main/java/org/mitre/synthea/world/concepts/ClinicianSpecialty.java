@@ -1,7 +1,16 @@
 package org.mitre.synthea.world.concepts;
 
-import java.util.ArrayList;
-
+/**
+ * ClinicianSpecialty is an enumeration of Clinical Specialties that a
+ * Clinician can possess. Each of the values (e.g. "ADDICTION MEDICINE")
+ * corresponds to a column header in the primary care facilities file
+ * identified by the Synthea property:
+ * <p/>
+ * generate.providers.primarycare.default_file = "providers/primary_care_facilities.csv"
+ * <p/>The numeric value in each cell identifies how many of clinicians should be
+ * generated with each specialty. These specialties can then be used to select
+ * an appropriate clinician for any encounter.
+ */
 public class ClinicianSpecialty {
 
   public static final String ADDICTION_MEDICINE = "ADDICTION MEDICINE";
@@ -90,7 +99,11 @@ public class ClinicianSpecialty {
   public static final String UNDEFINED = "UNDEFINED PHYSICIAN TYPE (SPECIFY)";
   public static final String UROLOGY = "UROLOGY";
   public static final String VASCULAR_SURGERY = "VASCULAR SURGERY";
-  
+
+  /**
+   * Get the complete list of all specialties defined in the system.
+   * @return List of Strings defined each clinical specialty.
+   */
   public static String[] getSpecialties() {
     String[] specialtyList = {"ADDICTION MEDICINE", 
       "ADVANCED HEART FAILURE AND TRANSPLANT CARDIOLOGY", "ALLERGY/IMMUNOLOGY", "ANESTHESIOLOGY", 

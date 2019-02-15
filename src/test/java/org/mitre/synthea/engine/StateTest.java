@@ -158,9 +158,9 @@ public class StateTest {
   }
 
   @Test
-  public void condition_onset_diagnosed_by_target_encounter() { 
+  public void condition_onset_diagnosed_by_target_encounter() {
     Module module = getModule("condition_onset.json");
-    
+
     State condition = module.getState("Diabetes");
     // Should pass through this state immediately without calling the record
     person.history.add(0, condition);
@@ -376,6 +376,14 @@ public class StateTest {
   }
 
   @Test
+  public void symptoms50() {
+    Module module = getModule("symptom50.json");
+
+    State symptom50 = module.getState("Symptom50");
+    assertTrue(symptom50.process(person, time));
+  }
+
+  @Test
   public void setAttribute_with_value() {
     Module module = getModule("set_attribute.json");
 
@@ -475,7 +483,7 @@ public class StateTest {
     //assertEquals("LOINC", codeObservation.value.system);
     //assertEquals("25428-4", codeObservation.value.code);
     //assertEquals("Glucose [Presence] in Urine by Test strip", codeObservation.value.system);
-    
+
     Code testCode = new Code("LOINC", "25428-4", "Glucose [Presence] in Urine by Test strip");
     assertEquals(testCode.toString(), codeObservation.value.toString());
 
@@ -1451,24 +1459,24 @@ public class StateTest {
     // for a DiagnosticReport, we expect the report as well as the individual observations
     // to be added to the record
     Encounter e = person.record.encounters.get(0);
-    
+
     assertEquals(1, e.reports.size());
     HealthRecord.Report report = e.reports.get(0);
     assertEquals(8, report.observations.size());
     assertEquals(8, e.observations.size());
-    
+
     String[] codes =
         {"2339-0", "6299-2", "38483-4", "49765-1", "2947-0", "6298-4", "2069-3", "20565-8"};
     // Glucose, Urea Nitrogen, Creatinine, Calcium, Sodium, Potassium, Chloride, Carbon Dioxide
-    
+
     for (int i = 0; i < 8; i++) {
       HealthRecord.Observation o = e.observations.get(i);
-      
+
       assertEquals(codes[i], o.codes.get(0).code);
       assertEquals(report, o.report);
     }
   }
-  
+
   @Test
   public void testMultiObservation() {
     // Birth makes the blood pump :-)
@@ -1483,7 +1491,7 @@ public class StateTest {
     // not the child observations, which get added as components of the parent observation
     Encounter e = person.record.encounters.get(0);
     assertEquals(1, e.observations.size());
-    
+
     HealthRecord.Observation o = e.observations.get(0);
     assertEquals("55284-4", o.codes.get(0).code);
     assertEquals(2, o.observations.size());
