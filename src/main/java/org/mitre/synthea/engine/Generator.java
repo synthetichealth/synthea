@@ -386,7 +386,7 @@ public class Generator {
       System.out.println("VITAL SIGNS");
       for (VitalSign vitalSign : person.vitalSigns.keySet()) {
         System.out.format("  * %25s = %6.2f\n", vitalSign,
-            person.getVitalSign(vitalSign).doubleValue());
+            person.getVitalSign(vitalSign, time).doubleValue());
       }
       System.out.println("-----");
     }

@@ -1,6 +1,6 @@
 package org.mitre.synthea.export;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
@@ -127,7 +127,8 @@ public class FHIRSTU3ExporterTest {
         Exporter.export(person, System.currentTimeMillis());
       }
     }
-    assertEquals(0, validationErrors.size());
+    assertTrue("Validation of exported FHIR bundle failed: "
+        + String.join("|", validationErrors), validationErrors.size() == 0);
   }
 
   /**

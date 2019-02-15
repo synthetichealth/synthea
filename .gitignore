@@ -17,3 +17,7 @@ src/main/resources/version.txt
 # H2 database files
 **/*.mv.db
 **/*.trace.db
+
+# VS Code launch settings
+.vscode/launch.test.json
+.vscode/launch.json

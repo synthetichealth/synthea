@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
@@ -99,7 +100,7 @@ public final class LifecycleModule extends Module {
     quitSmoking(person, time);
     quitAlcoholism(person, time);
     adherence(person, time);
-    diabeticVitalSigns(person, time);
+    calculateVitalSigns(person, time);
     calculateFallRisk(person, time);
     death(person, time);
 
@@ -182,6 +183,7 @@ public final class LifecycleModule extends Module {
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person.random));
 
+    // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
     double weightPercentile = person.rand();
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
@@ -212,18 +214,34 @@ public final class LifecycleModule extends Module {
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
+    calculateVitalSigns(person, time);  // Set initial values for many vital signs.
 
     String orientation = sexualOrientationData.next(person.random);
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
+
+    // Setup vital signs which follow the generator approach
+    setupVitalSignGenerators(person, time);
   }
 
   /**
-   * Generate a first name appropriate for a given gender and language.
-   * @param gender Gender of the name, "M" or "F"
-   * @param language Origin language of the name, "english", "spanish"
-   * @param random Random number generator to use.
-   * @return First name.
+   * Set up the generators for vital signs which use the generator-based approach already.
+   * @param person
+   * @param time
    */
+  private static void setupVitalSignGenerators(Person person, long time) {
+    person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
+        new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
+    person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
+        new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
+  }
+
+/**
+ * Generate a first name appropriate for a given gender and language.
+ * @param gender Gender of the name, "M" or "F"
+ * @param language Origin language of the name, "english", "spanish"
+ * @param random Random number generator to use.
+ * @return First name.
+ */
   @SuppressWarnings("unchecked")
   public static String fakeFirstName(String gender, String language, Random random) {
     List<String> choices;
@@ -403,17 +421,17 @@ public final class LifecycleModule extends Module {
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
 
-    double height = person.getVitalSign(VitalSign.HEIGHT);
-    double weight = person.getVitalSign(VitalSign.WEIGHT);
+    double height = person.getVitalSign(VitalSign.HEIGHT, time);
+    double weight = person.getVitalSign(VitalSign.WEIGHT, time);
 
     if (age < 20) {
       // follow growth charts
       String gender = (String) person.attributes.get(Person.GENDER);
       int ageInMonths = person.ageInMonths(time);
       height = lookupGrowthChart("height", gender, ageInMonths,
-          person.getVitalSign(VitalSign.HEIGHT_PERCENTILE));
+          person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
       weight = lookupGrowthChart("weight", gender, ageInMonths,
-          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE));
+          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
     } else if (age <= ADULT_MAX_WEIGHT_AGE) {
       // getting older and fatter
       double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
@@ -519,14 +537,7 @@ public final class LifecycleModule extends Module {
     return impacts;
   }
   
-  private static final int[] HYPERTENSIVE_SYS_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.hypertensive.systolic");
-  private static final int[] HYPERTENSIVE_DIA_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.hypertensive.diastolic");
-  private static final int[] NORMAL_SYS_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.normal.systolic");
-  private static final int[] NORMAL_DIA_BP_RANGE =
-      BiometricsConfig.ints("metabolic.blood_pressure.normal.diastolic");
+
   
   private static final int[] CHOLESTEROL_RANGE =
       BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
@@ -586,22 +597,7 @@ public final class LifecycleModule extends Module {
    * @param person The person
    * @param time Current simulation timestamp
    */
-  private static void diabeticVitalSigns(Person person, long time) {
-    boolean hypertension = (Boolean)person.attributes.getOrDefault("hypertension", false);
-
-    int[] sysRange;
-    int[] diaRange;
-    if (hypertension) {
-      sysRange = HYPERTENSIVE_SYS_BP_RANGE;
-      diaRange = HYPERTENSIVE_DIA_BP_RANGE;
-    } else {
-      sysRange = NORMAL_SYS_BP_RANGE;
-      diaRange = NORMAL_DIA_BP_RANGE;
-    }
-
-    person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, person.rand(sysRange));
-    person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, person.rand(diaRange));
-    
+  private static void calculateVitalSigns(Person person, long time) {
     int index = 0;
     if (person.attributes.containsKey("diabetes_severity")) {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
@@ -617,7 +613,7 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.HDL, hdl);
     person.setVitalSign(VitalSign.LDL, ldl);
     
-    double bmi = person.getVitalSign(VitalSign.BMI);
+    double bmi = person.getVitalSign(VitalSign.BMI, time);
     boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
     boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
     double hbA1c = estimateHbA1c(bmi, prediabetes, diabetes, person);
@@ -734,7 +730,7 @@ public final class LifecycleModule extends Module {
     try {
       int age = person.ageInYears(time);
       boolean female = "F".equals(person.attributes.get(Person.GENDER));
-      double weight = person.getVitalSign(VitalSign.WEIGHT); // kg
+      double weight = person.getVitalSign(VitalSign.WEIGHT, time); // kg
       crcl = Math.max(1, Math.min(crcl, 100)); // clamp between 1-100
       double creatinine = ((140.0 - age) * weight) / (72.0 * crcl);
       if (female) {
