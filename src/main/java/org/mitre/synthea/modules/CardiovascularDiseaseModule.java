@@ -15,6 +15,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -734,7 +735,7 @@ public final class CardiovascularDiseaseModule extends Module {
           Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
           // no provider associated with encounter or procedure
           if (provider == null) {
-            provider = person.getAmbulatoryProvider(time);
+            provider = person.getProvider(EncounterType.AMBULATORY, time);
           }
           provider.incrementPrescriptions(year);
         }
@@ -765,7 +766,7 @@ public final class CardiovascularDiseaseModule extends Module {
             Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
             // no provider associated with encounter or procedure
             if (provider == null) {
-              provider = person.getAmbulatoryProvider(time);
+              provider = person.getProvider(EncounterType.AMBULATORY, time);
             }
             provider.incrementProcedures(year);
           }
@@ -781,7 +782,7 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param diagnosis The diagnosis to be made.
    */
   public static void performEmergency(Person person, long time, String diagnosis) {
-    Provider provider = person.getEmergencyProvider(time);
+    Provider provider = person.getProvider(EncounterType.EMERGENCY, time);
 
     int year = Utilities.getYear(time);
 

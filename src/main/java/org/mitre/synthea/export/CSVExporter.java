@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -314,13 +315,21 @@ public class CSVExporter {
   private String patient(Person person, long time) throws IOException {
     // Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,
     // FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
-    StringBuilder s = new StringBuilder();
-
     String personID = (String) person.attributes.get(Person.ID);
+
+    // check if we've already exported this patient demographic data yet,
+    // otherwise the "split record" feature could add a duplicate entry.
+    if (person.attributes.containsKey("exported_to_csv")) {
+      return personID;
+    } else {
+      person.attributes.put("exported_to_csv", personID);
+    }
+
+    StringBuilder s = new StringBuilder();
     s.append(personID).append(',');
     s.append(dateFromTimestamp((long)person.attributes.get(Person.BIRTHDATE))).append(',');
     if (!person.alive(time)) {
-      s.append(dateFromTimestamp(person.record.death));
+      s.append(dateFromTimestamp(person.events.event(Event.DEATH).time));
     }
 
     for (String attribute : new String[] {

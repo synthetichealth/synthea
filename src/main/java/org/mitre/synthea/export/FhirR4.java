@@ -92,6 +92,7 @@ import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -105,6 +106,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -500,7 +502,8 @@ public class FhirR4 {
     }
 
     if (!person.alive(stopTime)) {
-      patientResource.setDeceased(convertFhirDateTime(person.record.death, true));
+      patientResource.setDeceased(
+          convertFhirDateTime(person.events.event(Event.DEATH).time, true));
     }
 
     String generatedBySynthea =
@@ -599,7 +602,7 @@ public class FhirR4 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getAmbulatoryProvider(encounter.start);
+      Provider provider = person.getProvider(EncounterType.AMBULATORY, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {

@@ -24,16 +24,12 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 public class Provider implements QuadTreeData {
 
-  public static final String WELLNESS = "wellness";
-  public static final String AMBULATORY = "ambulatory";
-  public static final String INPATIENT = "inpatient";
-  public static final String EMERGENCY = "emergency";
-  public static final String URGENTCARE = "urgent care";
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
   public static final String LABS = "labs";
@@ -62,15 +58,16 @@ public class Provider implements QuadTreeData {
   public String ownership;
   public int quality;
   private DirectPosition2D coordinates;
-  public ArrayList<String> servicesProvided;
+  public ArrayList<EncounterType> servicesProvided;
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
 
   protected Provider() {
+    uuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
-    servicesProvided = new ArrayList<String>();
+    servicesProvided = new ArrayList<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
   }
 
@@ -86,13 +83,13 @@ public class Provider implements QuadTreeData {
     return coordinates;
   }
 
-  public boolean hasService(String service) {
+  public boolean hasService(EncounterType service) {
     return servicesProvided.contains(service);
   }
 
-  public void incrementEncounters(String encounterType, int year) {
+  public void incrementEncounters(EncounterType service, int year) {
     increment(year, ENCOUNTERS);
-    increment(year, ENCOUNTERS + "-" + encounterType);
+    increment(year, ENCOUNTERS + "-" + service);
   }
 
   public void incrementProcedures(int year) {
@@ -150,11 +147,11 @@ public class Provider implements QuadTreeData {
   /**
    * Find specific service closest to the person, with a maximum distance of 500 kilometers.
    * @param person The patient who requires the service.
-   * @param service The service required. For example, Provider.AMBULATORY.
+   * @param service The service required. For example, EncounterType.AMBULATORY.
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
-  public static Provider findClosestService(Person person, String service, long time) {
+  public static Provider findClosestService(Person person, EncounterType service, long time) {
     double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
     double distance = 100;
     double step = 100;
@@ -172,13 +169,13 @@ public class Provider implements QuadTreeData {
   /**
    * Find a service around a given point.
    * @param person The patient who requires the service.
-   * @param service e.g. Provider.AMBULATORY
+   * @param service e.g. EncounterType.AMBULATORY
    * @param searchDistance in kilometers
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
   private static Provider findService(Person person,
-      String service, double searchDistance, long time) {
+      EncounterType service, double searchDistance, long time) {
     DirectPosition2D coord = person.getLatLon();
     List<QuadTreeData> results = providerMap.queryByPointRadius(coord, searchDistance);
 
@@ -230,9 +227,10 @@ public class Provider implements QuadTreeData {
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        Set<String> servicesProvided = new HashSet<String>();
-        servicesProvided.add(Provider.AMBULATORY);
-        servicesProvided.add(Provider.INPATIENT);
+        Set<EncounterType> servicesProvided = new HashSet<EncounterType>();
+        servicesProvided.add(EncounterType.AMBULATORY);
+        servicesProvided.add(EncounterType.OUTPATIENT);
+        servicesProvided.add(EncounterType.INPATIENT);
       
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, servicesProvided);
@@ -241,12 +239,12 @@ public class Provider implements QuadTreeData {
         loadProviders(location, vaFile, servicesProvided);
 
         servicesProvided.clear();
-        servicesProvided.add(Provider.WELLNESS);
+        servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(location, primaryCareFile, servicesProvided);
         
         servicesProvided.clear();
-        servicesProvided.add(Provider.URGENTCARE);
+        servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
         loadProviders(location, urgentcareFile, servicesProvided);
       
@@ -270,7 +268,7 @@ public class Provider implements QuadTreeData {
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      Set<String> servicesProvided)
+      Set<EncounterType> servicesProvided)
       throws IOException {
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -289,7 +287,7 @@ public class Provider implements QuadTreeData {
         parsed.servicesProvided.addAll(servicesProvided);
 
         if ("Yes".equals(row.remove("emergency"))) {
-          parsed.servicesProvided.add(Provider.EMERGENCY);
+          parsed.servicesProvided.add(EncounterType.EMERGENCY);
         }
 
         // add any remaining columns we didn't explicitly map to first-class fields
@@ -343,36 +341,21 @@ public class Provider implements QuadTreeData {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = generateClinician(i, this);
+      clinician = generateClinician(Long.parseLong(loaded + "" + i), this);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
     return clinicians;
   }
-  
-  /**
-   * Generate a completely random Clinician.
-   * The seed used to generate the person is randomized as well.
-   *
-   * @param index Target index in the whole set of people to generate
-   * @return generated Person
-   */
-  private Clinician generateClinician(int index, Provider provider) {
-    // System.currentTimeMillis is not unique enough
-    long clinicianSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    return generateClinician(index, clinicianSeed, provider);
-  }
 
   /**
    * Generate a random clinician, from the given seed.
    *
-   * @param index
-   *          Target index in the whole set of people to generate
    * @param clinicianSeed
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  private Clinician generateClinician(int index, long clinicianSeed, Provider provider) {
+  private Clinician generateClinician(long clinicianSeed, Provider provider) {
     Clinician clinician = null;
     try {
       Random randomForDemographics = new Random(clinicianSeed);
@@ -440,10 +423,14 @@ public class Provider implements QuadTreeData {
    */
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
-    d.uuid = UUID.randomUUID().toString();
     // using remove instead of get here so that we can iterate over the remaining keys later
     d.id = line.remove("id");
     d.name = line.remove("name");
+    if (d.name == null || d.name.isEmpty()) {
+      d.name = d.id;
+    }
+    String base = d.id + d.name;
+    d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     d.address = line.remove("address");
     d.city = line.remove("city");
     d.state = line.remove("state");

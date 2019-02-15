@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -39,7 +38,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * Age:                 51
  * Birth Date:          1966-10-26
  * Marital Status:
- * Outpatient Provider: MCLEAN HOSPITAL CORPORATION
+ * Provider: MCLEAN HOSPITAL CORPORATION
  * --------------------------------------------------------------------------------
  * ALLERGIES:
  * --------------------------------------------------------------------------------
@@ -161,10 +160,11 @@ public class TextExporter {
    * Produce and export a person's record in the text format.
    *
    * @param person Person to export
+   * @param fileTag Tag to add to the filename
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
    */
-  public static void exportAll(Person person, long time) throws IOException {
+  public static void exportAll(Person person, String fileTag, long time) throws IOException {
 
     List<Encounter> encounters = person.record.encounters;
     List<Entry> conditions = new ArrayList<>();
@@ -273,7 +273,7 @@ public class TextExporter {
 
     // finally write to the file
     File outDirectory = Exporter.getOutputFolder("text", person);
-    Path outFilePath = outDirectory.toPath().resolve(Exporter.filename(person, "txt"));
+    Path outFilePath = outDirectory.toPath().resolve(Exporter.filename(person, fileTag, "txt"));
     Files.write(outFilePath, textRecord, StandardOpenOption.CREATE_NEW);
   }
 
@@ -355,7 +355,7 @@ public class TextExporter {
 
       //write to the file
       File outDirectory2 = Exporter.getOutputFolder("text_encounters", person);
-      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename_per_encounter(person, 
+      Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename(person,
           Integer.toString(encounterNumber), "txt"));
       Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
     }      
@@ -398,13 +398,10 @@ public class TextExporter {
     textRecord.add("Marital Status:      "
         + person.attributes.getOrDefault(Person.MARITAL_STATUS, "S"));
 
-    Provider prov = person.getAmbulatoryProvider(endTime);
-    if (prov != null) {
-      textRecord.add("Outpatient Provider: " + prov.name);
-    }
-    Provider primaryProv = person.getWellnessProvider(endTime);
-    if (primaryProv != null) {
-      textRecord.add("Primary Care Provider: " + prov.address);
+    if (person.record.provider != null) {
+      textRecord.add("Provider:            " + person.record.provider.name);
+      textRecord.add("Provider Address:    " + person.record.provider.address
+         + ", " + person.record.provider.city + ", " + person.record.provider.state);
     }
   }
   

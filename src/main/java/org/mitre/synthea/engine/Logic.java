@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Components.DateInput;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -32,6 +33,36 @@ public abstract class Logic {
    * @return boolean - whether or not the given condition is true or not
    */
   public abstract boolean test(Person person, long time);
+
+  /**
+   * Find the most recent entry, of a specific type of HealthRecord.Entry
+   * within the patient history. May return null.
+   * @param person Person the logic is executing against
+   * @param classType Must be a HealthRecord.Entry or subclass.
+   * @param code The code being searched for.
+   * @return The HealthRecord.Entry (or subclass) that was found.
+   */
+  @SuppressWarnings("unchecked")
+  private static <T extends HealthRecord.Entry> HealthRecord.Entry findEntryFromHistory(
+      Person person, Class<T> classType, Code code) {
+    // Find the most recent health record entry from the patient history
+    HealthRecord.Entry entry = null;
+    for (State state : person.history) {
+      if (state.entry != null && classType.isInstance(state.entry)) {
+        T candidate = (T) state.entry;
+        for (Code candidateCode : candidate.codes) {
+          if (candidateCode.equals(code)) {
+            entry = candidate;
+            break;
+          }
+        }
+      }
+      if (entry != null) {
+        break;
+      }
+    }
+    return entry;
+  }
 
   /**
    * The Gender condition type tests the patient's gender. (M or F)
@@ -173,13 +204,23 @@ public abstract class Logic {
       HealthRecord.Observation observation = null;
       if (this.codes != null) {
         for (Code code : this.codes) {
+          // First, look in the current health record for the latest observation
           HealthRecord.Observation last = person.record.getLatestObservation(code.code);
+          if (last == null && person.hasMultipleRecords) {
+            // If the latest observation is not in the current health record,
+            // then look in the module history.
+            last = (HealthRecord.Observation)
+                findEntryFromHistory(person, HealthRecord.Observation.class, code);
+            if (Boolean.parseBoolean(
+                Config.get("exporter.split_records.duplicate_data", "false"))) {
+              person.record.currentEncounter(time).observations.add(last);
+            }
+          }
           if (last != null) {
             observation = last;
             break;
           }
         }
-        
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
           observation = 
@@ -195,6 +236,8 @@ public abstract class Logic {
         return observation == null;
       } else if (operator.equals("is not nil")) {
         return observation != null;
+      } else if (observation == null) {
+        throw new NullPointerException("Required observation is null.");
       } else {
         return Utilities.compare(observation.value, this.value, operator);
       }
@@ -377,6 +420,19 @@ public abstract class Logic {
           if (person.record.present.containsKey(code.code)) {
             return true;
           }
+          if (person.hasMultipleRecords) {
+            // If the condition is not in the current health record,
+            // then look in the module history.
+            HealthRecord.Entry condition = (HealthRecord.Entry)
+                findEntryFromHistory(person, HealthRecord.Entry.class, code);
+            if (condition != null && condition.stop == 0L) {
+              if (Boolean.parseBoolean(
+                  Config.get("exporter.split_records.duplicate_data", "false"))) {
+                person.record.currentEncounter(time).conditions.add(condition);
+              }
+              return true;
+            }
+          }
         }
         return false;
       } else if (referencedByAttribute != null) {
@@ -404,6 +460,19 @@ public abstract class Logic {
           if (person.record.medicationActive(code.code)) {
             return true;
           }
+          if (person.hasMultipleRecords) {
+            // If the medication is not in the current health record,
+            // then look in the module history.
+            HealthRecord.Medication medication = (HealthRecord.Medication)
+                findEntryFromHistory(person, HealthRecord.Medication.class, code);
+            if (medication != null && medication.stop == 0L) {
+              if (Boolean.parseBoolean(
+                  Config.get("exporter.split_records.duplicate_data", "false"))) {
+                person.record.currentEncounter(time).medications.add(medication);
+              }
+              return true;
+            }
+          }
         }
         return false;
       } else if (this.referencedByAttribute != null) {
@@ -430,6 +499,19 @@ public abstract class Logic {
         for (Code code : this.codes) {
           if (person.record.careplanActive(code.code)) {
             return true;
+          }
+          if (person.hasMultipleRecords) {
+            // If the care plan is not in the current health record,
+            // then look in the module history.
+            HealthRecord.CarePlan carePlan = (HealthRecord.CarePlan)
+                findEntryFromHistory(person, HealthRecord.CarePlan.class, code);
+            if (carePlan != null && carePlan.stop == 0L) {
+              if (Boolean.parseBoolean(
+                  Config.get("exporter.split_records.duplicate_data", "false"))) {
+                person.record.currentEncounter(time).careplans.add(carePlan);
+              }
+              return true;
+            }
           }
         }
         return false;

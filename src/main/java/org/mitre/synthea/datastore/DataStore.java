@@ -20,6 +20,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -696,14 +697,11 @@ public class DataStore {
         }
       }
 
-      String[] encounterTypes = { "encounters-wellness", "encounters-ambulatory",
-          "encounters-outpatient", "encounters-emergency", "encounters-inpatient",
-          "encounters-postdischarge", "encounters" };
       for (int year = 1900; year <= Utilities.getYear(System.currentTimeMillis()); year++) {
-        for (int t = 0; t < encounterTypes.length; t++) {
+        for (int t = 0; t < EncounterType.values().length; t++) {
           utilizationDetailTable.setString(1, "None");
           utilizationDetailTable.setInt(2, year);
-          utilizationDetailTable.setString(3, encounterTypes[t]);
+          utilizationDetailTable.setString(3, EncounterType.values()[t].toString());
           utilizationDetailTable.setInt(4, 0);
           utilizationDetailTable.addBatch();
         }

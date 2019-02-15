@@ -52,9 +52,11 @@ public class StateTest {
     person.attributes.put(Person.ETHNICITY, "hispanic");
 
     person.history = new LinkedList<>();
-    person.setAmbulatoryProvider(Mockito.mock(Provider.class));
-    person.setEmergencyProvider(Mockito.mock(Provider.class));
-    person.setInpatientProvider(Mockito.mock(Provider.class));
+    Provider mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-UUID";
+    person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.EMERGENCY, mock);
+    person.setProvider(EncounterType.INPATIENT, mock);
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
@@ -63,7 +65,7 @@ public class StateTest {
     time = System.currentTimeMillis();
   }
 
-  private static Module getModule(String name) {
+  protected static Module getModule(String name) {
     try {
       Path modulesFolder = Paths.get("src/test/resources/generic");
       Path logicFile = modulesFolder.resolve(name);

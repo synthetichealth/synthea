@@ -18,11 +18,13 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.EventList;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class Person implements Serializable, QuadTreeData {
@@ -79,7 +81,10 @@ public class Person implements Serializable, QuadTreeData {
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
   public EventList events;
+  /** the active health record. */
   public HealthRecord record;
+  public Map<String, HealthRecord> records;
+  public boolean hasMultipleRecords;
   /** history of the currently active module. */
   public List<State> history;
 
@@ -91,6 +96,11 @@ public class Person implements Serializable, QuadTreeData {
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
     events = new EventList();
+    hasMultipleRecords =
+        Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
+    if (hasMultipleRecords) {
+      records = new ConcurrentHashMap<String, HealthRecord>();
+    }
     record = new HealthRecord(this);
   }
 
@@ -319,10 +329,37 @@ public class Person implements Serializable, QuadTreeData {
     return false;
   }
 
+  public Encounter encounterStart(long time, EncounterType type) {
+    // Set the record for the current provider as active
+    Provider provider = getProvider(type, time);
+    record = getHealthRecord(provider);
+    // Start the encounter
+    return record.encounterStart(time, type);
+  }
+
+  public synchronized HealthRecord getHealthRecord(Provider provider) {
+    HealthRecord returnValue = this.record;
+    if (hasMultipleRecords) {
+      String key = provider.uuid;
+      if (!records.containsKey(key)) {
+        HealthRecord record = null;
+        if (this.record != null && this.record.provider == null) {
+          record = this.record;
+        } else {
+          record = new HealthRecord(this);
+        }
+        record.provider = provider;
+        records.put(key, record);
+      }
+      returnValue = records.get(key);      
+    }
+    return returnValue;
+  }
+
   public static final String CURRENT_ENCOUNTERS = "current-encounters";
 
   @SuppressWarnings("unchecked")
-  public HealthRecord.Encounter getCurrentEncounter(Module module) {
+  public Encounter getCurrentEncounter(Module module) {
     Map<String, Encounter> moduleToCurrentEncounter = 
         (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
@@ -352,107 +389,24 @@ public class Person implements Serializable, QuadTreeData {
 
   // Providers API -----------------------------------------------------------
   public static final String CURRENTPROVIDER = "currentProvider";
-  public static final String PREFERREDAMBULATORYPROVIDER = "preferredAmbulatoryProvider";
-  public static final String PREFERREDWELLNESSPROVIDER = "preferredWellnessProvider";
-  public static final String PREFERREDINPATIENTPROVIDER = "preferredInpatientProvider";
-  public static final String PREFERREDEMERGENCYPROVIDER = "preferredEmergencyProvider";
-  public static final String PREFERREDURGENTCAREPROVIDER = "preferredUrgentCareProvider";
+  public static final String PREFERREDYPROVIDER = "preferredProvider";
 
-  public Provider getProvider(String encounterClass, long time) {
-    switch (encounterClass) {
-      case Provider.AMBULATORY:
-        return this.getAmbulatoryProvider(time);
-      case Provider.EMERGENCY:
-        return this.getEmergencyProvider(time);
-      case Provider.INPATIENT:
-        return this.getInpatientProvider(time);
-      case Provider.WELLNESS:
-        return this.getWellnessProvider(time);
-      case Provider.URGENTCARE:
-        return this.getUrgentCareProvider(time);
-      default:
-        return this.getAmbulatoryProvider(time);
+  public Provider getProvider(EncounterType type, long time) {
+    String key = PREFERREDYPROVIDER + type;
+    if (!attributes.containsKey(key)) {
+      setProvider(type, time);
     }
-  }
-
-  public Provider getAmbulatoryProvider(long time) {
-    if (!attributes.containsKey(PREFERREDAMBULATORYPROVIDER)) {
-      setAmbulatoryProvider(time);
-    }
-    return (Provider) attributes.get(PREFERREDAMBULATORYPROVIDER);
-  }
-
-  private void setAmbulatoryProvider(long time) {
-    Provider provider = Provider.findClosestService(this, Provider.AMBULATORY, time);
-    attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
-  }
-
-  public void setAmbulatoryProvider(Provider provider) {
-    attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
-  }
-
-  public Provider getWellnessProvider(long time) {
-    if (!attributes.containsKey(PREFERREDWELLNESSPROVIDER)) {
-      setWellnessProvider(time);
-    }
-    return (Provider) attributes.get(PREFERREDWELLNESSPROVIDER);
-  }
-
-  private void setWellnessProvider(long time) {
-    Provider provider = Provider.findClosestService(this, Provider.WELLNESS, time);
-    attributes.put(PREFERREDWELLNESSPROVIDER, provider);
-  }
-
-  public void setWellnessProvider(Provider provider) {
-    attributes.put(PREFERREDAMBULATORYPROVIDER, provider);
+    return (Provider) attributes.get(key);
   }
   
-  public Provider getInpatientProvider(long time) {
-    if (!attributes.containsKey(PREFERREDINPATIENTPROVIDER)) {
-      setInpatientProvider(time);
-    }
-    return (Provider) attributes.get(PREFERREDINPATIENTPROVIDER);
+  public void setProvider(EncounterType type, Provider provider) {
+    String key = PREFERREDYPROVIDER + type;
+    attributes.put(key, provider);
   }
 
-  private void setInpatientProvider(long time) {
-    Provider provider = Provider.findClosestService(this, Provider.INPATIENT, time);
-    attributes.put(PREFERREDINPATIENTPROVIDER, provider);
-  }
-
-  public void setInpatientProvider(Provider provider) {
-    attributes.put(PREFERREDINPATIENTPROVIDER, provider);
-  }
-
-  public Provider getEmergencyProvider(long time) {
-    if (!attributes.containsKey(PREFERREDEMERGENCYPROVIDER)) {
-      setEmergencyProvider(time);
-    }
-    return (Provider) attributes.get(PREFERREDEMERGENCYPROVIDER);
-  }
-
-  private void setEmergencyProvider(long time) {
-    Provider provider = Provider.findClosestService(this, Provider.EMERGENCY, time);
-    attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
-  }
-
-  public void setEmergencyProvider(Provider provider) {
-    attributes.put(PREFERREDEMERGENCYPROVIDER, provider);
-  }
-
-  public Provider getUrgentCareProvider(long time) {
-    if (!attributes.containsKey(PREFERREDURGENTCAREPROVIDER)) {
-      setUrgentCareProvider(time);
-    }
-    return (Provider) attributes.get(PREFERREDURGENTCAREPROVIDER);
-  }
-
-  private void setUrgentCareProvider(long time) {
-    Provider provider = Provider.findClosestService(this, Provider.URGENTCARE, time);
-    attributes.put(PREFERREDURGENTCAREPROVIDER, provider);
-  }
-
-  public void setUrgentCareProvider(Provider provider) {
-    attributes.put(PREFERREDURGENTCAREPROVIDER, provider);
+  public void setProvider(EncounterType type, long time) {
+    Provider provider = Provider.findClosestService(this, type, time);
+    setProvider(type, provider);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
