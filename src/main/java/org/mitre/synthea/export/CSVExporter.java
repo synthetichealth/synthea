@@ -314,9 +314,17 @@ public class CSVExporter {
   private String patient(Person person, long time) throws IOException {
     // ID,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,
     // FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
-    StringBuilder s = new StringBuilder();
-
     String personID = (String) person.attributes.get(Person.ID);
+
+    // check if we've already exported this patient demographic data yet,
+    // otherwise the "split record" feature could add a duplicate entry.
+    if (person.attributes.containsKey("exported_to_csv")) {
+      return personID;
+    } else {
+      person.attributes.put("exported_to_csv", personID);
+    }
+
+    StringBuilder s = new StringBuilder();
     s.append(personID).append(',');
     s.append(dateFromTimestamp((long)person.attributes.get(Person.BIRTHDATE))).append(',');
     if (!person.alive(time)) {
