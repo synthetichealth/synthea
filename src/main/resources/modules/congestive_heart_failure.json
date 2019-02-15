@@ -1,12 +1,42 @@
 {
   "name": "Congestive Heart Failure",
   "remarks": [
-    "A blank module"
+    "REFERENCES",
+    "This module was built based on the following references:",
+    "1. the existing synthea congestive_heartfailure_module",
+    "2. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5494150/",
+    "3. https://www.acc.org/tools-and-practice-support/clinical-toolkits/~/media/1E4D8F9B69D14F55821BFE642FBFA221.ashx",
+    "4. https://r.details.loinc.org/LOINC/55405-5.html?sections=Comprehensive",
+    "5. https://www.nbt.nhs.uk/sites/default/files/BNP%20fact%20sheet.pdf",
+    "6. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4254520/",
+    "7. http://heartfailure.onlinejacc.org/content/jhf/2/3/278.full.pdf",
+    "8. https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007569",
+    "",
+    "GOALS",
+    "- Simulate entire lifecycle of HF from onset to death",
+    "- Simulate disease progression through NYHA II-IV",
+    "- Include telemedicine (remote monitoring)",
+    "",
+    "LIMITATIONS",
+    "- Age-specific prevalences are based on numbers from Portugal",
+    "",
+    "IN PROGRESS",
+    "- EF observations",
+    "- Reporting on imaging procedures",
+    "- Implement full LOINC heart failure tracking panel",
+    "",
+    "",
+    "TODO:",
+    "- NYHA classification",
+    "- Adopt medications to severity",
+    "- send patients to observation unit ([6])",
+    "- Better modelling of mortality (e.g. clustered ED visits [8])",
+    "- What is a documented probability of acute exacerbations per 6 months? 1% was too low. But what is good number?"
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "age delay"
+      "direct_transition": "Age Guard"
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
@@ -59,57 +89,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "BNP lab workup"
-    },
-    "inital workup imaging for CHF": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": "34552-0",
-        "display": "trans thoracic echocardiogram"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 261179002,
-            "display": "thoracic"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "US",
-            "display": "Ultrasound"
-          },
-          "instances": [
-            {
-              "title": "Ultrasound Multiframe Image Storage",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.3.1",
-                "display": "Ultrasound Multiframe Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "CHF careplan"
-    },
-    "BNP lab workup": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "pg/mL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "42637-9",
-          "display": "Natriuretic peptide B"
-        }
-      ],
-      "direct_transition": "Record_MetabolicPanel",
-      "range": {
-        "low": 2,
-        "high": 100
-      }
+      "direct_transition": "NTproBNP lab workup"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -231,7 +211,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "inital workup imaging for CHF"
+      "direct_transition": "Workup imaging for CHF"
     },
     "CHF careplan": {
       "type": "CarePlanStart",
@@ -242,7 +222,7 @@
           "display": "Heart failure self management plan"
         }
       ],
-      "direct_transition": "CHF Medication Start 1",
+      "direct_transition": "Wrap up follow-up encounter",
       "reason": "chf",
       "activities": [
         {
@@ -303,7 +283,7 @@
           "display": "Lasix 40mg"
         }
       ],
-      "direct_transition": "end_followup_encounter",
+      "direct_transition": "Assign CHF care plan",
       "reason": "chf",
       "prescription": {
         "dosage": {
@@ -323,28 +303,42 @@
       "type": "EncounterEnd",
       "direct_transition": "Maintaining CHF"
     },
-    "age delay": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 50,
-        "unit": "years"
-      },
-      "direct_transition": "chance of CHF"
-    },
     "chance of CHF": {
       "type": "Delay",
       "exact": {
         "quantity": 1,
         "unit": "years"
       },
-      "distributed_transition": [
+      "conditional_transition": [
         {
-          "transition": "chance of CHF",
-          "distribution": 0.99904
+          "transition": "Age_80-Chance of CHF",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 80,
+            "unit": "years"
+          }
         },
         {
-          "transition": "CHF symptom onset 1",
-          "distribution": 0.00096
+          "transition": "Age_70-79-Chance of CHF",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 70,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Age_60-69-Chance of CHF",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 60,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Age_50-59-Chance of CHF"
         }
       ]
     },
@@ -376,11 +370,11 @@
       "distributed_transition": [
         {
           "transition": "acute inpatient CHF flare",
-          "distribution": 0.01
+          "distribution": 0.5
         },
         {
           "transition": "Maintaining CHF",
-          "distribution": 0.99
+          "distribution": 0.5
         }
       ]
     },
@@ -440,40 +434,18 @@
     },
     "Admit_Discharge Transition": {
       "type": "Simple",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Systolic Blood Pressure",
-                "operator": "<",
-                "value": 0
-              },
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Sodium",
-                "operator": "<",
-                "value": 135
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "Inpatient_admittance",
-              "distribution": 1
-            }
-          ]
+          "transition": "Inpatient_admittance",
+          "distribution": 0.84
         },
         {
-          "distributions": [
-            {
-              "transition": "Potential CHF Flare",
-              "distribution": 1
-            }
-          ]
+          "transition": "Maintaining CHF",
+          "distribution": 0.16000000000000014
         }
+      ],
+      "remarks": [
+        "Different studies suggest numbers from 74% to 84% for inpatient admittance."
       ]
     },
     "Inpatient_admittance": {
@@ -487,7 +459,7 @@
           "display": "Inpatient stay (finding)"
         }
       ],
-      "direct_transition": "Inpatient CarePlan"
+      "direct_transition": "Inpatient LOS"
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -498,7 +470,7 @@
           "display": "Inpatient care plan (record artifact)"
         }
       ],
-      "direct_transition": "Lasix IV",
+      "direct_transition": "Inpatient daily routine",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -648,41 +620,7 @@
         "quantity": 1,
         "unit": "days"
       },
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Systolic Blood Pressure",
-                "operator": ">",
-                "value": 120
-              },
-              {
-                "condition_type": "Vital Sign",
-                "vital_sign": "Sodium",
-                "operator": ">",
-                "value": 135
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "Inpatient Discharge",
-              "distribution": 1
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Lasix IV",
-              "distribution": 1
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Inpatient Death decision"
     },
     "Inpatient Discharge": {
       "type": "Simple",
@@ -695,7 +633,37 @@
     },
     "End Inpatient Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Potential CHF Flare"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2005,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Maintaining CHF",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Maintaining CHF with Telemedicine",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Maintaining CHF",
+              "distribution": 0.30000000000000004
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Discharge the patient. Starting since the early 2000s this has a likelihood of being an enrollment into a telemedical home monitoring program, designed to prevent readmissions."
+      ]
     },
     "inpatient daily labs": {
       "type": "DiagnosticReport",
@@ -1035,6 +1003,393 @@
         }
       ],
       "direct_transition": "CXR_ED"
+    },
+    "Age Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 50,
+        "unit": "years"
+      },
+      "direct_transition": "chance of CHF"
+    },
+    "Age_50-59-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.003
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.9970000000000001
+        }
+      ]
+    },
+    "Age_60-69-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.008
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.992
+        }
+      ]
+    },
+    "Age_70-79-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.013
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.9870000000000001
+        }
+      ]
+    },
+    "Age_80-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.02
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "CHF onset": {
+      "type": "Simple",
+      "direct_transition": "Reset inpatient count"
+    },
+    "CHF careplan for smokers": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 735984001,
+          "display": "Heart failure self management plan"
+        }
+      ],
+      "reason": "chf",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183063000,
+          "display": "low salt diet education"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183301007,
+          "display": "physical exercise"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225323000,
+          "display": "Smoking cessation education"
+        }
+      ],
+      "direct_transition": "Wrap up follow-up encounter"
+    },
+    "Assign CHF care plan": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CHF careplan for smokers",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CHF careplan"
+        }
+      ]
+    },
+    "Wrap up follow-up encounter": {
+      "type": "Simple",
+      "direct_transition": "end_followup_encounter"
+    },
+    "Order medications": {
+      "type": "Simple",
+      "direct_transition": "CHF Medication Start 1"
+    },
+    "Report workup imaging": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55405-5",
+          "display": "Heartfailure Tracking Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-sign",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10230-1",
+              "display": "Left ventricular Ejection fraction"
+            }
+          ],
+          "vital_sign": "Left ventricular Ejection fraction"
+        }
+      ],
+      "direct_transition": "Order medications"
+    },
+    "Workup imaging for CHF": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "34552-0",
+        "display": "trans thoracic echocardiogram"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 261179002,
+            "display": "thoracic"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Read workup imaging"
+    },
+    "Calculate LVEF": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "%",
+      "direct_transition": "CHF symptom onset 1",
+      "range": {
+        "low": 30,
+        "high": 49
+      }
+    },
+    "Read workup imaging": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "10230-1",
+          "display": "Left ventricular Ejection fraction"
+        }
+      ],
+      "direct_transition": "Report workup imaging",
+      "vital_sign": "Left ventricular Ejection fraction"
+    },
+    "NTproBNP lab workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "pg/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33762-6",
+          "display": "NT-proBNP"
+        }
+      ],
+      "direct_transition": "Record_MetabolicPanel",
+      "range": {
+        "low": 200,
+        "high": 2000
+      }
+    },
+    "Count inpatient stays": {
+      "type": "Counter",
+      "attribute": "inpatient-count",
+      "action": "increment",
+      "direct_transition": "Inpatient CarePlan"
+    },
+    "Inpatient LOS": {
+      "type": "SetAttribute",
+      "attribute": "inpatient-los",
+      "direct_transition": "Count inpatient stays",
+      "value": 0
+    },
+    "Reset inpatient count": {
+      "type": "SetAttribute",
+      "attribute": "inpatient-count",
+      "direct_transition": "Calculate LVEF",
+      "value": 0
+    },
+    "Inpatient daily routine": {
+      "type": "Simple",
+      "direct_transition": "Lasix IV"
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Inpatient Discharge decision": {
+      "type": "Counter",
+      "attribute": "inpatient-los",
+      "action": "increment",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "inpatient-los",
+            "operator": ">=",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Inpatient Discharge",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Inpatient daily routine",
+              "distribution": 0.19999999999999996
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Model the ALOS (5.8) through an increased likelihood of a discharge after 5 days."
+      ]
+    },
+    "Inpatient Death decision": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "inpatient-count",
+            "operator": ">=",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Death",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Inpatient Discharge decision",
+              "distribution": 0.19999999999999996
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "A high number of previous inpatient encounters increases the likelihood of death."
+      ]
+    },
+    "Maintaining CHF with Telemedicine": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Daily Self-Measurement Encounter",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Skip daily measurement",
+          "distribution": 0.39
+        },
+        {
+          "transition": "Potential CHF Flare",
+          "distribution": 0.010000000000000009
+        }
+      ]
+    },
+    "Skip daily measurement": {
+      "type": "Simple",
+      "direct_transition": "Maintaining CHF with Telemedicine"
+    },
+    "Daily self-measurement": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55284-4",
+          "display": "Blood Pressure"
+        }
+      ],
+      "direct_transition": "End self-measurement",
+      "observations": [
+        {
+          "category": "vital-signs",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ]
+    },
+    "End self-measurement": {
+      "type": "EncounterEnd",
+      "direct_transition": "Maintaining CHF with Telemedicine"
+    },
+    "Daily Self-Measurement Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448337001,
+          "display": "Telemedicine consultation with patient"
+        }
+      ],
+      "direct_transition": "Daily self-measurement",
+      "reason": "chf"
     }
   }
 }

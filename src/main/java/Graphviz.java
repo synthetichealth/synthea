@@ -327,6 +327,11 @@ public class Graphviz {
           String quantity = e.get("quantity").getAsString();
           details.append(s).append(": ").append(quantity);
         }
+        if (state.has("probability")) {
+          double pct = state.get("probability").getAsDouble() * 100.0;
+          String label = pct + "%";
+          details.append(" (").append(label).append(")");
+        }
         break;
       case "Observation":
         String unit = "";

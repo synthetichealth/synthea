@@ -280,15 +280,15 @@ public final class CardiovascularDiseaseModule extends Module {
   private static void calculateCardioRisk(Person person, long time) {
     int age = person.ageInYears(time);
     String gender = (String) person.attributes.get(Person.GENDER);
-    Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE);
-    Double chol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL);
+    Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+    Double chol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL, time);
     if (sysBP == null || chol == null) {
       return;
     }
 
     Boolean bpTreated = (Boolean) person.attributes.getOrDefault("bp_treated?", false);
 
-    Double hdl = person.getVitalSign(VitalSign.HDL);
+    Double hdl = person.getVitalSign(VitalSign.HDL, time);
 
     // calculate which index in a lookup array a number corresponds to based on ranges in scoring
     int shortAgeRange = bound((age - 20) / 5, 0, 11);
@@ -439,8 +439,8 @@ public final class CardiovascularDiseaseModule extends Module {
   private static void calculateAtrialFibrillationRisk(Person person, long time) {
     int age = person.ageInYears(time);
     if (age < 45 || person.attributes.containsKey("atrial_fibrillation")
-        || person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE) == null
-        || person.getVitalSign(VitalSign.BMI) == null) {
+        || person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) == null
+        || person.getVitalSign(VitalSign.BMI, time) == null) {
       return;
     }
 
@@ -448,11 +448,11 @@ public final class CardiovascularDiseaseModule extends Module {
     int ageRange = Math.min((age - 45) / 5, 8);
     int genderIndex = (person.attributes.get(Person.GENDER).equals("M")) ? 0 : 1;
     afScore += age_af[genderIndex][ageRange];
-    if (person.getVitalSign(VitalSign.BMI) >= 30) {
+    if (person.getVitalSign(VitalSign.BMI, time) >= 30) {
       afScore += 1;
     }
 
-    if (person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE) >= 160) {
+    if (person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) >= 160) {
       afScore += 1;
     }
 
@@ -525,7 +525,7 @@ public final class CardiovascularDiseaseModule extends Module {
   private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
 
   private static void calculateStrokeRisk(Person person, long time) {
-    Double bloodPressure = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE);
+    Double bloodPressure = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
     if (bloodPressure == null) {
       return;
     }

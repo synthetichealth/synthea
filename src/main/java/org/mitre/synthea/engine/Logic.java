@@ -540,7 +540,7 @@ public abstract class Logic {
 
     @Override
     public boolean test(Person person, long time) {
-      return Utilities.compare(person.getVitalSign(vitalSign), value, operator);
+      return Utilities.compare(person.getVitalSign(vitalSign, time), value, operator);
     }
   }
 }
