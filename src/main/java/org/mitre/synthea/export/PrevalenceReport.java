@@ -23,14 +23,16 @@ public class PrevalenceReport {
   private static final String ACTUAL_PREV_PERCENT = "ACTUAL PREVALENCE PERCENT";
   private static final String PREV_RATE = "SYNTHEA PREVALENCE RATE";
   private static final String PREV_PERCENT = "SYNTHEA PREVALENCE PERCENT";
-  private static final String ITEM = "ITEM";
+  private static final String CODE = "CODE";
+  private static final String DISPLAY = "DISPLAY";
   private static final String GENDER = "GENDER";
   private static final String RACE = "RACE";
   private static final String AGE = "AGE GROUP";
   private static final String OCCUR = "SYNTHEA OCCURRENCES";
   private static final String POP = "SYNTHEA POPULATION";
-  private static final String GIVEN_CON = "GIVEN CONDITION";
-
+  private static final String GIVEN_CON_DISPLAY = "GIVEN CONDITION DISPLAY";
+  private static final String GIVEN_CON_CODE = "GIVEN CONDITION CODE";
+  
   private static final String ALL = "*";
 
   /**
@@ -57,7 +59,7 @@ public class PrevalenceReport {
 
       for (LinkedHashMap<String, String> line : data) {
 
-        if (line.get(ITEM).isEmpty()) {
+        if (line.get(CODE).isEmpty() && line.get(DISPLAY).isEmpty()) {
           continue;
         }
 
@@ -92,7 +94,7 @@ public class PrevalenceReport {
     sb.append("SUM( CASE WHEN c.CODE is NOT NULL then 1 ELSE 0 END ) occurrences \n");
     // subquery to count rows where the named condition exists, using an outer join
     sb.append("FROM PERSON p \n");
-    sb.append("LEFT JOIN CONDITION c on p.id = c.PERSON_ID and c.DISPLAY = ?  \n");
+    sb.append("LEFT JOIN CONDITION c on p.id = c.PERSON_ID and (c.CODE = ? OR c.DISPLAY = ?) \n");
 
     String age = line.get(AGE);
     if (!age.equals(ALL)) {
@@ -119,16 +121,21 @@ public class PrevalenceReport {
       sb.append("AND CAST(a.VALUE AS INT) >= 65  \n");
     }
 
-    String givenCondition = line.get(GIVEN_CON);
-    if (!givenCondition.isEmpty()) {
-      sb.append(
-          "AND EXISTS(SELECT 1 FROM CONDITION gc WHERE p.ID = gc.PERSON_ID and gc.DISPLAY = ?) \n");
+    String givenConditionDisplay = line.get(GIVEN_CON_DISPLAY);
+    String givenConditionCode = line.get(GIVEN_CON_CODE);
+    if (!givenConditionDisplay.isEmpty() || !givenConditionCode.isEmpty()) {
+      sb.append("AND EXISTS(")
+        .append("  SELECT 1 FROM CONDITION gc")
+        .append("  WHERE p.ID = gc.PERSON_ID")
+        .append("  AND (gc.CODE = ? OR gc.DISPLAY = ?)")
+        .append(") \n");
     }
 
     PreparedStatement stmt = connection.prepareStatement(sb.toString());
 
     int index = 1; // SQL begins at 1 not 0
-    stmt.setString(index++, line.get(ITEM));
+    stmt.setString(index++, line.get(CODE));
+    stmt.setString(index++, line.get(DISPLAY));
 
     if (!gender.equals(ALL)) {
       stmt.setString(index++, gender);
@@ -138,8 +145,9 @@ public class PrevalenceReport {
       stmt.setString(index++, race);
     }
 
-    if (!givenCondition.isEmpty()) {
-      stmt.setString(index++, givenCondition);
+    if (!givenConditionDisplay.isEmpty() || !givenConditionCode.isEmpty()) {
+    	stmt.setString(index++, givenConditionCode);
+    	stmt.setString(index++, givenConditionDisplay);
     }
 
     ResultSet rs = stmt.executeQuery();
@@ -208,18 +216,21 @@ public class PrevalenceReport {
 
     stmt = connection.prepareStatement(
         "select distinct c.display as DistinctDisplay, "
+        + "c.code DistinctCode, "
         + "count(distinct c.person_id) as CountDisplay \n"
         + "from condition c, person p\n" 
         + "where c.person_id = p.id\n"
         + "and p.date_of_death is null\n" 
-        + "group by c.display\n" 
+        + "group by c.display, c.code \n" 
         + "order by c.display ASC");
     rs = stmt.executeQuery();
     while (rs.next()) {
       String disease = rs.getString("DistinctDisplay");
+      String code = rs.getString("DistinctCode");
       int count = rs.getInt("CountDisplay");
       LinkedHashMap<String, String> line = new LinkedHashMap<String, String>();
-      line.put(ITEM, disease);
+      line.put(CODE, code);
+      line.put(DISPLAY, disease);
       line.put(OCCUR, Integer.toString(count));
       line.put(POP, Integer.toString(totalPopulation));
       data.add(line);

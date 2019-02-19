@@ -1,229 +1,227 @@
-ITEM,CATEGORY,STATUS,AGE GROUP,GENDER,RACE,GIVEN CONDITION ,ACTUAL PREVALENCE PERCENT,SYNTHEA OCCURRENCES,SYNTHEA POPULATION,SYNTHEA PREVALENCE RATE,SYNTHEA PREVALENCE PERCENT,DIFFERENCE,REFERENCE
-,,,,,,,,,,,,,
-Diabetes,unique conditions,living,adult,*,*,,8,,,,,,https://gis.cdc.gov/grasp/diabetes/DiabetesAtlas.html
-Diabetes,unique conditions,living,adult,*,white,,6.5,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
-Diabetes,unique conditions,living,adult,*,hispanic,,14.2,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
-Diabetes,unique conditions,living,adult,*,black,,12.8,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
-Diabetes,unique conditions,living,adult,*,asian,,16,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
-Diabetes,unique conditions,living,adult,*,native,,14.3,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
-Diabetes,unique conditions,living,adult,F,*,,9.2,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,F,white,,6.8,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,F,hispanic,,11.7,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,F,black,,13.2,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,F,asian,,7.3,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,F,native,,15.3,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,M,*,,9.4,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,M,white,,8.1,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,M,hispanic,,12.6,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,M,black,,12.2,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,M,asian,,9,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,adult,M,native,,14.9,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,child,*,*,,0.24,,,,,,http://www.diabetes.org/diabetes-basics/statistics/?referrer=https://www.google.com/
-Diabetes,unique conditions,living,child,*,white,,,,,,,,
-Diabetes,unique conditions,living,child,*,hispanic,,,,,,,,
-Diabetes,unique conditions,living,child,*,black,,,,,,,,
-Diabetes,unique conditions,living,child,*,asian,,,,,,,,
-Diabetes,unique conditions,living,child,*,native,,,,,,,,
-Diabetes,unique conditions,living,child,F,*,,,,,,,,
-Diabetes,unique conditions,living,child,F,white,,,,,,,,
-Diabetes,unique conditions,living,child,F,hispanic,,,,,,,,
-Diabetes,unique conditions,living,child,F,black,,,,,,,,
-Diabetes,unique conditions,living,child,F,asian,,,,,,,,
-Diabetes,unique conditions,living,child,F,native,,,,,,,,
-Diabetes,unique conditions,living,child,M,*,,,,,,,,
-Diabetes,unique conditions,living,child,M,white,,,,,,,,
-Diabetes,unique conditions,living,child,M,hispanic,,,,,,,,
-Diabetes,unique conditions,living,child,M,black,,,,,,,,
-Diabetes,unique conditions,living,child,M,asian,,,,,,,,
-Diabetes,unique conditions,living,child,M,native,,,,,,,,
-Diabetes,unique conditions,living,senior,*,*,,20.8,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
-Diabetes,unique conditions,living,senior,*,white,,,,,,,,
-Diabetes,unique conditions,living,senior,*,hispanic,,,,,,,,
-Diabetes,unique conditions,living,senior,*,black,,,,,,,,
-Diabetes,unique conditions,living,senior,*,asian,,,,,,,,
-Diabetes,unique conditions,living,senior,*,native,,,,,,,,
-Diabetes,unique conditions,living,senior,F,*,,,,,,,,
-Diabetes,unique conditions,living,senior,F,white,,,,,,,,
-Diabetes,unique conditions,living,senior,F,hispanic,,,,,,,,
-Diabetes,unique conditions,living,senior,F,black,,,,,,,,
-Diabetes,unique conditions,living,senior,F,asian,,,,,,,,
-Diabetes,unique conditions,living,senior,F,native,,,,,,,,
-Diabetes,unique conditions,living,senior,M,*,,,,,,,,
-Diabetes,unique conditions,living,senior,M,white,,,,,,,,
-Diabetes,unique conditions,living,senior,M,hispanic,,,,,,,,
-Diabetes,unique conditions,living,senior,M,black,,,,,,,,
-Diabetes,unique conditions,living,senior,M,asian,,,,,,,,
-Diabetes,unique conditions,living,senior,M,native,,,,,,,,
-,,,,,,,,,,,,,
-Hypertension,unique conditions,living,adult,*,*,,29.1,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,*,white,,28,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,*,hispanic,,26,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,*,black,,42.1,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,*,asian,,24.7,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,*,native,,,,,,,,
-Hypertension,unique conditions,living,adult,F,*,,28.5,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,F,white,,,,,,,,
-Hypertension,unique conditions,living,adult,F,hispanic,,,,,,,,
-Hypertension,unique conditions,living,adult,F,black,,,,,,,,
-Hypertension,unique conditions,living,adult,F,asian,,,,,,,,
-Hypertension,unique conditions,living,adult,F,native,,,,,,,,
-Hypertension,unique conditions,living,adult,M,*,,29.7,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,adult,M,white,,,,,,,,
-Hypertension,unique conditions,living,adult,M,hispanic,,,,,,,,
-Hypertension,unique conditions,living,adult,M,black,,,,,,,,
-Hypertension,unique conditions,living,adult,M,asian,,,,,,,,
-Hypertension,unique conditions,living,adult,M,native,,,,,,,,
-Hypertension,unique conditions,living,child,*,*,,,,,,,,
-Hypertension,unique conditions,living,child,*,white,,,,,,,,
-Hypertension,unique conditions,living,child,*,hispanic,,,,,,,,
-Hypertension,unique conditions,living,child,*,black,,,,,,,,
-Hypertension,unique conditions,living,child,*,asian,,,,,,,,
-Hypertension,unique conditions,living,child,*,native,,,,,,,,
-Hypertension,unique conditions,living,child,F,*,,,,,,,,
-Hypertension,unique conditions,living,child,F,white,,,,,,,,
-Hypertension,unique conditions,living,child,F,hispanic,,,,,,,,
-Hypertension,unique conditions,living,child,F,black,,,,,,,,
-Hypertension,unique conditions,living,child,F,asian,,,,,,,,
-Hypertension,unique conditions,living,child,F,native,,,,,,,,
-Hypertension,unique conditions,living,child,M,*,,,,,,,,
-Hypertension,unique conditions,living,child,M,white,,,,,,,,
-Hypertension,unique conditions,living,child,M,hispanic,,,,,,,,
-Hypertension,unique conditions,living,child,M,black,,,,,,,,
-Hypertension,unique conditions,living,child,M,asian,,,,,,,,
-Hypertension,unique conditions,living,child,M,native,,,,,,,,
-Hypertension,unique conditions,living,senior,*,*,,65,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
-Hypertension,unique conditions,living,senior,*,white,,,,,,,,
-Hypertension,unique conditions,living,senior,*,hispanic,,,,,,,,
-Hypertension,unique conditions,living,senior,*,black,,,,,,,,
-Hypertension,unique conditions,living,senior,*,asian,,,,,,,,
-Hypertension,unique conditions,living,senior,*,native,,,,,,,,
-Hypertension,unique conditions,living,senior,F,*,,,,,,,,
-Hypertension,unique conditions,living,senior,F,white,,,,,,,,
-Hypertension,unique conditions,living,senior,F,hispanic,,,,,,,,
-Hypertension,unique conditions,living,senior,F,black,,,,,,,,
-Hypertension,unique conditions,living,senior,F,asian,,,,,,,,
-Hypertension,unique conditions,living,senior,F,native,,,,,,,,
-Hypertension,unique conditions,living,senior,M,*,,,,,,,,
-Hypertension,unique conditions,living,senior,M,white,,,,,,,,
-Hypertension,unique conditions,living,senior,M,hispanic,,,,,,,,
-Hypertension,unique conditions,living,senior,M,black,,,,,,,,
-Hypertension,unique conditions,living,senior,M,asian,,,,,,,,
-Hypertension,unique conditions,living,senior,M,native,,,,,,,,
-,,,,,,,,,,,,,
-Coronary Heart Disease,unique conditions,living,adult,*,*,,6,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,*,white,,5.8,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,*,hispanic,,6.1,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,*,black,,6.5,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,*,asian,,3.9,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,*,native,,11.6,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,F,*,,4.6,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,F,white,,4.2,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,F,hispanic,,5.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,F,black,,5.9,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,F,asian,,2.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,F,native,,8.4,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,M,*,,7.8,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,M,white,,7.7,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,M,hispanic,,7.2,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,M,black,,7.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,M,asian,,5.4,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,adult,M,native,,14.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,child,*,*,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,*,white,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,*,hispanic,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,*,black,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,*,asian,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,*,native,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,F,*,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,F,white,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,F,hispanic,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,F,black,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,F,asian,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,F,native,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,M,*,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,M,white,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,M,hispanic,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,M,black,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,M,asian,,,,,,,,
-Coronary Heart Disease,unique conditions,living,child,M,native,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,*,*,,19.8,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
-Coronary Heart Disease,unique conditions,living,senior,*,white,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,*,hispanic,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,*,black,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,*,asian,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,*,native,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,F,*,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,F,white,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,F,hispanic,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,F,black,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,F,asian,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,F,native,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,M,*,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,M,white,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,M,hispanic,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,M,black,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,M,asian,,,,,,,,
-Coronary Heart Disease,unique conditions,living,senior,M,native,,,,,,,,
-,,,,,,,,,,,,,
-Asthma,unique conditions,living,adult,*,*,,9.6,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,adult,*,white,,9.4,,,,,,
-Asthma,unique conditions,living,adult,*,hispanic,,11.1,,,,,,
-Asthma,unique conditions,living,adult,*,black,,11.1,,,,,,
-Asthma,unique conditions,living,adult,*,asian,,,,,,,,
-Asthma,unique conditions,living,adult,*,native,,,,,,,,
-Asthma,unique conditions,living,adult,F,*,,11.8,,,,,,
-Asthma,unique conditions,living,adult,F,white,,,,,,,,
-Asthma,unique conditions,living,adult,F,hispanic,,,,,,,,
-Asthma,unique conditions,living,adult,F,black,,,,,,,,
-Asthma,unique conditions,living,adult,F,asian,,,,,,,,
-Asthma,unique conditions,living,adult,F,native,,,,,,,,
-Asthma,unique conditions,living,adult,M,*,,7.2,,,,,,
-Asthma,unique conditions,living,adult,M,white,,,,,,,,
-Asthma,unique conditions,living,adult,M,hispanic,,,,,,,,
-Asthma,unique conditions,living,adult,M,black,,,,,,,,
-Asthma,unique conditions,living,adult,M,asian,,,,,,,,
-Asthma,unique conditions,living,adult,M,native,,,,,,,,
-Asthma,unique conditions,living,child,*,*,,8.4,,,,,,https://www.cdc.gov/asthma/most_recent_data.htm
-Asthma,unique conditions,living,child,*,white,,8.2,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,child,*,hispanic,,12.9,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,child,*,black,,17.3,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,child,*,asian,,,,,,,,
-Asthma,unique conditions,living,child,*,native,,,,,,,,
-Asthma,unique conditions,living,child,F,*,,7.4,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,child,F,white,,,,,,,,
-Asthma,unique conditions,living,child,F,hispanic,,,,,,,,
-Asthma,unique conditions,living,child,F,black,,,,,,,,
-Asthma,unique conditions,living,child,F,asian,,,,,,,,
-Asthma,unique conditions,living,child,F,native,,,,,,,,
-Asthma,unique conditions,living,child,M,*,,12.4,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,child,M,white,,,,,,,,
-Asthma,unique conditions,living,child,M,hispanic,,,,,,,,
-Asthma,unique conditions,living,child,M,black,,,,,,,,
-Asthma,unique conditions,living,child,M,asian,,,,,,,,
-Asthma,unique conditions,living,child,M,native,,,,,,,,
-Asthma,unique conditions,living,senior,*,*,,8.9,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
-Asthma,unique conditions,living,senior,*,white,,,,,,,,
-Asthma,unique conditions,living,senior,*,hispanic,,,,,,,,
-Asthma,unique conditions,living,senior,*,black,,,,,,,,
-Asthma,unique conditions,living,senior,*,asian,,,,,,,,
-Asthma,unique conditions,living,senior,*,native,,,,,,,,
-Asthma,unique conditions,living,senior,F,*,,,,,,,,
-Asthma,unique conditions,living,senior,F,white,,,,,,,,
-Asthma,unique conditions,living,senior,F,hispanic,,,,,,,,
-Asthma,unique conditions,living,senior,F,black,,,,,,,,
-Asthma,unique conditions,living,senior,F,asian,,,,,,,,
-Asthma,unique conditions,living,senior,F,native,,,,,,,,
-Asthma,unique conditions,living,senior,M,*,,,,,,,,
-Asthma,unique conditions,living,senior,M,white,,,,,,,,
-Asthma,unique conditions,living,senior,M,hispanic,,,,,,,,
-Asthma,unique conditions,living,senior,M,black,,,,,,,,
-Asthma,unique conditions,living,senior,M,asian,,,,,,,,
-Asthma,unique conditions,living,senior,M,native,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-Hypertension,unique conditions,living,adult,*,*,Diabetes,59.4,,,,,,http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
-Hypertension,unique conditions,living,adult,*,*,Coronary Heart Disease,,,,,,,
-Diabetes,unique conditions,living,adult,*,*,Coronary Heart Disease,,,,,,,
-Asthma,unique conditions,living,adult,*,*,Hypertension,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
+CODE,DISPLAY,CATEGORY,STATUS,AGE GROUP,GENDER,RACE,GIVEN CONDITION CODE,GIVEN CONDITION DISPLAY,ACTUAL PREVALENCE PERCENT,SYNTHEA OCCURRENCES,SYNTHEA POPULATION,SYNTHEA PREVALENCE RATE,SYNTHEA PREVALENCE PERCENT,DIFFERENCE,REFERENCE
+,,,,,,,,,,,,,,,
+44054006,Diabetes,unique conditions,living,adult,*,*,,,8,,,,,,https://gis.cdc.gov/grasp/diabetes/DiabetesAtlas.html
+44054006,Diabetes,unique conditions,living,adult,*,white,,,6.5,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
+44054006,Diabetes,unique conditions,living,adult,*,hispanic,,,14.2,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
+44054006,Diabetes,unique conditions,living,adult,*,black,,,12.8,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
+44054006,Diabetes,unique conditions,living,adult,*,asian,,,16,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
+44054006,Diabetes,unique conditions,living,adult,*,native,,,14.3,,,,,,http://www.mass.gov/eohhs/gov/departments/dph/programs/community-health/diabetes/facts/diabetes-statistics.html
+44054006,Diabetes,unique conditions,living,adult,F,*,,,9.2,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,F,white,,,6.8,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,F,hispanic,,,11.7,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,F,black,,,13.2,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,F,asian,,,7.3,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,F,native,,,15.3,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,M,*,,,9.4,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,M,white,,,8.1,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,M,hispanic,,,12.6,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,M,black,,,12.2,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,M,asian,,,9,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,adult,M,native,,,14.9,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,child,*,*,,,0.24,,,,,,http://www.diabetes.org/diabetes-basics/statistics/?referrer=https://www.google.com/
+44054006,Diabetes,unique conditions,living,child,*,white,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,*,hispanic,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,*,black,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,*,asian,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,*,native,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,F,*,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,F,white,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,F,hispanic,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,F,black,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,F,asian,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,F,native,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,M,*,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,M,white,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,M,hispanic,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,M,black,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,M,asian,,,,,,,,,
+44054006,Diabetes,unique conditions,living,child,M,native,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,*,*,,,20.8,,,,,,https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf
+44054006,Diabetes,unique conditions,living,senior,*,white,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,*,hispanic,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,*,black,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,*,asian,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,*,native,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,F,*,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,F,white,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,F,hispanic,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,F,black,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,F,asian,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,F,native,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,M,*,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,M,white,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,M,hispanic,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,M,black,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,M,asian,,,,,,,,,
+44054006,Diabetes,unique conditions,living,senior,M,native,,,,,,,,,
+,,,,,,,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,*,*,,,29.1,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,*,white,,,28,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,*,hispanic,,,26,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,*,black,,,42.1,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,*,asian,,,24.7,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,*,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,F,*,,,28.5,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,F,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,F,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,F,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,F,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,F,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,M,*,,,29.7,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,adult,M,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,M,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,M,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,M,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,M,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,*,*,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,*,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,*,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,*,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,*,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,*,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,F,*,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,F,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,F,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,F,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,F,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,F,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,M,*,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,M,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,M,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,M,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,M,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,child,M,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,*,*,,,65,,,,,,https://www.cdc.gov/nchs/products/databriefs/db133.htm
+38341003,Hypertension,unique conditions,living,senior,*,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,*,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,*,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,*,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,*,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,F,*,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,F,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,F,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,F,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,F,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,F,native,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,M,*,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,M,white,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,M,hispanic,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,M,black,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,M,asian,,,,,,,,,
+38341003,Hypertension,unique conditions,living,senior,M,native,,,,,,,,,
+,,,,,,,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,adult,*,*,,,6,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,*,white,,,5.8,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,*,hispanic,,,6.1,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,*,black,,,6.5,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,*,asian,,,3.9,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,*,native,,,11.6,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,F,*,,,4.6,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,F,white,,,4.2,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,F,hispanic,,,5.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,F,black,,,5.9,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,F,asian,,,2.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,F,native,,,8.4,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,M,*,,,7.8,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,M,white,,,7.7,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,M,hispanic,,,7.2,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,M,black,,,7.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,M,asian,,,5.4,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,adult,M,native,,,14.3,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,child,*,*,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,*,white,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,*,hispanic,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,*,black,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,*,asian,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,*,native,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,F,*,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,F,white,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,F,hispanic,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,F,black,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,F,asian,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,F,native,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,M,*,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,M,white,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,M,hispanic,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,M,black,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,M,asian,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,child,M,native,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,*,*,,,19.8,,,,,,https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6040a1.htm
+53741008,Coronary Heart Disease,unique conditions,living,senior,*,white,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,*,hispanic,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,*,black,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,*,asian,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,*,native,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,F,*,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,F,white,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,F,hispanic,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,F,black,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,F,asian,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,F,native,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,M,*,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,M,white,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,M,hispanic,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,M,black,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,M,asian,,,,,,,,,
+53741008,Coronary Heart Disease,unique conditions,living,senior,M,native,,,,,,,,,
+,,,,,,,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,*,*,,,9.6,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,adult,*,white,,,9.4,,,,,,
+195967001,Asthma,unique conditions,living,adult,*,hispanic,,,11.1,,,,,,
+195967001,Asthma,unique conditions,living,adult,*,black,,,11.1,,,,,,
+195967001,Asthma,unique conditions,living,adult,*,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,*,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,F,*,,,11.8,,,,,,
+195967001,Asthma,unique conditions,living,adult,F,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,F,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,F,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,F,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,F,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,M,*,,,7.2,,,,,,
+195967001,Asthma,unique conditions,living,adult,M,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,M,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,M,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,M,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,adult,M,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,*,*,,,8.4,,,,,,https://www.cdc.gov/asthma/most_recent_data.htm
+195967001,Asthma,unique conditions,living,child,*,white,,,8.2,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,child,*,hispanic,,,12.9,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,child,*,black,,,17.3,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,child,*,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,*,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,F,*,,,7.4,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,child,F,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,F,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,F,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,F,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,F,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,M,*,,,12.4,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,child,M,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,M,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,M,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,M,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,child,M,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,*,*,,,8.9,,,,,,https://www.cdc.gov/asthma/stateprofiles/asthma_in_ma.pdf
+195967001,Asthma,unique conditions,living,senior,*,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,*,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,*,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,*,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,*,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,F,*,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,F,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,F,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,F,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,F,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,F,native,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,M,*,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,M,white,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,M,hispanic,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,M,black,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,M,asian,,,,,,,,,
+195967001,Asthma,unique conditions,living,senior,M,native,,,,,,,,,
+,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,
+38341003,Hypertension,unique conditions,living,adult,*,*,44054006,Diabetes,59.4,,,,,,http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab
+38341003,Hypertension,unique conditions,living,adult,*,*,53741008,Coronary Heart Disease,,,,,,,
+44054006,Diabetes,unique conditions,living,adult,*,*,53741008,Coronary Heart Disease,,,,,,,
+195967001,Asthma,unique conditions,living,adult,*,*,38341003,Hypertension,,,,,,,
