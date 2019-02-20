@@ -28,8 +28,8 @@ public class PrevalenceReport {
   private static final String GENDER = "GENDER";
   private static final String RACE = "RACE";
   private static final String AGE = "AGE GROUP";
-  private static final String OCCUR = "SYNTHEA OCCURRENCES";
-  private static final String POP = "SYNTHEA POPULATION";
+  private static final String OCCURRENCES = "SYNTHEA OCCURRENCES";
+  private static final String POPULATION = "SYNTHEA POPULATION";
   private static final String GIVEN_CON_DISPLAY = "GIVEN CONDITION DISPLAY";
   private static final String GIVEN_CON_CODE = "GIVEN CONDITION CODE";
   
@@ -63,7 +63,7 @@ public class PrevalenceReport {
           continue;
         }
 
-        getPrev(connection, line);
+        getPrevalence(connection, line);
         completeSyntheaFields(line);
         calculateDifferenceFromActual(line);
       }
@@ -82,11 +82,13 @@ public class PrevalenceReport {
   }
 
   /**
-   * Uses a string builder to run a query dependent upon what is on each line of the CSV template.
-   * Executes the query after filling in the indexes. Inserts result of query into the occurrences
-   * column.
+   * Constructs and executes a query to find the population and occurrences 
+   * for the condition and filters on a single line of the report.
+   * 
+   * @param connection Database connection
+   * @param line Current line of the prevalence report to look up stats for and populate fields
    */
-  private static void getPrev(Connection connection, LinkedHashMap<String, String> line)
+  private static void getPrevalence(Connection connection, LinkedHashMap<String, String> line)
       throws SQLException {
 
     StringBuilder sb = new StringBuilder();
@@ -156,8 +158,8 @@ public class PrevalenceReport {
 
     int population = rs.getInt(1);
     int occurrences = rs.getInt(2);
-    line.put(POP, Integer.toString(population));
-    line.put(OCCUR, Integer.toString(occurrences));
+    line.put(POPULATION, Integer.toString(population));
+    line.put(OCCURRENCES, Integer.toString(occurrences));
   }
 
   /**
@@ -165,12 +167,12 @@ public class PrevalenceReport {
    * result of calculation into the prevalence rate and percent columns.
    */
   private static void completeSyntheaFields(LinkedHashMap<String, String> line) {
-    if (line.get(OCCUR).isEmpty() || line.get(POP).isEmpty()) {
+    if (line.get(OCCURRENCES).isEmpty() || line.get(POPULATION).isEmpty()) {
       line.put(PREV_RATE, (null));
       line.put(PREV_PERCENT, (null));
     } else {
-      double occurr = Double.parseDouble(line.get(OCCUR));
-      double pop = Double.parseDouble(line.get(POP));
+      double occurr = Double.parseDouble(line.get(OCCURRENCES));
+      double pop = Double.parseDouble(line.get(POPULATION));
 
       if (pop != 0) {
         double prevRate = occurr / pop;
@@ -231,8 +233,8 @@ public class PrevalenceReport {
       LinkedHashMap<String, String> line = new LinkedHashMap<String, String>();
       line.put(CODE, code);
       line.put(DISPLAY, disease);
-      line.put(OCCUR, Integer.toString(count));
-      line.put(POP, Integer.toString(totalPopulation));
+      line.put(OCCURRENCES, Integer.toString(count));
+      line.put(POPULATION, Integer.toString(totalPopulation));
       data.add(line);
       completeSyntheaFields(line);
     }
