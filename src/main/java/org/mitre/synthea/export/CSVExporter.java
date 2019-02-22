@@ -804,7 +804,7 @@ public class CSVExporter {
       String value = (String) provider.attributes.getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
     }
-    s.append(provider.getEncounterCount()).append(',');
+    s.append(provider.getEncounterCount());
 
     s.append(NEWLINE);
 
