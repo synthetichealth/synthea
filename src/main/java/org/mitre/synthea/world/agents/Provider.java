@@ -179,24 +179,33 @@ public class Provider implements QuadTreeData {
     DirectPosition2D coord = person.getLatLon();
     List<QuadTreeData> results = providerMap.queryByPointRadius(coord, searchDistance);
 
-    Provider closest = null;
-    Provider provider = null;
+    List<Provider> closest = new ArrayList<>();
     double minDistance = Double.MAX_VALUE;
     double distance;
 
     for (QuadTreeData item : results) {
-      provider = (Provider) item;
+      Provider provider = (Provider) item;
       if (provider.accepts(person, time)
           && (provider.hasService(service) || service == null)) {
         distance = item.getLatLon().distance(coord);
         if (distance < minDistance) {
-          closest = (Provider) item;
+          closest.clear();
+          closest.add(provider);
           minDistance = distance;
+        } else if (distance == minDistance) {
+          closest.add(provider);
         }
       }
     }
 
-    return closest;
+    if (closest.isEmpty()) {
+      return null;
+    } else if (closest.size() == 1) {
+      return closest.get(0);
+    } else {
+      // just pick one randomly. eventually the algorithm should consider additional factors
+      return closest.get(person.randInt(closest.size()));
+    }
   }
 
   /**
