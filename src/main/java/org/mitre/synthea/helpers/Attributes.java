@@ -1,5 +1,6 @@
 package org.mitre.synthea.helpers;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -50,20 +51,28 @@ import org.mitre.synthea.modules.QualityOfLifeModule;
  */
 public class Attributes {
   
-  static public class Inventory {
+  public class Inventory {
     /** Key: Module Name, Values: State names that read this attribute. */
     public Map<String,List<String>> read;
     /** Key: Module Name, Values: State names that write to this attribute. */
     public Map<String,List<String>> write;
     /** List of example values as strings. */
-    public Set<String> example_values;
+    public Set<String> exampleValues;
 
+    /**
+     * Create a new Inventory object with instantiated read, write, and exampleValues collections.
+     */
     public Inventory() {
       this.read = new TreeMap<String,List<String>>();
       this.write = new TreeMap<String,List<String>>();
-      this.example_values = new TreeSet<String>();
+      this.exampleValues = new TreeSet<String>();
     }
 
+    /**
+     * Mark that the given "module" reads this attribute from the given "state".
+     * @param module The reading module.
+     * @param state The reading state.
+     */
     public void read(String module, String state) {
       List<String> states = this.read.computeIfAbsent(module, f -> new ArrayList<String>());
       if (state != null) {
@@ -71,13 +80,21 @@ public class Attributes {
       }
     }
 
+    /**
+     * Mark that the given "module" writes this attribute from the given "state".
+     * Non-null example values are recorded as examples.
+     *
+     * @param module The writing module.
+     * @param state The writing state.
+     * @param example A single example value as a string.
+     */
     public void write(String module, String state, String example) {
       List<String> states = this.write.computeIfAbsent(module, f -> new ArrayList<String>());
       if (state != null) {
         states.add(state);
       }
       if (example != null) {
-        example_values.add(example);        
+        exampleValues.add(example);
       }
     }
   }
@@ -96,7 +113,9 @@ public class Attributes {
     
     String outFilePath = new File("./output/attributes.json").toPath().toString();
     Writer writer = new FileWriter(outFilePath);
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = new GsonBuilder()
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+        .setPrettyPrinting().create();
     gson.toJson(output, writer);
     writer.flush();
     writer.close();
@@ -179,26 +198,26 @@ public class Attributes {
         // reason is a prior state -- ignore, prior state is not an attribute.
       } else {
         // reason is another attribute
-        Inventory data = attributes.computeIfAbsent(reason, f -> new Inventory());
+        Inventory data = attributes.computeIfAbsent(reason, f -> new Attributes().new Inventory());
         data.read(moduleName, stateName);    
       }
     }
 
     if (state.has("assign_to_attribute")) {
       String attribute = state.get("assign_to_attribute").getAsString();
-      Inventory data = attributes.computeIfAbsent(attribute, f -> new Inventory());
+      Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
       data.write(moduleName, stateName, type);
     }
 
     if (state.has("referenced_by_attribute")) {
       String attribute = state.get("referenced_by_attribute").getAsString();
-      Inventory data = attributes.computeIfAbsent(attribute, f -> new Inventory());
+      Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
       data.read(moduleName, stateName);
     }
 
     if (state.has("attribute")) {
       String attribute = state.get("attribute").getAsString();
-      Inventory data = attributes.computeIfAbsent(attribute, f -> new Inventory());
+      Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
       if (type.equalsIgnoreCase("SetAttribute")) {
         String value = null;
         try {
@@ -228,7 +247,7 @@ public class Attributes {
    */
   public static void inventory(Map<String,Inventory> attributes,
       String module, String attribute, boolean read, boolean write, String example) {
-    Inventory data = attributes.computeIfAbsent(attribute, f -> new Inventory());
+    Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
     if (read) {
       data.read(module, null);
     }
@@ -243,7 +262,7 @@ public class Attributes {
    * @param output The results of getAttributeInventory()
    * @param filename The filename of the image (without a path or extension) to write.
    * @param readAndWrite If false, all nodes are rendered. If true, only attributes that are
-   * both read from and written to are considered.
+   *     both read from and written to are considered.
    */
   public static void graph(Map<String,Inventory> output, String filename, boolean readAndWrite) {
     Map<String,Node> modules = new TreeMap<String,Node>();

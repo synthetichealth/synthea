@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.world.agents.Person;
 
 public class HealthInsuranceModule extends Module {

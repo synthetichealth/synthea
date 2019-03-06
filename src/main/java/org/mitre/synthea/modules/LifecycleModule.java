@@ -222,28 +222,27 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
 
     // Setup vital signs which follow the generator approach
-    setupVitalSignGenerators(person, time);
+    setupVitalSignGenerators(person);
   }
 
   /**
    * Set up the generators for vital signs which use the generator-based approach already.
-   * @param person
-   * @param time
+   * @param person The person to generate vital signs for.
    */
-  private static void setupVitalSignGenerators(Person person, long time) {
+  private static void setupVitalSignGenerators(Person person) {
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
   }
 
-/**
- * Generate a first name appropriate for a given gender and language.
- * @param gender Gender of the name, "M" or "F"
- * @param language Origin language of the name, "english", "spanish"
- * @param random Random number generator to use.
- * @return First name.
- */
+  /**
+   * Generate a first name appropriate for a given gender and language.
+   * @param gender Gender of the name, "M" or "F"
+   * @param language Origin language of the name, "english", "spanish"
+   * @param random Random number generator to use.
+   * @return First name.
+   */
   @SuppressWarnings("unchecked")
   public static String fakeFirstName(String gender, String language, Random random) {
     List<String> choices;
@@ -1010,7 +1009,8 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, AGE, false, true, "Numeric");
     Attributes.inventory(attributes, m, AGE_MONTHS, false, true, "Numeric");
     Attributes.inventory(attributes, m, BirthStatistics.BIRTH_SEX, false, true, "M");
-    Attributes.inventory(attributes, m, LifecycleModule.QUIT_SMOKING_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m,
+        LifecycleModule.QUIT_SMOKING_PROBABILITY, false, true, "1.0");
     Attributes.inventory(attributes, m, Person.ADDRESS, false, true, null);
     Attributes.inventory(attributes, m, Person.ALCOHOLIC, false, true, "Boolean");
     Attributes.inventory(attributes, m, Person.BIRTH_CITY, false, true, "Bedford");

@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.Attributes.Inventory;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
