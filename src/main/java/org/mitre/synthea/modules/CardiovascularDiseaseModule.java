@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -821,5 +823,44 @@ public final class CardiovascularDiseaseModule extends Module {
    */
   public static Collection<Code> getAllCodes() {
     return LOOKUP.values();
+  }
+
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+    String m = CardiovascularDiseaseModule.class.getSimpleName();
+    // Read
+    Attributes.inventory(attributes, m, Person.GENDER, true, false, "M");
+    Attributes.inventory(attributes, m, Person.GENDER, true, false, "F");
+    Attributes.inventory(attributes, m, Person.SMOKER, true, false, "true");
+    Attributes.inventory(attributes, m, Person.SMOKER, true, false, "false");
+    Attributes.inventory(attributes, m, "atrial_fibrillation", true, false, "false");
+    Attributes.inventory(attributes, m, "atrial_fibrillation_risk", true, false, null);
+    Attributes.inventory(attributes, m, "bp_treated?", true, false, "false");
+    Attributes.inventory(attributes, m, "cardio_risk", true, false, "-1.0");
+    Attributes.inventory(attributes, m, "coronary_heart_disease", true, false, "false");
+    Attributes.inventory(attributes, m, "cardiovascular_procedures", true, false, null);
+    Attributes.inventory(attributes, m, "cardiovascular_disease_med_changes", true, false, null);
+    Attributes.inventory(attributes, m, "diabetes", true, false, "false");
+    Attributes.inventory(attributes, m, "left_ventricular_hypertrophy", true, false, "false");
+    Attributes.inventory(attributes, m, "stroke_risk", true, false, null);
+    // Write
+    Attributes.inventory(attributes, m, "atrial_fibrillation", false, true, "true");
+    Attributes.inventory(attributes, m, "atrial_fibrillation_risk", false, true, "Numeric");
+    Attributes.inventory(attributes, m, "cardio_risk", false, true, "1.0");
+    Attributes.inventory(attributes, m,
+        "cardiovascular_procedures", false, true, "Map<String, List<String>>");
+    Attributes.inventory(attributes, m,
+        "cardiovascular_disease_med_changes", false, true, "Set<String>");
+    Attributes.inventory(attributes, m, "coronary_heart_disease", false, true, "true");
+    Attributes.inventory(attributes, m, "stroke_risk", false, true, "0.0");
+    Attributes.inventory(attributes, m, "stroke_risk", false, true, "0.5");
+    Attributes.inventory(attributes, m, "stroke_risk", false, true, "1.0");
+    Attributes.inventory(attributes, m, "stroke_points", false, true, "Numeric");
+    Attributes.inventory(attributes, m, "stroke_history", false, true, "true");
   }
 }

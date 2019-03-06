@@ -119,6 +119,12 @@ task concepts(type: JavaExec) {
   main = "org.mitre.synthea.helpers.Concepts"
 }
 
+task attributes(type: JavaExec) {
+  description 'Create a list of patient attributes'
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.Attributes"
+}
+
 task versionTxt() {
   doLast {
     try {

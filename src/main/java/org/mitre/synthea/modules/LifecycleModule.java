@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
@@ -964,5 +966,82 @@ public final class LifecycleModule extends Module {
    */
   public static Collection<Code> getAllCodes() {
     return Collections.singleton(NATURAL_CAUSES);
+  }
+
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+    String m = HealthInsuranceModule.class.getSimpleName();
+    // Read
+    Attributes.inventory(attributes, m, Person.ADHERENCE, true, false, null);
+    Attributes.inventory(attributes, m, ADHERENCE_PROBABILITY, true, false, "1.0");
+    Attributes.inventory(attributes, m, AGE, true, false, null);
+    Attributes.inventory(attributes, m, AGE_MONTHS, true, false, null);
+    Attributes.inventory(attributes, m, Person.ALCOHOLIC, true, false, null);
+    Attributes.inventory(attributes, m, "ckd", true, false, null);
+    Attributes.inventory(attributes, m, "diabetes", true, false, null);
+    Attributes.inventory(attributes, m, "diabetes_severity", true, false, null);
+    Attributes.inventory(attributes, m, Person.EDUCATION_LEVEL, true, false, null);
+    Attributes.inventory(attributes, m, Person.ETHNICITY, true, false, null);
+    Attributes.inventory(attributes, m, Person.FIRST_NAME, true, false, null);
+    Attributes.inventory(attributes, m, Person.FIRST_LANGUAGE, true, false, null);
+    Attributes.inventory(attributes, m, Person.GENDER, true, false, "M");
+    Attributes.inventory(attributes, m, Person.IDENTIFIER_DRIVERS, true, false, null);
+    Attributes.inventory(attributes, m, Person.IDENTIFIER_PASSPORT, true, false, null);
+    Attributes.inventory(attributes, m, Person.LAST_NAME, true, false, null);
+    Attributes.inventory(attributes, m, Person.NAME_PREFIX, true, false, null);
+    Attributes.inventory(attributes, m, Person.NAME_SUFFIX, true, false, null);
+    Attributes.inventory(attributes, m, Person.MARITAL_STATUS, true, false, null);
+    Attributes.inventory(attributes, m, "osteporosis", true, false, null);
+    Attributes.inventory(attributes, m, "prediabetes", true, false, null);
+    Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, true, false, null);
+    Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, true, false, null);
+    Attributes.inventory(attributes, m, Person.RACE, true, false, null);
+    Attributes.inventory(attributes, m, Person.SMOKER, true, false, "Boolean");
+    // Write
+    Attributes.inventory(attributes, m, "pregnant", false, true, "Boolean");
+    Attributes.inventory(attributes, m, "probability_of_fall_injury", false, true, "1.0");
+    Attributes.inventory(attributes, m, "RH_NEG", false, true, "Boolean");
+    Attributes.inventory(attributes, m, ADHERENCE_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m, AGE, false, true, "Numeric");
+    Attributes.inventory(attributes, m, AGE_MONTHS, false, true, "Numeric");
+    Attributes.inventory(attributes, m, BirthStatistics.BIRTH_SEX, false, true, "M");
+    Attributes.inventory(attributes, m, LifecycleModule.QUIT_SMOKING_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m, Person.ADDRESS, false, true, null);
+    Attributes.inventory(attributes, m, Person.ALCOHOLIC, false, true, "Boolean");
+    Attributes.inventory(attributes, m, Person.BIRTH_CITY, false, true, "Bedford");
+    Attributes.inventory(attributes, m, Person.BIRTH_COUNTRY, false, true, "USA");
+    Attributes.inventory(attributes, m, Person.BIRTH_STATE, false, true, "Massachusetts");
+    Attributes.inventory(attributes, m, Person.BIRTHDATE, false, true, null);
+    Attributes.inventory(attributes, m, Person.BIRTHPLACE, false, true, "Boston");
+    Attributes.inventory(attributes, m, Person.ETHNICITY, false, true, null);
+    Attributes.inventory(attributes, m, Person.FIRST_NAME, false, true, null);
+    Attributes.inventory(attributes, m, Person.GENDER, false, true, "F");
+    Attributes.inventory(attributes, m, Person.ID, false, true, null);
+    Attributes.inventory(attributes, m, Person.IDENTIFIER_DRIVERS, false, true, null);
+    Attributes.inventory(attributes, m, Person.IDENTIFIER_PASSPORT, false, true, null);
+    Attributes.inventory(attributes, m, Person.IDENTIFIER_SSN, false, true, "999-99-9999");
+    Attributes.inventory(attributes, m, Person.LAST_NAME, false, true, null);
+    Attributes.inventory(attributes, m, Person.MAIDEN_NAME, false, true, null);
+    Attributes.inventory(attributes, m, Person.MARITAL_STATUS, false, true, "M");
+    Attributes.inventory(attributes, m, Person.MULTIPLE_BIRTH_STATUS, false, true, "Boolean");
+    Attributes.inventory(attributes, m, Person.NAME, false, true, null);
+    Attributes.inventory(attributes, m, Person.NAME_FATHER, false, true, null);
+    Attributes.inventory(attributes, m, Person.NAME_MOTHER, false, true, null);
+    Attributes.inventory(attributes, m, Person.NAME_PREFIX, false, true, null);
+    Attributes.inventory(attributes, m, Person.NAME_SUFFIX, false, true, null);
+    Attributes.inventory(attributes, m, Person.RACE, false, true, null);
+    Attributes.inventory(attributes, m, Person.SEXUAL_ORIENTATION, false, true, null);
+    Attributes.inventory(attributes, m, Person.SMOKER, false, true, "Boolean");
+    Attributes.inventory(attributes, m, Person.TELECOM, false, true, "555-555-5555");
+    Attributes.inventory(attributes, m, Person.ZIP, false, true, "01730");
+    Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_AGE, false, true, "Numeric");
+    Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m, QUIT_SMOKING_AGE, false, true, "Numeric");
+    Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, false, true, "1.0");
   }
 }

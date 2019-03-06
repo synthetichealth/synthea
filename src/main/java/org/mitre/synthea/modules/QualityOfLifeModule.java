@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -86,7 +88,7 @@ public class QualityOfLifeModule extends Module {
     double yld = 0.0;
 
     int age = person.ageInYears(stop);
-    long birthdate = (long) person.attributes.get("birthdate");
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
 
     if (!person.alive(stop)) {
       // life expectancy equation derived from IHME GBD 2015 Reference Life Table
@@ -149,5 +151,21 @@ public class QualityOfLifeModule extends Module {
     double ageWeight = 0.1658 * age * Math.exp(-0.04 * age);
     double weight = ageWeight * disabilityWeight;
     return weight;
+  }
+
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+    String m = QualityOfLifeModule.class.getSimpleName();
+    Attributes.inventory(attributes, m, "QALY", true, true, "LinkedHashMap<Integer, Double>");
+    Attributes.inventory(attributes, m, "DALY", true, true, "LinkedHashMap<Integer, Double>");
+    Attributes.inventory(attributes, m, "QOL", true, true, "LinkedHashMap<Integer, Double>");
+    Attributes.inventory(attributes, m, Person.BIRTHDATE, true, false, null);
+    Attributes.inventory(attributes, m, "most-recent-daly", false, true, "Numeric");
+    Attributes.inventory(attributes, m, "most-recent-qaly", false, true, "Numeric");
   }
 }
