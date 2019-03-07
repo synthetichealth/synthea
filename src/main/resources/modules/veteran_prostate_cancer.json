@@ -540,7 +540,6 @@
     },
     "Stage 4 Prostate Cancer": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Prostate_Cancer_Therapy",
       "codes": [
         {
@@ -553,7 +552,6 @@
     },
     "In Situ Prostate Cancer": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Prostate_Cancer_Therapy",
       "codes": [
         {

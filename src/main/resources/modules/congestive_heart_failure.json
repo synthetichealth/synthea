@@ -385,7 +385,6 @@
     "CHF ED Visit": {
       "type": "Encounter",
       "encounter_class": "emergency",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -451,7 +450,6 @@
     "Inpatient_admittance": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",

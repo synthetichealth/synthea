@@ -82,7 +82,6 @@
     },
     "Alcohol Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "",
       "codes": [
         {
@@ -194,7 +193,6 @@
     },
     "Opioid Abuse Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "",
       "codes": [
         {

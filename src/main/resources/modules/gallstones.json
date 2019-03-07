@@ -322,7 +322,6 @@
     },
     "Acute_Cholecystitis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cholecystitis_Encounter",
       "codes": [
         {
@@ -348,7 +347,6 @@
     },
     "Gallstones": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cholecystitis_Encounter",
       "codes": [
         {

@@ -254,7 +254,6 @@
     },
     "Meconium Ileus": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Fibrosis_Screening",
       "codes": [
         {
@@ -289,7 +288,6 @@
     },
     "Male_Infertility": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Fibrosis_Screening",
       "codes": [
         {
@@ -302,7 +300,6 @@
     },
     "Female_Infertility": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Fibrosis_Screening",
       "codes": [
         {
@@ -817,7 +814,6 @@
     },
     "Develop_Diabetes": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Quarterly_Checkup",
       "codes": [
         {
@@ -1114,7 +1110,6 @@
     },
     "Develop_Infection_1": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Quarterly_Checkup",
       "codes": [
         {
@@ -1127,7 +1122,6 @@
     },
     "Develop_Infection_2": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Quarterly_Checkup",
       "codes": [
         {
@@ -1638,7 +1632,6 @@
     "Lung_Transplant_Wait": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
