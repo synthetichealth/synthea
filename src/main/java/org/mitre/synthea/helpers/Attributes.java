@@ -194,44 +194,56 @@ public class Attributes {
 
     if (state.has("reason")) {
       String reason = state.get("reason").getAsString();
-      if (stateNames.contains(reason)) {
-        // reason is a prior state -- ignore, prior state is not an attribute.
-      } else {
-        // reason is another attribute
-        Inventory data = attributes.computeIfAbsent(reason, f -> new Attributes().new Inventory());
-        data.read(moduleName, stateName);    
+      if (!reason.isEmpty()) {
+        if (stateNames.contains(reason)) {
+          // reason is a prior state -- ignore, prior state is not an attribute.
+        } else {
+          // reason is another attribute
+          Inventory data = attributes.computeIfAbsent(reason,
+              f -> new Attributes().new Inventory());
+          data.read(moduleName, stateName);    
+        }        
       }
     }
 
     if (state.has("assign_to_attribute")) {
       String attribute = state.get("assign_to_attribute").getAsString();
-      Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
-      data.write(moduleName, stateName, type);
+      if (!attribute.isEmpty()) {
+        Inventory data = attributes.computeIfAbsent(attribute,
+            f -> new Attributes().new Inventory());
+        data.write(moduleName, stateName, type);        
+      }
     }
 
     if (state.has("referenced_by_attribute")) {
       String attribute = state.get("referenced_by_attribute").getAsString();
-      Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
-      data.read(moduleName, stateName);
+      if (!attribute.isEmpty()) {
+        Inventory data = attributes.computeIfAbsent(attribute,
+            f -> new Attributes().new Inventory());
+        data.read(moduleName, stateName);        
+      }
     }
 
     if (state.has("attribute")) {
       String attribute = state.get("attribute").getAsString();
-      Inventory data = attributes.computeIfAbsent(attribute, f -> new Attributes().new Inventory());
-      if (type.equalsIgnoreCase("SetAttribute")) {
-        String value = null;
-        try {
-          value = state.get("value").getAsJsonPrimitive().toString();
-        } catch (Exception e) {
-          // Missing value. Do nothing, this attribute is basically a :symbol
-        }
-        data.write(moduleName, stateName, value);
-      } else if (type.equalsIgnoreCase("Counter")) {
-        data.write(moduleName, stateName, "Integer");
-      } else if (type.equalsIgnoreCase("Observation")) {
-        data.read(moduleName, stateName);
-      } else {
-        System.out.println("Unhandled State: " + type);
+      if (!attribute.isEmpty()) {
+        Inventory data = attributes.computeIfAbsent(attribute,
+            f -> new Attributes().new Inventory());
+        if (type.equalsIgnoreCase("SetAttribute")) {
+          String value = null;
+          try {
+            value = state.get("value").getAsJsonPrimitive().toString();
+          } catch (Exception e) {
+            // Missing value. Do nothing, this attribute is basically a :symbol
+          }
+          data.write(moduleName, stateName, value);
+        } else if (type.equalsIgnoreCase("Counter")) {
+          data.write(moduleName, stateName, "Integer");
+        } else if (type.equalsIgnoreCase("Observation")) {
+          data.read(moduleName, stateName);
+        } else {
+          System.out.println("Unhandled State: " + type);
+        }        
       }
     }
   }
