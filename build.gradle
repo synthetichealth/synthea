@@ -108,24 +108,29 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {
+  group 'Application'
   description 'Generate rule visualization'
   classpath sourceSets.main.runtimeClasspath
   main = "Graphviz"
 }
 
 task concepts(type: JavaExec) {
+  group 'Application'
   description 'Create a list of simulated concepts'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Concepts"
 }
 
 task attributes(type: JavaExec) {
+  group 'Application'
   description 'Create a list of patient attributes'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Attributes"
 }
 
 task versionTxt() {
+  group 'Build'
+  description 'Generates a version file.'
   doLast {
     try {
       // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
