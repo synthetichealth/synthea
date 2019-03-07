@@ -929,7 +929,7 @@ public final class LifecycleModule extends Module {
    */
   private void calculateFallRisk(Person person, long time) {
     if (person.ageInYears(time) >= 65) {
-      boolean hasOsteoporosis = (boolean) person.attributes.getOrDefault("osteporosis", false);
+      boolean hasOsteoporosis = (boolean) person.attributes.getOrDefault("osteoporosis", false);
       double baselineFallRisk = hasOsteoporosis ? 0.06 : 0.035;// numbers from injuries module
 
       int activeInterventions = 0;
@@ -995,7 +995,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.NAME_PREFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.MARITAL_STATUS, true, false, null);
-    Attributes.inventory(attributes, m, "osteporosis", true, false, null);
+    Attributes.inventory(attributes, m, "osteoporosis", true, false, null);
     Attributes.inventory(attributes, m, "prediabetes", true, false, null);
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, true, false, null);
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, true, false, null);
