@@ -72,6 +72,7 @@
     "Cystic_Fibrosis": {
       "type": "ConditionOnset",
       "target_encounter": "Fibrosis_Screening",
+      "assign_to_attribute": "Cystic_Fibrosis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -618,7 +619,7 @@
         }
       ],
       "direct_transition": "Prescribe_Mucus_Thinner",
-      "reason": "Cystic Fibrosis",
+      "reason": "Cystic_Fibrosis",
       "remarks": [
         "https://www.cff.org/About-Us/Media-Center/Press-Releases/The-Cystic-Fibrosis-Foundation-Applauds-FDA-Approval-of-Kalydeco/"
       ]

@@ -567,7 +567,7 @@
           ]
         }
       ],
-      "direct_transition": "CXR_Inpt_daily"
+      "direct_transition": "Set 3D Echo"
     },
     "O2 Vitals": {
       "type": "VitalSign",
@@ -626,7 +626,7 @@
     },
     "End Inpatient Care Plan": {
       "type": "CarePlanEnd",
-      "direct_transition": "End Inpatient Encounter",
+      "direct_transition": "Reset 3D Echo",
       "careplan": "Inpatient CarePlan"
     },
     "End Inpatient Encounter": {
@@ -1388,6 +1388,17 @@
       ],
       "direct_transition": "Daily self-measurement",
       "reason": "chf"
+    },
+    "Set 3D Echo": {
+      "type": "SetAttribute",
+      "attribute": "3decho",
+      "direct_transition": "CXR_Inpt_daily",
+      "value": true
+    },
+    "Reset 3D Echo": {
+      "type": "SetAttribute",
+      "attribute": "3decho",
+      "direct_transition": "End Inpatient Encounter"
     }
   }
 }

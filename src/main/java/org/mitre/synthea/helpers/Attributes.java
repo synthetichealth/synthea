@@ -3,6 +3,7 @@ package org.mitre.synthea.helpers;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -43,6 +44,7 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.world.agents.Person;
 
 /**
  * Task class to export a report of all Person attributes
@@ -53,9 +55,9 @@ public class Attributes {
   
   public class Inventory {
     /** Key: Module Name, Values: State names that read this attribute. */
-    public Map<String,List<String>> read;
+    public Map<String,Set<String>> read;
     /** Key: Module Name, Values: State names that write to this attribute. */
-    public Map<String,List<String>> write;
+    public Map<String,Set<String>> write;
     /** List of example values as strings. */
     public Set<String> exampleValues;
 
@@ -63,8 +65,8 @@ public class Attributes {
      * Create a new Inventory object with instantiated read, write, and exampleValues collections.
      */
     public Inventory() {
-      this.read = new TreeMap<String,List<String>>();
-      this.write = new TreeMap<String,List<String>>();
+      this.read = new TreeMap<String,Set<String>>();
+      this.write = new TreeMap<String,Set<String>>();
       this.exampleValues = new TreeSet<String>();
     }
 
@@ -74,7 +76,7 @@ public class Attributes {
      * @param state The reading state.
      */
     public void read(String module, String state) {
-      List<String> states = this.read.computeIfAbsent(module, f -> new ArrayList<String>());
+      Set<String> states = this.read.computeIfAbsent(module, f -> new TreeSet<String>());
       if (state != null) {
         states.add(state);        
       }
@@ -89,7 +91,7 @@ public class Attributes {
      * @param example A single example value as a string.
      */
     public void write(String module, String state, String example) {
-      List<String> states = this.write.computeIfAbsent(module, f -> new ArrayList<String>());
+      Set<String> states = this.write.computeIfAbsent(module, f -> new TreeSet<String>());
       if (state != null) {
         states.add(state);
       }
@@ -244,6 +246,120 @@ public class Attributes {
         } else {
           System.out.println("Unhandled State: " + type);
         }        
+      }
+    }
+
+    inventoryTransition(attributes, moduleName, stateName, state);
+  }
+
+  /**
+   * Catalog all attributes from the given state transition into the given Table.
+   *
+   * @param attributes Table of attributes to add to
+   * @param moduleName The name of the module.
+   * @param stateName The name of the state.
+   * @param state State to parse for attributes and codes
+   */
+  private static void inventoryTransition(Map<String,Inventory> attributes, String moduleName,
+      String stateName, JsonObject state) {
+
+    if (state.has("distributed_transition")) {
+      // TODO
+    } else if (state.has("conditional_transition")) {
+      JsonArray transitions = state.get("conditional_transition").getAsJsonArray();
+      for (JsonElement element : transitions) {
+        JsonObject transition = (JsonObject) element;
+        if (transition.has("condition")) {
+          JsonObject condition = transition.get("condition").getAsJsonObject();
+          inventoryLogic(attributes, moduleName, stateName, condition);
+        }
+      }
+    } else if (state.has("complex_transition")) {
+      JsonArray transitions = state.get("complex_transition").getAsJsonArray();
+      for (JsonElement element : transitions) {
+        JsonObject transition = (JsonObject) element;
+        if (transition.has("condition")) {
+          JsonObject condition = transition.get("condition").getAsJsonObject();
+          inventoryLogic(attributes, moduleName, stateName, condition);
+        }
+      }
+    }
+  }
+
+  /**
+   * Catalog all attributes from the given logic statement into the given Table.
+   *
+   * @param attributes Table of attributes to add to
+   * @param moduleName The name of the module.
+   * @param stateName The name of the state.
+   * @param logic Logic to parse for attributes
+   */
+  private static void inventoryLogic(Map<String,Inventory> attributes, String moduleName,
+      String stateName, JsonObject logic) {
+
+    String type = logic.get("condition_type").getAsString();
+
+    if (type.equalsIgnoreCase("Attribute")) {
+      String attribute = logic.get("attribute").getAsString();
+      if (!attribute.isEmpty()) {
+        Inventory data = attributes.computeIfAbsent(attribute,
+            f -> new Attributes().new Inventory());
+        data.read(moduleName, stateName);
+      }
+    } else if (type.equalsIgnoreCase("Age")) {
+      Inventory data = attributes.computeIfAbsent(Person.BIRTHDATE,
+          f -> new Attributes().new Inventory());
+      data.read(moduleName, stateName);
+    } else if (type.equalsIgnoreCase("Gender")) {
+      Inventory data = attributes.computeIfAbsent(Person.GENDER,
+          f -> new Attributes().new Inventory());
+      data.read(moduleName, stateName);
+    } else if (type.equalsIgnoreCase("Socioeconomic Status")) {
+      Inventory data = attributes.computeIfAbsent(Person.SOCIOECONOMIC_CATEGORY,
+          f -> new Attributes().new Inventory());
+      data.read(moduleName, stateName);
+    } else if (type.equalsIgnoreCase("Race")) {
+      Inventory data = attributes.computeIfAbsent(Person.RACE,
+          f -> new Attributes().new Inventory());
+      data.read(moduleName, stateName);
+    } else if (type.equalsIgnoreCase("Symptom")) {
+      String attribute = logic.get("symptom").getAsString();
+      if (!attribute.isEmpty()) {
+        Inventory data = attributes.computeIfAbsent(attribute,
+            f -> new Attributes().new Inventory());
+        data.read(moduleName, stateName);
+      }
+    } else if (type.equalsIgnoreCase("Vital Sign")) {
+      // Vital signs are not truly attributes, but we want to included them anyway
+      String attribute = logic.get("vital_sign").getAsString();
+      if (!attribute.isEmpty()) {
+        Inventory data = attributes.computeIfAbsent(attribute,
+            f -> new Attributes().new Inventory());
+        data.read(moduleName, stateName);
+      }
+    } else if (type.equalsIgnoreCase("Observation") ||
+        type.equalsIgnoreCase("Active Condition") ||
+        type.equalsIgnoreCase("Active Medication") ||
+        type.equalsIgnoreCase("Active CarePlan")) {
+      if (logic.has("referenced_by_attribute")) {
+        String attribute = logic.get("referenced_by_attribute").getAsString();
+        if (!attribute.isEmpty()) {
+          Inventory data = attributes.computeIfAbsent(attribute,
+              f -> new Attributes().new Inventory());
+          data.read(moduleName, stateName);
+        }
+      }
+    } else if (type.equalsIgnoreCase("And") ||
+        type.equalsIgnoreCase("Or") ||
+        type.equalsIgnoreCase("Not") ||
+        type.equalsIgnoreCase("AtLeast") ||
+        type.equalsIgnoreCase("At Most")) {
+      if (logic.has("conditions")) {
+        JsonArray conditions = logic.get("conditions").getAsJsonArray();
+        for (JsonElement element : conditions) {
+          JsonObject condition = (JsonObject) element;
+          inventoryLogic(attributes, moduleName, stateName, condition);
+        }
       }
     }
   }

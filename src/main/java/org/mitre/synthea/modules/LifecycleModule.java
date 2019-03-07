@@ -974,7 +974,7 @@ public final class LifecycleModule extends Module {
    * @param attributes Attribute map to populate.
    */
   public static void inventoryAttributes(Map<String,Inventory> attributes) {
-    String m = HealthInsuranceModule.class.getSimpleName();
+    String m = LifecycleModule.class.getSimpleName();
     // Read
     Attributes.inventory(attributes, m, Person.ADHERENCE, true, false, null);
     Attributes.inventory(attributes, m, ADHERENCE_PROBABILITY, true, false, "1.0");
