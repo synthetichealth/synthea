@@ -2368,8 +2368,6 @@
     },
     "CKD1 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2381,8 +2379,6 @@
     },
     "CKD2 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2394,7 +2390,6 @@
     },
     "CKD3 Diagnosis": {
       "type": "ConditionOnset",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2407,8 +2402,6 @@
     },
     "CKD4 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",

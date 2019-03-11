@@ -2,10 +2,13 @@ package org.mitre.synthea.modules;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -243,4 +246,19 @@ public final class EncounterModule extends Module {
         WELL_CHILD_VISIT, GENERAL_EXAM, ENCOUNTER_URGENTCARE);
   }
 
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+    String m = EncounterModule.class.getSimpleName();
+    // Read
+    Attributes.inventory(attributes, m, LAST_VISIT_SYMPTOM_TOTAL, true, true, "Integer");
+    // Write
+    Attributes.inventory(attributes, m, ACTIVE_WELLNESS_ENCOUNTER, false, true, "Boolean");
+    Attributes.inventory(attributes, m, ACTIVE_URGENT_CARE_ENCOUNTER, false, true, "Boolean");
+    Attributes.inventory(attributes, m, ACTIVE_EMERGENCY_ENCOUNTER, false, true, "Boolean");
+  }
 }

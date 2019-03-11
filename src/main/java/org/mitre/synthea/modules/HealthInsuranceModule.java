@@ -2,8 +2,11 @@ package org.mitre.synthea.modules;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -115,5 +118,22 @@ public class HealthInsuranceModule extends Module {
       }
     }
     return result;
+  }
+
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+    String m = HealthInsuranceModule.class.getSimpleName();
+    Attributes.inventory(attributes, m, INSURANCE, true, true, "List<String>");
+    Attributes.inventory(attributes, m, "pregnant", true, false, "Boolean");
+    Attributes.inventory(attributes, m, "blindness", true, false, "Boolean");
+    Attributes.inventory(attributes, m, "end_stage_renal_disease", true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.GENDER, true, false, "F");
+    Attributes.inventory(attributes, m, Person.OCCUPATION_LEVEL, true, false, "Low");
+    Attributes.inventory(attributes, m, Person.INCOME, true, false, "1.0");
   }
 }

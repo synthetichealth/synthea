@@ -530,7 +530,6 @@
     "VA Hotline Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
