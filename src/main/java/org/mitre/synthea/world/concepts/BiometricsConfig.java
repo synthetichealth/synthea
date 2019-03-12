@@ -75,7 +75,7 @@ public abstract class BiometricsConfig {
    * @return parsed integer array
    */
   public static int[] ints(String path) {
-    List<Integer> ints = (List<Integer>)get(path);
+    List<Integer> ints = (List<Integer>) get(path);
     int[] array = ints.stream().mapToInt(i -> i).toArray();
     return array;
   }
@@ -89,7 +89,7 @@ public abstract class BiometricsConfig {
    * @return parsed double array
    */
   public static double[] doubles(String path) {
-    List<Number> doubles = (List<Number>)get(path);
+    List<Number> doubles = (List<Number>) get(path);
     double[] array = doubles.stream().mapToDouble(i -> i.doubleValue()).toArray();
     return array;
   }

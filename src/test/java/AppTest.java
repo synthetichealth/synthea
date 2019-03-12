@@ -10,7 +10,6 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 
-import static java.io.File.pathSeparator;
 
 public class AppTest {
 
@@ -118,11 +117,12 @@ public class AppTest {
     Assert.assertEquals(alive + dead, 3);
     System.setOut(original);
   }
-  
+
+  @Test
   public void testAppWithModuleFilter() throws Exception {
     TestHelper.exportOff();
     Config.set("test_key", "pre-test value");
-    String[] args = {"-s", "0", "-p", "0", "-m", "copd" + pathSeparator + "allerg*"};
+    String[] args = {"-s", "0", "-p", "0", "-m", "copd" + File.pathSeparator + "allerg*"};
     final PrintStream original = System.out;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final PrintStream print = new PrintStream(out, true);

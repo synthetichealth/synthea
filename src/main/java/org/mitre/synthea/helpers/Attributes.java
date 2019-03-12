@@ -337,10 +337,10 @@ public class Attributes {
             f -> new Attributes().new Inventory());
         data.read(moduleName, stateName);
       }
-    } else if (type.equalsIgnoreCase("Observation") ||
-        type.equalsIgnoreCase("Active Condition") ||
-        type.equalsIgnoreCase("Active Medication") ||
-        type.equalsIgnoreCase("Active CarePlan")) {
+    } else if (type.equalsIgnoreCase("Observation")
+        || type.equalsIgnoreCase("Active Condition")
+        || type.equalsIgnoreCase("Active Medication")
+        || type.equalsIgnoreCase("Active CarePlan")) {
       if (logic.has("referenced_by_attribute")) {
         String attribute = logic.get("referenced_by_attribute").getAsString();
         if (!attribute.isEmpty()) {
@@ -349,11 +349,11 @@ public class Attributes {
           data.read(moduleName, stateName);
         }
       }
-    } else if (type.equalsIgnoreCase("And") ||
-        type.equalsIgnoreCase("Or") ||
-        type.equalsIgnoreCase("Not") ||
-        type.equalsIgnoreCase("AtLeast") ||
-        type.equalsIgnoreCase("At Most")) {
+    } else if (type.equalsIgnoreCase("And")
+        || type.equalsIgnoreCase("Or")
+        || type.equalsIgnoreCase("Not")
+        || type.equalsIgnoreCase("AtLeast")
+        || type.equalsIgnoreCase("At Most")) {
       if (logic.has("conditions")) {
         JsonArray conditions = logic.get("conditions").getAsJsonArray();
         for (JsonElement element : conditions) {
