@@ -1334,13 +1334,13 @@ public class StateTest {
 
   @Test
   public void testSubmoduleHistory() {
-    Map<String, Module> modules =
-        Whitebox.<Map<String, Module>>getInternalState(Module.class, "modules");
+    Map<String, Module.ModuleSupplier> modules =
+            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
     Module subModule1 = getModule("submodules/encounter_submodule.json");
     Module subModule2 = getModule("submodules/medication_submodule.json");
-    modules.put("submodules/encounter_submodule", subModule1);
-    modules.put("submodules/medication_submodule", subModule2);
+    modules.put("submodules/encounter_submodule", new Module.ModuleSupplier(subModule1));
+    modules.put("submodules/medication_submodule", new Module.ModuleSupplier(subModule2));
 
     try {
       Module module = getModule("recursively_calls_submodules.json");
@@ -1421,11 +1421,11 @@ public class StateTest {
 
   @Test
   public void testSubmoduleDiagnosesAndEndingEncounters() {
-    Map<String, Module> modules =
-        Whitebox.<Map<String, Module>>getInternalState(Module.class, "modules");
+    Map<String, Module.ModuleSupplier> modules =
+        Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
     Module subModule = getModule("submodules/admission.json");
-    modules.put("submodules/admission", subModule);
+    modules.put("submodules/admission", new Module.ModuleSupplier(subModule));
 
     try {
       Module module = getModule("encounter_with_submodule.json");

@@ -1,4 +1,5 @@
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.PrintStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,6 +9,8 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+
+import static java.io.File.pathSeparator;
 
 public class AppTest {
 
@@ -113,6 +116,27 @@ public class AppTest {
     int alive = Integer.parseInt(matches.group(1));
     int dead = Integer.parseInt(matches.group(2));
     Assert.assertEquals(alive + dead, 3);
+    System.setOut(original);
+  }
+  
+  public void testAppWithModuleFilter() throws Exception {
+    TestHelper.exportOff();
+    Config.set("test_key", "pre-test value");
+    String[] args = {"-s", "0", "-p", "0", "-m", "copd" + pathSeparator + "allerg*"};
+    final PrintStream original = System.out;
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final PrintStream print = new PrintStream(out, true);
+    System.setOut(print);
+    App.main(args);
+    out.flush();
+    String output = out.toString();
+    Assert.assertTrue(output.contains("Running with options:"));
+    Assert.assertTrue(output.contains("Seed:"));
+    Assert.assertTrue(output.contains("Modules:"));
+    Assert.assertTrue(output.contains("COPD Module"));
+    Assert.assertTrue(output.contains("Allergic"));
+    Assert.assertTrue(output.contains("Allergies"));
+    Assert.assertFalse(output.contains("asthma"));
     System.setOut(original);
   }
 
