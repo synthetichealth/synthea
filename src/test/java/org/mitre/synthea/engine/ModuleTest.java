@@ -1,7 +1,12 @@
 package org.mitre.synthea.engine;
 
-import org.junit.Test;
-import org.powermock.reflect.Whitebox;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -11,7 +16,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 public class ModuleTest {
 
@@ -64,7 +70,8 @@ public class ModuleTest {
    * @return A FaultyModuleScope that restores the previous state for the specified module.
    * @throws Exception If something goes terribly wrong.
    */
-  private static FaultyModuleScope injectFaultIntoModuleLoad(String path, Exception fault) throws Exception {
+  private static FaultyModuleScope injectFaultIntoModuleLoad(String path, Exception fault)
+      throws Exception {
     Field modulesField = Whitebox.getField(Module.class, "modules");
     modulesField.setAccessible(true);
     @SuppressWarnings("unchecked")
@@ -73,7 +80,9 @@ public class ModuleTest {
     
     // Store the old supplier and inject our "broken" one.
     Module.ModuleSupplier originalSupplier = modules.get(path);
-    Callable<Module> faultyCallable = () -> { throw fault; };
+    Callable<Module> faultyCallable = () -> {
+      throw fault;
+    };
     Module.ModuleSupplier faultySupplier = new Module.ModuleSupplier(false, path, faultyCallable);
     modules.put(path, faultySupplier);
     

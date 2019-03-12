@@ -260,7 +260,8 @@ public class Person implements Serializable, QuadTreeData {
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
     if (valueGenerator == null) {
-      throw new NullPointerException("Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
+      throw new NullPointerException("Vital sign '" + vitalSign
+          + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
     return valueGenerator.getValue(time);
   }
@@ -270,7 +271,7 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Convenience function to set a vital sign to a constant value
+   * Convenience function to set a vital sign to a constant value.
    */
   public void setVitalSign(VitalSign vitalSign, double value) {
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));

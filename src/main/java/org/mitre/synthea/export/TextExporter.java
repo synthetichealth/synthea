@@ -401,7 +401,7 @@ public class TextExporter {
     if (person.record.provider != null) {
       textRecord.add("Provider:            " + person.record.provider.name);
       textRecord.add("Provider Address:    " + person.record.provider.address
-         + ", " + person.record.provider.city + ", " + person.record.provider.state);
+          + ", " + person.record.provider.city + ", " + person.record.provider.state);
     }
   }
   

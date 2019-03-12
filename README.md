@@ -42,7 +42,7 @@ Command-line arguments may be provided to specify a state, city, population size
 
 Usage is 
 ```
-run_synthea [-s seed] [-p populationSize] [state [city]]
+run_synthea [-s seed] [-p populationSize] [-m moduleFilter] [state [city]]
 ```
 For example:
 
@@ -52,6 +52,7 @@ For example:
  - `run_synthea -p 1000`
  - `run_synthea -s 987 Washington Seattle`
  - `run_synthea -s 21 -p 100 Utah "Salt Lake City"`
+ - `run_synthea -m metabolic*`
 
 Some settings can be changed in `./src/main/resources/synthea.properties`.
 
@@ -63,9 +64,16 @@ Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
 ./gradlew graphviz
 ```
 
+### Concepts and Attributes
+Generate a list of concepts (used in the records) or attributes (variables on each patient).
+```
+./gradlew concepts
+./gradlew attributes
+```
+
 # License
 
-Copyright 2017-2018 The MITRE Corporation
+Copyright 2017-2019 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

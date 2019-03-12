@@ -345,7 +345,7 @@ public class Generator {
         }
         
         if (this.metrics != null) {
-          metrics.recordStats(person, time, modules);
+          metrics.recordStats(person, time, Module.getModules(modulePredicate));
         }
 
         if (!this.logLevel.equals("none")) {

@@ -118,8 +118,9 @@ public class Module {
   }
 
   /**
+   * Get a list of top-level modules including core and submodules.
    * @return a list of top-level modules, only including core modules and those allowed by the 
-   * supplied predicate. Submodules are loaded, but not included.
+   *     supplied predicate. Submodules are loaded, but not included.
    */
   public static List<Module> getModules(Predicate<String> pathPredicate) {
     List<Module> list = new ArrayList<Module>();
@@ -154,6 +155,12 @@ public class Module {
     // no-args constructor only allowed to be used by subclasses
   }
 
+  /**
+   * Create a new Module.
+   * @param definition JSON definition of the module.
+   * @param submodule Whether or not this is a shared or reusable submodule.
+   * @throws Exception when an error occurs inflating the module.
+   */
   public Module(JsonObject definition, boolean submodule) throws Exception {
     name = String.format("%s Module", definition.get("name").getAsString());
     this.submodule = submodule;
@@ -238,7 +245,10 @@ public class Module {
     }
     return states.keySet();
   }
-  
+
+  /**
+   * ModuleSupplier allows for lazy loading of Modules.
+   */
   public static class ModuleSupplier implements Supplier<Module> {
 
     public final boolean core;
@@ -250,6 +260,12 @@ public class Module {
     private Module module;
     private Throwable fault;
 
+    /**
+     * Create a ModuleSupplier.
+     * @param submodule Whether or not this is a reusable or shared submodule.
+     * @param path The file path of the module being supplied.
+     * @param loader The loader that will lazily supply the module on demand.
+     */
     public ModuleSupplier(boolean submodule, String path, Callable<Module> loader) {
       this.core = false;
       this.submodule = submodule;

@@ -9,19 +9,17 @@ public class RandomValueGenerator extends ValueGenerator {
   private double low;
   private double high;
 
-
   /**
-   * 
-   * @param person
-   * @param low
-   * @param high
+   * Createa new RandomValueGenerator.
+   * @param person The person to generate data for.
+   * @param low The lower bound for the generator.
+   * @param high The upper bound for the generator.
    */
   public RandomValueGenerator(Person person, double low, double high) {
     super(person);
     this.low = low;
     this.high = high;
   }
-
 
   @Override
   public double getValue(long time) {

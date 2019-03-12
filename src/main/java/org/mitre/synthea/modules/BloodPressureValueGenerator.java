@@ -9,8 +9,7 @@ import org.mitre.synthea.world.concepts.BiometricsConfig;
  * Generate realistic blood pressure vital signs. 
  * Can reproducibly look a few days into the past and future.
  * 
- * @see https://raywinstead.com/bp/thrice.htm for desired result
- * TODO: Carve out abstract parent class to use this for additional vital signs.
+ * @see "https://raywinstead.com/bp/thrice.htm" for desired result
  */
 public class BloodPressureValueGenerator extends ValueGenerator {
   public enum SysDias {
@@ -76,7 +75,6 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private double maxChangePerDay() {
     return 15.0;
   }
-
 
   /**
    * Return a matching value generator for the given time.
