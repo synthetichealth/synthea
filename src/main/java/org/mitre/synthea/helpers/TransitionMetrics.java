@@ -6,6 +6,7 @@ import com.google.common.collect.Tables;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +45,7 @@ public class TransitionMetrics {
    * @param modules
    *          The collection of modules to record stats for
    */
+  @SuppressWarnings("unchecked")
   public void recordStats(Person person, long simulationEnd, Collection<Module> modules) {
     for (Module m : modules) {
       if (!m.getClass().equals(Module.class)) {
@@ -132,15 +134,16 @@ public class TransitionMetrics {
       System.out.println(m.name.toUpperCase());
 
       Map<String, Metric> moduleMetrics = metrics.row(m.name);
+      List<String> keys = new ArrayList<String>(moduleMetrics.keySet());
+      Collections.sort(keys);
 
-      for (String stateName : moduleMetrics.keySet()) {
+      for (String stateName : keys) {
         Metric stats = getMetric(m.name, stateName);
         int entered = stats.entered.get();
         int population = stats.population.get();
         long duration = stats.duration.get();
         int current = stats.current.get();
-        
-        
+
         System.out.println(stateName + ":");
         System.out.println(" Total times entered: " + stats.entered);
         System.out.println(" Population that ever hit this state: " + stats.population + " ("
@@ -173,6 +176,7 @@ public class TransitionMetrics {
       }
 
       List<String> unreached = new ArrayList<>(m.getStateNames());
+      Collections.sort(unreached);
       // moduleMetrics only includes states actually hit
       unreached.removeAll(moduleMetrics.keySet()); 
       unreached.forEach(state -> System.out.println(state + ": \n Never reached \n\n"));
