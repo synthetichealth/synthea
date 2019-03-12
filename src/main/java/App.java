@@ -52,8 +52,11 @@ public class App {
         
         while (!argsQ.isEmpty()) {
           String currArg = argsQ.poll();
-          
-          if (currArg.equalsIgnoreCase("-s")) {
+
+          if (currArg.equalsIgnoreCase("-h")) {
+            usage();
+            System.exit(0);
+          } else if (currArg.equalsIgnoreCase("-s")) {
             String value = argsQ.poll();
             options.seed = Long.parseLong(value);
           } else if (currArg.equalsIgnoreCase("-p")) {
