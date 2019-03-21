@@ -423,7 +423,20 @@
     },
     "End_Diagnosis_Encounter_III": {
       "type": "EncounterEnd",
-      "direct_transition": "Schedule Follow Up III"
+      "distributed_transition": [
+        {
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.77
+        },
+        {
+          "transition": "Schedule Follow Up III",
+          "distribution": 0.23
+        }
+      ],
+      "remarks": [
+        "1462 of 1900 patients developed anemia at some point during the survey - ",
+        ""
+      ]
     },
     "Schedule Follow Up III": {
       "type": "Delay",
@@ -2528,6 +2541,27 @@
         "high": 10
       },
       "direct_transition": "Chest_CT"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Schedule Follow Up III"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Schedule Follow Up III"
+        }
+      ]
     }
   }
 }

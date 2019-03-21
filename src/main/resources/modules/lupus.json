@@ -96,7 +96,7 @@
       ],
       "direct_transition": "Lupus_Symptom1"
     },
-     "Lupus_Symptom1": {
+    "Lupus_Symptom1": {
       "type": "Symptom",
       "symptom": "Joint Pain",
       "range": {
@@ -192,7 +192,20 @@
     },
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Corticosteroid_Treatment"
+      "distributed_transition": [
+        {
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Corticosteroid_Treatment",
+          "distribution": 0.5
+        }
+      ],
+      "remarks": [
+        "The most common blood disorder is anemia, affecting about half of all people with active lupus - https://www.lupus.org/resources/what-you-need-to-know-about-anemia ",
+        ""
+      ]
     },
     "Corticosteroid_Treatment": {
       "type": "Delay",
@@ -299,6 +312,27 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Corticosteroid_Treatment"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Corticosteroid_Treatment"
+        }
+      ]
     }
   }
 }

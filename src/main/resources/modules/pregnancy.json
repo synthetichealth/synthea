@@ -562,13 +562,16 @@
       "type": "EncounterEnd",
       "distributed_transition": [
         {
-          "distribution": 0.9999,
-          "transition": "Week_12"
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.123
         },
         {
-          "distribution": 0.0001,
-          "transition": "Non_Low_Risk_Pregnancy"
+          "transition": "End_Anemia_Check",
+          "distribution": 0.877
         }
+      ],
+      "remarks": [
+        "Anemia across the board was 8.8% (general) and 3.5% for severe - "
       ]
     },
     "Non_Low_Risk_Pregnancy": {
@@ -2199,12 +2202,38 @@
     "Normal_Pregnancy_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Become_Pregnant",
-      "direct_transition": "Six_Weeks_After_Birth"
+      "conditional_transition": [
+        {
+          "transition": "Anemia_End",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia_pregnancy",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Six_Weeks_After_Birth"
+        }
+      ]
     },
     "Miscarriage_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Become_Pregnant",
-      "direct_transition": "Unset_Pregnant_Attribute"
+      "conditional_transition": [
+        {
+          "transition": "Anemia_End_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia_pregnancy",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Unset_Pregnant_Attribute"
+        }
+      ]
     },
     "Abortion_Ends": {
       "type": "ConditionEnd",
@@ -2296,6 +2325,68 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Set_Anemia_Pregnancy"
+    },
+    "End_Anemia_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.9999,
+          "transition": "Week_12"
+        },
+        {
+          "distribution": 0.0001,
+          "transition": "Non_Low_Risk_Pregnancy"
+        }
+      ]
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "End_Anemia_Check"
+        }
+      ]
+    },
+    "Set_Anemia_Pregnancy": {
+      "type": "SetAttribute",
+      "attribute": "anemia_pregnancy",
+      "direct_transition": "End_Anemia_Check",
+      "value": 1
+    },
+    "Anemia_End": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "anemia",
+      "direct_transition": "Remove_Anemia_Pregnacy"
+    },
+    "Remove_Anemia_Pregnacy": {
+      "type": "SetAttribute",
+      "attribute": "anemia_pregnancy",
+      "direct_transition": "Six_Weeks_After_Birth",
+      "value": 0
+    },
+    "Anemia_End_2": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "anemia",
+      "direct_transition": "Remove_Anemia_Pregnacy_2"
+    },
+    "Remove_Anemia_Pregnacy_2": {
+      "type": "SetAttribute",
+      "attribute": "anemia_pregnancy",
+      "value": 0,
+      "direct_transition": "Unset_Pregnant_Attribute"
     }
   }
 }
