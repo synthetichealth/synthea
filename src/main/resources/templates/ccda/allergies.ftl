@@ -11,6 +11,7 @@
     <#list ehr_allergies as entry>
     <entry typeCode="DRIV">
       <act classCode="ACT" moodCode="EVN">
+        <templateId root="2.16.840.1.113883.10.20.22.4.30"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.30" extension="2015-08-01"/>
         <!--Allergy act template -->
         <id root="${UUID?api.toString()}"/>
@@ -21,6 +22,7 @@
         </effectiveTime>
         <entryRelationship typeCode="SUBJ" inversionInd="false">
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.7"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.7" extension="2014-06-09"/>
             <id root="${UUID?api.toString()}"/>
             <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
