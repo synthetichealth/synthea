@@ -660,7 +660,7 @@ public abstract class State implements Cloneable {
       String primaryCode = codes.get(0).code;
       entry = person.record.conditionStart(time, primaryCode);
       entry.name = this.name;
-      if (codes != null) {
+      if (codes != null && entry.codes.isEmpty()) {
         entry.codes.addAll(codes);
       }
       if (assignToAttribute != null) {

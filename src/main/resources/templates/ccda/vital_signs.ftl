@@ -10,6 +10,7 @@
     <@narrative.narrative entries=ehr_observations section="observations"/>
     <entry typeCode="DRIV">
       <organizer classCode="CLUSTER" moodCode="EVN">
+        <templateId root="2.16.840.1.113883.10.20.22.4.26"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.26" extension="2015-08-01"/>
         <!-- Vital signs organizer template -->
         <id root="${UUID?api.toString()}"/>
@@ -22,6 +23,7 @@
         <#if entry.value??>
         <component>
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
             <id root="${UUID?api.toString()}"/>
@@ -44,6 +46,7 @@
         <#list entry.observations as obs>
         <component>
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
             <id root="${UUID?api.toString()}"/>
@@ -70,6 +73,7 @@
         <#else>
         <component>
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
             <id root="${UUID?api.toString()}"/>

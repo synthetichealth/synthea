@@ -132,7 +132,7 @@
       <#else>
         <#include "diagnostic_imaging_reports_no_current.ftl" parse=false>
       </#if>
-      <#if ehr_social_history?has_content>
+      <#if ehr_social_history?has_content || ehr_smoking_history?has_content>
         <#include "social_history.ftl">
       <#else>
         <#include "social_history_no_current.ftl" parse=false>

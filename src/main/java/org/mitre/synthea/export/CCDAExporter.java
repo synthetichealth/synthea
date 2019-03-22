@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 
 /**
@@ -74,6 +75,7 @@ public class CCDAExporter {
         break;
       }
     }
+    Observation smoking_history = person.record.getLatestObservation("72166-2");
 
     // The export templates fill in the record by accessing the attributes
     // of the Person, so we add a few attributes just for the purposes of export.
@@ -88,6 +90,9 @@ public class CCDAExporter {
     person.attributes.put("ehr_medications", superEncounter.medications);
     person.attributes.put("ehr_careplans", superEncounter.careplans);
     person.attributes.put("ehr_imaging_studies", superEncounter.imagingStudies);
+    // person.attributes.put("ehr_social_history", social_history);
+    person.attributes.put("ehr_smoking_history", smoking_history);
+    // person.attributes.put("ehr_medical_equipment", );
     person.attributes.put("time", time);
     person.attributes.put("race_lookup", RaceAndEthnicity.LOOK_UP_CDC_RACE);
     person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
