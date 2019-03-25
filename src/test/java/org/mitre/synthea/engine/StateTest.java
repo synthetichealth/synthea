@@ -474,7 +474,7 @@ public class StateTest {
     HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
     assertEquals(120.0, vitalObservation.value);
     assertEquals("vital-signs", vitalObservation.category);
-    assertEquals("mmHg", vitalObservation.unit);
+    assertEquals("mm[Hg]", vitalObservation.unit);
 
     Code vitalObsCode = vitalObservation.codes.get(0);
     assertEquals("8480-6", vitalObsCode.code);
