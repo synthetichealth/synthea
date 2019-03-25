@@ -239,7 +239,20 @@
     },
     "initial encounter end": {
       "type": "EncounterEnd",
-      "direct_transition": "intra_encounter time gate"
+      "distributed_transition": [
+        {
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.2
+        },
+        {
+          "transition": "intra_encounter time gate",
+          "distribution": 0.8
+        }
+      ],
+      "remarks": [
+        "Anemia prevalence for CHF - https://www.ncbi.nlm.nih.gov/pubmed/20630401",
+        ""
+      ]
     },
     "intra_encounter time gate": {
       "type": "Delay",
@@ -1399,6 +1412,27 @@
       "type": "SetAttribute",
       "attribute": "3decho",
       "direct_transition": "End Inpatient Encounter"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "intra_encounter time gate"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "intra_encounter time gate"
+        }
+      ]
     }
   }
 }

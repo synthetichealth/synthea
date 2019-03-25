@@ -948,7 +948,83 @@
         "high": 7,
         "unit": "days"
       },
-      "direct_transition": "Oncologist_Encounter"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.6
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.53
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.47
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.66
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.34
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.2
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ],
+      "remarks": [
+        "40% of patients with early-stage colon tumors and nearly 80% of patients with advanced disease had anemia - "
+      ]
     },
     "Oncologist_Encounter": {
       "type": "Encounter",
@@ -1995,6 +2071,27 @@
         "high": 8
       },
       "direct_transition": "Record_CMP"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Oncologist_Encounter"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Oncologist_Encounter"
+        }
+      ]
     }
   }
 }

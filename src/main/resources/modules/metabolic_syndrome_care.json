@@ -880,7 +880,83 @@
     },
     "Check_Complications": {
       "type": "Simple",
-      "direct_transition": "check CKD"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.084
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.916
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.121
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.879
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.174
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.826
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.503
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.497
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "The prevalence of anemia increased with stage of CKD, from 8.4% at stage 1 to 53.4% at stage 5 - see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3879360/"
+      ]
     },
     "Check_Nephropathy": {
       "type": "Simple",
@@ -4213,6 +4289,32 @@
         }
       ],
       "direct_transition": "Check_Nephropathy"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "check CKD"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "check CKD"
+        }
+      ],
+      "remarks": [
+        "The prevalence of anemia increased with stage of CKD, from 8.4% at stage 1 to 53.4% at stage 5 - see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3879360/",
+        "",
+        ""
+      ]
     }
   }
 }

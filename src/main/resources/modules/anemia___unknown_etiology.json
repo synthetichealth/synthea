@@ -262,7 +262,7 @@
       "type": "Symptom",
       "symptom": "Fatigue",
       "cause": "",
-      "direct_transition": "Anemia Encounter",
+      "direct_transition": "Check_Anemia_Exist",
       "exact": {
         "quantity": 1
       }
@@ -279,7 +279,7 @@
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "End_Encounter"
+      "direct_transition": "Anemia_End"
     },
     "Delay_0_14": {
       "type": "Delay",
@@ -339,19 +339,6 @@
         }
       ]
     },
-    "Anemia Encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "anemia",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
-        }
-      ],
-      "direct_transition": "Anemia_Submodule"
-    },
     "Next_Symptom_1": {
       "type": "Simple",
       "distributed_transition": [
@@ -373,14 +360,31 @@
           "distribution": 0.15
         },
         {
-          "transition": "Anemia Encounter",
+          "transition": "Check_Anemia_Exist",
           "distribution": 0.85
         }
       ]
     },
-    "End_Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Anemia_End": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "anemia"
     }
   }
 }
