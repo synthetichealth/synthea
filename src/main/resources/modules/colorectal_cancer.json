@@ -998,7 +998,7 @@
           ],
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "colorectal cancer stage",
+            "attribute": "colorectal_cancer_stage",
             "operator": "==",
             "value": 3
           }
