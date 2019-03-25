@@ -95,7 +95,7 @@
               "display": "Systolic Blood Pressure"
             }
           ],
-          "unit": "mmHg"
+          "unit": "mm[Hg]"
         },
         {
           "category": "vital-signs",
@@ -107,7 +107,7 @@
               "display": "Diastolic Blood Pressure"
             }
           ],
-          "unit": "mmHg"
+          "unit": "mm[Hg]"
         }
       ],
       "target_encounter": "Wellness_Encounter",
