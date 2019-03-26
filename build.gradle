@@ -32,10 +32,10 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.7.0-SNAPSHOT'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.7.0-SNAPSHOT'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.7.0-SNAPSHOT'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.7.0-SNAPSHOT'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.7.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.7.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.7.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.7.0'
   // C-CDA export uses Apache FreeMarker templates
   compile 'org.freemarker:freemarker:2.3.26-incubating'
   // location processing
@@ -69,10 +69,10 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.19.0'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:3.7.0-SNAPSHOT'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.7.0-SNAPSHOT'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.7.0-SNAPSHOT'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:3.7.0-SNAPSHOT'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:3.7.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.7.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.7.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:3.7.0'
   testCompile 'com.helger:ph-schematron:5.0.6'
   testCompile 'com.phloc:phloc-schematron:2.7.1'
   testCompile 'com.phloc:phloc-commons:4.4.11'
