@@ -715,9 +715,11 @@ public class FhirDstu2 {
 
         // item service should match the entry code
         itemService = new CodingDt();
-        itemService.setSystem(item.codes.get(0).system)
-            .setCode(item.codes.get(0).code)
-            .setDisplay(item.codes.get(0).display);
+        Code code = item.codes.get(0);
+        String system = ExportHelper.getSystemURI(code.system);
+        itemService.setSystem(system)
+            .setCode(code.code)
+            .setDisplay(code.display);
         procedureItem.setService(itemService);
 
         claimResource.addItem(procedureItem);
@@ -729,8 +731,10 @@ public class FhirDstu2 {
         diagnosisComponent.setSequence(new PositiveIntDt(conditionSequence));
         if (item.codes.size() > 0) {
           // use first code
+          Code code = item.codes.get(0);
+          String system = ExportHelper.getSystemURI(code.system);
           diagnosisComponent.setDiagnosis(
-              new CodingDt(item.codes.get(0).system, item.codes.get(0).code));
+              new CodingDt(system, code.code).setDisplay(code.display));
         }
         claimResource.addDiagnosis(diagnosisComponent);
         conditionSequence++;

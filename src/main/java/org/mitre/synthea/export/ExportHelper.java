@@ -133,4 +133,28 @@ public abstract class ExportHelper {
       return ISO_DATE_FORMAT.format(new Date(time));
     }
   }
+
+  private static final String SNOMED_URI = "http://snomed.info/sct";
+  private static final String LOINC_URI = "http://loinc.org";
+  private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
+  private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
+
+  /**
+   * Translate the system name (e.g. SNOMED-CT) into the official
+   * FHIR system URI (e.g. http://snomed.info/sct).
+   * @param system SNOMED-CT, LOINC, RxNorm, CVX
+   * @return The FHIR system URI for the given system or the input if not found.
+   */
+  public static String getSystemURI(String system) {
+    if (system.equals("SNOMED-CT")) {
+      system = SNOMED_URI;
+    } else if (system.equals("LOINC")) {
+      system = LOINC_URI;
+    } else if (system.equals("RxNorm")) {
+      system = RXNORM_URI;
+    } else if (system.equals("CVX")) {
+      system = CVX_URI;
+    }
+    return system;
+  }
 }

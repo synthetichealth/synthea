@@ -49,9 +49,16 @@ public class FHIRR4ExporterTest {
       int x = validationErrors.size();
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
-      Config.set("exporter.fhir_r4.export", "true");
+      Config.set("exporter.fhir.export", "true");
       FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
+      // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
+      // (these should have been converted into URIs)
+      if (fhirJson.contains("SNOMED-CT")) {
+        validationErrors.add(
+            "JSON contains unconverted references to 'SNOMED-CT' (should be URIs)");
+      }
+      // Now validate the resource...
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
       ValidationResult result = validator.validateWithResult(resource);
       if (!result.isSuccessful()) {
@@ -72,6 +79,13 @@ public class FHIRR4ExporterTest {
                  * if verification Status is entered-in-error
                  * Expression:
                  * verificationStatus!='entered-in-error' or clinicalStatus.empty()
+                 */
+                valid = true;
+              } else if (emessage.getMessage().contains("@ ExplanationOfBenefit dom-3")) {
+                /*
+                 * For some reason, it doesn't like the contained ServiceRequest and contained
+                 * Coverage resources in the ExplanationOfBenefit, both of which are
+                 * properly referenced. Running $validate on test servers finds this valid...
                  */
                 valid = true;
               }
