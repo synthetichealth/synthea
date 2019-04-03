@@ -60,9 +60,8 @@ public abstract class Exporter {
    */
   private static void exportRecord(Person person, String fileTag, long stopTime) {
 
-    // Defaults to STU3 output
-    if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
-      File outDirectory = getOutputFolder("fhir", person);
+    if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
+      File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
@@ -95,8 +94,8 @@ public abstract class Exporter {
         writeNewFile(outFilePath, bundleJson);
       }
     }
-    if (Boolean.parseBoolean(Config.get("exporter.fhir_r4.export"))) {
-      File outDirectory = getOutputFolder("fhir_r4", person);
+    if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
+      File outDirectory = getOutputFolder("fhir", person);
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);

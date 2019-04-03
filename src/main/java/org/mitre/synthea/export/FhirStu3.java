@@ -793,15 +793,12 @@ public class FhirStu3 {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
         Code primaryCode = item.codes.get(0);
-
+        String system = ExportHelper.getSystemURI(primaryCode.system);
         CodeableConcept serviceProvided = new CodeableConcept()
             .addCoding(new Coding()
                 .setCode(primaryCode.code)
                 .setVersion("v1")
-                // Temporarily set the system to SNOMED.  Should be
-                // changed when Terminology branch gets merged and
-                // system names can be translated to their URI's
-                .setSystem(SNOMED_URI));
+                .setSystem(system));
         claimItem.setService(serviceProvided);
         // calculate the cost of the procedure
         Money moneyResource = new Money();
