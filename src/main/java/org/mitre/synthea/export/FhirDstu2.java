@@ -994,7 +994,12 @@ public class FhirDstu2 {
     ca.uhn.fhir.model.dstu2.resource.Encounter encounter =
         (ca.uhn.fhir.model.dstu2.resource.Encounter) encounterEntry.getResource();
     medicationResource.setPrescriber(encounter.getParticipantFirstRep().getIndividual());
-    medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
+
+    Code code = medication.codes.get(0);
+    String system = code.system.equals("SNOMED-CT")
+        ? SNOMED_URI
+        : RXNORM_URI;
+    medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
     if (medication.stop != 0L) {

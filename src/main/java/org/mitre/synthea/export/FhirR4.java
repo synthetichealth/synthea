@@ -1510,7 +1510,11 @@ public class FhirR4 {
     medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
     medicationResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
-    medicationResource.setMedication(mapCodeToCodeableConcept(medication.codes.get(0), RXNORM_URI));
+    Code code = medication.codes.get(0);
+    String system = code.system.equals("SNOMED-CT")
+        ? SNOMED_URI
+        : RXNORM_URI;
+    medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
 
     medicationResource.setAuthoredOn(new Date(medication.start));
     medicationResource.setIntent(MedicationRequestIntent.ORDER);
