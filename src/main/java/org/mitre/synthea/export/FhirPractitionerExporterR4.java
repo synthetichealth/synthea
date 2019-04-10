@@ -32,7 +32,7 @@ public abstract class FhirPractitionerExporterR4 {
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
 
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir_r4.export"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir.export"))) {
 
       Bundle bundle = new Bundle();
       if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
@@ -68,7 +68,7 @@ public abstract class FhirPractitionerExporterR4 {
 
       // get output folder
       List<String> folders = new ArrayList<>();
-      folders.add("fhir_r4");
+      folders.add("fhir");
       String baseDirectory = Config.get("exporter.baseDirectory");
       File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
       f.mkdirs();
