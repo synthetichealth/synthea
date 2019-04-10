@@ -120,6 +120,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.geography.Location;
 
 public class FhirR4 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
@@ -468,7 +469,9 @@ public class FhirR4 {
     patientResource.addExtension(birthSexExtension);
 
     String state = (String) person.attributes.get(Person.STATE);
-
+    if (USE_US_CORE_IG) {
+      state = Location.getAbbreviation(state);
+    }
     Address addrResource = patientResource.addAddress();
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))

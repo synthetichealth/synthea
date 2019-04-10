@@ -30,7 +30,7 @@ public abstract class HospitalExporterStu3 {
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_stu3.export"))) {
 
       Bundle bundle = new Bundle();
       if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
@@ -54,7 +54,7 @@ public abstract class HospitalExporterStu3 {
 
       // get output folder
       List<String> folders = new ArrayList<>();
-      folders.add("fhir");
+      folders.add("fhir_stu3");
       String baseDirectory = Config.get("exporter.baseDirectory");
       File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
       f.mkdirs();
