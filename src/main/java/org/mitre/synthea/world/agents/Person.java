@@ -406,7 +406,7 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   public void setProvider(EncounterType type, long time) {
-    Provider provider = Provider.findClosestService(this, type, time);
+    Provider provider = Provider.findService(this, type, time);
     setProvider(type, provider);
   }
 

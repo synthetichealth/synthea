@@ -23,6 +23,10 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.behaviors.IProviderFinder;
+import org.mitre.synthea.world.agents.behaviors.ProviderFinderNearest;
+import org.mitre.synthea.world.agents.behaviors.ProviderFinderQuality;
+import org.mitre.synthea.world.agents.behaviors.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Demographics;
@@ -35,6 +39,12 @@ public class Provider implements QuadTreeData {
   public static final String LABS = "labs";
   public static final String PRESCRIPTIONS = "prescriptions";
 
+  // Provider Selection Behavior algorithm choices:
+  public static final String NEAREST = "nearest";
+  public static final String QUALITY = "quality";
+  public static final String RANDOM = "random";
+  public static final String NETWORK = "network";
+
   // ArrayList of all providers imported
   private static ArrayList<Provider> providerList = new ArrayList<Provider>();
   private static QuadTree providerMap = generateQuadTree();
@@ -42,8 +52,11 @@ public class Provider implements QuadTreeData {
   private static int loaded = 0;
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
-      Double.parseDouble(Config.get("generate.maximum_provider_search_distance", "500"));
-  
+      Double.parseDouble(Config.get("generate.providers.maximum_search_distance", "500"));
+  public static final String PROVIDER_SELECTION_BEHAVIOR =
+      Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
+  private static IProviderFinder providerFinder = buildProviderFinder();
+
   public Map<String, Object> attributes;
   public String uuid;
   public String id;
@@ -63,12 +76,36 @@ public class Provider implements QuadTreeData {
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
 
-  protected Provider() {
+  /**
+   * Create a new Provider with no information.
+   */
+  public Provider() {
     uuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
+    coordinates = new DirectPosition2D();
+  }
+
+  private static IProviderFinder buildProviderFinder() {
+    IProviderFinder finder = null;
+    String behavior =
+        Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
+    switch (behavior) {
+      case QUALITY:
+        finder = new ProviderFinderQuality();
+        break;
+      case RANDOM:
+      case NETWORK:
+        finder = new ProviderFinderRandom();
+        break;
+      case NEAREST:
+      default:
+        finder = new ProviderFinderNearest();
+        break;
+    }
+    return finder;
   }
 
   public String getResourceID() {
@@ -145,19 +182,21 @@ public class Provider implements QuadTreeData {
   }
 
   /**
-   * Find specific service closest to the person, with a maximum distance of 500 kilometers.
+   * Find specific service provider for the given person.
    * @param person The patient who requires the service.
    * @param service The service required. For example, EncounterType.AMBULATORY.
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
-  public static Provider findClosestService(Person person, EncounterType service, long time) {
+  public static Provider findService(Person person, EncounterType service, long time) {
     double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
     double distance = 100;
     double step = 100;
+    List<Provider> options = null;
     Provider provider = null;
     while (distance <= maxDistance) {
-      provider = findService(person, service, distance, time);
+      options = findProvidersByLocation(person, distance);
+      provider = providerFinder.find(options, person, service, time);
       if (provider != null) {
         return provider;
       }
@@ -169,43 +208,17 @@ public class Provider implements QuadTreeData {
   /**
    * Find a service around a given point.
    * @param person The patient who requires the service.
-   * @param service e.g. EncounterType.AMBULATORY
-   * @param searchDistance in kilometers
-   * @param time The date/time within the simulated world, in milliseconds.
-   * @return Service provider or null if none is available.
+   * @param distance in kilometers
+   * @return List of providers within the given distance.
    */
-  private static Provider findService(Person person,
-      EncounterType service, double searchDistance, long time) {
+  private static List<Provider> findProvidersByLocation(Person person, double distance) {
     DirectPosition2D coord = person.getLatLon();
-    List<QuadTreeData> results = providerMap.queryByPointRadius(coord, searchDistance);
-
-    List<Provider> closest = new ArrayList<>();
-    double minDistance = Double.MAX_VALUE;
-    double distance;
-
+    List<QuadTreeData> results = providerMap.queryByPointRadius(coord, distance);
+    List<Provider> providers = new ArrayList<Provider>();
     for (QuadTreeData item : results) {
-      Provider provider = (Provider) item;
-      if (provider.accepts(person, time)
-          && (provider.hasService(service) || service == null)) {
-        distance = item.getLatLon().distance(coord);
-        if (distance < minDistance) {
-          closest.clear();
-          closest.add(provider);
-          minDistance = distance;
-        } else if (distance == minDistance) {
-          closest.add(provider);
-        }
-      }
+      providers.add((Provider) item);
     }
-
-    if (closest.isEmpty()) {
-      return null;
-    } else if (closest.size() == 1) {
-      return closest.get(0);
-    } else {
-      // just pick one randomly. eventually the algorithm should consider additional factors
-      return closest.get(person.randInt(closest.size()));
-    }
+    return providers;
   }
 
   /**
@@ -451,15 +464,14 @@ public class Provider implements QuadTreeData {
       d.quality = Integer.parseInt(line.remove("quality"));
     } catch (Exception e) {
       // Swallow invalid format data
+      d.quality = 0;
     }
     try {
       double lat = Double.parseDouble(line.remove("LAT"));
       double lon = Double.parseDouble(line.remove("LON"));
-      d.coordinates = new DirectPosition2D(lon, lat);
+      d.coordinates.setLocation(lon, lat);
     } catch (Exception e) {
-      double lat = 0.0;
-      double lon = 0.0;
-      d.coordinates = new DirectPosition2D(lon, lat);
+      d.coordinates.setLocation(0.0, 0.0);
     }
     return d;
   }
