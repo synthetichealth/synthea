@@ -25,6 +25,7 @@ public class CSVExporterTest {
   public void testCSVExport() throws Exception {
     TestHelper.exportOff();
     Config.set("exporter.csv.export", "true");
+    Config.set("exporter.csv.folder_per_run", "false");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 

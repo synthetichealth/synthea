@@ -1532,8 +1532,8 @@ public class FhirR4 {
       medicationResource.setMeta(meta);
     } else if (USE_SHR_EXTENSIONS) {
       medicationResource.addExtension()
-      .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
-      .setValue(PRESCRIPTION_OF_DRUG_CC);
+        .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
+        .setValue(PRESCRIPTION_OF_DRUG_CC);
     
       medicationResource.setMeta(new Meta()
           .addProfile(SHR_EXT + "shr-medication-MedicationRequested"));
