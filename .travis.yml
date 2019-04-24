@@ -1,6 +1,8 @@
 language: java
 jdk:
-  - oraclejdk8
+  - openjdk8
+  - openjdk11
+  - openjdk12
 
 # gradle projects have "gradle assemble" and "gradle check" run automatically
 # so a script setting is not required to verify the code compiles or run tests
