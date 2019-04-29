@@ -608,7 +608,10 @@ public class FhirStu3 {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
 
-    encounterResource.setClass_(new Coding().setCode(EncounterType.fromString(encounter.type).code()));
+    Coding classCode = new Coding();
+    classCode.setCode(EncounterType.fromString(encounter.type).code());
+    classCode.setSystem("http://terminology.hl7.org/CodeSystem/v3-ActCode");
+    encounterResource.setClass_(classCode);
     encounterResource
         .setPeriod(new Period()
             .setStart(new Date(encounter.start))
