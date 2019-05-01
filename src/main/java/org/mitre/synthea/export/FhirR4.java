@@ -619,7 +619,11 @@ public class FhirR4 {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
 
-    encounterResource.setClass_(new Coding().setCode(encounter.type));
+
+    Coding classCode = new Coding();
+    classCode.setCode(EncounterType.fromString(encounter.type).code());
+    classCode.setSystem("http://terminology.hl7.org/CodeSystem/v3-ActCode");
+    encounterResource.setClass_(classCode);
     encounterResource
         .setPeriod(new Period()
             .setStart(new Date(encounter.start))
@@ -909,7 +913,7 @@ public class FhirR4 {
    * @param personEntry Entry for the person
    * @param bundle The Bundle to add to
    * @param encounterEntry The current Encounter
-   * @param claim the Claim object
+   * @param claimEntry the Claim object
    * @param person the person the health record belongs to
    * @param encounter the current Encounter as an object
    * @return the added entry
