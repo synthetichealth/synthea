@@ -2331,7 +2331,11 @@ public class FhirStu3 {
     BundleEntryComponent entry = bundle.addEntry();
 
     resource.setId(resourceID);
-    entry.setFullUrl("urn:uuid:" + resourceID);
+    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+      entry.setFullUrl(resource.fhirType() + "/" + resourceID);
+    } else {
+      entry.setFullUrl("urn:uuid:" + resourceID);
+    }
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {

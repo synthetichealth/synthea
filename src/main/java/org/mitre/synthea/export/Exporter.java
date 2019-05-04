@@ -188,6 +188,8 @@ public abstract class Exporter {
    * @param generator Generator that generated the patients
    */
   public static void runPostCompletionExports(Generator generator) {
+    String bulk = Config.get("exporter.fhir.bulk_data");
+    Config.set("exporter.fhir.bulk_data", "false");
     try {
       HospitalExporterR4.export(generator.stop);
     } catch (Exception e) {
@@ -223,6 +225,7 @@ public abstract class Exporter {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    Config.set("exporter.fhir.bulk_data", bulk);
 
     if (Boolean.parseBoolean(Config.get("exporter.cost_access_outcomes_report"))) {
       ReportExporter.export(generator);
