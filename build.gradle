@@ -62,6 +62,9 @@ dependencies {
   compile "org.slf4j:slf4j-api:1.6.1"
   compile "org.slf4j:slf4j-nop:1.6.1"
 
+// https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-client
+  compile 'org.elasticsearch.client:elasticsearch-rest-high-level-client:5.6.16'
+
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
   testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')

@@ -118,6 +118,7 @@ public class App {
     if (validArgs) {
       Generator generator = new Generator(options);
       generator.run();
+      System.exit(0);
     }
   }
 }

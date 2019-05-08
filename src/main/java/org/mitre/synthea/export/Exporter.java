@@ -260,6 +260,11 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    String exportElastic = Config.get("exporter.elastic.export");
+    if ("true".equalsIgnoreCase(exportElastic)){
+      ElasticSearchExporter.getInstance().export();
+    }
+
   }
 
   /**
