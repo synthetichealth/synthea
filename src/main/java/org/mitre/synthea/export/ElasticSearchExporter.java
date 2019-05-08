@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -40,6 +41,7 @@ public class ElasticSearchExporter {
     private static ElasticSearchExporter SINGLETON = null;
     private String indexName = null;
     private String indexType = null;
+    private HashMap<String,Integer> report;
 
     private ElasticSearchExporter() {
         String esurl = Config.get("exporter.elastic.url");
@@ -52,7 +54,7 @@ public class ElasticSearchExporter {
         indexName = Config.get("exporter.elastic.indexname");
         indexType = Config.get("exporter.elastic.indextype");
         ctx = FhirContext.forDstu2();
-
+        report = new HashMap<>();
         RestClientBuilder builder = null;
         if (esuser != null && espassword != null){
             final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -80,6 +82,10 @@ public class ElasticSearchExporter {
         } else {
             return SINGLETON;
         }
+    }
+
+    public HashMap<String,Integer> getReport(){
+        return this.report;
     }
 
     public void export() {
@@ -125,7 +131,10 @@ public class ElasticSearchExporter {
                                     indexName+resourceName,
                                     indexType,
                                     id);
-
+                            if ("true".equalsIgnoreCase(Config.get("exporter.elastic.isunittest"))){
+                                count++;
+                                continue;
+                            }
                             request.source(json, XContentType.JSON);
                             IndexResponse indexResponse = client.index(request);
                             String index = indexResponse.getIndex();
@@ -146,6 +155,7 @@ public class ElasticSearchExporter {
                         }//end for
 
                         System.out.println("TOTAL documents indexed for file:"+filePath+" is "+count);
+                        report.put(filePath.toString(),count);
 
                     } catch (Exception e) {
                         e.printStackTrace();
