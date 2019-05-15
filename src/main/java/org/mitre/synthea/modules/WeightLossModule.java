@@ -11,6 +11,8 @@ import static org.mitre.synthea.modules.LifecycleModule.lookupGrowthChart;
 
 public final class WeightLossModule extends Module {
 
+  public WeightLossModule() { this.name = "Weight Loss"; }
+
   public static final String ACTIVE_WEIGHT_MANAGEMENT = "active_weight_management";
   public static final String PRE_MANAGEMENT_WEIGHT = "pre_management_weight";
   public static final String WEIGHT_MANAGEMENT_START = "weight_management_start";
@@ -38,8 +40,8 @@ public final class WeightLossModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
-    boolean activeWeightManagement = (boolean) person.attributes.get(ACTIVE_WEIGHT_MANAGEMENT);
-    if (activeWeightManagement) {
+    Object activeWeightManagement = person.attributes.get(ACTIVE_WEIGHT_MANAGEMENT);
+    if (activeWeightManagement != null && (boolean) activeWeightManagement) {
       boolean followsPlan = (boolean) person.attributes.get(WEIGHT_LOSS_ADHERENCE);
       boolean longTermSuccess = (boolean) person.attributes.get(LONG_TERM_WEIGHT_LOSS);
       if (firstYearOfManagement(person, time)) {
@@ -106,7 +108,7 @@ public final class WeightLossModule extends Module {
 
   public boolean firstFiveYearsOfManagement(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
-    return start <= time - Utilities.convertTime("years", 5);
+    return start >= time - Utilities.convertTime("years", 5);
   }
 
   /*
@@ -115,7 +117,8 @@ public final class WeightLossModule extends Module {
    */
   public double adultWeightLoss(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
-    double percentOfYearElapsed = (time - start) / Utilities.convertTime("years", 1);
+    double year = Utilities.convertTime("years", 1);
+    double percentOfYearElapsed = (time - start) / year;
     double startWeight = (double) person.attributes.get(PRE_MANAGEMENT_WEIGHT);
     double lossPercent = (double) person.attributes.get(WEIGHT_LOSS_PERCENTAGE);
     return startWeight - (startWeight * lossPercent * percentOfYearElapsed);
@@ -128,7 +131,7 @@ public final class WeightLossModule extends Module {
   public double adultRegression(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     double percentOfTimeElapsed = (time - start - Utilities.convertTime("years", 1)) /
-        Utilities.convertTime("years", 4);
+        (double) Utilities.convertTime("years", 4);
     double startWeight = (double) person.attributes.get(PRE_MANAGEMENT_WEIGHT);
     double lossPercent = (double) person.attributes.get(WEIGHT_LOSS_PERCENTAGE);
     double minWeight = startWeight - (startWeight * lossPercent);
@@ -159,7 +162,7 @@ public final class WeightLossModule extends Module {
         person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
     double lossPercent = (double) person.attributes.get(WEIGHT_LOSS_PERCENTAGE);
     double percentOfTimeElapsed = (time - start - Utilities.convertTime("years", 1)) /
-        Utilities.convertTime("years", 4);
+        (double) Utilities.convertTime("years", 4);
     return regressionWeight - (regressionWeight * lossPercent * (1 - percentOfTimeElapsed));
   }
 
