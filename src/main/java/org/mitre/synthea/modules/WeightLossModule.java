@@ -193,6 +193,8 @@ public final class WeightLossModule extends Module {
       person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
       boolean longTermSuccess = person.rand() <= maintenance;
       person.attributes.put(LONG_TERM_WEIGHT_LOSS, longTermSuccess);
+    } else {
+      person.attributes.put(LONG_TERM_WEIGHT_LOSS, false);
     }
   }
 

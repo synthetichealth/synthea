@@ -444,9 +444,9 @@ public final class LifecycleModule extends Module {
 
   private static double adjustWeight(Person person, long time) {
     double weight = person.getVitalSign(VitalSign.WEIGHT, time);
-    boolean weightManagement = (boolean) person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
+    Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
     // If there is active weight management, changing of weight will be handled by the WeightLossModule
-    if (!weightManagement) {
+    if (weightManagement != null && ! (boolean) weightManagement) {
       int age = person.ageInYears(time);
       if (age < 20) {
         // follow growth charts
