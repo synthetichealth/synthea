@@ -72,6 +72,7 @@ public class Person implements Serializable, QuadTreeData {
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
   public static final String LOCATION = "location";
+  public static final String ACTIVE_WEIGHT_MANAGEMENT = "active_weight_management";
 
   public final Random random;
   public final long seed;

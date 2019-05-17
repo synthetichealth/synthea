@@ -31,6 +31,7 @@ import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -53,6 +54,7 @@ public class Module {
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
     retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
+    retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
       URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");

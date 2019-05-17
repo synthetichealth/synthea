@@ -185,6 +185,7 @@ public final class LifecycleModule extends Module {
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person.random));
 
+    attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
     double weightPercentile = person.rand();
@@ -423,31 +424,50 @@ public final class LifecycleModule extends Module {
     int age = person.ageInYears(time);
 
     double height = person.getVitalSign(VitalSign.HEIGHT, time);
-    double weight = person.getVitalSign(VitalSign.WEIGHT, time);
 
     if (age < 20) {
-      // follow growth charts
-      String gender = (String) person.attributes.get(Person.GENDER);
-      int ageInMonths = person.ageInMonths(time);
-      height = lookupGrowthChart("height", gender, ageInMonths,
-          person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
-      weight = lookupGrowthChart("weight", gender, ageInMonths,
-          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
-    } else if (age <= ADULT_MAX_WEIGHT_AGE) {
-      // getting older and fatter
-      double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
-      weight += adultWeightGain;
-    } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
-      // getting older and wasting away
-      double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
-      weight -= geriatricWeightLoss;
+      height = childHeightGrowth(person, time);
     }
+    double weight = adjustWeight(person, time);
 
     person.setVitalSign(VitalSign.HEIGHT, height);
     person.setVitalSign(VitalSign.WEIGHT, weight);
     person.setVitalSign(VitalSign.BMI, bmi(height, weight));
   }
-  
+
+  private static double childHeightGrowth(Person person, long time) {
+    String gender = (String) person.attributes.get(Person.GENDER);
+    int ageInMonths = person.ageInMonths(time);
+    return lookupGrowthChart("height", gender, ageInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+  }
+
+  private static double adjustWeight(Person person, long time) {
+    double weight = person.getVitalSign(VitalSign.WEIGHT, time);
+    Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
+    // If there is active weight management,
+    // changing of weight will be handled by the WeightLossModule
+    if (weightManagement != null && ! (boolean) weightManagement) {
+      int age = person.ageInYears(time);
+      if (age < 20) {
+        // follow growth charts
+        String gender = (String) person.attributes.get(Person.GENDER);
+        int ageInMonths = person.ageInMonths(time);
+        weight = lookupGrowthChart("weight", gender, ageInMonths,
+            person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+      } else if (age <= ADULT_MAX_WEIGHT_AGE) {
+        // getting older and fatter
+        double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
+        weight += adultWeightGain;
+      } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
+        // getting older and wasting away
+        double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
+        weight -= geriatricWeightLoss;
+      }
+    }
+    return weight;
+  }
+
   /**
    * Lookup and calculate values from the CDC growth charts, using the LMS
    * values to calculate the intermediate values.
@@ -505,7 +525,7 @@ public final class LifecycleModule extends Module {
     return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
   }
 
-  private static double bmi(double heightCM, double weightKG) {
+  public static double bmi(double heightCM, double weightKG) {
     return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
   }
 
