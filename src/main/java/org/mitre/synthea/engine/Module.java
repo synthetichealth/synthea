@@ -26,7 +26,12 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
-import org.mitre.synthea.modules.*;
+import org.mitre.synthea.modules.CardiovascularDiseaseModule;
+import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.Person;
 
 /**
