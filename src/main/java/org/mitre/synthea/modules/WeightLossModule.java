@@ -4,9 +4,9 @@ import static org.mitre.synthea.modules.LifecycleModule.bmi;
 import static org.mitre.synthea.modules.LifecycleModule.lookupGrowthChart;
 
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 /**
@@ -30,22 +30,18 @@ public final class WeightLossModule extends Module {
   public static final String LONG_TERM_WEIGHT_LOSS = "long_term_weight_loss";
   public static final String WEIGHT_LOSS_ADHERENCE = "weight_loss_adherence";
 
-  public static final int managementStartAge =
-      Integer.parseInt(Config.get("lifecycle.weight_loss.min_age", "5"));
+  public static final int managementStartAge = (int) BiometricsConfig.get("min_age", 5);
   public static final double startWeightManagementProb =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.start_prob", "0.493"));
+      (double) BiometricsConfig.get("start_prob", 0.493);
   public static final double adherence =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.adherence", "0.605"));
+      (double) BiometricsConfig.get("adherence", 0.605);
   public static final double startBMI =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.start_bmi", "30"));
-  public static final double minLoss =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.min_management_loss", "0.07"));
-  public static final double maxLoss =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.max_management_loss", "0.1"));
-  public static final double maintenance =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.maintenance", "0.2"));
+      (double) BiometricsConfig.get("start_bmi", 30d);
+  public static final double minLoss = (double) BiometricsConfig.get("min_loss", 0.07);
+  public static final double maxLoss = (double) BiometricsConfig.get("max_loss", 0.1);
+  public static final double maintenance = (double) BiometricsConfig.get("maintenance", 0.2);
   public static final double minWeightPercentile =
-      Double.parseDouble(Config.get("lifecycle.weight_loss.best_pediatric_percentile", "0.6"));
+      (double) BiometricsConfig.get("best_pediatric_percentile", 0.6);
 
 
   @Override
