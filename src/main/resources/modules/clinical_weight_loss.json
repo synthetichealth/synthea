@@ -1,0 +1,155 @@
+{
+  "name": "Clinical Weight Loss",
+  "remarks": [
+    "This module simulates a clinical weight loss program. It works in tandem with the Java",
+    "WeightLossModule, triggering on patients who start active weight management."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "active_weight_management",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "BMI",
+                "operator": ">=",
+                "value": 35
+              }
+            ]
+          },
+          "transition": "Comprehensive_Multidisciplinary_Intervention_Care_Plan"
+        },
+        {
+          "transition": "Initial"
+        }
+      ]
+    },
+    "Comprehensive_Multidisciplinary_Intervention_Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "obesity_care_plan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "718361005",
+          "display": "Weight management program"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "77806000",
+          "display": "Low calorie diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "1171000175109",
+          "display": "Increased physical activity"
+        }
+      ],
+      "direct_transition": "End_Wellness_Encounter"
+    },
+    "End_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_For_Initial_WM_Visit"
+    },
+    "Wait_For_Initial_WM_Visit": {
+      "type": "Delay",
+      "range": {
+        "low": 14,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "Initial_WM_Visit"
+    },
+    "Initial_WM_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "obesity",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "WM_Visit_Vitals"
+    },
+    "WM_Visit_Vitals": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/vitals",
+      "direct_transition": "Initial_Nutrition_Education"
+    },
+    "Initial_Nutrition_Education": {
+      "type": "Procedure",
+      "reason": "obesity",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "61310001",
+          "display": "Nutrition education"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Initial_Activity_Education"
+    },
+    "Initial_Activity_Education": {
+      "type": "Procedure",
+      "reason": "obesity",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "304507003",
+          "display": "Exercise education"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Initial_Weight_Education"
+    },
+    "Initial_Weight_Education": {
+      "type": "Procedure",
+      "reason": "obesity",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "410200000",
+          "display": "Weight control education"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Initial_WM_Visit"
+    },
+    "End_Initial_WM_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "End_Clinical_Weight_Loss"
+    },
+    "End_Clinical_Weight_Loss": {
+      "type": "Terminal"
+    }
+  }
+}
