@@ -145,7 +145,113 @@
       "direct_transition": "End_Initial_WM_Visit"
     },
     "End_Initial_WM_Visit": {
+      "remarks": [
+        "At the end of the visit, those who adhere to plans will continue with treatment ",
+        "while the rest may drop out."
+      ],
       "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "weight_loss_adherence",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "First_Follow_Ups"
+
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "weight_loss_adherence",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.40,
+              "transition": "First_Follow_Ups"
+            },
+            {
+              "distribution": 0.60,
+              "transition": "End_Clinical_Weight_Loss"
+            }
+          ]
+        }
+      ]
+    },
+    "First_Follow_Ups": {
+      "type": "CallSubmodule",
+      "submodule": "weight_loss/follow_up_sessions",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "weight_loss_adherence",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Second_Follow_Ups"
+
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "weight_loss_adherence",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.40,
+              "transition": "Second_Follow_Ups"
+            },
+            {
+              "distribution": 0.60,
+              "transition": "End_Clinical_Weight_Loss"
+            }
+          ]
+        }
+      ]
+    },
+    "Second_Follow_Ups": {
+      "type": "CallSubmodule",
+      "submodule": "weight_loss/follow_up_sessions",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "weight_loss_adherence",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Third_Follow_Ups"
+
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "weight_loss_adherence",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.40,
+              "transition": "Third_Follow_Ups"
+            },
+            {
+              "distribution": 0.60,
+              "transition": "End_Clinical_Weight_Loss"
+            }
+          ]
+        }
+      ]
+    },
+    "Third_Follow_Ups": {
+      "type": "CallSubmodule",
+      "submodule": "weight_loss/follow_up_sessions",
       "direct_transition": "End_Clinical_Weight_Loss"
     },
     "End_Clinical_Weight_Loss": {
