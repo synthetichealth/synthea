@@ -1,0 +1,459 @@
+{
+  "name": "Lyme Disease",
+  "remarks": [
+    "An infection caused by the bacteria Borrelia burgdorferi, often a result of the bite of an infected tick.",
+    "",
+    "Sources:",
+    "https://www.bayarealyme.org/about-lyme/lyme-disease-facts-statistics/",
+    "https://www.cdc.gov/lyme/signs_symptoms/index.html",
+    "https://www.uptodate.com/contents/what-to-do-after-a-tick-bite-to-prevent-lyme-disease-beyond-the-basics"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Yearly_Potentially_Contract_Delay"
+    },
+    "Go_To_Doctor": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103324002,
+          "display": "Lyme Disease Symptoms"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Condition_Misdiagnosed",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Correct_Diagnosis",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Condition_Misdiagnosed": {
+      "type": "Simple",
+      "direct_transition": "Misdiagnosis_Doctor_Visit_Complete"
+    },
+    "Correct_Diagnosis": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "87274-7",
+          "display": "Lyme Disease Diagnosis"
+        }
+      ],
+      "observations": [],
+      "distributed_transition": [
+        {
+          "transition": "Early_Stage_Localized_Lyme_Diagnosis",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Late_Stage_Disseminated_Lyme_Diagnosis",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "200mg_Doxyxyxline": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1650142,
+          "display": "72 Hour Lyme Disease Precaution"
+        }
+      ],
+      "direct_transition": "Bacteria_Is_Eliminated",
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      }
+    },
+    "Lyme_Disease_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Bullseye Rash",
+      "cause": "",
+      "probability": 0.7,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Lyme_Disease_Symptom2"
+    },
+    "Lyme_Disease_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Muscle Pain and Stiffness",
+      "cause": "",
+      "probability": 0.8,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Lyme_Disease_Symptom3"
+    },
+    "Lyme_Disease_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Facial Palsy",
+      "cause": "",
+      "probability": 0.8,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Lyme_Disease_Symptom4"
+    },
+    "Lyme_Disease_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Heart Palpitations/Irregular Heartbeat",
+      "cause": "",
+      "probability": 0.8,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Lyme_Disease_Symptom5"
+    },
+    "Lyme_Disease_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Severe Memory Loss",
+      "cause": "",
+      "probability": 0.8,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Go_To_Doctor"
+    },
+    "Lyme_Disease_Subsides": {
+      "type": "ConditionEnd",
+      "direct_transition": "Lyme_Disease_Symptom1_Ends"
+    },
+    "Lyme_Disease_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Bullseye Rash",
+      "cause": "",
+      "probability": 0,
+      "direct_transition": "Lyme_Disease_Symptom2_Ends",
+      "exact": {
+        "quantity": 0
+      }
+    },
+    "Lyme_Disease_Symptom2_Ends": {
+      "type": "Symptom",
+      "symptom": "Muscle Pain and Stiffness",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Lyme_Disease_Symptom3_Ends"
+    },
+    "Lyme_Disease_Symptom3_Ends": {
+      "type": "Symptom",
+      "symptom": "Facial_Palsy",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Lyme_Disease_Symptom4_Ends"
+    },
+    "Lyme_Disease_Symptom4_Ends": {
+      "type": "Symptom",
+      "symptom": "Heart Palpitations/Irregular Heartbeat",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Lyme_Disease_Symptom5_Ends"
+    },
+    "Lyme_Disease_Symptom5_Ends": {
+      "type": "Symptom",
+      "symptom": "Severe Memory Loss",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "Lyme_Disease_Ends"
+    },
+    "Intravenous_Antibiotic_Treatment": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1008081,
+          "display": "IV Lyme Disease Treatment"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Lyme_Disease_Subsides",
+          "distribution": 0.8
+        },
+        {
+          "transition": "IV_Treatment_Is_Ineffective",
+          "distribution": 0.2
+        }
+      ],
+      "remarks": [
+        "Intravenous Amoxicillin"
+      ]
+    },
+    "Tick_Passes_Bacteria": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Tick_Is_Not_Found",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Tick_Is_Found",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Tick_Is_Found": {
+      "type": "Simple",
+      "direct_transition": "See_Doctor_Within_72_Hours"
+    },
+    "Tick_Is_Not_Found": {
+      "type": "Simple",
+      "direct_transition": "Lyme_Disease_Begins"
+    },
+    "See_Doctor_Within_72_Hours": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103324002,
+          "display": "Bit By Tick Within 72 Hours"
+        }
+      ],
+      "direct_transition": "200mg_Doxyxyxline"
+    },
+    "Bacteria_Is_Eliminated": {
+      "type": "Simple",
+      "direct_transition": "Yearly_Potentially_Contract_Delay"
+    },
+    "Lyme_Disease_Begins": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23502006,
+          "display": "Lyme Disease Onset"
+        }
+      ],
+      "direct_transition": "Delayed_Onset_Symptoms"
+    },
+    "Delayed_Onset_Symptoms": {
+      "type": "Delay",
+      "direct_transition": "Lyme_Disease_Symptom1",
+      "range": {
+        "low": 3,
+        "high": 30,
+        "unit": "days"
+      }
+    },
+    "Lyme_Disease_Ends": {
+      "type": "ConditionEnd",
+      "direct_transition": "Yearly_Potentially_Contract_Delay",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23502006,
+          "display": "SNOMED Code"
+        }
+      ]
+    },
+    "Revisit_Doctor_Delay": {
+      "type": "Delay",
+      "direct_transition": "Go_To_Doctor",
+      "range": {
+        "low": 7,
+        "high": 60,
+        "unit": "days"
+      }
+    },
+    "Oral_Antibiotic_Treatment_Is_Ineffective": {
+      "type": "Simple",
+      "direct_transition": "Chronic_Lyme_Disease"
+    },
+    "IV_Treatment_Is_Ineffective": {
+      "type": "Simple",
+      "direct_transition": "Chronic_Lyme_Disease"
+    },
+    "Early_Stage_Localized_Lyme_Diagnosis": {
+      "type": "Simple",
+      "direct_transition": "Early_Stage_Doctor_Visit_Complete"
+    },
+    "Late_Stage_Disseminated_Lyme_Diagnosis": {
+      "type": "Simple",
+      "direct_transition": "Late_Stage_Doctor_Visit_Complete"
+    },
+    "Misdiagnosis_Doctor_Visit_Complete": {
+      "type": "EncounterEnd",
+      "direct_transition": "Revisit_Doctor_Delay",
+      "remarks": [
+        "End Misdiagnosis Doctor Visit"
+      ]
+    },
+    "1/1000_Get_Lyme_Yearly": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          //Name of the state to transition to if true
+          "transition": "Tick_Passes_Bacteria",
+          //will determine which lookup table to use
+          "lookup_table_name": "lyme_bystate.csv"
+        },
+        {
+          // Else transition
+          "transition": "Yearly_Potentially_Contract_Delay"
+        }
+      ]
+    },
+    "Late_Stage_Doctor_Visit_Complete": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Intravenous_Antibiotic_Treatment",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Adult_Oral_Antibiotic_Treatment",
+          "distribution": 0.5
+        }
+      ],
+      "remarks": [
+        "Late Stage Lyme Diagnosis Doctor Visit Complete"
+      ]
+    },
+    "Early_Stage_Doctor_Visit_Complete": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "Completed Doctor Visit for Early Stage Lyme Diagnosis"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Adult_Oral_Antibiotic_Treatment",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 18,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Child_Oral_Antibiotic_Treatment"
+        }
+      ]
+    },
+    "Child_Oral_Antibiotic_Treatment": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 308182,
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "Take_Antibiotic_Child_Delay",
+      "remarks": [
+        "Amoxixillin"
+      ]
+    },
+    "Adult_Oral_Antibiotic_Treatment": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 308182,
+          "display": "Oral Lyme Disease Treatment"
+        }
+      ],
+      "prescription": {
+        "dosage": {
+          "amount": 28,
+          "frequency": 1,
+          "period": 28,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "Take_Antibiotic_Adult_Delay",
+      "remarks": [
+        "Amoxicillin"
+      ]
+    },
+    "Chronic_Lyme_Disease": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Take_Antibiotic_Adult_Delay": {
+      "type": "Delay",
+      "distributed_transition": [
+        {
+          "transition": "Oral_Antibiotic_Treatment_Is_Ineffective",
+          "distribution": 0.19999999999999996
+        },
+        {
+          "transition": "Lyme_Disease_Subsides",
+          "distribution": 0.8
+        }
+      ],
+      "range": {
+        "low": 14,
+        "high": 28,
+        "unit": "days"
+      }
+    },
+    "Take_Antibiotic_Child_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 14,
+        "high": 21,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Lyme_Disease_Subsides",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Oral_Antibiotic_Treatment_Is_Ineffective",
+          "distribution": 0.19999999999999996
+        }
+      ]
+    },
+    "Yearly_Potentially_Contract_Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "1/1000_Get_Lyme_Yearly"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
