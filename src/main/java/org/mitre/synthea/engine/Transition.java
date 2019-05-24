@@ -16,6 +16,8 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.mitre.synthea.world.agents.Person;
 
+import ca.uhn.fhir.model.dstu2.resource.Provenance.AgentRelatedAgent;
+
 /**
  * Transition represents all the transition types within the generic module
  * framework. This class is stateless, and calling 'follow' on an instance must
@@ -122,7 +124,7 @@ public abstract class Transition {
   public static class LookupTableTransition extends Transition {
 
     // Map of lookupTables Data
-    private static HashMap<String, HashMap<ArrayList<String>, Double>> lookupTables = new HashMap<String, HashMap<ArrayList<String>, Double>>();
+    private static HashMap<String, HashMap<LookupTableKey, Double>> lookupTables = new HashMap<String, HashMap<LookupTableKey, Double>>();
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
 
@@ -135,7 +137,7 @@ public abstract class Transition {
 
         String newTableName = transitions.get(0).lookupTableName;
         System.out.println("Loading Lookup Table: " + newTableName);
-        HashMap<ArrayList<String>, Double> newTable = new HashMap<ArrayList<String>, Double>();
+        HashMap<LookupTableKey, Double> newTable = new HashMap<LookupTableKey, Double>();
 
         // Parse CSV
         File csvData = new File("/Users/rscalfani/Documents/code/synthea/src/main/resources/modules/lookup_tables/"
@@ -159,8 +161,9 @@ public abstract class Transition {
             for (int currentAttribute = 0; currentAttribute < numAttributes; currentAttribute++) {
               attributeRecords.add(records.get(currentRecord).get(currentAttribute));
             }
+            LookupTableKey attributeRecordsLookupKey = new LookupTableKey(attributeRecords, this.attributes.indexOf("age"));
             // Insert new record into new table
-            newTable.put(attributeRecords, Double.parseDouble(records.get(currentRecord).get(numAttributes)));
+            newTable.put(attributeRecordsLookupKey, Double.parseDouble(records.get(currentRecord).get(numAttributes)));
           }
           // Insert new table into lookupTables Hashmap
           lookupTables.put(newTableName, newTable);
@@ -179,12 +182,18 @@ public abstract class Transition {
       // Extract Person's list of relevant attributes
       ArrayList<String> personsAttributes = new ArrayList<String>();
       for (int attributeToAdd = 0; attributeToAdd < this.attributes.size(); attributeToAdd++) {
+        if(attributes.get(attributeToAdd).equals("age")){
+          personsAttributes.add( Integer.toString(person.ageInYears(time)));
+        }else{
         personsAttributes.add( (String) person.attributes.get(this.attributes.get(attributeToAdd).toLowerCase()));
+        }
       }
 
-      if (lookupTables.get(this.transitions.get(0).lookupTableName).containsKey(personsAttributes)) {
+      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, this.attributes.indexOf("age"));
+
+      if (lookupTables.get(this.transitions.get(0).lookupTableName).containsKey(personsAttributesLookupKey)) {
         // Person's attributes match a lookup table entry
-        numericDistribution = lookupTables.get(this.transitions.get(0).lookupTableName).get(personsAttributes);
+        numericDistribution = lookupTables.get(this.transitions.get(0).lookupTableName).get(personsAttributesLookupKey);
       } else {
         // No attribute match
         // implement '*' here
@@ -199,6 +208,79 @@ public abstract class Transition {
       } else {
         // Return second transition
         return transitions.get(1).transition;
+      }
+    }
+
+    class LookupTableKey{
+
+      ArrayList<String> attributes;
+      int ageIndex;
+
+      LookupTableKey(ArrayList<String> attributes, int ageIndex){
+        System.out.println(ageIndex);
+        this.attributes = attributes;
+        this.ageIndex = ageIndex;
+      }
+
+      @Override
+      public int hashCode() {
+        if(this.ageIndex > -1){
+          System.out.println("#Hashing Age");
+          ArrayList<String> ageRemovedAttributes = new ArrayList<String>();
+          ageRemovedAttributes = this.attributes;
+
+          System.out.println(ageRemovedAttributes);
+
+          ageRemovedAttributes.remove(ageIndex);
+          return ageRemovedAttributes.hashCode();// * attributes.get(attributes.indexOf("age")).hashCode();
+        }else{
+          //System.out.println("#Hashing");
+          return this.attributes.hashCode();
+        }
+      }
+
+      @Override
+      public boolean equals(Object obj){
+
+        ///System.out.println("Checking if it equals...");
+
+        if(getClass() != obj.getClass()){
+          return false;
+        }
+
+        ArrayList<String> personAttributes = ((LookupTableKey) obj).attributes;
+
+        if(this.attributes.contains("age")){
+          int ageIndex = this.attributes.indexOf("age");
+          String personAge = personAttributes.get(ageIndex);
+          String ageRange = this.attributes.get(ageIndex);
+
+          ArrayList<String> ageRemovedAttributes = new ArrayList<String>();
+          ageRemovedAttributes = this.attributes;
+          ageRemovedAttributes.remove(ageIndex);
+
+          ArrayList<String> ageRemovedPersonAttributes = new ArrayList<String>();
+          ageRemovedPersonAttributes = personAttributes;
+          ageRemovedPersonAttributes.remove(ageIndex);
+
+          if(ageRemovedAttributes.equals(ageRemovedPersonAttributes)){
+            //parse out age
+  
+            String lowAge = ageRange.substring(0,ageRange.indexOf("-"));
+            String highAge = ageRange.substring(ageRange.indexOf("-"));
+
+            if(Integer.parseInt(lowAge) < Integer.parseInt(personAge) && Integer.parseInt(highAge) > Integer.parseInt(personAge)){
+              return true;
+            }else{
+              return false;
+            }
+          }else{
+            return false;
+          }
+        }else{
+          //System.out.println("Equals without age");
+          return this.attributes.equals(personAttributes);
+        }
       }
     }
   }
