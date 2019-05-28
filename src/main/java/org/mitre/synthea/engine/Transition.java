@@ -9,14 +9,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.mitre.synthea.world.agents.Person;
-
-import ca.uhn.fhir.model.dstu2.resource.Provenance.AgentRelatedAgent;
 
 /**
  * Transition represents all the transition types within the generic module
@@ -120,11 +117,10 @@ public abstract class Transition {
    * person does not correspond to any of the sets of attributes, the probaiblity
    * will default to 0.0.
    */
-
   public static class LookupTableTransition extends Transition {
 
     // Map of lookupTables Data
-    private static HashMap<String, HashMap<LookupTableKey, Double>> lookupTables = new HashMap<String, HashMap<LookupTableKey, Double>>();
+    private static HashMap<String, HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>> lookupTables = new HashMap<String, HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>>();
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
 
@@ -137,17 +133,18 @@ public abstract class Transition {
 
         String newTableName = transitions.get(0).lookupTableName;
         System.out.println("Loading Lookup Table: " + newTableName);
-        HashMap<LookupTableKey, Double> newTable = new HashMap<LookupTableKey, Double>();
+        // Hashmap for the new table
+        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
 
         // Parse CSV
-        File csvData = new File("/Users/rscalfani/Documents/code/synthea/src/main/resources/modules/lookup_tables/"
-            + this.transitions.get(0).lookupTableName);
+        File csvData = new File(
+            "./src/main/resources/modules/lookup_tables/" + this.transitions.get(0).lookupTableName);
         CSVParser parser;
         try {
           parser = CSVParser.parse(csvData, Charset.defaultCharset(), CSVFormat.RFC4180);
           List<CSVRecord> records = parser.getRecords();
           // Parse out the list of attributes based on names of columns.
-          int numAttributes = records.get(0).size() - 1;
+          int numAttributes = records.get(0).size() - (this.transitions.size());
           // First entry in CSV has extra char at beginning
           int startIndex = 1;
           for (int attributeName = 0; attributeName < numAttributes; attributeName++) {
@@ -155,15 +152,33 @@ public abstract class Transition {
             startIndex = 0;
           }
           // Fill new table within lookupTables hashmap
-          for (int currentRecord = 1; currentRecord < records.size(); currentRecord++) {
+          for (int currentRecord = 1; currentRecord < (records.size()); currentRecord++) {
             // Parse the list of attributes for current record
             ArrayList<String> attributeRecords = new ArrayList<String>();
             for (int currentAttribute = 0; currentAttribute < numAttributes; currentAttribute++) {
               attributeRecords.add(records.get(currentRecord).get(currentAttribute));
             }
-            LookupTableKey attributeRecordsLookupKey = new LookupTableKey(attributeRecords, this.attributes.indexOf("age"));
+            LookupTableKey attributeRecordsLookupKey = new LookupTableKey(attributeRecords,
+                this.attributes.indexOf("age"), -1);
+            // Create DistributedTransitionOption Arraylist of transition probabilities
+            ArrayList<DistributedTransitionOption> transitionProbabilities = new ArrayList<DistributedTransitionOption>();
+            for (int currentTransitionProbability = 0; currentTransitionProbability < this.transitions
+                .size(); currentTransitionProbability++) {
+
+              DistributedTransitionOption currentOption = new DistributedTransitionOption();
+              currentOption.numericDistribution = Double
+                  .parseDouble(records.get(currentRecord).get(numAttributes + currentTransitionProbability));
+
+              if (records.get(0).get(numAttributes + currentTransitionProbability)
+                  .equals(transitions.get(currentTransitionProbability).transition)) {
+                currentOption.transition = transitions.get(currentTransitionProbability).transition;
+                transitionProbabilities.add(currentOption);
+              } else {
+                System.out.println("ERROR: COLUMN STATE NAME DOES NOT MATCH STATE TO TRANSITION TO");
+              }
+            }
             // Insert new record into new table
-            newTable.put(attributeRecordsLookupKey, Double.parseDouble(records.get(currentRecord).get(numAttributes)));
+            newTable.put(attributeRecordsLookupKey, transitionProbabilities);
           }
           // Insert new table into lookupTables Hashmap
           lookupTables.put(newTableName, newTable);
@@ -176,110 +191,86 @@ public abstract class Transition {
     @Override
     public String follow(Person person, long time) {
 
-      // If none of the records match, then probability will default to 0.0.
-      double numericDistribution = 0.0;
-
       // Extract Person's list of relevant attributes
+      String personAge = "-1";
       ArrayList<String> personsAttributes = new ArrayList<String>();
       for (int attributeToAdd = 0; attributeToAdd < this.attributes.size(); attributeToAdd++) {
-        if(attributes.get(attributeToAdd).equals("age")){
-          personsAttributes.add( Integer.toString(person.ageInYears(time)));
-        }else{
-        personsAttributes.add( (String) person.attributes.get(this.attributes.get(attributeToAdd).toLowerCase()));
+        if (attributes.get(attributeToAdd).equals("age")) {
+          personAge = Integer.toString(person.ageInYears(time));
+        } else {
+          personsAttributes.add((String) person.attributes.get(this.attributes.get(attributeToAdd).toLowerCase()));
         }
       }
 
-      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, this.attributes.indexOf("age"));
-
+      // Create Key to get distributions
+      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, this.attributes.indexOf("age"),
+          Integer.parseInt(personAge));
       if (lookupTables.get(this.transitions.get(0).lookupTableName).containsKey(personsAttributesLookupKey)) {
-        // Person's attributes match a lookup table entry
-        numericDistribution = lookupTables.get(this.transitions.get(0).lookupTableName).get(personsAttributesLookupKey);
+        // Person matches, use the list of distributedtransitionoptions in their
+        // corresponding record
+        return pickDistributedTransition(
+            lookupTables.get(this.transitions.get(0).lookupTableName).get(personsAttributesLookupKey), person);
       } else {
         // No attribute match
-        // implement '*' here
-        // implement default value
-      }
-
-      // Randomly determine which transition to go to.
-      Random r = new Random();
-      if ((r.nextInt(1000) + 1) <= numericDistribution * 1000) {
-        // Return the first transition
-        return transitions.get(0).transition;
-      } else {
-        // Return second transition
-        return transitions.get(1).transition;
+        // Need to Return a default value... Or should we expect that every possibility
+        // is taken care of? Will "*" be a necesessity/fix?
+        System.out.println("NO TRANSITION MATCHED");
+        return "Terminal";
       }
     }
 
-    class LookupTableKey{
+    class LookupTableKey {
 
-      ArrayList<String> attributes;
+      ArrayList<String> recordAttributes;
+      int ageHigh;
+      int ageLow;
       int ageIndex;
+      int personAge;
 
-      LookupTableKey(ArrayList<String> attributes, int ageIndex){
-        System.out.println(ageIndex);
-        this.attributes = attributes;
+      LookupTableKey(ArrayList<String> attributes, int ageIndex, int personAge) {
+        if (ageIndex > -1 && personAge < 0) {
+          String ageRange = attributes.get(ageIndex);
+          this.ageLow = Integer.parseInt(ageRange.substring(0, ageRange.indexOf("-")));
+          this.ageHigh = Integer.parseInt(ageRange.substring(ageRange.indexOf("-") + 1));
+          attributes.remove(ageIndex);
+        }
+        this.personAge = personAge;
+        this.recordAttributes = attributes;
         this.ageIndex = ageIndex;
       }
 
       @Override
       public int hashCode() {
-        if(this.ageIndex > -1){
-          System.out.println("#Hashing Age");
-          ArrayList<String> ageRemovedAttributes = new ArrayList<String>();
-          ageRemovedAttributes = this.attributes;
-
-          System.out.println(ageRemovedAttributes);
-
-          ageRemovedAttributes.remove(ageIndex);
-          return ageRemovedAttributes.hashCode();// * attributes.get(attributes.indexOf("age")).hashCode();
-        }else{
-          //System.out.println("#Hashing");
-          return this.attributes.hashCode();
-        }
+        return this.recordAttributes.hashCode();
       }
 
       @Override
-      public boolean equals(Object obj){
+      public boolean equals(Object obj) {
 
-        ///System.out.println("Checking if it equals...");
-
-        if(getClass() != obj.getClass()){
+        if (this == obj) {
+          return true;
+        }
+        if (obj == null) {
           return false;
         }
+        if (this.getClass() != obj.getClass()) {
+          return false;
+        }
+        ArrayList<String> personAttributes = ((LookupTableKey) obj).recordAttributes;
+        LookupTableKey lookupTableKey = (LookupTableKey) obj;
 
-        ArrayList<String> personAttributes = ((LookupTableKey) obj).attributes;
+        // If There is an age column (at ageIndex)
+        if (this.ageIndex > -1) {
+          // If this is a person
+          if (personAge > -1) {
+            return personAge >= lookupTableKey.ageLow && personAge <= lookupTableKey.ageHigh;
 
-        if(this.attributes.contains("age")){
-          int ageIndex = this.attributes.indexOf("age");
-          String personAge = personAttributes.get(ageIndex);
-          String ageRange = this.attributes.get(ageIndex);
-
-          ArrayList<String> ageRemovedAttributes = new ArrayList<String>();
-          ageRemovedAttributes = this.attributes;
-          ageRemovedAttributes.remove(ageIndex);
-
-          ArrayList<String> ageRemovedPersonAttributes = new ArrayList<String>();
-          ageRemovedPersonAttributes = personAttributes;
-          ageRemovedPersonAttributes.remove(ageIndex);
-
-          if(ageRemovedAttributes.equals(ageRemovedPersonAttributes)){
-            //parse out age
-  
-            String lowAge = ageRange.substring(0,ageRange.indexOf("-"));
-            String highAge = ageRange.substring(ageRange.indexOf("-"));
-
-            if(Integer.parseInt(lowAge) < Integer.parseInt(personAge) && Integer.parseInt(highAge) > Integer.parseInt(personAge)){
-              return true;
-            }else{
-              return false;
-            }
-          }else{
-            return false;
+          } else {
+            return attributes.equals(personAttributes);
           }
-        }else{
-          //System.out.println("Equals without age");
-          return this.attributes.equals(personAttributes);
+        } else {
+          // No age column. Return standard ArrayList.equals();
+          return this.recordAttributes.equals(personAttributes);
         }
       }
     }
