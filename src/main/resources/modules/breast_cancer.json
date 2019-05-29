@@ -32,6 +32,10 @@
         {
           "transition": "Pre_breastCancer",
           "distribution": 0.125
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.875
         }
       ],
       "remarks": [

@@ -6,10 +6,203 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Terminal"
+      "direct_transition": "TNM_Classification"
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "TNM_Classification": {
+      "type": "Simple",
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/StagingofBreastCancer.html#stages"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Tis-N0-M0",
+          "distribution": 1
+        },
+        {
+          "transition": "T1*-N0-M0_T0-N1mi-M0_T1*-N1mi-M0",
+          "distribution": 1
+        },
+        {
+          "transition": "Initial",
+          "distribution": 1
+        },
+        {
+          "transition": "T0-N1**-M0_T1*-N1**-M0_T2-N0-M0",
+          "distribution": 1
+        },
+        {
+          "transition": "T2-N1***-M0_T3-N0-M0",
+          "distribution": 1
+        },
+        {
+          "transition": "T0-N2-M0_T1*-N2-M0_T2-N2-M0_T3-N1***-M0_T3-N2-M0",
+          "distribution": 1
+        },
+        {
+          "transition": "T4-N0-M0_T4-N1***-M0_T4-N2-M0_Tany-N3-M0",
+          "distribution": 1
+        },
+        {
+          "transition": "Tany-Nany-M1",
+          "distribution": 1
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 1
+        }
+      ]
+    },
+    "Tis-N0-M0": {
+      "type": "Simple",
+      "direct_transition": "Stage_0"
+    },
+    "T1*-N0-M0_T0-N1mi-M0_T1*-N1mi-M0": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Grade_1",
+          "distribution": {
+            "attribute": "attribute",
+            "default": 1
+          }
+        },
+        {
+          "transition": "Grade_2_or_Grade_3",
+          "distribution": 1
+        },
+        {
+          "distribution": 1
+        }
+      ]
+    },
+    "T0-N1**-M0_T1*-N1**-M0_T2-N0-M0": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Grade_1(3)",
+          "distribution": 1
+        },
+        {
+          "transition": "Grade_2(3)",
+          "distribution": 1
+        },
+        {
+          "transition": "Grade_3(3)",
+          "distribution": 1
+        }
+      ]
+    },
+    "T2-N1***-M0_T3-N0-M0": {
+      "type": "Simple",
+      "direct_transition": "T2-N1***-M0_T3-N0-M0"
+    },
+    "T0-N2-M0_T1*-N2-M0_T2-N2-M0_T3-N1***-M0_T3-N2-M0": {
+      "type": "Simple",
+      "direct_transition": "T0-N2-M0_T1*-N2-M0_T2-N2-M0_T3-N1***-M0_T3-N2-M0"
+    },
+    "T4-N0-M0_T4-N1***-M0_T4-N2-M0_Tany-N3-M0": {
+      "type": "Simple",
+      "direct_transition": "T4-N0-M0_T4-N1***-M0_T4-N2-M0_Tany-N3-M0"
+    },
+    "Tany-Nany-M1": {
+      "type": "Simple",
+      "direct_transition": "Tany-Nany-M1"
+    },
+    "Grade_1": {
+      "type": "Simple",
+      "direct_transition": "Stage_IA"
+    },
+    "Stage_0": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Grade_2_or_Grade_3": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "All_Receptors_Negative",
+          "distribution": 1
+        },
+        {
+          "transition": "One_Plus_Positive_Receptor",
+          "distribution": 1
+        }
+      ]
+    },
+    "Stage_IA": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "LOINC Code"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 261634002,
+        "display": "Stage 1A (qualifier value)"
+      }
+    },
+    "Stage_IB": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "All_Receptors_Negative": {
+      "type": "Simple",
+      "direct_transition": "Stage_IB"
+    },
+    "One_Plus_Positive_Receptor": {
+      "type": "Simple",
+      "direct_transition": "Stage_IA"
+    },
+    "New_State_4": {
+      "type": "Simple",
+      "direct_transition": "New_State_4"
+    },
+    "New_State_7": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "New_State_7",
+          "distribution": 1
+        }
+      ]
+    },
+    "HER2+_(3)": {
+      "type": "Simple",
+      "direct_transition": "HER2+_(3)"
+    },
+    "HER2-_(3)": {
+      "type": "Simple",
+      "direct_transition": "HER2-_(3)"
+    },
+    "Grade_1(3)": {
+      "type": "Simple",
+      "direct_transition": "Grade_1(3)"
+    },
+    "Grade_2(3)": {
+      "type": "Simple",
+      "direct_transition": "Grade_2(3)"
+    },
+    "Grade_3(3)": {
+      "type": "Simple",
+      "direct_transition": "Grade_3(3)"
     }
   }
 }
