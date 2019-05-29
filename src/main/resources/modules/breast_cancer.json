@@ -1,0 +1,290 @@
+{
+  "name": "Breast_cancer",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Pre_breastCancer",
+          "distribution": 0.125
+        }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
+      ]
+    },
+    "Male": {
+      "type": "Simple",
+      "remarks": [
+        "https://www.breastcancer.org/symptoms/types/male_bc"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.99
+        },
+        {
+          "transition": "60 <= Age <=69",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Pre_breastCancer": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Age < 39",
+          "distribution": 0.005
+        },
+        {
+          "transition": "39 <= Age < 59",
+          "distribution": 0.039
+        },
+        {
+          "transition": "60 <= Age <=69",
+          "distribution": 0.036
+        }
+      ]
+    },
+    "Age < 39": {
+      "type": "Delay",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
+      ],
+      "range": {
+        "low": 0,
+        "high": 39,
+        "unit": "years"
+      },
+      "direct_transition": "BreastCancer_Symptom1"
+    },
+    "39 <= Age < 59": {
+      "type": "Delay",
+      "range": {
+        "low": 39,
+        "high": 59,
+        "unit": "years"
+      },
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
+      ],
+      "direct_transition": "BreastCancer_Symptom1"
+    },
+    "60 <= Age <=69": {
+      "type": "Delay",
+      "range": {
+        "low": 60,
+        "high": 69,
+        "unit": "years"
+      },
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
+      ],
+      "direct_transition": "BreastCancer_Symptom1"
+    },
+    "BreastCancer_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Lump/mass",
+      "cause": "",
+      "probability": 1,
+      "direct_transition": "BreastCancer_Symptom2",
+      "range": {
+        "low": 1,
+        "high": 2
+      },
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+      ]
+    },
+    "BreastCancer_Symptom2": {
+      "type": "Symptom",
+      "symptom": "Swelling",
+      "cause": "",
+      "probability": 1,
+      "direct_transition": "BreastCancer_Symptom3",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+      ],
+      "range": {
+        "low": 1,
+        "high": 2
+      }
+    },
+    "BreastCancer_Symptom4": {
+      "type": "Symptom",
+      "symptom": "Breast/Nipple Pain",
+      "cause": "",
+      "probability": 1,
+      "direct_transition": "BreastCancer_Symptom5",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+      ],
+      "range": {
+        "low": 1,
+        "high": 2
+      }
+    },
+    "BreastCancer_Symptom3": {
+      "type": "Symptom",
+      "symptom": "Skin Irritation/Dimpling",
+      "cause": "",
+      "probability": 1,
+      "direct_transition": "BreastCancer_Symptom4",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+      ],
+      "range": {
+        "low": 1,
+        "high": 2
+      }
+    },
+    "BreastCancer_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Nipple Retraction",
+      "cause": "",
+      "probability": 1,
+      "direct_transition": "BreastCancer_Symptom6",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+      ],
+      "range": {
+        "low": 1,
+        "high": 2
+      }
+    },
+    "BreastCancer_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Nipple Discharge",
+      "cause": "",
+      "probability": 1,
+      "direct_transition": "Breast Cancer",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+      ],
+      "range": {
+        "low": 1,
+        "high": 2
+      }
+    },
+    "Breast Cancer": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 254837009,
+          "display": "Malignant neoplasm of breast (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "MRI ",
+          "distribution": 0.29
+        },
+        {
+          "transition": "Mammogram",
+          "distribution": 0.28
+        },
+        {
+          "transition": "Ultrasound",
+          "distribution": 0.28
+        },
+        {
+          "transition": "Breast Biopsy",
+          "distribution": 0.35
+        }
+      ]
+    },
+    "MRI ": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 268547008,
+          "display": "Screening for malignant neoplasm of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "TNM/Marker tests"
+    },
+    "Mammogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 268547008,
+          "display": "Screening for malignant neoplasm of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "TNM/Marker tests"
+    },
+    "Ultrasound": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 268547008,
+          "display": "Screening for malignant neoplasm of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "TNM/Marker tests"
+    },
+    "Breast Biopsy": {
+      "type": "Simple",
+      "direct_transition": "TNM/Marker tests"
+    },
+    "TNM/Marker tests": {
+      "type": "Simple",
+      "direct_transition": "TNM_caller"
+    },
+    "TNM_caller": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_cancer_tnm_marker",
+      "direct_transition": "Treatment"
+    },
+    "Treatment": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    }
+  }
+}
