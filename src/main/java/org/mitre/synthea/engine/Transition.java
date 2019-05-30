@@ -101,21 +101,21 @@ public abstract class Transition {
 
   /**
    * A LookupTableTransitionOption represents a destination state which will be
-   * chosen based on the result of a table lookup.
+   * compared with a table lookup to find its probability and attributes.
    */
   public static final class LookupTableTransitionOption extends TransitionOption {
     private String lookupTableName;
   }
 
   /**
-   * LookupTable transitions will transition to one of two possible states based
-   * on a probability extacted from a table. A LookUpTableTransition will have one
-   * field denoting the lookuptable to use and a field donating the probability
-   * that the subject of that table is true. A table may have any set of
-   * attributes to determine the probability based on a variety of attributes
-   * which will be compared to the attributes within the current person. If a
-   * person does not correspond to any of the sets of attributes, the probaiblity
-   * will default to 0.0.
+   * LookupTable transitions will transition to one of several possible states
+   * based on probabilities for each state extacted from a table. A
+   * LookUpTableTransition will have one field denoting the lookuptable to use. A
+   * table may have any set of attributes to determine the probabilities of any
+   * set of states to transition to based on a variety of attributes which will be
+   * compared to the attributes of the current person. If a person does not
+   * correspond to any of the sets of attributes, the state will transition to
+   * "Terminal"
    */
   public static class LookupTableTransition extends Transition {
 
@@ -124,6 +124,10 @@ public abstract class Transition {
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
 
+    /**
+     * Constructor for LookupTableTransition
+     * @param lookupTableTransitions transitions parsed from JSON
+     */
     public LookupTableTransition(List<LookupTableTransitionOption> lookupTableTransitions) {
 
       this.transitions = lookupTableTransitions;
@@ -174,11 +178,13 @@ public abstract class Transition {
                 currentOption.transition = transitions.get(currentTransitionProbability).transition;
                 transitionProbabilities.add(currentOption);
               } else {
-                System.out.println("ERROR: COLUMN STATE NAME DOES NOT MATCH STATE TO TRANSITION TO");
+                throw new RuntimeException("CSV/JSON ERROR: CSV column state name '" + records.get(0).get(numAttributes + currentTransitionProbability) + "' does not match JSON state to transition to '" + transitions.get(currentTransitionProbability).transition + "' in CSV table " + newTableName);
               }
             }
             // Insert new record into new table
             newTable.put(attributeRecordsLookupKey, transitionProbabilities);
+            // can't close csvData File?
+            parser.close();
           }
           // Insert new table into lookupTables Hashmap
           lookupTables.put(newTableName, newTable);
@@ -198,7 +204,11 @@ public abstract class Transition {
         if (attributes.get(attributeToAdd).equals("age")) {
           personAge = Integer.toString(person.ageInYears(time));
         } else {
-          personsAttributes.add((String) person.attributes.get(this.attributes.get(attributeToAdd).toLowerCase()));
+          String currentAttributeToCheck = (String) person.attributes.get(this.attributes.get(attributeToAdd).toLowerCase());
+          if(currentAttributeToCheck == null){
+            throw new RuntimeException("CSV ATTRIBUTE ERROR: Attribute '" + this.attributes.get(attributeToAdd) + "' does not exist as a Person's attribute.");
+          }
+          personsAttributes.add(currentAttributeToCheck);
         }
       }
 
@@ -206,15 +216,13 @@ public abstract class Transition {
       LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, this.attributes.indexOf("age"),
           Integer.parseInt(personAge));
       if (lookupTables.get(this.transitions.get(0).lookupTableName).containsKey(personsAttributesLookupKey)) {
-        // Person matches, use the list of distributedtransitionoptions in their
-        // corresponding record
+        // Person matches, use the list of distributedtransitionoptions in their corresponding record
         return pickDistributedTransition(
             lookupTables.get(this.transitions.get(0).lookupTableName).get(personsAttributesLookupKey), person);
       } else {
         // No attribute match
         // Need to Return a default value... Or should we expect that every possibility
         // is taken care of? Will "*" be a necesessity/fix?
-        System.out.println("NO TRANSITION MATCHED");
         return "Terminal";
       }
     }
@@ -230,8 +238,14 @@ public abstract class Transition {
       LookupTableKey(ArrayList<String> attributes, int ageIndex, int personAge) {
         if (ageIndex > -1 && personAge < 0) {
           String ageRange = attributes.get(ageIndex);
+          if(ageRange.indexOf("-") == -1 ||  ageRange.substring(0, ageRange.indexOf("-")).length() < 1 || ageRange.substring(ageRange.indexOf("-") + 1).length() < 1){
+            throw new RuntimeException("CSV AGE ERROR: Age Range '" + ageRange + "' must be in the form: 'ageLow-ageHigh'");
+          }
           this.ageLow = Integer.parseInt(ageRange.substring(0, ageRange.indexOf("-")));
           this.ageHigh = Integer.parseInt(ageRange.substring(ageRange.indexOf("-") + 1));
+          if(ageLow > ageHigh){
+            throw new RuntimeException("CSV AGE ERROR: low age '" + ageLow + "' must be less than high age '" + ageHigh + "'.");
+          }
           attributes.remove(ageIndex);
         }
         this.personAge = personAge;
