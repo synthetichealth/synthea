@@ -1,0 +1,517 @@
+{
+  "name": "treatment_bcancer",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Treatment_options"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Treatment_options": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Lymph Node Surgery",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "72107-6",
+                "display": "Mini Mental State Examination"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": "1234",
+              "display": "SNOMED Code"
+            }
+          }
+        },
+        {
+          "transition": "Surgery",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "72107-6",
+                "display": "Mini Mental State Examination"
+              }
+            ],
+            "operator": "==",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Advanced Breast Cancer"
+        }
+      ]
+    },
+    "Surgery": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Radiation Therapy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Adjuvant/Neoadjuvant Chemotherapy",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Breast-conserving surgery (BCS)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Hypofractionated radiation therapy",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Intraoperative radiation therapy (IORT)",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Brachytherapy",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Mastectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "External Beam Radiation"
+    },
+    "Lymph Node Surgery": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Sentinel Lymph Node Biopsy (SLNB)",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Axillary Lymph Node Dissection (ALND)",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Advanced Breast Cancer": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Taxanes",
+          "distribution": 1
+        },
+        {
+          "transition": "Anthracyclines",
+          "distribution": 1
+        },
+        {
+          "transition": "Carboplatin",
+          "distribution": 1
+        },
+        {
+          "transition": "Vinorelbine",
+          "distribution": 1
+        },
+        {
+          "transition": "Capecitabine",
+          "distribution": 1
+        },
+        {
+          "transition": "Gemcitabine",
+          "distribution": 1
+        },
+        {
+          "transition": "Ixabepilone",
+          "distribution": 1
+        },
+        {
+          "transition": "Eribulin",
+          "distribution": 1
+        }
+      ]
+    },
+    "Sentinel Lymph Node Biopsy (SLNB)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Sentinel Lymph Node Biopsy (SLNB)"
+    },
+    "Axillary Lymph Node Dissection (ALND)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "External Beam Radiation"
+    },
+    "External Beam Radiation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "External Beam Radiation",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+      ]
+    },
+    "Hypofractionated radiation therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 3,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Hypofractionated radiation therapy"
+    },
+    "Intraoperative radiation therapy (IORT)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Intraoperative radiation therapy (IORT)"
+    },
+    "Radiation Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Breast-conserving surgery (BCS)",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Mastectomy",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Interstitial Brachytherapy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Intracavitary brachytherapy",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Interstitial Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Interstitial Brachytherapy"
+    },
+    "Intracavitary brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Intracavitary brachytherapy"
+    },
+    "Anthracyclines": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Doxorubicin",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Epirubicin",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Taxanes": {
+      "type": "Simple",
+      "direct_transition": "Paclitaxel"
+    },
+    "Doxorubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 42512,
+          "display": "Adriamycin"
+        }
+      ],
+      "direct_transition": "Doxorubicin",
+      "remarks": [
+        "- Doxorubicin (Adriamycin)",
+        "- Epriubicin (Ellence) ",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ]
+    },
+    "Epirubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 203766,
+          "display": "Ellence"
+        }
+      ],
+      "direct_transition": "Epirubicin"
+    },
+    "Paclitaxel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 202982,
+          "display": "Taxotere"
+        }
+      ],
+      "direct_transition": "Paclitaxel"
+    },
+    "Adjuvant/Neoadjuvant Chemotherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Anthracyclines",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Taxanes",
+          "distribution": 0.2
+        },
+        {
+          "transition": "5-fluorouracil",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Cyclophosphamide",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Carboplatin",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "5-fluorouracil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 4492,
+          "display": "5-FU"
+        }
+      ],
+      "direct_transition": "5-fluorouracil"
+    },
+    "Cyclophosphamide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 3002,
+          "display": "Cytoxan"
+        }
+      ],
+      "direct_transition": "Cyclophosphamide"
+    },
+    "Carboplatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 40048,
+          "display": "Paraplatin"
+        }
+      ],
+      "direct_transition": "Carboplatin"
+    },
+    "Vinorelbine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 53557,
+          "display": "Navelbine"
+        }
+      ],
+      "direct_transition": "Vinorelbine"
+    },
+    "Capecitabine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 220961,
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "Capecitabine"
+    },
+    "Gemcitabine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 101236,
+          "display": "Gemzar"
+        }
+      ],
+      "direct_transition": "Gemcitabine"
+    },
+    "Ixabepilone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 744825,
+          "display": "Ixempra"
+        }
+      ],
+      "direct_transition": "Ixabepilone"
+    },
+    "Eribulin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1045457,
+          "display": "Halaven"
+        }
+      ],
+      "direct_transition": "Eribulin"
+    }
+  }
+}
