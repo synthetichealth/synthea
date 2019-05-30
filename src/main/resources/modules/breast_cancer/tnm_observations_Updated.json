@@ -1,5 +1,5 @@
 {
-  "name": "TNM_Observations",
+  "name": "TNM_Observations_Updated",
   "remarks": [
     "Newest Try of Implementing TNM Data"
   ],
@@ -9,16 +9,7 @@
       "remarks": [
         "https://www.breastcancer.org/symptoms/types/recur_metast"
       ],
-      "distributed_transition": [
-        {
-          "transition": "Metastasis_(M1)",
-          "distribution": 0.3
-        },
-        {
-          "transition": "No Metastasis_(M0)",
-          "distribution": 0.7
-        }
-      ]
+      "direct_transition": "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Fluorescence in situ Hybridization (FISH)"
     },
     "Terminal": {
       "type": "Terminal"
@@ -44,24 +35,6 @@
         "system": "SNOMED-CT",
         "code": 315004001,
         "display": "Metastasis from malignant tumor of breast (disorder)"
-      }
-    },
-    "No Metastasis_(M0)": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "21907-1",
-          "display": "Distant metastases.clinical [Class] Cancer"
-        }
-      ],
-      "direct_transition": "No Metastasis_(M0)",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 261985008,
-        "display": "No metastases (tumor staging)"
       }
     },
     "Stage_IV": {
@@ -98,11 +71,433 @@
           "transition": "Terminal",
           "distribution": 0.22
         }
+      ],
+      "remarks": [
+        "https://www.fredhutch.org/en/news/center-news/2014/10/stage-4-metastatic-misunderstood-breast-cancer.html"
       ]
     },
     "Death": {
       "type": "Death",
       "direct_transition": "Terminal"
+    },
+    "T4": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "T4",
+              "distribution": 1
+            }
+          ]
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 65565005,
+        "display": "T4 category (finding)"
+      }
+    },
+    "T2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 67673008,
+        "display": "T2 category (finding)"
+      },
+      "direct_transition": "T3"
+    },
+    "T3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 14410001,
+        "display": "T3 category (finding)"
+      },
+      "direct_transition": "T4"
+    },
+    "T1": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 23351008,
+        "display": "T1 category (finding)"
+      },
+      "direct_transition": "T2"
+    },
+    "T0": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 23351008,
+        "display": "T1 category (finding)"
+      },
+      "direct_transition": "T1"
+    },
+    "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Immunochemistry": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433114000,
+          "display": "Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "HER2-negative",
+          "distribution": 0.85
+        },
+        {
+          "transition": "HER2-positive",
+          "distribution": 0.15
+        }
+      ],
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ]
+    },
+    "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Fluorescence in situ Hybridization (FISH)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 434363004,
+          "display": "Human epidermal growth factor receptor 2 gene detection by fluorescence in situ hybridization (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Immunochemistry",
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ]
+    },
+    "HER2-negative": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85319-2",
+          "display": "HER2 [Presence] in Breast cancer specimen by Immune stain"
+        }
+      ],
+      "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 431396003,
+        "display": "Human epidermal growth factor 2 negative carcinoma of breast (disorder)"
+      }
+    },
+    "HER2-positive": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85319-2",
+          "display": "HER2 [Presence] in Breast cancer specimen by Immune stain"
+        }
+      ],
+      "direct_transition": "Targeted HER2 Therapies",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 427685000,
+        "display": "Human epidermal growth factor 2 positive carcinoma of breast (disorder)"
+      }
+    },
+    "Targeted HER2 Therapies": {
+      "type": "Simple",
+      "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ]
+    },
+    "ER-negative": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 441117001,
+        "display": "Estrogen receptor negative neoplasm (disorder)"
+      },
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status"
+    },
+    "ER-positive": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 416053008,
+        "display": "Estrogen receptor positive tumor (disorder)"
+      },
+      "direct_transition": "ER Hormone Therapy Drugs"
+    },
+    "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122548005,
+          "display": "Biopsy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "ER-negative",
+          "distribution": 0.2
+        },
+        {
+          "transition": "ER-positive",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "No_Metastasis_(M0)": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21907-1",
+          "display": "Distant metastases.clinical [Class] Cancer"
+        }
+      ],
+      "direct_transition": "T0",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 261985008,
+        "display": "No metastases (tumor staging)"
+      }
+    },
+    "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122548005,
+          "display": "Biopsy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "PR_negative",
+          "distribution": 0.35
+        },
+        {
+          "transition": "PR-positive",
+          "distribution": 0.65
+        }
+      ]
+    },
+    "PR_negative": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 441118006,
+        "display": "Progesterone receptor negative neoplasm (disorder)"
+      },
+      "direct_transition": "Overall Receptor Analysis"
+    },
+    "PR-positive": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 416561008,
+        "display": "Progesterone receptor positive tumor (disorder)"
+      },
+      "direct_transition": "PR Hormone Therapy Drugs"
+    },
+    "ER Hormone Therapy Drugs": {
+      "type": "Simple",
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status"
+    },
+    "PR Hormone Therapy Drugs": {
+      "type": "Simple",
+      "direct_transition": "Overall Receptor Analysis"
+    },
+    "Overall Receptor Analysis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Triple_Negative",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "72107-6",
+                "display": "Mini Mental State Examination"
+              }
+            ],
+            "operator": "==",
+            "value": 0
+          }
+        },
+        {
+          "transition": "TNM_Analysis"
+        }
+      ],
+      "remarks": [
+        "If all hormones are negative transition to triple negative"
+      ]
+    },
+    "Triple_Negative": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 706970001,
+        "display": "Triple negative malignant neoplasm of breast (disorder)"
+      },
+      "direct_transition": "Triple Negative therapy options"
+    },
+    "TNM_Analysis": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Metastasis_(M1)",
+          "distribution": 0.3
+        },
+        {
+          "transition": "No_Metastasis_(M0)",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Triple Negative therapy options": {
+      "type": "Simple",
+      "direct_transition": "TNM_Analysis"
     }
   }
 }
