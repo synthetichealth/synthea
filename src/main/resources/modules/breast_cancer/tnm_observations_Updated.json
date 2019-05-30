@@ -1,0 +1,108 @@
+{
+  "name": "TNM_Observations",
+  "remarks": [
+    "Newest Try of Implementing TNM Data"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "https://www.breastcancer.org/symptoms/types/recur_metast"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Metastasis_(M1)",
+          "distribution": 0.3
+        },
+        {
+          "transition": "No Metastasis_(M0)",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Metastasis_(M1)": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21907-1",
+          "display": "Distant metastases.clinical [Class] Cancer"
+        }
+      ],
+      "direct_transition": "Stage_IV",
+      "remarks": [
+        "Patient Enters M1 State",
+        "",
+        ""
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 315004001,
+        "display": "Metastasis from malignant tumor of breast (disorder)"
+      }
+    },
+    "No Metastasis_(M0)": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21907-1",
+          "display": "Distant metastases.clinical [Class] Cancer"
+        }
+      ],
+      "direct_transition": "No Metastasis_(M0)",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 261985008,
+        "display": "No metastases (tumor staging)"
+      }
+    },
+    "Stage_IV": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 2640006,
+        "display": "Clinical stage IV (finding)"
+      },
+      "direct_transition": "Five_Year_Survival"
+    },
+    "Five_Year_Survival": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Death",
+          "distribution": 0.78
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.22
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    }
+  }
+}

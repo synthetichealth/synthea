@@ -28,18 +28,103 @@
     },
     "Female": {
       "type": "Simple",
-      "distributed_transition": [
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/RaceampEthnicity.html",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
+      ],
+      "complex_transition": [
         {
-          "transition": "Pre_breastCancer",
-          "distribution": 0.125
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          },
+          "distributions": [
+            {
+              "transition": "Pre_breastCancer",
+              "distribution": 0.13
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8700000000000001
+            }
+          ]
         },
         {
-          "transition": "Terminal",
-          "distribution": 0.875
+          "distributions": [
+            {
+              "transition": "Pre_breastCancer",
+              "distribution": 0.12
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.88
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Pre_breastCancer",
+              "distribution": 0.11
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.89
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "Asian"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Pre_breastCancer",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.9
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "Hispanic"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Pre_breastCancer",
+              "distribution": 0.08
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.92
+            }
+          ],
+          "condition": {
+            "condition_type": "Race",
+            "race": "Native"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Pre_breastCancer",
+              "distribution": 0.125
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.875
+            }
+          ]
         }
-      ],
-      "remarks": [
-        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ]
     },
     "Male": {
@@ -289,6 +374,26 @@
     "Treatment": {
       "type": "Simple",
       "direct_transition": "Terminal"
+    },
+    "Race": {
+      "type": "Simple",
+      "direct_transition": "Race"
+    },
+    "Race_White": {
+      "type": "Observation",
+      "category": "social-history",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "LOINC Code"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Race_White"
     }
   }
 }
