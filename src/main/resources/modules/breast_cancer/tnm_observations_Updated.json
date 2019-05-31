@@ -165,7 +165,16 @@
         "code": 23351008,
         "display": "T1 category (finding)"
       },
-      "direct_transition": "T2"
+      "distributed_transition": [
+        {
+          "transition": "T2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Stage 1A",
+          "distribution": 0.5
+        }
+      ]
     },
     "T0": {
       "type": "Observation",
@@ -357,12 +366,21 @@
           "display": "Distant metastases.clinical [Class] Cancer"
         }
       ],
-      "direct_transition": "T0",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 261985008,
         "display": "No metastases (tumor staging)"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "T0",
+          "distribution": 0.5
+        },
+        {
+          "transition": "N0",
+          "distribution": 0.5
+        }
+      ]
     },
     "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status": {
       "type": "Procedure",
@@ -498,6 +516,116 @@
     "Triple Negative therapy options": {
       "type": "Simple",
       "direct_transition": "TNM_Analysis"
+    },
+    "N0": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21892-5",
+          "display": "Lymph node involvement Cancer"
+        }
+      ],
+      "direct_transition": "N1",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 62455006,
+        "display": "N0 category (finding)"
+      }
+    },
+    "N1": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21892-5",
+          "display": "Lymph node involvement Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 53623008,
+        "display": "N1 category (finding)"
+      },
+      "distributed_transition": [
+        {
+          "transition": "N2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Stage 1B",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "N2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21892-5",
+          "display": "Lymph node involvement Cancer"
+        }
+      ],
+      "direct_transition": "N3",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 46059003,
+        "display": "N2 category (finding)"
+      }
+    },
+    "N3": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21892-5",
+          "display": "Lymph node involvement Cancer"
+        }
+      ],
+      "direct_transition": "N3",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 5856006,
+        "display": "N3 category (finding)"
+      }
+    },
+    "Surgery": {
+      "type": "Simple",
+      "direct_transition": "Surgery"
+    },
+    "Radiation therapy": {
+      "type": "Simple",
+      "direct_transition": "Radiation therapy"
+    },
+    "Neoadjuvant Chemotherapy": {
+      "type": "Simple",
+      "direct_transition": "Neoadjuvant Chemotherapy"
+    },
+    "Stage 1A": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Neoadjuvant Chemotherapy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Radiation therapy",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Stage 1B": {
+      "type": "Simple",
+      "direct_transition": "Stage 1B"
     }
   }
 }
