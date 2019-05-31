@@ -139,6 +139,9 @@ public abstract class Transition {
       if (!lookupTables.containsKey(transitions.get(0).lookupTableName)) {
 
         String newTableName = transitions.get(0).lookupTableName;
+        if (newTableName == null) {
+          throw new RuntimeException("LOOKUP TABLE JSON ERROR: Table name must be a field in the first transition.");
+        }
         System.out.println("Loading Lookup Table: " + newTableName);
         // Hashmap for the new table
         HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
@@ -148,9 +151,9 @@ public abstract class Transition {
             "./src/main/resources/modules/lookup_tables/" + this.transitions.get(0).lookupTableName);
         CSVParser parser;
         try {
-          // may be able to speed up here with removal...
           parser = CSVParser.parse(csvData, Charset.defaultCharset(), CSVFormat.RFC4180);
           List<CSVRecord> records = parser.getRecords();
+          parser.close();
           // Parse out the list of attributes based on names of columns.
           int numAttributes = records.get(0).size() - (this.transitions.size());
           // First entry in CSV has extra char at beginning
@@ -160,71 +163,31 @@ public abstract class Transition {
             startIndex = 0;
           }
           // Fill new table within lookupTables hashmap
-          for (int currentRecord = 1; currentRecord < (records.size()); currentRecord++) {
+          for (CSVRecord currentRecord : records.subList(1, records.size())) {
+
             // Parse the list of attributes for current record
             ArrayList<String> attributeRecords = new ArrayList<String>();
             for (int currentAttribute = 0; currentAttribute < numAttributes; currentAttribute++) {
-
-              attributeRecords.add(records.get(currentRecord).get(currentAttribute));
-
+              attributeRecords.add(currentRecord.get(currentAttribute));
             }
-
+            // Default Row
             if (attributeRecords.contains("*")) {
-
               if (this.defaultTransition == null) {
-                this.defaultTransition = new ArrayList<DistributedTransitionOption>();
-
-                for (int currentTransitionProbability = 0; currentTransitionProbability < this.transitions
-                    .size(); currentTransitionProbability++) {
-
-                  DistributedTransitionOption currentOption = new DistributedTransitionOption();
-                  currentOption.numericDistribution = Double
-                      .parseDouble(records.get(currentRecord).get(numAttributes + currentTransitionProbability));
-
-                  if (records.get(0).get(numAttributes + currentTransitionProbability)
-                      .equals(transitions.get(currentTransitionProbability).transition)) {
-                    currentOption.transition = transitions.get(currentTransitionProbability).transition;
-                    defaultTransition.add(currentOption);
-                  } else {
-                    throw new RuntimeException("CSV/JSON ERROR: CSV column state name '"
-                        + records.get(0).get(numAttributes + currentTransitionProbability)
-                        + "' does not match JSON state to transition to '"
-                        + transitions.get(currentTransitionProbability).transition + "' in CSV table " + newTableName);
-                  }
-                }
-
+                this.defaultTransition = createDistributedTransitionOptions(records, currentRecord, numAttributes,
+                    newTableName);
               } else {
-                throw new RuntimeException("CSV ERROR: Cannot have multiple '*' default rows in table " + newTableName);
+                throw new RuntimeException(
+                    "LOOKUP TABLE CSV ERROR: Cannot have multiple '*' default rows in table '" + newTableName + "'.");
               }
             } else {
-
               LookupTableKey attributeRecordsLookupKey = new LookupTableKey(attributeRecords,
                   this.attributes.indexOf("age"), -1);
               // Create DistributedTransitionOption Arraylist of transition probabilities
-              ArrayList<DistributedTransitionOption> transitionProbabilities = new ArrayList<DistributedTransitionOption>();
-              for (int currentTransitionProbability = 0; currentTransitionProbability < this.transitions
-                  .size(); currentTransitionProbability++) {
-
-                DistributedTransitionOption currentOption = new DistributedTransitionOption();
-                currentOption.numericDistribution = Double
-                    .parseDouble(records.get(currentRecord).get(numAttributes + currentTransitionProbability));
-
-                if (records.get(0).get(numAttributes + currentTransitionProbability)
-                    .equals(transitions.get(currentTransitionProbability).transition)) {
-                  currentOption.transition = transitions.get(currentTransitionProbability).transition;
-                  transitionProbabilities.add(currentOption);
-                } else {
-                  throw new RuntimeException("CSV/JSON ERROR: CSV column state name '"
-                      + records.get(0).get(numAttributes + currentTransitionProbability)
-                      + "' does not match JSON state to transition to '"
-                      + transitions.get(currentTransitionProbability).transition + "' in CSV table " + newTableName);
-                }
-              }
+              ArrayList<DistributedTransitionOption> transitionProbabilities = createDistributedTransitionOptions(
+                  records, currentRecord, numAttributes, newTableName);
               // Insert new record into new table
               newTable.put(attributeRecordsLookupKey, transitionProbabilities);
             }
-            // can't close csvData File?
-            parser.close();
           }
           // Insert new table into lookupTables Hashmap
           lookupTables.put(newTableName, newTable);
@@ -234,20 +197,50 @@ public abstract class Transition {
       }
     }
 
+    private ArrayList<DistributedTransitionOption> createDistributedTransitionOptions(List<CSVRecord> records,
+        CSVRecord currentRecord, int numAttributes, String newTableName) {
+
+      ArrayList<DistributedTransitionOption> transitionProbabilities = new ArrayList<DistributedTransitionOption>();
+      for (int currentTransitionProbability = 0; currentTransitionProbability < this.transitions
+          .size(); currentTransitionProbability++) {
+        boolean columnMatched = false;
+
+        DistributedTransitionOption currentOption = new DistributedTransitionOption();
+        currentOption.numericDistribution = Double
+            .parseDouble(currentRecord.get(numAttributes + currentTransitionProbability));
+
+        // Allow CSV columns and JSON transitions to be in any order.
+        for (int currentColumnCheck = 0; currentColumnCheck < this.transitions.size(); currentColumnCheck++) {
+          if (records.get(0).get(numAttributes + currentColumnCheck)
+              .equals(transitions.get(currentTransitionProbability).transition)) {
+            currentOption.transition = transitions.get(currentColumnCheck).transition;
+            transitionProbabilities.add(currentOption);
+            columnMatched = true;
+          }
+        }
+        if (!columnMatched) {
+          throw new RuntimeException("LOOKUP TABLE CSV/JSON ERROR: CSV column state name '"
+              + records.get(0).get(numAttributes + currentTransitionProbability)
+              + "' does not match a JSON state to transition to in CSV table " + newTableName);
+        }
+      }
+      return transitionProbabilities;
+    }
+
     @Override
     public String follow(Person person, long time) {
 
       // Extract Person's list of relevant attributes
       String personAge = "-1";
       ArrayList<String> personsAttributes = new ArrayList<String>();
-      for (int attributeToAdd = 0; attributeToAdd < this.attributes.size(); attributeToAdd++) {
-        if (attributes.get(attributeToAdd).equals("age")) {
+      for (String attributeToAdd : this.attributes) {
+        attributeToAdd.toLowerCase();
+        if (attributeToAdd.equals("age")) {
           personAge = Integer.toString(person.ageInYears(time));
         } else {
-          String currentAttributeToCheck = (String) person.attributes
-              .get(this.attributes.get(attributeToAdd).toLowerCase());
+          String currentAttributeToCheck = (String) person.attributes.get(attributeToAdd);
           if (currentAttributeToCheck == null) {
-            throw new RuntimeException("CSV ATTRIBUTE ERROR: Attribute '" + this.attributes.get(attributeToAdd)
+            throw new RuntimeException("LOOKUP TABLE CSV ATTRIBUTE ERROR: Attribute '" + attributeToAdd
                 + "' does not exist as a Person's attribute.");
           }
           personsAttributes.add(currentAttributeToCheck);
@@ -258,19 +251,16 @@ public abstract class Transition {
       LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, this.attributes.indexOf("age"),
           Integer.parseInt(personAge));
       if (lookupTables.get(this.transitions.get(0).lookupTableName).containsKey(personsAttributesLookupKey)) {
-        // Person matches, use the list of distributedtransitionoptions in their
-        // corresponding record
+        // Person matches, use their attribute's list of distributedtransitionoptions
         return pickDistributedTransition(
             lookupTables.get(this.transitions.get(0).lookupTableName).get(personsAttributesLookupKey), person);
       } else {
-        // No attribute match
-        // Need to Return a default value... Or should we expect that every possibility
-        // is taken care of? Will "*" be a necesessity/fix?
+        // No attribute match, use default value
         return pickDistributedTransition(this.defaultTransition, person);
       }
     }
 
-    class LookupTableKey {
+    private class LookupTableKey {
 
       ArrayList<String> recordAttributes;
       int ageHigh;
@@ -284,13 +274,13 @@ public abstract class Transition {
           if (ageRange.indexOf("-") == -1 || ageRange.substring(0, ageRange.indexOf("-")).length() < 1
               || ageRange.substring(ageRange.indexOf("-") + 1).length() < 1) {
             throw new RuntimeException(
-                "CSV AGE ERROR: Age Range '" + ageRange + "' must be in the form: 'ageLow-ageHigh'");
+                "LOOKUP TABLE CSV AGE ERROR: Age Range '" + ageRange + "' must be in the form: 'ageLow-ageHigh'");
           }
           this.ageLow = Integer.parseInt(ageRange.substring(0, ageRange.indexOf("-")));
           this.ageHigh = Integer.parseInt(ageRange.substring(ageRange.indexOf("-") + 1));
           if (ageLow > ageHigh) {
             throw new RuntimeException(
-                "CSV AGE ERROR: low age '" + ageLow + "' must be less than high age '" + ageHigh + "'.");
+                "LOOKUP TABLE CSV AGE ERROR: low age '" + ageLow + "' must be less than high age '" + ageHigh + "'.");
           }
           attributes.remove(ageIndex);
         }
@@ -324,7 +314,6 @@ public abstract class Transition {
           // If this is a person
           if (personAge > -1) {
             return personAge >= lookupTableKey.ageLow && personAge <= lookupTableKey.ageHigh;
-
           } else {
             return attributes.equals(personAttributes);
           }

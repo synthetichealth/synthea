@@ -31,7 +31,7 @@ public class LookupTableTransitionTest {
   @Before
   public void setup() throws IOException {
     standardGeneratorOptions = new GeneratorOptions();
-    this.population = 250;
+    this.population = 150;
     standardGeneratorOptions.population = this.population;
     // Create Mild Lookuptablitis Condition
     mildLookuptablitis = new ActiveCondition();
@@ -125,7 +125,7 @@ public class LookupTableTransitionTest {
           }
         }
         else{
-          //assertTrue(moderateLookuptablitis.test(person, time));
+          //assertTrue(mildLookuptablitis.test(person, time));
         }
       }
       else {
@@ -190,7 +190,7 @@ public class LookupTableTransitionTest {
           }
         }
         else{
-          //assertTrue(moderateLookuptablitis.test(person, time));
+          //assertTrue(mildLookuptablitis.test(person, time));
         }
       }
     }
