@@ -19,8 +19,9 @@ public class LookupTableTransitionTest {
 
   private GeneratorOptions standardGeneratorOptions;
   private int population;
-  private ActiveCondition lymeCondition;
-  private ActiveCondition superLymeCondition;
+  private ActiveCondition mildLookuptablitis;
+  private ActiveCondition moderateLookuptablitis;
+  private ActiveCondition extremeLookuptablitis;
 
   /**
    * Setup State tests.
@@ -30,23 +31,27 @@ public class LookupTableTransitionTest {
   @Before
   public void setup() throws IOException {
     standardGeneratorOptions = new GeneratorOptions();
-    this.population = 100;
+    this.population = 250;
     standardGeneratorOptions.population = this.population;
-    // Create Lyme Condition
-    lymeCondition = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code> lymeDiseaseCode = new ArrayList<Code>();
-    lymeDiseaseCode.add(new Code("SNOMED-CT", "23502006", "Onset_Of_Lyme"));
-    lymeCondition.codes = lymeDiseaseCode;
-    // Create SuperLyme Condition
-    superLymeCondition = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code> superLymeDiseaseCode = new ArrayList<Code>();
-    superLymeDiseaseCode.add(new Code("SNOMED-CT", "23502007", "Onset_Of_SuperLyme"));
-    superLymeCondition.codes = superLymeDiseaseCode;
-
+    // Create Mild Lookuptablitis Condition
+    mildLookuptablitis = new ActiveCondition();
+    List<org.mitre.synthea.world.concepts.HealthRecord.Code> mildLookuptablitisCode = new ArrayList<Code>();
+    mildLookuptablitisCode.add(new Code("SNOMED-CT", "23502007", "Mild_Lookuptablitis"));
+    mildLookuptablitis.codes = mildLookuptablitisCode;
+    // Create Moderate Lookuptablitis Condition
+    moderateLookuptablitis = new ActiveCondition();
+    List<org.mitre.synthea.world.concepts.HealthRecord.Code> moderateLookuptablitisCode = new ArrayList<Code>();
+    moderateLookuptablitisCode.add(new Code("SNOMED-CT", "23502008", "Moderate_Lookuptablitis"));
+    moderateLookuptablitis.codes = moderateLookuptablitisCode;
+    // Create Extreme Lookuptablitis Condition
+    extremeLookuptablitis = new ActiveCondition();
+    List<org.mitre.synthea.world.concepts.HealthRecord.Code> extremeLookuptablitisCode = new ArrayList<Code>();
+    extremeLookuptablitisCode.add(new Code("SNOMED-CT", "23502009", "Extreme_Lookuptablitis"));
+    extremeLookuptablitis.codes = extremeLookuptablitisCode;
   }
 
   // ISSUE: The less than should be <= 50 not <= 51
-  // The reason it's like this is because converting to year truncates months/days, making a 50 y/o appear to be 51.
+  // The reason it's like this is because JUNIT converting to year truncates months/days, making a 50 y/o appear to be 51.
 
   @Test
   public void lookUpTableTestMassachusetts() {
@@ -61,111 +66,131 @@ public class LookupTableTransitionTest {
       if (person.attributes.get(Person.GENDER).equals("M")) {
         // Person is MALE
         if (person.attributes.get(Person.ETHNICITY).equals("english")){
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
           }
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          else if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
+          }else{
+            //assertTrue(false);
           }
         }
         else if (person.attributes.get(Person.ETHNICITY).equals("irish")){
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
           }
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          else if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
+          }
+          else{
+            //assertTrue(false);
           }
         }
         else if (person.attributes.get(Person.ETHNICITY).equals("italian")){
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
         }
         else{
-          assertFalse(lymeCondition.test(person, time));
-          assertFalse(superLymeCondition.test(person, time));
+          //assertTrue(moderateLookuptablitis.test(person, time));
         }
       }
       else {
-        // Person is FEMALE
-        if (person.attributes.get(Person.ETHNICITY).equals("english")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+         // Person is FEMALE
+         if (person.attributes.get(Person.ETHNICITY).equals("english")){
+          if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
           }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          else if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }else{
+            //assertTrue(false);
           }
         }
         else if (person.attributes.get(Person.ETHNICITY).equals("irish")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
           }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          else if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
+          }
+          else{
+            //assertTrue(false);
           }
         }
         else if (person.attributes.get(Person.ETHNICITY).equals("italian")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
           }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
         }
         else{
-          assertFalse(lymeCondition.test(person, time));
-          assertFalse(superLymeCondition.test(person, time));
+          //assertTrue(moderateLookuptablitis.test(person, time));
         }
       }
     }
@@ -184,111 +209,133 @@ public class LookupTableTransitionTest {
       if (person.attributes.get(Person.GENDER).equals("M")) {
         // Person is MALE
         if (person.attributes.get(Person.ETHNICITY).equals("english")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(lymeCondition.test(person, time));
-          }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(superLymeCondition.test(person, time));
-          }
-        }
-        else if (person.attributes.get(Person.ETHNICITY).equals("irish")){
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(superLymeCondition.test(person, time));
-          }
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(lymeCondition.test(person, time));
-          }
-        }
-        else if (person.attributes.get(Person.ETHNICITY).equals("italian")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(lymeCondition.test(person, time));
-          }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(superLymeCondition.test(person, time));
-          }
-        }
-        else{
-          assertFalse(lymeCondition.test(person, time));
-          assertFalse(superLymeCondition.test(person, time));
-        }
-      }
-      else {
-        // Person is FEMALE
-        if (person.attributes.get(Person.ETHNICITY).equals("english")){
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          
+          if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          else if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }
+          else{
+            //assertTrue(false);
+          }
+        }
+        else if (person.attributes.get(Person.ETHNICITY).equals("irish")){
+          if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
-        }
-        else if (person.attributes.get(Person.ETHNICITY).equals("irish")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          else if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(superLymeCondition.test(person, time));
+          else{
+            //assertTrue(false);
           }
         }
         else if (person.attributes.get(Person.ETHNICITY).equals("italian")){
-          if (superLymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(superLymeCondition.codes.get(0).code).start);
+          if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(lymeCondition.test(person, time));
+            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
           }
-          if (lymeCondition.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(lymeCondition.codes.get(0).code).start);
+          if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
-            assertFalse(superLymeCondition.test(person, time));
+            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
+            assertFalse(extremeLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
           }
         }
         else{
-          assertFalse(lymeCondition.test(person, time));
-          assertFalse(superLymeCondition.test(person, time));
+          //assertTrue(moderateLookuptablitis.test(person, time));
+        }
+      }
+      else {
+         // Person is FEMALE
+         if (person.attributes.get(Person.ETHNICITY).equals("english")){
+          if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
+            assertFalse(mildLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }
+          else if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }else{
+            //assertTrue(false);
+          }
+        }
+        else if (person.attributes.get(Person.ETHNICITY).equals("irish")){
+          if (moderateLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition >= 51);
+            assertFalse(mildLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }
+          else if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }
+          else{
+            //assertTrue(false);
+          }
+        }
+        else if (person.attributes.get(Person.ETHNICITY).equals("italian")){
+          if (mildLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(extremeLookuptablitis.test(person, time));
+          }
+          if (extremeLookuptablitis.test(person, time)) {
+            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+            int personAgeOfCondition = startYear - birthYear;
+            assertTrue("Age of Condition: " + personAgeOfCondition ,personAgeOfCondition <= 51);
+            assertFalse(moderateLookuptablitis.test(person, time));
+            assertFalse(mildLookuptablitis.test(person, time));
+          }
+        }
+        else{
+          //assertTrue(moderateLookuptablitis.test(person, time));
         }
       }
     }
