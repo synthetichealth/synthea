@@ -200,84 +200,84 @@
       "type": "Symptom",
       "symptom": "Lump/mass",
       "cause": "",
-      "probability": 1,
+      "probability": 0.8,
       "direct_transition": "BreastCancer_Symptom2",
-      "range": {
-        "low": 1,
-        "high": 2
-      },
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
-      ]
+      ],
+      "range": {
+        "low": 10,
+        "high": 20
+      }
     },
     "BreastCancer_Symptom2": {
       "type": "Symptom",
       "symptom": "Swelling",
       "cause": "",
-      "probability": 1,
+      "probability": 0.9,
       "direct_transition": "BreastCancer_Symptom3",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
       ],
       "range": {
-        "low": 1,
-        "high": 2
+        "low": 20,
+        "high": 30
       }
     },
     "BreastCancer_Symptom4": {
       "type": "Symptom",
       "symptom": "Breast/Nipple Pain",
       "cause": "",
-      "probability": 1,
+      "probability": 0.95,
       "direct_transition": "BreastCancer_Symptom5",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
       ],
       "range": {
-        "low": 1,
-        "high": 2
+        "low": 20,
+        "high": 60
       }
     },
     "BreastCancer_Symptom3": {
       "type": "Symptom",
       "symptom": "Skin Irritation/Dimpling",
       "cause": "",
-      "probability": 1,
+      "probability": 0.8,
       "direct_transition": "BreastCancer_Symptom4",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
       ],
       "range": {
-        "low": 1,
-        "high": 2
+        "low": 0,
+        "high": 35
       }
     },
     "BreastCancer_Symptom5": {
       "type": "Symptom",
       "symptom": "Nipple Retraction",
       "cause": "",
-      "probability": 1,
+      "probability": 0.65,
       "direct_transition": "BreastCancer_Symptom6",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
       ],
       "range": {
-        "low": 1,
-        "high": 2
+        "low": 0,
+        "high": 10
       }
     },
     "BreastCancer_Symptom6": {
       "type": "Symptom",
       "symptom": "Nipple Discharge",
       "cause": "",
-      "probability": 1,
+      "probability": 0.35,
       "direct_transition": "Breast Cancer",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
       ],
       "range": {
-        "low": 1,
-        "high": 2
+        "low": 0,
+        "high": 5
       }
     },
     "Breast Cancer": {
@@ -320,8 +320,8 @@
         }
       ],
       "duration": {
-        "low": 0,
-        "high": 30,
+        "low": 45,
+        "high": 90,
         "unit": "minutes"
       },
       "direct_transition": "TNM/Marker tests"
@@ -335,12 +335,12 @@
           "display": "Screening for malignant neoplasm of breast (procedure)"
         }
       ],
+      "direct_transition": "TNM/Marker tests",
       "duration": {
-        "low": 0,
-        "high": 30,
+        "low": 15,
+        "high": 25,
         "unit": "minutes"
-      },
-      "direct_transition": "TNM/Marker tests"
+      }
     },
     "Ultrasound": {
       "type": "Procedure",
@@ -352,7 +352,7 @@
         }
       ],
       "duration": {
-        "low": 0,
+        "low": 15,
         "high": 30,
         "unit": "minutes"
       },
@@ -374,26 +374,6 @@
     "Treatment": {
       "type": "Simple",
       "direct_transition": "Terminal"
-    },
-    "Race": {
-      "type": "Simple",
-      "direct_transition": "Race"
-    },
-    "Race_White": {
-      "type": "Observation",
-      "category": "social-history",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "1234",
-          "display": "LOINC Code"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "Race_White"
     }
   }
 }

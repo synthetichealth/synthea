@@ -217,17 +217,12 @@
           "system": "SNOMED-CT",
           "code": 433114000,
           "display": "Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure)"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 0,
+        "high": 1,
+        "unit": "days"
       },
       "distributed_transition": [
         {
@@ -253,9 +248,9 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 0,
+        "high": 1,
+        "unit": "days"
       },
       "direct_transition": "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Immunochemistry",
       "remarks": [
@@ -291,23 +286,16 @@
           "display": "HER2 [Presence] in Breast cancer specimen by Immune stain"
         }
       ],
-      "direct_transition": "Targeted HER2 Therapies",
+      "direct_transition": "Targeted HER2 Therapy",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 427685000,
         "display": "Human epidermal growth factor 2 positive carcinoma of breast (disorder)"
       }
     },
-    "Targeted HER2 Therapies": {
-      "type": "Simple",
-      "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
-      "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
-      ]
-    },
     "ER-negative": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "procedure",
       "unit": "",
       "codes": [
         {
@@ -325,7 +313,7 @@
     },
     "ER-positive": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "procedure",
       "unit": "",
       "codes": [
         {
@@ -339,7 +327,7 @@
         "code": 416053008,
         "display": "Estrogen receptor positive tumor (disorder)"
       },
-      "direct_transition": "ER Hormone Therapy Drugs"
+      "direct_transition": "Estrogen Receptor Blocker"
     },
     "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status": {
       "type": "Procedure",
@@ -351,9 +339,9 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 0,
+        "high": 1,
+        "unit": "days"
       },
       "remarks": [
         "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
@@ -408,9 +396,9 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 0,
+        "high": 1,
+        "unit": "days"
       },
       "remarks": [
         "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
@@ -430,7 +418,7 @@
     },
     "PR_negative": {
       "type": "Observation",
-      "category": "survey",
+      "category": "procedure",
       "unit": "",
       "codes": [
         {
@@ -448,7 +436,7 @@
     },
     "PR-positive": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "procedure",
       "unit": "",
       "codes": [
         {
@@ -462,15 +450,7 @@
         "code": 416561008,
         "display": "Progesterone receptor positive tumor (disorder)"
       },
-      "direct_transition": "PR Hormone Therapy Drugs"
-    },
-    "ER Hormone Therapy Drugs": {
-      "type": "Simple",
-      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status"
-    },
-    "PR Hormone Therapy Drugs": {
-      "type": "Simple",
-      "direct_transition": "Overall Receptor Analysis"
+      "direct_transition": "Synthetic Progesterone Treatment"
     },
     "Overall Receptor Analysis": {
       "type": "Simple",
@@ -478,16 +458,58 @@
         {
           "transition": "Triple_Negative",
           "condition": {
-            "condition_type": "Observation",
-            "codes": [
+            "condition_type": "At Least",
+            "minimum": 3,
+            "conditions": [
               {
-                "system": "LOINC",
-                "code": "72107-6",
-                "display": "Mini Mental State Examination"
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "85319-2",
+                    "display": "HER2 [Presence] in Breast cancer specimen by Immune stain"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 431396003,
+                  "display": "Human epidermal growth factor 2 negative carcinoma of breast (disorder)"
+                }
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "66110-8",
+                    "display": "Breast Pathology biopsy report"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 441117001,
+                  "display": "Estrogen receptor negative neoplasm (disorder)"
+                }
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "66110-8",
+                    "display": "Breast Pathology biopsy report"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 441118006,
+                  "display": "Progesterone receptor negative neoplasm (disorder)"
+                }
               }
-            ],
-            "operator": "==",
-            "value": 0
+            ]
           }
         },
         {
@@ -500,7 +522,7 @@
     },
     "Triple_Negative": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "procedure",
       "unit": "",
       "codes": [
         {
@@ -514,7 +536,7 @@
         "code": 706970001,
         "display": "Triple negative malignant neoplasm of breast (disorder)"
       },
-      "direct_transition": "Triple Negative therapy options"
+      "direct_transition": "Chemotherapy Drug"
     },
     "TNM_Analysis": {
       "type": "Simple",
@@ -528,10 +550,6 @@
           "distribution": 0.7
         }
       ]
-    },
-    "Triple Negative therapy options": {
-      "type": "Simple",
-      "direct_transition": "TNM_Analysis"
     },
     "N0": {
       "type": "Observation",
@@ -634,10 +652,6 @@
         "display": "N3 category (finding)"
       },
       "direct_transition": "Stage 3C"
-    },
-    "Surgery": {
-      "type": "Simple",
-      "direct_transition": "Surgery"
     },
     "Radiation therapy": {
       "type": "Simple",
@@ -932,6 +946,130 @@
           "distribution": 0.5
         }
       ]
+    },
+    "Targeted HER2 Therapy": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 224905,
+          "display": "trastuzumab"
+        }
+      ],
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Targeted HER2 Therapy Part 2",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Targeted HER2 Therapy Part 2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1298944,
+          "display": "pertuzumab"
+        }
+      ],
+      "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status"
+    },
+    "Estrogen Receptor Blocker": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 10324,
+          "display": "Tamoxifen"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Aromatase_Inhibitor_1",
+          "distribution": 0.34
+        },
+        {
+          "transition": "Aromatase_Inhibitor_2",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Aromatase_Inhibitor_3",
+          "distribution": 0.33
+        }
+      ]
+    },
+    "Aromatase_Inhibitor_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 84857,
+          "display": "anastrozole"
+        }
+      ],
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status"
+    },
+    "Aromatase_Inhibitor_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 258494,
+          "display": "exemestane"
+        }
+      ],
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status"
+    },
+    "Aromatase_Inhibitor_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 72965,
+          "display": "letrozole"
+        }
+      ],
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status"
+    },
+    "Synthetic Progesterone Treatment": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 29451,
+          "display": "Megestrol Acetate"
+        }
+      ],
+      "direct_transition": "Overall Receptor Analysis"
+    },
+    "Chemotherapy Drug": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 486610,
+          "display": "paclitaxel protein-bound"
+        }
+      ],
+      "direct_transition": "Immunotherapy Drug"
+    },
+    "Immunotherapy Drug": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1792776,
+          "display": "atezolizumab"
+        }
+      ],
+      "direct_transition": "TNM_Analysis"
     }
   }
 }
