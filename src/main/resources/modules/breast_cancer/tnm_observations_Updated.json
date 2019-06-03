@@ -604,7 +604,7 @@
     },
     "Radiation therapy": {
       "type": "Simple",
-      "direct_transition": "Radiation therapy"
+      "direct_transition": "Mastectomy"
     },
     "Neoadjuvant Chemotherapy": {
       "type": "Simple",
@@ -625,7 +625,64 @@
     },
     "Stage 1B": {
       "type": "Simple",
-      "direct_transition": "Stage 1B"
+      "distributed_transition": [
+        {
+          "transition": "Sentinel Lymph Node Biopsy (SLNB)",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Axillary Lymph Node Dissection (ALND)",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Mastectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 69031006,
+          "display": "Excision of breast tissue (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Radiation therapy"
+    },
+    "Sentinel Lymph Node Biopsy (SLNB)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396487001,
+          "display": "Sentinel lymph node biopsy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Sentinel Lymph Node Biopsy (SLNB)"
+    },
+    "Axillary Lymph Node Dissection (ALND)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 234262008,
+          "display": "Excision of axillary lymph node (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Axillary Lymph Node Dissection (ALND)"
     }
   }
 }
