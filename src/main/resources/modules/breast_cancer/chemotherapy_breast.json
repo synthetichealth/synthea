@@ -16,14 +16,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 3,
+        "high": 12,
+        "unit": "months"
       },
       "distributed_transition": [
         {

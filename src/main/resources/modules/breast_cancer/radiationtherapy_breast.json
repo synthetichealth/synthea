@@ -16,14 +16,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 385798007,
+          "display": "Radiation therapy care (regime/therapy)"
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 5,
+        "high": 8,
+        "unit": "weeks"
       },
       "distributed_transition": [
         {
@@ -34,6 +34,9 @@
           "transition": "Mastectomy",
           "distribution": 0.4
         }
+      ],
+      "remarks": [
+        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
       ]
     },
     "Mastectomy": {
@@ -41,29 +44,32 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 69031006,
+          "display": "Excision of breast tissue (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
+        "low": 2,
+        "high": 3,
+        "unit": "hours"
       },
-      "direct_transition": "External Beam Radiation"
+      "direct_transition": "External Beam Radiation",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ]
     },
     "Breast-conserving surgery (BCS)": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 392021009,
+          "display": "Lumpectomy of breast (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
+        "low": 15,
+        "high": 40,
         "unit": "minutes"
       },
       "distributed_transition": [
@@ -83,6 +89,9 @@
           "transition": "Brachytherapy",
           "distribution": 0.1
         }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
       ]
     },
     "External Beam Radiation": {
@@ -90,8 +99,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 33195004,
+          "display": "Teleradiotherapy procedure (procedure)"
         }
       ],
       "duration": {
@@ -109,16 +118,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 385798007,
+          "display": "Radiation therapy care (regime/therapy)"
         }
       ],
       "duration": {
         "low": 3,
-        "high": 3,
+        "high": 5,
         "unit": "weeks"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "remarks": [
+        "https://www.breastcancer.org/research-news/accelerated-whole-breast-radiation-new-standard"
+      ]
     },
     "Intraoperative radiation therapy (IORT)": {
       "type": "Procedure",
@@ -126,32 +138,37 @@
         {
           "system": "SNOMED-CT",
           "code": "1234",
-          "display": "SNOMED Code"
+          "display": "Radiotherapy - intraoperative control (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
+        "low": 15,
+        "high": 40,
         "unit": "minutes"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5493441/",
+        "https://uihc.org/health-topics/intraoperative-radiation-therapy-iort"
+      ]
     },
     "Brachytherapy": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": "SCTID: 447759004",
+          "display": "Brachytherapy of breast (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
+        "low": 1,
         "high": 30,
-        "unit": "minutes"
+        "unit": "days"
       },
       "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
       ],
       "distributed_transition": [
         {
@@ -169,32 +186,38 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 113120007,
+          "display": "Interstitial brachytherapy (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
+        "low": 1,
         "high": 30,
-        "unit": "minutes"
+        "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ]
     },
     "Intracavitary brachytherapy": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 384692006,
+          "display": "Intracavitary brachytherapy (procedure)"
         }
       ],
       "duration": {
-        "low": 30,
+        "low": 1,
         "high": 30,
-        "unit": "minutes"
+        "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ]
     }
   }
 }
