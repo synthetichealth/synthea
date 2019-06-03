@@ -91,27 +91,21 @@
           "display": "Primary tumor.clinical"
         }
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 0,
-            "unit": "years"
-          },
-          "distributions": [
-            {
-              "transition": "T4",
-              "distribution": 1
-            }
-          ]
-        }
-      ],
       "value_code": {
         "system": "SNOMED-CT",
         "code": 65565005,
         "display": "T4 category (finding)"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "Stage 3B",
+          "distribution": 1
+        },
+        {
+          "transition": "Stage 3C",
+          "distribution": 1
+        }
+      ]
     },
     "T2": {
       "type": "Observation",
@@ -129,7 +123,16 @@
         "code": 67673008,
         "display": "T2 category (finding)"
       },
-      "direct_transition": "T3"
+      "distributed_transition": [
+        {
+          "transition": "T3",
+          "distribution": 1
+        },
+        {
+          "transition": "Stage 2B",
+          "distribution": 1
+        }
+      ]
     },
     "T3": {
       "type": "Observation",
@@ -147,7 +150,16 @@
         "code": 14410001,
         "display": "T3 category (finding)"
       },
-      "direct_transition": "T4"
+      "distributed_transition": [
+        {
+          "transition": "T4",
+          "distribution": 1
+        },
+        {
+          "transition": "Stage 3A",
+          "distribution": 1
+        }
+      ]
     },
     "T1": {
       "type": "Observation",
@@ -172,7 +184,11 @@
         },
         {
           "transition": "Stage 1A",
-          "distribution": 0.5
+          "distribution": 0.25
+        },
+        {
+          "transition": "Stage 2A",
+          "distribution": 0.25
         }
       ]
     },
@@ -554,11 +570,19 @@
       "distributed_transition": [
         {
           "transition": "N2",
-          "distribution": 0.5
+          "distribution": 0.25
         },
         {
           "transition": "Stage 1B",
-          "distribution": 0.5
+          "distribution": 0.25
+        },
+        {
+          "transition": "Stage 2A",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Stage 2B",
+          "distribution": 0.25
         }
       ]
     },
@@ -573,12 +597,25 @@
           "display": "Lymph node involvement Cancer"
         }
       ],
-      "direct_transition": "N3",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 46059003,
         "display": "N2 category (finding)"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "Stage 3A",
+          "distribution": 1
+        },
+        {
+          "transition": "N3",
+          "distribution": 1
+        },
+        {
+          "transition": "Stage 3B",
+          "distribution": 1
+        }
+      ]
     },
     "N3": {
       "type": "Observation",
@@ -591,12 +628,12 @@
           "display": "Lymph node involvement Cancer"
         }
       ],
-      "direct_transition": "N3",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 5856006,
         "display": "N3 category (finding)"
-      }
+      },
+      "direct_transition": "Stage 3C"
     },
     "Surgery": {
       "type": "Simple",
@@ -608,7 +645,16 @@
     },
     "Neoadjuvant Chemotherapy": {
       "type": "Simple",
-      "direct_transition": "Neoadjuvant Chemotherapy"
+      "distributed_transition": [
+        {
+          "transition": "Trastuzumab",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Pertuzumab",
+          "distribution": 0.5
+        }
+      ]
     },
     "Stage 1A": {
       "type": "Simple",
@@ -650,7 +696,21 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Radiation therapy"
+      "distributed_transition": [
+        {
+          "transition": "T2",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.98
+        }
+      ],
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/ChancesForSurvivalBasedOnCancerStage.html",
+        "https://www.medicalnewstoday.com/articles/316867.php",
+        ""
+      ]
     },
     "Sentinel Lymph Node Biopsy (SLNB)": {
       "type": "Procedure",
@@ -666,7 +726,16 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Sentinel Lymph Node Biopsy (SLNB)"
+      "distributed_transition": [
+        {
+          "transition": "N2",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.98
+        }
+      ]
     },
     "Axillary Lymph Node Dissection (ALND)": {
       "type": "Procedure",
@@ -682,7 +751,187 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Axillary Lymph Node Dissection (ALND)"
+      "distributed_transition": [
+        {
+          "transition": "N2",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Stage 2A": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Breast",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Lymph",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Stage 2B": {
+      "type": "Simple",
+      "direct_transition": "Stage 2B"
+    },
+    "Stage 3A": {
+      "type": "Simple",
+      "direct_transition": "Stage 3A"
+    },
+    "Stage 3B": {
+      "type": "Simple",
+      "direct_transition": "Stage 3B"
+    },
+    "Stage 3C": {
+      "type": "Simple",
+      "direct_transition": "Stage 3C"
+    },
+    "Trastuzumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 101306,
+          "display": "Herceptin"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "T2",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Pertuzumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1298949,
+          "display": "Perjeta"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.98
+        },
+        {
+          "transition": "T2",
+          "distribution": 0.02
+        }
+      ]
+    },
+    "Breast conserving surgery BCS": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392021009,
+          "display": "Lumpectomy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Radiation Thrpy (stage2a)",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Adjuvant Chemotherapy (stge2A)",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Breast": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Breast conserving surgery BCS",
+          "distribution": 1
+        }
+      ]
+    },
+    "Lymph": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "SLNB",
+          "distribution": 0.5
+        },
+        {
+          "transition": "ALND",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "SLNB": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396487001,
+          "display": "Sentinel lymph node biopsy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Transfer"
+    },
+    "ALND": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 234262008,
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Transfer"
+    },
+    "Radiation Thrpy (stage2a)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/radiationtherapy_breast",
+      "direct_transition": "Transfer"
+    },
+    "Adjuvant Chemotherapy (stge2A)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/chemotherapy_breast",
+      "direct_transition": "Transfer"
+    },
+    "Transfer": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "T2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "N2",
+          "distribution": 0.5
+        }
+      ]
     }
   }
 }

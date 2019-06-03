@@ -1,0 +1,200 @@
+{
+  "name": "Radiationtherapy_breast",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Radiation_Therapy"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Radiation_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Breast-conserving surgery (BCS)",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Mastectomy",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Mastectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "External Beam Radiation"
+    },
+    "Breast-conserving surgery (BCS)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Hypofractionated radiation therapy",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Intraoperative radiation therapy (IORT)",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Brachytherapy",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "External Beam Radiation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Terminal",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+      ]
+    },
+    "Hypofractionated radiation therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 3,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Intraoperative radiation therapy (IORT)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Interstitial Brachytherapy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Intracavitary brachytherapy",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Interstitial Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Intracavitary brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Terminal"
+    }
+  }
+}

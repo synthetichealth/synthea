@@ -1,0 +1,140 @@
+{
+  "name": "Chemotherapy_breast",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Adjuvant_Neoadjuvant_Chemotherapy"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Adjuvant_Neoadjuvant_Chemotherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Anthracyclines",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Taxanes",
+          "distribution": 0.2
+        },
+        {
+          "transition": "5-fluorouracil",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Cyclophosphamide",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Carboplatin",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Cyclophosphamide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 3002,
+          "display": "Cytoxan"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Anthracyclines": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Doxorubicin",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Epirubicin",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Carboplatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 40048,
+          "display": "Paraplatin"
+        }
+      ],
+      "direct_transition": "Carboplatin"
+    },
+    "Taxanes": {
+      "type": "Simple",
+      "direct_transition": "Paclitaxel"
+    },
+    "5-fluorouracil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 4492,
+          "display": "5-FU"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Doxorubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 42512,
+          "display": "Adriamycin"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "remarks": [
+        "- Doxorubicin (Adriamycin)",
+        "- Epriubicin (Ellence) ",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ]
+    },
+    "Epirubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 203766,
+          "display": "Ellence"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Paclitaxel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 202982,
+          "display": "Taxotere"
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  }
+}
