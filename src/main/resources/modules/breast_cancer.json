@@ -282,8 +282,6 @@
     },
     "Breast Cancer": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -291,24 +289,7 @@
           "display": "Malignant neoplasm of breast (disorder)"
         }
       ],
-      "distributed_transition": [
-        {
-          "transition": "MRI ",
-          "distribution": 0.29
-        },
-        {
-          "transition": "Mammogram",
-          "distribution": 0.28
-        },
-        {
-          "transition": "Ultrasound",
-          "distribution": 0.28
-        },
-        {
-          "transition": "Breast Biopsy",
-          "distribution": 0.35
-        }
-      ]
+      "direct_transition": "Breast Cancer Encounter"
     },
     "MRI ": {
       "type": "Procedure",
@@ -368,12 +349,48 @@
     },
     "TNM_caller": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_cancer_tnm_marker",
-      "direct_transition": "Treatment"
-    },
-    "Treatment": {
-      "type": "Simple",
+      "submodule": "TNM_Observations_Updated",
       "direct_transition": "Terminal"
+    },
+    "Breast Cancer Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 134405005,
+          "display": "Suspected breast cancer (situation)"
+        }
+      ],
+      "direct_transition": "Breast Cancer Screening"
+    },
+    "Breast Cancer Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 15886004,
+          "display": "Screening for cancer (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "MRI ",
+          "distribution": 0.29
+        },
+        {
+          "transition": "Mammogram",
+          "distribution": 0.28
+        },
+        {
+          "transition": "Ultrasound",
+          "distribution": 0.28
+        },
+        {
+          "transition": "Breast Biopsy",
+          "distribution": 0.35
+        }
+      ]
     }
   }
 }
