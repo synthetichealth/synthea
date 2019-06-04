@@ -26,10 +26,13 @@ public class Location {
 
   // cache the population by city name for performance
   private Map<String, Long> populationByCity;
+  private Map<String, Long> populationByCityId;
   private Map<String, List<Place>> zipCodes;
 
   public final String city;
+  private Demographics fixedCity;
   public final String state;
+  /** Map of CityId to Demographics. */
   private Map<String, Demographics> demographics;
 
   /**
@@ -50,20 +53,27 @@ public class Location {
       // because allDemographics will only contain that 1 city
       this.demographics = allDemographics.row(state);
 
-      if (city != null && !demographics.containsKey(city)) {
+      if (city != null 
+          && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
         throw new Exception("The city " + city + " was not found in the demographics file.");
       }
 
       long runningPopulation = 0;
-      populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
+      // linked to ensure consistent iteration order
+      populationByCity = new LinkedHashMap<>();
+      populationByCityId = new LinkedHashMap<>();      
       for (Demographics d : this.demographics.values()) {
         long pop = d.population;
         runningPopulation += pop;
-        populationByCity.put(d.city, pop);
+        if (populationByCity.containsKey(d.city)) {
+          populationByCity.put(d.city, pop + populationByCity.get(d.city));
+        } else {
+          populationByCity.put(d.city, pop);          
+        }
+        populationByCityId.put(d.id, pop);
       }
-      
+
       totalPopulation = runningPopulation;
-      
     } catch (Exception e) {
       System.err.println("ERROR: unable to load demographics");
       e.printStackTrace();
@@ -132,10 +142,15 @@ public class Location {
    */
   public Demographics randomCity(Random random) {
     if (city != null) {
-      // if we're only generating one city at a time, just use that one city
-      return demographics.get(city);
+      // if we're only generating one city at a time, just use the largest entry for that one city
+      if (fixedCity == null) {
+        fixedCity = demographics.values().stream()
+          .filter(d -> d.city.equalsIgnoreCase(city))
+          .sorted().findFirst().get();
+      }
+      return fixedCity;
     }
-    return demographics.get(randomCityName(random));
+    return demographics.get(randomCityId(random));
   }
   
   /**
@@ -144,9 +159,19 @@ public class Location {
    * @return a city name
    */
   public String randomCityName(Random random) {
+    String cityId = randomCityId(random);
+    return demographics.get(cityId).city;
+  }
+
+  /**
+   * Pick a random city id, weighted by population.
+   * @param random Source of randomness
+   * @return a city id
+   */
+  private String randomCityId(Random random) {
     long targetPop = (long) (random.nextDouble() * totalPopulation);
 
-    for (Map.Entry<String, Long> city : populationByCity.entrySet()) {
+    for (Map.Entry<String, Long> city : populationByCityId.entrySet()) {
       targetPop -= city.getValue();
 
       if (targetPop < 0) {
@@ -155,7 +180,7 @@ public class Location {
     }
 
     // should never happen
-    throw new RuntimeException("Unable to select a random city name.");
+    throw new RuntimeException("Unable to select a random city id.");
   }
 
   /**
