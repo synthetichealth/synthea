@@ -291,45 +291,38 @@
       ],
       "direct_transition": "Breast Cancer Encounter"
     },
-    "MRI ": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 268547008,
-          "display": "Screening for malignant neoplasm of breast (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 45,
-        "high": 90,
-        "unit": "minutes"
-      },
-      "direct_transition": "TNM/Marker tests"
-    },
     "Mammogram": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 268547008,
-          "display": "Screening for malignant neoplasm of breast (procedure)"
+          "code": 71651007,
+          "display": "Mammography (procedure)"
         }
       ],
-      "direct_transition": "TNM/Marker tests",
       "duration": {
         "low": 15,
         "high": 25,
         "unit": "minutes"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "MRI",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Ultrasound",
+          "distribution": 0.75
+        }
+      ]
     },
     "Ultrasound": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 268547008,
-          "display": "Screening for malignant neoplasm of breast (procedure)"
+          "code": 1571000087109,
+          "display": "Ultrasonography of bilateral breasts (procedure)"
         }
       ],
       "duration": {
@@ -337,20 +330,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "TNM/Marker tests"
-    },
-    "Breast Biopsy": {
-      "type": "Simple",
-      "direct_transition": "TNM/Marker tests"
-    },
-    "TNM/Marker tests": {
-      "type": "Simple",
-      "direct_transition": "TNM_caller"
-    },
-    "TNM_caller": {
-      "type": "CallSubmodule",
-      "submodule": "TNM_Observations_Updated",
-      "direct_transition": "Terminal"
+      "direct_transition": "Switch from Primary Care Physician to Oncologist"
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
@@ -373,24 +353,32 @@
           "display": "Screening for cancer (procedure)"
         }
       ],
-      "distributed_transition": [
+      "direct_transition": "Mammogram"
+    },
+    "TNM/Marker Tests": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/tnm_observations_updated",
+      "direct_transition": "Terminal"
+    },
+    "Switch from Primary Care Physician to Oncologist": {
+      "type": "EncounterEnd",
+      "direct_transition": "TNM/Marker Tests"
+    },
+    "MRI": {
+      "type": "Procedure",
+      "codes": [
         {
-          "transition": "MRI ",
-          "distribution": 0.29
-        },
-        {
-          "transition": "Mammogram",
-          "distribution": 0.28
-        },
-        {
-          "transition": "Ultrasound",
-          "distribution": 0.28
-        },
-        {
-          "transition": "Breast Biopsy",
-          "distribution": 0.35
+          "system": "SNOMED-CT",
+          "code": 241615005,
+          "display": "Magnetic resonance imaging of breast (procedure)"
         }
-      ]
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Switch from Primary Care Physician to Oncologist"
     }
   }
 }

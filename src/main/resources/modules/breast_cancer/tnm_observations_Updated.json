@@ -9,7 +9,7 @@
       "remarks": [
         "https://www.breastcancer.org/symptoms/types/recur_metast"
       ],
-      "direct_transition": "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Fluorescence in situ Hybridization (FISH)"
+      "direct_transition": "Oncologist Encounter"
     },
     "Terminal": {
       "type": "Terminal"
@@ -53,7 +53,7 @@
         "code": 2640006,
         "display": "Clinical stage IV (finding)"
       },
-      "direct_transition": "Five_Year_Survival"
+      "direct_transition": "End Breast Cancer Treatment"
     },
     "Five_Year_Survival": {
       "type": "Delay",
@@ -163,7 +163,7 @@
     },
     "T1": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "imaging",
       "unit": "",
       "codes": [
         {
@@ -194,7 +194,7 @@
     },
     "T0": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "imaging",
       "unit": "",
       "codes": [
         {
@@ -205,8 +205,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 23351008,
-        "display": "T1 category (finding)"
+        "code": 58790005,
+        "display": "T0 category (finding)"
       },
       "direct_transition": "T1"
     },
@@ -361,7 +361,7 @@
     },
     "No_Metastasis_(M0)": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "imaging",
       "unit": "",
       "codes": [
         {
@@ -513,7 +513,7 @@
           }
         },
         {
-          "transition": "TNM_Analysis"
+          "transition": "End Breast Cancer Hormone Treatment"
         }
       ],
       "remarks": [
@@ -549,6 +549,10 @@
           "transition": "No_Metastasis_(M0)",
           "distribution": 0.7
         }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/symptoms/types/recur_metast",
+        "Nearly 30% of women diagnosed with early-stage breast cancer will develop metastatic disease."
       ]
     },
     "N0": {
@@ -653,12 +657,20 @@
       },
       "direct_transition": "Stage 3C"
     },
-    "Radiation therapy": {
-      "type": "Simple",
-      "direct_transition": "Mastectomy"
-    },
     "Neoadjuvant Chemotherapy": {
-      "type": "Simple",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
       "distributed_transition": [
         {
           "transition": "Trastuzumab",
@@ -668,6 +680,9 @@
           "transition": "Pertuzumab",
           "distribution": 0.5
         }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/lumpectomy-after-neoadjuvant-chemo"
       ]
     },
     "Stage 1A": {
@@ -675,11 +690,11 @@
       "distributed_transition": [
         {
           "transition": "Neoadjuvant Chemotherapy",
-          "distribution": 0.5
+          "distribution": 0.205
         },
         {
-          "transition": "Radiation therapy",
-          "distribution": 0.5
+          "transition": "Surgery",
+          "distribution": 1
         }
       ]
     },
@@ -831,16 +846,7 @@
           "display": "Herceptin"
         }
       ],
-      "distributed_transition": [
-        {
-          "transition": "T2",
-          "distribution": 0.02
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.98
-        }
-      ]
+      "direct_transition": "Surgery"
     },
     "Pertuzumab": {
       "type": "MedicationOrder",
@@ -851,16 +857,7 @@
           "display": "Perjeta"
         }
       ],
-      "distributed_transition": [
-        {
-          "transition": "Terminal",
-          "distribution": 0.98
-        },
-        {
-          "transition": "T2",
-          "distribution": 0.02
-        }
-      ]
+      "direct_transition": "Surgery"
     },
     "Breast conserving surgery BCS": {
       "type": "Procedure",
@@ -1090,7 +1087,7 @@
           "display": "atezolizumab"
         }
       ],
-      "direct_transition": "TNM_Analysis"
+      "direct_transition": "Temp_Placeholder"
     },
     "Chemo (stage 2b)": {
       "type": "CallSubmodule",
@@ -1182,6 +1179,48 @@
           "distribution": 0.28
         }
       ]
+    },
+    "End Breast Cancer Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Five_Year_Survival"
+    },
+    "Breast Cancer Hormone Treatment": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385417002,
+          "display": "Breast TNM finding (finding)"
+        }
+      ],
+      "direct_transition": "Human Epidermal Growth Factor Receptor 2 (HER2) Detection - Fluorescence in situ Hybridization (FISH)"
+    },
+    "End Breast Cancer Hormone Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Temp_Placeholder"
+    },
+    "Temp_Placeholder": {
+      "type": "Simple",
+      "direct_transition": "Temp_Placeholder"
+    },
+    "Oncologist Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 310518002,
+          "display": "Admission by medical oncologist (procedure)"
+        }
+      ],
+      "direct_transition": "TNM_Analysis"
+    },
+    "Surgery": {
+      "type": "Simple",
+      "direct_transition": "Mastectomy"
     }
   }
 }
