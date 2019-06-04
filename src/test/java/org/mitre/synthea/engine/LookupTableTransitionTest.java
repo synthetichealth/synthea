@@ -36,17 +36,20 @@ public class LookupTableTransitionTest {
     standardGeneratorOptions.population = this.population;
     // Create Mild Lookuptablitis Condition
     mildLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code> mildLookuptablitisCode = new ArrayList<Code>();
+    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
+        mildLookuptablitisCode = new ArrayList<Code>();
     mildLookuptablitisCode.add(new Code("SNOMED-CT", "23502007", "Mild_Lookuptablitis"));
     mildLookuptablitis.codes = mildLookuptablitisCode;
     // Create Moderate Lookuptablitis Condition
     moderateLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code> moderateLookuptablitisCode = new ArrayList<Code>();
+    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
+        moderateLookuptablitisCode = new ArrayList<Code>();
     moderateLookuptablitisCode.add(new Code("SNOMED-CT", "23502008", "Moderate_Lookuptablitis"));
     moderateLookuptablitis.codes = moderateLookuptablitisCode;
     // Create Extreme Lookuptablitis Condition
     extremeLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code> extremeLookuptablitisCode = new ArrayList<Code>();
+    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
+        extremeLookuptablitisCode = new ArrayList<Code>();
     extremeLookuptablitisCode.add(new Code("SNOMED-CT", "23502009", "Extreme_Lookuptablitis"));
     extremeLookuptablitis.codes = extremeLookuptablitisCode;
   }
@@ -69,7 +72,8 @@ public class LookupTableTransitionTest {
         // Person is MALE
         if (person.attributes.get(Person.ETHNICITY).equals("english")) {
           if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -77,7 +81,8 @@ public class LookupTableTransitionTest {
             assertFalse(extremeLookuptablitis.test(person, time));
           }
           if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -90,15 +95,16 @@ public class LookupTableTransitionTest {
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
           if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -111,7 +117,8 @@ public class LookupTableTransitionTest {
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
           if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -119,8 +126,8 @@ public class LookupTableTransitionTest {
             assertFalse(mildLookuptablitis.test(person, time));
           }
           if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -133,7 +140,8 @@ public class LookupTableTransitionTest {
           }
         } else {
           if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time), extremeLookuptablitis.test(person, time));
+            assertTrue("Person age: " + person.ageInYears(time),
+                extremeLookuptablitis.test(person, time));
           }
         }
       } else {
@@ -148,7 +156,8 @@ public class LookupTableTransitionTest {
             assertFalse(mildLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -169,7 +178,8 @@ public class LookupTableTransitionTest {
             assertFalse(mildLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -182,14 +192,16 @@ public class LookupTableTransitionTest {
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
           if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -202,7 +214,8 @@ public class LookupTableTransitionTest {
           }
         } else {
           if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time), extremeLookuptablitis.test(person, time));
+            assertTrue("Person age: " + person.ageInYears(time),
+                extremeLookuptablitis.test(person, time));
           }
         }
       }
@@ -224,14 +237,16 @@ public class LookupTableTransitionTest {
         if (person.attributes.get(Person.ETHNICITY).equals("english")) {
 
           if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
           } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -242,7 +257,8 @@ public class LookupTableTransitionTest {
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
           if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -262,7 +278,8 @@ public class LookupTableTransitionTest {
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
 
           if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -281,7 +298,8 @@ public class LookupTableTransitionTest {
           }
         } else {
           if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time), extremeLookuptablitis.test(person, time));
+            assertTrue("Person age: " + person.ageInYears(time),
+                extremeLookuptablitis.test(person, time));
           }
         }
       } else {
@@ -296,7 +314,8 @@ public class LookupTableTransitionTest {
             assertFalse(mildLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
@@ -315,7 +334,8 @@ public class LookupTableTransitionTest {
             assertFalse(mildLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -326,14 +346,16 @@ public class LookupTableTransitionTest {
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
           if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(mildLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(mildLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
           } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present.get(extremeLookuptablitis.codes.get(0).code).start);
+            int startYear = Utilities.getYear(person.record.present
+                .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
             int personAgeOfCondition = startYear - birthYear;
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
@@ -342,7 +364,8 @@ public class LookupTableTransitionTest {
           }
         } else {
           if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time), extremeLookuptablitis.test(person, time));
+            assertTrue("Person age: " + person.ageInYears(time),
+                extremeLookuptablitis.test(person, time));
           }
         }
       }

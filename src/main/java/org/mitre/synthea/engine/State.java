@@ -64,7 +64,7 @@ public abstract class State implements Cloneable {
       this.transition = new ComplexTransition(complexTransition);
     } else if (lookupTableTransition != null) {
       this.transition = new LookupTableTransition(lookupTableTransition);
-    }else if (!(this instanceof Terminal)) {
+    } else if (!(this instanceof Terminal)) {
       throw new RuntimeException("State `" + name + "` has no transition.\n");
     }
   }

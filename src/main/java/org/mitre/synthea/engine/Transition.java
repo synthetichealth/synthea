@@ -5,10 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,7 +86,7 @@ public abstract class Transition {
    * effective distribution of 0.0).
    */
   public static final class DistributedTransition extends Transition {
-    private List<DistributedTransitionOption> transitions;
+    private List<DistributedTransitionOption>  transitions;
 
     public DistributedTransition(List<DistributedTransitionOption> transitions) {
       this.transitions = transitions;
@@ -123,7 +120,9 @@ public abstract class Transition {
   public static class LookupTableTransition extends Transition {
 
     // Map of lookupTables Data
-    private static HashMap<String, HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>> lookupTables = new HashMap<String, HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>>();
+    private static HashMap<String, HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>>
+        lookupTables = new HashMap<String, HashMap<LookupTableKey,
+            ArrayList<DistributedTransitionOption>>>();
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
     private ArrayList<String> stateNames;
@@ -131,21 +130,19 @@ public abstract class Transition {
     private String lookupTableName;
 
     /**
-     * Constructor for LookupTableTransition
-     * 
+     * Constructor for LookupTableTransition.
      * @param lookupTableTransitions transitions parsed from JSON
      */
     public LookupTableTransition(List<LookupTableTransitionOption> lookupTableTransitions) {
 
       this.transitions = lookupTableTransitions;
       this.attributes = new ArrayList<String>();
-      //Create Default Transition
+      // Create Default Transition
       this.defaultTransitions = new ArrayList<DistributedTransitionOption>();
-      for(LookupTableTransitionOption transitionOption : this.transitions) {
+      for (LookupTableTransitionOption transitionOption : this.transitions) {
         DistributedTransitionOption distributedTransitionOption = new DistributedTransitionOption();
         distributedTransitionOption.transition = transitionOption.transition;
         distributedTransitionOption.numericDistribution = transitionOption.defaultProbability;
-        System.out.println(transitionOption.transition + " -- " + transitionOption.defaultProbability);
         defaultTransitions.add(distributedTransitionOption);
       }
 
@@ -157,7 +154,8 @@ public abstract class Transition {
         }
         System.out.println("Loading Lookup Table: " + lookupTableName);
         // Hashmap for the new table
-        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
+        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>
+            newTable = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
 
         String fileName = null;
         fileName = "modules/lookup_tables/" + lookupTableName;
@@ -175,8 +173,8 @@ public abstract class Transition {
 
         // Parse List of Attributes
         this.attributes = new ArrayList<String>(lookupTable.get(0).keySet());
-        this.attributes.subList((this.attributes.size() - lookupTableTransitions.size()), this.attributes.size())
-            .clear();
+        this.attributes.subList((this.attributes.size() - lookupTableTransitions.size()),
+            this.attributes.size()).clear();
         // Parse list of State Transitions
         this.stateNames = new ArrayList<String>(lookupTable.get(0).keySet());
         this.stateNames.subList(0, this.attributes.size()).clear();
@@ -187,53 +185,41 @@ public abstract class Transition {
           currentAttributes.subList(this.attributes.size(), currentAttributes.size()).clear();
           LookupTableKey attributeRecordsLookupKey = new LookupTableKey(currentAttributes,
               this.attributes.indexOf("age"), -1);
-          ArrayList<DistributedTransitionOption> transitionProbabilities = new ArrayList<DistributedTransitionOption>();
+          ArrayList<DistributedTransitionOption> transitionProbabilities
+              = new ArrayList<DistributedTransitionOption>();
           transitionProbabilities = createDistributedTransitionOptions(currentRow);
           newTable.put(attributeRecordsLookupKey, transitionProbabilities);
         }
 
         lookupTables.put(lookupTableName, newTable);
-        // for (int checkAllStars = 0; checkAllStars < numAttributes; checkAllStars++) {
-        // if (!attributeRecords.get(0).equals("*")) {
-        // throw new RuntimeException(
-        // "LOOKUP TABLE CSV ERROR: Default rows must have '*' for each attribute in
-        // table '"
-        // + lookupTableName + "'.");
-        // }
-        // }
-
-        // if (this.defaultTransition == null) {
-        // this.defaultTransition = createDistributedTransitionOptions(records,
-        // currentRecord, numAttributes);
-        // } else {
-        // throw new RuntimeException("LOOKUP TABLE CSV ERROR: Cannot have multiple '*'
-        // default rows in table '"
-        // + lookupTableName + "'.");
-        // }
       }
     }
 
-    private ArrayList<DistributedTransitionOption> createDistributedTransitionOptions(Map<String, String> currentRow) {
+    private ArrayList<DistributedTransitionOption> createDistributedTransitionOptions(
+        Map<String, String> currentRow) {
 
-      ArrayList<DistributedTransitionOption> transitionProbabilities = new ArrayList<DistributedTransitionOption>();
+      ArrayList<DistributedTransitionOption> transitionProbabilities
+          = new ArrayList<DistributedTransitionOption>();
 
       for (String transitionName : this.stateNames) {
-        if (currentRow.containsKey(transitionName) && checkTransitionMatch(transitionName) ) {
+        if (currentRow.containsKey(transitionName) && checkTransitionMatch(transitionName)) {
           DistributedTransitionOption currentOption = new DistributedTransitionOption();
           currentOption.numericDistribution = Double.parseDouble(currentRow.get(transitionName));
           currentOption.transition = transitionName;// may be wrong
           transitionProbabilities.add(currentOption);
         } else {
-          throw new RuntimeException("LOOKUP TABLE CSV/JSON ERROR: CSV column state name '" + transitionName
-              + "' does not match a JSON state to transition to in CSV table '" + lookupTableName + "'");
+          throw new RuntimeException(
+              "LOOKUP TABLE CSV/JSON ERROR: CSV column state name '" + transitionName
+              + "' does not match a JSON state to transition to in CSV table '"
+              + lookupTableName + "'");
         }
       }
       return transitionProbabilities;
     }
 
     private boolean checkTransitionMatch(String transitionName) {
-      for(LookupTableTransitionOption option : this.transitions){
-        if(option.transition.equals(transitionName)){
+      for (LookupTableTransitionOption option : this.transitions) {
+        if (option.transition.equals(transitionName)) {
           return true;
         }
       }
@@ -253,18 +239,19 @@ public abstract class Transition {
         } else {
           String currentAttributeToCheck = (String) person.attributes.get(attributeToAdd);
           if (currentAttributeToCheck == null) {
-            throw new RuntimeException("LOOKUP TABLE CSV ATTRIBUTE ERROR: Attribute '" + attributeToAdd
-                + "' does not exist as one of this person's attributes.");
+            throw new RuntimeException("LOOKUP TABLE CSV ATTRIBUTE ERROR: Attribute '"
+                + attributeToAdd + "' does not exist as one of this person's attributes.");
           }
           personsAttributes.add(currentAttributeToCheck);
         }
       }
       // Create Key to get distributions
-      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, this.attributes.indexOf("age"),
-          Integer.parseInt(personAge));
+      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes,
+          this.attributes.indexOf("age"), Integer.parseInt(personAge));
       if (lookupTables.get(lookupTableName).containsKey(personsAttributesLookupKey)) {
         // Person matches, use their attribute's list of distributedtransitionoptions
-        return pickDistributedTransition(lookupTables.get(lookupTableName).get(personsAttributesLookupKey), person);
+        return pickDistributedTransition(
+            lookupTables.get(lookupTableName).get(personsAttributesLookupKey), person);
       } else {
         // No attribute match, use default value
         String tran = pickDistributedTransition(this.defaultTransitions, person);
@@ -283,12 +270,16 @@ public abstract class Transition {
       LookupTableKey(ArrayList<String> currentAttributes, int ageIndex, int personAge) {
         if (ageIndex > -1 && personAge < 0) {
           String ageRange = currentAttributes.get(ageIndex);
-          if (ageRange.indexOf("-") == -1 || ageRange.substring(0, ageRange.indexOf("-")).length() < 1
+          if (ageRange.indexOf("-") == -1 || ageRange.substring(
+              0, ageRange.indexOf("-")).length() < 1
               || ageRange.substring(ageRange.indexOf("-") + 1).length() < 1) {
             throw new RuntimeException(
-                "LOOKUP TABLE CSV AGE ERROR: Age Range '" + ageRange + "' must be in the form: 'ageLow-ageHigh'");
+                "LOOKUP TABLE CSV AGE ERROR: Age Range '" + ageRange
+                + "' must be in the form: 'ageLow-ageHigh'");
           }
-          this.ageRange = Range.between(Integer.parseInt(ageRange.substring(0, ageRange.indexOf("-"))), Integer.parseInt(ageRange.substring(ageRange.indexOf("-") + 1)));
+          this.ageRange = Range.between(Integer.parseInt(ageRange.substring(
+              0, ageRange.indexOf("-"))), Integer.parseInt(ageRange.substring(
+              ageRange.indexOf("-") + 1)));
           currentAttributes.remove(ageIndex);
         } else {
           this.ageRange = Range.between(-1, -1);
@@ -318,7 +309,7 @@ public abstract class Transition {
         if (this.ageIndex > -1) {
           // If this is a person
           if (personAge > -1) {
-            return lookupTableKey.ageRange.contains(personAge);//personAge >= lookupTableKey.ageLow && personAge <= lookupTableKey.ageHigh;
+            return lookupTableKey.ageRange.contains(personAge);
           } else {
             return attributes.equals(personAttributes);
           }
@@ -423,11 +414,13 @@ public abstract class Transition {
       } else if (option.distributions != null) {
         return pickDistributedTransition(option.distributions, person);
       }
-      throw new IllegalArgumentException("Complex Transition must have either transition or distributions");
+      throw new IllegalArgumentException(
+          "Complex Transition must have either transition or distributions");
     }
   }
 
-  private static String pickDistributedTransition(List<DistributedTransitionOption> transitions, Person person) {
+  private static String pickDistributedTransition(
+      List<DistributedTransitionOption> transitions, Person person) {
     double p = person.rand();
     double high = 0.0;
     for (DistributedTransitionOption option : transitions) {
@@ -440,10 +433,8 @@ public abstract class Transition {
         if (person.attributes.containsKey(nd.attribute)) {
           dist = (Double) person.attributes.get(nd.attribute);
         }
-
         high += dist;
       }
-
       if (p < high) {
         return option.transition;
       }
