@@ -791,19 +791,36 @@
     },
     "Stage 2B": {
       "type": "Simple",
-      "direct_transition": "Stage 2B"
+      "distributed_transition": [
+        {
+          "transition": "Radiation (stage2b)",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Chemo (stage 2b)",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Hormone_therapy",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Targeted_therapy",
+          "distribution": 0.25
+        }
+      ]
     },
     "Stage 3A": {
       "type": "Simple",
-      "direct_transition": "Stage 3A"
+      "direct_transition": "treatment_stage3"
     },
     "Stage 3B": {
       "type": "Simple",
-      "direct_transition": "Stage 3B"
+      "direct_transition": "treatment_stage3"
     },
     "Stage 3C": {
       "type": "Simple",
-      "direct_transition": "Stage 3C"
+      "direct_transition": "treatment_stage3"
     },
     "Trastuzumab": {
       "type": "MedicationOrder",
@@ -939,11 +956,15 @@
       "distributed_transition": [
         {
           "transition": "T2",
-          "distribution": 0.5
+          "distribution": 0.47
         },
         {
           "transition": "N2",
-          "distribution": 0.5
+          "distribution": 0.47
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.06
         }
       ]
     },
@@ -1070,6 +1091,97 @@
         }
       ],
       "direct_transition": "TNM_Analysis"
+    },
+    "Chemo (stage 2b)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/chemotherapy_breast",
+      "direct_transition": "transfer to 3"
+    },
+    "Radiation (stage2b)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/radiationtherapy_breast",
+      "direct_transition": "transfer to 3"
+    },
+    "Hormone_therapy": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/hormonetherapy_breast",
+      "direct_transition": "transfer to 3"
+    },
+    "Targeted_therapy": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/targetedtherapy_breast",
+      "direct_transition": "transfer to 3"
+    },
+    "transfer to 3": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "T3",
+          "distribution": 0.02
+        },
+        {
+          "transition": "T4",
+          "distribution": 0.01
+        },
+        {
+          "transition": "N2",
+          "distribution": 0.02
+        },
+        {
+          "transition": "N3",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.93
+        }
+      ]
+    },
+    "treatment_stage3": {
+      "type": "Simple",
+      "direct_transition": "Radiation (stage 3)"
+    },
+    "chemo (stage 3)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/chemotherapy_breast",
+      "distributed_transition": [
+        {
+          "transition": "Hormonal (stage 3)",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Targeted (stage 3)",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Radiation (stage 3)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/radiationtherapy_breast",
+      "direct_transition": "chemo (stage 3)"
+    },
+    "Targeted (stage 3)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/targetedtherapy_breast",
+      "direct_transition": "final_transfer"
+    },
+    "Hormonal (stage 3)": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/hormonetherapy_breast",
+      "direct_transition": "final_transfer"
+    },
+    "final_transfer": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.72
+        },
+        {
+          "transition": "Metastasis_(M1)",
+          "distribution": 0.28
+        }
+      ]
     }
   }
 }
