@@ -3,8 +3,17 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,27 +22,54 @@ import org.mitre.synthea.engine.Logic.ActiveCondition;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.powermock.reflect.Whitebox;
 
 public class LookupTableTransitionTest {
 
   private long time;
-
   private GeneratorOptions standardGeneratorOptions;
   private int population;
   private ActiveCondition mildLookuptablitis;
   private ActiveCondition moderateLookuptablitis;
   private ActiveCondition extremeLookuptablitis;
 
+  protected static Module getModule(String name) {
+    try {
+      Path modulesFolder = Paths.get("src/test/resources/generic");
+      Path logicFile = modulesFolder.resolve(name);
+      JsonReader reader = new JsonReader(new FileReader(logicFile.toString()));
+      JsonObject jsonModule = new JsonParser().parse(reader).getAsJsonObject();
+      reader.close();
+
+      return new Module(jsonModule, false);
+    } catch (Exception e) {
+      // if anything breaks, we can't fix it. throw a RuntimeException for simplicity
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+  }
+
   /**
    * Setup State tests.
-   * 
    * @throws IOException On File IO errors.
    */
   @Before
-  public void setup() {
+  public void setup() throws IOException {
+
+    // Hack in the lookuptable_test.json module
+    Map<String, Module.ModuleSupplier> modules =
+            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module lookuptabletestModule = getModule("lookuptable_test.json");
+    modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+
     standardGeneratorOptions = new GeneratorOptions();
-    this.population = 200;
+    this.population = 50;
     standardGeneratorOptions.population = this.population;
+    ArrayList<String> testList = new ArrayList<String>();
+    testList.add("Lookup Table Transition Test");
+    standardGeneratorOptions.enabledModules = testList;
+    
     // Create Mild Lookuptablitis Condition
     mildLookuptablitis = new ActiveCondition();
     List<org.mitre.synthea.world.concepts.HealthRecord.Code>
@@ -53,10 +89,6 @@ public class LookupTableTransitionTest {
     extremeLookuptablitisCode.add(new Code("SNOMED-CT", "23502009", "Extreme_Lookuptablitis"));
     extremeLookuptablitis.codes = extremeLookuptablitisCode;
   }
-
-  // NOTE: The less than should be <= 50 not <= 51
-  // The reason it's like this is because JUNIT converting to year truncates
-  // months/days, sometimes making a 50 y/o appear to be 51.
 
   @Test
   public void lookUpTableTestMassachusetts() {

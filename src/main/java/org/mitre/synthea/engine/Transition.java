@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +87,7 @@ public abstract class Transition {
    * effective distribution of 0.0).
    */
   public static final class DistributedTransition extends Transition {
-    private List<DistributedTransitionOption>  transitions;
+    private List<DistributedTransitionOption> transitions;
 
     public DistributedTransition(List<DistributedTransitionOption> transitions) {
       this.transitions = transitions;
@@ -119,10 +120,11 @@ public abstract class Transition {
    */
   public static class LookupTableTransition extends Transition {
 
-    // Map of lookupTables Data
-    private static HashMap<String, HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>>
-        lookupTables = new HashMap<String, HashMap<LookupTableKey,
-            ArrayList<DistributedTransitionOption>>>();
+    // Map of lookupTables
+    private static HashMap<String,
+        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>>
+        lookupTables = new HashMap<String,
+        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>>();
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
     private ArrayList<String> stateNames;
@@ -154,23 +156,26 @@ public abstract class Transition {
         }
         System.out.println("Loading Lookup Table: " + lookupTableName);
         // Hashmap for the new table
-        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>
-            newTable = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
-
+        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable =
+            new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
+        // Load in the respective CSV file
         String fileName = null;
-        fileName = "modules/lookup_tables/" + lookupTableName;
+        if (lookupTableName.contains("test")) {
+          fileName = lookupTableName;
+        } else {
+          fileName = "modules/lookup_tables/" + lookupTableName;
+        }
         String csv;
         List<? extends Map<String, String>> lookupTable = null;
         try {
           csv = Utilities.readResource(fileName);
           if (csv.startsWith("\uFEFF")) {
-            csv = csv.substring(1); // Remove BOM
+            csv = csv.substring(1); // Removes BOM
           }
           lookupTable = SimpleCSV.parse(csv);
         } catch (IOException e1) {
           e1.printStackTrace();
         }
-
         // Parse List of Attributes
         this.attributes = new ArrayList<String>(lookupTable.get(0).keySet());
         this.attributes.subList((this.attributes.size() - lookupTableTransitions.size()),
@@ -178,9 +183,8 @@ public abstract class Transition {
         // Parse list of State Transitions
         this.stateNames = new ArrayList<String>(lookupTable.get(0).keySet());
         this.stateNames.subList(0, this.attributes.size()).clear();
-
+        // Insert each row of CSV into Hashmap
         for (Map<String, String> currentRow : lookupTable) {
-
           ArrayList<String> currentAttributes = new ArrayList<String>(currentRow.values());
           currentAttributes.subList(this.attributes.size(), currentAttributes.size()).clear();
           LookupTableKey attributeRecordsLookupKey = new LookupTableKey(currentAttributes,
@@ -190,22 +194,22 @@ public abstract class Transition {
           transitionProbabilities = createDistributedTransitionOptions(currentRow);
           newTable.put(attributeRecordsLookupKey, transitionProbabilities);
         }
-
+        // Put new table into Hasmap of all tables
         lookupTables.put(lookupTableName, newTable);
       }
     }
 
+    // Creates Distributed Transition Options based on CSV probabilities and JSON States
     private ArrayList<DistributedTransitionOption> createDistributedTransitionOptions(
         Map<String, String> currentRow) {
 
       ArrayList<DistributedTransitionOption> transitionProbabilities
           = new ArrayList<DistributedTransitionOption>();
-
       for (String transitionName : this.stateNames) {
         if (currentRow.containsKey(transitionName) && checkTransitionMatch(transitionName)) {
           DistributedTransitionOption currentOption = new DistributedTransitionOption();
           currentOption.numericDistribution = Double.parseDouble(currentRow.get(transitionName));
-          currentOption.transition = transitionName;// may be wrong
+          currentOption.transition = transitionName;
           transitionProbabilities.add(currentOption);
         } else {
           throw new RuntimeException(
