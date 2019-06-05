@@ -36,7 +36,6 @@ title: home
                             </div>
                             <div class="panel-body">
                                 <p>
-                                    <!-- The availability of synthetic data can accelerate preliminary research, informing the direction of future studies in both academia and the wider healthcare space. -->
                                     The models used to generate synthetic patients are informed by numerous academic publications. Our synthetic populations provide insight into the validity of this research and encourage future studies in population health.
                                 </p>
                             </div>
@@ -71,7 +70,7 @@ title: home
                             </div>
                             <div class="panel-body">
                                 <p>
-                                    <!-- HIPAA compliance can limit the scope policy driven research in an effort to maintain citizen anonymity.  -->The effects of healthcare policy can be simulated, quickly and repeatably, in a synthetic population. Using this iterative approach, Synthea can guide policy with patient models at the state and county level that are free from privacy restrictions.
+                                    The effects of healthcare policy can be simulated, quickly and repeatably, in a synthetic population. Using this iterative approach, Synthea can guide policy with patient models at the state and county level that are free from privacy restrictions.
                                 </p>
                             </div>
                         </div>
@@ -96,7 +95,6 @@ title: home
                         <p>
                             Synthea’s Generic Module Framework (GMF) enables the modeling of various diseases and conditions that contribute to the medical history of synthetic patients. Each patient is simulated independently from birth to present day. Their diseases, conditions and medical care are defined by one or more generic modules.
                         </p>
-                        <!-- Synthea’s modules are at the core of each simulation. -->
                         <p>
                             Each module models events that could occur in a real patient’s life,  describing a progression of states and the transitions between them. These modules are informed by clinicians and real-world statistics collected by the CDC, NIH, and other research sources. Synthea started with modules for  the top ten reasons patients visit their primary care physician and the top ten conditions that result in years of life lost. Check out our <a href="https://github.com/synthetichealth/synthea/tree/gh-pages/graphviz" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea/tree/gh-pages/graphviz'); return false;">full gallery of modules</a> to see what we've added since.
                         </p>
@@ -128,10 +126,11 @@ title: home
                     <div class="img-card img-data eq-h-md">
                         <img src="{{site.baseurl}}/assets/img/guy_poly2.jpg" alt="Visual representation of a synthetic patient" class="eq-h-md">
                         <div class="btn-group btn-group-justified btn-group-raised">
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_stu3_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_stu3_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> FHIR STU3</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_dstu2_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_dstu2_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> FHIR DSTU2</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_ccda_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_ccda_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> CCDA</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_csv_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_csv_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> CSV</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR R4</a>  
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR STU3</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR DSTU2</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CCDA</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CSV</a>
                         </div>
                     </div>
                 </div>
@@ -143,7 +142,7 @@ title: home
                             For each synthetic patient, Synthea data contains a complete medical history, including medications, allergies, medical encounters, and social determinants of health. This data can be used without concern for legal or privacy restrictions. To support developers, clinicians and researchers alike, Synthea data is exported in a variety of data standards, including <a href="http://hl7.org/fhir/" onclick="trackOutboundLink('http://hl7.org/fhir/'); return false;">HL7 FHIR®</a>, <a href="https://www.healthit.gov/policy-researchers-implementers/consolidated-cda-overview" onclick="trackOutboundLink('https://www.healthit.gov/policy-researchers-implementers/consolidated-cda-overview'); return false;">C-CDA</a> and CSV.
                         </p>
                         <p>
-                            Use the buttons <span class="hidden-sm hidden-xs">to the left</span><span class="hidden-xl hidden-lg hidden-md">below</span> to download sample data in the available formats. You can also <a href="https://www.github.com/synthetichealth/synthea" onclick="trackOutboundLink('https://www.github.com/synthetichealth/synthea'); return false;">build the project yourself</a> to generate your own patients. For help or more information, <a href="mailto:synthea-list@groups.mitre.org">contact us</a>!
+                            Use the buttons <span class="hidden-sm hidden-xs">to the left</span><span class="hidden-xl hidden-lg hidden-md">below</span> to download over a thousand sample patients in the available formats. You can also <a href="https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running'); return false;">build the project yourself</a> to generate your own patients. For help or more information, <a href="mailto:synthea-list@groups.mitre.org">contact us</a>!
                         </p>
                     </div>
                 </div>
@@ -151,10 +150,11 @@ title: home
                     <div class="img-card img-data eq-h-md">
                         <img src="{{site.baseurl}}/assets/img/guy_poly2.jpg" alt="Visual representation of a synthetic patient" class="eq-h-md">
                         <div class="btn-group btn-group-justified btn-group-raised">
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_stu3_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_stu3_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> FHIR STU3</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_dstu2_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_dstu2_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> FHIR DSTU2</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_ccda_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_ccda_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> CCDA</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_csv_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_csv_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> CSV</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR R4</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR STU3</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR DSTU2</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CCDA</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CSV</a>
                         </div>
                     </div>
                 </div>
@@ -162,10 +162,11 @@ title: home
                     <div class="img-card img-data eq-h-md">
                         <img src="{{site.baseurl}}/assets/img/guy_poly2.jpg" alt="Visual representation of a synthetic patient" class="eq-h-md">
                         <div class=" btn-group btn-group-vertical btn-group-raised">
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_stu3_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_stu3_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> FHIR STU3</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_dstu2_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_fhir_dstu2_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> FHIR DSTU2</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_ccda_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_ccda_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> CCDA</a>
-                          <a href="https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_csv_nov2017.zip" onclick="trackOutboundLink('https://syntheticmass.mitre.org/downloads/2017_11_06/synthea_sample_data_csv_nov2017.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span> 1k Patients<br> CSV</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR R4</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR STU3</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR DSTU2</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CCDA</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_jun2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_jun2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CSV</a>
                         </div>
                     </div>
                 </div>
@@ -178,15 +179,15 @@ title: home
                         <h2>Empowering Health IT</h2>
                         <h3>Cutting Edge Research and Developement</h3>
                         <p>With a virtually limitless supply of synthetic patients, Synthea provides the foundational health data that researchers, clinicians, policy makers and software developers need to architect the next generation of Health IT solutions.</p>
-                        <p><a href='https://syntheticmass.mitre.org' onclick="trackOutboundLink('https://syntheticmass.mitre.org'); return false;">SyntheticMass</a>, an award winning simulated Health Information Exchange, is one of the applications already enabled by Synthea patient data. SyntheticMass allows users to visualize and interact with patient data on city, town, and individual patient levels, providing a sandbox to empower Health IT innovators to explore new healthcare solutions.</p>
+                        <p>Award-winning <a href='https://synthea.mitre.org' onclick="trackOutboundLink('https://synthea.mitre.org'); return false;">SyntheticMass</a>, is one of the applications already enabled by Synthea patient data. SyntheticMass provides users API access to patient data on city, town, and individual level, providing a sandbox to empower Health IT innovators to explore new healthcare solutions.</p>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="img-card img-rd eq-h-md" data-toggle="modal" data-target="#rdModal">
+                    <div class="img-card img-rd eq-h-md">
                         <img 
-                            src="{{site.baseurl}}/assets/img/syn-mass-dash-2-thin.png" 
-                            alt="An image of SyntheticMass, a simulated HIE made possible through Synthea's data." 
-                            class="clickable-img eq-h-md"
+                            src="{{site.baseurl}}/assets/img/syntheticmass_map.jpg" 
+                            alt="An image of SyntheticMass, an API made possible through Synthea's data." 
+                            class="eq-h-md"
                         >
                     </div>
                 </div>
@@ -253,7 +254,7 @@ title: home
                         <div class="row">
                             <div class="col-md-6">
                                 <p>
-                                    Synthea was started at The MITRE Corporation as part of the <a href="http://standardhealthrecord.org/" onclick="trackOutboundLink('http://standardhealthrecord.org/'); return false;">Standard Health Record Collaborative (SHRC)</a>, an open-source, health data interoperability effort. The Collaborative's focus is to develop a Standard Health Record (SHR) and the technological infrastructure that drives health innovation. Check out the <a href="https://www.standardhealthrecord.org/shr/" onclick="trackOutboundLink('https://www.standardhealthrecord.org/shr/'); return false;">SHR Specification Viewer</a> to provide feedback on the current iteration of the SHR, and visit the <a href="https://github.com/synthetichealth/syntheticmass" onclick="trackOutboundLink('https://github.com/synthetichealth/syntheticmass'); return false;">SyntheticMass GitHub page</a> to see how our contributors are shaping Health IT.
+                                    Synthea was started at The MITRE Corporation as part of the <a href="http://standardhealthrecord.org/" onclick="trackOutboundLink('http://standardhealthrecord.org/'); return false;">Standard Health Record Collaborative (SHRC)</a>, an open-source, health data interoperability effort. The Collaborative's focus is to develop a Standard Health Record (SHR) and the technological infrastructure that drives health innovation. Check out the <a href="https://www.standardhealthrecord.org/shr/" onclick="trackOutboundLink('https://www.standardhealthrecord.org/shr/'); return false;">SHR Specification Viewer</a> to provide feedback on the current iteration of the SHR.
                                 </p>
                             </div>
                             <div class="col-md-6">
@@ -269,7 +270,7 @@ title: home
                                             <br>
                                             <p>Standard Health Record</p>
                                         </a>
-                                        <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo" href="https://github.com/synthetichealth/syntheticmass/" onclick="trackOutboundLink('https://github.com/synthetichealth/syntheticmass/'); return false;">
+                                        <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo" href="https://synthea.mitre.org" onclick="trackOutboundLink('https://synthea.mitre.org'); return false;">
                                             <img class="shr-logo fa-fw" src='{{site.baseurl}}/assets/img/syn-mass-logo.png' alt='Synthea Logo'>
                                             <br>
                                             <p>Synthetic Mass</p>
@@ -408,11 +409,5 @@ title: home
 <div id="earinfectionModal" class="modal fade" tabindex="-1" style="display: none;">
   <div class="modal-dialog gmf-dialog">
     <img class="modal-content" src="{{site.baseurl}}/assets/img/ear-infection.png" alt="An example of one of Synthea's generic modules." style="max-width: 100%">
-  </div>
-</div>
-
-<div id="rdModal" class="modal fade" tabindex="-1" style="display: none;">
-  <div class="modal-dialog rd-dialog">
-    <img class="modal-content" src="{{site.baseurl}}/assets/img/syn-mass-dash-2.png" alt="An image of Synthetic Mass, a simulated HIE made possible through Synthea's data." style="max-width: 100%">
   </div>
 </div>
