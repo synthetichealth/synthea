@@ -288,7 +288,9 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"), INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
+    WELLNESS("AMB"), AMBULATORY("AMB"),
+    OUTPATIENT("AMB"), INPATIENT("IMP"),
+    EMERGENCY("EMER"), URGENTCARE("AMB");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -305,7 +307,9 @@ public class HealthRecord {
       }
     }
 
-    public String code() { return this.code; }
+    public String code() {
+      return this.code;
+    }
 
     public String toString() {
       return this.name().toLowerCase();
