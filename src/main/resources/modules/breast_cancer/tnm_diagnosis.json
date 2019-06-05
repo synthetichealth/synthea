@@ -1,0 +1,139 @@
+{
+  "name": "TNM_Diagnosis",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "M Marker"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "M1": {
+      "type": "SetAttribute",
+      "attribute": "M",
+      "direct_transition": "T Marker",
+      "value": "M1"
+    },
+    "M0": {
+      "type": "SetAttribute",
+      "attribute": "M",
+      "direct_transition": "T Marker",
+      "value": "M0"
+    },
+    "M Marker": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "M0",
+          "distribution": 0.94
+        },
+        {
+          "transition": "M1",
+          "distribution": 0.06
+        }
+      ],
+      "remarks": [
+        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
+      ]
+    },
+    "T Marker": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "T1",
+          "distribution": 1
+        },
+        {
+          "transition": "T2",
+          "distribution": 1
+        },
+        {
+          "transition": "T3",
+          "distribution": 1
+        },
+        {
+          "transition": "T4",
+          "distribution": 1
+        }
+      ]
+    },
+    "N Marker": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "N0",
+          "distribution": 1
+        },
+        {
+          "transition": "N1",
+          "distribution": 1
+        },
+        {
+          "transition": "N2",
+          "distribution": 1
+        },
+        {
+          "transition": "N3",
+          "distribution": 1
+        }
+      ]
+    },
+    "T1": {
+      "type": "SetAttribute",
+      "attribute": "T",
+      "direct_transition": "N Marker",
+      "value": "T1"
+    },
+    "T2": {
+      "type": "SetAttribute",
+      "attribute": "T",
+      "direct_transition": "N Marker",
+      "value": "T2"
+    },
+    "T3": {
+      "type": "SetAttribute",
+      "attribute": "T",
+      "direct_transition": "N Marker",
+      "value": "T3"
+    },
+    "T4": {
+      "type": "SetAttribute",
+      "attribute": "T",
+      "direct_transition": "N Marker",
+      "value": "T4"
+    },
+    "T0": {
+      "type": "SetAttribute",
+      "attribute": "T",
+      "direct_transition": "N Marker",
+      "value": "T0"
+    },
+    "N1": {
+      "type": "SetAttribute",
+      "attribute": "N",
+      "direct_transition": "Terminal",
+      "value": "N1"
+    },
+    "N2": {
+      "type": "SetAttribute",
+      "attribute": "N",
+      "direct_transition": "Terminal",
+      "value": "N2"
+    },
+    "N3": {
+      "type": "SetAttribute",
+      "attribute": "N",
+      "direct_transition": "Terminal",
+      "value": "N3"
+    },
+    "N0": {
+      "type": "SetAttribute",
+      "attribute": "N",
+      "direct_transition": "Terminal",
+      "value": "N0"
+    }
+  }
+}
