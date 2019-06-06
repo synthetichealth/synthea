@@ -3,6 +3,7 @@ package org.mitre.synthea.engine;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -160,11 +161,7 @@ public abstract class Transition {
             new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
         // Load in the respective CSV file
         String fileName = null;
-        if (lookupTableName.contains("test")) {
-          fileName = lookupTableName;
-        } else {
-          fileName = "modules/lookup_tables/" + lookupTableName;
-        }
+        fileName = "lookup_tables/" + lookupTableName;
         String csv;
         List<? extends Map<String, String>> lookupTable = null;
         try {
@@ -244,7 +241,8 @@ public abstract class Transition {
           String currentAttributeToCheck = (String) person.attributes.get(attributeToAdd);
           if (currentAttributeToCheck == null) {
             throw new RuntimeException("LOOKUP TABLE CSV ATTRIBUTE ERROR: Attribute '"
-                + attributeToAdd + "' does not exist as one of this person's attributes.");
+                + attributeToAdd + "' in table '" + this.lookupTableName
+                + "' does not exist as one of this person's attributes.");
           }
           personsAttributes.add(currentAttributeToCheck);
         }

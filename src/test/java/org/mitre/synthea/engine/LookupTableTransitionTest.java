@@ -66,9 +66,6 @@ public class LookupTableTransitionTest {
     standardGeneratorOptions = new GeneratorOptions();
     this.population = 50;
     standardGeneratorOptions.population = this.population;
-    ArrayList<String> testList = new ArrayList<String>();
-    testList.add("Lookup Table Transition Test");
-    standardGeneratorOptions.enabledModules = testList;
     
     // Create Mild Lookuptablitis Condition
     mildLookuptablitis = new ActiveCondition();
@@ -402,5 +399,41 @@ public class LookupTableTransitionTest {
         }
       }
     }
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void invalidAgeRangeTest() {
+
+    Map<String, Module.ModuleSupplier> modules =
+            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module lookuptabletestModule = getModule("lookuptable_agerangetest.json");
+    modules.put("lookuptable_agerangetest", new Module.ModuleSupplier(lookuptabletestModule));
+
+    GeneratorOptions onePersonGeneratorOption = standardGeneratorOptions;
+    onePersonGeneratorOption.population = 10;
+    Generator generator = new Generator(onePersonGeneratorOption);
+
+    generator.generatePerson(4);
+
+    modules.remove("lookuptable_agerangetest");
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void noTransitionMatchTest() {
+
+    Map<String, Module.ModuleSupplier> modules =
+            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module lookuptabletestModule = getModule("lookuptable_nomatchcolumn.json");
+    modules.put("lookuptable_nomatchcolumn", new Module.ModuleSupplier(lookuptabletestModule));
+
+    GeneratorOptions onePersonGeneratorOption = standardGeneratorOptions;
+    onePersonGeneratorOption.population = 10;
+    Generator generator = new Generator(onePersonGeneratorOption);
+
+    generator.generatePerson(6);
+
+    modules.remove("lookuptable_nomatchcolumn");
   }
 }
