@@ -27,7 +27,6 @@ import org.powermock.reflect.Whitebox;
 public class LookupTableTransitionTest {
 
   private long time;
-  private GeneratorOptions standardGeneratorOptions;
   private int population;
   private ActiveCondition mildLookuptablitis;
   private ActiveCondition moderateLookuptablitis;
@@ -50,23 +49,24 @@ public class LookupTableTransitionTest {
   }
 
   /**
-   * Setup State tests.
+   * Setup Conditions
    * @throws IOException On File IO errors.
    */
   @Before
   public void setup() throws IOException {
 
-    // Hack in the lookuptable_test.json module
-    Map<String, Module.ModuleSupplier> modules =
-            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
-    // hack to load these test modules so they can be called by the CallSubmodule state
-    Module lookuptabletestModule = getModule("lookuptable_test.json");
-    modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+    // // Hack in the lookuptable_test.json module
+    // Map<String, Module.ModuleSupplier> modules =
+    //         Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // // hack to load these test modules so they can be called by the CallSubmodule state
+    // Module lookuptabletestModule = getModule("lookuptable_test.json");
+    // modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
 
-    standardGeneratorOptions = new GeneratorOptions();
-    this.population = 50;
-    standardGeneratorOptions.population = this.population;
+    // standardGeneratorOptions = new GeneratorOptions();
+    // this.population = 50;
+    // standardGeneratorOptions.population = this.population;
     
+    this.population = 100; 
     // Create Mild Lookuptablitis Condition
     mildLookuptablitis = new ActiveCondition();
     List<org.mitre.synthea.world.concepts.HealthRecord.Code>
@@ -90,8 +90,17 @@ public class LookupTableTransitionTest {
   @Test
   public void lookUpTableTestMassachusetts() {
 
-    standardGeneratorOptions.state = "Massachusetts";
-    Generator generator = new Generator(standardGeneratorOptions);
+    // Hack in the lookuptable_test.json module
+    Map<String, Module.ModuleSupplier> modules =
+            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module lookuptabletestModule = getModule("lookuptable_test.json");
+    modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+
+    GeneratorOptions massGeneratorOptions = new GeneratorOptions();
+    massGeneratorOptions.population = this.population;
+    massGeneratorOptions.state = "Massachusetts";
+    Generator generator = new Generator(massGeneratorOptions);
 
     for (int i = 0; i < this.population; i++) {
       // Generate People
@@ -108,8 +117,7 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
-          }
-          if (extremeLookuptablitis.test(person, time)) {
+          } else if (extremeLookuptablitis.test(person, time)) {
             int startYear = Utilities.getYear(person.record.present
                 .get(extremeLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
@@ -117,10 +125,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            if (person.ageInYears(time) > 50) {
-              assertTrue(false);
-            }
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
           if (mildLookuptablitis.test(person, time)) {
@@ -139,10 +143,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(extremeLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            if (person.ageInYears(time) > 50) {
-              assertTrue(false);
-            }
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
           if (extremeLookuptablitis.test(person, time)) {
@@ -153,8 +153,7 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          }
-          if (moderateLookuptablitis.test(person, time)) {
+          } else if (moderateLookuptablitis.test(person, time)) {
             int startYear = Utilities.getYear(person.record.present
                 .get(moderateLookuptablitis.codes.get(0).code).start);
             int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
@@ -162,15 +161,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(extremeLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            if (person.ageInYears(time) > 50) {
-              assertTrue(false);
-            }
-          }
-        } else {
-          if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time),
-                extremeLookuptablitis.test(person, time));
           }
         }
       } else {
@@ -192,10 +182,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
-          } else {
-            if (person.ageInYears(time) > 50) {
-              assertTrue(false);
-            }
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
           if (moderateLookuptablitis.test(person, time)) {
@@ -214,10 +200,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            if (person.ageInYears(time) > 50) {
-              assertTrue(false);
-            }
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
           if (mildLookuptablitis.test(person, time)) {
@@ -236,26 +218,27 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            if (person.ageInYears(time) > 50) {
-              assertTrue(false);
-            }
-          }
-        } else {
-          if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time),
-                extremeLookuptablitis.test(person, time));
           }
         }
       }
     }
+    modules.remove("lookuptable_test");
   }
 
   @Test
   public void lookUpTableTestArizona() {
 
-    standardGeneratorOptions.state = "Arizona";
-    Generator generator = new Generator(standardGeneratorOptions);
+    // Hack in the lookuptable_test.json module
+    Map<String, Module.ModuleSupplier> modules =
+            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module lookuptabletestModule = getModule("lookuptable_test.json");
+    modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+
+    GeneratorOptions arizGeneratorOptions = new GeneratorOptions();
+    arizGeneratorOptions.population = this.population;
+    arizGeneratorOptions.state = "Arizona";
+    Generator generator = new Generator(arizGeneratorOptions);
 
     for (int i = 0; i < this.population; i++) {
       // Generate People
@@ -281,8 +264,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
-          } else {
-            // assertTrue(false);
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
           if (extremeLookuptablitis.test(person, time)) {
@@ -301,8 +282,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(extremeLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            // assertTrue(false);
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
 
@@ -322,13 +301,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(extremeLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
-          } else {
-            // assertTrue(false);
-          }
-        } else {
-          if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time),
-                extremeLookuptablitis.test(person, time));
           }
         }
       } else {
@@ -350,8 +322,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
-          } else {
-            // assertTrue(false);
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
           if (moderateLookuptablitis.test(person, time)) {
@@ -370,8 +340,6 @@ public class LookupTableTransitionTest {
             assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(extremeLookuptablitis.test(person, time));
-          } else {
-            // assertTrue(false);
           }
         } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
           if (mildLookuptablitis.test(person, time)) {
@@ -391,14 +359,10 @@ public class LookupTableTransitionTest {
             assertFalse(moderateLookuptablitis.test(person, time));
             assertFalse(mildLookuptablitis.test(person, time));
           }
-        } else {
-          if (person.ageInYears(time) > 50) {
-            assertTrue("Person age: " + person.ageInYears(time),
-                extremeLookuptablitis.test(person, time));
-          }
         }
       }
     }
+    modules.remove("lookuptable_test");
   }
 
   @Test(expected = RuntimeException.class)
@@ -410,8 +374,8 @@ public class LookupTableTransitionTest {
     Module lookuptabletestModule = getModule("lookuptable_agerangetest.json");
     modules.put("lookuptable_agerangetest", new Module.ModuleSupplier(lookuptabletestModule));
 
-    GeneratorOptions onePersonGeneratorOption = standardGeneratorOptions;
-    onePersonGeneratorOption.population = 10;
+    GeneratorOptions onePersonGeneratorOption = new GeneratorOptions();
+    onePersonGeneratorOption.population = 5;
     Generator generator = new Generator(onePersonGeneratorOption);
 
     generator.generatePerson(4);
@@ -428,7 +392,7 @@ public class LookupTableTransitionTest {
     Module lookuptabletestModule = getModule("lookuptable_nomatchcolumn.json");
     modules.put("lookuptable_nomatchcolumn", new Module.ModuleSupplier(lookuptabletestModule));
 
-    GeneratorOptions onePersonGeneratorOption = standardGeneratorOptions;
+    GeneratorOptions onePersonGeneratorOption = new GeneratorOptions();
     onePersonGeneratorOption.population = 10;
     Generator generator = new Generator(onePersonGeneratorOption);
 
