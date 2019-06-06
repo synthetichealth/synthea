@@ -1,0 +1,389 @@
+{
+  "name": "Hormone_Diagnosis",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 434363004,
+          "display": "Human epidermal growth factor receptor 2 gene detection by fluorescence in situ hybridization (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ],
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Immunochemistry"
+    },
+    "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Immunochemistry": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433114000,
+          "display": "Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "HER2_negative",
+          "distribution": 1
+        },
+        {
+          "transition": "HER2_positive",
+          "distribution": 1
+        }
+      ]
+    },
+    "HER2_negative": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85319-2",
+          "display": "HER2 [Presence] in Breast cancer specimen by Immune stain"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 431396003,
+        "display": "Human epidermal growth factor 2 negative carcinoma of breast (disorder)"
+      },
+      "direct_transition": "HER2-"
+    },
+    "HER2_positive": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85319-2",
+          "display": "HER2 [Presence] in Breast cancer specimen by Immune stain"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 427685000,
+        "display": "Human epidermal growth factor 2 positive carcinoma of breast (disorder)"
+      },
+      "direct_transition": "HER2+"
+    },
+    "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122548005,
+          "display": "Biopsy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "ER_negative",
+          "distribution": 1
+        },
+        {
+          "transition": "ER_positive",
+          "distribution": 1
+        }
+      ]
+    },
+    "ER_negative": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 441117001,
+        "display": "Estrogen receptor negative neoplasm (disorder)"
+      },
+      "direct_transition": "ER-"
+    },
+    "ER_positive": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 416053008,
+        "display": "Estrogen receptor positive tumor (disorder)"
+      },
+      "direct_transition": "ER+"
+    },
+    "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122548005,
+          "display": "Biopsy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "PR_negative",
+          "distribution": 1
+        },
+        {
+          "transition": "PR_positive",
+          "distribution": 1
+        }
+      ]
+    },
+    "PR_negative": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 441118006,
+        "display": "Progesterone receptor negative neoplasm (disorder)"
+      },
+      "direct_transition": "PR-"
+    },
+    "PR_positive": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 416561008,
+        "display": "Progesterone receptor positive tumor (disorder)"
+      },
+      "direct_transition": "PR+"
+    },
+    "Overall_Receptor_Analysis": {
+      "type": "Simple",
+      "remarks": [
+        "If all hormones are negative transition to triple negative"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Hormone Receptor Negative",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER",
+                "operator": "==",
+                "value": "-"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "PR",
+                "operator": "==",
+                "value": "-"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hormone Receptor Positive",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER",
+                "operator": "==",
+                "value": "+"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "PR",
+                "operator": "==",
+                "value": "+"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "HER2-": {
+      "type": "SetAttribute",
+      "attribute": "HER2",
+      "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
+      "value": "HER2-negative"
+    },
+    "HER2+": {
+      "type": "SetAttribute",
+      "attribute": "HER2",
+      "distributed_transition": [
+        {
+          "transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
+          "distribution": 1
+        }
+      ],
+      "value": "HER2-positive"
+    },
+    "ER-": {
+      "type": "SetAttribute",
+      "attribute": "ER",
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status",
+      "value": "ER-negative"
+    },
+    "ER+": {
+      "type": "SetAttribute",
+      "attribute": "ER",
+      "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status",
+      "value": "ER-positive"
+    },
+    "PR-": {
+      "type": "SetAttribute",
+      "attribute": "PR",
+      "direct_transition": "Overall_Receptor_Analysis",
+      "value": "-"
+    },
+    "PR+": {
+      "type": "SetAttribute",
+      "attribute": "PR",
+      "direct_transition": "Overall_Receptor_Analysis",
+      "value": "+"
+    },
+    "Triple_Negative": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21924-6",
+          "display": "Tumor marker Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 706970001,
+        "display": "Triple negative malignant neoplasm of breast (disorder)"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Hormone Receptor Positive": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 417181009,
+        "display": "Hormone receptor positive malignant neoplasm of breast (disorder)"
+      }
+    },
+    "Hormone Receptor Negative": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66110-8",
+          "display": "Breast Pathology biopsy report"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 438628005,
+        "display": "Hormone receptor negative neoplasm (disorder)"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Triple_Negative",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "HER2",
+            "operator": "==",
+            "value": "-"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    }
+  }
+}

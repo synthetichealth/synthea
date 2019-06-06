@@ -14,14 +14,17 @@
     "M1": {
       "type": "SetAttribute",
       "attribute": "M",
-      "direct_transition": "T Marker",
+      "direct_transition": "M1_Diagnosed",
       "value": "M1"
     },
     "M0": {
       "type": "SetAttribute",
       "attribute": "M",
-      "direct_transition": "T Marker",
-      "value": "M0"
+      "value": "M0",
+      "remarks": [
+        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
+      ],
+      "direct_transition": "M0_Diagnosed"
     },
     "M Marker": {
       "type": "Simple",
@@ -39,101 +42,361 @@
         "https://www.cancer.net/cancer-types/breast-cancer/statistics"
       ]
     },
-    "T Marker": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "T1",
-          "distribution": 1
-        },
-        {
-          "transition": "T2",
-          "distribution": 1
-        },
-        {
-          "transition": "T3",
-          "distribution": 1
-        },
-        {
-          "transition": "T4",
-          "distribution": 1
-        }
-      ]
-    },
     "N Marker": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "N0",
-          "distribution": 1
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Location",
+            "operator": "==",
+            "value": "local"
+          },
+          "distributions": [
+            {
+              "transition": "N0",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "N1",
-          "distribution": 1
-        },
-        {
-          "transition": "N2",
-          "distribution": 1
-        },
-        {
-          "transition": "N3",
-          "distribution": 1
+          "distributions": [
+            {
+              "transition": "N1",
+              "distribution": 0.34
+            },
+            {
+              "transition": "N2",
+              "distribution": 0.33
+            },
+            {
+              "transition": "N3",
+              "distribution": 0.33
+            }
+          ]
         }
       ]
     },
     "T1": {
       "type": "SetAttribute",
       "attribute": "T",
-      "direct_transition": "N Marker",
+      "direct_transition": "T1_Diagnosed",
       "value": "T1"
     },
     "T2": {
       "type": "SetAttribute",
       "attribute": "T",
-      "direct_transition": "N Marker",
+      "direct_transition": "T2_Diagnosed",
       "value": "T2"
     },
     "T3": {
       "type": "SetAttribute",
       "attribute": "T",
-      "direct_transition": "N Marker",
+      "direct_transition": "T3_Diagnosed",
       "value": "T3"
     },
     "T4": {
       "type": "SetAttribute",
       "attribute": "T",
-      "direct_transition": "N Marker",
+      "direct_transition": "T4_Diagnosed",
       "value": "T4"
     },
     "T0": {
       "type": "SetAttribute",
       "attribute": "T",
-      "direct_transition": "N Marker",
+      "direct_transition": "T0_Diagnosed",
       "value": "T0"
     },
     "N1": {
       "type": "SetAttribute",
       "attribute": "N",
-      "direct_transition": "Terminal",
+      "direct_transition": "N1_Diagnosed",
       "value": "N1"
     },
     "N2": {
       "type": "SetAttribute",
       "attribute": "N",
-      "direct_transition": "Terminal",
+      "direct_transition": "N2_Diagnosed",
       "value": "N2"
     },
     "N3": {
       "type": "SetAttribute",
       "attribute": "N",
-      "direct_transition": "Terminal",
+      "direct_transition": "N3_Diagnosed",
       "value": "N3"
     },
     "N0": {
       "type": "SetAttribute",
       "attribute": "N",
-      "direct_transition": "Terminal",
+      "direct_transition": "N0_Diagnosed",
       "value": "N0"
+    },
+    "Distant Breast Cancer": {
+      "type": "SetAttribute",
+      "attribute": "Location",
+      "direct_transition": "T4",
+      "value": "distant"
+    },
+    "Regional Breast Cancer": {
+      "type": "SetAttribute",
+      "attribute": "Location",
+      "distributed_transition": [
+        {
+          "transition": "T1",
+          "distribution": 0.3011
+        },
+        {
+          "transition": "T2",
+          "distribution": 0.5053
+        },
+        {
+          "transition": "T3",
+          "distribution": 0.1398
+        },
+        {
+          "transition": "T0",
+          "distribution": 0.0538
+        }
+      ],
+      "remarks": [
+        "Adjusted Tumor Data for Regional Breast Cancer:",
+        "https://onlinelibrary.wiley.com/doi/full/10.1002/cncr.21285"
+      ],
+      "value": "regional"
+    },
+    "Local Breast Cancer": {
+      "type": "SetAttribute",
+      "attribute": "Location",
+      "distributed_transition": [
+        {
+          "transition": "T0",
+          "distribution": 0.2632
+        },
+        {
+          "transition": "T1",
+          "distribution": 0.442
+        },
+        {
+          "transition": "T2",
+          "distribution": 0.2632
+        },
+        {
+          "transition": "T3",
+          "distribution": 0.0316
+        }
+      ],
+      "remarks": [
+        "Adjusted Tumor Data for Local Breast Cancer:",
+        "https://onlinelibrary.wiley.com/doi/full/10.1002/cncr.21285"
+      ],
+      "value": "local"
+    },
+    "M1_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21907-1",
+          "display": "Distant metastases.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 55440008,
+        "display": "M1 category (finding)"
+      },
+      "direct_transition": "Distant Breast Cancer"
+    },
+    "M0_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21907-1",
+          "display": "Distant metastases.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 30893008,
+        "display": "M0 category (finding)"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Local Breast Cancer",
+          "distribution": 0.62
+        },
+        {
+          "transition": "Regional Breast Cancer",
+          "distribution": 0.38
+        }
+      ]
+    },
+    "T0_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical [Class] Cancer"
+        }
+      ],
+      "direct_transition": "N Marker",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 58790005,
+        "display": "T0 category (finding)"
+      }
+    },
+    "T1_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 23351008,
+        "display": "T1 category (finding)"
+      },
+      "direct_transition": "N Marker"
+    },
+    "T2_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 67673008,
+        "display": "T2 category (finding)"
+      },
+      "direct_transition": "N Marker"
+    },
+    "T3_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 14410001,
+        "display": "T3 category (finding)"
+      },
+      "direct_transition": "N Marker"
+    },
+    "T4_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21905-5",
+          "display": "Primary tumor.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 65565005,
+        "display": "T4 category (finding)"
+      },
+      "direct_transition": "N Marker"
+    },
+    "N1_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21906-3",
+          "display": "Regional lymph nodes.clinical [Class] Cancer"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 53623008,
+        "display": "N1 category (finding)"
+      }
+    },
+    "N0_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21906-3",
+          "display": "Regional lymph nodes.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 62455006,
+        "display": "N0 category (finding)"
+      },
+      "direct_transition": "Terminal"
+    },
+    "N2_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21906-3",
+          "display": "Regional lymph nodes.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 46059003,
+        "display": "N2 category (finding)"
+      },
+      "direct_transition": "Terminal"
+    },
+    "N3_Diagnosed": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21906-3",
+          "display": "Regional lymph nodes.clinical [Class] Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 5856006,
+        "display": "N3 category (finding)"
+      },
+      "direct_transition": "Terminal"
     }
   }
 }

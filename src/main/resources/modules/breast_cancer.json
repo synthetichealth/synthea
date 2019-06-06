@@ -148,16 +148,19 @@
       "distributed_transition": [
         {
           "transition": "Age < 39",
-          "distribution": 0.005
+          "distribution": 0.0625
         },
         {
           "transition": "39 <= Age < 59",
-          "distribution": 0.039
+          "distribution": 0.4875
         },
         {
           "transition": "60 <= Age <=69",
-          "distribution": 0.036
+          "distribution": 0.45
         }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ]
     },
     "Age < 39": {
@@ -355,14 +358,9 @@
       ],
       "direct_transition": "Mammogram"
     },
-    "TNM/Marker Tests": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/tnm_observations_updated",
-      "direct_transition": "Terminal"
-    },
     "Switch from Primary Care Physician to Oncologist": {
       "type": "EncounterEnd",
-      "direct_transition": "TNM/Marker Tests"
+      "direct_transition": "TNM_Staging_Visit"
     },
     "MRI": {
       "type": "Procedure",
@@ -379,6 +377,37 @@
         "unit": "minutes"
       },
       "direct_transition": "Switch from Primary Care Physician to Oncologist"
+    },
+    "TNM_Staging_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 254293002,
+          "display": "Tumor-node-metastasis (TNM) tumor staging system (tumor staging)"
+        }
+      ],
+      "direct_transition": "Diagnose_TNM_Markers"
+    },
+    "Diagnose_TNM_Markers": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/TNM_Diagnosis",
+      "direct_transition": "Diagnose Hormone Receptors"
+    },
+    "Diagnose Hormone Receptors": {
+      "type": "CallSubmodule",
+      "submodule": "Hormone_Diagnosis",
+      "direct_transition": "Staging"
+    },
+    "Staging": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Stage 1": {
+      "type": "Simple",
+      "direct_transition": "Stage 1"
     }
   }
 }
