@@ -206,31 +206,6 @@
         }
       ]
     },
-    "Neoadjuvant Chemotherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 367336001,
-          "display": "Chemotherapy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 3,
-        "high": 6,
-        "unit": "months"
-      },
-      "distributed_transition": [
-        {
-          "transition": "Trastuzumab",
-          "distribution": 0.5
-        },
-        {
-          "transition": "Pertuzumab",
-          "distribution": 0.5
-        }
-      ]
-    },
     "Breast_Surgery": {
       "type": "Simple",
       "distributed_transition": [
@@ -243,28 +218,6 @@
           "distribution": 0.6
         }
       ]
-    },
-    "Pertuzumab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1298949,
-          "display": "RxNorm Code"
-        }
-      ],
-      "direct_transition": "Breast_Surgery"
-    },
-    "Trastuzumab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 101306,
-          "display": "Herceptin"
-        }
-      ],
-      "direct_transition": "Breast_Surgery"
     },
     "ER pos treatments": {
       "type": "Simple",
