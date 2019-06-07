@@ -234,6 +234,9 @@
           "transition": "Regional Breast Cancer",
           "distribution": 0.38
         }
+      ],
+      "remarks": [
+        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
       ]
     },
     "T0_Diagnosed": {
@@ -306,7 +309,10 @@
         "code": 14410001,
         "display": "T3 category (finding)"
       },
-      "direct_transition": "N Marker"
+      "direct_transition": "N Marker",
+      "remarks": [
+        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
+      ]
     },
     "T4_Diagnosed": {
       "type": "Observation",

@@ -501,7 +501,20 @@
     },
     "Stage IV Treatment": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage4"
+      "submodule": "breast_cancer/breast_stage4",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.22
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.78
+        }
+      ],
+      "remarks": [
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ]
     },
     "Stage III": {
       "type": "Observation",
@@ -577,7 +590,20 @@
     },
     "Stage III Treatment": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage4"
+      "submodule": "breast_cancer/breast_stage4",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.72
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.28
+        }
+      ],
+      "remarks": [
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ]
     },
     "Nonaggressive": {
       "type": "Simple",
@@ -803,43 +829,58 @@
     },
     "Stage II Treatment": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage2"
+      "submodule": "breast_cancer/breast_stage2",
+      "remarks": [
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.93
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.07
+        }
+      ]
     },
     "Stage 1 Treatment": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/breast_stage1",
-      "direct_transition": "Eventual_Survival"
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.99
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.01
+        }
+      ]
     },
     "Stage 0 Treatment": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage0"
+      "submodule": "breast_cancer/breast_stage0",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.99
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.01
+        }
+      ],
+      "remarks": [
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ]
     },
     "Eventual_Death": {
       "type": "Simple"
     },
-    "Eventual_Survival": {
-      "type": "Simple",
-      "direct_transition": "End Oncologist Visit"
-    },
     "End Oncologist Visit": {
       "type": "EncounterEnd",
       "direct_transition": "Initialize Initial Follow-Up Counter"
-    },
-    "Initial Follow-Up Doctor Vistit": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185389009,
-          "display": "Follow-up visit (procedure)"
-        }
-      ],
-      "direct_transition": "End Initial Follow-Up Doctor Visit",
-      "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
-      ]
     },
     "End Initial Follow-Up Doctor Visit": {
       "type": "EncounterEnd",
@@ -851,7 +892,7 @@
         "quantity": 4,
         "unit": "months"
       },
-      "direct_transition": "Initial Follow-Up Doctor Vistit"
+      "direct_transition": "Initial Follow-Up Doctor Visit"
     },
     "Initial Follow-Up Counter": {
       "type": "Counter",
@@ -861,10 +902,21 @@
         {
           "transition": "4 Months between Initial Follow-Ups",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "init_followup_counter",
-            "operator": "<",
-            "value": 3
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "init_followup_counter",
+                "operator": "<",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "years_after_treatment",
+                "operator": "<",
+                "value": 5
+              }
+            ]
           }
         },
         {
@@ -875,7 +927,7 @@
     "Initialize Initial Follow-Up Counter": {
       "type": "SetAttribute",
       "attribute": "init_followup_counter",
-      "direct_transition": "4 Months between Initial Follow-Ups",
+      "direct_transition": "Initialize Years After Treatment Counter",
       "value": 0
     },
     "Mammogram Followup": {
@@ -1002,7 +1054,66 @@
     },
     "Bone Followup": {
       "type": "Simple",
-      "direct_transition": "Bone Exam Visit"
+      "conditional_transition": [
+        {
+          "transition": "Bone Exam Visit",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 258494,
+                    "display": "exemestane"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 84857,
+                        "display": "anastrozole"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 72965,
+                        "display": "letrozole"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Bone Exam Visit",
+          "condition": {
+            "condition_type": "Symptom",
+            "symptom": "Early menopause due to treatment",
+            "operator": "<",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Reset Initial Follow-Up Counter"
+        }
+      ],
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
+      ]
     },
     "End Gynecologist Visit": {
       "type": "EncounterEnd",
@@ -1043,7 +1154,8 @@
       },
       "direct_transition": "End Gynecologist Visit",
       "remarks": [
-        "https://www.hopkinsmedicine.org/kimmel_cancer_center/centers/breast_cancer_program/treatment_and_services/survivorship/follow_up/pelvic_exams.html"
+        "https://www.hopkinsmedicine.org/kimmel_cancer_center/centers/breast_cancer_program/treatment_and_services/survivorship/follow_up/pelvic_exams.html",
+        "https://www.webmd.com/breast-cancer/guide/breast-cancer-follow-up-care"
       ]
     },
     "Bone Exam": {
@@ -1060,7 +1172,10 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "End Bone Exam Visit"
+      "direct_transition": "End Bone Exam Visit",
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/bone-density-test/about/pac-20385273"
+      ]
     },
     "Bone Exam Visit": {
       "type": "Encounter",
@@ -1069,14 +1184,154 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 312681000,
+          "display": "SN   Bone density scan (procedure)"
         }
       ],
       "direct_transition": "Bone Exam"
     },
     "End Bone Exam Visit": {
-      "type": "Simple"
+      "type": "EncounterEnd",
+      "direct_transition": "Reset Initial Follow-Up Counter"
+    },
+    "Years After Treatment Counter": {
+      "type": "Counter",
+      "attribute": "years_after_treatment",
+      "action": "increment",
+      "conditional_transition": [
+        {
+          "transition": "Death",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_left",
+            "operator": "<",
+            "value": 1
+          }
+        },
+        {
+          "transition": "4 Months between Initial Follow-Ups",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_after_treatment",
+            "operator": "<",
+            "value": 5
+          }
+        },
+        {
+          "transition": "1 Year Passed"
+        }
+      ]
+    },
+    "Initialize Years After Treatment Counter": {
+      "type": "SetAttribute",
+      "attribute": "years_after_treatment",
+      "direct_transition": "4 Months between Initial Follow-Ups",
+      "value": 0
+    },
+    "Reset Initial Follow-Up Counter": {
+      "type": "SetAttribute",
+      "attribute": "init_followup_counter",
+      "direct_transition": "Decrement Years Left",
+      "value": 0
+    },
+    "1 Year Passed": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Initial Follow-Up Doctor Visit"
+    },
+    "Initial Follow-Up Doctor Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "End Initial Follow-Up Doctor Visit",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "Follow-Up Treatment": {
+      "type": "Simple",
+      "direct_transition": "End Oncologist Visit"
+    },
+    "Decrement Years Left": {
+      "type": "Counter",
+      "attribute": "years_left",
+      "action": "decrement",
+      "direct_transition": "Years After Treatment Counter"
+    },
+    "Treatment Unsuccessful": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal 1 Year",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal 2 Years",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal 3 Years",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal 4 Years",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal 5 Years",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Treatment Successful": {
+      "type": "SetAttribute",
+      "attribute": "years_left",
+      "direct_transition": "Follow-Up Treatment",
+      "value": 200
+    },
+    "Terminal 1 Year": {
+      "type": "SetAttribute",
+      "attribute": "years_left",
+      "value": 1,
+      "direct_transition": "Follow-Up Treatment"
+    },
+    "Terminal 2 Years": {
+      "type": "SetAttribute",
+      "attribute": "years_left",
+      "value": 2,
+      "direct_transition": "Follow-Up Treatment"
+    },
+    "Terminal 3 Years": {
+      "type": "SetAttribute",
+      "attribute": "years_left",
+      "value": 3,
+      "direct_transition": "Follow-Up Treatment"
+    },
+    "Terminal 4 Years": {
+      "type": "SetAttribute",
+      "attribute": "years_left",
+      "value": 4,
+      "direct_transition": "Follow-Up Treatment"
+    },
+    "Terminal 5 Years": {
+      "type": "SetAttribute",
+      "attribute": "years_left",
+      "value": 5,
+      "direct_transition": "Follow-Up Treatment"
     }
   }
 }
