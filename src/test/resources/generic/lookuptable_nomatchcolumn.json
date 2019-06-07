@@ -18,7 +18,7 @@
       "name": "Determine_Condition",
       "lookup_table_transition": [
         {
-          "transition": "Mild_Lokuptablitis",
+          "transition": "Mild_Lookuptabliti",
           "default_probability": "0",
           "lookup_table_name": "lookuptablitis_test.csv"
         },
