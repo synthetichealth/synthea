@@ -380,13 +380,13 @@
     },
     "TNM_Staging_Visit": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 254293002,
-          "display": "Tumor-node-metastasis (TNM) tumor staging system (tumor staging)"
+          "code": 413744002,
+          "display": "Cancer screening follow up (finding)"
         }
       ],
       "direct_transition": "Diagnose_TNM_Markers"
@@ -403,11 +403,680 @@
     },
     "Staging": {
       "type": "Simple",
-      "direct_transition": "Terminal"
+      "conditional_transition": [
+        {
+          "transition": "Stage IV",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "M",
+            "operator": "==",
+            "value": "M1"
+          }
+        },
+        {
+          "transition": "Nonmetastatic",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "M",
+            "operator": "==",
+            "value": "M0"
+          }
+        }
+      ]
     },
-    "Stage 1": {
+    "Stage IV": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "direct_transition": "Stage IV Treatment",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 2640006,
+        "display": "Clinical stage IV (finding)"
+      }
+    },
+    "Nonmetastatic": {
       "type": "Simple",
-      "direct_transition": "Stage 1"
+      "conditional_transition": [
+        {
+          "transition": "IIIC",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "==",
+            "value": "N3"
+          }
+        },
+        {
+          "transition": "IIIB",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T4"
+          }
+        },
+        {
+          "transition": "IIIA",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N2"
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N1"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T3"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Nonaggressive"
+        }
+      ]
+    },
+    "Stage IV Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_stage4"
+    },
+    "Stage III": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 50283003,
+        "display": "Clinical stage III (finding)"
+      },
+      "direct_transition": "Stage III Treatment"
+    },
+    "Stage I": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 13104003,
+        "display": "Clinical stage I (finding)"
+      },
+      "direct_transition": "Stage 1 Treatment"
+    },
+    "IIIB": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "direct_transition": "Stage III",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 64062008,
+        "display": "Clinical stage III B (finding)"
+      }
+    },
+    "IIIA": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 73082003,
+        "display": "Clinical stage III A (finding)"
+      },
+      "direct_transition": "Stage III"
+    },
+    "Stage III Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_stage4"
+    },
+    "Nonaggressive": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "IIB",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "T",
+                "operator": "==",
+                "value": "T3"
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N1"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "IIA",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "T",
+                "operator": "==",
+                "value": "T2"
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T1"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N1"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Early_Stage"
+        }
+      ]
+    },
+    "IIIC": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 48105005,
+        "display": "Clinical stage III C (finding)"
+      },
+      "direct_transition": "Stage III"
+    },
+    "IIB": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 17816005,
+        "display": "Clinical stage II B (finding)"
+      },
+      "direct_transition": "Stage II"
+    },
+    "IIA": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 17816005,
+        "display": "Clinical stage II A (finding)"
+      },
+      "direct_transition": "Stage II"
+    },
+    "IA": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 46333007,
+        "display": "Clinical stage I A (finding)"
+      },
+      "direct_transition": "Stage I"
+    },
+    "IB": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 786005,
+        "display": "Clinical stage I B (finding)"
+      },
+      "direct_transition": "Stage I"
+    },
+    "Stage 0": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 718465002,
+        "display": "Clinical stage 0 (finding)"
+      },
+      "direct_transition": "Stage 0 Treatment"
+    },
+    "Early_Stage": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "IA",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T1"
+          }
+        },
+        {
+          "transition": "IB",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "==",
+            "value": "N1"
+          }
+        },
+        {
+          "transition": "Stage 0"
+        }
+      ]
+    },
+    "Stage II": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 60333009,
+        "display": "Clinical stage II (finding)"
+      },
+      "direct_transition": "Stage II Treatment"
+    },
+    "Stage II Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_stage2"
+    },
+    "Stage 1 Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_stage1",
+      "direct_transition": "Eventual_Survival"
+    },
+    "Stage 0 Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_stage0"
+    },
+    "Eventual_Death": {
+      "type": "Simple"
+    },
+    "Eventual_Survival": {
+      "type": "Simple",
+      "direct_transition": "End Oncologist Visit"
+    },
+    "End Oncologist Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Initialize Initial Follow-Up Counter"
+    },
+    "Initial Follow-Up Doctor Vistit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "End Initial Follow-Up Doctor Visit",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
+      ]
+    },
+    "End Initial Follow-Up Doctor Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Initial Follow-Up Counter"
+    },
+    "4 Months between Initial Follow-Ups": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 4,
+        "unit": "months"
+      },
+      "direct_transition": "Initial Follow-Up Doctor Vistit"
+    },
+    "Initial Follow-Up Counter": {
+      "type": "Counter",
+      "attribute": "init_followup_counter",
+      "action": "increment",
+      "conditional_transition": [
+        {
+          "transition": "4 Months between Initial Follow-Ups",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "init_followup_counter",
+            "operator": "<",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Mammogram Followup"
+        }
+      ]
+    },
+    "Initialize Initial Follow-Up Counter": {
+      "type": "SetAttribute",
+      "attribute": "init_followup_counter",
+      "direct_transition": "4 Months between Initial Follow-Ups",
+      "value": 0
+    },
+    "Mammogram Followup": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Mammogram Followup Visit",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "!=",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 786005,
+              "display": "Clinical stage I B (finding)"
+            }
+          }
+        },
+        {
+          "transition": "Pelvic Followup"
+        }
+      ]
+    },
+    "Post-Surgery Mammogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71651007,
+          "display": "Mammography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 25,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Mammogram Followup Visit"
+    },
+    "Mammogram Followup Visit": {
+      "type": "Encounter",
+      "reason": "",
+      "direct_transition": "Post-Surgery Mammogram",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71651007,
+          "display": "Mammography (procedure)"
+        }
+      ],
+      "encounter_class": "inpatient"
+    },
+    "End Mammogram Followup Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Pelvic Followup"
+    },
+    "Pelvic Followup": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Gynecologist Visit",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 10324,
+                    "display": "Tamoxifen"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 38409,
+                    "display": "Toremifene"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Gynecologist Visit",
+          "condition": {
+            "condition_type": "Symptom",
+            "symptom": "Unusual Vaginal Bleeding",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Bone Followup"
+        }
+      ],
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html",
+        "https://www.hopkinsmedicine.org/kimmel_cancer_center/centers/breast_cancer_program/treatment_and_services/survivorship/follow_up/pelvic_exams.html"
+      ]
+    },
+    "Gynecologist Visit": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 310061009,
+          "display": "Gynecology service (qualifier value)"
+        }
+      ],
+      "direct_transition": "Pelvic Exam"
+    },
+    "Bone Followup": {
+      "type": "Simple",
+      "direct_transition": "Bone Exam Visit"
+    },
+    "End Gynecologist Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Bone Followup"
+    },
+    "Pelvic Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 35025007,
+          "display": "Manual pelvic examination (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Pap Smear",
+      "remarks": [
+        "https://www.webmd.com/women/guide/pelvic-examination#1"
+      ]
+    },
+    "Pap Smear": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 90226004,
+          "display": "Cytopathology procedure, preparation of smear, genital source (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Gynecologist Visit",
+      "remarks": [
+        "https://www.hopkinsmedicine.org/kimmel_cancer_center/centers/breast_cancer_program/treatment_and_services/survivorship/follow_up/pelvic_exams.html"
+      ]
+    },
+    "Bone Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 312681000,
+          "display": "Bone density scan (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Bone Exam Visit"
+    },
+    "Bone Exam Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Bone Exam"
+    },
+    "End Bone Exam Visit": {
+      "type": "Simple"
     }
   }
 }
