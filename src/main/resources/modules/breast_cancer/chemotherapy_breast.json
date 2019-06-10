@@ -81,7 +81,7 @@
           "display": "Paraplatin"
         }
       ],
-      "direct_transition": "Carboplatin"
+      "direct_transition": "Terminal"
     },
     "Taxanes": {
       "type": "Simple",
