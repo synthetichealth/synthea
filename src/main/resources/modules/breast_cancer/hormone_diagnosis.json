@@ -45,16 +45,17 @@
         "unit": "days"
       },
       "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
       ],
       "distributed_transition": [
         {
           "transition": "HER2_negative",
-          "distribution": 1
+          "distribution": 0.8
         },
         {
           "transition": "HER2_positive",
-          "distribution": 1
+          "distribution": 0.2
         }
       ]
     },
@@ -116,11 +117,11 @@
       "distributed_transition": [
         {
           "transition": "ER_negative",
-          "distribution": 1
+          "distribution": 0.2
         },
         {
           "transition": "ER_positive",
-          "distribution": 1
+          "distribution": 0.8
         }
       ]
     },
@@ -182,11 +183,11 @@
       "distributed_transition": [
         {
           "transition": "PR_negative",
-          "distribution": 1
+          "distribution": 0.35
         },
         {
           "transition": "PR_positive",
-          "distribution": 1
+          "distribution": 0.65
         }
       ]
     },
@@ -286,13 +287,8 @@
     "HER2+": {
       "type": "SetAttribute",
       "attribute": "HER2",
-      "distributed_transition": [
-        {
-          "transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
-          "distribution": 1
-        }
-      ],
-      "value": "HER2-positive"
+      "value": "HER2-positive",
+      "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status"
     },
     "ER-": {
       "type": "SetAttribute",
