@@ -1091,7 +1091,48 @@
     },
     "Treatment_3C": {
       "type": "Simple",
-      "direct_transition": "Treatment_3C"
+      "conditional_transition": [
+        {
+          "transition": "Neoadjuvant Chemotherapy",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "T",
+                "operator": "==",
+                "value": "T1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T3"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Lymph_node_decider",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T0"
+          }
+        }
+      ]
     },
     "Treatment_3A": {
       "type": "Simple",
