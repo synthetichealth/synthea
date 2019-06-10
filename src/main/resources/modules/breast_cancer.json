@@ -292,7 +292,8 @@
           "display": "Malignant neoplasm of breast (disorder)"
         }
       ],
-      "direct_transition": "Breast Cancer Encounter"
+      "direct_transition": "Breast Cancer Encounter",
+      "target_encounter": "Breast Cancer Encounter"
     },
     "Mammogram": {
       "type": "Procedure",
