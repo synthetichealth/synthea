@@ -920,7 +920,7 @@
     },
     "chemo": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/Chemotherapy_breast",
+      "submodule": "breast_cancer/chemotherapy_breast",
       "conditional_transition": [
         {
           "transition": "Lymph_node_decider",
@@ -1094,7 +1094,7 @@
     },
     "chemo_BCS": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/Chemotherapy_breast",
+      "submodule": "breast_cancer/chemotherapy_breast",
       "conditional_transition": [
         {
           "transition": "Lymph_node_decider",

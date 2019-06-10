@@ -393,12 +393,12 @@
     },
     "Diagnose_TNM_Markers": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/TNM_Diagnosis",
+      "submodule": "breast_cancer/tnm_diagnosis",
       "direct_transition": "Diagnose Hormone Receptors"
     },
     "Diagnose Hormone Receptors": {
       "type": "CallSubmodule",
-      "submodule": "Hormone_Diagnosis",
+      "submodule": "breast_cancer/hormone_diagnosis",
       "direct_transition": "Staging"
     },
     "Staging": {
@@ -590,7 +590,7 @@
     },
     "Stage III Treatment": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage4",
+      "submodule": "breast_cancer/breast_stage3",
       "distributed_transition": [
         {
           "transition": "Treatment Successful",
