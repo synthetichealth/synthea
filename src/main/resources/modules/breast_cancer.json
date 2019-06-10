@@ -203,7 +203,7 @@
       "type": "Symptom",
       "symptom": "Lump/mass",
       "cause": "",
-      "probability": 0.8,
+      "probability": 0.9,
       "direct_transition": "BreastCancer_Symptom2",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -217,7 +217,7 @@
       "type": "Symptom",
       "symptom": "Swelling",
       "cause": "",
-      "probability": 0.9,
+      "probability": 0.7,
       "direct_transition": "BreastCancer_Symptom3",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -231,7 +231,7 @@
       "type": "Symptom",
       "symptom": "Breast/Nipple Pain",
       "cause": "",
-      "probability": 0.95,
+      "probability": 0.5,
       "direct_transition": "BreastCancer_Symptom5",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -245,7 +245,7 @@
       "type": "Symptom",
       "symptom": "Skin Irritation/Dimpling",
       "cause": "",
-      "probability": 0.8,
+      "probability": 0.2,
       "direct_transition": "BreastCancer_Symptom4",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -259,7 +259,7 @@
       "type": "Symptom",
       "symptom": "Nipple Retraction",
       "cause": "",
-      "probability": 0.65,
+      "probability": 0.1,
       "direct_transition": "BreastCancer_Symptom6",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -273,7 +273,7 @@
       "type": "Symptom",
       "symptom": "Nipple Discharge",
       "cause": "",
-      "probability": 0.35,
+      "probability": 0.1,
       "direct_transition": "Breast Cancer",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -341,8 +341,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 134405005,
-          "display": "Suspected breast cancer (situation)"
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "Breast Cancer Screening"
@@ -874,9 +874,6 @@
       "remarks": [
         "https://www.medicalnewstoday.com/articles/316867.php"
       ]
-    },
-    "Eventual_Death": {
-      "type": "Simple"
     },
     "End Oncologist Visit": {
       "type": "EncounterEnd",
