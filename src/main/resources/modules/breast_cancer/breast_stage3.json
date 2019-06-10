@@ -632,10 +632,32 @@
         {
           "transition": "Lymph_node_decider",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N3"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -661,10 +683,32 @@
         {
           "transition": "Lymph_node_decider",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N3"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -715,10 +759,32 @@
         {
           "transition": "Lymph_node_decider",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N3"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -744,10 +810,32 @@
         {
           "transition": "Lymph_node_decider",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N3"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -837,10 +925,32 @@
         {
           "transition": "Lymph_node_decider",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N3"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -989,10 +1099,32 @@
         {
           "transition": "Lymph_node_decider",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "N",
+                "operator": "==",
+                "value": "N1"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "N",
+                    "operator": "==",
+                    "value": "N3"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -1180,13 +1312,13 @@
                 "condition_type": "Attribute",
                 "attribute": "T",
                 "operator": "==",
-                "value": "T3"
+                "value": "T4"
               },
               {
                 "condition_type": "Attribute",
                 "attribute": "T",
                 "operator": "==",
-                "value": "T2"
+                "value": "T4"
               }
             ]
           }
