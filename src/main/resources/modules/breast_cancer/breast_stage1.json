@@ -17,85 +17,19 @@
         {
           "transition": "Treatment_1A",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "M",
-                "operator": "==",
-                "value": "M0"
-              },
-              {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "N",
-                    "operator": "==",
-                    "value": "N0"
-                  },
-                  {
-                    "condition_type": "And",
-                    "conditions": [
-                      {
-                        "condition_type": "Attribute",
-                        "attribute": "T",
-                        "operator": "==",
-                        "value": "T1"
-                      },
-                      {
-                        "condition_type": "And",
-                        "conditions": [
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "ER",
-                            "operator": "==",
-                            "value": "ER-positive"
-                          },
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "PR",
-                            "operator": "==",
-                            "value": "PR-positive"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T1"
           }
         },
         {
           "transition": "Treatment_1B",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "M",
-                "operator": "==",
-                "value": "M0"
-              },
-              {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "N",
-                    "operator": "==",
-                    "value": "N1"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "T",
-                    "operator": "==",
-                    "value": "T1"
-                  }
-                ]
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "==",
+            "value": "N1"
           }
         }
       ]

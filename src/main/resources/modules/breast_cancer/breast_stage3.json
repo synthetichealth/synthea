@@ -1281,10 +1281,21 @@
                 "value": "T1"
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "T",
-                "operator": "==",
-                "value": "T2"
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T2"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "T",
+                    "operator": "==",
+                    "value": "T3"
+                  }
+                ]
               }
             ]
           }
@@ -1302,37 +1313,7 @@
     },
     "Treatment_3B": {
       "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Neoadjuvant Chemotherapy",
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "T",
-                "operator": "==",
-                "value": "T4"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "T",
-                "operator": "==",
-                "value": "T4"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Lymph_node_decider",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
-          }
-        }
-      ]
+      "direct_transition": "Neoadjuvant Chemotherapy"
     },
     "buffer": {
       "type": "Delay",
@@ -1342,6 +1323,26 @@
         "high": 6,
         "unit": "months"
       }
+    },
+    "New_State": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "New_State",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "72107-6",
+                "display": "Mini Mental State Examination"
+              }
+            ],
+            "operator": "==",
+            "value": 0
+          }
+        }
+      ]
     }
   }
 }

@@ -28,36 +28,7 @@
       "remarks": [
         "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
       ],
-      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Immunochemistry"
-    },
-    "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Immunochemistry": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 433114000,
-          "display": "Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
-      },
-      "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
-        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
-      ],
-      "distributed_transition": [
-        {
-          "transition": "HER2_negative",
-          "distribution": 0.8
-        },
-        {
-          "transition": "HER2_positive",
-          "distribution": 0.2
-        }
-      ]
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2_HER2_Detection_Immunochemistry"
     },
     "HER2_negative": {
       "type": "Observation",
@@ -162,24 +133,7 @@
       "direct_transition": "ER+"
     },
     "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 122548005,
-          "display": "Biopsy of breast (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
-      },
-      "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
-        "",
-        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
-      ],
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "PR_negative",
@@ -189,6 +143,11 @@
           "transition": "PR_positive",
           "distribution": 0.65
         }
+      ],
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
       ]
     },
     "PR_negative": {
@@ -242,13 +201,13 @@
                 "condition_type": "Attribute",
                 "attribute": "ER",
                 "operator": "==",
-                "value": "-"
+                "value": "ER-negative"
               },
               {
                 "condition_type": "Attribute",
                 "attribute": "PR",
                 "operator": "==",
-                "value": "-"
+                "value": "PR-negative"
               }
             ]
           }
@@ -262,13 +221,13 @@
                 "condition_type": "Attribute",
                 "attribute": "ER",
                 "operator": "==",
-                "value": "+"
+                "value": "ER-positive"
               },
               {
                 "condition_type": "Attribute",
                 "attribute": "PR",
                 "operator": "==",
-                "value": "+"
+                "value": "PR-positive"
               }
             ]
           }
@@ -306,13 +265,13 @@
       "type": "SetAttribute",
       "attribute": "PR",
       "direct_transition": "Overall_Receptor_Analysis",
-      "value": "-"
+      "value": "PR-negative"
     },
     "PR+": {
       "type": "SetAttribute",
       "attribute": "PR",
       "direct_transition": "Overall_Receptor_Analysis",
-      "value": "+"
+      "value": "PR-positive"
     },
     "Triple_Negative": {
       "type": "Observation",
@@ -373,11 +332,40 @@
             "condition_type": "Attribute",
             "attribute": "HER2",
             "operator": "==",
-            "value": "-"
+            "value": "HER2-negative"
           }
         },
         {
           "transition": "Terminal"
+        }
+      ]
+    },
+    "Human_Epidermal_Growth_Factor_Receptor_2_HER2_Detection_Immunochemistry": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433114000,
+          "display": "Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "HER2_negative",
+          "distribution": 0.8
+        },
+        {
+          "transition": "HER2_positive",
+          "distribution": 0.2
         }
       ]
     }

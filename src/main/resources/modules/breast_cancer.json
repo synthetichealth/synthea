@@ -349,14 +349,7 @@
       "direct_transition": "Breast Cancer Screening"
     },
     "Breast Cancer Screening": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 15886004,
-          "display": "Screening for cancer (procedure)"
-        }
-      ],
+      "type": "Simple",
       "direct_transition": "Mammogram"
     },
     "Switch from Primary Care Physician to Oncologist": {
@@ -1101,7 +1094,7 @@
           "condition": {
             "condition_type": "Symptom",
             "symptom": "Early menopause due to treatment",
-            "operator": "<",
+            "operator": ">",
             "value": 0
           }
         },
