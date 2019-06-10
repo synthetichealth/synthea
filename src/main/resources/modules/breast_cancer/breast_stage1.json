@@ -245,7 +245,7 @@
           "display": "Tamoxifen"
         }
       ],
-      "direct_transition": "Estrogen Blocking Receptors"
+      "direct_transition": "Terminal"
     },
     "Aromatase Inhibitors (AI)": {
       "type": "Simple",
@@ -273,7 +273,7 @@
           "display": "Faslodex"
         }
       ],
-      "direct_transition": "Fulvestrant"
+      "direct_transition": "Terminal"
     },
     "Letrozole": {
       "type": "MedicationOrder",
@@ -317,7 +317,7 @@
           "display": "Megace"
         }
       ],
-      "direct_transition": "Megestrol Acetate"
+      "direct_transition": "Terminal"
     },
     "External Beam Radiation": {
       "type": "Procedure",
@@ -365,7 +365,7 @@
         "high": 40,
         "unit": "minutes"
       },
-      "direct_transition": "Intraoperative radiation therapy (IORT)"
+      "direct_transition": "Terminal"
     },
     "Brachytherapy": {
       "type": "Procedure",
@@ -438,7 +438,7 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Axillary Lymph Node Dissection (ALND)"
+      "direct_transition": "Terminal"
     },
     "Sentinel Lymph Node Biopsy (SLNB)": {
       "type": "Procedure",
@@ -454,7 +454,7 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Sentinel Lymph Node Biopsy (SLNB)"
+      "direct_transition": "Terminal"
     },
     "Lymph": {
       "type": "Simple",
