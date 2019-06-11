@@ -27,6 +27,7 @@ public class FileSystemExporter {
    * @return Either the base folder provided, or a subdirectory, depending on
    *         configuration settings.
    */
+
   public static File getOutputFolder(String folderName, Person person) {
     List<String> folders = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class FileSystemExporter {
    * @param file     Path to the new file.
    * @param contents The contents of the file.
    */
-  public static synchronized void appendToFile(Path file, String contents) {
+   public static synchronized void appendToFile(Path file, String contents) {
     try {
       if (Files.notExists(file)) {
         Files.createFile(file);
