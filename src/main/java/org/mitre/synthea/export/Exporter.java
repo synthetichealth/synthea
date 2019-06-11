@@ -84,7 +84,8 @@ public abstract class Exporter {
           AWSS3Exporter.writeNewFile(null, bundleJson);
         } else {
           File outDirectory = FileSystemExporter.getOutputFolder("fhir_stu3", person);
-          Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+          String filename = filename(person, fileTag, "json");
+          Path outFilePath = outDirectory.toPath().resolve(filename);
           FileSystemExporter.writeNewFile(outFilePath, bundleJson);
         }
       }
@@ -112,7 +113,8 @@ public abstract class Exporter {
           AWSS3Exporter.writeNewFile(null, bundleJson);
         } else {
           File outDirectory = FileSystemExporter.getOutputFolder("fhir_dstu2", person);
-          Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+          String filename = filename(person, fileTag, "json");
+          Path outFilePath = outDirectory.toPath().resolve(fileTag);
           FileSystemExporter.writeNewFile(outFilePath, bundleJson);
         }
       }
@@ -140,7 +142,8 @@ public abstract class Exporter {
           AWSS3Exporter.writeNewFile(null, bundleJson);
         } else {
           File outDirectory = FileSystemExporter.getOutputFolder("fhir", person);
-          Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+          String filename = filename(person, fileTag, "json");
+          Path outFilePath = outDirectory.toPath().resolve(filename);
           FileSystemExporter.writeNewFile(outFilePath, bundleJson);
         }
       }
@@ -152,7 +155,8 @@ public abstract class Exporter {
         AWSS3Exporter.writeNewFile(null, ccdaXml);
       } else {
         File outDirectory = FileSystemExporter.getOutputFolder("ccda", person);
-        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
+        String filename = filename(person, fileTag, "xml");
+        Path outFilePath = outDirectory.toPath().resolve(filename);
         FileSystemExporter.writeNewFile(outFilePath, ccdaXml);
       }
     }
