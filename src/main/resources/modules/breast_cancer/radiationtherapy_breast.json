@@ -214,10 +214,10 @@
         "high": 30,
         "unit": "days"
       },
-      "direct_transition": "Terminal",
       "remarks": [
         "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
-      ]
+      ],
+      "direct_transition": "Terminal"
     }
   }
 }

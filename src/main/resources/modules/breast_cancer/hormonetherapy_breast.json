@@ -6,44 +6,23 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "distributed_transition": [
+      "conditional_transition": [
         {
-          "transition": "ER-Positive",
-          "distribution": 0.8
+          "transition": "ER-Treatments",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ER",
+            "operator": "==",
+            "value": "ER-positive"
+          }
         },
         {
-          "transition": "PR-Positive",
-          "distribution": 0.2
+          "transition": "PR-Treatments"
         }
       ]
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "ER-Positive": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Estrogen Blocking Receptors",
-          "distribution": 1
-        },
-        {
-          "transition": "Fulvestrant",
-          "distribution": 1
-        },
-        {
-          "transition": "Aromatase Inhibitors (AI)",
-          "distribution": 1
-        },
-        {
-          "transition": "Ovarian suppression",
-          "distribution": 1
-        }
-      ]
-    },
-    "PR-Positive": {
-      "type": "Simple",
-      "direct_transition": "Megestrol Acetate"
     },
     "Estrogen Blocking Receptors": {
       "type": "MedicationOrder",
@@ -54,7 +33,7 @@
           "display": "Tamoxifen"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "PR-Treatments"
     },
     "Fulvestrant": {
       "type": "MedicationOrder",
@@ -65,7 +44,7 @@
           "display": "Faslodex"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "PR-Treatments"
     },
     "Aromatase Inhibitors (AI)": {
       "type": "Simple",
@@ -93,7 +72,7 @@
           "display": "Femara"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "PR-Treatments"
     },
     "Anastrozole": {
       "type": "MedicationOrder",
@@ -104,7 +83,7 @@
           "display": "Arimidex"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "PR-Treatments"
     },
     "Exemestane": {
       "type": "MedicationOrder",
@@ -115,56 +94,7 @@
           "display": "Aromasin"
         }
       ],
-      "direct_transition": "Terminal"
-    },
-    "Ovarian suppression": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Oophorectomy",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Luteinizing hormone-releasing horomone (LHRH) analogs",
-          "distribution": 0.34
-        },
-        {
-          "transition": "chemo",
-          "distribution": 0.33
-        }
-      ]
-    },
-    "Oophorectomy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 83152002,
-          "display": "Oophorectomy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
-      },
-      "direct_transition": "Terminal"
-    },
-    "Luteinizing hormone-releasing horomone (LHRH) analogs": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 58328,
-          "display": "Zoladex"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "chemo": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/chemotherapy_breast",
-      "direct_transition": "Terminal"
+      "direct_transition": "PR-Treatments"
     },
     "Megestrol Acetate": {
       "type": "MedicationOrder",
@@ -175,6 +105,34 @@
           "display": "Megace"
         }
       ],
+      "direct_transition": "HER2-Treatment"
+    },
+    "PR-Treatments": {
+      "type": "Simple",
+      "direct_transition": "Megestrol Acetate"
+    },
+    "ER-Treatments": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Estrogen Blocking Receptors",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Fulvestrant",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Aromatase Inhibitors (AI)",
+          "distribution": 0.3
+        },
+        {
+          "distribution": 1
+        }
+      ]
+    },
+    "HER2-Treatment": {
+      "type": "Simple",
       "direct_transition": "Terminal"
     }
   }
