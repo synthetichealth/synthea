@@ -6,33 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Whichtreatment"
+      "direct_transition": "Which_Treatment"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "Whichtreatment": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Treatment_1A",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "T",
-            "operator": "==",
-            "value": "T1"
-          }
-        },
-        {
-          "transition": "Treatment_1B",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N1"
-          }
-        }
-      ]
     },
     "Treatment_1A": {
       "type": "Simple",
@@ -117,6 +94,29 @@
       "type": "CallSubmodule",
       "submodule": "breast_cancer/hormonetherapy_breast",
       "direct_transition": "Terminal"
+    },
+    "Which_Treatment": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Treatment_1A",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T1"
+          }
+        },
+        {
+          "transition": "Treatment_1B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "==",
+            "value": "N1"
+          }
+        }
+      ]
     }
   }
 }

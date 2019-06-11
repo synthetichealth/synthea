@@ -72,26 +72,67 @@
         "high": 40,
         "unit": "minutes"
       },
-      "distributed_transition": [
-        {
-          "transition": "External Beam Radiation",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Hypofractionated radiation therapy",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Intraoperative radiation therapy (IORT)",
-          "distribution": 0.1
-        },
-        {
-          "transition": "Brachytherapy",
-          "distribution": 0.1
-        }
-      ],
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "21908-9",
+                    "display": "Stage group.clinical Cancer"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 13104003,
+                  "display": "Clinical stage I (finding)"
+                }
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "21908-9",
+                    "display": "Stage group.clinical Cancer"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 718465002,
+                  "display": "Clinical stage 0 (finding)"
+                }
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            }
+          ]
+        }
       ]
     },
     "External Beam Radiation": {

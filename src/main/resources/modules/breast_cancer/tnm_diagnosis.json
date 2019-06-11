@@ -169,12 +169,8 @@
       "attribute": "Location",
       "distributed_transition": [
         {
-          "transition": "T0",
-          "distribution": 0.2632
-        },
-        {
           "transition": "T1",
-          "distribution": 0.442
+          "distribution": 0.7052
         },
         {
           "transition": "T2",
