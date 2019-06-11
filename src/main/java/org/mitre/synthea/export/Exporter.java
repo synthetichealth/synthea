@@ -61,46 +61,49 @@ public abstract class Exporter {
   private static void exportRecord(Person person, String fileTag, long stopTime) {
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
+      String folderName = "fhir_stu3";
+
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
-          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";          
           if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
             // todo : write to aws3
             AWSS3Exporter.appendToFile(null, entryJson);
           } else {
-            File outDirectory = FileSystemExporter.getOutputFolder("fhir_stu3", person);            
+            File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);            
             Path outFilePath = outDirectory.toPath().resolve(filename);
             FileSystemExporter.appendToFile(outFilePath, entryJson);
           }
         }
       } else {
         String bundleJson = FhirStu3.convertToFHIRJson(person, stopTime);
-        String filename = filename(person, fileTag, "json");
+        String filename = filename(person, fileTag, "json");        
         if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
           // todo : write to aws3
           AWSS3Exporter.writeNewFile(null, bundleJson);
         } else {
-          File outDirectory = FileSystemExporter.getOutputFolder("fhir_stu3", person);          
+          File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);          
           Path outFilePath = outDirectory.toPath().resolve(filename);
           FileSystemExporter.writeNewFile(outFilePath, bundleJson);
         }
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.fhir_dstu2.export"))) {
+      String folderName = "fhir_dstu2";
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
-          String filename = entry.getResource().getResourceName() + ".ndjson";
+          String filename = entry.getResource().getResourceName() + ".ndjson";          
           if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
             // todo : write to aws3
             AWSS3Exporter.appendToFile(null, entryJson);
           } else {
-            File outDirectory = FileSystemExporter.getOutputFolder("fhir_dstu2", person);            
+            File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);            
             Path outFilePath = outDirectory.toPath().resolve(filename);
             FileSystemExporter.appendToFile(outFilePath, entryJson);
           }
@@ -112,36 +115,37 @@ public abstract class Exporter {
           // todo : write to aws3
           AWSS3Exporter.writeNewFile(null, bundleJson);
         } else {
-          File outDirectory = FileSystemExporter.getOutputFolder("fhir_dstu2", person);          
+          File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);          
           Path outFilePath = outDirectory.toPath().resolve(fileTag);
           FileSystemExporter.writeNewFile(outFilePath, bundleJson);
         }
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
+      String folderName = "fhir";
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
-          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";          
           if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
             // todo : write to aws3
             AWSS3Exporter.appendToFile(null, entryJson);
           } else {
-            File outDirectory = FileSystemExporter.getOutputFolder("fhir", person);            
+            File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);            
             Path outFilePath = outDirectory.toPath().resolve(filename);
             FileSystemExporter.appendToFile(outFilePath, entryJson);
           }
         }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
-        String filename = filename(person, fileTag, "json");
+        String filename = filename(person, fileTag, "json");        
         if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
           // todo : write to aws3
           AWSS3Exporter.writeNewFile(null, bundleJson);
         } else {
-          File outDirectory = FileSystemExporter.getOutputFolder("fhir", person);          
+          File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);          
           Path outFilePath = outDirectory.toPath().resolve(filename);
           FileSystemExporter.writeNewFile(outFilePath, bundleJson);
         }
@@ -150,11 +154,12 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
       String filename = filename(person, fileTag, "xml");
+      String folderName = "ccda";
       if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
         // todo : write to aws3
         AWSS3Exporter.writeNewFile(null, ccdaXml);
       } else {
-        File outDirectory = FileSystemExporter.getOutputFolder("ccda", person);      
+        File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);      
         Path outFilePath = outDirectory.toPath().resolve(filename);
         FileSystemExporter.writeNewFile(outFilePath, ccdaXml);
       }
