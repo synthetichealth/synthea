@@ -42,27 +42,28 @@ public abstract class HospitalExporterR4 {
       for (Provider h : Provider.getProviderList()) {
         // filter - exports only those hospitals in use
         Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
-        int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
-            .mapToInt(ai -> ai.get()).sum();
+        int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
         if (totalEncounters > 0) {
           BundleEntryComponent entry = FhirR4.provider(bundle, h);
           addHospitalExtensions(h, (Organization) entry.getResource());
         }
       }
 
-      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
-
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
+      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 
       try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
+        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          // todo : write to aws3
+        } else {
+          // get output folder
+          List<String> folders = new ArrayList<>();
+          folders.add("fhir");
+          String baseDirectory = Config.get("exporter.baseDirectory");
+          File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
+          f.mkdirs();
+          Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
+          Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -72,31 +73,27 @@ public abstract class HospitalExporterR4 {
   public static void addHospitalExtensions(Provider h, Organization organizationResource) {
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
     // calculate totals for utilization
-    int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
-        .mapToInt(ai -> ai.get()).sum();
+    int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
     Extension encountersExtension = new Extension(SYNTHEA_URI + "utilization-encounters-extension");
     IntegerType encountersValue = new IntegerType(totalEncounters);
     encountersExtension.setValue(encountersValue);
     organizationResource.addExtension(encountersExtension);
 
-    int totalProcedures = utilization.column(Provider.PROCEDURES).values().stream()
-        .mapToInt(ai -> ai.get()).sum();
+    int totalProcedures = utilization.column(Provider.PROCEDURES).values().stream().mapToInt(ai -> ai.get()).sum();
     Extension proceduresExtension = new Extension(SYNTHEA_URI + "utilization-procedures-extension");
     IntegerType proceduresValue = new IntegerType(totalProcedures);
     proceduresExtension.setValue(proceduresValue);
     organizationResource.addExtension(proceduresExtension);
 
-    int totalLabs = utilization.column(Provider.LABS).values().stream().mapToInt(ai -> ai.get())
-        .sum();
+    int totalLabs = utilization.column(Provider.LABS).values().stream().mapToInt(ai -> ai.get()).sum();
     Extension labsExtension = new Extension(SYNTHEA_URI + "utilization-labs-extension");
     IntegerType labsValue = new IntegerType(totalLabs);
     labsExtension.setValue(labsValue);
     organizationResource.addExtension(labsExtension);
 
-    int totalPrescriptions = utilization.column(Provider.PRESCRIPTIONS).values().stream()
-        .mapToInt(ai -> ai.get()).sum();
-    Extension prescriptionsExtension = new Extension(
-        SYNTHEA_URI + "utilization-prescriptions-extension");
+    int totalPrescriptions = utilization.column(Provider.PRESCRIPTIONS).values().stream().mapToInt(ai -> ai.get())
+        .sum();
+    Extension prescriptionsExtension = new Extension(SYNTHEA_URI + "utilization-prescriptions-extension");
     IntegerType prescriptionsValue = new IntegerType(totalPrescriptions);
     prescriptionsExtension.setValue(prescriptionsValue);
     organizationResource.addExtension(prescriptionsExtension);

@@ -27,8 +27,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public abstract class Exporter {
   /**
-   * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
-   * configuration)
+   * Export a single patient, into all the formats supported. (Formats may be
+   * enabled or disabled by configuration)
    *
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
@@ -51,8 +51,8 @@ public abstract class Exporter {
   }
 
   /**
-   * Export a single patient record, into all the formats supported.
-   * (Formats may be enabled or disabled by configuration)
+   * Export a single patient record, into all the formats supported. (Formats may
+   * be enabled or disabled by configuration)
    *
    * @param person   Patient to export, with Patient.record being set.
    * @param fileTag  An identifier to tag the file with.
@@ -61,61 +61,93 @@ public abstract class Exporter {
   private static void exportRecord(Person person, String fileTag, long stopTime) {
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
-      File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
-          Path outFilePath = outDirectory.toPath().resolve(filename);
-          String entryJson = parser.encodeResourceToString(entry.getResource());
-          appendToFile(outFilePath, entryJson);
+          if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+            // todo : write to aws3
+          } else {
+            File outDirectory = FileSystemExporter.getOutputFolder("fhir_stu3", person);
+            String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+            Path outFilePath = outDirectory.toPath().resolve(filename);
+            String entryJson = parser.encodeResourceToString(entry.getResource());
+            FileSystemExporter.appendToFile(outFilePath, entryJson);
+          }
         }
       } else {
         String bundleJson = FhirStu3.convertToFHIRJson(person, stopTime);
-        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
-        writeNewFile(outFilePath, bundleJson);
+
+        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          // todo : write to aws3
+        } else {
+          File outDirectory = FileSystemExporter.getOutputFolder("fhir_stu3", person);
+          Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+          FileSystemExporter.writeNewFile(outFilePath, bundleJson);
+        }
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.fhir_dstu2.export"))) {
-      File outDirectory = getOutputFolder("fhir_dstu2", person);
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceName() + ".ndjson";
-          Path outFilePath = outDirectory.toPath().resolve(filename);
-          String entryJson = parser.encodeResourceToString(entry.getResource());
-          appendToFile(outFilePath, entryJson);
+          if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+            // todo : write to aws3
+          } else {
+            File outDirectory = FileSystemExporter.getOutputFolder("fhir_dstu2", person);
+            String filename = entry.getResource().getResourceName() + ".ndjson";
+            Path outFilePath = outDirectory.toPath().resolve(filename);
+            String entryJson = parser.encodeResourceToString(entry.getResource());
+            FileSystemExporter.appendToFile(outFilePath, entryJson);
+          }
         }
       } else {
         String bundleJson = FhirDstu2.convertToFHIRJson(person, stopTime);
-        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
-        writeNewFile(outFilePath, bundleJson);
+        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          // todo : write to aws3
+        } else {
+          File outDirectory = FileSystemExporter.getOutputFolder("fhir_dstu2", person);
+          Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+          FileSystemExporter.writeNewFile(outFilePath, bundleJson);
+        }
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.fhir.export"))) {
-      File outDirectory = getOutputFolder("fhir", person);
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
-          Path outFilePath = outDirectory.toPath().resolve(filename);
-          String entryJson = parser.encodeResourceToString(entry.getResource());
-          appendToFile(outFilePath, entryJson);
+          if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+            // todo : write to aws3
+          } else {
+            File outDirectory = FileSystemExporter.getOutputFolder("fhir", person);
+            String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+            Path outFilePath = outDirectory.toPath().resolve(filename);
+            String entryJson = parser.encodeResourceToString(entry.getResource());
+            FileSystemExporter.appendToFile(outFilePath, entryJson);
+          }
         }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
-        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
-        writeNewFile(outFilePath, bundleJson);
+        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          // todo : write to aws3
+        } else {
+          File outDirectory = FileSystemExporter.getOutputFolder("fhir", person);
+          Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+          FileSystemExporter.writeNewFile(outFilePath, bundleJson);
+        }
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
-      File outDirectory = getOutputFolder("ccda", person);
-      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
-      writeNewFile(outFilePath, ccdaXml);
+      if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        // todo : write to aws3
+      } else {
+        File outDirectory = FileSystemExporter.getOutputFolder("ccda", person);
+        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
+        FileSystemExporter.writeNewFile(outFilePath, ccdaXml);
+      }
     }
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
@@ -148,42 +180,8 @@ public abstract class Exporter {
   }
 
   /**
-   * Write a new file with the given contents.
-   * @param file Path to the new file.
-   * @param contents The contents of the file.
-   */
-  private static void writeNewFile(Path file, String contents) {
-    try {
-      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE_NEW);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Append contents to the end of a file.
-   * @param file Path to the new file.
-   * @param contents The contents of the file.
-   */
-  private static synchronized void appendToFile(Path file, String contents) {
-    try {
-      if (Files.notExists(file)) {
-        Files.createFile(file);
-      }
-    } catch (Exception e) {
-      // Ignore... multi-threaded race condition to create a file that didn't exist,
-      // but does now because one of the other exporter threads beat us to it.
-    }
-    try {
-      Files.write(file, Collections.singleton(contents), StandardOpenOption.APPEND);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Run any exporters that require the full dataset to be generated prior to exporting.
-   * (E.g., an aggregate statistical exporter)
+   * Run any exporters that require the full dataset to be generated prior to
+   * exporting. (E.g., an aggregate statistical exporter)
    *
    * @param generator Generator that generated the patients
    */
@@ -263,10 +261,10 @@ public abstract class Exporter {
   }
 
   /**
-   * Filter the patient's history to only the last __ years
-   * but also include relevant history from before that. Exclude
-   * any history that occurs after the specified end_time -- typically
-   * this is the current time/System.currentTimeMillis().
+   * Filter the patient's history to only the last __ years but also include
+   * relevant history from before that. Exclude any history that occurs after the
+   * specified end_time -- typically this is the current
+   * time/System.currentTimeMillis().
    *
    * @param original    The Person to filter.
    * @param yearsToKeep The last __ years to keep.
@@ -276,8 +274,8 @@ public abstract class Exporter {
   public static Person filterForExport(Person original, int yearsToKeep, long endTime) {
     // TODO: clone the patient so that we export only the last _ years
     // but the rest still exists, just in case
-    Person filtered = original; //.clone();
-    //filtered.record = original.record.clone();
+    Person filtered = original; // .clone();
+    // filtered.record = original.record.clone();
 
     if (filtered.hasMultipleRecords) {
       for (String key : filtered.records.keySet()) {
@@ -292,12 +290,11 @@ public abstract class Exporter {
   }
 
   /**
-   * Filter the health record to only the last __ years
-   * but also include relevant history from before that. Exclude
-   * any history that occurs after the specified end_time -- typically
-   * this is the current time/System.currentTimeMillis().
+   * Filter the health record to only the last __ years but also include relevant
+   * history from before that. Exclude any history that occurs after the specified
+   * end_time -- typically this is the current time/System.currentTimeMillis().
    *
-   * @param record    The record to filter.
+   * @param record      The record to filter.
    * @param yearsToKeep The last __ years to keep.
    * @param endTime     The time the history ends.
    * @return Modified record with history expunged.
@@ -319,9 +316,9 @@ public abstract class Exporter {
       // allergies are essentially the same as conditions
       filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepCondition);
 
-      // some of the "future death" logic could potentially add a future-dated death certificate
-      Predicate<Observation> isCauseOfDeath =
-          o -> DeathModule.CAUSE_OF_DEATH_CODE.code.equals(o.type);
+      // some of the "future death" logic could potentially add a future-dated death
+      // certificate
+      Predicate<Observation> isCauseOfDeath = o -> DeathModule.CAUSE_OF_DEATH_CODE.code.equals(o.type);
       // keep cause of death unless it's future dated
       Predicate<Observation> keepObservation = isCauseOfDeath.and(notFutureDated);
       filterEntries(encounter.observations, claimItems, cutoffDate, endTime, keepObservation);
@@ -334,27 +331,22 @@ public abstract class Exporter {
       filterEntries(encounter.procedures, claimItems, cutoffDate, endTime, null);
 
       // keep medications if still active, regardless of start date
-      filterEntries(encounter.medications, claimItems, cutoffDate, endTime,
-          med -> record.medicationActive(med.type));
+      filterEntries(encounter.medications, claimItems, cutoffDate, endTime, med -> record.medicationActive(med.type));
 
       filterEntries(encounter.immunizations, claimItems, cutoffDate, endTime, null);
 
       // keep careplans if they are still active, regardless of start date
-      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime,
-          cp -> record.careplanActive(cp.type));
+      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime, cp -> record.careplanActive(cp.type));
     }
 
     // if ANY of these are not empty, the encounter is not empty
-    Predicate<Encounter> encounterNotEmpty = e ->
-        !e.conditions.isEmpty() || !e.allergies.isEmpty()
-            || !e.observations.isEmpty() || !e.reports.isEmpty()
-            || !e.procedures.isEmpty() || !e.medications.isEmpty()
-            || !e.immunizations.isEmpty() || !e.careplans.isEmpty();
+    Predicate<Encounter> encounterNotEmpty = e -> !e.conditions.isEmpty() || !e.allergies.isEmpty()
+        || !e.observations.isEmpty() || !e.reports.isEmpty() || !e.procedures.isEmpty() || !e.medications.isEmpty()
+        || !e.immunizations.isEmpty() || !e.careplans.isEmpty();
 
-    Predicate<Encounter> isDeathCertification =
-        e -> !e.codes.isEmpty() && DeathModule.DEATH_CERTIFICATION.equals(e.codes.get(0));
-    Predicate<Encounter> keepEncounter =
-        encounterNotEmpty.or(isDeathCertification.and(notFutureDated));
+    Predicate<Encounter> isDeathCertification = e -> !e.codes.isEmpty()
+        && DeathModule.DEATH_CERTIFICATION.equals(e.codes.get(0));
+    Predicate<Encounter> keepEncounter = encounterNotEmpty.or(isDeathCertification.and(notFutureDated));
 
     // finally filter out any empty encounters
     filterEntries(record.encounters, Collections.emptyList(), cutoffDate, endTime, keepEncounter);
@@ -363,20 +355,20 @@ public abstract class Exporter {
   }
 
   /**
-   * Helper function to filter entries from a list. Entries are kept if their date range falls
-   * within the provided range or if `keepFunction` is provided, and returns `true` for the given
-   * entry.
+   * Helper function to filter entries from a list. Entries are kept if their date
+   * range falls within the provided range or if `keepFunction` is provided, and
+   * returns `true` for the given entry.
    *
    * @param entries      List of `Entry`s to filter
-   * @param claimItems   List of ClaimItems, from which any removed items should also be removed.
+   * @param claimItems   List of ClaimItems, from which any removed items should
+   *                     also be removed.
    * @param cutoffDate   Minimum date, entries older than this may be discarded
    * @param endTime      Maximum date, entries newer than this may be discarded
-   * @param keepFunction Keep function, if this function returns `true` for an entry then it will
-   *                     be kept
+   * @param keepFunction Keep function, if this function returns `true` for an
+   *                     entry then it will be kept
    */
-  private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
-      List<HealthRecord.Entry> claimItems, long cutoffDate,
-      long endTime, Predicate<E> keepFunction) {
+  private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries, List<HealthRecord.Entry> claimItems,
+      long cutoffDate, long endTime, Predicate<E> keepFunction) {
 
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
@@ -385,8 +377,7 @@ public abstract class Exporter {
       // if the entry is not within the keep time range,
       // and the special keep function (if provided) doesn't say keep it
       // remove it from the list
-      if (!entryWithinTimeRange(entry, cutoffDate, endTime)
-          && (keepFunction == null || !keepFunction.test(entry))) {
+      if (!entryWithinTimeRange(entry, cutoffDate, endTime) && (keepFunction == null || !keepFunction.test(entry))) {
         iterator.remove();
 
         claimItems.removeIf(ci -> ci == entry);
@@ -395,14 +386,14 @@ public abstract class Exporter {
     }
   }
 
-  private static boolean entryWithinTimeRange(
-      HealthRecord.Entry e, long cutoffDate, long endTime) {
+  private static boolean entryWithinTimeRange(HealthRecord.Entry e, long cutoffDate, long endTime) {
 
     if (e.start > cutoffDate && e.start <= endTime) {
       return true; // trivial case, when we're within the last __ years
     }
 
-    // if the entry has a stop time, check if the effective date range overlapped the last __ years
+    // if the entry has a stop time, check if the effective date range overlapped
+    // the last __ years
     if (e.stop != 0L && e.stop > cutoffDate) {
 
       if (e.stop > endTime) {
@@ -417,40 +408,11 @@ public abstract class Exporter {
     return false;
   }
 
-  /**
-   * Get the folder where the patient record should be stored.
-   * See the configuration settings "exporter.subfolders_by_id_substring" and
-   * "exporter.baseDirectory".
-   *
-   * @param folderName The base folder to use.
-   * @param person     The person being exported.
-   * @return Either the base folder provided, or a subdirectory, depending on configuration
-   *     settings.
-   */
-  public static File getOutputFolder(String folderName, Person person) {
-    List<String> folders = new ArrayList<>();
 
-    folders.add(folderName);
-
-    if (person != null
-        && Boolean.parseBoolean(Config.get("exporter.subfolders_by_id_substring"))) {
-      String id = (String) person.attributes.get(Person.ID);
-
-      folders.add(id.substring(0, 2));
-      folders.add(id.substring(0, 3));
-    }
-
-    String baseDirectory = Config.get("exporter.baseDirectory");
-
-    File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-    f.mkdirs();
-
-    return f;
-  }
 
   /**
-   * Get the filename to used to export the patient record.
-   * See the configuration setting "exporter.use_uuid_filenames".
+   * Get the filename to used to export the patient record. See the configuration
+   * setting "exporter.use_uuid_filenames".
    *
    * @param person    The person being exported.
    * @param tag       A tag to add to the filename before the extension.
@@ -462,8 +424,8 @@ public abstract class Exporter {
       return person.attributes.get(Person.ID) + tag + "." + extension;
     } else {
       // ensure unique filenames for now
-      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
-          + person.attributes.get(Person.ID) + tag + "." + extension;
+      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_" + person.attributes.get(Person.ID)
+          + tag + "." + extension;
     }
   }
 }

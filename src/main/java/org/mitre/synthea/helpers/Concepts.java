@@ -31,9 +31,8 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 /**
- * Task class to export a report of all clinical concepts
- * (aka Codes) that Synthea is aware of.
- * Format is "system,code,display".
+ * Task class to export a report of all clinical concepts (aka Codes) that
+ * Synthea is aware of. Format is "system,code,display".
  */
 public class Concepts {
   /**
@@ -44,29 +43,30 @@ public class Concepts {
    */
   public static void main(String[] args) throws Exception {
     System.out.println("Performing an inventory of concepts into `output/concepts.csv`...");
-    
+
     List<String> output = getConceptInventory();
-    
+
     Path outFilePath = new File("./output/concepts.csv").toPath();
-    
+
     Files.write(outFilePath, output, StandardOpenOption.CREATE);
-    
+
     System.out.println("Catalogued " + output.size() + " concepts.");
     System.out.println("Done.");
   }
-  
+
   /**
    * Get the list of all concepts in Synthea, as a list of CSV strings.
+   * 
    * @return list of CSV strings
    * @throws Exception if any exception occurs in reading the modules.
    */
   public static List<String> getConceptInventory() throws Exception {
-    Map<Code,Set<String>> concepts = new TreeMap<Code,Set<String>>();
+    Map<Code, Set<String>> concepts = new TreeMap<Code, Set<String>>();
 
     URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
     Path path = Paths.get(modulesFolder.toURI());
-    Files.walk(path).filter(Files::isReadable).filter(Files::isRegularFile)
-        .filter(f -> f.toString().endsWith(".json")).forEach(modulePath -> {
+    Files.walk(path).filter(Files::isReadable).filter(Files::isRegularFile).filter(f -> f.toString().endsWith(".json"))
+        .forEach(modulePath -> {
           try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
             JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
             inventoryModule(concepts, module);
@@ -83,9 +83,9 @@ public class Concepts {
     inventoryCodes(concepts, Immunizations.getAllCodes(), Immunizations.class.getSimpleName());
     inventoryCodes(concepts, LifecycleModule.getAllCodes(), LifecycleModule.class.getSimpleName());
     // QualityOfLifeModule adds no new codes to patients
-    
+
     List<String> conceptList = new ArrayList<>();
-    
+
     for (Code code : concepts.keySet()) {
       Set<String> modules = concepts.get(code);
       String display = code.display;
@@ -94,32 +94,31 @@ public class Concepts {
       String concept = code.system + ',' + code.code + ',' + display + ',' + mods;
       conceptList.add(concept);
     }
-    
+
     return conceptList;
   }
-  
+
   /**
    * Catalog all concepts from the given module into the given Table.
    * 
    * @param concepts Table of concepts to add to
-   * @param module Module to parse for concepts and codes
+   * @param module   Module to parse for concepts and codes
    */
-  public static void inventoryModule(Map<Code,Set<String>> concepts, JsonObject module) {
+  public static void inventoryModule(Map<Code, Set<String>> concepts, JsonObject module) {
     JsonObject states = module.get("states").getAsJsonObject();
     for (Entry<String, JsonElement> entry : states.entrySet()) {
       JsonObject state = entry.getValue().getAsJsonObject();
       inventoryState(concepts, state, module.get("name").getAsString());
     }
   }
-  
+
   /**
    * Catalog all concepts from the given state into the given Table.
    * 
    * @param concepts Table of concepts to add to
-   * @param state State to parse for concepts and codes
+   * @param state    State to parse for concepts and codes
    */
-  public static void inventoryState(Map<Code,Set<String>> concepts, JsonObject state,
-      String module) {
+  public static void inventoryState(Map<Code, Set<String>> concepts, JsonObject state, String module) {
     // TODO - how can we make this more generic
     // and not have to remember to update this if we add new codes in another field?
 
@@ -146,14 +145,14 @@ public class Concepts {
       inventoryCodes(concepts, Collections.singleton(code), module);
     }
   }
-  
+
   /**
    * Add the Codes in the given Collection to the given inventory of concepts.
+   * 
    * @param concepts Table of concepts to add to
-   * @param codes Collection of codes to add
+   * @param codes    Collection of codes to add
    */
-  public static void inventoryCodes(Map<Code,Set<String>> concepts,
-      Collection<Code> codes, String module) {
+  public static void inventoryCodes(Map<Code, Set<String>> concepts, Collection<Code> codes, String module) {
     codes.forEach(code -> {
       if (!concepts.containsKey(code)) {
         concepts.put(code, new HashSet<String>());

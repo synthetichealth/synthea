@@ -28,8 +28,7 @@ public abstract class FhirPractitionerExporterR4 {
 
   private static final FhirContext FHIR_CTX = FhirContext.forR4();
 
-  private static final String EXTENSION_URI = 
-      "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
+  private static final String EXTENSION_URI = "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
 
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir.export"))) {
@@ -44,8 +43,7 @@ public abstract class FhirPractitionerExporterR4 {
         // filter - exports only those hospitals in use
 
         Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
-        int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
-            .mapToInt(ai -> ai.get()).sum();
+        int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
         if (totalEncounters > 0) {
           Map<String, ArrayList<Clinician>> clinicians = h.clinicianMap;
           for (String specialty : clinicians.keySet()) {
@@ -54,28 +52,31 @@ public abstract class FhirPractitionerExporterR4 {
               if (doc.getEncounterCount() > 0) {
                 BundleEntryComponent entry = FhirR4.practitioner(bundle, doc);
                 Practitioner practitioner = (Practitioner) entry.getResource();
-                practitioner.addExtension()
-                  .setUrl(EXTENSION_URI)
-                  .setValue(new IntegerType(doc.getEncounterCount()));
+                practitioner.addExtension().setUrl(EXTENSION_URI).setValue(new IntegerType(doc.getEncounterCount()));
               }
             }
           }
         }
       }
 
-      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
+      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("practitionerInformation" + stop + ".json");
+      
 
       try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
+        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          // todo : write to aws3
+        } else {
+          // get output folder
+          List<String> folders = new ArrayList<>();
+          folders.add("fhir");
+          String baseDirectory = Config.get("exporter.baseDirectory");
+          File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
+          f.mkdirs();
+          Path outFilePath = f.toPath().resolve("practitionerInformation" + stop + ".json");
+          
+          Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }

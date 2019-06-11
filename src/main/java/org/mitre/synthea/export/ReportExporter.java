@@ -33,7 +33,7 @@ public class ReportExporter {
     }
 
     try (Connection connection = generator.database.getConnection()) {
-      File outDirectory = Exporter.getOutputFolder("statistics", null);
+      File outDirectory = FileSystemExporter.getOutputFolder("statistics", null);
       String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 

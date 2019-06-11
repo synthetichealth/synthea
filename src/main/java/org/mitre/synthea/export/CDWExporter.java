@@ -43,6 +43,7 @@ import org.mitre.synthea.world.geography.Location;
  * https://www.data.va.gov/dataset/corporate-data-warehouse-cdw
  */
 public class CDWExporter {
+  // todo : replace File and FileWriter for awss3
   /** Number of clinicians to generate. */
   private static final int CLINICIANS = 100;
 
@@ -156,7 +157,7 @@ public class CDWExporter {
     sids = new HashMap<FileWriter,AtomicInteger>();
     
     try {
-      File output = Exporter.getOutputFolder("cdw", null);
+      File output = FileSystemExporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
 
@@ -552,7 +553,7 @@ public class CDWExporter {
    */
   public void writeFactTables() {
     try {
-      File output = Exporter.getOutputFolder("cdw", null);
+      File output = FileSystemExporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
       sstaff.write(openFileWriter(outputDirectory, "sstaff.csv"));

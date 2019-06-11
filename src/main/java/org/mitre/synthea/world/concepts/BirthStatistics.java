@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.FileSystemExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -19,6 +20,8 @@ import org.mitre.synthea.world.agents.Person;
  * the baby, and the newborn height and weight.
  */
 public class BirthStatistics {
+  // todo : replace File and FileWriter for awss3
+
   public static final String BIRTH_WEEK = "pregnancy_birth_week";
   public static final String BIRTH_DATE = "pregnancy_birth_date";
   public static final String BIRTH_WEIGHT = "pregnancy_birth_weight";
@@ -38,7 +41,7 @@ public class BirthStatistics {
     FileWriter fw = null;
     if (LOG_OUTPUT) {
       try {
-        File output = Exporter.getOutputFolder("", null);
+        File output = FileSystemExporter.getOutputFolder("", null);
         output.mkdirs();
         Path outputDirectory = output.toPath();
         File file = outputDirectory.resolve("birth_statistics.csv").toFile();

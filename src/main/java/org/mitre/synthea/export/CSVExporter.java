@@ -48,6 +48,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * observations.csv, procedures.csv, and immunizations.csv.
  */
 public class CSVExporter {
+  // todo : replace File and FileWriter for awss3
   /**
    * Writer for patients.csv.
    */
@@ -108,7 +109,7 @@ public class CSVExporter {
    */
   private CSVExporter() {
     try {
-      File output = Exporter.getOutputFolder("csv", null);
+      File output = FileSystemExporter.getOutputFolder("csv", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
 
