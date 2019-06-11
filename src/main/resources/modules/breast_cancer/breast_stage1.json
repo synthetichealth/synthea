@@ -36,35 +36,7 @@
     },
     "Treatment_1A": {
       "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Breast_Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "T",
-            "operator": "==",
-            "value": "T1"
-          }
-        },
-        {
-          "transition": "ER pos treatments",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ER",
-            "operator": "==",
-            "value": "ER-positive"
-          }
-        },
-        {
-          "transition": "Megestrol Acetate",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "PR",
-            "operator": "==",
-            "value": "PR-positive"
-          }
-        }
-      ]
+      "direct_transition": "Breast_Surgery"
     },
     "Treatment_1B": {
       "type": "Simple",
@@ -91,272 +63,10 @@
         }
       ]
     },
-    "Mastectomy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 69031006,
-          "display": "Excision of breast tissue (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 2,
-        "high": 3,
-        "unit": "hours"
-      },
-      "direct_transition": "External Beam Radiation"
-    },
-    "Breast-conserving surgery (BCS)": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 392021009,
-          "display": "Lumpectomy of breast (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 15,
-        "high": 40,
-        "unit": "minutes"
-      },
-      "distributed_transition": [
-        {
-          "transition": "External Beam Radiation",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Hypofractionated Radiation Therapy",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Intraoperative radiation therapy (IORT)",
-          "distribution": 0.1
-        },
-        {
-          "transition": "Brachytherapy",
-          "distribution": 0.1
-        }
-      ]
-    },
     "Breast_Surgery": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Mastectomy",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Breast-conserving surgery (BCS)",
-          "distribution": 0.6
-        }
-      ]
-    },
-    "ER pos treatments": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Estrogen Blocking Receptors",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Fulvestrant",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Aromatase Inhibitors (AI)",
-          "distribution": 0.3
-        }
-      ]
-    },
-    "Estrogen Blocking Receptors": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 10324,
-          "display": "Tamoxifen"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Aromatase Inhibitors (AI)": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Letrozole",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Anastrozole",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Exemestane",
-          "distribution": 0.34
-        }
-      ]
-    },
-    "Fulvestrant": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203870,
-          "display": "Faslodex"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Letrozole": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203769,
-          "display": "Femara"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Anastrozole": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 262485,
-          "display": "RxNorm Code"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Exemestane": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 262105,
-          "display": "Aromasin"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Megestrol Acetate": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203000,
-          "display": "Megace"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "External Beam Radiation": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 33195004,
-          "display": "Teleradiotherapy procedure (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
-      },
-      "direct_transition": "Terminal"
-    },
-    "Hypofractionated Radiation Therapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 385798007,
-          "display": "Radiation therapy care (regime/therapy)"
-        }
-      ],
-      "duration": {
-        "low": 3,
-        "high": 5,
-        "unit": "weeks"
-      },
-      "direct_transition": "Terminal"
-    },
-    "Intraoperative radiation therapy (IORT)": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 168524008,
-          "display": "Radiotherapy - intraoperative control (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 15,
-        "high": 40,
-        "unit": "minutes"
-      },
-      "direct_transition": "Terminal"
-    },
-    "Brachytherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 447759004,
-          "display": "Brachytherapy of breast (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
-      },
-      "distributed_transition": [
-        {
-          "transition": "Interstitial Brachytherapy",
-          "distribution": 0.5
-        },
-        {
-          "transition": "Intracavitary Brachytherapy",
-          "distribution": 0.5
-        }
-      ]
-    },
-    "Intracavitary Brachytherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 384692006,
-          "display": "Intracavitary brachytherapy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
-      },
-      "direct_transition": "Terminal"
-    },
-    "Interstitial Brachytherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 113120007,
-          "display": "Interstitial brachytherapy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
-      },
-      "direct_transition": "Terminal"
+      "type": "CallSubmodule",
+      "submodule": "radiationtherapy_breast",
+      "direct_transition": "Early Stage Hormone Treatment"
     },
     "Axillary Lymph Node Dissection (ALND)": {
       "type": "Procedure",
@@ -372,7 +82,7 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Early Stage Hormone Treatment"
     },
     "Sentinel Lymph Node Biopsy (SLNB)": {
       "type": "Procedure",
@@ -388,7 +98,7 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Early Stage Hormone Treatment"
     },
     "Lymph": {
       "type": "Simple",
@@ -402,6 +112,11 @@
           "distribution": 0.5
         }
       ]
+    },
+    "Early Stage Hormone Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/hormonetherapy_breast",
+      "direct_transition": "Terminal"
     }
   }
 }

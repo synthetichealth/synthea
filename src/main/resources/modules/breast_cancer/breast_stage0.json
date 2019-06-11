@@ -6,150 +6,20 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Treatment_0"
+      "direct_transition": "Breast_Surgery"
     },
     "Terminal": {
       "type": "Terminal"
     },
-    "Whichtreatment": {
-      "type": "Simple"
-    },
     "Breast_Surgery": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/Radiationtherapy_breast",
+      "direct_transition": "Low Stage Hormone Treatment"
+    },
+    "Low Stage Hormone Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/hormonetherapy_breast",
       "direct_transition": "Terminal"
-    },
-    "ER pos treatments": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Estrogen Blocking Receptors",
-          "distribution": 0.4
-        },
-        {
-          "transition": "Fulvestrant",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Aromatase Inhibitors (AI)",
-          "distribution": 0.3
-        }
-      ]
-    },
-    "Estrogen Blocking Receptors": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 10324,
-          "display": "Tamoxifen"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Aromatase Inhibitors (AI)": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Letrozole",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Anastrozole",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Exemestane",
-          "distribution": 0.34
-        }
-      ]
-    },
-    "Fulvestrant": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203870,
-          "display": "Faslodex"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Letrozole": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203769,
-          "display": "Femara"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Anastrozole": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 262485,
-          "display": "RxNorm Code"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Exemestane": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 262105,
-          "display": "Aromasin"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Megestrol Acetate": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203000,
-          "display": "Megace"
-        }
-      ],
-      "direct_transition": "Terminal"
-    },
-    "Treatment_0": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Breast_Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "T",
-            "operator": "==",
-            "value": "T0"
-          }
-        },
-        {
-          "transition": "ER pos treatments",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ER",
-            "operator": "==",
-            "value": "ER-positive"
-          }
-        },
-        {
-          "transition": "Megestrol Acetate",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "PR",
-            "operator": "==",
-            "value": "PR-positive"
-          }
-        }
-      ]
     }
   }
 }

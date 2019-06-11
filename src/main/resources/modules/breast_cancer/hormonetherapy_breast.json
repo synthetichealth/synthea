@@ -109,7 +109,20 @@
     },
     "PR-Treatments": {
       "type": "Simple",
-      "direct_transition": "Megestrol Acetate"
+      "conditional_transition": [
+        {
+          "transition": "Megestrol Acetate",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "PR",
+            "operator": "==",
+            "value": "PR-positive"
+          }
+        },
+        {
+          "transition": "HER2-Treatment"
+        }
+      ]
     },
     "ER-Treatments": {
       "type": "Simple",
@@ -133,7 +146,152 @@
     },
     "HER2-Treatment": {
       "type": "Simple",
-      "direct_transition": "Terminal"
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/targeted-therapy-for-breast-cancer.html"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "21908-9",
+                    "display": "Stage group.clinical Cancer"
+                  }
+                ],
+                "operator": "!=",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 13104003,
+                  "display": "Clinical stage I (finding)"
+                },
+                "value": 0
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "21908-9",
+                    "display": "Stage group.clinical Cancer"
+                  }
+                ],
+                "operator": "!=",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": 718465002,
+                  "display": "Clinical stage 0 (finding)"
+                },
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Trastuzumab_her2",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Ado_trastuzumab_emtansine",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Lapatinib",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Neratinib",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Hormone-Receptor-Treatments",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Pertuzumab_her2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1298949,
+          "display": "Perjeta"
+        }
+      ],
+      "direct_transition": "Hormone-Receptor-Treatments"
+    },
+    "Ado_trastuzumab_emtansine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1371046,
+          "display": "Kadcyla(TDM-1)"
+        }
+      ],
+      "direct_transition": "Hormone-Receptor-Treatments"
+    },
+    "Lapatinib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 659616,
+          "display": "Tykerb"
+        }
+      ],
+      "direct_transition": "Hormone-Receptor-Treatments"
+    },
+    "Neratinib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1940649,
+          "display": "Nerlynx"
+        }
+      ],
+      "direct_transition": "Hormone-Receptor-Treatments"
+    },
+    "Trastuzumab_her2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 101306,
+          "display": "Herceptin"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Pertuzumab_her2",
+          "distribution": 0.7
+        },
+        {
+          "transition": "Hormone-Receptor-Treatments",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Hormone-Receptor-Treatments": {
+      "type": "Simple",
+      "direct_transition": "Hormone-Receptor-Treatments"
     }
   }
 }
