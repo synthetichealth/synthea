@@ -67,24 +67,7 @@
       "direct_transition": "HER2+"
     },
     "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 122548005,
-          "display": "Biopsy of breast (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
-      },
-      "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
-        "",
-        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
-      ],
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "ER_negative",
@@ -94,6 +77,11 @@
           "transition": "ER_positive",
           "distribution": 0.8
         }
+      ],
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
       ]
     },
     "ER_negative": {

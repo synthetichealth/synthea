@@ -130,7 +130,8 @@
     "Male": {
       "type": "Simple",
       "remarks": [
-        "https://www.breastcancer.org/symptoms/types/male_bc"
+        "https://www.breastcancer.org/symptoms/types/male_bc",
+        "https://www.webmd.com/breast-cancer/breast-cancer-men"
       ],
       "distributed_transition": [
         {
@@ -148,18 +149,27 @@
       "distributed_transition": [
         {
           "transition": "Age < 39",
-          "distribution": 0.0625
+          "distribution": 0.0454
         },
         {
           "transition": "39 <= Age < 59",
-          "distribution": 0.4875
+          "distribution": 0.3549
         },
         {
           "transition": "60 <= Age <=69",
-          "distribution": 0.45
+          "distribution": 0.28800000000000003
+        },
+        {
+          "transition": "69 < Age <= 85",
+          "distribution": 0.2591
+        },
+        {
+          "transition": "85 < Age",
+          "distribution": 0.0526
         }
       ],
       "remarks": [
+        "https://gis.cdc.gov/Cancer/USCS/DataViz.html",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ]
     },
@@ -185,7 +195,16 @@
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ],
-      "direct_transition": "BreastCancer_Symptom1"
+      "distributed_transition": [
+        {
+          "transition": "Regular Mammogram Visit",
+          "distribution": 0.63
+        },
+        {
+          "transition": "BreastCancer_Symptom1",
+          "distribution": 0.3700000000000001
+        }
+      ]
     },
     "60 <= Age <=69": {
       "type": "Delay",
@@ -197,30 +216,57 @@
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ],
-      "direct_transition": "BreastCancer_Symptom1"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "BreastCancer_Symptom1",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Regular Mammogram Visit",
+              "distribution": 0.7
+            },
+            {
+              "transition": "BreastCancer_Symptom1",
+              "distribution": 0.3
+            }
+          ]
+        }
+      ]
     },
     "BreastCancer_Symptom1": {
       "type": "Symptom",
       "symptom": "Lump/mass",
       "cause": "",
-      "probability": 0.9,
+      "probability": 0.83,
       "direct_transition": "BreastCancer_Symptom2",
       "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5482318/"
       ],
       "range": {
-        "low": 10,
-        "high": 20
+        "low": 0,
+        "high": 5
       }
     },
     "BreastCancer_Symptom2": {
       "type": "Symptom",
       "symptom": "Swelling",
       "cause": "",
-      "probability": 0.7,
+      "probability": 0.006,
       "direct_transition": "BreastCancer_Symptom3",
       "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5482318/"
       ],
       "range": {
         "low": 20,
@@ -231,10 +277,11 @@
       "type": "Symptom",
       "symptom": "Breast/Nipple Pain",
       "cause": "",
-      "probability": 0.5,
+      "probability": 0.06,
       "direct_transition": "BreastCancer_Symptom5",
       "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5482318/"
       ],
       "range": {
         "low": 20,
@@ -245,10 +292,11 @@
       "type": "Symptom",
       "symptom": "Skin Irritation/Dimpling",
       "cause": "",
-      "probability": 0.2,
+      "probability": 0.02,
       "direct_transition": "BreastCancer_Symptom4",
       "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
+        "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5482318/"
       ],
       "range": {
         "low": 0,
@@ -259,7 +307,7 @@
       "type": "Symptom",
       "symptom": "Nipple Retraction",
       "cause": "",
-      "probability": 0.1,
+      "probability": 0.07,
       "direct_transition": "BreastCancer_Symptom6",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
@@ -292,7 +340,7 @@
           "display": "Malignant neoplasm of breast (disorder)"
         }
       ],
-      "direct_transition": "Breast Cancer Encounter",
+      "direct_transition": "Time Before Initial Doctor Visit",
       "target_encounter": "Breast Cancer Encounter"
     },
     "Mammogram": {
@@ -300,8 +348,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 71651007,
-          "display": "Mammography (procedure)"
+          "code": 241055006,
+          "display": "Mammogram - symptomatic (procedure)"
         }
       ],
       "duration": {
@@ -338,7 +386,7 @@
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "emergency",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -346,15 +394,11 @@
           "display": "Encounter for symptom (procedure)"
         }
       ],
-      "direct_transition": "Breast Cancer Screening"
-    },
-    "Breast Cancer Screening": {
-      "type": "Simple",
       "direct_transition": "Mammogram"
     },
     "Switch from Primary Care Physician to Oncologist": {
       "type": "EncounterEnd",
-      "direct_transition": "TNM_Staging_Visit"
+      "direct_transition": "Delay Before Oncologist Biopsy"
     },
     "MRI": {
       "type": "Procedure",
@@ -379,11 +423,11 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 413744002,
-          "display": "Cancer screening follow up (finding)"
+          "code": 122548005,
+          "display": "Biopsy of breast (procedure)"
         }
       ],
-      "direct_transition": "Diagnose_TNM_Markers"
+      "direct_transition": "Breast Biopsy"
     },
     "Diagnose_TNM_Markers": {
       "type": "CallSubmodule",
@@ -429,7 +473,7 @@
           "display": "Stage group.clinical Cancer"
         }
       ],
-      "direct_transition": "Stage IV Treatment",
+      "direct_transition": "Delay for Analysis of Possible Treatments",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 2640006,
@@ -526,7 +570,7 @@
         "code": 50283003,
         "display": "Clinical stage III (finding)"
       },
-      "direct_transition": "Stage III Treatment"
+      "direct_transition": "Delay for Analysis of Possible Treatments"
     },
     "Stage I": {
       "type": "Observation",
@@ -544,7 +588,7 @@
         "code": 13104003,
         "display": "Clinical stage I (finding)"
       },
-      "direct_transition": "Stage 1 Treatment"
+      "direct_transition": "Delay for Analysis of Possible Treatments"
     },
     "IIIB": {
       "type": "Observation",
@@ -775,7 +819,7 @@
         "code": 718465002,
         "display": "Clinical stage 0 (finding)"
       },
-      "direct_transition": "Stage 0 Treatment"
+      "direct_transition": "Delay for Analysis of Possible Treatments"
     },
     "Early_Stage": {
       "type": "Simple",
@@ -819,7 +863,7 @@
         "code": 60333009,
         "display": "Clinical stage II (finding)"
       },
-      "direct_transition": "Stage II Treatment"
+      "direct_transition": "Delay for Analysis of Possible Treatments"
     },
     "Stage II Treatment": {
       "type": "CallSubmodule",
@@ -835,20 +879,6 @@
         {
           "transition": "Treatment Unsuccessful",
           "distribution": 0.07
-        }
-      ]
-    },
-    "Stage 1 Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage1",
-      "distributed_transition": [
-        {
-          "transition": "Treatment Successful",
-          "distribution": 0.99
-        },
-        {
-          "transition": "Treatment Unsuccessful",
-          "distribution": 0.01
         }
       ]
     },
@@ -1323,6 +1353,225 @@
       "attribute": "years_left",
       "value": 5,
       "direct_transition": "Follow-Up Treatment"
+    },
+    "69 < Age <= 85": {
+      "type": "Delay",
+      "range": {
+        "low": 70,
+        "high": 85,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Regular Mammogram Visit",
+          "distribution": 0.69
+        },
+        {
+          "transition": "BreastCancer_Symptom1",
+          "distribution": 1
+        }
+      ]
+    },
+    "85 < Age": {
+      "type": "Delay",
+      "range": {
+        "low": 85,
+        "high": 140,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Regular Mammogram Visit",
+          "distribution": 0.48
+        },
+        {
+          "transition": "BreastCancer_Symptom1",
+          "distribution": 1
+        }
+      ]
+    },
+    "Regular_Mammogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71651007,
+          "display": "Mammography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 25,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Ultrasound",
+          "distribution": 0.75
+        },
+        {
+          "transition": "MRI",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Regular Mammogram Visit": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 394656005,
+          "display": "Inpatient care (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Regular_Mammogram"
+    },
+    "Breast Cancer Found": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 254837009,
+          "display": "Malignant neoplasm of breast (disorder)"
+        }
+      ],
+      "target_encounter": "Breast Cancer Encounter",
+      "direct_transition": "Diagnose_TNM_Markers"
+    },
+    "Breast Biopsy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122548005,
+          "display": "Biopsy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Breast Cancer Found",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Regular_Mammogram"
+          }
+        },
+        {
+          "transition": "Diagnose_TNM_Markers"
+        }
+      ]
+    },
+    "Time Before Initial Doctor Visit": {
+      "type": "Delay",
+      "direct_transition": "Breast Cancer Encounter",
+      "range": {
+        "low": 0,
+        "high": 1,
+        "unit": "weeks"
+      }
+    },
+    "Delay Before Oncologist Biopsy": {
+      "type": "Delay",
+      "direct_transition": "TNM_Staging_Visit",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      }
+    },
+    "Delay for Analysis of Possible Treatments": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+    },
+    "Sit-Down with Oncologist to Discuss Treatment Options": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End Meeting with Oncologist"
+    },
+    "End Meeting with Oncologist": {
+      "type": "EncounterEnd",
+      "direct_transition": "Choose Treatment Option"
+    },
+    "Choose Treatment Option": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Stage 0 Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage 0"
+          }
+        },
+        {
+          "transition": "Stage I Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage I"
+          }
+        },
+        {
+          "transition": "Stage II Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage II"
+          }
+        },
+        {
+          "transition": "Stage III Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage III"
+          }
+        },
+        {
+          "transition": "Stage IV Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage IV"
+          }
+        },
+        {
+          "transition": "Stage 0 Treatment"
+        }
+      ]
+    },
+    "Stage I Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/breast_stage1",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.99
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.01
+        }
+      ]
     }
   }
 }
