@@ -14,8 +14,7 @@ public class AWSS3Exporter {
      * @param fileUri  S3 Uri to the new file.
      * @param contents The contents of the file.
      */
-    public static void writeNewFile(Person person, String folderName, String fileName, String contents)
-            throws UnsupportedOperationException {
+    public static void writeNewFile(String folderName, String fileName, String contents) {
         try {
             String bucketURI = Config.get("exporter.awsS3.uri");
             URI outBucketURI = new URI(bucketURI).resolve(folderName);
@@ -23,7 +22,6 @@ public class AWSS3Exporter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
@@ -32,7 +30,7 @@ public class AWSS3Exporter {
    * @param uri     S3 Uri to the new file.
    * @param contents The contents of the file.
    */
-    public static synchronized void appendToFile(Person person, String folderName, String fileName, String contents) throws UnsupportedOperationException {
+    public static synchronized void appendToFile(String folderName, String fileName, String contents) {
         try {
             String bucketURI = Config.get("exporter.awsS3.uri");
             URI outBucketURI = new URI(bucketURI).resolve(folderName);
@@ -40,6 +38,5 @@ public class AWSS3Exporter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

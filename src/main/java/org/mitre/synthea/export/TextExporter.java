@@ -10,11 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -276,10 +279,14 @@ public class TextExporter {
     breakline(textRecord);
 
     // finally write to the file
-    File outDirectory = FileSystemExporter.getOutputFolder("text", person);
-    Path outFilePath = outDirectory.toPath().resolve(Exporter.filename(person, fileTag, "txt"));
-
-    Files.write(outFilePath, textRecord, StandardOpenOption.CREATE_NEW);
+    String folderName = "text";
+    File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
+    String fileName = Exporter.filename(person, fileTag, "txt");
+    if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+      AWSS3Exporter.writeNewFile(folderName, fileName, StringUtils.join(textRecord, "\n"));
+    } else {
+      FileSystemExporter.writeNewFile(outDirectory, fileName, StringUtils.join(textRecord, "\n"));
+    }
   }
 
   /**
@@ -360,11 +367,14 @@ public class TextExporter {
       encounterNumber++;
 
       // write to the file
-      File outDirectory2 = FileSystemExporter.getOutputFolder("text_encounters", person);
-      Path outFilePath2 = outDirectory2.toPath()
-          .resolve(Exporter.filename(person, Integer.toString(encounterNumber), "txt"));
-
-      Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
+      String folderName2 = "text_encounters";
+      File outDirectory2 = FileSystemExporter.getOutputFolder(folderName2, person);
+      String fileName2 = Exporter.filename(person, Integer.toString(encounterNumber), "txt");
+      if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        AWSS3Exporter.writeNewFile(folderName2, fileName2, StringUtils.join(textRecord, "\n"));
+      } else {
+        FileSystemExporter.writeNewFile(outDirectory2, fileName2, StringUtils.join(textRecord, "\n"));
+      }
     }
   }
 
