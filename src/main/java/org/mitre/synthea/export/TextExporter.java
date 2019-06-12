@@ -282,7 +282,7 @@ public class TextExporter {
     String folderName = "text";
     File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
     String fileName = Exporter.filename(person, fileTag, "txt");
-    if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+    if (Boolean.parseBoolean(Config.get("exporter.use_aws_s3")) == true) {
       AWSS3Exporter.writeNewFile(folderName, fileName, StringUtils.join(textRecord, "\n"));
     } else {
       FileSystemExporter.writeNewFile(outDirectory, fileName, StringUtils.join(textRecord, "\n"));
@@ -370,7 +370,7 @@ public class TextExporter {
       String folderName2 = "text_encounters";
       File outDirectory2 = FileSystemExporter.getOutputFolder(folderName2, person);
       String fileName2 = Exporter.filename(person, Integer.toString(encounterNumber), "txt");
-      if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+      if (Boolean.parseBoolean(Config.get("exporter.use_aws_s3")) == true) {
         AWSS3Exporter.writeNewFile(folderName2, fileName2, StringUtils.join(textRecord, "\n"));
       } else {
         FileSystemExporter.writeNewFile(outDirectory2, fileName2, StringUtils.join(textRecord, "\n"));
