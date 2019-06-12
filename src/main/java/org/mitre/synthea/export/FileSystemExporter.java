@@ -27,7 +27,6 @@ public class FileSystemExporter {
    * @return Either the base folder provided, or a subdirectory, depending on
    *         configuration settings.
    */
-
   public static File getOutputFolder(String folderName, Person person) {
     List<String> folders = new ArrayList<>();
 
@@ -50,8 +49,9 @@ public class FileSystemExporter {
   /**
    * Write a new file with the given contents.
    * 
-   * @param file     Path to the new file.
-   * @param contents The contents of the file.
+   * @param outDirectory
+   * @param fileName
+   * @param contents
    */
   public static void writeNewFile(File outDirectory, String fileName, String contents) {
     try {
@@ -65,8 +65,9 @@ public class FileSystemExporter {
   /**
    * Append contents to the end of a file.
    * 
-   * @param file     Path to the new file.
-   * @param contents The contents of the file.
+   * @param outDirectory
+   * @param fileName
+   * @param contents
    */
    public static synchronized void appendToFile(File outDirectory, String fileName, String contents) {
     Path outFilePath = outDirectory.toPath().resolve(fileName);

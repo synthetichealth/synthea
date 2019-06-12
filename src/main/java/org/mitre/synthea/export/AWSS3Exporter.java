@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 
 public class AWSS3Exporter {
 
+    
     private static AmazonS3 client = AmazonS3ClientBuilder
             .standard()
             .withCredentials(new ProfileCredentialsProvider(Config.get("exporter.aws.profile_name")))
@@ -29,7 +30,8 @@ public class AWSS3Exporter {
 
 
     /**
-     *
+     * Write a new file with the given contents.
+     * 
      * @param person
      * @param folderName
      * @param fileName
@@ -41,11 +43,12 @@ public class AWSS3Exporter {
     }
 
     /**
-   * Append contents to the end of a file.
-   * 
-   * @param uri     S3 Uri to the new file.
-   * @param contents The contents of the file.
-   */
+     * Append contents to the end of a file.
+     * 
+     * @param folderName
+     * @param fileName
+     * @param contents
+     */
     public static synchronized void appendToFile(String folderName, String fileName, String contents) {
         try {
             String bucketURI = Config.get("exporter.awsS3.uri");
