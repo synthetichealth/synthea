@@ -53,8 +53,9 @@ public class FileSystemExporter {
    * @param file     Path to the new file.
    * @param contents The contents of the file.
    */
-  public static void writeNewFile(File outDirectory, String fileName, String contents) {
+  public static void writeNewFile(Person person, String folderName, String fileName, String contents) {
     try {
+      File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
       Path outFilePath = outDirectory.toPath().resolve(fileName);
       Files.write(outFilePath, Collections.singleton(contents), StandardOpenOption.CREATE_NEW);
     } catch (IOException e) {
@@ -68,7 +69,8 @@ public class FileSystemExporter {
    * @param file     Path to the new file.
    * @param contents The contents of the file.
    */
-   public static synchronized void appendToFile(File outDirectory, String fileName, String contents) {
+   public static synchronized void appendToFile(Person person, String folderName, String fileName, String contents) {
+    File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
     Path outFilePath = outDirectory.toPath().resolve(fileName);
     try {
       if (Files.notExists(outFilePath)) {
