@@ -273,19 +273,19 @@ public class Generator {
   }
 
   /**
-   * Generate a random Person, from the given seed. The returned person will be
-   * alive at the end of the simulation. This means that if in the course of the
-   * simulation the person dies, a new person will be started to replace them.
-   * Note also that if the person dies, the seed to produce them can't be re-used
-   * (otherwise the new person would die as well) so a new seed is picked, based
-   * on the given seed.
+   * Generate a random Person, from the given seed. The returned person will be alive at the end of
+   * the simulation. This means that if in the course of the simulation the person dies, a new
+   * person will be started to replace them. Note also that if the person dies, the seed to produce
+   * them can't be re-used (otherwise the new person would die as well) so a new seed is picked,
+   * based on the given seed.
    * 
-   * @param index      Target index in the whole set of people to generate
-   * @param personSeed Seed for the random person
+   * @param index
+   *          Target index in the whole set of people to generate
+   * @param personSeed
+   *          Seed for the random person
    * @return generated Person
-   * @throws Throwable
    */
-  public Person generatePerson(int index, long personSeed)  {
+  public Person generatePerson(int index, long personSeed) {
     Person person = null;
     try {
       boolean isAlive = true;
