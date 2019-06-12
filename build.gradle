@@ -62,6 +62,9 @@ dependencies {
   compile "org.slf4j:slf4j-api:1.6.1"
   compile "org.slf4j:slf4j-nop:1.6.1"
 
+  // aws
+  compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.569'
+
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
   testCompile fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')

@@ -51,7 +51,7 @@ public abstract class HospitalExporterStu3 {
       String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 
       try {
-        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        if (Boolean.parseBoolean(Config.get("exporter.use_aws_s3")) == true) {
           // todo : write to aws3
         } else {
           // get output folder
