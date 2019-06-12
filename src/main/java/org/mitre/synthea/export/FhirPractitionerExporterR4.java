@@ -64,7 +64,7 @@ public abstract class FhirPractitionerExporterR4 {
       
 
       try {
-        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        if (Boolean.parseBoolean(Config.get("exporter.use_aws_s3")) == true) {
           // todo : write to aws3
         } else {
           // get output folder
