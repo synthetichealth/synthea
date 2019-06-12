@@ -53,9 +53,10 @@ public class FileSystemExporter {
    * @param file     Path to the new file.
    * @param contents The contents of the file.
    */
-  public static void writeNewFile(Path file, String contents) {
+  public static void writeNewFile(File outDirectory, String fileName, String contents) {
     try {
-      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE_NEW);
+      Path outFilePath = outDirectory.toPath().resolve(fileName);
+      Files.write(outFilePath, Collections.singleton(contents), StandardOpenOption.CREATE_NEW);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -67,17 +68,18 @@ public class FileSystemExporter {
    * @param file     Path to the new file.
    * @param contents The contents of the file.
    */
-   public static synchronized void appendToFile(Path file, String contents) {
+   public static synchronized void appendToFile(File outDirectory, String fileName, String contents) {
+    Path outFilePath = outDirectory.toPath().resolve(fileName);
     try {
-      if (Files.notExists(file)) {
-        Files.createFile(file);
+      if (Files.notExists(outFilePath)) {
+        Files.createFile(outFilePath);
       }
     } catch (Exception e) {
       // Ignore... multi-threaded race condition to create a file that didn't exist,
       // but does now because one of the other exporter threads beat us to it.
     }
     try {
-      Files.write(file, Collections.singleton(contents), StandardOpenOption.APPEND);
+      Files.write(outFilePath, Collections.singleton(contents), StandardOpenOption.APPEND);
     } catch (IOException e) {
       e.printStackTrace();
     }
