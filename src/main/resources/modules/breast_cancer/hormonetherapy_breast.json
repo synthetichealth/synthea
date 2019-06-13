@@ -105,7 +105,7 @@
           "display": "Megace"
         }
       ],
-      "direct_transition": "HER2-Treatment"
+      "direct_transition": "Upper-Stage Treatment"
     },
     "PR-Treatments": {
       "type": "Simple",
@@ -120,7 +120,7 @@
           }
         },
         {
-          "transition": "HER2-Treatment"
+          "transition": "Upper-Stage Treatment"
         }
       ]
     },
@@ -152,36 +152,15 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "HER2",
-                "operator": "==",
-                "value": "HER2-positive"
-              },
-              {
-                "condition_type": "Observation",
-                "codes": [
-                  {
-                    "system": "LOINC",
-                    "code": "21908-9",
-                    "display": "Clinical stage I (finding)"
-                  }
-                ],
-                "operator": "!=",
-                "value_code": {
-                  "system": "SNOMED-CT",
-                  "code": 13104003,
-                  "display": "Clinical stage I (finding)"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "HER2",
+            "operator": "==",
+            "value": "HER2-positive"
           },
           "distributions": [
             {
               "transition": "Trastuzumab_her2",
-              "distribution": 0.4
+              "distribution": 0.2
             },
             {
               "transition": "Ado_trastuzumab_emtansine",
@@ -194,13 +173,17 @@
             {
               "transition": "Neratinib",
               "distribution": 0.2
+            },
+            {
+              "transition": "Pertuzumab_her2",
+              "distribution": 1
             }
           ]
         },
         {
           "distributions": [
             {
-              "transition": "Terminal",
+              "transition": "CDK4/6 Inhibitors",
               "distribution": 1
             }
           ]
@@ -216,7 +199,7 @@
           "display": "Perjeta"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments"
     },
     "Ado_trastuzumab_emtansine": {
       "type": "MedicationOrder",
@@ -227,7 +210,7 @@
           "display": "Kadcyla(TDM-1)"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments"
     },
     "Lapatinib": {
       "type": "MedicationOrder",
@@ -238,7 +221,7 @@
           "display": "Tykerb"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments"
     },
     "Neratinib": {
       "type": "MedicationOrder",
@@ -249,7 +232,7 @@
           "display": "Nerlynx"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments"
     },
     "Trastuzumab_her2": {
       "type": "MedicationOrder",
@@ -260,20 +243,112 @@
           "display": "Herceptin"
         }
       ],
+      "direct_transition": "Hormone-Receptor-Positive-Treatments"
+    },
+    "CDK4/6 Inhibitors": {
+      "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Pertuzumab_her2",
-          "distribution": 0.7
+          "transition": "Abemaciclib",
+          "distribution": 0.33
         },
         {
-          "transition": "Hormone-Receptor-Treatments",
-          "distribution": 0.3
+          "transition": "Palbociclib",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Ribociclib",
+          "distribution": 0.34
         }
       ]
     },
-    "Hormone-Receptor-Treatments": {
-      "type": "Simple",
+    "Abemaciclib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1946831,
+          "display": "Verzenio"
+        }
+      ],
       "direct_transition": "Terminal"
+    },
+    "Palbociclib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1601381,
+          "display": "Ibrance"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Ribociclib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1873984,
+          "display": "Kisqali"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Upper-Stage Treatment": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          }
+        },
+        {
+          "transition": "HER2-Treatment"
+        }
+      ]
+    },
+    "Hormone-Receptor-Positive-Treatments": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CDK4/6 Inhibitors",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER",
+                "operator": "==",
+                "value": "ER-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "PR",
+                "operator": "==",
+                "value": "PR-positive"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
     }
   }
 }
