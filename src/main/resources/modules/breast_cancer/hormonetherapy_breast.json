@@ -10,14 +10,25 @@
         {
           "transition": "ER-Treatments",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ER",
-            "operator": "==",
-            "value": "ER-positive"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "PR",
+                "operator": "==",
+                "value": "PR-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER",
+                "operator": "==",
+                "value": "ER-positive"
+              }
+            ]
           }
         },
         {
-          "transition": "PR-Treatments"
+          "transition": "Upper-Stage Treatment"
         }
       ]
     },
@@ -33,7 +44,7 @@
           "display": "Tamoxifen"
         }
       ],
-      "direct_transition": "PR-Treatments"
+      "direct_transition": "Upper-Stage Treatment"
     },
     "Fulvestrant": {
       "type": "MedicationOrder",
@@ -44,7 +55,7 @@
           "display": "Faslodex"
         }
       ],
-      "direct_transition": "PR-Treatments"
+      "direct_transition": "Upper-Stage Treatment"
     },
     "Aromatase Inhibitors (AI)": {
       "type": "Simple",
@@ -72,7 +83,7 @@
           "display": "Femara"
         }
       ],
-      "direct_transition": "PR-Treatments"
+      "direct_transition": "Upper-Stage Treatment"
     },
     "Anastrozole": {
       "type": "MedicationOrder",
@@ -83,7 +94,7 @@
           "display": "Arimidex"
         }
       ],
-      "direct_transition": "PR-Treatments"
+      "direct_transition": "Upper-Stage Treatment"
     },
     "Exemestane": {
       "type": "MedicationOrder",
@@ -94,53 +105,22 @@
           "display": "Aromasin"
         }
       ],
-      "direct_transition": "PR-Treatments"
-    },
-    "Megestrol Acetate": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 203000,
-          "display": "Megace"
-        }
-      ],
       "direct_transition": "Upper-Stage Treatment"
-    },
-    "PR-Treatments": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Megestrol Acetate",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "PR",
-            "operator": "==",
-            "value": "PR-positive"
-          }
-        },
-        {
-          "transition": "Upper-Stage Treatment"
-        }
-      ]
     },
     "ER-Treatments": {
       "type": "Simple",
       "distributed_transition": [
         {
           "transition": "Estrogen Blocking Receptors",
-          "distribution": 0.4
+          "distribution": 0.6
         },
         {
           "transition": "Fulvestrant",
-          "distribution": 0.3
+          "distribution": 0.1
         },
         {
           "transition": "Aromatase Inhibitors (AI)",
           "distribution": 0.3
-        },
-        {
-          "distribution": 1
         }
       ]
     },
@@ -160,31 +140,31 @@
           "distributions": [
             {
               "transition": "Trastuzumab_her2",
-              "distribution": 0.2
+              "distribution": 0.6
             },
             {
               "transition": "Ado_trastuzumab_emtansine",
-              "distribution": 0.2
+              "distribution": 0.03
             },
             {
               "transition": "Lapatinib",
-              "distribution": 0.2
+              "distribution": 0.03
             },
             {
               "transition": "Neratinib",
-              "distribution": 0.2
+              "distribution": 0.04
             },
             {
               "transition": "Pertuzumab_her2",
-              "distribution": 1
+              "distribution": 0.3
             }
           ]
         },
         {
           "distributions": [
             {
-              "transition": "CDK4/6 Inhibitors",
-              "distribution": 1
+              "distribution": 1,
+              "transition": "Hormone-Receptor-Positive-Treatments"
             }
           ]
         }
