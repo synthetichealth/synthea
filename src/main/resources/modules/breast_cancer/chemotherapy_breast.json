@@ -28,23 +28,23 @@
       "distributed_transition": [
         {
           "transition": "Anthracyclines",
-          "distribution": 0.2
+          "distribution": 0.3
         },
         {
           "transition": "Taxanes",
-          "distribution": 0.2
+          "distribution": 0.3
         },
         {
           "transition": "5-fluorouracil",
-          "distribution": 0.2
+          "distribution": 0.05
         },
         {
           "transition": "Cyclophosphamide",
-          "distribution": 0.2
+          "distribution": 0.3
         },
         {
           "transition": "Carboplatin",
-          "distribution": 0.2
+          "distribution": 0.05
         }
       ]
     },
