@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.writer.AWSS3Writer;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -31,7 +33,6 @@ import org.mitre.synthea.helpers.Utilities;
  * 
  */
 public class CustomSqlReport {
-  // todo : replace Files.write for awss3
 
   /**
    * The String that will be used in the results when the query found no rows
@@ -52,7 +53,7 @@ public class CustomSqlReport {
       return;
     }
 
-    File outDirectory = FileSystemExporter.getOutputFolder("reports", null);
+    File outDirectory = FileSystemWriter.getOutputFolder("reports", null);
 
     String queriesFile = Config.get("exporter.custom_report_queries_file");
     String sqlQueries = Utilities.readResource(queriesFile);

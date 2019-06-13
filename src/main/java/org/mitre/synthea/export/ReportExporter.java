@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.helpers.Config;
 
 /**
@@ -33,7 +34,7 @@ public class ReportExporter {
     }
 
     try (Connection connection = generator.database.getConnection()) {
-      File outDirectory = FileSystemExporter.getOutputFolder("statistics", null);
+      File outDirectory = FileSystemWriter.getOutputFolder("statistics", null);
       String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 

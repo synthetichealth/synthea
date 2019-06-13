@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.mitre.synthea.export.Exporter;
-import org.mitre.synthea.export.FileSystemExporter;
+import org.mitre.synthea.writer.FileSystemWriter;
 
 
 public class Graphviz {
@@ -44,7 +44,7 @@ public class Graphviz {
    * @throws URISyntaxException on failure to load modules.
    */
   public static void main(String[] args) throws URISyntaxException {
-    File folder = FileSystemExporter.getOutputFolder("graphviz", null);
+    File folder = FileSystemWriter.getOutputFolder("graphviz", null);
 
     Path inputPath = null;
     if (args != null && args.length > 0) {

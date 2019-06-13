@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.engine.Event;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -43,7 +44,6 @@ import org.mitre.synthea.world.geography.Location;
  * https://www.data.va.gov/dataset/corporate-data-warehouse-cdw
  */
 public class CDWExporter {
-  // todo : replace File and FileWriter for awss3
   /** Number of clinicians to generate. */
   private static final int CLINICIANS = 100;
 
@@ -157,7 +157,7 @@ public class CDWExporter {
     sids = new HashMap<FileWriter,AtomicInteger>();
     
     try {
-      File output = FileSystemExporter.getOutputFolder("cdw", null);
+      File output = FileSystemWriter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
 
@@ -553,7 +553,7 @@ public class CDWExporter {
    */
   public void writeFactTables() {
     try {
-      File output = FileSystemExporter.getOutputFolder("cdw", null);
+      File output = FileSystemWriter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
       sstaff.write(openFileWriter(outputDirectory, "sstaff.csv"));

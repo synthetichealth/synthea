@@ -14,6 +14,8 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
+import org.mitre.synthea.writer.AWSS3Writer;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -65,20 +67,20 @@ public abstract class Exporter {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
           if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-            AWSS3Exporter.appendToFile(folderName, fileName, entryJson);
+            AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
-            File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-            FileSystemExporter.appendToFile(outDirectory, fileName, entryJson);
+            File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+            FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
           }
         }
       } else {
         String bundleJson = FhirStu3.convertToFHIRJson(person, stopTime);
         String fileName = filename(person, fileTag, "json");
         if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-          AWSS3Exporter.writeNewFile(folderName, fileName, bundleJson);
+          AWSS3Writer.writeNewFile(folderName, fileName, bundleJson);
         } else {
-          File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-          FileSystemExporter.writeNewFile(outDirectory, fileName, bundleJson);
+          File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+          FileSystemWriter.writeNewFile(outDirectory, fileName, bundleJson);
         }
       }
     }
@@ -91,20 +93,20 @@ public abstract class Exporter {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceName() + ".ndjson";
           if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-            AWSS3Exporter.appendToFile(folderName, fileName, entryJson);
+            AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
-            File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-            FileSystemExporter.appendToFile(outDirectory, fileName, entryJson);
+            File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+            FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
           }
         }
       } else {
         String bundleJson = FhirDstu2.convertToFHIRJson(person, stopTime);
         String fileName = filename(person, fileTag, "json");
         if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-          AWSS3Exporter.writeNewFile(folderName, fileName, bundleJson);
+          AWSS3Writer.writeNewFile(folderName, fileName, bundleJson);
         } else {
-          File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-          FileSystemExporter.writeNewFile(outDirectory, fileName, bundleJson);
+          File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+          FileSystemWriter.writeNewFile(outDirectory, fileName, bundleJson);
         }
       }
     }
@@ -117,20 +119,20 @@ public abstract class Exporter {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
           if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-            AWSS3Exporter.appendToFile(folderName, fileName, entryJson);
+            AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
-            File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-            FileSystemExporter.appendToFile(outDirectory, fileName, entryJson);
+            File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+            FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
           }
         }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
         String fileName = filename(person, fileTag, "json");
         if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-          AWSS3Exporter.writeNewFile(folderName, fileName, bundleJson);
+          AWSS3Writer.writeNewFile(folderName, fileName, bundleJson);
         } else {
-          File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-          FileSystemExporter.writeNewFile(outDirectory, fileName, bundleJson);
+          File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+          FileSystemWriter.writeNewFile(outDirectory, fileName, bundleJson);
         }
       }
     }
@@ -139,10 +141,10 @@ public abstract class Exporter {
       String fileName = filename(person, fileTag, "xml");
       String folderName = "ccda";
       if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
-        AWSS3Exporter.writeNewFile(folderName, fileName, ccdaXml);
+        AWSS3Writer.writeNewFile(folderName, fileName, ccdaXml);
       } else {
-        File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
-        FileSystemExporter.writeNewFile(outDirectory, fileName, ccdaXml);
+        File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+        FileSystemWriter.writeNewFile(outDirectory, fileName, ccdaXml);
       }
     }
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {

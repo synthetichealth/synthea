@@ -18,6 +18,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.writer.AWSS3Writer;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -280,12 +282,12 @@ public class TextExporter {
 
     // finally write to the file
     String folderName = "text";
-    File outDirectory = FileSystemExporter.getOutputFolder(folderName, person);
+    File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
     String fileName = Exporter.filename(person, fileTag, "txt");
     if (Boolean.parseBoolean(Config.get("exporter.use_aws_s3")) == true) {
-      AWSS3Exporter.writeNewFile(folderName, fileName, StringUtils.join(textRecord, "\n"));
+      AWSS3Writer.writeNewFile(folderName, fileName, StringUtils.join(textRecord, "\n"));
     } else {
-      FileSystemExporter.writeNewFile(outDirectory, fileName, StringUtils.join(textRecord, "\n"));
+      FileSystemWriter.writeNewFile(outDirectory, fileName, StringUtils.join(textRecord, "\n"));
     }
   }
 
@@ -368,12 +370,12 @@ public class TextExporter {
 
       // write to the file
       String folderName2 = "text_encounters";
-      File outDirectory2 = FileSystemExporter.getOutputFolder(folderName2, person);
+      File outDirectory2 = FileSystemWriter.getOutputFolder(folderName2, person);
       String fileName2 = Exporter.filename(person, Integer.toString(encounterNumber), "txt");
       if (Boolean.parseBoolean(Config.get("exporter.use_aws_s3")) == true) {
-        AWSS3Exporter.writeNewFile(folderName2, fileName2, StringUtils.join(textRecord, "\n"));
+        AWSS3Writer.writeNewFile(folderName2, fileName2, StringUtils.join(textRecord, "\n"));
       } else {
-        FileSystemExporter.writeNewFile(outDirectory2, fileName2, StringUtils.join(textRecord, "\n"));
+        FileSystemWriter.writeNewFile(outDirectory2, fileName2, StringUtils.join(textRecord, "\n"));
       }
     }
   }

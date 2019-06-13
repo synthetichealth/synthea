@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.writer.AWSS3Writer;;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -48,7 +50,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
  * observations.csv, procedures.csv, and immunizations.csv.
  */
 public class CSVExporter {
-  // todo : replace File and FileWriter for awss3
   /**
    * Writer for patients.csv.
    */
@@ -109,7 +110,7 @@ public class CSVExporter {
    */
   private CSVExporter() {
     try {
-      File output = FileSystemExporter.getOutputFolder("csv", null);
+      File output = FileSystemWriter.getOutputFolder("csv", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
 

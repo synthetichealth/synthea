@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.writer;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 
 
-public class FileSystemExporter {
+public class FileSystemWriter {
   /**
    * Get the folder where the patient record should be stored. See the
    * configuration settings "exporter.subfolders_by_id_substring" and

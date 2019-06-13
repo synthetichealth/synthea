@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.writer;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 
-public class AWSS3Exporter {
+public class AWSS3Writer {
 
     
     private static AmazonS3 client = AmazonS3ClientBuilder

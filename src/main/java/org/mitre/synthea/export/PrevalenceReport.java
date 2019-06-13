@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.writer.FileSystemWriter;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -66,7 +67,7 @@ public class PrevalenceReport {
 
     String newCsvData = SimpleCSV.unparse(data);
 
-    File outDirectory = FileSystemExporter.getOutputFolder("prevalence", null);
+    File outDirectory = FileSystemWriter.getOutputFolder("prevalence", null);
 
     Path outFilePath = outDirectory.toPath().resolve("prev_data" + System.currentTimeMillis() + ".csv");
 
