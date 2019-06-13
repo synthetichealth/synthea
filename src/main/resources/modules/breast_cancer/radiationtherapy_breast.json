@@ -53,9 +53,78 @@
         "high": 3,
         "unit": "hours"
       },
-      "direct_transition": "External Beam Radiation",
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          },
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.01
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Advanced_drugs",
+              "distribution": 0.66
+            }
+          ],
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 2640006,
+              "display": "Clinical stage IV (finding)"
+            }
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.5
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.5
+            }
+          ]
+        }
       ]
     },
     "Breast-conserving surgery (BCS)": {
@@ -78,41 +147,20 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Or",
-            "conditions": [
+            "condition_type": "Observation",
+            "codes": [
               {
-                "condition_type": "Observation",
-                "codes": [
-                  {
-                    "system": "LOINC",
-                    "code": "21908-9",
-                    "display": "Stage group.clinical Cancer"
-                  }
-                ],
-                "operator": "==",
-                "value_code": {
-                  "system": "SNOMED-CT",
-                  "code": 13104003,
-                  "display": "Clinical stage I (finding)"
-                }
-              },
-              {
-                "condition_type": "Observation",
-                "codes": [
-                  {
-                    "system": "LOINC",
-                    "code": "21908-9",
-                    "display": "Stage group.clinical Cancer"
-                  }
-                ],
-                "operator": "==",
-                "value_code": {
-                  "system": "SNOMED-CT",
-                  "code": 718465002,
-                  "display": "Clinical stage 0 (finding)"
-                }
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
               }
-            ]
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
           },
           "distributions": [
             {
@@ -273,6 +321,57 @@
         "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
       ],
       "direct_transition": "Terminal"
+    },
+    "chemo": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/chemotherapy_breast"
+    },
+    "Advanced_drugs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Denosumab",
+          "distribution": 0.34
+        },
+        {
+          "transition": "Zoledronic_Acid",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Pamidronate",
+          "distribution": 0.33
+        }
+      ]
+    },
+    "Zoledronic_Acid": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 285143,
+          "display": "Zometa"
+        }
+      ]
+    },
+    "Denosumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1046399,
+          "display": "Xgeva"
+        }
+      ]
+    },
+    "Pamidronate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 11473,
+          "display": "Aredia"
+        }
+      ]
     }
   }
 }

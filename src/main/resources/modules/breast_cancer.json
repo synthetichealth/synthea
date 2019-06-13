@@ -803,24 +803,6 @@
       },
       "direct_transition": "Stage I"
     },
-    "Stage 0": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "21908-9",
-          "display": "Stage group.clinical Cancer"
-        }
-      ],
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 718465002,
-        "display": "Clinical stage 0 (finding)"
-      },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
-    },
     "Early_Stage": {
       "type": "Simple",
       "conditional_transition": [
@@ -841,9 +823,6 @@
             "operator": "==",
             "value": "N1"
           }
-        },
-        {
-          "transition": "Stage 0"
         }
       ]
     },
@@ -1522,8 +1501,7 @@
         {
           "transition": "Stage 0 Treatment",
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Stage 0"
+            "condition_type": "PriorState"
           }
         },
         {

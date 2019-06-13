@@ -55,7 +55,19 @@
           "distributions": [
             {
               "transition": "N0",
-              "distribution": 1
+              "distribution": 0.8
+            },
+            {
+              "transition": "N1",
+              "distribution": 0.1
+            },
+            {
+              "transition": "N2",
+              "distribution": 0.06
+            },
+            {
+              "transition": "N3",
+              "distribution": 0.03
             }
           ]
         },

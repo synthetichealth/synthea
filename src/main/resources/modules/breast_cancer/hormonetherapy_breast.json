@@ -155,20 +155,10 @@
             "condition_type": "And",
             "conditions": [
               {
-                "condition_type": "Observation",
-                "codes": [
-                  {
-                    "system": "LOINC",
-                    "code": "21908-9",
-                    "display": "Stage group.clinical Cancer"
-                  }
-                ],
-                "operator": "!=",
-                "value_code": {
-                  "system": "SNOMED-CT",
-                  "code": 718465002,
-                  "display": "Clinical stage 0 (finding)"
-                }
+                "condition_type": "Attribute",
+                "attribute": "HER2",
+                "operator": "==",
+                "value": "HER2-positive"
               },
               {
                 "condition_type": "Observation",
