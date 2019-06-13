@@ -132,6 +132,20 @@
               "distribution": 0.1
             }
           ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 1
+            }
+          ]
         }
       ]
     },

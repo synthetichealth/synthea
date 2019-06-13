@@ -17,63 +17,17 @@
         {
           "transition": "Treatment_2B",
           "condition": {
-            "condition_type": "And",
+            "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Attribute",
-                "attribute": "T",
-                "operator": "==",
-                "value": "T2"
+                "condition_type": "Gender",
+                "gender": "M"
               },
               {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "N",
-                    "operator": "==",
-                    "value": "N1"
-                  },
-                  {
-                    "condition_type": "Or",
-                    "conditions": [
-                      {
-                        "condition_type": "Attribute",
-                        "attribute": "M",
-                        "operator": "==",
-                        "value": "M0"
-                      },
-                      {
-                        "condition_type": "And",
-                        "conditions": [
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "T",
-                            "operator": "==",
-                            "value": "T3"
-                          },
-                          {
-                            "condition_type": "And",
-                            "conditions": [
-                              {
-                                "condition_type": "Attribute",
-                                "attribute": "N",
-                                "operator": "==",
-                                "value": "N0"
-                              },
-                              {
-                                "condition_type": "Attribute",
-                                "attribute": "M",
-                                "operator": "==",
-                                "value": "M0"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 40,
+                "unit": "years"
               }
             ]
           }
@@ -239,31 +193,6 @@
         }
       ]
     },
-    "Neoadjuvant Chemotherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 367336001,
-          "display": "Chemotherapy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 3,
-        "high": 6,
-        "unit": "months"
-      },
-      "distributed_transition": [
-        {
-          "transition": "Trastuzumab",
-          "distribution": 0.5
-        },
-        {
-          "transition": "Pertuzumab",
-          "distribution": 0.5
-        }
-      ]
-    },
     "Breast_Surgery": {
       "type": "Simple",
       "distributed_transition": [
@@ -276,28 +205,6 @@
           "distribution": 0.6
         }
       ]
-    },
-    "Pertuzumab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1298949,
-          "display": "Perjeta"
-        }
-      ],
-      "direct_transition": "Breast_Surgery"
-    },
-    "Trastuzumab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 101306,
-          "display": "Herceptin"
-        }
-      ],
-      "direct_transition": "Breast_Surgery"
     },
     "ER pos treatments": {
       "type": "Simple",
@@ -722,7 +629,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Neoadjuvant Chemotherapy",
+          "transition": "Breast_Surgery",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -756,7 +663,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Neoadjuvant Chemotherapy",
+          "transition": "Breast_Surgery",
           "condition": {
             "condition_type": "Or",
             "conditions": [

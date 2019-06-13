@@ -166,10 +166,9 @@
                 "operator": "!=",
                 "value_code": {
                   "system": "SNOMED-CT",
-                  "code": 13104003,
-                  "display": "Clinical stage I (finding)"
-                },
-                "value": 0
+                  "code": 718465002,
+                  "display": "Clinical stage 0 (finding)"
+                }
               },
               {
                 "condition_type": "Observation",
@@ -177,16 +176,15 @@
                   {
                     "system": "LOINC",
                     "code": "21908-9",
-                    "display": "Stage group.clinical Cancer"
+                    "display": "Clinical stage I (finding)"
                   }
                 ],
                 "operator": "!=",
                 "value_code": {
                   "system": "SNOMED-CT",
-                  "code": 718465002,
-                  "display": "Clinical stage 0 (finding)"
-                },
-                "value": 0
+                  "code": 13104003,
+                  "display": "Clinical stage I (finding)"
+                }
               }
             ]
           },
@@ -210,15 +208,9 @@
           ]
         },
         {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 0,
-            "unit": "years"
-          },
           "distributions": [
             {
-              "transition": "Hormone-Receptor-Treatments",
+              "transition": "Terminal",
               "distribution": 1
             }
           ]
@@ -291,7 +283,7 @@
     },
     "Hormone-Receptor-Treatments": {
       "type": "Simple",
-      "direct_transition": "Hormone-Receptor-Treatments"
+      "direct_transition": "Terminal"
     }
   }
 }
