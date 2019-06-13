@@ -1,0 +1,510 @@
+{
+  "name": "Surgery_Therapy_Breast",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Breast_Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "!=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Lymph_Node Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T0"
+          }
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mastectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 69031006,
+          "display": "Excision of breast tissue (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 3,
+        "unit": "hours"
+      },
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          },
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.01
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Advanced_drugs",
+              "distribution": 0.66
+            }
+          ],
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 2640006,
+              "display": "Clinical stage IV (finding)"
+            }
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.5
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    "Breast-conserving surgery (BCS)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392021009,
+          "display": "Lumpectomy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          },
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Advanced_drugs",
+              "distribution": 0.7
+            }
+          ],
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 2640006,
+              "display": "Clinical stage IV (finding)"
+            }
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
+    },
+    "External Beam Radiation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 33195004,
+          "display": "Teleradiotherapy procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End Breast Surgery",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+      ]
+    },
+    "Hypofractionated radiation therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385798007,
+          "display": "Radiation therapy care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 3,
+        "high": 5,
+        "unit": "weeks"
+      },
+      "direct_transition": "End Breast Surgery",
+      "remarks": [
+        "https://www.breastcancer.org/research-news/accelerated-whole-breast-radiation-new-standard"
+      ]
+    },
+    "Intraoperative radiation therapy (IORT)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Radiotherapy - intraoperative control (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Breast Surgery",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5493441/",
+        "https://uihc.org/health-topics/intraoperative-radiation-therapy-iort"
+      ]
+    },
+    "Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "SCTID: 447759004",
+          "display": "Brachytherapy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Interstitial Brachytherapy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Intracavitary brachytherapy",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Interstitial Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 113120007,
+          "display": "Interstitial brachytherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      },
+      "direct_transition": "End Breast Surgery",
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ]
+    },
+    "Intracavitary brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 384692006,
+          "display": "Intracavitary brachytherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      },
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ],
+      "direct_transition": "End Breast Surgery"
+    },
+    "chemo": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/chemotherapy_breast",
+      "direct_transition": "End Breast Surgery"
+    },
+    "Advanced_drugs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Denosumab",
+          "distribution": 0.34
+        },
+        {
+          "transition": "Zoledronic_Acid",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Pamidronate",
+          "distribution": 0.33
+        }
+      ]
+    },
+    "Zoledronic_Acid": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 285143,
+          "display": "Zometa"
+        }
+      ],
+      "direct_transition": "End Breast Surgery"
+    },
+    "Denosumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1046399,
+          "display": "Xgeva"
+        }
+      ],
+      "direct_transition": "End Breast Surgery"
+    },
+    "Pamidronate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 11473,
+          "display": "Aredia"
+        }
+      ],
+      "direct_transition": "End Breast Surgery"
+    },
+    "Breast_Surgery": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Breast-conserving surgery (BCS)",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Mastectomy",
+          "distribution": 0.4
+        }
+      ],
+      "remarks": [
+        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
+      ]
+    },
+    "Sentinel_Lymph_Node_Biopsy__SLNB_": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396487001,
+          "display": "Sentinel lymph node biopsy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Axillary_Lymph_Node_Dissection__ALND_": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 234262008,
+          "display": "Excision of axillary lymph node (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal"
+    },
+    "End Breast Surgery": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Lymph_Node Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "!=",
+            "value": "N0"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "==",
+            "value": "N0"
+          }
+        }
+      ]
+    },
+    "Lymph_Node Surgery": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Sentinel_Lymph_Node_Biopsy__SLNB_",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Axillary_Lymph_Node_Dissection__ALND_",
+          "distribution": 0.5
+        }
+      ]
+    }
+  }
+}
