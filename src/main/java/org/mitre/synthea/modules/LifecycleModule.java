@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
@@ -432,7 +433,15 @@ public final class LifecycleModule extends Module {
 
     person.setVitalSign(VitalSign.HEIGHT, height);
     person.setVitalSign(VitalSign.WEIGHT, weight);
-    person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+    double bmi = bmi(height, weight);
+    person.setVitalSign(VitalSign.BMI, bmi);
+
+    if (age >= 2 && age < 20) {
+      int ageInMonths = person.ageInMonths(time);
+      String gender = (String) person.attributes.get(Person.GENDER);
+      double percentile = percentileForBMI(bmi, gender, ageInMonths);
+      person.attributes.put(Person.BMI_PERCENTILE, percentile);
+    }
   }
 
   private static double childHeightGrowth(Person person, long time) {
@@ -501,6 +510,18 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
+    Map chart = (Map) growthChart.get("bmi");
+    Map byGender = (Map) chart.get(gender);
+    Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
+
+    double l = Double.parseDouble((String) byAge.get("l"));
+    double m = Double.parseDouble((String) byAge.get("m"));
+    double s = Double.parseDouble((String) byAge.get("s"));
+    double z = zScoreForValue(bmi, l, m, s);
+    return zScoreToPercentile(z);
+  }
+
   /**
    * Z is the z-score that corresponds to the percentile.
    * z-scores correspond exactly to percentiles, e.g.,
@@ -527,6 +548,35 @@ public final class LifecycleModule extends Module {
       percentile = 0.001;
     }
     return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
+  }
+
+  /**
+   * Compute the z-score given a value and the LMS parameters
+   * @param value the actual value, for example a weight, height or BMI
+   * @param l distribution's L parameter
+   * @param m distribution's M parameter
+   * @param s distribution's S parameter
+   * @return z-score
+   */
+  protected static double zScoreForValue(double value, double l, double m, double s) {
+    if (l == 0) {
+      return Math.log(value / m) / s;
+    } else {
+      return (Math.pow((value / m), l) - 1) / (l * s);
+    }
+  }
+
+  /**
+   * Convert a z-score into a percentile
+   * @param zScore
+   * @return percentile - 0.0 - 1.0
+   */
+  protected static double zScoreToPercentile(double zScore) {
+    double percentile = 0;
+
+    NormalDistribution dist = new NormalDistribution();
+    percentile = dist.cumulativeProbability(zScore);
+    return percentile;
   }
 
   public static double bmi(double heightCM, double weightKG) {
