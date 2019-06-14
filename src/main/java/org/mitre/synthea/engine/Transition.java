@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Range;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -157,7 +158,7 @@ public abstract class Transition {
             = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
         // Load in the respective CSV file
         String fileName = null;
-        fileName = "lookup_tables/" + lookupTableName;
+        fileName = Config.get("generate.lookuptables") + "/" + lookupTableName;
         String csv;
         List<? extends Map<String, String>> lookupTable = null;
         try {

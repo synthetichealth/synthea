@@ -45,7 +45,7 @@ public class LookupTableTransitionTest {
   @Test
   public void lookUpTableTestMassachusetts() {
 
-    int population = 50;
+    int population = 30;
     GeneratorOptions standardGO = new GeneratorOptions();
     standardGO.population = population;
 
@@ -209,7 +209,7 @@ public class LookupTableTransitionTest {
     Module lookuptabletestModule = getModule("lookuptable_test.json");
     modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
 
-    int population = 50;
+    int population = 30;
     GeneratorOptions standardGO = new GeneratorOptions();
     standardGO.population = population;
 
