@@ -140,7 +140,7 @@
           "distributions": [
             {
               "transition": "Trastuzumab_her2",
-              "distribution": 0.6
+              "distribution": 0.9
             },
             {
               "transition": "Ado_trastuzumab_emtansine",
@@ -153,10 +153,6 @@
             {
               "transition": "Neratinib",
               "distribution": 0.04
-            },
-            {
-              "transition": "Pertuzumab_her2",
-              "distribution": 0.3
             }
           ]
         },
@@ -169,17 +165,6 @@
           ]
         }
       ]
-    },
-    "Pertuzumab_her2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1298949,
-          "display": "Perjeta"
-        }
-      ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments"
     },
     "Ado_trastuzumab_emtansine": {
       "type": "MedicationOrder",
