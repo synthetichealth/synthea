@@ -1506,7 +1506,27 @@
         "high": 7,
         "unit": "days"
       },
-      "direct_transition": "Neoadjuvant Chemo Before Surgery"
+      "conditional_transition": [
+        {
+          "transition": "Neoadjuvant Chemo Before Surgery",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Stage III"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Stage IV"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Begin Treatment"
+        }
+      ]
     },
     "End Treatment": {
       "type": "Simple",
@@ -1564,19 +1584,16 @@
         "high": 2,
         "unit": "hours"
       },
-      "direct_transition": "Pertuzumab"
-    },
-    "Pertuzumab": {
-      "type": "MedicationOrder",
-      "codes": [
+      "distributed_transition": [
         {
-          "system": "RxNorm",
-          "code": 1298949,
-          "display": "Perjeta"
+          "transition": "Anthracyclines",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Taxanes",
+          "distribution": 0.5
         }
-      ],
-      "direct_transition": "End Neoadjuvant Chemo Treatment",
-      "assign_to_attribute": "neoMed"
+      ]
     },
     "Buffer": {
       "type": "Delay",
@@ -1618,6 +1635,61 @@
       "type": "CallSubmodule",
       "submodule": "Breast_cancer/Surgery_Therapy_Breast",
       "direct_transition": "End Treatment"
+    },
+    "Doxorubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 42512,
+          "display": "Adriamycin"
+        }
+      ],
+      "remarks": [
+        "- Doxorubicin (Adriamycin)",
+        "- Epriubicin (Ellence) ",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ],
+      "direct_transition": "End Neoadjuvant Chemo Treatment"
+    },
+    "Epirubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 203766,
+          "display": "Ellence"
+        }
+      ],
+      "direct_transition": "End Neoadjuvant Chemo Treatment"
+    },
+    "Paclitaxel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 202982,
+          "display": "Taxotere"
+        }
+      ],
+      "direct_transition": "End Neoadjuvant Chemo Treatment"
+    },
+    "Anthracyclines": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Doxorubicin",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Epirubicin",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Taxanes": {
+      "type": "Simple",
+      "direct_transition": "Paclitaxel"
     }
   }
 }
