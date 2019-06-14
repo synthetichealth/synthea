@@ -5,9 +5,10 @@ import ca.uhn.fhir.parser.IParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.function.Predicate;
 
 import org.mitre.synthea.engine.Generator;
@@ -66,7 +67,7 @@ public abstract class Exporter {
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
-          if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3")) == true) {
+          if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
             AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
             File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -115,15 +116,25 @@ public abstract class Exporter {
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
+        Set<String> fileNames = new HashSet<>();
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
-          if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
-            AWSS3Writer.appendToFile(folderName, fileName, entryJson);
-          } else {
-            File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
-            FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
-          }
+          fileNames.add(fileName);
+          File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
+          FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
+        }
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
+          fileNames.forEach((fileName) -> {
+            try {
+              Path path = Paths.get(fileName);
+              String content = new String ( Files.readAllBytes(path));
+              AWSS3Writer.writeNewFile(folderName, fileName, content);
+              Files.delete(path);
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          });
         }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
