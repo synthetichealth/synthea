@@ -106,6 +106,7 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -744,13 +745,13 @@ public class FhirR4 {
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person,
+    // get the insurance info at the time that the encounter happened (CHANGED FROM String TO Payer)
+    Payer insurance = HealthInsuranceModule.getCurrentInsurance(person,
         encounterResource.getPeriod().getStart().getTime());
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance));
+    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.name));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -807,13 +808,13 @@ public class FhirR4 {
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person,
+    // get the insurance info at the time that the encounter happened (CHANGED FROM String to PAYER)
+    Payer insurance = HealthInsuranceModule.getCurrentInsurance(person,
         encounterResource.getPeriod().getStart().getTime());
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance));
+    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.name));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1003,21 +1004,21 @@ public class FhirR4 {
     eob.addContained(referral);
     eob.setReferral(new Reference().setReference("#referral"));
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+    // get the insurance info at the time that the encounter happened (ALTERED FROM String TO Payer)
+    Payer insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setStatus(CoverageStatus.ACTIVE);
-    coverage.setType(new CodeableConcept().setText(insurance));
+    coverage.setType(new CodeableConcept().setText(insurance.name));
     coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
-    coverage.addPayor(new Reference().setDisplay(insurance));
+    coverage.addPayor(new Reference().setDisplay(insurance.name));
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(insurance));
+    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(insurance.name));
     eob.addInsurance(insuranceComponent);
-    eob.setInsurer(new Reference().setDisplay(insurance));
+    eob.setInsurer(new Reference().setDisplay(insurance.name));
 
     org.hl7.fhir.r4.model.Claim claim =
         (org.hl7.fhir.r4.model.Claim) claimEntry.getResource();

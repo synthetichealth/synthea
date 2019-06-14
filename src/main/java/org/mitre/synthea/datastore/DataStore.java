@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -251,11 +252,11 @@ public class DataStore {
       // Add coverage to database
       stmt = connection
           .prepareStatement("INSERT INTO COVERAGE (person_id, year, category) VALUES (?,?,?);");
-      List<String> coverage = (List<String>) p.attributes.get(HealthInsuranceModule.INSURANCE);
+      List<Payer> coverage = (List<Payer>) p.getPayerHistory();
       long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
       int birthYear = Utilities.getYear(birthdate);
       for (int i = 0; i < coverage.size(); i++) {
-        String category = coverage.get(i);
+        String category = coverage.get(i).name;
         if (category == null) {
           break;
         } else {

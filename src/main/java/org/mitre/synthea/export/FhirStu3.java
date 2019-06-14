@@ -106,6 +106,7 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -1133,11 +1134,11 @@ public class FhirStu3 {
       eob.setOrganization(new Reference().setIdentifier(identifier));
     }
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+    // get the insurance info at the time that the encounter happened (CHANGED FROM String TO Payer)
+    Payer insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
-    coverage.setType(new CodeableConcept().setText(insurance));
+    coverage.setType(new CodeableConcept().setText(insurance.name));
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();

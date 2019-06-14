@@ -88,6 +88,9 @@ public class Person implements Serializable, QuadTreeData {
   public boolean hasMultipleRecords;
   /** history of the currently active module. */
   public List<State> history;
+  /** person's insurance company */
+  // Each entry in the payerHistory List corresponds to the insurance held at that age
+  public List<Payer> payerHistory;
 
   public Person(long seed) {
     this.seed = seed; // keep track of seed so it can be exported later
@@ -103,6 +106,9 @@ public class Person implements Serializable, QuadTreeData {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     record = new HealthRecord(this);
+    // NEW
+    // 128 because it's a nice power of 2, and nobody will reach that age
+    payerHistory = Arrays.asList(new Payer[128]);
   }
 
   public double rand() {
@@ -474,4 +480,16 @@ public class Person implements Serializable, QuadTreeData {
   public String getFileName() {
     return null;
   }
+
+public Payer getInsurance(long time) {
+  int age = this.ageInYears(time);
+  if(this.payerHistory.get(age) != null){
+    return this.payerHistory.get(age);
+  }
+	return this.payerHistory.get(0);
+}
+
+public List<Payer> getPayerHistory() {
+	return this.payerHistory;
+}
 }

@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
@@ -114,11 +115,14 @@ public class HealthRecord {
       this.codes = new ArrayList<Code>();
     }
 
+
+    // EDIT THIS SO THAT PAYER IS NOT NULL
     public BigDecimal cost() {
       if (cost == null) {
         Person patient = record.person;
         Provider provider = record.provider;
-        String payer = null;
+        //Payer payer = null;
+        Payer payer = person.getInsurance(start);
         cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
         cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
       }
@@ -249,7 +253,7 @@ public class HealthRecord {
     public Encounter encounter;
     public Medication medication;
     public List<Entry> items;
-    public String insurance;
+    public Payer insurance;
 
     public Claim(Encounter encounter) {
       this.insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);

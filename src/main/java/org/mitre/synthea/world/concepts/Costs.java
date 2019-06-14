@@ -10,6 +10,7 @@ import java.util.Random;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -118,7 +119,7 @@ public class Costs {
   }
 
   /**
-   * Calculate the cost of this Procedure, Encounter, Medication, etc.
+   * Calculate the cost of this Procedure, Encounter, Medication, etc to the patient.
    * 
    * @param entry Entry to calculate cost of.
    * @param patient Person to whom the entry refers to
@@ -126,7 +127,7 @@ public class Costs {
    * @param payer Entity paying for the service, if any
    * @return Cost, in USD.
    */
-  public static double calculateCost(Entry entry, Person patient, Provider provider, String payer) {
+  public static double calculateCost(Entry entry, Person patient, Provider provider, Payer payer) {
     if (!hasCost(entry)) {
       return 0;
     }
@@ -150,13 +151,15 @@ public class Costs {
       defaultCost = DEFAULT_IMMUNIZATION_COST;
     }
     
+    // Calculate the Base Cost
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
       baseCost = costs.get(code).chooseCost(patient.random);
     } else {
       baseCost = defaultCost;
     }
-    
+
+    // Calculate the location adjustment factor
     double locationAdjustment = 1.0;
     if (patient != null && patient.attributes.containsKey(Person.STATE)) {
       String state = (String) patient.attributes.get(Person.STATE);
@@ -165,8 +168,26 @@ public class Costs {
         locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
       }
     }
+
+    // Calculate what the Payer pays
+    double payerCoveredCharges = 0.0;
+    // NEED TO UPDATE TO BE ACTUAL TIME
+    long tempTime = 0;
+    if(patient != null && patient.getInsurance(tempTime) != null){
+      // if(payer.isInNetwork(provider))
+      // if(payer.coversProcedure(entry))
+      payerCoveredCharges = payer.getCoverage();
+    }
+    // The Insurance Company must be in the network of the provider (Implement Later)
+    // The Insurance Company must cover the given procedure/medication/checkup/etc. (Implement Later)
+    // The insurance company has an amount that they will pay (percentage? hard number?)
+
     
-    return baseCost * locationAdjustment;
+    // Should 'costToPatient' be called 'patientDeductible'?
+    double costToPatient = (baseCost * locationAdjustment) * (1.0 - payerCoveredCharges);
+
+    //return baseCost * locationAdjustment; - Previous return statement
+    return costToPatient;
   }
   
   /**

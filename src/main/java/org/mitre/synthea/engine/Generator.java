@@ -25,6 +25,7 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -183,6 +184,8 @@ public class Generator {
 
     // initialize hospitals
     Provider.loadProviders(location);
+    // Initialize Insurance Companies
+    Payer.loadPayers(location);
     // ensure modules load early
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 

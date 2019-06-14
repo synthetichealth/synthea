@@ -1,0 +1,8 @@
+﻿,id,name,address,city,state,zip,default_coverage,default_copay,monthly_premium,ownership,LAT,LON
+0,10001,Medicare,,,,,0.95,55,70,Government,43.4,71
+1,10002,Medicaid,,,,,0.85,100,70,Government,43.4,71
+2,10003,Dual Eligible,,,,,0.99,25,70,Government,43.4,71
+3,10004,MassHealth,201 WASHINGTON STREET,BOSTON,MA,2102,0.8,80,90,Private,43.4,71
+4,10005,Blue Cross Blue Shield,202 WASHINGTON STREET,BOSTON,MA,2101,0.75,75,100,Private,43.4,71
+5,10006,CaliHealth,915 I STREET,SACRAMENTO,CA,95814,0.7,22,150,Private,43.4,71
+6,10007,Gecko Health,916 I STREET,SACRAMENTO,CA,95814,0.65,30,200,Private,43.4,71
