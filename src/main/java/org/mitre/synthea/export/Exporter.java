@@ -66,7 +66,7 @@ public abstract class Exporter {
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
-          if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3")) == true) {
             AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
             File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -76,7 +76,7 @@ public abstract class Exporter {
       } else {
         String bundleJson = FhirStu3.convertToFHIRJson(person, stopTime);
         String fileName = filename(person, fileTag, "json");
-        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
           AWSS3Writer.writeNewFile(folderName, fileName, bundleJson);
         } else {
           File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -92,7 +92,7 @@ public abstract class Exporter {
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceName() + ".ndjson";
-          if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
             AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
             File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -102,7 +102,7 @@ public abstract class Exporter {
       } else {
         String bundleJson = FhirDstu2.convertToFHIRJson(person, stopTime);
         String fileName = filename(person, fileTag, "json");
-        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
           AWSS3Writer.writeNewFile(folderName, fileName, bundleJson);
         } else {
           File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -118,7 +118,7 @@ public abstract class Exporter {
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
-          if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+          if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
             AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
             File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -128,7 +128,7 @@ public abstract class Exporter {
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
         String fileName = filename(person, fileTag, "json");
-        if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
           AWSS3Writer.writeNewFile(folderName, fileName, bundleJson);
         } else {
           File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
@@ -140,7 +140,7 @@ public abstract class Exporter {
       String ccdaXml = CCDAExporter.export(person, stopTime);
       String fileName = filename(person, fileTag, "xml");
       String folderName = "ccda";
-      if (Boolean.parseBoolean(Config.get("exporter.useAwsS3")) == true) {
+      if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
         AWSS3Writer.writeNewFile(folderName, fileName, ccdaXml);
       } else {
         File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
