@@ -28,23 +28,20 @@ public class AWSS3Writer {
             .withRegion(Config.get("exporter.aws.bucket_region"))
             .build();
 
-
     /**
      * Write a new file with the given contents.
-     * 
-     * @param person
      * @param folderName
      * @param fileName
      * @param contents
      * @throws UnsupportedOperationException
      */
     public static void writeNewFile(String folderName, String fileName, String contents) {
-        client.putObject(Config.get("exporter.aws.bucket_name"), fileName, contents);
+        client.putObject(Config.get("exporter.aws.bucket_name") + '/' + folderName, fileName, contents);
     }
 
     /**
      * Append contents to the end of a file.
-     * 
+     *
      * @param folderName
      * @param fileName
      * @param contents
