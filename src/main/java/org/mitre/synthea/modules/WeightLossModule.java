@@ -37,6 +37,8 @@ public final class WeightLossModule extends Module {
       (double) BiometricsConfig.get("adherence", 0.605);
   public static final double startBMI =
       (double) BiometricsConfig.get("start_bmi", 30d);
+  public static final double startPercentile =
+      (double) BiometricsConfig.get("start_percentile", 0.85d);
   public static final double minLoss = (double) BiometricsConfig.get("min_loss", 0.07);
   public static final double maxLoss = (double) BiometricsConfig.get("max_loss", 0.1);
   public static final double maintenance = (double) BiometricsConfig.get("maintenance", 0.2);
@@ -231,16 +233,32 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Determines whether a person will start weight management. With the default settings, if they
-    are over 5 years old and have a BMI over 30, there is a 49.3% chance that they will start
+    Determines whether a person will start weight management. If they meet the weight
+    management thresholds, there is a 49.3% chance that they will start
     weight management. This does not mean that they will adhere to the management plan.
    */
   public boolean willStartWeightManagement(Person person, long time) {
-    int age = person.ageInYears(time);
-    double bmi = person.getVitalSign(VitalSign.BMI, time);
-    if (age >= managementStartAge && bmi >= startBMI) {
+    if (meetsWeightManagementThresholds(person, time)) {
       return person.rand() <= startWeightManagementProb;
     }
     return false;
+  }
+
+  /**
+    Determines whether a person meets the thresholds for starting weight management. With the default settings:
+    Children under 5 do not ever meet the threshold.
+    Patients from ages 5 to 20 meet the threshold if their BMI is at or over the 85th percentile for their age in months
+    Patients 20 and older meet the threshold if their BMI is 30 or over.
+   */
+  public boolean meetsWeightManagementThresholds(Person person, long time) {
+    int age = person.ageInYears(time);
+    double bmi = person.getVitalSign(VitalSign.BMI, time);
+    double bmiAtPercentile = 500; // initializing to an impossibly high value if we somehow hit this later
+    if (age >= 2 && age < 20) {
+      int ageInMonths = person.ageInMonths(time);
+      String gender = (String) person.attributes.get(Person.GENDER);
+      bmiAtPercentile = lookupGrowthChart("bmi", gender, ageInMonths, startPercentile);
+    }
+    return (age >= managementStartAge && ((bmi >= startBMI && age >= 20) || (age < 20 && bmi >= bmiAtPercentile)));
   }
 }

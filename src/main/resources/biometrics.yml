@@ -79,8 +79,10 @@ weightloss:
 
   # Earliest age someone will try to lose weight
   min_age: 5
-  # BMI at which someone will start to consider losing weight
+  # BMI at which someone will start to consider losing weight for patients over 20
   start_bmi: 30
+  # BMI percentile at which someone will start to consider losing weight for patients under 20
+  start_percentile: 0.85
 
   #https://www.cdc.gov/mmwr/volumes/67/wr/mm6741a10.htm?s_cid=mm6741a10_w
   start_prob: 0.493

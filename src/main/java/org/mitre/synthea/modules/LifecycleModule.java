@@ -472,16 +472,20 @@ public final class LifecycleModule extends Module {
    * Lookup and calculate values from the CDC growth charts, using the LMS
    * values to calculate the intermediate values.
    * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
-   * @param heightOrWeight "height" | "weight"
+   *
+   * Note: BMI values only available for ageInMonths 24 - 240 as BMI is
+   * typically useful in patients under 24 months.
+   *
+   * @param heightWeightOrBMI "height" | "weight" | "bmi"
    * @param gender "M" | "F"
    * @param ageInMonths 0 - 240
    * @param percentile 0.0 - 1.0
    * @return The height (cm) or weight (kg)
    */
   @SuppressWarnings("rawtypes")
-  public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths,
+  public static double lookupGrowthChart(String heightWeightOrBMI, String gender, int ageInMonths,
       double percentile) {
-    Map chart = (Map) growthChart.get(heightOrWeight);
+    Map chart = (Map) growthChart.get(heightWeightOrBMI);
     Map byGender = (Map) chart.get(gender);
     Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
 

@@ -3,6 +3,8 @@ package org.mitre.synthea.modules;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mitre.synthea.modules.LifecycleModule.adherence;
+import static org.mitre.synthea.modules.LifecycleModule.bmi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -140,6 +142,27 @@ public class WeightLossModuleTest {
     assertEquals(39.87, weight, 0.1);
   }
 
+  @Test
+  public void testMeetsWeightManagementThresholds() {
+    long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
+    long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, birthDay);
+    person.attributes.put(Person.GENDER, "M");
+    person.setVitalSign(VitalSign.HEIGHT, 139);
+    person.setVitalSign(VitalSign.WEIGHT, 41);
+    person.setVitalSign(VitalSign.BMI, bmi(139, 41));
+    assertTrue(mod.meetsWeightManagementThresholds(person, start));
+    person.setVitalSign(VitalSign.WEIGHT, 35);
+    person.setVitalSign(VitalSign.BMI, bmi(139, 35));
+    assertFalse(mod.meetsWeightManagementThresholds(person, start));
+    assertTrue(mod.meetsWeightManagementThresholds(thirtyYearOld(), start));
+    Person lighterThirty = thirtyYearOld();
+    lighterThirty.setVitalSign(VitalSign.WEIGHT, 85);
+    lighterThirty.setVitalSign(VitalSign.BMI, bmi(175, 85));
+    assertFalse(mod.meetsWeightManagementThresholds(lighterThirty, start));
+  }
+
   /*
   30 year old 300 lb man in the year 2000
    */
@@ -150,8 +173,9 @@ public class WeightLossModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
-    person.setVitalSign(VitalSign.WEIGHT, 136d);
-    person.setVitalSign(VitalSign.HEIGHT, 175d);
+    person.setVitalSign(VitalSign.WEIGHT, 136);
+    person.setVitalSign(VitalSign.HEIGHT, 175);
+    person.setVitalSign(VitalSign.BMI, bmi(175, 136));
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
     person.attributes.put(WeightLossModule.WEIGHT_LOSS_PERCENTAGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 136d);
