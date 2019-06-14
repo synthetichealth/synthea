@@ -1584,14 +1584,53 @@
         "high": 2,
         "unit": "hours"
       },
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Anthracyclines",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "neoMed",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "transition": "Anthracyclines",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Taxanes",
+              "distribution": 0.5
+            }
+          ]
         },
         {
-          "transition": "Taxanes",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "neoMed",
+            "operator": "==",
+            "value": "P"
+          },
+          "distributions": [],
+          "transition": "Paclitaxel"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "neoMed",
+            "operator": "==",
+            "value": "E"
+          },
+          "distributions": [],
+          "transition": "Epirubicin"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "neoMed",
+            "operator": "==",
+            "value": "D"
+          },
+          "distributions": [],
+          "transition": "Doxorubicin"
         }
       ]
     },
@@ -1661,7 +1700,8 @@
           "display": "Ellence"
         }
       ],
-      "direct_transition": "End Neoadjuvant Chemo Treatment"
+      "direct_transition": "End Neoadjuvant Chemo Treatment",
+      "assign_to_attribute": "neoMed"
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
